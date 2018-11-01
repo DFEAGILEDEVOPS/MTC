@@ -5,10 +5,17 @@ const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
 
 const serviceToExport = {
-  sqlFindEligiblePupilsBySchool: async (schoolId) => {
+  /**
+   *
+   * @param {number} schoolId
+   * @param {boolean} isLiveCheck
+   * @return {Promise<*>}
+   */
+  sqlFindEligiblePupilsBySchool: async (schoolId, isLiveCheck) => {
+    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration';
     const sql = `SELECT 
                   * 
-                FROM ${sqlService.adminSchema}.vewPupilsEligibleForPinGeneration
+                FROM ${sqlService.adminSchema}.${view}
                 WHERE school_id=@schoolId                 
                 ORDER BY lastName asc, foreName asc, middleNames asc `
     const params = [
@@ -21,22 +28,23 @@ const serviceToExport = {
     return sqlService.query(sql, params)
   },
 
-  sqlFindPupilsWithActivePins: async (schoolId, pinEnv) => {
-    // TODO: use pinEnv to differentiate between live and familiarisation
+  sqlFindPupilsWithActivePins: async (schoolId, isLiveCheck) => {
+    const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins';
     const param = { name: 'schoolId', type: TYPES.Int, value: schoolId }
     const sql = `
       SELECT 
         *
-      FROM ${sqlService.adminSchema}.[vewPupilsWithActivePins] 
+      FROM ${sqlService.adminSchema}.[${view}] 
       WHERE school_id = @schoolId
       ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
       `
     return sqlService.query(sql, [param])
   },
 
-  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds) => {
+  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
+    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
     const select = `SELECT * 
-                    FROM ${sqlService.adminSchema}.[vewPupilsEligibleForPinGeneration]`
+                    FROM ${sqlService.adminSchema}.[${view}]`
     let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
     const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
     params.push({
