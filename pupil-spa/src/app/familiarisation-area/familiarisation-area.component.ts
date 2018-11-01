@@ -104,9 +104,9 @@ export class FamiliarisationAreaComponent {
   @HostListener('window:resize')
   checkValidSelection() {
     const width = window.innerWidth;
-    if (width < 641 && (this.selectedSize === 'xlarge' || this.selectedSize === 'xxlarge')) {
+    if (width < 641 && (this.selectedSize === 'large' || this.selectedSize === 'xlarge' || this.selectedSize === 'xxlarge')) {
       this.validSelection = false;
-    } else if (width < 720 && (this.selectedSize === 'xxlarge')) {
+    } else if (width < 720 && (this.selectedSize === 'xlarge' || this.selectedSize === 'xxlarge')) {
       this.validSelection = false;
     } else {
       this.validSelection = true;
