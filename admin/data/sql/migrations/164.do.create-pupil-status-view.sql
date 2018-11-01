@@ -2,6 +2,7 @@
 
 CREATE VIEW [mtc_admin].[vewPupilStatus] AS (
       SELECT
+              p.id as pupil_id,
               p.foreName,
               p.lastName,
               p.middleNames,
