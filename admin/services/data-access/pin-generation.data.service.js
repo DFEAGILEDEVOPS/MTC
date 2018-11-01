@@ -29,7 +29,6 @@ const serviceToExport = {
   },
 
   sqlFindPupilsWithActivePins: async (schoolId, isLiveCheck) => {
-    console.log('sqlFindPupilsWithActivePins: ', isLiveCheck)
     const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins';
     const param = { name: 'schoolId', type: TYPES.Int, value: schoolId }
     const sql = `
