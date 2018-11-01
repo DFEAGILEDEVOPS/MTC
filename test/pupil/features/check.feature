@@ -24,7 +24,7 @@ Feature: Check questions
     Given I have started the check
     Then I can answer the question using their phsyical keyboard
 
-  @local_storage
+  @local_storage @smoke
   Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB
     Given I have started the check
     Then I should be able to use the on screen keyboard to complete the test
