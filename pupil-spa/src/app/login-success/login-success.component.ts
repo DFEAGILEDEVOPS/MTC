@@ -86,7 +86,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onClick() {
     const config = this.questionService.getConfig();
-    const hasAccessSettings = config.audibleSounds || config.numpadRemoval || config.inputAssistance;
+    const hasAccessSettings = config.audibleSounds || config.numpadRemoval || config.inputAssistance || config.colourContrast;
     if (hasAccessSettings) {
       this.router.navigate(['access-settings']);
     } else {
