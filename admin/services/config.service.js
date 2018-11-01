@@ -46,7 +46,8 @@ const configService = {
       inputAssistance: false,
       numpadRemoval: false,
       fontSize: false,
-      colourContrast: false
+      colourContrast: false,
+      questionReader: false
     }
 
     let pupilAccessArrangements
@@ -69,6 +70,7 @@ const configService = {
       if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
       if (code === accessArrangementsDataService.CODES.FONT_SIZE) checkOptions.fontSize = true
       if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) checkOptions.colourContrast = true
+      if (code === accessArrangementsDataService.CODES.QUESTION_READER) checkOptions.questionReader = true
     })
 
     return R.merge(config, checkOptions)
