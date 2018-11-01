@@ -2,11 +2,12 @@
 const config = require('../config')
 
 const NAMES = {
-  PREPARE_CHECK: 'prepare-check',
   CHECK_COMPLETE: 'check-complete',
-  PUPIL_FEEDBACK: 'pupil-feedback',
   CHECK_STARTED: 'check-started',
-  PUPIL_PREFS: 'pupil-prefs'
+  PREPARE_CHECK: 'prepare-check',
+  PUPIL_FEEDBACK: 'pupil-feedback',
+  PUPIL_PREFS: 'pupil-prefs',
+  PUPIL_STATUS: 'pupil-status'
 }
 
 Object.freeze(NAMES)
