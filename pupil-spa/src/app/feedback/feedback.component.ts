@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
 
 @Component({
@@ -8,7 +10,7 @@ import { FeedbackService } from '../services/feedback/feedback.service';
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.scss']
 })
-export class FeedbackComponent implements OnInit {
+export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public inputTypes: object;
   public satisfactionRatings: object;
@@ -19,6 +21,7 @@ export class FeedbackComponent implements OnInit {
   public errorSatisfactionRating: boolean;
   public errorCommentExists: boolean;
   public enableSubmit: boolean;
+  public speechListenerEvent: any;
 
   private pupilData: object;
   private feedbackExists: boolean;
@@ -28,6 +31,9 @@ export class FeedbackComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
+    private speechService: SpeechService,
+    private questionService: QuestionService,
+    private elRef: ElementRef,
     private feedbackService: FeedbackService
   ) {}
 
@@ -60,6 +66,26 @@ export class FeedbackComponent implements OnInit {
     this.errorCommentExists = false;
     this.submitted = false;
     this.enableSubmit = false;
+  }
+
+  ngAfterViewInit() {
+    if (this.questionService.getConfig().questionReader) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
+        (event) => { this.speechService.focusEventListenerHook(event); },
+        true
+      );
+    }
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    if (this.questionService.getConfig().questionReader) {
+      this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
+    }
   }
 
   componentValidate() {

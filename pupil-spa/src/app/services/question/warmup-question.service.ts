@@ -42,7 +42,7 @@ export class WarmupQuestionService extends QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
-    config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
+    config.questionReader = configData['questionReader'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
     config.numpadRemoval = configData[ 'numpadRemoval' ];
     config.fontSize = configData[ 'fontSize' ];

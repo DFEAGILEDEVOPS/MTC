@@ -1,7 +1,7 @@
 export class Config {
   private _questionTime: number;
   private _loadingTime: number;
-  private _speechSynthesis: boolean;
+  private _questionReader: boolean;
   private _audibleSounds: boolean;
   private _inputAssistance: boolean;
   private _numpadRemoval: boolean;
@@ -25,12 +25,12 @@ export class Config {
     this._loadingTime = value;
   }
 
-  get speechSynthesis(): boolean {
-    return this._speechSynthesis;
+  get questionReader(): boolean {
+    return this._questionReader;
   }
 
-  set speechSynthesis(value: boolean) {
-    this._speechSynthesis = value;
+  set questionReader(value: boolean) {
+    this._questionReader = value;
   }
 
   get audibleSounds(): boolean {
