@@ -1,21 +1,28 @@
 'use strict'
 
+const azure = require('azure-storage')
 const moment = require('moment')
-const winston = require('winston')
-const uuid = require('uuid/v4')
-const { TYPES } = require('tedious')
+const process = require('process')
 const sqlService = require('less-tedious')
+const uuid = require('uuid/v4')
+const winston = require('winston')
+const { TYPES } = require('tedious')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
+const sqlUtil = require('../lib/sql-helper')
 const config = require('../config')
+
+const azureStorageHelper = require('../lib/azure-storage-helper')
 
 winston.level = 'error'
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
-const sqlUtil = require('../lib/sql-helper')
-
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 const schema = '[mtc_admin]'
-const azureTableService = getPromisifiedAzureTableService()
+const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, checkStartMessage) {
   context.log('check-started message received', checkStartMessage.checkCode)
@@ -33,15 +40,28 @@ module.exports = async function (context, checkStartMessage) {
     throw error
   }
 
-  // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.
+  // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.]
+  let checkData
   try {
-    const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
+    checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
     if (checkData.isLiveCheck) {
-      await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+      await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
       context.log('check-started: SUCCESS: pupil check row deleted from preparedCheck table for', checkStartMessage.checkCode)
     }
   } catch (error) {
     context.log.error(`check-started: ERROR: unable to delete from table storage for ${checkStartMessage.checkCode}`)
+    throw error
+  }
+
+  // Request a pupil status change
+  try {
+    if (checkData.isLiveCheck) {
+      const pupilStatusQueueName = 'pupil-status'
+      const message = { version: 1, pupilId: checkData.pupil_id, checkCode: checkStartMessage.checkCode }
+      await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
+    }
+  } catch (error) {
+    context.log.error(`check-started: Error requesting a pupil-status change for checkCode ${checkStartMessage.checkCode}`)
     throw error
   }
 
