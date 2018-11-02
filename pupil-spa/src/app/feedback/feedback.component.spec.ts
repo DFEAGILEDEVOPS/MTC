@@ -10,6 +10,11 @@ import { FeedbackService } from '../services/feedback/feedback.service';
 import { TokenService } from '../services/token/token.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 
@@ -30,6 +35,9 @@ describe('FeedbackComponent', () => {
       providers: [
         { provide: QUEUE_STORAGE_TOKEN },
         { provide: Router, useValue: mockRouter },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        WindowRefService,
         AzureQueueService,
         FeedbackService,
         StorageService,
