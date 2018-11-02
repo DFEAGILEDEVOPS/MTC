@@ -97,7 +97,7 @@ export class FamiliarisationAreaComponent {
     if (this.questionService.getConfig().colourContrast) {
       this.router.navigate(['colour-choice']);
     } else {
-      this.router.navigate(['access-settings']);
+      this.router.navigate(['sign-in-success']);
     }
   }
 
