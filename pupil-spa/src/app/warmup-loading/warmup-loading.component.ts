@@ -28,7 +28,7 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
     }));
 
     // wait for the component to be rendered first, before parsing the text
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
 
       setTimeout(() => {
