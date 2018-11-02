@@ -7,7 +7,7 @@ const httpMocks = require('node-mocks-http')
 
 const schoolController = require('../../../controllers/school')
 const schoolService = require('../../../services/school.service')
-const schoolHomePinGenerationPresenter = require('../../../helpers/school-home-pin-generation-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 const schoolMock = require('../mocks/school')
 
 describe('school controller:', () => {
@@ -44,12 +44,12 @@ describe('school controller:', () => {
 
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
-        spyOn(schoolHomePinGenerationPresenter, 'getEligibilityData')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getEligibilityData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         const res = getRes()
         const req = getReq(goodReqParams)
         await schoolController.getSchoolLandingPage(req, res, next)
-        expect(schoolHomePinGenerationPresenter.getEligibilityData).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getEligibilityData).toHaveBeenCalled()
         expect(schoolService.findSchoolByDfeNumber).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('School Homepage')
@@ -57,12 +57,12 @@ describe('school controller:', () => {
         done()
       })
       it('should throw an error if getEligibilityData method throws an error', async () => {
-        spyOn(schoolHomePinGenerationPresenter, 'getEligibilityData').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getEligibilityData').and.returnValue(Promise.reject(new Error('error')))
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         const res = getRes()
         const req = getReq(goodReqParams)
         await schoolController.getSchoolLandingPage(req, res, next)
-        expect(schoolHomePinGenerationPresenter.getEligibilityData).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getEligibilityData).toHaveBeenCalled()
         expect(schoolService.findSchoolByDfeNumber).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })

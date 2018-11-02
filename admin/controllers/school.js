@@ -1,6 +1,6 @@
 'use strict'
 
-const schoolHomePinGenerationPresenter = require('../helpers/school-home-pin-generation-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const config = require('../config')
 const schoolService = require('../services/school.service')
 const moment = require('moment')
@@ -21,7 +21,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
   let pinGenerationEligibilityData
   let schoolName = ''
   try {
-    pinGenerationEligibilityData = await schoolHomePinGenerationPresenter.getEligibilityData()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getEligibilityData()
     schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
