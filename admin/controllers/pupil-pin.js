@@ -1,5 +1,6 @@
 const featureToggles = require('feature-toggles')
 const R = require('ramda')
+const winston = require('winston')
 
 const config = require('../config')
 const monitor = require('../helpers/monitor')
@@ -12,7 +13,7 @@ const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const winston = require('winston')
+const pinGenerationEligibilityService = require('../services/pin-generation-eligibility.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
@@ -23,6 +24,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
@@ -68,6 +70,7 @@ const getGeneratePinsList = async (req, res, next) => {
 
   // TODO: data service call should be moved to a service
   try {
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -117,6 +120,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
     // OLD code - writes to check table
     if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
@@ -161,6 +165,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
@@ -204,6 +209,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
