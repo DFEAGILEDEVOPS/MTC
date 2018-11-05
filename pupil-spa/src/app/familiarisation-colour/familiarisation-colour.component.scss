@@ -149,7 +149,7 @@ span.xsmall {
   @media (max-width: 640px) {
     margin: 0;
     max-width: 100%;
-    height: auto;
+    height: 250px;
     padding-bottom: 20px;
   }
 
@@ -163,18 +163,25 @@ span.xsmall {
     width: auto;
   }
 
-  > .question-text {
-    margin-top: 10%;
-    text-align: center;
-  }
+  > .preview-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 
-  table {
-    border-spacing: 10px;
-    margin: auto;
-  }
+    > .question-text {
+      text-align: center;
+    }
 
-  > table button {
-    border: none;
-    padding: 0;
+    table {
+      border-spacing: 10px;
+      margin: auto;
+    }
+
+    > table button {
+      background-color: #6f777b;
+      border: none;
+      color: #fff;
+    }
   }
 }
