@@ -3,7 +3,7 @@
     <div class="grid-row">
         <div class="column-two-thirds">
             <header class="page-header">
-                <h1 class="heading-xlarge" tabindex="0">Give feedback</h1>
+                <h1 class="heading-xlarge">Give feedback</h1>
             </header>
 
             <div *ngIf="(errorInputType || errorSatisfactionRating)"
@@ -17,11 +17,11 @@
             </div>
 
             <form (ngSubmit)="onSubmit(commentText.value)" autocomplete="off">
-                <h2 class="heading-medium no-top-margin" tabindex="0">How did you enter your answers today?</h2>
+                <h2 class="heading-medium no-top-margin">How did you enter your answers today?</h2>
 
                 <div [ngClass]="(errorInputType === true)?'form-group-error':'form-group'" class="text">
                     <fieldset>
-                        <legend class="visually-hidden" aria-hidden="true">How did you enter your answers today?</legend>
+                        <legend class="visually-hidden">How did you enter your answers today?</legend>
                         <span *ngIf="errorInputType" class="error-message">Please choose an option below</span>
                         <div class="multiple-choice" *ngFor="let inputType of inputTypes">
                             <input type="radio"
@@ -36,11 +36,11 @@
 
                 <br style="clear:both">
 
-                <h2 class="heading-medium no-top-margin" tabindex="0">How easy or difficult was it to enter your answers today?</h2>
+                <h2 class="heading-medium no-top-margin">How easy or difficult was it to enter your answers today?</h2>
 
                 <div [ngClass]="(errorSatisfactionRating === true)?'form-group-error':'form-group'" class="text">
                     <fieldset>
-                        <legend class="visually-hidden" aria-hidden="true">How easy or difficult was it to enter your answers today?
+                        <legend class="visually-hidden">How easy or difficult was it to enter your answers today?
                         </legend>
                         <span *ngIf="errorSatisfactionRating" class="error-message">Please choose an option below</span>
                         <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
@@ -57,7 +57,7 @@
                 <br style="clear:both">
 
                 <div [ngClass]="(errorCommentExists === true)?'form-group-error':'form-group'" class="text">
-                    <h2 class="heading-medium no-top-margin" tabindex="0">What would make it better?</h2>
+                    <h2 class="heading-medium no-top-margin">What would make it better?</h2>
                     <span *ngIf="errorCommentExists" class="error-message">
           (Comment error message)
         </span>

@@ -116,10 +116,13 @@ describe('LoginComponent', () => {
       });
     });
 
-    it('should redirect to success page given a valid schoolPin and pupilPin', () => {
-      component.onSubmit('goodPin', 'goodPin');
-      fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+    describe('for no access arrangements', () => {
+      it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
+        spyOn(mockQuestionService, 'getConfig').and.returnValue({});
+        component.onSubmit('goodPin', 'goodPin');
+        fixture.whenStable().then(() => {
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        });
       });
     });
 

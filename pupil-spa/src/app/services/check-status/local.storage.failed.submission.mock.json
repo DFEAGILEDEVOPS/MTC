@@ -514,7 +514,7 @@
   "config": {
     "questionTime": 5,
     "loadingTime": 2,
-    "questionReader": false
+    "speechSynthesis": false
   },
   "device": {
     "battery": {

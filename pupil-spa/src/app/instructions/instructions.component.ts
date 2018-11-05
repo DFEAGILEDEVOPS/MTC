@@ -49,7 +49,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.questionService.getConfig().questionReader) {
+    if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#start-now-button'));
       });
@@ -63,7 +63,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
+    if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
