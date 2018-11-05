@@ -27,6 +27,10 @@ class AccessArrangementsSettingPage < SitePrism::Page
           SqlDbHelper.set_pupil_access_arrangement(pupil_id, new_time, new_time, 7)
         when 'Input assistance'
           SqlDbHelper.set_pupil_access_arrangement(pupil_id, new_time, new_time, 4)
+        when 'Colour contrast'
+          SqlDbHelper.set_pupil_access_arrangement(pupil_id, new_time, new_time, 2)
+        else
+          fail 'Access arrangement not found'
       end
     end
 

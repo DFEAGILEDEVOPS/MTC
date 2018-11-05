@@ -23,8 +23,8 @@ export class QuestionServiceMock {
     config.loadingTime = 2;
     config.questionTime = 5;
     config.questionReader = false;
-    config.audibleSounds = true;
-    config.inputAssistance = true;
+    config.audibleSounds = false;
+    config.inputAssistance = false;
     return config;
   }
 
