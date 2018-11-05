@@ -7,6 +7,7 @@ Feature: Pupil Status Outcome
     When I have submitted valid pupil details
     Then I can see the status for the pupil is 'Not started'
 
+  @manual
   Scenario: Pupil status is Not Started when PIN is expired
     Given I have generated a pin for a pupil
     And I expired the pupil pin
@@ -45,6 +46,7 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Restart'
 
+  @manual
   Scenario: Pupil status is Restart when a Restart is taken and PIN is expired
     Given I submitted pupils for Restart
     And I expired the pupil pin

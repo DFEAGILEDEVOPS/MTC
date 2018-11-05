@@ -10,8 +10,7 @@ Feature: Generate Pupil PINs Familiarisation
 
   @wip
   Scenario: Generate Pins familiarisation Pupil List page display pupil with active pin
-    Given I am logged in
-    And I have a pupil with active pin
+    Given I have generated a pin for a pupil
     And I am on the generate pupil pins familiarisation page
     When I click Generate PINs button
     Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page
@@ -87,7 +86,7 @@ Feature: Generate Pupil PINs Familiarisation
 
   @reset_all_pins
   Scenario: Cancel returns user to Familiarisation Generate Pupil Pin Landing page if there are no pupil with pins
-    Given I am logged in
+    Given I have signed in with teacher3
     And I select a Pupil from familiarisation Generate Pin page
     When I choose to cancel
     Then I should be taken to familiarisation pin overview page

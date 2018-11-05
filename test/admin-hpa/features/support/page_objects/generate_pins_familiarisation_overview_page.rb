@@ -16,7 +16,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PIN"
-    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for 1 pupil"
+    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'input[value="View all pins"]'
     element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
@@ -43,6 +43,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     name = pupil.name.text
     pupil.checkbox.click
     sticky_banner.confirm.click
+    sleep(30)
     name
   end
 
@@ -53,6 +54,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}
     sticky_banner.confirm.click
+    sleep(30)
     pupil_names
   end
 
