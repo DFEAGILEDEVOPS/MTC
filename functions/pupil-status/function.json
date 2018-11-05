@@ -9,7 +9,7 @@
       "connection": "StorageAccount"
     },
     {
-      "name": "pupilEventTable",
+      "name": "pupilEventsTable",
       "type": "table",
       "direction": "out",
       "tableName": "pupilEvent",
