@@ -10,19 +10,19 @@ import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { TokenService } from '../services/token/token.service';
 
-import { FamiliarisationAreaComponent } from './familiarisation-area.component';
+import { AAFontsComponent } from './aa-fonts.component';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { RouteService } from '../services/route/route.service';
 
-describe('FamiliarisationAreaComponent', () => {
+describe('AAFontsComponent', () => {
   let auditService: AuditService;
   let azureQueueService: AzureQueueService;
   let mockRouter;
   let mockStorageService;
   let mockQuestionService;
   let tokenService: TokenService;
-  let component: FamiliarisationAreaComponent;
-  let fixture: ComponentFixture<FamiliarisationAreaComponent>;
+  let component: AAFontsComponent;
+  let fixture: ComponentFixture<AAFontsComponent>;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -30,7 +30,7 @@ describe('FamiliarisationAreaComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ FamiliarisationAreaComponent ],
+      declarations: [ AAFontsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         RouteService,
@@ -54,7 +54,7 @@ describe('FamiliarisationAreaComponent', () => {
   describe('when config does not include existing font size selection', () => {
     beforeEach(async(() => {
       spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b', checkCode: 'checkCode' });
-      fixture = TestBed.createComponent(FamiliarisationAreaComponent);
+      fixture = TestBed.createComponent(AAFontsComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
     }));
@@ -150,7 +150,7 @@ describe('FamiliarisationAreaComponent', () => {
         }
       });
       spyOn(mockStorageService, 'setItem');
-      fixture = TestBed.createComponent(FamiliarisationAreaComponent);
+      fixture = TestBed.createComponent(AAFontsComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
     }));

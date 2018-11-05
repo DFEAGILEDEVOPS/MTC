@@ -9,11 +9,11 @@ import { StorageService } from '../services/storage/storage.service';
 import { RouteService } from '../services/route/route.service';
 
 @Component({
-  selector: 'app-familiarisation-colour',
-  templateUrl: './familiarisation-colour.component.html',
-  styleUrls: ['./familiarisation-colour.component.scss']
+  selector: 'app-aa-colours',
+  templateUrl: './aa-colours.component.html',
+  styleUrls: ['./aa-colours.component.scss']
 })
-export class FamiliarisationColourComponent implements OnInit {
+export class AAColoursComponent implements OnInit {
   selectedContrast;
   contrastSettings;
   accessArrangements;

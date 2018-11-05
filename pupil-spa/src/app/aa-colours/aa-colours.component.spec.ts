@@ -2,17 +2,17 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FamiliarisationColourComponent } from './familiarisation-colour.component';
+import { AAColoursComponent } from './aa-colours.component';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
 
-describe('FamiliarisationColourComponent', () => {
+describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
-  let component: FamiliarisationColourComponent;
-  let fixture: ComponentFixture<FamiliarisationColourComponent>;
+  let component: AAColoursComponent;
+  let fixture: ComponentFixture<AAColoursComponent>;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -20,7 +20,7 @@ describe('FamiliarisationColourComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ FamiliarisationColourComponent ],
+      declarations: [ AAColoursComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
@@ -33,7 +33,7 @@ describe('FamiliarisationColourComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FamiliarisationColourComponent);
+    fixture = TestBed.createComponent(AAColoursComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
   });

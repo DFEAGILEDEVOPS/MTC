@@ -18,11 +18,11 @@ import { queueNames } from '../services/azure-queue/queue-names';
 import { RouteService } from '../services/route/route.service';
 
 @Component({
-  selector: 'app-familiarisation-area',
-  templateUrl: './familiarisation-area.component.html',
-  styleUrls: ['./familiarisation-area.component.scss']
+  selector: 'app-aa-fonts',
+  templateUrl: './aa-fonts.component.html',
+  styleUrls: ['./aa-fonts.component.scss']
 })
-export class FamiliarisationAreaComponent {
+export class AAFontsComponent {
   accessArrangements;
   featureUseHpa;
   pupil: Pupil;
