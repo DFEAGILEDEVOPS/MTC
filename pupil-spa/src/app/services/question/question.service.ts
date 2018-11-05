@@ -75,7 +75,7 @@ export class QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
-    config.questionReader = configData['questionReader'] && this.speechService.isSupported();
+    config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
     config.inputAssistance = configData[ 'inputAssistance' ];
     config.numpadRemoval = configData[ 'numpadRemoval' ];

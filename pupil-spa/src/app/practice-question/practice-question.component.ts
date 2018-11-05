@@ -47,7 +47,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Experimental: Flag to indicate whether we want speech synthesis
    */
-  protected hasQuestionReader = false;
+  protected hasSpeechSynthesis = false;
 
   /**
    * Reference to global window object
@@ -154,7 +154,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
   async preSendTimeoutEvent() {
-    if (!this.config.questionReader) {
+    if (!this.config.speechSynthesis) {
       return this.soundComponent.playEndOfQuestionSound();
     }
 
@@ -272,7 +272,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     this.addQuestionAnsweredEvent();
     this.submitted = true;
-    if (this.config.questionReader) {
+    if (this.config.speechSynthesis) {
       this.speechService.waitForEndOfSpeech().then(() => {
         this.manualSubmitEvent.emit(this.answer);
       });
@@ -306,7 +306,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       question: `${this.factor1}x${this.factor2}`
     }));
     this.submitted = true;
-    if (this.config.questionReader) {
+    if (this.config.speechSynthesis) {
       await this.speechService.waitForEndOfSpeech();
 
       if (this.config.audibleSounds) {
@@ -329,7 +329,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.startedAnswering = true;
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
-      if (this.config.questionReader) {
+      if (this.config.speechSynthesis) {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
@@ -352,7 +352,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
 
     if (this.answer.length > 0) {
-      if (this.questionService.getConfig().questionReader) {
+      if (this.questionService.getConfig().speechSynthesis) {
         this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
       }
       this.answer = this.answer.substr(0, this.answer.length - 1);
@@ -368,7 +368,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.hasStartedAnswering()) {
       return;
     }
-    if (!this.questionService.getConfig().questionReader) {
+    if (!this.questionService.getConfig().speechSynthesis) {
       return;
     }
 

@@ -22,7 +22,7 @@ export class QuestionServiceMock {
     const config = new Config();
     config.loadingTime = 2;
     config.questionTime = 5;
-    config.questionReader = false;
+    config.speechSynthesis = false;
     config.audibleSounds = true;
     config.inputAssistance = true;
     return config;

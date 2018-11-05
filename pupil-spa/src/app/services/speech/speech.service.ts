@@ -152,7 +152,7 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
 
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
@@ -182,14 +182,18 @@ export class SpeechService implements OnDestroy {
         continue;
       }
 
-      speechText += '\n' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
+      speechText += ' , ' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
     }
 
     return this.speak(speechText
-                // remove empty lines
-                .replace(/^\s+$/gm, '')
-                // replace newlines with commas
-                .replace(/[\n\r]+/g, ' , '));
+               // remove unnecessary newlines
+               .replace(/[\n\r]+/g, ' ')
+               // remove the leading comma, if there is any
+               .replace(/^ , /g, ' ')
+               // remove duplicate commas, if there is any
+               .replace(/(\s*,\s*),/g, '$1')
+               // remove commas that appear after a period without text inbetween
+               .replace(/\.\s*,/g, '. '));
   }
 
   /**
@@ -197,16 +201,7 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   speakFocusedElement(nativeElement): void {
-    const { id, nodeName, parentNode } = nativeElement;
-
-    let toSpeak = nativeElement;
-
-    if (nodeName === 'INPUT' && id && parentNode) {
-      // if there is a label for this input element
-      toSpeak = parentNode.querySelector(`label[for="${id}"]`) || toSpeak;
-    }
-
-    const speechText = this.addTextBeforeSpeakingElement(toSpeak) + toSpeak.textContent;
+    const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
 
     this.speak(speechText);
   }
@@ -249,14 +244,6 @@ export class SpeechService implements OnDestroy {
       return 'Button: ';
     } else if (nativeElement.tagName === 'A') {
       return 'Link: ';
-    } else if (nativeElement.tagName === 'LI') {
-      const parent = nativeElement.parentNode;
-      if (parent.tagName === 'OL') {
-        const index = Array.prototype.indexOf.call(parent.children, nativeElement);
-        return `${index + 1}: `;
-      } else {
-        return '';
-      }
     } else {
       return '';
     }
