@@ -15,6 +15,7 @@ import {
 } from '../access-arrangements';
 import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../services/audit/auditEntry';
 import { queueNames } from '../services/azure-queue/queue-names';
+import { RouteService } from '../services/route/route.service';
 
 @Component({
   selector: 'app-familiarisation-area',
@@ -34,6 +35,7 @@ export class FamiliarisationAreaComponent {
   constructor(
     private auditService: AuditService,
     private azureQueueService: AzureQueueService,
+    private routeService: RouteService,
     private questionService: QuestionService,
     private router: Router,
     private storageService: StorageService,
@@ -94,10 +96,15 @@ export class FamiliarisationAreaComponent {
       }
     }
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    if (this.questionService.getConfig().colourContrast) {
-      this.router.navigate(['colour-choice']);
+
+    if (this.routeService.getPreviousUrl() === '/access-settings') {
+      this.router.navigate(['access-settings']);
     } else {
-      this.router.navigate(['sign-in-success']);
+      if (this.questionService.getConfig().colourContrast) {
+        this.router.navigate(['colour-choice']);
+      } else {
+        this.router.navigate(['sign-in-success']);
+      }
     }
   }
 
