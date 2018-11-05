@@ -299,7 +299,7 @@ describe('restart controller:', () => {
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
     })
 
-    it('throws an error if the pupli status refresh goes wrong', async () => {
+    it('throws an error if the pupil status refresh goes wrong', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
