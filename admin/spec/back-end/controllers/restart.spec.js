@@ -265,17 +265,19 @@ describe('restart controller:', () => {
     beforeEach(() => {
       next = jasmine.createSpy('next')
     })
-    it('redirects to restart overview page when successfully marking the pupil as deleted', async (done) => {
+
+    it('redirects to restart overview page when successfully marking the pupil as deleted', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
-      done()
     })
+
     it('calls next if error occurred while marking the pupil as deleted', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -284,6 +286,35 @@ describe('restart controller:', () => {
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
       done()
+    })
+
+    it('makes a request for the pupil status to be refreshed', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      const controller = require('../../../controllers/restart').postDeleteRestart
+      await controller(req, res, next)
+      expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
+    })
+
+    it('throws an error if the pupli status refresh goes wrong', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
+      spyOn(winston, 'error')
+      const controller = require('../../../controllers/restart').postDeleteRestart
+
+      try {
+        await controller(req, res, next)
+        fail('expected to throw')
+      } catch (error) {
+        expect(winston.error).toHaveBeenCalledTimes(1)
+        expect(error.message).toBe('a mock error')
+      }
     })
   })
 })

@@ -149,7 +149,6 @@ describe('pupil-status-analysis.service', () => {
     expect(targetStatus).toBe('UNALLOC')
   })
 
-
   it('returns UNALLOC if the pupil has an unconsumed restart', () => {
     const data = [
       {
@@ -164,5 +163,21 @@ describe('pupil-status-analysis.service', () => {
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
     expect(targetStatus).toBe('UNALLOC')
+  })
+
+  it('removal of restart changes the status to that from last check', () => {
+    const data = [
+      {
+        pupil_id: 12,
+        pupilStatusCode: 'UNALLOC', // set up for a restart, which is being removed
+        check_id: 1,
+        checkStatusCode: 'CMP',
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
+      }
+    ]
+    const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
+    expect(targetStatus).toBe('COMPLETED')
   })
 })

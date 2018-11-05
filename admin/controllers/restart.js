@@ -137,6 +137,15 @@ controller.postDeleteRestart = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+
+  // Ask for these pupils to have their status updated
+  try {
+    await pupilStatusService.recalculateStatusByPupilIds([pupilId], req.user.schoolId)
+  } catch (error) {
+    winston.error('Failed to recalculate pupil status')
+    throw error
+  }
+
   req.flash('info', `Restart removed for ${deleted.lastName}, ${deleted.foreName}`)
   return res.redirect('/restart/overview')
 }
