@@ -12,6 +12,7 @@ import { TokenService } from '../services/token/token.service';
 
 import { FamiliarisationAreaComponent } from './familiarisation-area.component';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
+import { RouteService } from '../services/route/route.service';
 
 describe('FamiliarisationAreaComponent', () => {
   let auditService: AuditService;
@@ -32,6 +33,7 @@ describe('FamiliarisationAreaComponent', () => {
       declarations: [ FamiliarisationAreaComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
+        RouteService,
         { provide: Router, useValue: mockRouter },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
