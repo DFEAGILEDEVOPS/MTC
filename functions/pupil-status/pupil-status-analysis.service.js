@@ -33,6 +33,11 @@ module.exports = {
       return 'NOT_TAKING'
     }
 
+    // Check for unconsumed restarts
+    if (lastCheckTaken.pupilRestart_id && lastCheckTaken.pupilRestart_check_id === null) {
+      return 'UNALLOC'
+    }
+
     switch (lastCheckTaken.checkStatusCode) {
       case null:
         return 'UNALLOC'

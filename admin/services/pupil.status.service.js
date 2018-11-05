@@ -70,7 +70,7 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
 }
 
 /**
- * Make a request to the pupil status service to recalculate the status for pupils.
+ * Make a request to the pupil status service to recalculate the status for one or more pupils.
  * This function has to fabricate a checkCode as in the not-taking-check example one isn't available.
  * @param {[number]}postedPupilSlugs
  */
@@ -80,6 +80,24 @@ pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) 
   }
 
   const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(pupilSlugs, schoolId)
+
+  for (let pupil of pupils) {
+    azureQueueService.addMessage('pupil-status', { version: 1,  pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
+  }
+}
+
+/**
+ * Make a request to the pupil status service to recalculate the status for one or more pupils.
+ * Same as recalculateStatusByPupilSlugs, but using pupil Ids as that is what the restart controller is using.
+ * @param {[number]} pupilIds - array of numeric pupil IDs
+ * @param {number} schoolId - ID of school in school table
+ */
+pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
+  if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
+    throw new Error('Invalid parameter: pupilIds')
+  }
+
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
 
   for (let pupil of pupils) {
     azureQueueService.addMessage('pupil-status', { version: 1,  pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })

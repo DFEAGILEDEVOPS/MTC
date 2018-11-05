@@ -12,7 +12,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'UNALLOC',
         check_id: null,
         checkStatusCode: null,
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -26,7 +28,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'UNALLOC',
         check_id: 1,
         checkStatusCode: 'NEW',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -40,7 +44,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'UNALLOC',
         check_id: 1,
         checkStatusCode: 'NEW',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -54,7 +60,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'ALLOC',
         check_id: 1,
         checkStatusCode: 'COL',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -68,7 +76,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'LOGGED_IN',
         check_id: 1,
         checkStatusCode: 'STD',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -82,7 +92,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'STARTED',
         check_id: 1,
         checkStatusCode: 'CMP',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -96,7 +108,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'UNALLOC',
         check_id: 2,
         checkStatusCode: 'CMP',
-        pupilAttendance_id: 1
+        pupilAttendance_id: 1,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -110,7 +124,9 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'ALLOC',
         check_id: 2,
         checkStatusCode: 'EXP',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
@@ -124,7 +140,26 @@ describe('pupil-status-analysis.service', () => {
         pupilStatusCode: 'UNALLOC',
         check_id: null,
         checkStatusCode: 'SOMETHING_RANDOM',
-        pupilAttendance_id: null
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
+      }
+    ]
+    const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
+    expect(targetStatus).toBe('UNALLOC')
+  })
+
+
+  it('returns UNALLOC if the pupil has an unconsumed restart', () => {
+    const data = [
+      {
+        pupil_id: 12,
+        pupilStatusCode: 'COMPLETED',
+        check_id: null,
+        checkStatusCode: 'CMP',
+        pupilAttendance_id: null,
+        pupilRestart_id: 1,
+        pupilRestart_check_id: null // a null check id mean it's unconsumed
       }
     ]
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)

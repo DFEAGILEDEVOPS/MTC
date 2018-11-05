@@ -70,13 +70,15 @@ async function getCurrentPupilData (pupilId) {
     pstatus.code as pupilStatusCode,
     chk.id as check_id,
     chkStatus.code as checkStatusCode,
-    pa.id as pupilAttendance_id
+    pr.id as pupilRestart_id,
+    pr.check_id as pupilRestart_check_id 
   FROM 
         ${sqlService.adminSchema}.[pupil] p
         INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
         LEFT OUTER JOIN ${sqlService.adminSchema}.[check] chk ON (p.id = chk.pupil_id)
         LEFT OUTER JOIN ${sqlService.adminSchema}.[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id AND chk.isLiveCheck = 1)
         LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
+        LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilRestart] pr ON (p.id = pr.pupil_id AND pr.isDeleted = 0)
   WHERE p.id = @pupilId
   ORDER BY chk.id ASC`
 
