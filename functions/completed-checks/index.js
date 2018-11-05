@@ -28,7 +28,7 @@ module.exports = async function (context, completedCheckMessage) {
   try {
     checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
   } catch (error) {
-    logger.error(`completed-check: ERROR: failed to retrieve checkData for checkCode: ${completedCheckMessage.checkCode}`)
+    context.log.error(`completed-check: ERROR: failed to retrieve checkData for checkCode: ${completedCheckMessage.checkCode}`)
     throw error
   }
 

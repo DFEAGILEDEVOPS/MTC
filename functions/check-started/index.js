@@ -1,6 +1,5 @@
 'use strict'
 
-const azure = require('azure-storage')
 const moment = require('moment')
 const process = require('process')
 const sqlService = require('less-tedious')

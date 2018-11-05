@@ -55,58 +55,58 @@ const azureStorageHelper = {
    * Promisify and cache the azureTableService library as it still lacks Promise support
    */
   getPromisifiedAzureTableService: function getPromisifiedAzureTableService () {
-  if (azureTableService) {
-    return azureTableService
-  }
-  azureTableService = azureStorage.createTableService()
-  bluebird.promisifyAll(azureTableService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            resolve({ result, response })
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
+    if (azureTableService) {
+      return azureTableService
     }
-  })
+    azureTableService = azureStorage.createTableService()
+    bluebird.promisifyAll(azureTableService, {
+      promisifier: (originalFunction) => function (...args) {
+        return new Promise((resolve, reject) => {
+          try {
+            originalFunction.call(this, ...args, (error, result, response) => {
+              if (error) {
+                return reject(error)
+              }
+              resolve({ result, response })
+            })
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
+    })
 
-  return azureTableService
-},
+    return azureTableService
+  },
 
   /**
    * Promisify the azureQueueService
    * @return {*}
    */
-  getPromisifiedAzureQueueService: function getPromisifiedAzureQueueService ()  {
-  if (azureQueueService) {
-    return azureQueueService
-  }
-  azureQueueService = azureStorage.createQueueService()
-  bluebird.promisifyAll(azureQueueService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            resolve({ result, response })
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
+  getPromisifiedAzureQueueService: function getPromisifiedAzureQueueService () {
+    if (azureQueueService) {
+      return azureQueueService
     }
-  })
+    azureQueueService = azureStorage.createQueueService()
+    bluebird.promisifyAll(azureQueueService, {
+      promisifier: (originalFunction) => function (...args) {
+        return new Promise((resolve, reject) => {
+          try {
+            originalFunction.call(this, ...args, (error, result, response) => {
+              if (error) {
+                return reject(error)
+              }
+              resolve({ result, response })
+            })
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
+    })
 
-  return azureQueueService
-},
+    return azureQueueService
+  },
 
   addMessageToQueue: async function addMessageToQueue (queueName, messageData) {
     const azureQueueService = this.getPromisifiedAzureQueueService()
