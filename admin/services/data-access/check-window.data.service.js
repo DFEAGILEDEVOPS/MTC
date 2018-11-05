@@ -330,7 +330,7 @@ const checkWindowDataService = {
 
   /**
    * Fetch active check window
-   * @return {Promise<Object>}
+   * @return {Object}
    */
   sqlFindActiveCheckWindow: async () => {
     const sql = `SELECT *

@@ -15,7 +15,6 @@ describe('pinGenerationEligibilityService', () => {
       })
     })
     it('should return true if live pin generation is allowed', async () => {
-
       const result = await pinGenerationEligibilityService.isPinGenerationAllowed('live')
       expect(result).toBeTruthy()
     })
