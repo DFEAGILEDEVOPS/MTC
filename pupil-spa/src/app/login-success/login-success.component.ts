@@ -21,7 +21,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   school: School;
   config: Config;
   speechListenerEvent: any;
-  isAAUser = false;
 
   constructor(private router: Router,
               private storageService: StorageService,
@@ -59,10 +58,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setItem('pupil', { checkCode });
 
     this.config = this.questionService.getConfig();
-    this.isAAUser = this.config.fontSize
-      || this.config.colourContrast
-      || this.config.audibleSounds
-      || this.config.numpadRemoval;
   }
 
   async ngOnInit() {
@@ -72,7 +67,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.config.speechSynthesis) {
+    if (this.config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#confirm-identity-button'));
       });
@@ -85,9 +80,13 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    const config = this.questionService.getConfig();
-    const hasAccessSettings = config.audibleSounds || config.numpadRemoval || config.inputAssistance;
-    if (hasAccessSettings) {
+    const hasAccessSettings = this.config.audibleSounds ||
+                              this.config.numpadRemoval ||
+                              this.config.inputAssistance ||
+                              this.config.questionReader;
+    if (this.config.fontSize) {
+      this.router.navigate(['font-choice']);
+    } else if (hasAccessSettings) {
       this.router.navigate(['access-settings']);
     } else {
       this.router.navigate(['check-start']);
@@ -98,7 +97,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     // remove pupil data from memory once component is destroyed
     this.pupil = undefined;
     // stop the current speech process if the page is changed
-    if (this.config.speechSynthesis) {
+    if (this.config.questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);

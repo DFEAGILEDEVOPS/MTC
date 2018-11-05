@@ -43,7 +43,7 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionIntroRendered());
 
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#start-now-button'));
       });
@@ -63,7 +63,7 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
