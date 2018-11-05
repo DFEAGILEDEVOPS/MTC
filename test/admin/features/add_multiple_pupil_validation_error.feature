@@ -106,4 +106,3 @@ Feature: Add Multiple Pupil validation Error
     And I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error
     Then I can see the validation error for wrong 13th char for UPN for multiple pupil upload
-    
