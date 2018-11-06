@@ -12,7 +12,6 @@ const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const winston = require('winston')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
@@ -54,7 +53,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
  */
 const getGeneratePinsList = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  const isLiveCheck = (req.params && req.params.pinEnv === 'live') ? true : false;
+  const isLiveCheck = !!((req.params && req.params.pinEnv === 'live'))
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(

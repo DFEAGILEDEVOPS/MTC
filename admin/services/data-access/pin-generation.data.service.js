@@ -12,7 +12,7 @@ const serviceToExport = {
    * @return {Promise<*>}
    */
   sqlFindEligiblePupilsBySchool: async (schoolId, isLiveCheck) => {
-    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration';
+    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
     const sql = `SELECT 
                   * 
                 FROM ${sqlService.adminSchema}.${view}
@@ -29,7 +29,7 @@ const serviceToExport = {
   },
 
   sqlFindPupilsWithActivePins: async (schoolId, isLiveCheck) => {
-    const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins';
+    const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins'
     const param = { name: 'schoolId', type: TYPES.Int, value: schoolId }
     const sql = `
       SELECT 

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach jasmine spyOn fail */
+/* global describe it expect beforeEach jasmine spyOn fail xit */
 
 const httpMocks = require('node-mocks-http')
 const winston = require('winston')
@@ -13,7 +13,6 @@ const pupilIdentificationFlag = require('../../../services/pupil-identification-
 const ValidationError = require('../../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
-
 
 describe('restart controller:', () => {
   function getRes () {
