@@ -17,21 +17,21 @@ schoolHomePinGenerationEligibilityPresenter.getPresentationData = async () => {
   const overridePinGenerationEligibility = config.OverridePinExpiry
   const currentDate = moment.utc()
   const pinGenerationEligibilityData = {}
-  const isUnavailableTime = currentDate.hour() < 8 || currentDate.hour() > 16
+  const isWithinRestrictedHours = currentDate.hour() < 8 || currentDate.hour() > 16
   const isWithinFamiliarisationPeriod = currentDate.isAfter(checkWindow.familiarisationCheckStartDate) && currentDate.isBefore(checkWindow.familiarisationCheckEndDate)
   const isWithinLivePeriod = currentDate.isAfter(checkWindow.checkStartDate) && currentDate.isBefore(checkWindow.checkEndDate)
   // Familiarisation data
   pinGenerationEligibilityData.familiarisationCheckStartDate = checkWindow.familiarisationCheckStartDate
   pinGenerationEligibilityData.familiarisationCheckEndDate = checkWindow.familiarisationCheckEndDate
-  pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed = (isWithinFamiliarisationPeriod && !isUnavailableTime) || overridePinGenerationEligibility
+  pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed = (isWithinFamiliarisationPeriod && !isWithinRestrictedHours) || overridePinGenerationEligibility
   pinGenerationEligibilityData.isFamiliarisationInTheFuture = currentDate.isBefore(checkWindow.familiarisationCheckStartDate)
-  pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours = isWithinFamiliarisationPeriod && isUnavailableTime
+  pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours = isWithinFamiliarisationPeriod && isWithinRestrictedHours
   // Live data
   pinGenerationEligibilityData.liveCheckStartDate = checkWindow.checkStartDate
   pinGenerationEligibilityData.liveCheckEndDate = checkWindow.checkEndDate
-  pinGenerationEligibilityData.isLivePinGenerationAllowed = (isWithinLivePeriod && !isUnavailableTime) || overridePinGenerationEligibility
+  pinGenerationEligibilityData.isLivePinGenerationAllowed = (isWithinLivePeriod && !isWithinRestrictedHours) || overridePinGenerationEligibility
   pinGenerationEligibilityData.isLiveInTheFuture = currentDate.isBefore(checkWindow.checkStartDate)
-  pinGenerationEligibilityData.isWithinLiveUnavailableHours = isWithinLivePeriod && isUnavailableTime
+  pinGenerationEligibilityData.isWithinLiveUnavailableHours = isWithinLivePeriod && isWithinRestrictedHours
 
   return pinGenerationEligibilityData
 }
