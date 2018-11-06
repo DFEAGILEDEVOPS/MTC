@@ -15,11 +15,11 @@ describe('pinGenerationEligibilityService', () => {
       })
     })
     it('should return true if live pin generation is allowed', async () => {
-      const result = await pinGenerationEligibilityService.isPinGenerationAllowed('live')
+      const result = await pinGenerationEligibilityService.isPinGenerationAllowed(true)
       expect(result).toBeTruthy()
     })
     it('should return false if familiarisation pin generation is disallowed', async () => {
-      const result = await pinGenerationEligibilityService.isPinGenerationAllowed('familiarisation')
+      const result = await pinGenerationEligibilityService.isPinGenerationAllowed(false)
       expect(result).toBeFalsy()
     })
     it('should throw an error if pin environment is not provided', async () => {
@@ -27,7 +27,7 @@ describe('pinGenerationEligibilityService', () => {
         await pinGenerationEligibilityService.isPinGenerationAllowed('')
         fail()
       } catch (error) {
-        expect(error.message).toBe('pin environment variable not detected')
+        expect(error.message).toBe('type of check not detected')
       }
     })
   })
@@ -35,7 +35,7 @@ describe('pinGenerationEligibilityService', () => {
     it('should not throw an error if eligibility is true', async () => {
       spyOn(pinGenerationEligibilityService, 'isPinGenerationAllowed').and.returnValue(true)
       try {
-        await pinGenerationEligibilityService.determinePinGenerationEligibility('live')
+        await pinGenerationEligibilityService.determinePinGenerationEligibility(true)
       } catch (error) {
         fail()
       }
@@ -43,10 +43,10 @@ describe('pinGenerationEligibilityService', () => {
     it('should throw an error if eligibility is false', async () => {
       spyOn(pinGenerationEligibilityService, 'isPinGenerationAllowed').and.returnValue(false)
       try {
-        await pinGenerationEligibilityService.determinePinGenerationEligibility('live')
+        await pinGenerationEligibilityService.determinePinGenerationEligibility(true)
         fail()
       } catch (error) {
-        expect(error.message).toBe('live pin generation is not allowed')
+        expect(error.message).toBe('Live pin generation is not allowed')
       }
     })
   })

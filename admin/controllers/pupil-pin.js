@@ -17,6 +17,7 @@ const pinGenerationEligibilityService = require('../services/pin-generation-elig
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = req.params && req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `PINs for ${pinEnv} check`
   req.breadcrumbs(res.locals.pageTitle)
@@ -24,7 +25,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
@@ -56,6 +57,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
  */
 const getGeneratePinsList = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = req.params && req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
@@ -70,7 +72,7 @@ const getGeneratePinsList = async (req, res, next) => {
 
   // TODO: data service call should be moved to a service
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -99,6 +101,7 @@ const getGeneratePinsList = async (req, res, next) => {
 
 const postGeneratePins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = req.params && req.params.pinEnv === 'live'
   let pupilsList
   // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
   // busboy provides either an array of values, or, sometimes an object where the key is the
@@ -120,7 +123,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
     // OLD code - writes to check table
     if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
@@ -151,6 +154,7 @@ const postGeneratePins = async (req, res, next) => {
 
 const getViewAndPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = req.params && req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `View and print PINs`
   req.breadcrumbs(
@@ -165,7 +169,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
@@ -194,6 +198,7 @@ const getViewAndPrintPins = async (req, res, next) => {
 
 const getViewAndCustomPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = req.params && req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `View and custom print PINs`
   req.breadcrumbs(
@@ -209,7 +214,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(pinEnv)
+    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
     } else {
