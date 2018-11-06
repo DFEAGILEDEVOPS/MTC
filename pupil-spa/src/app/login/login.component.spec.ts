@@ -138,7 +138,7 @@ describe('LoginComponent', () => {
         component.onSubmit('goodPin', 'goodPin');
         fixture.whenStable().then(() => {
           expect(mockQuestionService.getConfig).toHaveBeenCalled();
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
         });
       });
 
@@ -147,7 +147,7 @@ describe('LoginComponent', () => {
         component.onSubmit('goodPin', 'goodPin');
         fixture.whenStable().then(() => {
           expect(mockQuestionService.getConfig).toHaveBeenCalled();
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
         });
       });
     });

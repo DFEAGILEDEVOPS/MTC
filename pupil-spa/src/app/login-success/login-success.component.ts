@@ -83,7 +83,8 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     const hasAccessSettings = this.config.audibleSounds ||
                               this.config.numpadRemoval ||
                               this.config.inputAssistance ||
-                              this.config.questionReader;
+                              this.config.questionReader ||
+                              this.config.colourContrast;
     if (this.config.fontSize) {
       this.router.navigate(['font-choice']);
     } else if (hasAccessSettings) {
