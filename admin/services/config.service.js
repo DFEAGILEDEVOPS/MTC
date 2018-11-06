@@ -52,10 +52,14 @@ const configService = {
 
     let pupilAccessArrangements
     let accessArrangementsCodes
+    let fontSizeAccessArrangement
+    let colourContrastAccessArrangement
     try {
       pupilAccessArrangements = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
       if (pupilAccessArrangements && pupilAccessArrangements.length) {
         const accessArrangementsIds = pupilAccessArrangements.map(aa => aa['accessArrangements_id'])
+        fontSizeAccessArrangement = pupilAccessArrangements.find(aa => aa.pupilFontSizeCode)
+        colourContrastAccessArrangement = pupilAccessArrangements.find(aa => aa.pupilColourContrastCode)
         accessArrangementsCodes = await accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds(accessArrangementsIds)
       } else {
         accessArrangementsCodes = []
@@ -68,8 +72,14 @@ const configService = {
       if (code === accessArrangementsDataService.CODES.AUDIBLE_SOUNDS) checkOptions.audibleSounds = true
       if (code === accessArrangementsDataService.CODES.INPUT_ASSISTANCE) checkOptions.inputAssistance = true
       if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
-      if (code === accessArrangementsDataService.CODES.FONT_SIZE) checkOptions.fontSize = true
-      if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) checkOptions.colourContrast = true
+      if (code === accessArrangementsDataService.CODES.FONT_SIZE) {
+        checkOptions.fontSize = true
+        checkOptions.fontSizeCode = fontSizeAccessArrangement && fontSizeAccessArrangement.pupilFontSizeCode
+      }
+      if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) {
+        checkOptions.colourContrast = true
+        checkOptions.colourContrastCode = colourContrastAccessArrangement && colourContrastAccessArrangement.pupilColourContrastCode
+      }
       if (code === accessArrangementsDataService.CODES.QUESTION_READER) checkOptions.questionReader = true
     })
 
