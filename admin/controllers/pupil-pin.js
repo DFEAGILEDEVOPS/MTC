@@ -16,11 +16,12 @@ const checkWindowSanityCheckService = require('../services/check-window-sanity-c
 const pinGenerationEligibilityService = require('../services/pin-generation-eligibility.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'string') {
-    isLiveCheck = req.params.pinEnv === 'live'
+  if (!req.params || !req.params.pinEnv) {
+    const error = new Error('Pin environment not provided')
+    return next(error)
   }
+  const { pinEnv } = req.params
+  const isLiveCheck = req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `PINs for ${pinEnv} check`
   req.breadcrumbs(res.locals.pageTitle)
@@ -59,11 +60,12 @@ const getGeneratePinsOverview = async (req, res, next) => {
  * @return {Promise<*>}
  */
 const getGeneratePinsList = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'string') {
-    isLiveCheck = req.params.pinEnv === 'live'
+  if (!req.params || !req.params.pinEnv) {
+    const error = new Error('Pin environment not provided')
+    return next(error)
   }
+  const { pinEnv } = req.params
+  const isLiveCheck = req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
@@ -106,11 +108,12 @@ const getGeneratePinsList = async (req, res, next) => {
 }
 
 const postGeneratePins = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'string') {
-    isLiveCheck = req.params.pinEnv === 'live'
+  if (!req.params || !req.params.pinEnv) {
+    const error = new Error('Pin environment not provided')
+    return next(error)
   }
+  const { pinEnv } = req.params
+  const isLiveCheck = req.params.pinEnv === 'live'
   let pupilsList
   // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
   // busboy provides either an array of values, or, sometimes an object where the key is the
@@ -162,11 +165,12 @@ const postGeneratePins = async (req, res, next) => {
 }
 
 const getViewAndPrintPins = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'string') {
-    isLiveCheck = req.params.pinEnv === 'live'
+  if (!req.params || !req.params.pinEnv) {
+    const error = new Error('Pin environment not provided')
+    return next(error)
   }
+  const { pinEnv } = req.params
+  const isLiveCheck = req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `View and print PINs`
   req.breadcrumbs(
@@ -209,11 +213,12 @@ const getViewAndPrintPins = async (req, res, next) => {
 }
 
 const getViewAndCustomPrintPins = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'string') {
-    isLiveCheck = req.params.pinEnv === 'live'
+  if (!req.params || !req.params.pinEnv) {
+    const error = new Error('Pin environment not provided')
+    return next(error)
   }
+  const { pinEnv } = req.params
+  const isLiveCheck = req.params.pinEnv === 'live'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `View and custom print PINs`
   req.breadcrumbs(

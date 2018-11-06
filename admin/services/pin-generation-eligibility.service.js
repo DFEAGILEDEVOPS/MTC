@@ -12,9 +12,6 @@ const pinGenerationEligibilityService = {}
  * @throws Will throw an error if the argument passed is not boolean type
  */
 pinGenerationEligibilityService.isPinGenerationAllowed = async (isLiveCheck) => {
-  if (typeof isLiveCheck !== 'boolean') {
-    throw new Error('type of check not detected')
-  }
   const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
   if (isLiveCheck) {
     return pinGenerationEligibilityData.isLivePinGenerationAllowed

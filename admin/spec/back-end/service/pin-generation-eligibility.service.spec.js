@@ -24,15 +24,6 @@ describe('pinGenerationEligibilityService', () => {
       const result = await pinGenerationEligibilityService.isPinGenerationAllowed(isLiveCheck)
       expect(result).toBeFalsy()
     })
-    it('should throw an error if not a boolean parameter is provided', async () => {
-      try {
-        const isLiveCheck = ''
-        await pinGenerationEligibilityService.isPinGenerationAllowed(isLiveCheck)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('type of check not detected')
-      }
-    })
   })
   describe('#determinePinGenerationEligibility', () => {
     let isLiveCheck

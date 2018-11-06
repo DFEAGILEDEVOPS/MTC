@@ -6,6 +6,7 @@ const restartV2Service = require('../services/restart-v2.service')
 const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const ValidationError = require('../lib/validation-error')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const monitor = require('../helpers/monitor')
 
 const controller = {}
@@ -14,8 +15,10 @@ controller.getRestartOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
   let restarts
+  let pinGenerationEligibilityData
   try {
     restarts = await restartService.getSubmittedRestarts(req.user.School)
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
   } catch (error) {
     return next(error)
   }
@@ -24,10 +27,11 @@ controller.getRestartOverview = async (req, res, next) => {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
   return res.render('restart/restart-overview', {
-    highlight: hl && new Set(hl),
     breadcrumbs: req.breadcrumbs(),
-    restarts,
-    messages: res.locals.messages
+    highlight: hl && new Set(hl),
+    messages: res.locals.messages,
+    pinGenerationEligibilityData,
+    restarts
   })
 }
 
