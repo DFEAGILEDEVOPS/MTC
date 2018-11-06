@@ -2,7 +2,7 @@
 const moment = require('moment')
 const uuid = require('uuid/v4')
 
-const checkWindowHelper = require('../../../helpers/check-window-presenter')
+const checkWindowPresenter = require('../../../helpers/check-window-presenter')
 
 describe('checkWindowHelper', () => {
   describe('getEditViewData', () => {
@@ -17,7 +17,7 @@ describe('checkWindowHelper', () => {
         checkStartDate: moment.utc().add(3, 'days'),
         checkEndDate: moment.utc().add(5, 'days')
       }
-      const checkWindowViewData = checkWindowHelper.getEditViewData(checkWindowData)
+      const checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData)
       expect(checkWindowViewData.adminStartDateDisabled).toBeFalsy()
       expect(checkWindowViewData.adminEndDateDisabled).toBeFalsy()
       expect(checkWindowViewData.familiarisationCheckStartDateDisabled).toBeFalsy()
