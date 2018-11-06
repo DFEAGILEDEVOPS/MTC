@@ -179,16 +179,34 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
+  // Create Checks in the Database
   const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
     : [res.insertId]
+
+  const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
+    schoolId,
+    newCheckIds,
+    pupilIds
+  )
 
   await pinGenerationV2Service.checkAndUpdateRestarts(
     schoolId,
     pupils,
     newCheckIds
   )
+
+  if (isLiveCheck) {
+    const pupilStatusQueueName = queueNameService.getName(
+      queueNameService.NAMES.PUPIL_STATUS
+    )
+
+    // Request the pupil status be re-computed
+    for (let check of newChecks) {
+      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: check.pupil_id, checkCode: check.checkCode })
+    }
+  }
 
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
