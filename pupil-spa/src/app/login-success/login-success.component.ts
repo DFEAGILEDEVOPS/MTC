@@ -84,10 +84,9 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
                               this.config.numpadRemoval ||
                               this.config.inputAssistance ||
                               this.config.questionReader ||
+                              this.config.fontSize ||
                               this.config.colourContrast;
-    if (this.config.fontSize) {
-      this.router.navigate(['font-choice']);
-    } else if (hasAccessSettings) {
+    if (hasAccessSettings) {
       this.router.navigate(['access-settings']);
     } else {
       this.router.navigate(['check-start']);
