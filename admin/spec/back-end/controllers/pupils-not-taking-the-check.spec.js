@@ -14,6 +14,7 @@ const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const groupsMock = require('../mocks/groups')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 
 describe('pupils-not-taking-the-check controller:', () => {
   function getRes () {
@@ -56,6 +57,7 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -65,12 +67,14 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).not.toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         done()
       })
 
       it('should execute next if initial page fails to render', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -78,6 +82,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         done()
       })
     })
