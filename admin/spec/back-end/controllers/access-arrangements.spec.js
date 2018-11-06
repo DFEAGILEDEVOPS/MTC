@@ -10,6 +10,7 @@ const accessArrangementsService = require('../../../services/access-arrangements
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../../../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 const pupilService = require('../../../services/pupil.service')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -45,21 +46,25 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils')
+      spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
+      expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
     })
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
       try {
         await controller.getOverview(req, res, next)
       } catch (error) {
         expect(error.message).toBe('error')
       }
       expect(res.render).not.toHaveBeenCalled()
+      expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
     })
   })
   describe('getSelectAccessArrangements route', () => {

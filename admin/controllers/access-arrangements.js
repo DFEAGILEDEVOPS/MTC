@@ -4,6 +4,7 @@ const pupilAccessArrangementsService = require('../services/pupil-access-arrange
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const monitor = require('../helpers/monitor')
 const ValidationError = require('../lib/validation-error')
 
@@ -20,8 +21,10 @@ controller.getOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Access arrangements'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
+  let pinGenerationEligibilityData
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
   } catch (error) {
     return next(error)
   }
@@ -30,6 +33,7 @@ controller.getOverview = async (req, res, next) => {
     highlight: hl,
     messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs(),
+    pinGenerationEligibilityData,
     pupils
   })
 }
