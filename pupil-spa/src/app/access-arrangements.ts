@@ -2,6 +2,7 @@ export const accessArrangementsDataKey = 'access_arrangements';
 
 export class AccessArrangements {
   fontSize: 'xsmall' | 'small' | 'regular' | 'large' | 'xlarge' | 'xxlarge';
+  contrast: 'bow' | 'yob' | 'bob' | 'bop' | 'boc';
 }
 
 export class AccessArrangementsConfig {
@@ -12,5 +13,12 @@ export class AccessArrangementsConfig {
     { label: 'Large', val: 'large', code: 'LRG' },
     { label: 'Very large', val: 'xlarge', code: 'XLG' },
     { label: 'Largest', val: 'xxlarge', code: 'XXL' }
+  ];
+  static contrastSettings: Array<Object> = [
+    { label: 'Black on White', val: 'bow' },
+    { label: 'Yellow on Black', val: 'yob' },
+    { label: 'Black on Blue', val: 'bob' },
+    { label: 'Black on Peach', val: 'bop' },
+    { label: 'Blue on Cream', val: 'boc' }
   ];
 }
