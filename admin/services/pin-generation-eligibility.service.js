@@ -15,7 +15,7 @@ pinGenerationEligibilityService.isPinGenerationAllowed = async (isLiveCheck) => 
   if (typeof isLiveCheck !== 'boolean') {
     throw new Error('type of check not detected')
   }
-  const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getEligibilityData()
+  const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
   if (isLiveCheck) {
     return pinGenerationEligibilityData.isLivePinGenerationAllowed
   } else {

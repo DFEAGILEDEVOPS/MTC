@@ -17,7 +17,8 @@ controller.getSchoolLandingPage = async (req, res, next) => {
   let pinGenerationEligibilityData
   let schoolName = ''
   try {
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getEligibilityData()
+    // Fetch set of flags to determine pin generation allowance on UI
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
     schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
