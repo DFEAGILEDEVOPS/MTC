@@ -2,20 +2,27 @@
 
 const R = require('ramda')
 
-/**
- *
- * @param data
- * @return {string}
- *
- * Data Format
- [ { pupil_id: 12,
-   pupilStatusCode: 'UNALLOC',
-   check_id: 1,
-   checkStatusCode: 'NEW' }
- ]
- */
+
 
 module.exports = {
+  /**
+   * Re-compute the pupil status of a single pupil.
+   *
+   * This function will query everything it needs from the SQL database.
+   *
+   * @param data
+   * @return {string}
+   *
+   * Data Format
+   [ { pupil_id: 12,
+   pupilStatusCode: 'UNALLOC',
+   check_id: 1,
+   checkStatusCode: 'NEW',
+   pupilAttendance_id: null,
+   pupilRestart_id: 1,
+   pupilRestart_check_id: null }
+   ]
+   */
   analysePupilData: function analysePupilData (data) {
     if (!data) {
       throw new Error('No data provided')
