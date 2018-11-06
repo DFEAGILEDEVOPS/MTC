@@ -168,7 +168,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
         done()
       })
 
@@ -270,7 +270,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.School)
         expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
       })
 
       it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {

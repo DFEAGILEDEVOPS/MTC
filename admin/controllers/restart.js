@@ -120,7 +120,9 @@ controller.postSubmitRestartList = async (req, res, next) => {
 
   // Ask for these pupils to have their status updated
   try {
-    await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
+    }
   } catch (error) {
     winston.error('Failed to recalculate pupil status')
     throw error
@@ -140,7 +142,9 @@ controller.postDeleteRestart = async (req, res, next) => {
 
   // Ask for these pupils to have their status updated
   try {
-    await pupilStatusService.recalculateStatusByPupilIds([pupilId], req.user.schoolId)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      await pupilStatusService.recalculateStatusByPupilIds([pupilId], req.user.schoolId)
+    }
   } catch (error) {
     winston.error('Failed to recalculate pupil status')
     throw error

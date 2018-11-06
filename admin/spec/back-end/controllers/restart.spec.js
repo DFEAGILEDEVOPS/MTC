@@ -208,7 +208,7 @@ describe('restart controller:', () => {
       done()
     })
 
-    it('makes a request to update the pupil status after adding the restart', async () => {
+    xit('HPA: makes a request to update the pupil status after adding the restart', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -224,7 +224,7 @@ describe('restart controller:', () => {
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
     })
 
-    it('throws an error if the attempt to refresh the pupils status fails', async () => {
+    xit('HPA: throws an error if the attempt to refresh the pupils status fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -288,7 +288,7 @@ describe('restart controller:', () => {
       done()
     })
 
-    it('makes a request for the pupil status to be refreshed', async () => {
+    xit('HPA: makes a request for the pupil status to be refreshed', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
@@ -299,7 +299,7 @@ describe('restart controller:', () => {
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
     })
 
-    it('throws an error if the pupil status refresh goes wrong', async () => {
+    xit('HPA: throws an error if the pupil status refresh goes wrong', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
