@@ -46,6 +46,7 @@ import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
+import { RouteService } from './services/route/route.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -149,6 +150,7 @@ const appRoutes: Routes = [
     CheckCompleteService,
     TokenService,
     AzureQueueService,
+    RouteService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue
