@@ -23,7 +23,7 @@
           You have the following settings on your check
         </p>
         <ol class="list list-number">
-          <li tabindex="0" *ngIf="config.colourContrast">Colour contrast</li>
+          <li tabindex="0" *ngIf="config.colourContrast"><a routerLink="/colour-choice">Edit colour</a> of page</li>
           <li tabindex="0" *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
           <li tabindex="0" *ngIf="config.inputAssistance" [ngClass]="{'extra-space': !config.practice}">
             Input assistant
