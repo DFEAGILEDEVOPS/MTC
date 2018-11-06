@@ -21,6 +21,14 @@ FROM [mtc_admin].[pupil] p
 WHERE chk.isLiveCheck = 1
 AND chk.id IS NULL;
 
+-- Set the pupil status for pupils who have been allocated but not logged in
+-- statusId is still ALLOC
+UPDATE [mtc_admin].[pupil]
+SET pupilStatus_id = @statusId
+FROM [mtc_admin].[pupil] p
+       LEFT JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
+       INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
+WHERE chkStatus.code = 'NEW';
 
 
 -- Set pupil status for those pupils who have have logged in to their check
@@ -81,4 +89,11 @@ FROM [mtc_admin].[pupil] p
 WHERE
       pr.check_id IS NULL
 AND   pr.isDeleted = 0;
+
+-- set any pupils who only have familiarisation checks to be UNALLOC
+set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'UNALLOC');
+
+UPDATE [mtc_admin].[pupil]
+SET pupilStatus_id = @statusId
+WHERE pupilStatus_id IS NULL;
 
