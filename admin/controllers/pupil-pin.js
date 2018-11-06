@@ -18,7 +18,7 @@ const pinGenerationEligibilityService = require('../services/pin-generation-elig
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'string') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   res.locals.pinEnv = pinEnv
@@ -61,7 +61,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
 const getGeneratePinsList = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'string') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   res.locals.pinEnv = pinEnv
@@ -108,7 +108,7 @@ const getGeneratePinsList = async (req, res, next) => {
 const postGeneratePins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'string') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   let pupilsList
@@ -164,7 +164,7 @@ const postGeneratePins = async (req, res, next) => {
 const getViewAndPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'string') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   res.locals.pinEnv = pinEnv
@@ -211,7 +211,7 @@ const getViewAndPrintPins = async (req, res, next) => {
 const getViewAndCustomPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.params && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'string') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   res.locals.pinEnv = pinEnv
