@@ -18,7 +18,7 @@ const pinGenerationEligibilityService = require('../services/pin-generation-elig
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let isLiveCheck
-  if (req.param && typeof req.params.pinEnv === 'boolean') {
+  if (req.params && typeof req.params.pinEnv === 'boolean') {
     isLiveCheck = req.params.pinEnv === 'live'
   }
   res.locals.pinEnv = pinEnv
