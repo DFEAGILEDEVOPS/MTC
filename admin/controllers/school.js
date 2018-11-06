@@ -1,28 +1,33 @@
 'use strict'
 
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const schoolService = require('../services/school.service')
 const monitor = require('../helpers/monitor')
+const controller = {}
 
 /**
- * School landing page.
+ * Display school landing page.
  * @param req
  * @param res
  * @param next
  * @returns {Promise<*>}
  */
-const getSchoolLandingPage = async (req, res, next) => {
+controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
+  let pinGenerationEligibilityData
   let schoolName = ''
-
   try {
+    // Fetch set of flags to determine pin generation allowance on UI
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
     schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
   }
   return res.render('school/school-home', {
-    schoolName,
-    breadcrumbs: [ { 'name': 'School Home' } ]
+    breadcrumbs: [ { 'name': 'School Home' } ],
+    pinGenerationEligibilityData,
+    schoolName
   })
 }
 
-module.exports = monitor('school.controller', { getSchoolLandingPage })
+module.exports = monitor('school.controller', controller)

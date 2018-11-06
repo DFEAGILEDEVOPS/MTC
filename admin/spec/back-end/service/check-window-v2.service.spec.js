@@ -169,4 +169,11 @@ describe('check-window-v2.service', () => {
       expect(checkWindowData.familiarisationCheckEndDate.format('HH:mm:ss')).toBe('23:59:59')
     })
   })
+  describe('getActiveCheckWindow', () => {
+    it('should call checkWindowDataService sqlFindActiveCheckWindow method', async () => {
+      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow')
+      await checkWindowV2Service.getActiveCheckWindow()
+      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalled()
+    })
+  })
 })
