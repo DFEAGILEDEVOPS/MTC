@@ -50,7 +50,7 @@ pupilStatusService.getStatus = async (pupil) => {
   const hasCheckStarted = latestStartedCheck && latestStartedCheck.startedAt && !latestStartedCheck.data && !isActivePin
   if (hasCheckStarted) return getStatusDescription('CHS')
   // Pupil has a result
-  if (latestCheckStarted && latestStartedCheck.data) return getStatusDescription('COM')
+  if (latestStartedCheck && latestStartedCheck.data) return getStatusDescription('COM')
 }
 
 /**
