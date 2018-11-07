@@ -137,7 +137,8 @@ checkStartService.prepareCheck2 = async function (
   // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
   const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
     schoolId,
-    pupilIds
+    pupilIds,
+    isLiveCheck
   )
 
   // Check to see if we lost any pupils during the data select, indicating - they weren't eligible for instance.

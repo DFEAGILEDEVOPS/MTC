@@ -49,10 +49,11 @@ const serviceToExport = {
    * - it adds restart information
    * @param schoolId
    * @param pupilIds
+   * @param {boolean} isLiveCheck - flag to indicate if the check is a live check (true) or a familiarisation check (false)
    * @return {Promise<*>}
    */
-  getPupilsEligibleForPinGenerationById: async function getPupilsEligibleForPinGenerationById (schoolId, pupilIds) {
-    return pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById(schoolId, pupilIds)
+  getPupilsEligibleForPinGenerationById: async function getPupilsEligibleForPinGenerationById (schoolId, pupilIds, isLiveCheck) {
+    return pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById(schoolId, pupilIds, isLiveCheck)
   },
 
   /**
