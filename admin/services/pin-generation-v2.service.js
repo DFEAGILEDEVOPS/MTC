@@ -29,7 +29,6 @@ const serviceToExport = {
 
   /**
    * Return a list of pupils who have an active pin - one that can be used to take a check
-   * TODO: add pinEnv
    * @param {number} schoolId
    * @param {boolean} isLiveCheck
    * @return {Promise<void>}
