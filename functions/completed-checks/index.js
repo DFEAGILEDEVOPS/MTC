@@ -79,6 +79,17 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
     throw error
   }
 
+  if (!checkData.startedAt) {
+    // Back-fill the check startedAt time using audit log data
+    try {
+      const checkStartedAuditEvent = findAuditEvent(completedCheckMessage, 'CheckStarted')
+      await sqlUpdateCheckStartedAt(checkData.id, moment(checkStartedAuditEvent.clientTimestamp))
+      logger(`completed-check: updated check start date from audit entry for checkCode: ${checkData.checkCode}`)
+    } catch (error) {
+      logger.error(`completed-check: Failed to back-fill checkStarted event for checkCode: ${checkData.checkCode}: ${error.message}`)
+    }
+  }
+
   try {
     await sqlInsertPayload(completedCheckMessage, checkData.id)
   } catch (error) {
@@ -134,7 +145,7 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
     {
       name: 'receivedByServerAt',
       value: new Date(),
-      type: TYPES.DateTime
+      type: TYPES.DateTimeOffset
     }
   ]
 
@@ -147,4 +158,44 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
     logger(`completed-check: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode} : ${error.message}`)
     throw error
   }
+}
+
+/**
+ * Find a specific audit event in the payload message
+ * @param payload - the payload object
+ * @param {string} auditEventType - e.g. 'CheckStarted'
+ */
+function findAuditEvent (payload, auditEventType) {
+  const logEntries = payload.audit.filter(logEntry => logEntry.type === auditEventType)
+  if (!logEntries.length) {
+    throw new Error('No matching audit events found')
+  }
+  const logEntry = logEntries[0]
+  if (!logEntry.hasOwnProperty('clientTimestamp')) {
+    throw new Error('No `clientTimestamp` property found')
+  }
+  return logEntry
+}
+
+/**
+ * Update the check start time with data obtained from the check audit log
+ * @param {number} checkId
+ * @param {moment} clientTimestamp
+ * @return {Promise<void>}
+ */
+async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
+  if (!moment.isMoment(clientTimestamp)) {
+    throw new Error('Invalid type for clientTimestamp')
+  }
+
+  const sql = `UPDATE ${schema}.${checkTable}
+               SET startedAt = @startedAt
+               WHERE id = @checkId`
+
+  const params = [
+    { name: 'checkId', value: checkId, type: TYPES.Int },
+    { name: 'startedAt', value: clientTimestamp, type: TYPES.DateTimeOffset }
+  ]
+
+  return await sqlService.modify(sql, params)
 }
