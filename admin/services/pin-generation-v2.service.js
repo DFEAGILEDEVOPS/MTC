@@ -18,8 +18,8 @@ const serviceToExport = {
    * @param schoolId
    * @return {Promise<*>}
    */
-  getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId) {
-    const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId)
+  getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId, isLiveCheck) {
+    const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId, isLiveCheck)
 
     // Fix up the pupil names for the GUI
     const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
@@ -30,12 +30,12 @@ const serviceToExport = {
   /**
    * Return a list of pupils who have an active pin - one that can be used to take a check
    * TODO: add pinEnv
-   * @param schoolId
-   * @param pinEnv
+   * @param {number} schoolId
+   * @param {boolean} isLiveCheck
    * @return {Promise<void>}
    */
-  getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, pinEnv) {
-    const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, pinEnv)
+  getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, isLiveCheck) {
+    const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, isLiveCheck)
 
     // Fix up the pupil names for the GUI
     const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
@@ -49,10 +49,11 @@ const serviceToExport = {
    * - it adds restart information
    * @param schoolId
    * @param pupilIds
+   * @param {boolean} isLiveCheck - flag to indicate if the check is a live check (true) or a familiarisation check (false)
    * @return {Promise<*>}
    */
-  getPupilsEligibleForPinGenerationById: async function getPupilsEligibleForPinGenerationById (schoolId, pupilIds) {
-    return pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById(schoolId, pupilIds)
+  getPupilsEligibleForPinGenerationById: async function getPupilsEligibleForPinGenerationById (schoolId, pupilIds, isLiveCheck) {
+    return pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById(schoolId, pupilIds, isLiveCheck)
   },
 
   /**

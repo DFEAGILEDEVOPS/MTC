@@ -137,7 +137,8 @@ checkStartService.prepareCheck2 = async function (
   // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
   const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
     schoolId,
-    pupilIds
+    pupilIds,
+    isLiveCheck
   )
 
   // Check to see if we lost any pupils during the data select, indicating - they weren't eligible for instance.
@@ -179,16 +180,34 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
+  // Create Checks in the Database
   const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
     : [res.insertId]
+
+  const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
+    schoolId,
+    newCheckIds,
+    pupilIds
+  )
 
   await pinGenerationV2Service.checkAndUpdateRestarts(
     schoolId,
     pupils,
     newCheckIds
   )
+
+  if (isLiveCheck) {
+    const pupilStatusQueueName = queueNameService.getName(
+      queueNameService.NAMES.PUPIL_STATUS
+    )
+
+    // Request the pupil status be re-computed
+    for (let check of newChecks) {
+      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: check.pupil_id, checkCode: check.checkCode })
+    }
+  }
 
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
