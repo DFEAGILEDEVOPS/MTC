@@ -6,7 +6,17 @@ const winston = require('winston')
 const Postgrator = require('postgrator')
 const path = require('path')
 const chalk = require('chalk')
+const commandLineArgs = require('command-line-args')
+const {
+  sortMigrationsAsc,
+  sortMigrationsDesc
+} = require('postgrator/lib/utils.js')
 const createDatabaseIfNotExists = require('./createDatabase')
+
+const optionDefinitions = [
+  { name: 'version', alias: 'v', type: String },
+  { name: 'help', alias: 'h', type: Boolean }
+]
 
 const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
@@ -26,16 +36,46 @@ const migratorConfig = {
   validateChecksums: false
 }
 
-const runMigrations = async () => {
+const runMigrations = async (options) => {
   await createDatabaseIfNotExists()
 
   const postgrator = new Postgrator(migratorConfig)
+
+  let result = await postgrator.runQuery(`SELECT version FROM ${postgrator.config.schemaTable}`)
+  let appliedMigrations = result.rows.map(result => parseInt(result.version))
+
+  // Patch the getRunnableMigrations method
+  postgrator.getRunnableMigrations = (databaseVersion, targetVersion) => {
+    const { migrations } = postgrator
+    if (targetVersion >= databaseVersion) {
+      return migrations
+        .filter(
+          migration =>
+            migration.action === 'do' &&
+            (migration.version > databaseVersion || appliedMigrations.indexOf(migration.version) === -1) &&
+            migration.version <= targetVersion
+        )
+        .sort(sortMigrationsAsc)
+    }
+    if (targetVersion < databaseVersion) {
+      return migrations
+        .filter(
+          migration =>
+            migration.action === 'undo' &&
+            migration.version <= databaseVersion &&
+            migration.version > targetVersion
+        )
+        .sort(sortMigrationsDesc)
+    }
+    return []
+  }
+
   // subscribe to useful events
   postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
   postgrator.on('error', error => winston.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
-  const version = process.argv.length > 2 ? process.argv[2] : 'max'
+  const version = options.version || 'max'
   winston.info(chalk.green('Migrating to version:'), chalk.green.bold(version))
 
   try {
@@ -51,12 +91,17 @@ const runMigrations = async () => {
   }
 }
 
-winston.info('Preparing migrations...')
-
 try {
-  runMigrations()
+  const options = commandLineArgs(optionDefinitions)
+  if (options.help || (options['apply-missing'] && options['version'])) {
+    console.log(`
+    Usage: <script> --apply-missing | --version <migration number>
+    `)
+    process.exit(0)
+  }
+  runMigrations(options)
     .then(() => {
-      winston.info(chalk.green('all done'))
+      winston.info(chalk.green('Done'))
     },
     (error) => {
       winston.info(chalk.red(error.message))
