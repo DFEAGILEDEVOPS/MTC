@@ -6,9 +6,11 @@ end
 Then(/^the device information should be persisted to the DB$/) do
   device_info = JSON.parse(page.evaluate_script('window.localStorage.getItem("device");'))
   check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  data = SqlDbHelper.get_check_data(check_code)
-  local_info = JSON.parse data['data']
-  db_device_info = local_info['data']['device']
+  binding.pry
+  check_id = SqlDbHelper.get_check(check_code)['id']
+  data = SqlDbHelper.get_check_result(check_id)
+  local_info = JSON.parse data['payload']
+  db_device_info = local_info['device']
   device_info['appUsageCounter']=1
   expect(db_device_info).to eql device_info
 end
