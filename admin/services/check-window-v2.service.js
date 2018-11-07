@@ -22,6 +22,14 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
 }
 
 /**
+ * Get active check window
+ * @return {Promise<Object>} Check window object
+ */
+checkWindowV2Service.getActiveCheckWindow = async () => {
+  return checkWindowDataService.sqlFindActiveCheckWindow()
+}
+
+/**
  * Get all check windows recorded in the database with their status
  * @returns {Array} List of check windows
  */
