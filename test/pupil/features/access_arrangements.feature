@@ -20,3 +20,12 @@ Feature: Access Arrangements
     |error_message|
     |Enter a first name|
     |Enter a last name|
+
+
+  Scenario: Setting page is displayed as per design for Colour contrast access arrangement
+    Given I logged in with user with access arrangement 'Colour contrast'
+    Then I should see the colour contrast page matches design
+
+  Scenario: Welcome page is displayed when user wants to accept a colour contrast
+    Given I logged in with user with access arrangement 'Colour contrast'
+    Then I should be taken to the Welcome page once i have chosen a colour
