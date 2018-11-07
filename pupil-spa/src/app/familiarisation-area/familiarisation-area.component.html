@@ -16,11 +16,11 @@
             <fieldset>
               <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
                 <input type="radio"
-                      value="{{selectedFont.val}}"
-                      id="font-{{selectedFont.val}}"
-                      name="font-size"
-                      [checked]="!selectedSize && selectedFont.val === 'regular'"
-                      (change)="selectionChange(selectedFont.val)">
+                       value="{{selectedFont.val}}"
+                       id="font-{{selectedFont.val}}"
+                       name="font-size"
+                       [checked]="selectedSize === selectedFont.val"
+                       (change)="selectionChange(selectedFont.val)">
                 <label class="font-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
               </div>
             </fieldset>

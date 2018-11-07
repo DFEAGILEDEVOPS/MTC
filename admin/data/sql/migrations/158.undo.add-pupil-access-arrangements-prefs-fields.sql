@@ -1,0 +1,4 @@
+ALTER TABLE [mtc_admin].pupilAccessArrangements DROP CONSTRAINT FK_pupilAccessArrangements_pupilColourContrasts_id_pupilColourContrasts_id
+ALTER TABLE [mtc_admin].pupilAccessArrangements DROP CONSTRAINT FK_pupilAccessArrangements_pupilFontSizes_id_pupilFontSizes_id
+ALTER TABLE [mtc_admin].pupilAccessArrangements DROP COLUMN pupilColourContrasts_Id
+ALTER TABLE [mtc_admin].pupilAccessArrangements DROP COLUMN pupilFontSizes_id
