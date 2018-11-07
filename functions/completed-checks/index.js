@@ -79,6 +79,14 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
     throw error
   }
 
+  // Don't process any checks more than once
+  if (check.receivedByServerAt) {
+    const msg = `completed-check: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
+    logger.error(msg)
+    throw new Error(msg)
+  }
+
+
   if (!checkData.startedAt) {
     // Back-fill the check startedAt time using audit log data
     try {
