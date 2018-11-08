@@ -11,6 +11,8 @@ const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+
 
 describe('group controller', () => {
   function getRes () {
@@ -56,6 +58,7 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
           await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -63,6 +66,7 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
+          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
           done()
         })
       })
@@ -77,6 +81,7 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -84,6 +89,7 @@ describe('group controller', () => {
           expect(next).toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
+          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
           done()
         })
       })

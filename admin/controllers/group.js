@@ -3,6 +3,7 @@
 const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const monitor = require('../helpers/monitor')
 
 /**
@@ -17,18 +18,21 @@ const groupPupilsPage = async (req, res, next) => {
 
   let groups
   let pupilsPerGroup
+  let pinGenerationEligibilityData
 
   try {
     groups = await groupService.getGroups(req.user.schoolId)
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
   } catch (error) {
     next(error)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/groups.ejs', {
+    groups,
     breadcrumbs: req.breadcrumbs(),
+    pinGenerationEligibilityData,
     pupilsPerGroup,
-    groups
   })
 }
 
