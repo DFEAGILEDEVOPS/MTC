@@ -1,6 +1,5 @@
 const featureToggles = require('feature-toggles')
 const R = require('ramda')
-const winston = require('winston')
 
 const config = require('../config')
 const monitor = require('../helpers/monitor')
