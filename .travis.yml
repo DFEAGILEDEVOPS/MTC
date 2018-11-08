@@ -11,7 +11,8 @@ cache:
   directories:
     - /home/travis/.rvm/
     - ${TRAVIS_BUILD_DIR}/admin/node_modules
-#    - ${TRAVIS_BUILD_DIR}/pupil-api/node_modules
+    - ${TRAVIS_BUILD_DIR}/pupil-api/node_modules
+    - ${TRAVIS_BUILD_DIR}/functions/node_modules
     - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
@@ -23,7 +24,10 @@ env:
     - TEST_TYPE=pupil-e2e-2
   global:
     - OVERRIDE_PIN_EXPIRY=true
-
+    - ENVIRONMENT_NAME=hpa-travis
+    - secure: "Vn8f0QgONEiHpaHaYKNjMu1fWkArZpc/SgYuq9YyGYWcXg+yp2qxQTsacJCgDuy0a6gPWKcrHYcCEsPQyVA3Y1HZm+ZnTKGWDjg3ZB2cn/wFuC2Ni1yQIATawDSXL14BNHHgvNgpA4xKhb6KzPdsZYeiTupjrnI/F7SLF0eJL3b81QMGdLcrWhyCwZ2n4GpEAweH3aL2L9W70p58VXMYBCa4kJB2OzNGrEZE6BsCH4yegbhFs9O0J2RtowekADKBv47aVOTXJgNQ4ImyoCfH/uHSaUWcz1Iz7ABRFOjVzR5WBxb3klztCeOjZIbz0QpG1Zl4D+DALcSUUDnsiWIL0RY0xbhiAnbmI0lmMA2upfOlHT5I/R1vK6hP7dIGNLQov8CbnD5o7M7EHcWkcue1t7Ky6pWOoTj9tJdIHyKkdoIQ9bnnsrcPjWTWqVgF+IYWTaPuo3bWleklYIumVaHqwrdlmIEdjR9xwR1c+nD/gK5XjRf9EzPU/MIRSniTdvbgwp2fAV4yO0k/g7uL8aM8ovbgH9No3OaW1WRRky41eyVI4LYp7ZJC/AVDkQ9RXvnhUEQe/ldCiirZ6aXqPBtodwgdcJEUAi7aOFOhqbLZM+DJ1zaoT1HCK0swVoHSDxhyoOCUkT0nmwVuHhKoPNNoFWqS5A5stF81ce5KNtbrLDk="
+    - secure: "kBwB67TqUqm7hb+k5G/8zRRM4qLVSoL6vnVjucoeCoRSWsYhpvYINEQGXm0IVq2Nm/Qfx7GHhK9jdYxYR6oFkHNIzGGQn9evJKvIMVGqpx16bwgEElEGp/73cK73oxKF8rrTO0XUHcufNJLIck4e+cNN4Vm1M0GIiRL8zMUqfq/ljrggfofJ/86xkBf8dc9eb/4XKJbsyMw8h3XiiBfrYarQMlnL0iBDT4dZiy8c1l513ccoTTln6q1FtbsqPVXaYs1jExfSnzprMwWGaqYWfC00ogYvsYvfDgRjnfn3np4MuinX34KIvrghG8hd8GiclR4rAHB+si11ayRB9R3r4PGwOdhhl91/QsVNTA2UxWwf9XAGPwwVmRi0rTI6byaFLinMP+3p72/tk5bd7I42xEjb0tD+o2UUl3xVZjZ4aoE76TYkbNSxgOGyy4GVx9AxeF6KX6DJfr9DTpGtuNYJgEBSoJZa1gFE+NR7V6m7oAFx176qaWQuyccjnGwDuHNIj8+1sil5i9PRSXJYcX29apeGn5VOK+XPw8uoCYCEP43MoGvjjugMiKmqk4zNW0T3/D1yoA/cM2JWpc70BZGTHieJP3iax29YzjmJmfefISiEE3pemgW8KwUYcRZW2XK7FWsPddfpt6E6h0Gg6B9KFdxXvcMytGXC6NsP2f4c+3s="
+    - secure: "KY2Dr7GXZU0HOniQyPM01NpkLprZ2bfhPJSth4Hsbr5fPD8fmkPNMH42T43ZQjW7Uliq1hViVnLFzQ8cet3TJvO3QciUmI1nMtORgXiSwpzpI1OOVZR9s6gqwLFyRyZd5JaOrBc8vUrWHI8FYjrvOhDYdDiFkNrgbx/3Ijf02X7T40iRHwDh+b7S1NfoXNZc8okiuVcj0neXwv5nrjhf97J9xdXLaT1u3yt4faS+t4XScpqqSheBwJ3M8FXnU3x5JX3Wj48Mg7vmuHB/jWj4xrLGNaYT4QhNFoMYkqbYrTjgpGwVNukK9ATrnlvGhIB3cTaies4Nvfl+wosYB3Qd63DZwL2pPb2s2E/ufVpfq73w388aN5iN/lDMP5aYTrH8h0zGlu02VswkaSs+WhqhcpBRVUJTDI7E979PUG/+5wyodijdBcPpPJA7xrc2UI49dVCnRln+GZAf2/HiCHLwGO3YdT4R5SgN3UVdhqtx3kbMgwpdFcU9YNYgIOHhYkrhGvxK1xDE0HtSaT7lRomwHV8MqBsn3a50uhytPLKAAJ4BstfrtnDhieRlcC2evrm3IW0/yIVkkFFN4nWp4EasOwi5MS7xTQSdHC3T8Dql6bbM9eZ13juEH1kE7V93hZz+J4O1jyXf2Khcfdw1wNFbBemqXiTeBISWoTklXMHpr2I="
 node_js:
   - 8
 
@@ -45,8 +49,9 @@ install:
   - docker-compose up --build -d && sleep 30
   - docker info
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
+  - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
+  - cd ${TRAVIS_BUILD_DIR}/functions && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
-# - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/test/admin && gem install bundler --conservative && bundle install
   - cd ${TRAVIS_BUILD_DIR}/test/pupil && gem install bundler --conservative && bundle install
   - docker-compose logs
