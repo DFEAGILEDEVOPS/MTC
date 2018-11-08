@@ -17,7 +17,7 @@ schoolHomePinGenerationEligibilityPresenter.getPresentationData = async () => {
   const overridePinGenerationEligibility = config.OverridePinExpiry
   const currentDate = moment.utc()
   const pinGenerationEligibilityData = {}
-  const isWithinRestrictedHours = currentDate.hour() < 8 || currentDate.hour() > 16
+  const isWithinRestrictedHours = currentDate.hour() <= 8 || currentDate.hour() >= 16
   const isWithinFamiliarisationPeriod = currentDate.isAfter(checkWindow.familiarisationCheckStartDate) && currentDate.isBefore(checkWindow.familiarisationCheckEndDate)
   const isWithinLivePeriod = currentDate.isAfter(checkWindow.checkStartDate) && currentDate.isBefore(checkWindow.checkEndDate)
   // Familiarisation data
