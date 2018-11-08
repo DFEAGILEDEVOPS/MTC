@@ -8,6 +8,7 @@ const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
+const pupilStatusService = require('../../../services/pupil.status.service')
 const groupService = require('../../../services/group.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
@@ -43,6 +44,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
+      spyOn(pupilStatusService, 'recalculateStatusByPupilSlugs')
     })
 
     afterEach(() => {
@@ -171,6 +173,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
         done()
       })
 
@@ -228,6 +231,7 @@ describe('pupils-not-taking-the-check controller:', () => {
       it('should redirect to the select pupils page if pupilId is not supplied', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
         spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -271,6 +275,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.School)
         expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
       })
 
       it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {

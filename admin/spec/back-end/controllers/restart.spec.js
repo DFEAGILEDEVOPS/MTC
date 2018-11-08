@@ -1,11 +1,14 @@
 'use strict'
-/* global describe it expect beforeEach jasmine spyOn fail */
+/* global describe it expect beforeEach jasmine spyOn fail xit */
 
 const httpMocks = require('node-mocks-http')
+const winston = require('winston')
+
 const restartService = require('../../../services/restart.service')
 const restartV2Service = require('../../../services/restart-v2.service')
 const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
+const pupilStatusService = require('../../../services/pupil.status.service')
 const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
 const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../../../lib/validation-error')
@@ -122,6 +125,7 @@ describe('restart controller:', () => {
       done()
     })
   })
+
   describe('postSubmitRestartList route', () => {
     let next
     let goodReqParams = {
@@ -137,6 +141,7 @@ describe('restart controller:', () => {
     beforeEach(() => {
       next = jasmine.createSpy('next')
     })
+
     it('redirects the restart list page if no pupils are provided', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -146,6 +151,7 @@ describe('restart controller:', () => {
       expect(res.redirect).toHaveBeenCalledWith('/restart/select-restart-list')
       done()
     })
+
     it('renders again the restart list page if the validation fails', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -161,12 +167,14 @@ describe('restart controller:', () => {
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Error: Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
       done()
     })
+
     it('renders the restart overview page when successfully submitted restarts', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -177,6 +185,7 @@ describe('restart controller:', () => {
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
@@ -185,6 +194,7 @@ describe('restart controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
       done()
     })
+
     it('renders a specific flash message for 1 pupil', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -194,13 +204,53 @@ describe('restart controller:', () => {
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }])
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
       expect(requestFlashCalls[0].args[1]).toBe('Restart made for 1 pupil')
       done()
     })
+
+    xit('HPA: makes a request to update the pupil status after adding the restart', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        pupil: [pupilMock._id]
+      }
+      const validationError = new ValidationError()
+      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
+      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
+    })
+
+    xit('HPA: throws an error if the attempt to refresh the pupils status fails', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        pupil: [pupilMock._id]
+      }
+      const validationError = new ValidationError()
+      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
+      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
+      spyOn(winston, 'error')
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      try {
+        await controller(req, res, next)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('a mock error')
+        expect(winston.error).toHaveBeenCalledTimes(1)
+      }
+    })
   })
+
   describe('postDeleteRestart route', () => {
     let next
     let goodReqParams = {
@@ -219,17 +269,19 @@ describe('restart controller:', () => {
     beforeEach(() => {
       next = jasmine.createSpy('next')
     })
-    it('redirects to restart overview page when successfully marking the pupil as deleted', async (done) => {
+
+    it('redirects to restart overview page when successfully marking the pupil as deleted', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
-      done()
     })
+
     it('calls next if error occurred while marking the pupil as deleted', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -238,6 +290,35 @@ describe('restart controller:', () => {
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
       done()
+    })
+
+    xit('HPA: makes a request for the pupil status to be refreshed', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      const controller = require('../../../controllers/restart').postDeleteRestart
+      await controller(req, res, next)
+      expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
+    })
+
+    xit('HPA: throws an error if the pupil status refresh goes wrong', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
+      spyOn(winston, 'error')
+      const controller = require('../../../controllers/restart').postDeleteRestart
+
+      try {
+        await controller(req, res, next)
+        fail('expected to throw')
+      } catch (error) {
+        expect(winston.error).toHaveBeenCalledTimes(1)
+        expect(error.message).toBe('a mock error')
+      }
     })
   })
 })
