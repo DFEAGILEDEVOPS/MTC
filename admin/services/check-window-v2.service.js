@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const dateService = require('./date.service')
-const monitor = require('../helpers/monitor')
+
 const validate = require('uuid-validate')
 
 const checkWindowDataService = require('./data-access/check-window.data.service')
@@ -110,4 +110,4 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   return checkWindowData
 }
 
-module.exports = monitor('check-window-v2.service', checkWindowV2Service)
+module.exports = checkWindowV2Service

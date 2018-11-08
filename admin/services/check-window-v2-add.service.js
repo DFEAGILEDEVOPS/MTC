@@ -3,7 +3,6 @@
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkWindowAddValidator = require('../lib/validator/check-window-v2/check-window-add-validator')
 const checkWindowV2Service = require('./check-window-v2.service')
-const monitor = require('../helpers/monitor')
 
 const checkWindowV2AddService = {}
 
@@ -21,4 +20,4 @@ checkWindowV2AddService.submit = async (requestData) => {
   return checkWindowDataService.sqlCreate(checkWindowData)
 }
 
-module.exports = monitor('check-window-add.service', checkWindowV2AddService)
+module.exports = checkWindowV2AddService

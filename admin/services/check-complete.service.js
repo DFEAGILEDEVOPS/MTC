@@ -11,7 +11,7 @@ const markingService = require('./marking.service')
 const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
-const monitor = require('../helpers/monitor')
+
 const checkStateService = require('../services/check-state.service')
 
 const checkCompleteService = {}
@@ -56,4 +56,4 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   }
 }
 
-module.exports = monitor('check-complete.service', checkCompleteService)
+module.exports = checkCompleteService
