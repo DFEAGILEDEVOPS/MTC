@@ -96,11 +96,11 @@ describe('LoginSuccessComponent', () => {
   });
 
   describe('for access arrangements', () => {
-    it('should redirect to the font selection page when fontSize is enabled', async () => {
+    it('should redirect to the AA settings page when fontSize is enabled', async () => {
       spyOnProperty(component.config, 'fontSize').and.returnValue(true);
       component.onClick();
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
       });
     });
 
