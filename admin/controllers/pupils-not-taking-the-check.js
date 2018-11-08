@@ -1,8 +1,10 @@
 'use strict'
+const featureToggles = require('feature-toggles')
 
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const attendanceCodeService = require('../services/attendance.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilStatusService = require('../services/pupil.status.service')
 const groupService = require('../services/group.service')
 const monitor = require('../helpers/monitor')
 
@@ -98,6 +100,11 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     const reasonText = postedPupilSlugs.length > 1 ? 'reasons' : 'reason'
     req.flash('info', `${postedPupilSlugs.length} ${reasonText} updated`)
 
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      // Ask for these pupils to have their status updated
+      await pupilStatusService.recalculateStatusByPupilSlugs(postedPupilSlugs, req.user.schoolId)
+    }
+
     // Send the information required for highlighting
     const highlight = JSON.stringify(postedPupilSlugs)
     return res.redirect(`/pupils-not-taking-the-check/view?hl=${highlight}`)
@@ -122,6 +129,12 @@ const removePupilNotTakingCheck = async (req, res, next) => {
     await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.School)
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
+
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      // Ask for this pupil to have their status updated
+      await pupilStatusService.recalculateStatusByPupilSlugs([pupilSlug], req.user.schoolId)
+    }
+
     const highlight = JSON.stringify(pupilSlug)
     return res.redirect(`/pupils-not-taking-the-check/view?hl=${highlight}`)
   } catch (error) {
