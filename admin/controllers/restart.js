@@ -1,6 +1,7 @@
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const monitor = require('../helpers/monitor')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
@@ -16,11 +17,14 @@ const controller = {}
 controller.getRestartOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
+
+  let checkWindowData
   let restarts
   let pinGenerationEligibilityData
   try {
     restarts = await restartService.getSubmittedRestarts(req.user.School)
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }
