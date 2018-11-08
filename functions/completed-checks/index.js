@@ -9,24 +9,31 @@ const { TYPES } = require('tedious')
 winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
 
-// SQL server table
+// SQL server vars
 const checkResultTable = '[checkResult]'
-
-const schema = ['mtc_admin']
+const schema = '[mtc_admin]'
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 
 // Table Storage
-const azureTableService = getPromisifiedAzureTableService()
+const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, completedCheckMessage) {
   context.log('completed-check message received', completedCheckMessage.checkCode)
 
+  let checkData
   try {
-    await savePayloadToAdminDatabase(completedCheckMessage, context.log)
+    checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
+  } catch (error) {
+    context.log.error(`completed-check: ERROR: failed to retrieve checkData for checkCode: ${completedCheckMessage.checkCode}`)
+    throw error
+  }
+
+  try {
+    await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
     throw error
@@ -42,13 +49,25 @@ module.exports = async function (context, completedCheckMessage) {
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   // This is a backup process in case the check-started message was not received.
   try {
-    await deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
+    await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
       context.log.error(`ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
       throw error
     }
+  }
+
+  // Request a pupil status change
+  try {
+    if (checkData.isLiveCheck) {
+      const pupilStatusQueueName = 'pupil-status'
+      const message = { version: 1, pupilId: checkData.pupil_id, checkCode: completedCheckMessage.checkCode }
+      await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
+    }
+  } catch (error) {
+    context.log.error(`check-started: Error requesting a pupil-status change for checkCode ${completedCheckMessage.checkCode}}`)
+    throw error
   }
 
   // Default output is bound to the pupilEvents table (saved in table storage)
@@ -65,27 +84,19 @@ module.exports = async function (context, completedCheckMessage) {
 
 /**
  * High level function to save the payload into the admin db
- * @param completedCheckMessage
+ * @param {object} completedCheckMessage
+ * @param {object} checkData
  * @param logger
  * @return {Promise<void>}
  */
-async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
-  let checkData
-
-  try {
-    checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
-  } catch (error) {
-    logger.error(`completed-check: ERROR: savePayloadToAdminDatabase(): failed to retrieve checkFormAllocationData for checkCode: ${completedCheckMessage.checkCode}`)
-    throw error
-  }
+async function savePayloadToAdminDatabase (completedCheckMessage, checkData, logger) {
 
   // Don't process any checks more than once
-  if (check.receivedByServerAt) {
+  if (checkData.receivedByServerAt) {
     const msg = `completed-check: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
     logger.error(msg)
     throw new Error(msg)
   }
-
 
   if (!checkData.startedAt) {
     // Back-fill the check startedAt time using audit log data
