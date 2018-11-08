@@ -6,6 +6,7 @@ const httpMocks = require('node-mocks-http')
 
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../../../services/pupil.status.service')
@@ -59,6 +60,7 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
@@ -69,6 +71,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).not.toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         done()
       })
@@ -76,6 +79,7 @@ describe('pupils-not-taking-the-check controller:', () => {
       it('should execute next if initial page fails to render', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
 
         const res = getRes()
@@ -84,6 +88,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         done()
       })

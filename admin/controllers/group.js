@@ -1,5 +1,6 @@
 'use strict'
 
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
@@ -16,13 +17,15 @@ const monitor = require('../helpers/monitor')
 const groupPupilsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Group pupils'
 
+  let checkWindowData
   let groups
   let pupilsPerGroup
   let pinGenerationEligibilityData
 
   try {
     groups = await groupService.getGroups(req.user.schoolId)
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     next(error)
   }

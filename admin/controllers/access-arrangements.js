@@ -1,5 +1,6 @@
 const R = require('ramda')
 const accessArrangementsService = require('../services/access-arrangements.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
@@ -22,9 +23,11 @@ controller.getOverview = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let pinGenerationEligibilityData
+  let checkWindowData
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }

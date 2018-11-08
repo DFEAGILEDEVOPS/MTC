@@ -2,6 +2,7 @@
 const featureToggles = require('feature-toggles')
 
 const attendanceCodeService = require('../services/attendance.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const monitor = require('../helpers/monitor')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
@@ -19,12 +20,14 @@ const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-h
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
+  let checkWindowData
   let pupils
   let pinGenerationEligibilityData
   try {
     // Get pupils for active school
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList: pupils,

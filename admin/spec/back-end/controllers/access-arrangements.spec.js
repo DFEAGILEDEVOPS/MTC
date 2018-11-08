@@ -5,6 +5,7 @@
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const controller = require('../../../controllers/access-arrangements')
 const accessArrangementsService = require('../../../services/access-arrangements.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
@@ -46,10 +47,12 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
     })
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
@@ -57,6 +60,7 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
       try {
         await controller.getOverview(req, res, next)
@@ -64,6 +68,7 @@ describe('access arrangements controller:', () => {
         expect(error.message).toBe('error')
       }
       expect(res.render).not.toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
       expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
     })
   })
