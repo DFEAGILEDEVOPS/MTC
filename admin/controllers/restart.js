@@ -1,4 +1,5 @@
 const featureToggles = require('feature-toggles')
+const winston = require('winston')
 
 const groupService = require('../services/group.service')
 const monitor = require('../helpers/monitor')
@@ -9,7 +10,6 @@ const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
-const winston = require('winston')
 
 const controller = {}
 
