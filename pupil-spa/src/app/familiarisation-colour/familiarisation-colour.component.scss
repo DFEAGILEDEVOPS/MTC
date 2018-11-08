@@ -2,8 +2,16 @@
   background-color: #fff;
   color: #000 !important;
 
+  .question-text span {
+    color: #000 !important;
+  }
+
   button, .badge {
     background-color: #6f777b !important;
+    color: #fff !important;
+  }
+
+  .badge span {
     color: #fff !important;
   }
 }
@@ -12,10 +20,18 @@
   background-color: #000;
   color: #ff0 !important;
 
+  .question-text span {
+    color: #ff0 !important;
+  }
+
   button, .badge {
     background: #000 !important;
     color: #ff0 !important;
     border: 1px solid #ff0 !important;
+  }
+
+  .badge span {
+    color: #ff0 !important;
   }
 }
 
@@ -23,8 +39,16 @@
   background-color: #96adfc;
   color: #000 !important;
 
+  .question-text span {
+    color: #000 !important;
+  }
+
   button, .badge {
     background-color: #000 !important;
+    color: #96adfc !important;
+  }
+
+  .badge span {
     color: #96adfc !important;
   }
 }
@@ -32,8 +56,17 @@
 .contrast-bop {
   background-color: #edd1b0;
   color: #000 !important;
+
+  .question-text span {
+    color: #000 !important;
+  }
+
   button, .badge {
     background-color: #000 !important;
+    color: #edd1b0 !important;
+  }
+
+  .badge span {
     color: #edd1b0 !important;
   }
 }
@@ -42,8 +75,16 @@
   background-color: #fff5cd;
   color: #00008b !important;
 
+  .question-text span {
+    color: #00008b !important;
+  }
+
   button, .badge {
     background-color: #00008b !important;
+    color: #fff5cd !important;
+  }
+
+  .badge span {
     color: #fff5cd !important;
   }
 }

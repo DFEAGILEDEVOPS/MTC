@@ -1,5 +1,6 @@
 #page-modifications {
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
 }
 
 @mixin colour-contrast($background-colour, $copy-colour) {
@@ -22,11 +23,14 @@
   }
 
   #familiarisation-header-bar, .familiarisation-title {
-    background-color: $background-colour !important;
     color: $copy-colour !important;
   }
 
-  h1, h2, h3, h4, p, strong, li, span, a {
+  #familiarisation-header-bar {
+    background-color: $background-colour !important;
+  }
+
+  h1, h2, h3, h4, p, strong, li, span, a, label, .timer, .remaining-time {
     color: $copy-colour !important;
   }
 
@@ -69,6 +73,11 @@
       fill: $copy-colour !important;
     }
   }
+
+  //hide the blue header bar on all contrast pages
+  #global-header-bar {
+    display: none !important;
+  }
 }
 
 .colour-contrast-yob {
@@ -78,7 +87,7 @@
   @include colour-contrast($background-colour, $copy-color);
 
   // Some YOB colour are inverted
-  .numpad-button {
+  .numpad-button, .numpad-enter-button {
     background-color: $background-colour !important;
     color: $copy-color !important;
     border: 2px solid $copy-color !important;
@@ -95,10 +104,6 @@
     #proposition-name, #logo {
       color: $copy-color !important;
     }
-  }
-
-  label {
-    color: $copy-color !important;
   }
 
   .button-start {
