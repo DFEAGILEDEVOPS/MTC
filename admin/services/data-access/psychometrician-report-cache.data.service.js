@@ -114,4 +114,4 @@ const psychometricianReportCacheDataService = {
 
 }
 
-module.exports = monitor('psychometricianReportCache.data-service', psychometricianReportCacheDataService)
+module.exports = psychometricianReportCacheDataService

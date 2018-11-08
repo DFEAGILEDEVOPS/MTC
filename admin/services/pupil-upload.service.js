@@ -63,4 +63,4 @@ service.upload = async (school, uploadFile) => {
   return pr
 }
 
-module.exports = monitor('pupil-upload.service', service)
+module.exports = service

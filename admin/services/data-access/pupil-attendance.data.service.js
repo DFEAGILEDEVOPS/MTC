@@ -97,4 +97,4 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   return R.head(result)
 }
 
-module.exports = monitor('pupilAttendance.data-service', pupilAttendanceDataService)
+module.exports = pupilAttendanceDataService

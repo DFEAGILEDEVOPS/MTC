@@ -122,4 +122,4 @@ groupService.assignGroupsToPupils = async (schoolId, pupils) => {
   })
 }
 
-module.exports = monitor('group.service', groupService)
+module.exports = groupService

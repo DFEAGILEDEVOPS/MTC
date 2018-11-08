@@ -277,4 +277,4 @@ groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
   return R.head(result)
 }
 
-module.exports = monitor('group.data-service', groupDataService)
+module.exports = groupDataService

@@ -57,4 +57,4 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   return R.head(result)
 }
 
-module.exports = monitor('headTeacherDeclaration.data-service', headteacherDeclarationDataService)
+module.exports = headteacherDeclarationDataService

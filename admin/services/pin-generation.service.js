@@ -215,4 +215,4 @@ pinGenerationService.generatePupilPin = () => {
   return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
-module.exports = monitor('pin-generation.service', pinGenerationService)
+module.exports = pinGenerationService

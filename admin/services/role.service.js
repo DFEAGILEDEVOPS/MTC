@@ -49,4 +49,4 @@ const service = {
   }
 }
 
-module.exports = monitor('role.service', service)
+module.exports = service

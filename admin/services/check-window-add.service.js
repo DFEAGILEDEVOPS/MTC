@@ -16,4 +16,4 @@ checkWindowAddService.process = async (requestData) => {
   }
   await checkWindowService.submit(requestData)
 }
-module.exports = monitor('check-window-add.service', checkWindowAddService)
+module.exports = checkWindowAddService

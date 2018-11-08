@@ -267,4 +267,4 @@ const checkFormDataService = {
   }
 }
 
-module.exports = monitor('checkForm.data-service', checkFormDataService)
+module.exports = checkFormDataService

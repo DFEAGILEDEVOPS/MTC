@@ -419,4 +419,4 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
   return messages
 }
 
-module.exports = monitor('check-start.service', checkStartService)
+module.exports = checkStartService

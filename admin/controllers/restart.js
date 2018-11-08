@@ -154,4 +154,4 @@ controller.postDeleteRestart = async (req, res, next) => {
   return res.redirect('/restart/overview')
 }
 
-module.exports = monitor('restart.controller', controller)
+module.exports = controller

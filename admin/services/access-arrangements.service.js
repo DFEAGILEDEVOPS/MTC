@@ -95,4 +95,4 @@ accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
   return { urlSlug, foreName, lastName }
 }
 
-module.exports = monitor('access-arrangements.service', accessArrangementsService)
+module.exports = accessArrangementsService

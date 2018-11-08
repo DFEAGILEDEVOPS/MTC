@@ -25,4 +25,4 @@ const getSchoolLandingPage = async (req, res, next) => {
   })
 }
 
-module.exports = monitor('school.controller', { getSchoolLandingPage })
+module.exports = { getSchoolLandingPage }

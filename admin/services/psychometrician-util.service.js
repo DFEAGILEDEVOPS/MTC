@@ -487,4 +487,4 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
-module.exports = monitor('psychometrician-util.service', psUtilService)
+module.exports = psUtilService

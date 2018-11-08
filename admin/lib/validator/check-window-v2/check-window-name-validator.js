@@ -18,4 +18,4 @@ checkWindowNameValidator.validate = (validationError, checkWindowName) => {
   }
 }
 
-module.exports = monitor('check-window-name-validator', checkWindowNameValidator)
+module.exports = checkWindowNameValidator

@@ -119,4 +119,4 @@ markingService.mark = async function (completedCheck) {
   await answerDataService.sqlUpdateWithResults(completedCheck.id, answers)
 }
 
-module.exports = monitor('marking.service', markingService)
+module.exports = markingService

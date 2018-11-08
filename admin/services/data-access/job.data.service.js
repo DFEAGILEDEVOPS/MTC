@@ -95,4 +95,4 @@ jobDataService.sqlUpdate = async (jobId, jobStatusId, jobOutput = undefined, err
   return sqlService.modify(sql, params)
 }
 
-module.exports = monitor('job.data-service', jobDataService)
+module.exports = jobDataService

@@ -52,4 +52,4 @@ const service = {
   }
 }
 
-module.exports = monitor('nca-tools-user.service', service)
+module.exports = service

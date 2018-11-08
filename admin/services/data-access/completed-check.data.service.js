@@ -226,4 +226,4 @@ function parseData (check) {
   return check
 }
 
-module.exports = monitor('completedCheck.data-service', completedCheckDataService)
+module.exports = completedCheckDataService

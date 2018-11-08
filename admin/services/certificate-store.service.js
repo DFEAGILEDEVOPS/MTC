@@ -32,4 +32,4 @@ const service = {
   }
 }
 
-module.exports = monitor('certificate-store.service', service)
+module.exports = service

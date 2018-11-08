@@ -110,4 +110,4 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   return checkWindowData
 }
 
-module.exports = monitor('check-window-v2.service', checkWindowV2Service)
+module.exports = checkWindowV2Service

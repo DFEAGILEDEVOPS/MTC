@@ -181,4 +181,4 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
   return R.head(result)
 }
 
-module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)
+module.exports = pupilAccessArrangementsDataService

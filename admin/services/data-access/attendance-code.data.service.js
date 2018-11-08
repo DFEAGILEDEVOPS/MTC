@@ -35,4 +35,4 @@ const attendanceCodeDataService = {
   }
 }
 
-module.exports = monitor('attendanceCode.data-service', attendanceCodeDataService)
+module.exports = attendanceCodeDataService

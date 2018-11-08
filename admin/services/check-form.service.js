@@ -345,4 +345,4 @@ const checkFormService = {
   }
 }
 
-module.exports = monitor('check-form.service', checkFormService)
+module.exports = checkFormService

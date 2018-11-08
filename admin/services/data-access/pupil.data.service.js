@@ -405,4 +405,4 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   // E.g. { insertId: [1, 2], rowsModified: 4 }
 }
 
-module.exports = monitor('pupil.data-service', pupilDataService)
+module.exports = pupilDataService

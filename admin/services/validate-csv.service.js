@@ -33,4 +33,4 @@ service.process = async (csvDataArray, school) => {
   return { pupils, csvData, headers }
 }
 
-module.exports = monitor('validate-csv.service', service)
+module.exports = service

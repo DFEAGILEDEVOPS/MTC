@@ -137,4 +137,4 @@ const dateService = {
   }
 }
 
-module.exports = monitor('date.service', dateService)
+module.exports = dateService

@@ -19,4 +19,4 @@ const schoolService = {
   }
 }
 
-module.exports = monitor('school.service', schoolService)
+module.exports = schoolService

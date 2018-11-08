@@ -329,4 +329,4 @@ const checkWindowDataService = {
   }
 }
 
-module.exports = monitor('checkWindow.data-service', checkWindowDataService)
+module.exports = checkWindowDataService

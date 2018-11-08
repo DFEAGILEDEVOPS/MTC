@@ -56,7 +56,7 @@ const service = {
   }
 }
 
-module.exports = monitor('nca-tools-auth.service', service)
+module.exports = service
 
 /**
  * Verify the provided signature is valid. - commented out at the moment, see the check on line 25

@@ -43,4 +43,4 @@ checkWindowV2UpdateService.getValidationConfig = (checkWindow) => {
   return config
 }
 
-module.exports = monitor('check-window-update.service', checkWindowV2UpdateService)
+module.exports = checkWindowV2UpdateService

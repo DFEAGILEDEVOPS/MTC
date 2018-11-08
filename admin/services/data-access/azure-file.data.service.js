@@ -69,4 +69,4 @@ const service = config.AZURE_STORAGE_CONNECTION_STRING ? {
   }
 }
 
-module.exports = monitor('azureFile.data-service', service)
+module.exports = service

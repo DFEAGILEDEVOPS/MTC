@@ -14,4 +14,4 @@ const pupilFeedbackDataService = {
   }
 }
 
-module.exports = monitor('pupilFeedback.data-service', pupilFeedbackDataService)
+module.exports = pupilFeedbackDataService

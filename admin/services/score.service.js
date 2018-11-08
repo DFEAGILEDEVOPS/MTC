@@ -42,4 +42,4 @@ scoreService.calculateScorePercentage = (results) => {
   return rounded
 }
 
-module.exports = monitor('score.service', scoreService)
+module.exports = scoreService

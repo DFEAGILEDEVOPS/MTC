@@ -97,4 +97,4 @@ const schoolDataService = {
   }
 }
 
-module.exports = monitor('school.data-service', schoolDataService)
+module.exports = schoolDataService

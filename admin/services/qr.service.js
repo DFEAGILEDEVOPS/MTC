@@ -15,4 +15,4 @@ const qrService = {
   }
 }
 
-module.exports = monitor('qr.service', qrService)
+module.exports = qrService

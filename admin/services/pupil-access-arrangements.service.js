@@ -69,4 +69,4 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, d
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
   return pupil
 }
-module.exports = monitor('pupil-access-arrangements.service', pupilAccessArrangementsService)
+module.exports = pupilAccessArrangementsService

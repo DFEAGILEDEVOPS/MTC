@@ -51,4 +51,4 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   return true
 }
 
-module.exports = monitor('check-processing.service', checkProcessingService)
+module.exports = checkProcessingService

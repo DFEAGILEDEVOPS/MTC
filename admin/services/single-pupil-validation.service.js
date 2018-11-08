@@ -58,4 +58,4 @@ const service = {
   }
 }
 
-module.exports = monitor('single-pupil-validation.service', service)
+module.exports = service

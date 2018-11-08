@@ -77,4 +77,4 @@ const anomalyReportCacheDataService = {
   }
 }
 
-module.exports = monitor('anomalyReportCache.data-service', anomalyReportCacheDataService)
+module.exports = anomalyReportCacheDataService

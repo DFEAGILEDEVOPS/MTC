@@ -10,4 +10,4 @@ const getContactPage = async (req, res) => {
   })
 }
 
-module.exports = monitor('contact.controller', { getContactPage })
+module.exports = { getContactPage }

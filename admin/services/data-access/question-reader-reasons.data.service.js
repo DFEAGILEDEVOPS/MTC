@@ -61,4 +61,4 @@ const init = async () => {
   })
 }
 
-module.exports = monitor('question-reader-reason.data-service', questionReaderReasonsDataService)
+module.exports = questionReaderReasonsDataService

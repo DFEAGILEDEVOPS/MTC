@@ -274,4 +274,4 @@ const upnService = {
   }
 }
 
-module.exports = monitor('upn.service', upnService)
+module.exports = upnService

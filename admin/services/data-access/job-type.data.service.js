@@ -27,4 +27,4 @@ jobTypeDataService.sqlFindOneByTypeCode = async (jobTypeCode) => {
   return R.head(result)
 }
 
-module.exports = monitor('jobType.data-service', jobTypeDataService)
+module.exports = jobTypeDataService

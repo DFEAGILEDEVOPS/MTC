@@ -10,4 +10,4 @@ adminLogonEventDataService.sqlCreate = async function (data) {
   return sqlService.create(table, data)
 }
 
-module.exports = monitor('adminLogonEvent.data-service', adminLogonEventDataService)
+module.exports = adminLogonEventDataService

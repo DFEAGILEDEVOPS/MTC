@@ -483,4 +483,4 @@ END CATCH
   `
   return sqlService.modify(wrappedSQL, params)
 }
-module.exports = monitor('sql.data-service', sqlService)
+module.exports = sqlService

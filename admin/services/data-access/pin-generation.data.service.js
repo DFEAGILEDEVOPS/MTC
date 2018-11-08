@@ -125,4 +125,4 @@ const serviceToExport = {
   }
 }
 
-module.exports = monitor('pin-generation.data.service', serviceToExport)
+module.exports = serviceToExport

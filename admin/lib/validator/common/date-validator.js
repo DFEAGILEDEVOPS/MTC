@@ -56,4 +56,4 @@ dateValidator.validate = (validationError, dateData) => {
   return validationError
 }
 
-module.exports = monitor('check-window-name-validator', dateValidator)
+module.exports = dateValidator

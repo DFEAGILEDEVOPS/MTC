@@ -46,4 +46,4 @@ jobStatusDataService.sqlFindOneById = async (id) => {
   return R.head(result)
 }
 
-module.exports = monitor('jobStatus.data-service', jobStatusDataService)
+module.exports = jobStatusDataService

@@ -87,4 +87,4 @@ const configService = {
   }
 }
 
-module.exports = monitor('config.service', configService)
+module.exports = configService

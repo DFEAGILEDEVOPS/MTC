@@ -67,4 +67,4 @@ sqlPoolService.drain = () => {
   }
 }
 
-module.exports = monitor('sqlPool.data-service', sqlPoolService)
+module.exports = sqlPoolService

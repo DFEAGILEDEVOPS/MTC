@@ -48,4 +48,4 @@ const pupilsNotTakingCheckDataService = {
   }
 }
 
-module.exports = monitor('pupilsNotTakingCheck.data-service', pupilsNotTakingCheckDataService)
+module.exports = pupilsNotTakingCheckDataService

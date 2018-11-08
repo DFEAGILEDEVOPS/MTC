@@ -56,4 +56,4 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   }
 }
 
-module.exports = monitor('check-complete.service', checkCompleteService)
+module.exports = checkCompleteService

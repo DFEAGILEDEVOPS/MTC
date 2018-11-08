@@ -85,4 +85,4 @@ const attendanceService = {
   }
 }
 
-module.exports = monitor('attendance.service', attendanceService)
+module.exports = attendanceService

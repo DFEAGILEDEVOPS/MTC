@@ -23,4 +23,4 @@ pupilCensusProcessingService.process = async (csvData, jobId) => {
   return pupilCensusImportDataService.sqlBulkImport(csvData, schoolsHashMap, jobId)
 }
 
-module.exports = monitor('pupil-census-processing.service', pupilCensusProcessingService)
+module.exports = pupilCensusProcessingService

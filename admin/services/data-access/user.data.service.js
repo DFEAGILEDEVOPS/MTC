@@ -38,4 +38,4 @@ const userDataService = {
   }
 }
 
-module.exports = monitor('user.data-service', userDataService)
+module.exports = userDataService

@@ -34,4 +34,4 @@ const sortingAttributesService = {
   }
 }
 
-module.exports = monitor('sorting-attributes.service', sortingAttributesService)
+module.exports = sortingAttributesService

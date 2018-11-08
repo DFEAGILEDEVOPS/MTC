@@ -74,4 +74,4 @@ const pupilsNotTakingCheckService = {
   }
 }
 
-module.exports = monitor('pupils-not-taking-check.service', pupilsNotTakingCheckService)
+module.exports = pupilsNotTakingCheckService

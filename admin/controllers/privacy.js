@@ -10,4 +10,4 @@ const getPrivacyPage = async (req, res) => {
   })
 }
 
-module.exports = monitor('privacy.controller', { getPrivacyPage })
+module.exports = { getPrivacyPage }

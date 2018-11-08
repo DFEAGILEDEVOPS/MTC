@@ -327,4 +327,4 @@ function scoreFilter (obj) {
   return R.pick(R.concat(props, scoreProps), obj)
 }
 
-module.exports = monitor('psychometrician-report.service', psychometricianReportService)
+module.exports = psychometricianReportService

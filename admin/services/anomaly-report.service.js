@@ -458,4 +458,4 @@ anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   return output
 }
 
-module.exports = monitor('anomaly-report.service', anomalyReportService)
+module.exports = anomalyReportService

@@ -54,4 +54,4 @@ const pupilRegisterService = {
   }
 }
 
-module.exports = monitor('pupil-register.service', pupilRegisterService)
+module.exports = pupilRegisterService

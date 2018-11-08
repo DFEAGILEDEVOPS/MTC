@@ -130,4 +130,4 @@ pupilCensusService.remove = async (pupilCensusId) => {
   await jobDataService.sqlUpdate(pupilCensusId, jobStatus.id, output)
 }
 
-module.exports = monitor('pupil-census.service', pupilCensusService)
+module.exports = pupilCensusService

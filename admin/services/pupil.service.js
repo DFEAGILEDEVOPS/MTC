@@ -116,4 +116,4 @@ pupilService.getPupilsWithFullNames = async (dfeNumber) => {
   }))
 }
 
-module.exports = monitor('pupil.service', pupilService)
+module.exports = pupilService

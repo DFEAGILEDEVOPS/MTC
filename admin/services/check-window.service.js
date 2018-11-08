@@ -358,4 +358,4 @@ const checkWindowService = {
   }
 }
 
-module.exports = monitor('check-window.service', checkWindowService)
+module.exports = checkWindowService

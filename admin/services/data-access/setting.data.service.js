@@ -40,4 +40,4 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
   return sqlService.modify(sql, params)
 }
 
-module.exports = monitor('setting.data-service', settingDataService)
+module.exports = settingDataService

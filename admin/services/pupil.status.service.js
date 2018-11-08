@@ -104,4 +104,4 @@ pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
   }
 }
 
-module.exports = monitor('pupil-status.service', pupilStatusService)
+module.exports = pupilStatusService

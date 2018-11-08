@@ -34,4 +34,4 @@ const pupilAuthenticationService = {
   }
 }
 
-module.exports = monitor('pupil-authentication.service', pupilAuthenticationService)
+module.exports = pupilAuthenticationService

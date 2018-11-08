@@ -31,4 +31,4 @@ const psychometricianDataService = {
   }
 }
 
-module.exports = monitor('psychometrician.data-service', psychometricianDataService)
+module.exports = psychometricianDataService

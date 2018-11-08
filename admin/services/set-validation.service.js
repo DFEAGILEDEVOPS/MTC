@@ -18,4 +18,4 @@ const setValidatorService = {
   }
 }
 
-module.exports = monitor('set-validation.service', setValidatorService)
+module.exports = setValidatorService

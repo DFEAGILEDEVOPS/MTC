@@ -27,4 +27,4 @@ checkWindowSanityCheckService.check = async () => {
   }
 }
 
-module.exports = monitor('check-window-sanity-check.service', checkWindowSanityCheckService)
+module.exports = checkWindowSanityCheckService

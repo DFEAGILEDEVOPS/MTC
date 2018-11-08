@@ -17,4 +17,4 @@ const pupilCensusDataService = {
   }
 }
 
-module.exports = monitor('pupilCensus.data-service', pupilCensusDataService)
+module.exports = pupilCensusDataService

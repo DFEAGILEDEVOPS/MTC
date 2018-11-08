@@ -91,4 +91,4 @@ const serviceToExport = {
   }
 }
 
-module.exports = monitor('pin-generation-v2-service', serviceToExport)
+module.exports = serviceToExport

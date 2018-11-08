@@ -23,4 +23,4 @@ const service = {
   }
 }
 
-module.exports = monitor('azureBlob.data-service', service)
+module.exports = service

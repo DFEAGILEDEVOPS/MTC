@@ -46,4 +46,4 @@ function trimLength (size, truncationIndicator, string = '') {
   return string.slice(0, size - truncationIndicator.length).concat(truncationIndicator)
 }
 
-module.exports = monitor('pupil-logon-event', pupilLogonEventService)
+module.exports = pupilLogonEventService

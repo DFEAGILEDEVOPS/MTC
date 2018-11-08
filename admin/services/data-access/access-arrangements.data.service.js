@@ -87,4 +87,4 @@ const init = async () => {
   })
 }
 
-module.exports = monitor('access-arrangements.data-service', accessArrangementsDataService)
+module.exports = accessArrangementsDataService

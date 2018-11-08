@@ -36,4 +36,4 @@ settingService.get = async () => {
   return settings
 }
 
-module.exports = monitor('setting.service', settingService)
+module.exports = settingService

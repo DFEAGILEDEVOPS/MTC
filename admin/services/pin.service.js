@@ -78,4 +78,4 @@ pinService.expireMultiplePins = async (pupilIds, schoolId) => {
   return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
-module.exports = monitor('pin.service', pinService)
+module.exports = pinService

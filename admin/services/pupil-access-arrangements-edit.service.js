@@ -29,4 +29,4 @@ pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlS
   return formData
 }
 
-module.exports = monitor('pupil-access-arrangements-edit.service', pupilAccessArrangementsEditService)
+module.exports = pupilAccessArrangementsEditService

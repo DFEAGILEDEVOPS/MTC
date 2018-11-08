@@ -17,4 +17,4 @@ checkWindowEditService.process = async (requestData) => {
   }
   await checkWindowService.submit(requestData, existingCheckWindow)
 }
-module.exports = monitor('check-window-edit.service', checkWindowEditService)
+module.exports = checkWindowEditService

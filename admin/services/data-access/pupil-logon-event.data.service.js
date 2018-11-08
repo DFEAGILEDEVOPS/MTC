@@ -9,4 +9,4 @@ pupilLogonEvent.sqlCreate = async function (data) {
   return sqlService.create('[pupilLogonEvent]', data)
 }
 
-module.exports = monitor('pupilLogonEvent.data-service', pupilLogonEvent)
+module.exports = pupilLogonEvent

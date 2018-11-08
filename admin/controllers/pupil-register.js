@@ -33,4 +33,4 @@ const listPupils = async (req, res, next) => {
   })
 }
 
-module.exports = monitor('pupil-register.controller', { listPupils })
+module.exports = { listPupils }

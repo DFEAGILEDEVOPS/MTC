@@ -70,4 +70,4 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
   })
 }
 
-module.exports = monitor('pupilCensusImport.data-service', pupilCensusImportDataService)
+module.exports = pupilCensusImportDataService

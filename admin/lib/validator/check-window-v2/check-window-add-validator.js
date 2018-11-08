@@ -271,4 +271,4 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
   return validationError
 }
 
-module.exports = monitor('check-window-add-validator', checkWindowAddValidator)
+module.exports = checkWindowAddValidator

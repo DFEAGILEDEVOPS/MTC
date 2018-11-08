@@ -160,4 +160,4 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   return sqlService.modify(sql, params)
 }
 
-module.exports = monitor('pupilRestart.data-service', pupilRestartDataService)
+module.exports = pupilRestartDataService

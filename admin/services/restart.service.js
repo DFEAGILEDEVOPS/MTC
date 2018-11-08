@@ -203,4 +203,4 @@ restartService.markDeleted = async (pupilId, userId) => {
   return pupil
 }
 
-module.exports = monitor('restart.service', restartService)
+module.exports = restartService

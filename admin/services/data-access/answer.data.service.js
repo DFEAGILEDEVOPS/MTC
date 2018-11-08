@@ -82,4 +82,4 @@ const answerDataService = {
   }
 }
 
-module.exports = monitor('answer.data-service', answerDataService)
+module.exports = answerDataService

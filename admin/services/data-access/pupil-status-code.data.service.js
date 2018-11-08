@@ -22,4 +22,4 @@ pupilStatusCodeDataService.sqlFindStatusCodes = async () => {
   return sqlService.query(sql)
 }
 
-module.exports = monitor('pupilStatusCode.data-service', pupilStatusCodeDataService)
+module.exports = pupilStatusCodeDataService

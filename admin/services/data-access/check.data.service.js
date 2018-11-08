@@ -283,4 +283,4 @@ checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
   return byPupil
 }
 
-module.exports = monitor('check.data-service', checkDataService)
+module.exports = checkDataService

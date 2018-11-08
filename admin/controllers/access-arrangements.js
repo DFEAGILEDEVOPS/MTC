@@ -157,4 +157,4 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
-module.exports = monitor('access-arrangements.controller', controller)
+module.exports = controller

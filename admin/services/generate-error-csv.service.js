@@ -25,4 +25,4 @@ service.generate = async (school, headers, csvData) => {
   return { file }
 }
 
-module.exports = monitor('generate-error-csv.service', service)
+module.exports = service

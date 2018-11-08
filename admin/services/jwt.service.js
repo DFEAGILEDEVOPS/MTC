@@ -87,4 +87,4 @@ const jwtService = {
   decode: (token) => jwt.decode(token)
 }
 
-module.exports = monitor('jwt.service', jwtService)
+module.exports = jwtService

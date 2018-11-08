@@ -30,4 +30,4 @@ const roleDataService = {
   }
 }
 
-module.exports = monitor('role.data-service', roleDataService)
+module.exports = roleDataService

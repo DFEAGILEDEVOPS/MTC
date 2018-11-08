@@ -21,4 +21,4 @@ checkWindowV2AddService.submit = async (requestData) => {
   return checkWindowDataService.sqlCreate(checkWindowData)
 }
 
-module.exports = monitor('check-window-add.service', checkWindowV2AddService)
+module.exports = checkWindowV2AddService

@@ -145,4 +145,4 @@ const controller = {
   }
 }
 
-module.exports = monitor('service-manager.controller', controller)
+module.exports = controller

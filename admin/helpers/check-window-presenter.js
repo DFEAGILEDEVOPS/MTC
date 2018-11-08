@@ -54,4 +54,4 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
   return checkWindowViewData
 }
 
-module.exports = monitor('check-window-presenter', checkWindowPresenter)
+module.exports = checkWindowPresenter

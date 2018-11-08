@@ -68,4 +68,4 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) 
   return true
 }
 
-module.exports = monitor('headteacher-declaration.service', headteacherDeclarationService)
+module.exports = headteacherDeclarationService

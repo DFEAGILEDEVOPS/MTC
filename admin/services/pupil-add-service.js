@@ -81,4 +81,4 @@ const pupilAddService = {
   }
 }
 
-module.exports = monitor('pupil-add.service', pupilAddService)
+module.exports = pupilAddService

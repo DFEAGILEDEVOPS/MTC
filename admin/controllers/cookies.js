@@ -10,4 +10,4 @@ const getCookiesPage = async (req, res) => {
   })
 }
 
-module.exports = monitor('cookies.controller', { getCookiesPage })
+module.exports = { getCookiesPage }
