@@ -4,7 +4,6 @@ const winston = require('winston')
 
 const pinGenerationDataService = require('./data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
-const monitor = require('../helpers/monitor')
 
 /**
  * Return a list of pupils who can have a pin generated
@@ -91,4 +90,4 @@ const serviceToExport = {
   }
 }
 
-module.exports = monitor('pin-generation-v2-service', serviceToExport)
+module.exports = serviceToExport

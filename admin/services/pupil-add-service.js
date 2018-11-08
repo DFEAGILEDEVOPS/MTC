@@ -5,7 +5,6 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
-const monitor = require('../helpers/monitor')
 
 const pupilAddService = {
   /**
@@ -81,4 +80,4 @@ const pupilAddService = {
   }
 }
 
-module.exports = monitor('pupil-add.service', pupilAddService)
+module.exports = pupilAddService

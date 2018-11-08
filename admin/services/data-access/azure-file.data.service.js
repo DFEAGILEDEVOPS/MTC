@@ -1,6 +1,6 @@
 const azure = require('azure-storage')
 const config = require('../../config')
-const monitor = require('../../helpers/monitor')
+
 const blobService = config.AZURE_STORAGE_CONNECTION_STRING ? azure.createBlobService() : {
   createBlockBlobFromText: () => { return { name: 'test_error.csv' } },
   getBlobToText: () => 'text',
@@ -69,4 +69,4 @@ const service = config.AZURE_STORAGE_CONNECTION_STRING ? {
   }
 }
 
-module.exports = monitor('azureFile.data-service', service)
+module.exports = service

@@ -2,7 +2,6 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
-const monitor = require('../../helpers/monitor')
 
 const sqlService = require('./sql.service')
 const pupilAccessArrangementsDataService = {}
@@ -181,4 +180,4 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
   return R.head(result)
 }
 
-module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)
+module.exports = pupilAccessArrangementsDataService

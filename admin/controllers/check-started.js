@@ -1,7 +1,7 @@
 const jwtService = require('../services/jwt.service')
 const pinService = require('../services/pin.service')
 const apiResponse = require('./api-response')
-const monitor = require('../helpers/monitor')
+
 const checkStateService = require('../services/check-state.service')
 
 /**
@@ -31,6 +31,4 @@ const checkStarted = async (req, res) => {
   return apiResponse.sendJson(res, 'OK', 201)
 }
 
-module.exports = monitor('check-started.controller', {
-  checkStarted
-})
+module.exports = { checkStarted }
