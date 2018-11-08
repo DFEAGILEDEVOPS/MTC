@@ -2,7 +2,7 @@
 
 const R = require('ramda')
 const TYPES = require('tedious').TYPES
-const monitor = require('../../helpers/monitor')
+
 
 const sqlService = require('./sql.service')
 const jobDataService = {}

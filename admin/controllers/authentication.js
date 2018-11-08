@@ -3,7 +3,7 @@
 const winston = require('winston')
 const rolesConfig = require('../roles-config')
 const config = require('../config')
-const monitor = require('../helpers/monitor')
+
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {

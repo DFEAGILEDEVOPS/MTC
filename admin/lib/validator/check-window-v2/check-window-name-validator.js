@@ -2,7 +2,7 @@
 const { isEmpty } = require('validator')
 
 const checkWindowErrorMessages = require('../../errors/check-window-v2')
-const monitor = require('../../../helpers/monitor')
+
 
 const checkWindowNameValidator = {}
 

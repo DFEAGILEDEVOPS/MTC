@@ -9,7 +9,7 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
-const monitor = require('../helpers/monitor')
+
 
 const restartService = {}
 

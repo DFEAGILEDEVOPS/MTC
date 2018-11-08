@@ -6,7 +6,7 @@ const attendanceCodeService = require('../services/attendance.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
+
 
 /**
  * Pupils not taking the check: initial page.

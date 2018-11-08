@@ -1,6 +1,6 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
+
 
 const getCookiesPage = async (req, res) => {
   res.locals.pageTitle = 'Cookies'

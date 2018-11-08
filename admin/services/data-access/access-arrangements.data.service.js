@@ -1,6 +1,6 @@
 'use strict'
 
-const monitor = require('../../helpers/monitor')
+
 const sqlService = require('./sql.service')
 const accessArrangementsDataService = {}
 const accessArrangementCodes = {}

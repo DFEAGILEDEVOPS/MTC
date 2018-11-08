@@ -4,7 +4,7 @@ const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const R = require('ramda')
 const winston = require('winston')
-const monitor = require('../../helpers/monitor')
+
 
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}

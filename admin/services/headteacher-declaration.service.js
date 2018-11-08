@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const monitor = require('../helpers/monitor')
+
 const schoolDataService = require('../services/data-access/school.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
 const headteacherDeclarationService = {}

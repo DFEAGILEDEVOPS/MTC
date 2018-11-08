@@ -2,7 +2,7 @@
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
-const monitor = require('../helpers/monitor')
+
 
 const listPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'

@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const dateService = require('./date.service')
-const monitor = require('../helpers/monitor')
+
 const validate = require('uuid-validate')
 
 const checkWindowDataService = require('./data-access/check-window.data.service')

@@ -2,7 +2,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const moment = require('moment')
 const R = require('ramda')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
-const monitor = require('../helpers/monitor')
+
 
 // Warning: some state is built up in this variable.  Please be sure to call `init()` before calling `validate()`
 let seenUpns = {}

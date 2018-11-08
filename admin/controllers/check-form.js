@@ -12,7 +12,7 @@ const dateService = require('../services/date.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
 const winston = require('winston')
-const monitor = require('../helpers/monitor')
+
 
 /**
  * Display landing page for 'test developer' role.

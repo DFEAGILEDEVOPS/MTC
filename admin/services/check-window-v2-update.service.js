@@ -5,7 +5,7 @@ const moment = require('moment')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkWindowAddValidator = require('../lib/validator/check-window-v2/check-window-add-validator')
 const checkWindowV2Service = require('./check-window-v2.service')
-const monitor = require('../helpers/monitor')
+
 
 const checkWindowV2UpdateService = {}
 

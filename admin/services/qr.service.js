@@ -1,5 +1,5 @@
 const qrCode = require('qrcode')
-const monitor = require('../helpers/monitor')
+
 
 const qrService = {
   getDataURL: (url) => {

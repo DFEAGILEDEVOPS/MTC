@@ -1,7 +1,7 @@
 const azureQueueService = require('./azure-queue.service')
 const checkDataService = require('./data-access/check.data.service')
 const moment = require('moment')
-const monitor = require('../helpers/monitor')
+
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')

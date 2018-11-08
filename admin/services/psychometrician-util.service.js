@@ -7,7 +7,7 @@ const winston = require('winston')
 const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')
-const monitor = require('../helpers/monitor')
+
 
 momentDurationFormatSetup(moment)
 

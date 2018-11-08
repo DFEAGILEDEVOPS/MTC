@@ -4,7 +4,7 @@ const groupDataService = {}
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
-const monitor = require('../../helpers/monitor')
+
 
 /**
  * Get active groups (non-soft-deleted).

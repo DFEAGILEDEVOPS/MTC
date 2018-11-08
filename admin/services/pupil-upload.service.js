@@ -5,7 +5,7 @@ const R = require('ramda')
 const pupilDataService = require('./data-access/pupil.data.service')
 const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
-const monitor = require('../helpers/monitor')
+
 
 const service = {}
 

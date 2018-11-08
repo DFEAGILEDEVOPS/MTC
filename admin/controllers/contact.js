@@ -1,6 +1,6 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
+
 
 const getContactPage = async (req, res) => {
   res.locals.pageTitle = 'Contact'

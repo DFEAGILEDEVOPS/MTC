@@ -7,7 +7,7 @@ const config = require('../../config')
 const pupilCensusImportDataService = {}
 const sqlService = require('./sql.service')
 const sqlPoolService = require('./sql.pool.service')
-const monitor = require('../../helpers/monitor')
+
 
 /**
  * Execute pupil data bulk import

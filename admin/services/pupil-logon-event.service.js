@@ -2,7 +2,7 @@
 const winston = require('winston')
 
 const pupilLogonEventDataService = require('./data-access/pupil-logon-event.data.service')
-const monitor = require('../helpers/monitor')
+
 
 const pupilLogonEventService = {}
 

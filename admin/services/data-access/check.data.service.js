@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const monitor = require('../../helpers/monitor')
+
 const table = '[check]'
 
 const checkDataService = {}

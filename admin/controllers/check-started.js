@@ -1,7 +1,7 @@
 const jwtService = require('../services/jwt.service')
 const pinService = require('../services/pin.service')
 const apiResponse = require('./api-response')
-const monitor = require('../helpers/monitor')
+
 const checkStateService = require('../services/check-state.service')
 
 /**

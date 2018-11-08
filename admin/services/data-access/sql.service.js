@@ -7,7 +7,7 @@ const winston = require('winston')
 
 const sqlPoolService = require('./sql.pool.service')
 const dateService = require('../date.service')
-const monitor = require('../../helpers/monitor')
+
 const moment = require('moment')
 let cache = {}
 

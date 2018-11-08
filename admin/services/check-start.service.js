@@ -22,7 +22,7 @@ const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 const azureQueueService = require('../services/azure-queue.service')
-const monitor = require('../helpers/monitor')
+
 const checkStateService = require('../services/check-state.service')
 
 const checkStartService = {}

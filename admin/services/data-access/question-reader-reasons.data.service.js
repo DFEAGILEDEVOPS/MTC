@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
+
 const questionReaderReasonsDataService = {}
 const questionReaderCodes = {}
 

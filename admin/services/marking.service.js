@@ -7,7 +7,7 @@ const R = require('ramda')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const answerDataService = require('./data-access/answer.data.service')
-const monitor = require('../helpers/monitor')
+
 
 const markingService = {}
 const batchSize = 100

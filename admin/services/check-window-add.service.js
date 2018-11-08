@@ -3,7 +3,7 @@
 const checkWindowAddService = {}
 const checkWindowService = require('./check-window.service')
 const checkWindowAddValidator = require('../lib/validator/check-window/check-window-add-validator')
-const monitor = require('../helpers/monitor')
+
 
 /**
  * Processes request data on adding

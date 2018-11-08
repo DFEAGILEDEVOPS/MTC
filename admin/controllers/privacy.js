@@ -1,6 +1,6 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
+
 
 const getPrivacyPage = async (req, res) => {
   res.locals.pageTitle = 'Privacy notice'

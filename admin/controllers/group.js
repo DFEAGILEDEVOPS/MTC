@@ -3,7 +3,7 @@
 const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
-const monitor = require('../helpers/monitor')
+
 
 /**
  * Render the initial 'groups' page.

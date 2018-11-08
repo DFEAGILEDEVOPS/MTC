@@ -1,7 +1,7 @@
 const featureToggles = require('feature-toggles')
 
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')

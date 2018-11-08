@@ -7,7 +7,7 @@ const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
-const monitor = require('../helpers/monitor')
+
 
 const pupilCensusService = {}
 

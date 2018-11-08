@@ -13,7 +13,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const R = require('ramda')
 const winston = require('winston')
-const monitor = require('../helpers/monitor')
+
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
