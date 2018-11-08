@@ -1,12 +1,14 @@
 'use strict'
 const featureToggles = require('feature-toggles')
 
-const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const attendanceCodeService = require('../services/attendance.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilStatusService = require('../services/pupil.status.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const monitor = require('../helpers/monitor')
+const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilStatusService = require('../services/pupil.status.service')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 
 /**
  * Pupils not taking the check: initial page.
@@ -18,15 +20,20 @@ const monitor = require('../helpers/monitor')
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
-
+  let checkWindowData
+  let pupils
+  let pinGenerationEligibilityData
   try {
     // Get pupils for active school
-    const pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList: pupils,
       highlight: [],
-      messages: req.flash('info')
+      messages: req.flash('info'),
+      pinGenerationEligibilityData
     })
   } catch (error) {
     return next(error)

@@ -1,9 +1,11 @@
 const R = require('ramda')
 const accessArrangementsService = require('../services/access-arrangements.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const monitor = require('../helpers/monitor')
 const ValidationError = require('../lib/validation-error')
 
@@ -20,8 +22,12 @@ controller.getOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Access arrangements'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
+  let pinGenerationEligibilityData
+  let checkWindowData
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }
@@ -30,6 +36,7 @@ controller.getOverview = async (req, res, next) => {
     highlight: hl,
     messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs(),
+    pinGenerationEligibilityData,
     pupils
   })
 }
