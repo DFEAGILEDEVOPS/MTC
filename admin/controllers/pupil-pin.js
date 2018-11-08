@@ -230,10 +230,10 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   })
 }
 
-module.exports = monitor('pupil-pin.controller', {
+module.exports = {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
   getViewAndCustomPrintPins
-})
+}

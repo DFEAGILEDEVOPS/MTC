@@ -2,7 +2,6 @@
 
 const sqlService = require('./sql.service')
 
-
 const pupilFeedbackDataService = {
   /**
    * create new pupilFeedback record

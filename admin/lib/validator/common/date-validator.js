@@ -6,7 +6,6 @@ const XRegExp = require('xregexp')
 
 const dateService = require('../../../services/date.service')
 
-
 const dateValidator = {}
 
 /**

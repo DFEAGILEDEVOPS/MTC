@@ -5,7 +5,6 @@ const checkDataService = require('../services/data-access/check.data.service')
 const apiResponse = require('./api-response')
 const pupilFeedbackDataService = require('../services/data-access/pupil-feedback.data.service')
 
-
 // TODO: add logging for all error paths
 
 const setPupilFeedback = async (req, res, next) => {
@@ -51,6 +50,4 @@ const setPupilFeedback = async (req, res, next) => {
   }
 }
 
-module.exports = monitor('pupil-feedback.controller', {
-  setPupilFeedback
-})
+module.exports = { setPupilFeedback }

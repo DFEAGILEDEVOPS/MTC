@@ -1,6 +1,5 @@
 'use strict'
 
-
 const groupDataService = require('../services/data-access/group.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const groupService = {}

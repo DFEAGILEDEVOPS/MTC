@@ -6,7 +6,6 @@ const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
-
 const pupilAddService = {
   /**
    * Add pupil.

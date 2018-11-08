@@ -2,7 +2,6 @@
 
 const schoolDataService = require('../services/data-access/school.data.service')
 
-
 const schoolService = {
 
   /**

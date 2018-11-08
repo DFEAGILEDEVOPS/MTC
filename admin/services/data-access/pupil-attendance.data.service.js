@@ -5,7 +5,6 @@ const sqlService = require('./sql.service')
 const R = require('ramda')
 const winston = require('winston')
 
-
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
 

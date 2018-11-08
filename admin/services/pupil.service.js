@@ -1,7 +1,6 @@
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
-
 const pupilService = {}
 
 /**

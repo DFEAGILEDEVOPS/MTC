@@ -261,7 +261,7 @@ const getPrintPupils = async (req, res, next) => {
   }
 }
 
-module.exports = monitor('pupil.controller', {
+module.exports = {
   getAddPupil,
   postAddPupil,
   getAddMultiplePupils,
@@ -270,4 +270,4 @@ module.exports = monitor('pupil.controller', {
   getEditPupilById,
   postEditPupil,
   getPrintPupils
-})
+}

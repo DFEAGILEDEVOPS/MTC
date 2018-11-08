@@ -3,7 +3,6 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 
-
 const table = '[pupil]'
 const pupilDataService = {}
 const sqlService = require('./sql.service')

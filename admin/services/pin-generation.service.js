@@ -12,7 +12,6 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const restartService = require('../services/restart.service')
 const config = require('../config')
 
-
 const allowedWords = new Set(
   (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
 )

@@ -3,7 +3,6 @@
 const R = require('ramda')
 const TYPES = require('tedious').TYPES
 
-
 const sqlService = require('./sql.service')
 const jobDataService = {}
 const table = '[job]'

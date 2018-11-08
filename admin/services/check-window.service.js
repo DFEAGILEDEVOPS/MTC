@@ -7,7 +7,6 @@ const dateService = require('../services/date.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
 const checkDataService = require('./data-access/check.data.service')
 
-
 const checkWindowService = {
 
   /**

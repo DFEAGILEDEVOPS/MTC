@@ -2,7 +2,6 @@
 
 const schoolService = require('../services/school.service')
 
-
 /**
  * School landing page.
  * @param req

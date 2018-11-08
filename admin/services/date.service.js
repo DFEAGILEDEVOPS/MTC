@@ -2,7 +2,6 @@
 const moment = require('moment')
 const winston = require('winston')
 
-
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
 const UKFormat = 'DD/MM/YYYY'

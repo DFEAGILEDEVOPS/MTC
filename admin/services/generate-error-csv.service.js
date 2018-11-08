@@ -4,7 +4,6 @@ const { promisify } = require('bluebird')
 const csv = require('fast-csv')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 
-
 const service = {}
 service.generate = async (school, headers, csvData) => {
   const errorsCsv = []

@@ -9,7 +9,6 @@ const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
 const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 
-
 /** @namespace */
 
 const configService = {

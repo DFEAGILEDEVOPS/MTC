@@ -1,7 +1,6 @@
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
 const config = require('../config')
 
-
 let ncaPublicKey, mtcPrivateKey
 
 const service = {

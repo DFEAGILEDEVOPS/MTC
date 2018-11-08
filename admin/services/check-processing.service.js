@@ -5,7 +5,6 @@ const psychometricianReportService = require('./psychometrician-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const winston = require('winston')
 
-
 const checkProcessingService = {}
 const batchSize = 100
 

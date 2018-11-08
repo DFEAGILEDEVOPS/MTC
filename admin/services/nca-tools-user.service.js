@@ -4,7 +4,6 @@ const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
 
-
 const service = {
   /**
    * @description maps an authenticated NCA Tools user to an MTC user, school and role

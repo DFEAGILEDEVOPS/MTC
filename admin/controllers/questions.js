@@ -14,7 +14,6 @@ const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const R = require('ramda')
 const winston = require('winston')
 
-
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
  * @param req
@@ -121,6 +120,4 @@ const getQuestions = async (req, res) => {
   apiResponse.sendJson(res, responseData)
 }
 
-module.exports = monitor('questions.controller', {
-  getQuestions
-})
+module.exports = { getQuestions }

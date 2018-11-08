@@ -5,7 +5,6 @@ const R = require('ramda')
 
 const sqlService = require('./sql.service')
 
-
 const attendanceCodeDataService = {
   /**
    * Find Attendance Codes.

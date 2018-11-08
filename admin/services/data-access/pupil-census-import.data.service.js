@@ -8,7 +8,6 @@ const pupilCensusImportDataService = {}
 const sqlService = require('./sql.service')
 const sqlPoolService = require('./sql.pool.service')
 
-
 /**
  * Execute pupil data bulk import
  * @param {Array} pupilData

@@ -19,7 +19,6 @@ const psychometricianDataService = require('./data-access/psychometrician.data.s
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
-
 const psychometricianReportService = {}
 const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
 

@@ -2,7 +2,6 @@
 
 const sqlService = require('./sql.service')
 
-
 const pupilLogonEvent = {}
 
 pupilLogonEvent.sqlCreate = async function (data) {

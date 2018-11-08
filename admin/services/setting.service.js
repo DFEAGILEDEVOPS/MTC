@@ -4,7 +4,6 @@ const settingDataService = require('./data-access/setting.data.service')
 const settingLogDataService = require('./data-access/setting-log.data.service')
 const config = require('../config')
 
-
 const settingService = {}
 
 /**

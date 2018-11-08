@@ -4,7 +4,6 @@ const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
 
-
 const settingDataService = {}
 
 settingDataService.sqlFindOne = async () => {

@@ -7,7 +7,6 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const groupService = require('../services/group.service')
 
-
 /**
  * Pupils not taking the check: initial page.
  * @param req
@@ -166,10 +165,10 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   }
 }
 
-module.exports = monitor('pupils-not-taking-the-check.controller', {
+module.exports = {
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
   savePupilNotTakingCheck,
   removePupilNotTakingCheck,
   viewPupilsNotTakingTheCheck
-})
+}

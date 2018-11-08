@@ -7,7 +7,6 @@ const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
 
-
 /** @namespace */
 
 const jwtService = {

@@ -4,7 +4,6 @@ const checkWindowDataService = require('./data-access/check-window.data.service'
 const checkWindowEditValidator = require('../lib/validator/check-window/check-window-edit-validator')
 const checkWindowService = require('./check-window.service')
 
-
 /**
  * Processes request data on editing
  * @param {Object} requestData

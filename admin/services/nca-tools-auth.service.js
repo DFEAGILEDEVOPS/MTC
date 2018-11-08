@@ -4,7 +4,6 @@ const iconv = require('iconv-lite')
 const crypto = require('crypto')
 const moment = require('moment')
 
-
 const service = {
   /**
    * @description decrypt and validate nca tools request payload

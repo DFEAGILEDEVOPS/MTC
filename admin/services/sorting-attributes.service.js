@@ -1,7 +1,5 @@
 'use strict'
 
-
-
 const sortingAttributesService = {
   /**
    * Flexible sorting service.

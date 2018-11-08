@@ -5,7 +5,6 @@ const questionReaderReasonsDataService = require('../services/data-access/questi
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
 
-
 const accessArrangementsService = {}
 
 /**

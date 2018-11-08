@@ -10,7 +10,6 @@ const checkWindowService = require('../services/check-window.service')
 const config = require('../config')
 const random = require('../lib/random-generator')
 
-
 const checkFormService = {
   /**
    * Randomly allocate a form to a pupil, discarding all previously used forms

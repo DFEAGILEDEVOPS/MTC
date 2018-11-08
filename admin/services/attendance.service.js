@@ -7,7 +7,6 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const pupilDataService = require('./data-access/pupil.data.service')
 const pinService = require('./pin.service')
 
-
 const attendanceService = {
   /**
    * Update pupil attendance by slug url.

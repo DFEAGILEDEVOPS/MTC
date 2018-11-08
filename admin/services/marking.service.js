@@ -8,7 +8,6 @@ const completedCheckDataService = require('./data-access/completed-check.data.se
 const checkDataService = require('./data-access/check.data.service')
 const answerDataService = require('./data-access/answer.data.service')
 
-
 const markingService = {}
 const batchSize = 100
 

@@ -5,7 +5,6 @@ const winston = require('winston')
 const pinGenerationDataService = require('./data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
-
 /**
  * Return a list of pupils who can have a pin generated
  * @param {number} schoolId

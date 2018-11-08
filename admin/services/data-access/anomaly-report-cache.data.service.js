@@ -5,7 +5,6 @@ const winston = require('winston')
 
 const sqlService = require('./sql.service')
 
-
 const table = '[anomalyReportCache]'
 
 const anomalyReportCacheDataService = {

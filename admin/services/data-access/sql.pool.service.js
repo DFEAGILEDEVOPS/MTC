@@ -4,7 +4,6 @@ var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
 const winston = require('winston')
 
-
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
   max: config.Sql.Pooling.MaxCount

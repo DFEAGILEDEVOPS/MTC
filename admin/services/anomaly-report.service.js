@@ -10,7 +10,6 @@ const anomalyReportCacheDataService = require('./data-access/anomaly-report-cach
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 
-
 const anomalyReportService = {}
 anomalyReportService.reportedAnomalies = []
 

@@ -1,6 +1,5 @@
 const qrCode = require('qrcode')
 
-
 const qrService = {
   getDataURL: (url) => {
     if (!url) return null

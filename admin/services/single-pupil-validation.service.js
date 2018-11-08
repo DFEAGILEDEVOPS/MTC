@@ -3,7 +3,6 @@ const moment = require('moment')
 const R = require('ramda')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 
-
 // Warning: some state is built up in this variable.  Please be sure to call `init()` before calling `validate()`
 let seenUpns = {}
 

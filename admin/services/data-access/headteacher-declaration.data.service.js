@@ -7,7 +7,6 @@ const table = '[hdf]'
 const headteacherDeclarationDataService = {}
 const checkWindowDataService = require('./check-window.data.service')
 
-
 headteacherDeclarationDataService.sqlCreate = async function (data) {
   return sqlService.create(table, data)
 }

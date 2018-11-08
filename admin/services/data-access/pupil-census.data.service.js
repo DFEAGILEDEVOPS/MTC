@@ -2,7 +2,6 @@
 const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 
-
 const pupilCensusDataService = {
   sqlDeletePupilsByJobId: async (jobId) => {
     const sql = `DELETE FROM ${sqlService.adminSchema}.[pupil] WHERE job_id=@jobId`

@@ -5,7 +5,6 @@ const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
 
-
 const pupilRegisterService = {
   /**
    * Get list of register pupils.

@@ -1,7 +1,5 @@
 'use strict'
 
-
-
 const setValidatorService = {
   /**
    * Utility function to validate that incoming form ids, match ids from objects in the second param

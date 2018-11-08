@@ -3,7 +3,6 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const serviceManagerErrorMessages = require('../lib/errors/service-manager')
 const testDeveloperErrorMessages = require('../lib/errors/test-developer')
 
-
 const checkWindowSanityCheckService = {}
 
 /**

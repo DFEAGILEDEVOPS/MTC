@@ -4,7 +4,6 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 
-
 const pupilAuthenticationService = {
   /**
    * Authenticate a pupil from the school pin and pupil pin

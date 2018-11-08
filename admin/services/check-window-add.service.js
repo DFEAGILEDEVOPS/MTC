@@ -4,7 +4,6 @@ const checkWindowAddService = {}
 const checkWindowService = require('./check-window.service')
 const checkWindowAddValidator = require('../lib/validator/check-window/check-window-add-validator')
 
-
 /**
  * Processes request data on adding
  * @param {Object} requestData

@@ -3,7 +3,6 @@
 const sqlService = require('../data-access/sql.service')
 const TYPES = require('tedious').TYPES
 
-
 const settingLogDataService = {}
 
 /**

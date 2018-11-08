@@ -8,7 +8,6 @@ const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')
 
-
 momentDurationFormatSetup(moment)
 
 const psUtilService = {}

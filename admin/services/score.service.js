@@ -1,6 +1,5 @@
 const checkDataService = require('./data-access/check.data.service')
 
-
 const scoreService = {}
 
 /**

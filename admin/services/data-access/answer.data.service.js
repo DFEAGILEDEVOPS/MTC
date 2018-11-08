@@ -3,7 +3,6 @@ const { TYPES } = require('tedious')
 
 const sqlService = require('./sql.service')
 
-
 const table = '[answer]'
 
 const answerDataService = {

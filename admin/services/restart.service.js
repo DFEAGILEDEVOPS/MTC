@@ -10,7 +10,6 @@ const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
 
-
 const restartService = {}
 
 restartService.totalRestartsAllowed = config.RESTART_MAX_ATTEMPTS

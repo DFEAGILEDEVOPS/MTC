@@ -4,7 +4,6 @@ const R = require('ramda')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 
-
 const jobStatusDataService = {}
 const table = '[jobStatus]'
 

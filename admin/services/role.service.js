@@ -2,7 +2,6 @@
 
 const roleDataService = require('./data-access/role.data.service')
 
-
 const service = {
   /**
    * Provides mapping of NCA Tools 'UserType' string to MTC role.

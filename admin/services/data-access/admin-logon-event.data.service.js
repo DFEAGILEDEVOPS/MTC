@@ -2,7 +2,6 @@
 
 const sqlService = require('./sql.service')
 
-
 const adminLogonEventDataService = {}
 const table = '[adminLogonEvent]'
 

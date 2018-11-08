@@ -3,7 +3,6 @@ const winston = require('winston')
 
 const pupilLogonEventDataService = require('./data-access/pupil-logon-event.data.service')
 
-
 const pupilLogonEventService = {}
 
 /**

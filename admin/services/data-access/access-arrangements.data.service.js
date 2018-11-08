@@ -1,6 +1,5 @@
 'use strict'
 
-
 const sqlService = require('./sql.service')
 const accessArrangementsDataService = {}
 const accessArrangementCodes = {}

@@ -5,7 +5,6 @@ const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
 
-
 /**
  * Get active groups (non-soft-deleted).
  * @returns {Promise<*>}

@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 
 const sqlService = require('./sql.service')
 
-
 /**
  * Psychometrician data service - test developer role can access all pupils
  */
