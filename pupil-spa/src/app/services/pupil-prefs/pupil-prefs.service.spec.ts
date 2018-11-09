@@ -8,11 +8,18 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
+import { AuditService } from '../audit/audit.service';
+import { QuestionService } from '../question/question.service';
+import { QuestionServiceMock } from '../question/question.service.mock';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 
 let azureQueueService: AzureQueueService;
 let pupilPrefsService: PupilPrefsService;
-let storageService: StorageService;
+let mockStorageService: StorageServiceMock;
+let auditService: AuditService;
+let mockQuestionService;
 let tokenService: TokenService;
+let storedPrefs;
 
 describe('PupilPrefsService', () => {
   beforeEach(() => {
@@ -25,40 +32,59 @@ describe('PupilPrefsService', () => {
         {provide: QUEUE_STORAGE_TOKEN},
         AzureQueueService,
         PupilPrefsService,
-        StorageService,
         TokenService,
+        AuditService,
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
         {provide: XHRBackend, useClass: MockBackend}
       ]
     });
     azureQueueService = injector.get(AzureQueueService);
     pupilPrefsService = injector.get(PupilPrefsService);
-    storageService = injector.get(StorageService);
     tokenService = injector.get(TokenService);
+    mockQuestionService = injector.get(QuestionService);
+    auditService = injector.get(AuditService);
+    mockStorageService = injector.get(StorageService);
+
+    pupilPrefsService.featureUseHpa = true;
+
+    storedPrefs = {
+      fontSize: 'large',
+      contrast: 'yob'
+    };
   });
 
-  it('should be created', inject([PupilPrefsService], (service: PupilPrefsService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', () => {
+    expect(pupilPrefsService).toBeTruthy();
+  });
 
   describe('storePupilPrefs ', () => {
-    let storedPrefsMock;
 
-    beforeEach(() => {
-        storedPrefsMock = {
-        fontSize: 'large',
-        contrast: 'yob'
-      };
+    it('should call pupil prefs azure queue storage', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+      spyOn(azureQueueService, 'addMessage');
+      spyOn(auditService, 'addEntry');
+      spyOn(mockStorageService, 'setItem');
+      spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);
+      await pupilPrefsService.storePupilPrefs();
+      expect(auditService.addEntry).toHaveBeenCalledTimes(2);
+      expect(mockStorageService.getItem).toHaveBeenCalled();
+      expect(tokenService.getToken).toHaveBeenCalled();
+      expect(azureQueueService.addMessage).toHaveBeenCalled();
     });
 
-    it('should call azureQueueService addMessage',
-      inject([PupilPrefsService], async (service: PupilPrefsService) => {
-        service.featureUseHpa = true;
-        spyOn(storageService, 'getItem').and.returnValue(storedPrefsMock);
-        spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
-        spyOn(azureQueueService, 'addMessage');
-        await service.storePupilPrefs();
-        expect(tokenService.getToken).toHaveBeenCalled();
-        expect(azureQueueService.addMessage).toHaveBeenCalled();
-    }));
+    it('should audit log the error when azureQueueService add Message fails', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+      spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
+      const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);
+      await pupilPrefsService.storePupilPrefs();
+      expect(mockStorageService.getItem).toHaveBeenCalled();
+      expect(tokenService.getToken).toHaveBeenCalled();
+      expect(azureQueueService.addMessage).toHaveBeenCalled();
+      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
+    });
   });
 });

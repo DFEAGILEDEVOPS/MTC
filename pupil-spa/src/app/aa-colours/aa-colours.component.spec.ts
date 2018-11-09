@@ -7,16 +7,21 @@ import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
+  let mockPupilPrefsService;
   let component: AAColoursComponent;
   let fixture: ComponentFixture<AAColoursComponent>;
 
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
+    };
+    mockPupilPrefsService = {
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
@@ -25,11 +30,13 @@ describe('AAColoursComponent', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock }
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
       ]
     });
 
     mockRouteService = injector.get(RouteService);
+    mockPupilPrefsService = injector.get(PupilPrefsService);
   }));
 
   beforeEach(() => {
@@ -64,5 +71,10 @@ describe('AAColoursComponent', () => {
     fixture.whenStable().then(() => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
     });
+  });
+
+  it('should store pupil prefs when navigating away', async () => {
+    component.onClick();
+    expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
   });
 });
