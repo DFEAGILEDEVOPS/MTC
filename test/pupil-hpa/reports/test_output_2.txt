@@ -1,0 +1,50 @@
+Using the default profile...
+[36m@header_footer[0m
+Feature: Header and Footer tests
+
+  Scenario: Welcome page has global header[90m # features/header_footer.feature:8[0m
+    [32mGiven I am on the welcome page[90m         # features/step_definitions/header_footer_steps.rb:29[0m[0m
+    [32mThen I should see a global header[90m      # features/step_definitions/header_footer_steps.rb:5[0m[0m
+
+  Scenario: Instruction page has global header[90m # features/header_footer.feature:12[0m
+    [32mGiven I am on the instructions page[90m        # features/step_definitions/header_footer_steps.rb:33[0m[0m
+    [32mThen I should see a global header[90m          # features/step_definitions/header_footer_steps.rb:5[0m[0m
+
+  Scenario: Complete page has global header[90m # features/header_footer.feature:16[0m
+    [31mGiven I am on the complete page[90m         # features/step_definitions/header_footer_steps.rb:38[0m[0m
+[31m      Unable to find css "span.question" (Capybara::ElementNotFound)[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block (2 levels) in complete_check_with_correct_answers'[0m
+[31m      ./features/support/helpers.rb:5:in `block in wait_until'[0m
+[31m      ./features/support/helpers.rb:4:in `wait_until'[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block in complete_check_with_correct_answers'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `times'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `complete_check_with_correct_answers'[0m
+[31m      ./features/step_definitions/check_steps.rb:84:in `/^I should be able to use the on screen keyboard to complete the test$/'[0m
+[31m      ./features/step_definitions/header_footer_steps.rb:40:in `/^I am on the complete page$/'[0m
+[31m      features/header_footer.feature:17:in `Given I am on the complete page'[0m
+    [36mThen I should see a global header[90m       # features/step_definitions/header_footer_steps.rb:5[0m[0m
+
+[36m@instructions[0m
+Feature: 
+  As a pupil I want a page of instructions
+  So I know what to do
+
+  Scenario: Instructions page should have a heading[90m        # features/instructions_page.feature:6[0m
+    [32mGiven I am on the instructions page[90m                    # features/step_definitions/header_footer_steps.rb:33[0m[0m
+    [31mThen I should see the instructions page matches design[90m # features/step_definitions/instructions_steps.rb:25[0m[0m
+[31m      expected ["There will be 3 practice questions.", "Then there will be 5 questions.", "Each question will show for 6 seconds."] to include "Then there will be 10 questions." (RSpec::Expectations::ExpectationNotMetError)[0m
+[31m      ./features/step_definitions/instructions_steps.rb:22:in `/^I should see the total number of questions in the check$/'[0m
+[31m      ./features/step_definitions/instructions_steps.rb:29:in `/^I should see the instructions page matches design$/'[0m
+[31m      features/instructions_page.feature:8:in `Then I should see the instructions page matches design'[0m
+
+  Scenario: Pupil Name is removed from Local storage after successful login and when pupil navigate to instruction page[90m # features/instructions_page.feature:10[0m
+    [32mGiven I am on the instructions page[90m                                                                                 # features/step_definitions/header_footer_steps.rb:33[0m[0m
+    [32mThen pupil name is removed from local storage[90m                                                                       # features/step_definitions/login_page_steps.rb:48[0m[0m
+
+[31mFailing Scenarios:[0m
+[31mcucumber features/header_footer.feature:16[0m[90m # Scenario: Complete page has global header[0m
+[31mcucumber features/instructions_page.feature:6[0m[90m # Scenario: Instructions page should have a heading[0m
+
+5 scenarios ([31m2 failed[0m, [32m3 passed[0m)
+10 steps ([31m2 failed[0m, [36m1 skipped[0m, [32m7 passed[0m)
+22m4.435s
