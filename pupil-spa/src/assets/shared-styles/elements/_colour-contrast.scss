@@ -54,9 +54,8 @@
   }
 
   .practice-box {
-    background-color: $background-colour !important;
-    color: $copy-colour !important;
-    border: 2px solid $copy-colour !important;
+    background-color: $copy-colour !important;
+    color: $background-colour !important;
   }
 
   .wait {
@@ -81,20 +80,20 @@
 }
 
 .colour-contrast-yob {
-  $copy-color: #ff0;
+  $copy-colour: #ff0;
   $background-colour: #000;
 
-  @include colour-contrast($background-colour, $copy-color);
+  @include colour-contrast($background-colour, $copy-colour);
 
   // Some YOB colour are inverted
   .numpad-button, .numpad-enter-button {
     background-color: $background-colour !important;
-    color: $copy-color !important;
-    border: 2px solid $copy-color !important;
+    color: $copy-colour !important;
+    border: 2px solid $copy-colour !important;
   }
 
   #global-header {
-    border: 2px solid $copy-color !important;
+    border: 2px solid $copy-colour !important;
     background-color: $background-colour !important;
 
     .header-wrapper, .header-logo {
@@ -102,8 +101,18 @@
     }
 
     #proposition-name, #logo {
-      color: $copy-color !important;
+      color: $copy-colour !important;
     }
+  }
+
+  .practice-box {
+    background-color: $background-colour !important;
+    color: $copy-colour !important;
+    border: 2px solid $copy-colour !important;
+  }
+
+  label {
+    color: $copy-colour !important;
   }
 
   .button-start {
@@ -113,7 +122,7 @@
   // Fill eyes when YOB
   .wait {
     .eye-cover {
-      fill: $copy-color !important;
+      fill: $copy-colour !important;
     }
   }
 }

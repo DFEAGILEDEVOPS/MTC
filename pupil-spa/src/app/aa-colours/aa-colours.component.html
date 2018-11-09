@@ -1,0 +1,46 @@
+<app-page-modifications>
+  <app-header class="full-width"></app-header>
+  <main id="content" class="js-content" role="main">
+    <div class="grid-row">
+      <div class="column-full">
+        <header class="page-header">
+          <h1 class="aa-lead-size" tabindex="0">Choose colour of page</h1>
+        </header>
+        <div class="grid-row">
+          <div class="column-one-third">
+            <fieldset>
+              <div class="multiple-choice" *ngFor="let contrastSetting of contrastSettings">
+                <input type="radio"
+                        value="{{contrastSetting.val}}"
+                        id="contrast-{{contrastSetting.val}}"
+                        name="colour-contrast"
+                        [checked]="selectedContrast == contrastSetting.val"
+                        (change)="selectionChange(contrastSetting.val)">
+                <label for="contrast-{{contrastSetting.val}}"><span class="contrast-{{contrastSetting.val}} aa-copy-size {{accessArrangements.fontSize}}">{{contrastSetting.label}}</span></label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="column-two-thirds">
+            <div class="preview-box contrast-{{selectedContrast}} {{accessArrangements.fontSize}}">
+              <div class="badge">Colour preview</div>
+              <div class="preview-content">
+                <div class="question-text aa-question-size"><span>123</span></div>
+                <table>
+                  <tr>
+                    <td><button class="numpad-button" type="button">1</button></td>
+                    <td><button class="numpad-button" type="button">2</button></td>
+                    <td><button class="numpad-button" type="button">3</button></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="aa-copy-size">
+          If you don't need this setting, <a routerLink="/sign-out">please tell your teacher and sign out</a>.
+        </p>
+        <button class="button aa-button-size" (click)="onClick()">Next</button>
+      </div>
+    </div>
+  </main>
+</app-page-modifications>
