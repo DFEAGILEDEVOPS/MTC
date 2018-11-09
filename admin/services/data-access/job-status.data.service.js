@@ -3,7 +3,6 @@
 const R = require('ramda')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const monitor = require('../../helpers/monitor')
 
 const jobStatusDataService = {}
 const table = '[jobStatus]'
@@ -46,4 +45,4 @@ jobStatusDataService.sqlFindOneById = async (id) => {
   return R.head(result)
 }
 
-module.exports = monitor('jobStatus.data-service', jobStatusDataService)
+module.exports = jobStatusDataService

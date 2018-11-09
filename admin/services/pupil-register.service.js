@@ -4,7 +4,6 @@ const pupilService = require('../services/pupil.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
 
 const pupilRegisterService = {
   /**
@@ -54,4 +53,4 @@ const pupilRegisterService = {
   }
 }
 
-module.exports = monitor('pupil-register.service', pupilRegisterService)
+module.exports = pupilRegisterService

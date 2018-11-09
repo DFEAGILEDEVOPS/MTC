@@ -3,7 +3,6 @@
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
-const monitor = require('../helpers/monitor')
 
 const pupilsNotTakingCheckService = {
   /**
@@ -74,4 +73,4 @@ const pupilsNotTakingCheckService = {
   }
 }
 
-module.exports = monitor('pupils-not-taking-check.service', pupilsNotTakingCheckService)
+module.exports = pupilsNotTakingCheckService

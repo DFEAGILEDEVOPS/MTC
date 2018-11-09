@@ -6,7 +6,6 @@ const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
-const monitor = require('../helpers/monitor')
 
 /** @namespace */
 
@@ -87,4 +86,4 @@ const jwtService = {
   decode: (token) => jwt.decode(token)
 }
 
-module.exports = monitor('jwt.service', jwtService)
+module.exports = jwtService

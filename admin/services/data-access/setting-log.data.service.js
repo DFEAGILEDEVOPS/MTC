@@ -2,7 +2,6 @@
 
 const sqlService = require('../data-access/sql.service')
 const TYPES = require('tedious').TYPES
-const monitor = require('../../helpers/monitor')
 
 const settingLogDataService = {}
 
@@ -40,4 +39,4 @@ settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTime
   return sqlService.modify(sql, params)
 }
 
-module.exports = monitor('settingLog.data-service', settingLogDataService)
+module.exports = settingLogDataService

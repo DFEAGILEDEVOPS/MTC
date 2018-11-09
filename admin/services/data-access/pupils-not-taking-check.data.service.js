@@ -2,7 +2,6 @@
 
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const monitor = require('../../helpers/monitor')
 
 const pupilsNotTakingCheckDataService = {
 /**
@@ -48,4 +47,4 @@ const pupilsNotTakingCheckDataService = {
   }
 }
 
-module.exports = monitor('pupilsNotTakingCheck.data-service', pupilsNotTakingCheckDataService)
+module.exports = pupilsNotTakingCheckDataService

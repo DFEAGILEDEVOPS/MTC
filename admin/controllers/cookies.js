@@ -1,7 +1,5 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
-
 const getCookiesPage = async (req, res) => {
   res.locals.pageTitle = 'Cookies'
   req.breadcrumbs(res.locals.pageTitle)
@@ -10,4 +8,4 @@ const getCookiesPage = async (req, res) => {
   })
 }
 
-module.exports = monitor('cookies.controller', { getCookiesPage })
+module.exports = { getCookiesPage }

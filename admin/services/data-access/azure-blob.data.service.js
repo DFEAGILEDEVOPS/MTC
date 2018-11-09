@@ -2,7 +2,7 @@
 
 const azureStorage = require('azure-storage')
 const config = require('../../config')
-const monitor = require('../../helpers/monitor')
+
 let blobService
 
 if (config.AZURE_STORAGE_CONNECTION_STRING) {
@@ -23,4 +23,4 @@ const service = {
   }
 }
 
-module.exports = monitor('azureBlob.data-service', service)
+module.exports = service

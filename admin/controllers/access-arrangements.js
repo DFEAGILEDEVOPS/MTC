@@ -4,7 +4,7 @@ const pupilAccessArrangementsService = require('../services/pupil-access-arrange
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
-const monitor = require('../helpers/monitor')
+
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -157,4 +157,4 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
-module.exports = monitor('access-arrangements.controller', controller)
+module.exports = controller

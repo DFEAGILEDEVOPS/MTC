@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const R = require('ramda')
 const winston = require('winston')
-const monitor = require('../../helpers/monitor')
 
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
@@ -97,4 +96,4 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   return R.head(result)
 }
 
-module.exports = monitor('pupilAttendance.data-service', pupilAttendanceDataService)
+module.exports = pupilAttendanceDataService
