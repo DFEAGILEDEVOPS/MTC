@@ -2,7 +2,6 @@
 const { isEmpty } = require('validator')
 
 const checkWindowErrorMessages = require('../../errors/check-window-v2')
-const monitor = require('../../../helpers/monitor')
 
 const checkWindowNameValidator = {}
 
@@ -18,4 +17,4 @@ checkWindowNameValidator.validate = (validationError, checkWindowName) => {
   }
 }
 
-module.exports = monitor('check-window-name-validator', checkWindowNameValidator)
+module.exports = checkWindowNameValidator
