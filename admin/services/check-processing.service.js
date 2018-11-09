@@ -4,7 +4,6 @@ const psychometricianReportDataService = require('./data-access/psychometrician-
 const psychometricianReportService = require('./psychometrician-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const winston = require('winston')
-const monitor = require('../helpers/monitor')
 
 const checkProcessingService = {}
 const batchSize = 100
@@ -51,4 +50,4 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   return true
 }
 
-module.exports = monitor('check-processing.service', checkProcessingService)
+module.exports = checkProcessingService

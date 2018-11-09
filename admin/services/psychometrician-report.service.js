@@ -18,7 +18,6 @@ const psUtilService = require('./psychometrician-util.service')
 const psychometricianDataService = require('./data-access/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const schoolDataService = require('./data-access/school.data.service')
-const monitor = require('../helpers/monitor')
 
 const psychometricianReportService = {}
 const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
@@ -327,4 +326,4 @@ function scoreFilter (obj) {
   return R.pick(R.concat(props, scoreProps), obj)
 }
 
-module.exports = monitor('psychometrician-report.service', psychometricianReportService)
+module.exports = psychometricianReportService

@@ -2,7 +2,6 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
-const monitor = require('../../helpers/monitor')
 
 const table = '[pupil]'
 const pupilDataService = {}
@@ -405,4 +404,4 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   // E.g. { insertId: [1, 2], rowsModified: 4 }
 }
 
-module.exports = monitor('pupil.data-service', pupilDataService)
+module.exports = pupilDataService

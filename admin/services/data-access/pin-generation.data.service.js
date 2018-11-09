@@ -2,7 +2,6 @@
 
 const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
 
 const serviceToExport = {
   /**
@@ -125,4 +124,4 @@ const serviceToExport = {
   }
 }
 
-module.exports = monitor('pin-generation.data.service', serviceToExport)
+module.exports = serviceToExport

@@ -3,7 +3,6 @@
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
-const monitor = require('../helpers/monitor')
 
 const service = {
   /**
@@ -52,4 +51,4 @@ const service = {
   }
 }
 
-module.exports = monitor('nca-tools-user.service', service)
+module.exports = service

@@ -6,7 +6,6 @@ const sqlService = require('./sql.service')
 const table = '[hdf]'
 const headteacherDeclarationDataService = {}
 const checkWindowDataService = require('./check-window.data.service')
-const monitor = require('../../helpers/monitor')
 
 headteacherDeclarationDataService.sqlCreate = async function (data) {
   return sqlService.create(table, data)
@@ -57,4 +56,4 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   return R.head(result)
 }
 
-module.exports = monitor('headTeacherDeclaration.data-service', headteacherDeclarationDataService)
+module.exports = headteacherDeclarationDataService

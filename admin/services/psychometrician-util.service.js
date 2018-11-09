@@ -7,7 +7,6 @@ const winston = require('winston')
 const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')
-const monitor = require('../helpers/monitor')
 
 momentDurationFormatSetup(moment)
 
@@ -487,4 +486,4 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
-module.exports = monitor('psychometrician-util.service', psUtilService)
+module.exports = psUtilService
