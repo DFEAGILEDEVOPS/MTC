@@ -5,7 +5,7 @@ Then(/^I should see meta data stored in the DB$/) do
   stored_check = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
   expect(stored_check['updatedAt'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
   expect(stored_check['createdAt'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
-  expect(stored_check['pupil_id']).to eql @pupil_information['id']
+  expect(stored_check['pupil_id']).to eql SqlDbHelper.pupil_details(@details_hash[:upn])['id']
   check_window_id = stored_check['checkWindow_id'].to_s
   SqlDbHelper.get_check_window(check_window_id)
   expect(SqlDbHelper.get_check_window(check_window_id)['checkStartDate'] < current_time).to be_truthy
@@ -32,6 +32,7 @@ Given(/^I attempt to login whilst the check window is not open as the end date i
   @original_end_date = @original['checkEndDate'].strftime("%Y-%m-%d %H:%M:%S")
   check_end_date = (Time.now - 3600).strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', check_end_date)
+  step 'I have generated a live pin'
   step 'I have logged in'
 end
 
@@ -41,5 +42,6 @@ Given(/^I attempt to login whilst the check window is not open as the start date
   @original_end_date = @original['checkEndDate'].strftime("%Y-%m-%d %H:%M:%S")
   check_start_date = (Time.now + 24*60*60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', check_start_date)
+  step 'I have generated a live pin'
   step 'I have logged in'
 end

@@ -1,39 +1,25 @@
 Given(/^I am on the warm up complete page using a real pupil$/) do
-  step "I login with a real user"
+  step 'I have generated a live pin'
+  step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
   step 'I should be able to use the numpad to complete the warm up questions'
 end
 
-Given(/^I login with a real user$/) do
-  sign_in_page.load
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil = SqlDbHelper.find_next_pupil
-  @pin = 4.times.map {rand(2..9)}.join
-  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time, @pin)
-  current_time = Time.now + 86400
-  new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
-  SqlDbHelper.create_check(new_time, new_time, @pupil['id'])
-  SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
-  @school = SqlDbHelper.find_school(@pupil['school_id'])
-  sign_in_page.login(@school['pin'], @pin)
-  sign_in_page.sign_in_button.click
-end
 
 Then(/^I should still have a valid pin$/) do
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
-  sign_in_page.login(@school['pin'], @pin)
+  sign_in_page.login(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
   expect(confirmation_page).to be_displayed
 end
 
-Given(/^I have completed the check with a real user(?: using the (.+))?$/) do |input|
+Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   input_type = (input ? input : 'numpad')
-  step 'I login with a real user'
+  step 'I have generated a live pin'
+  step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
@@ -51,12 +37,9 @@ Then(/^I should have an expired pin$/) do
   time = Time.now
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
-  sign_in_page.login(@school['pin'], @pin)
+  sign_in_page.login(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
   expect(sign_in_page.login_failure).to be_all_there
-  pupil = SqlDbHelper.find_pupil_from_school(@pupil['foreName'], @pupil['school_id'])
-  expect(pupil['pin']).to be_nil
-  expect(pupil['pinExpiresAt'].strftime('%d-%m-%Y %H')).to eql time.strftime('%d-%m-%Y %H')
 end
 
 Then(/^I should see a check started event in the audit log$/) do
@@ -74,7 +57,8 @@ Then(/^I should see a check start failure event recorded in the audit log$/) do
 end
 
 Given(/^I have lost my local storage$/) do
-  step 'I login with a real user'
+  step 'I have generated a live pin'
+  step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click

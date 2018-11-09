@@ -1,5 +1,6 @@
 Given(/^I have started the check(?: using the (.+))?$/) do |input|
   input_type = (input ? input : 'numpad')
+  step 'I have generated a live pin'
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click

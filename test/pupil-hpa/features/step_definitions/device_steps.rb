@@ -6,8 +6,9 @@ end
 Then(/^the device information should be persisted to the DB$/) do
   device_info = JSON.parse(page.evaluate_script('window.localStorage.getItem("device");'))
   check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  binding.pry
+  wait_until(60, 1){SqlDbHelper.get_check(check_code)['id']}
   check_id = SqlDbHelper.get_check(check_code)['id']
+  wait_until(60, 1){SqlDbHelper.get_check_result(check_id)}
   data = SqlDbHelper.get_check_result(check_id)
   local_info = JSON.parse data['payload']
   db_device_info = local_info['device']

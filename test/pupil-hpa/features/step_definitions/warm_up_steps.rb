@@ -1,4 +1,5 @@
 Given(/^I am on the warm up intro page$/) do
+  step 'I have generated a live pin'
   step "I have logged in"
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
@@ -31,6 +32,7 @@ Then(/^I should see a warm up label$/) do
 end
 
 Then(/^I am on the warm up complete page$/) do
+  step 'I have generated a live pin'
   step "I have logged in"
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click

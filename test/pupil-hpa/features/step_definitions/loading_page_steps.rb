@@ -1,4 +1,5 @@
 Given(/^I have read the instructions$/) do
+  step 'I have generated a live pin'
   step 'I have logged in'
   confirmation_page.read_instructions.click
 end

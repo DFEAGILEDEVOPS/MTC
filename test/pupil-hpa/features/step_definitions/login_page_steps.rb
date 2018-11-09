@@ -64,16 +64,13 @@ Then(/^local storage should be cleared$/) do
 end
 
 Given(/^I have attempted to enter a school I do not attend upon login$/) do
+  step 'I have generated a live pin'
+  step 'I login to the admin app with teacher2'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  pupil_name = generate_pins_overview_page.generate_pin_for_multiple_pupils(1).first
+  school_2_password = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == pupil_name}.school_password.text
   sign_in_page.load
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.expire_pin("Standard","Pupil",1,false)
-  SqlDbHelper.reset_pin("Standard","Pupil",1,new_time,"9999")
-  @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
-  schools = SqlDbHelper.get_list_of_schools.delete_if{|a| a['id'] == @pupil_information['school_id']}
-  pin = 'tes23mo'
-  SqlDbHelper.set_school_pin(schools.first['id'], new_time, pin)
-  sign_in_page.login(pin,@pupil_information['pin'])
+  sign_in_page.login(school_2_password, @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
 end
 
@@ -81,15 +78,15 @@ end
 Then(/^I should see all the correct pupil details$/) do
   school = SqlDbHelper.find_school(1)['name']
   expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
-  expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
-  expect(confirmation_page.school_name.text).to  eql "School: #{school}"
-  expect(confirmation_page.dob.text).to  eql "Date of birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
+  expect(confirmation_page.last_name.text).to eql "Last name: #{@pupil_information['lastName']}"
+  expect(confirmation_page.school_name.text).to eql "School: #{school}"
+  expect(confirmation_page.dob.text).to eql "Date of birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
 end
 
 
 Given(/^I am logged in with a user who needs speech synthesis$/) do
   sign_in_page.load
-  sign_in_page.login("abc12345","8888")
+  sign_in_page.login("abc12345", "8888")
   sign_in_page.sign_in_button.click
 end
 
@@ -140,10 +137,67 @@ end
 
 
 When(/^I want to try login with invalid credentials$/) do
-  sign_in_page.login("abc15","8888")
+  sign_in_page.login("abc15", "8888")
   sign_in_page.sign_in_button.click
 end
 
 Then(/^I should see a failed login message$/) do
   expect(sign_in_page.login_failure).to be_all_there
+end
+
+When(/^I submit the form with the name fields set as (.*)$/) do |value|
+  @upn = UpnGenerator.generate
+  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2010'}
+  add_pupil_page.enter_details(@details_hash)
+  add_pupil_page.add_pupil.click
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+Then(/^the pupil details should be stored$/) do
+  gender = @details_hash[:male] ? 'M' : 'F'
+  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details @upn.to_s
+  expect(@details_hash[:first_name]).to eql @stored_pupil_details['foreName']
+  expect(@details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
+  expect(@details_hash[:last_name]).to eql @stored_pupil_details['lastName']
+  expect(gender).to eql @stored_pupil_details['gender']
+  expect(@details_hash[:upn].to_s.upcase).to eql @stored_pupil_details['upn']
+  expect(Time.parse(@details_hash[:day]+ "-"+ @details_hash[:month]+"-"+ @details_hash[:year]).strftime("%d %m %y")).to eql (@stored_pupil_details['dateOfBirth']).strftime("%d %m %y")
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
+end
+
+When(/^I add a pupil$/) do
+  @name = (0...8).map {(65 + rand(26)).chr}.join
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
+  step "I submit the form with the name fields set as #{@name}"
+  step "the pupil details should be stored"
+end
+
+When(/^I login to the admin app with (.+)$/) do |user|
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
+  @teacher = user
+  admin_sign_in_page.login(@teacher, 'password')
+end
+
+When(/^I have generated a familiarisation pin$/) do
+  step 'I add a pupil'
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_familiarisation_overview_page.url
+  generate_pins_familiarisation_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_print_pins_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+end
+
+When(/^I have generated a live pin$/) do
+  step 'I add a pupil'
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end

@@ -8,6 +8,10 @@ Before do
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
+Before('@generate_live_pin') do
+  step 'I have generated a live pin'
+end
+
 Before("not @event_auditing", "not @feedback", "not @local_storage") do
   step 'I am on the sign in page'
   begin

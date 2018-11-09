@@ -1,21 +1,7 @@
 
 Given(/I am logged with familiarisation pin/) do
-  sign_in_page.load
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil = SqlDbHelper.find_next_pupil
-  @pin = 4.times.map {rand(2..9)}.join
-  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time, @pin)
-  current_time = Time.now + 86400
-  new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
-  SqlDbHelper.create_check(new_time, new_time, @pupil['id'], false)
-  SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
-
-  @school = SqlDbHelper.find_school(@pupil['school_id'])
-
-  sign_in_page.login(@school['pin'], @pin)
-  sign_in_page.sign_in_button.click
+  step 'I have generated a familiarisation pin'
+  step 'I have logged in'
 end
 
 Given(/^I am on the familiarisation complete page$/) do

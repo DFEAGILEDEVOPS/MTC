@@ -1,4 +1,5 @@
 Given(/^I am on the confirmation page$/) do
+  step 'I have generated a live pin'
   step 'I have logged in'
   step 'I should be taken to the confirmation page'
 end
@@ -81,6 +82,7 @@ end
 
 
 Given(/^I have refreshed on every question page$/) do
+  step 'I have generated a live pin'
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click

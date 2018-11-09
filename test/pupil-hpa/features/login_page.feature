@@ -18,6 +18,7 @@ Feature: Login page
     When I attempt to login with just a pupil pin
     Then the sign in button should be disabled
 
+  @generate_live_pin
   Scenario: Users can login with valid credentials
     Given I have logged in
     Then I should be taken to the confirmation page
@@ -29,6 +30,7 @@ Feature: Login page
     When I want to try login with invalid credentials
     Then I should see a failed login message
 
+  @generate_live_pin
   Scenario: Local storage is cleared when I have logged in but I return to login page as details are not correct
     Given I have logged in
     But I have chosen that the details are not correct

@@ -33,11 +33,23 @@ class SqlDbHelper
   end
 
   def self.find_pupil_via_pin(pin)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin='#{pin}'"
-    result = SQL_CLIENT.execute(sql)
-    pupil_details_res = result.first
+    pin_query = "SELECT id FROM [mtc_admin].[pin] WHERE val='#{pin}'"
+    result = SQL_CLIENT.execute(pin_query)
+    pin_id = result.first
     result.cancel
-    pupil_details_res
+    check_pin_query = "SELECT check_id FROM [mtc_admin].[checkPin] WHERE pin_id='#{pin_id.values.first}'"
+    result = SQL_CLIENT.execute(check_pin_query)
+    check_id = result.first
+    result.cancel
+    check_query = "SELECT pupil_id FROM [mtc_admin].[check] WHERE id = '#{check_id.values.first}'"
+    result = SQL_CLIENT.execute(check_query)
+    pupil_id = result.first
+    result.cancel
+    pupil_query = "SELECT * FROM [mtc_admin].[pupil] WHERE id='#{pupil_id.values.first}'"
+    result = SQL_CLIENT.execute(pupil_query)
+    pupil_details = result.first
+    result.cancel
+    pupil_details
   end
 
   def self.find_next_pupil
@@ -218,12 +230,29 @@ class SqlDbHelper
     data
   end
 
+
+  def self.get_check_using_pupil(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
   def self.get_check_result(check_id)
     sql = "SELECT * FROM [mtc_admin].[checkResult] WHERE check_id='#{check_id}'"
     result = SQL_CLIENT.execute(sql)
     data = result.first
     result.cancel
     data
+  end
+
+  def self.pupil_details(upn)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
 
