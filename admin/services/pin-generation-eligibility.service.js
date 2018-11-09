@@ -1,5 +1,6 @@
 'use strict'
 
+const checkWindowV2Service = require('./check-window-v2.service')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 
 const pinGenerationEligibilityService = {}
@@ -11,7 +12,8 @@ const pinGenerationEligibilityService = {}
  * @throws Will throw an error if the argument passed is not boolean type
  */
 pinGenerationEligibilityService.isPinGenerationAllowed = async (isLiveCheck) => {
-  const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData()
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   if (isLiveCheck) {
     return pinGenerationEligibilityData.isLivePinGenerationAllowed
   } else {

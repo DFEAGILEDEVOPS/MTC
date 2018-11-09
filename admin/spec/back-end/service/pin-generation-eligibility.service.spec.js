@@ -2,6 +2,7 @@
 /* global describe it spyOn expect fail beforeEach */
 
 const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pinGenerationEligibilityService = require('../../../services/pin-generation-eligibility.service')
 
 describe('pinGenerationEligibilityService', () => {
@@ -9,6 +10,7 @@ describe('pinGenerationEligibilityService', () => {
   })
   describe('#isPinGenerationAllowed', () => {
     beforeEach(() => {
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData').and.returnValue({
         isLivePinGenerationAllowed: true,
         isFamiliarisationPinGenerationAllowed: false
