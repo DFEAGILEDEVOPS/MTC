@@ -3,6 +3,7 @@ const R = require('ramda')
 
 const config = require('../config')
 
+const businessAvailabilityService = require('../services/business-availability.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const pinGenerationService = require('../services/pin-generation.service')
@@ -12,7 +13,6 @@ const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const pinGenerationEligibilityService = require('../services/pin-generation-eligibility.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -28,7 +28,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -78,7 +78,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -133,7 +133,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
     // OLD code - writes to check table
     if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
@@ -182,7 +182,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -231,7 +231,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    await pinGenerationEligibilityService.determinePinGenerationEligibility(isLiveCheck)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
