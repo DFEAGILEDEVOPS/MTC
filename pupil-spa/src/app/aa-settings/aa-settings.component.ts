@@ -54,7 +54,7 @@ export class AASettingsComponent implements AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    if (this.config.inputAssistance) {
+    if (this.config.inputAssistance && !this.config.practice) {
       this.formSubmitted = true;
       if (!this.inputAssistantForm.valid) {
         return;

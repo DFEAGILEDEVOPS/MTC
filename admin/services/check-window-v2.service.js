@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const dateService = require('./date.service')
-const monitor = require('../helpers/monitor')
+
 const validate = require('uuid-validate')
 
 const checkWindowDataService = require('./data-access/check-window.data.service')
@@ -19,6 +19,14 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
     throw new Error('Check window url slug is not valid')
   }
   return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
+}
+
+/**
+ * Get active check window
+ * @return {Promise<Object>} Check window object
+ */
+checkWindowV2Service.getActiveCheckWindow = async () => {
+  return checkWindowDataService.sqlFindActiveCheckWindow()
 }
 
 /**
@@ -110,4 +118,4 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   return checkWindowData
 }
 
-module.exports = monitor('check-window-v2.service', checkWindowV2Service)
+module.exports = checkWindowV2Service

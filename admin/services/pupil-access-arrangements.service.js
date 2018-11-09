@@ -2,7 +2,6 @@ const R = require('ramda')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
-const monitor = require('../helpers/monitor')
 
 const pupilAccessArrangementsService = {}
 
@@ -69,4 +68,4 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, d
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
   return pupil
 }
-module.exports = monitor('pupil-access-arrangements.service', pupilAccessArrangementsService)
+module.exports = pupilAccessArrangementsService

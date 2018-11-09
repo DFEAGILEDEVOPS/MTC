@@ -1,7 +1,6 @@
 'use strict'
 
 const roleDataService = require('./data-access/role.data.service')
-const monitor = require('../helpers/monitor')
 
 const service = {
   /**
@@ -49,4 +48,4 @@ const service = {
   }
 }
 
-module.exports = monitor('role.service', service)
+module.exports = service

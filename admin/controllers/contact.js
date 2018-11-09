@@ -1,7 +1,5 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
-
 const getContactPage = async (req, res) => {
   res.locals.pageTitle = 'Contact'
   req.breadcrumbs(res.locals.pageTitle)
@@ -10,4 +8,4 @@ const getContactPage = async (req, res) => {
   })
 }
 
-module.exports = monitor('contact.controller', { getContactPage })
+module.exports = { getContactPage }

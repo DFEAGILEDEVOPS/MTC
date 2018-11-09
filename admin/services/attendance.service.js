@@ -6,7 +6,6 @@ const attendanceCodeDataService = require('./data-access/attendance-code.data.se
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const pinService = require('./pin.service')
-const monitor = require('../helpers/monitor')
 
 const attendanceService = {
   /**
@@ -85,4 +84,4 @@ const attendanceService = {
   }
 }
 
-module.exports = monitor('attendance.service', attendanceService)
+module.exports = attendanceService

@@ -6,7 +6,6 @@ const checkWindowDataService = require('./data-access/check-window.data.service'
 const dateService = require('../services/date.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
 const checkDataService = require('./data-access/check.data.service')
-const monitor = require('../helpers/monitor')
 
 const checkWindowService = {
 
@@ -358,4 +357,4 @@ const checkWindowService = {
   }
 }
 
-module.exports = monitor('check-window.service', checkWindowService)
+module.exports = checkWindowService

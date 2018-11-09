@@ -1,23 +1,30 @@
 const featureToggles = require('feature-toggles')
+const winston = require('winston')
 
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
-const winston = require('winston')
 
 const controller = {}
 
 controller.getRestartOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
+
+  let checkWindowData
   let restarts
+  let pinGenerationEligibilityData
   try {
     restarts = await restartService.getSubmittedRestarts(req.user.School)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }
@@ -26,10 +33,11 @@ controller.getRestartOverview = async (req, res, next) => {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
   return res.render('restart/restart-overview', {
-    highlight: hl && new Set(hl),
     breadcrumbs: req.breadcrumbs(),
-    restarts,
-    messages: res.locals.messages
+    highlight: hl && new Set(hl),
+    messages: res.locals.messages,
+    pinGenerationEligibilityData,
+    restarts
   })
 }
 
@@ -154,4 +162,4 @@ controller.postDeleteRestart = async (req, res, next) => {
   return res.redirect('/restart/overview')
 }
 
-module.exports = monitor('restart.controller', controller)
+module.exports = controller

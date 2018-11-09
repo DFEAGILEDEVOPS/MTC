@@ -1,7 +1,5 @@
 'use strict'
 
-const monitor = require('../helpers/monitor')
-
 const sortingAttributesService = {
   /**
    * Flexible sorting service.
@@ -34,4 +32,4 @@ const sortingAttributesService = {
   }
 }
 
-module.exports = monitor('sorting-attributes.service', sortingAttributesService)
+module.exports = sortingAttributesService

@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const monitor = require('../helpers/monitor')
+
 const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
 const checkWindowPresenter = require('../helpers/check-window-presenter')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
@@ -145,4 +145,4 @@ const controller = {
   }
 }
 
-module.exports = monitor('service-manager.controller', controller)
+module.exports = controller

@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 const R = require('ramda')
 
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
 
 const attendanceCodeDataService = {
   /**
@@ -35,4 +34,4 @@ const attendanceCodeDataService = {
   }
 }
 
-module.exports = monitor('attendanceCode.data-service', attendanceCodeDataService)
+module.exports = attendanceCodeDataService

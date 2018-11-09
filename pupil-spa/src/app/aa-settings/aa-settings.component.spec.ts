@@ -59,62 +59,81 @@ describe('AASettingsComponent', () => {
   });
 
   describe('With input assistant enabled', () => {
+    describe('and when check type is live', () => {
+      beforeEach(() => {
+        mockQuestionService.getConfig.and.returnValue({inputAssistance: true});
+        fixture = TestBed.createComponent(AASettingsComponent);
+        fixture.detectChanges();
+        component = fixture.componentInstance;
+      });
 
-    beforeEach(() => {
-      mockQuestionService.getConfig.and.returnValue({ inputAssistance: true });
-      fixture = TestBed.createComponent(AASettingsComponent);
-      fixture.detectChanges();
-      component = fixture.componentInstance;
-    });
+      it('should have empty form data', () => {
+        expect(component.inputAssistantForm.value.inputAssistantFirstName).toBe(undefined);
+        expect(component.inputAssistantForm.value.inputAssistantLastName).toBe(undefined);
+      });
 
-    it('should have empty form data', () => {
-      expect(component.inputAssistantForm.value.inputAssistantFirstName).toBe(undefined);
-      expect(component.inputAssistantForm.value.inputAssistantLastName).toBe(undefined);
-    });
+      it('should redirect to the sign-in-success page on successful submission', () => {
+        spyOn(storageService, 'getItem').and.returnValue({checkCode: 'checkCode', inputAssistant: {}});
+        const setItemSpy = spyOn(storageService, 'setItem');
+        fixture.whenStable().then(() => {
+          component.inputAssistantForm.controls.inputAssistantFirstName.setValue('F1rstNàme');
+          component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last-Na\'me');
+          const updatedPupilData = {
+            checkCode: 'checkCode',
+            inputAssistant: {
+              firstName: 'F1rstNàme',
+              lastName: 'Last-Na\'me'
+            }
+          };
+          component.onClick();
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
+          expect(storageService.getItem).toHaveBeenCalled();
+          expect(setItemSpy.calls.all()[0].args[1]).toEqual(updatedPupilData);
+        });
+      });
 
-    it('should redirect to the sign-in-success page on successful submission', () => {
-      spyOn(storageService, 'getItem').and.returnValue({ checkCode: 'checkCode', inputAssistant: {} });
-      const setItemSpy = spyOn(storageService, 'setItem');
-      fixture.whenStable().then(() => {
-        component.inputAssistantForm.controls.inputAssistantFirstName.setValue('F1rstNàme');
-        component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last-Na\'me');
-        const updatedPupilData = {
-          checkCode: 'checkCode',
-          inputAssistant: {
-            firstName: 'F1rstNàme',
-            lastName: 'Last-Na\'me'
-          }
-        };
-        component.onClick();
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
-        expect(storageService.getItem).toHaveBeenCalled();
-        expect(setItemSpy.calls.all()[0].args[1]).toEqual(updatedPupilData);
+      it('should not redirect to the sign-in-success when a disallowed special character(exclamation) is detected', () => {
+        spyOn(storageService, 'getItem');
+        spyOn(storageService, 'setItem');
+        fixture.whenStable().then(() => {
+          component.inputAssistantForm.controls.inputAssistantFirstName.setValue('First!Name');
+          component.inputAssistantForm.controls.inputAssistantLastName.setValue('LastName');
+          component.onClick();
+          expect(mockRouter.navigate).not.toHaveBeenCalled();
+          expect(storageService.getItem).not.toHaveBeenCalled();
+          expect(storageService.setItem).not.toHaveBeenCalled();
+        });
+      });
+
+      it('should not redirect to the sign-in-success when a disallowed special character(double quotes) is detected', () => {
+        spyOn(storageService, 'getItem');
+        spyOn(storageService, 'setItem');
+        fixture.whenStable().then(() => {
+          component.inputAssistantForm.controls.inputAssistantFirstName.setValue('FirstName');
+          component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last"Name');
+          component.onClick();
+          expect(mockRouter.navigate).not.toHaveBeenCalled();
+          expect(storageService.getItem).not.toHaveBeenCalled();
+          expect(storageService.setItem).not.toHaveBeenCalled();
+        });
       });
     });
-
-    it('should not redirect to the sign-in-success when a disallowed special character(exclamation) is detected', () => {
-      spyOn(storageService, 'getItem');
-      spyOn(storageService, 'setItem');
-      fixture.whenStable().then(() => {
-        component.inputAssistantForm.controls.inputAssistantFirstName.setValue('First!Name');
-        component.inputAssistantForm.controls.inputAssistantLastName.setValue('LastName');
-        component.onClick();
-        expect(mockRouter.navigate).not.toHaveBeenCalled();
-        expect(storageService.getItem).not.toHaveBeenCalled();
-        expect(storageService.setItem).not.toHaveBeenCalled();
+    describe('and when check type is familiarisation', () => {
+      beforeEach(() => {
+        mockQuestionService.getConfig.and.returnValue({inputAssistance: true, practice: true});
+        fixture = TestBed.createComponent(AASettingsComponent);
+        fixture.detectChanges();
+        component = fixture.componentInstance;
       });
-    });
-
-    it('should not redirect to the sign-in-success when a disallowed special character(double quotes) is detected', () => {
-      spyOn(storageService, 'getItem');
-      spyOn(storageService, 'setItem');
-      fixture.whenStable().then(() => {
-        component.inputAssistantForm.controls.inputAssistantFirstName.setValue('FirstName');
-        component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last"Name');
-        component.onClick();
-        expect(mockRouter.navigate).not.toHaveBeenCalled();
-        expect(storageService.getItem).not.toHaveBeenCalled();
-        expect(storageService.setItem).not.toHaveBeenCalled();
+      it('should not call storageService setItem method when practice mode is switched on', () => {
+        spyOn(storageService, 'getItem');
+        spyOn(storageService, 'setItem');
+        fixture.whenStable().then(() => {
+          component.onClick();
+          expect(mockRouter.navigate).toHaveBeenCalled();
+          expect(storageService.getItem).not.toHaveBeenCalled();
+          expect(storageService.setItem).not.toHaveBeenCalled();
+        });
       });
     });
   });
