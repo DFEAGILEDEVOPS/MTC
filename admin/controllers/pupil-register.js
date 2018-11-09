@@ -2,7 +2,6 @@
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
-const monitor = require('../helpers/monitor')
 
 const listPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
@@ -33,4 +32,4 @@ const listPupils = async (req, res, next) => {
   })
 }
 
-module.exports = monitor('pupil-register.controller', { listPupils })
+module.exports = { listPupils }

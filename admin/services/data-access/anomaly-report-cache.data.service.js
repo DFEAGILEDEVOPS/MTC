@@ -4,7 +4,6 @@ const R = require('ramda')
 const winston = require('winston')
 
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
 
 const table = '[anomalyReportCache]'
 
@@ -77,4 +76,4 @@ const anomalyReportCacheDataService = {
   }
 }
 
-module.exports = monitor('anomalyReportCache.data-service', anomalyReportCacheDataService)
+module.exports = anomalyReportCacheDataService
