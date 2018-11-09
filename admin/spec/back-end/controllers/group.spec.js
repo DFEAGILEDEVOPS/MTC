@@ -3,6 +3,8 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
+
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const ValidationError = require('../../../lib/validation-error')
 const groupService = require('../../../services/group.service')
 const groupDataService = require('../../../services/data-access/group.data.service')
@@ -11,6 +13,7 @@ const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 
 describe('group controller', () => {
   function getRes () {
@@ -56,6 +59,8 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
           await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -63,6 +68,8 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
           done()
         })
       })
@@ -77,6 +84,8 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -84,6 +93,8 @@ describe('group controller', () => {
           expect(next).toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
+          expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
           done()
         })
       })

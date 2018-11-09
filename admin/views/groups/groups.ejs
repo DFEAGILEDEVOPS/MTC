@@ -97,7 +97,9 @@
                         <a href="/pupil-register/pupils-list">Pupil register</a>
                     </li>
                     <li>
-                        <a href="/pupil-pin/generate-pins-overview">Generate pupil PINs</a>
+                        <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
+                        <a href="/pupil-pin/generate-live-pins-overview">Generate live pupil PINs</a>
+                        <% } %>
                     </li>
                 </ul>
             </nav>
