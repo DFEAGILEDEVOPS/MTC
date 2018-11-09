@@ -3,26 +3,26 @@
   <main id="content" class="js-content" role="main">
     <form #inputAssistantForm="ngForm">
     <div class="grid-row">
-      <div class="column-two-thirds">
+      <div class="column-full">
         <div *ngIf="formSubmitted && inputAssistantForm.invalid" class="error-summary" role="alert" aria-labelledby="error-summary" tabindex="0">
-          <h2 class="heading-medium error-summary-heading" id="error-summary">
+          <h2 class="heading-medium error-summary-heading aa-lead-size" id="error-summary">
             You need to fix the error on this page before continuing
           </h2>
-          <p>
+          <p class="aa-copy-size">
             See highlighted errors below
           </p>
-          <div class="error-summary-list">
+          <div class="error-summary-list aa-copy-size">
             <ng-container *ngTemplateOutlet="errorSummary; context:{control: inputAssistantForm.controls.inputAssistantFirstName, focus: 'inputAssistantFirstName', field: 'first name'}"></ng-container>
             <ng-container *ngTemplateOutlet="errorSummary; context:{control: inputAssistantForm.controls.inputAssistantLastName, focus: 'inputAssistantLastName', field: 'last name'}"></ng-container>
           </div>
         </div>
           <header class="page-header" tabindex="0">
-            <h1 class="heading-xlarge">Your settings</h1>
+            <h1 class="heading-xlarge aa-title-size">Your settings</h1>
           </header>
-          <p class="lede" tabindex="0">
+          <p class="aa-lead-size" tabindex="0">
             You have the following settings on your check
           </p>
-          <ol class="list list-number">
+          <ol class="list list-number aa-copy-size">
             <li tabindex="0" *ngIf="config.colourContrast"><a routerLink="/colour-choice">Edit colour</a> of page</li>
             <li tabindex="0" *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
             <li tabindex="0" *ngIf="config.inputAssistance" class="extra-space">
@@ -31,7 +31,7 @@
                   <div tabindex="0">Please enter the first and last name of the input assistant that will be helping you through the check</div>
                   <br>
                   <div tabindex="0" [ngClass]="{ 'form-group': true, 'form-group-error': formSubmitted && inputAssistantFirstName.invalid}">
-                    <label for="inputAssistantFirstName" class="form-label">
+                    <label for="inputAssistantFirstName" class="form-label aa-copy-size">
                       First name of input assistant
                       <ng-container *ngTemplateOutlet="error; context:{control: inputAssistantFirstName, field: 'first name'}"></ng-container>
                     </label>
@@ -40,7 +40,7 @@
                             name="inputAssistantFirstName" spellcheck="false" autocorrect="off" autocomplete="off">
                   </div>
                   <div tabindex="0" [ngClass]="{ 'form-group': true, 'form-group-error': formSubmitted && inputAssistantLastName.invalid}">
-                    <label for="inputAssistantLastName" class="form-label">
+                    <label for="inputAssistantLastName" class="form-label aa-copy-size">
                       Last name of input assistant
                       <ng-container *ngTemplateOutlet="error; context:{control: inputAssistantLastName, field: 'last name'}"></ng-container>
                     </label>
@@ -54,29 +54,29 @@
             <li tabindex="0" *ngIf="config.numpadRemoval">Remove number pad</li>
             <li tabindex="0" *ngIf="config.audibleSounds">Time alert</li>
           </ol>
-          <p  tabindex="0">
+          <p  tabindex="0" class="aa-copy-size">
             If you need to add or remove any settings, please tell your teacher and
             <a routerLink="/sign-out">sign out</a>.
           </p>
-          <button class="button" (click)="onClick()" id="next">Next</button>
+          <button class="button aa-button-size" (click)="onClick()" id="next">Next</button>
       </div>
     </div>
     </form>
   </main>
 </app-page-modifications>
 <ng-template #errorSummary let-control="control" let-field="field" let-focus="focus">   
-    <p tabindex="0" *ngIf="control.errors && (control.errors.required || control.errors.maxlength)">
+    <p class="aa-copy-size" tabindex="0" *ngIf="control.errors && (control.errors.required || control.errors.maxlength)">
       <label [for]="focus">Enter a {{field}} in no more than 128 characters</label>
     </p>
-    <p tabindex="0" *ngIf="control.errors && control.errors.pattern">
+    <p class="aa-copy-size" tabindex="0" *ngIf="control.errors && control.errors.pattern">
       <label [for]="focus">Enter a {{field}} without special characters</label>
     </p>
 </ng-template>
 <ng-template #error let-control="control" let-field="field">
-    <span *ngIf="formSubmitted && control.errors && (control.errors.required || control.errors.maxlength)" class="error-message">
+    <span *ngIf="formSubmitted && control.errors && (control.errors.required || control.errors.maxlength)" class="error-message aa-copy-size">
       Enter a {{field}} in no more than 128 characters
     </span>
-    <span *ngIf="formSubmitted && control.errors && control.errors.pattern" class="error-message">
+    <span *ngIf="formSubmitted && control.errors && control.errors.pattern" class="error-message aa-copy-size">
       Enter a {{field}} without special characters
     </span>
 </ng-template>
