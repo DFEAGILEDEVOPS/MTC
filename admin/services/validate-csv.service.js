@@ -1,7 +1,6 @@
 const csvValidator = require('../lib/validator/csv-validator')
 const singlePupilValidationService = require('./single-pupil-validation.service')
 const arrayUtils = require('../lib/array-utils')
-const monitor = require('../helpers/monitor')
 
 const service = {}
 
@@ -33,4 +32,4 @@ service.process = async (csvDataArray, school) => {
   return { pupils, csvData, headers }
 }
 
-module.exports = monitor('validate-csv.service', service)
+module.exports = service

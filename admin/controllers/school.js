@@ -3,7 +3,6 @@
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const schoolService = require('../services/school.service')
-const monitor = require('../helpers/monitor')
 const controller = {}
 
 /**
@@ -33,4 +32,4 @@ controller.getSchoolLandingPage = async (req, res, next) => {
   })
 }
 
-module.exports = monitor('school.controller', controller)
+module.exports = controller

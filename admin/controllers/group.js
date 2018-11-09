@@ -5,7 +5,6 @@ const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
-const monitor = require('../helpers/monitor')
 
 /**
  * Render the initial 'groups' page.
@@ -35,7 +34,7 @@ const groupPupilsPage = async (req, res, next) => {
     groups,
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
-    pupilsPerGroup,
+    pupilsPerGroup
   })
 }
 
@@ -234,10 +233,10 @@ const removeGroup = async (req, res, next) => {
   return res.redirect('/group/pupils-list')
 }
 
-module.exports = monitor('group.controller', {
+module.exports = {
   groupPupilsPage,
   manageGroupPage,
   addGroup,
   editGroup,
   removeGroup
-})
+}

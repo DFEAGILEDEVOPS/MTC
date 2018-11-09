@@ -7,7 +7,6 @@ const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
-const monitor = require('../helpers/monitor')
 
 const pupilCensusService = {}
 
@@ -130,4 +129,4 @@ pupilCensusService.remove = async (pupilCensusId) => {
   await jobDataService.sqlUpdate(pupilCensusId, jobStatus.id, output)
 }
 
-module.exports = monitor('pupil-census.service', pupilCensusService)
+module.exports = pupilCensusService

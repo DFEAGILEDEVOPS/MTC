@@ -3,7 +3,7 @@ const winston = require('winston')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')
@@ -162,4 +162,4 @@ controller.postDeleteRestart = async (req, res, next) => {
   return res.redirect('/restart/overview')
 }
 
-module.exports = monitor('restart.controller', controller)
+module.exports = controller

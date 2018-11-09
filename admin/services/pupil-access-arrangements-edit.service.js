@@ -1,7 +1,6 @@
 const R = require('ramda')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilService = require('../services/pupil.service')
-const monitor = require('../helpers/monitor')
 
 const pupilAccessArrangementsEditService = {}
 
@@ -29,4 +28,4 @@ pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlS
   return formData
 }
 
-module.exports = monitor('pupil-access-arrangements-edit.service', pupilAccessArrangementsEditService)
+module.exports = pupilAccessArrangementsEditService

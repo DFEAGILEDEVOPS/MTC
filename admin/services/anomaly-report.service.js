@@ -9,7 +9,6 @@ const completedCheckDataService = require('./data-access/completed-check.data.se
 const anomalyReportCacheDataService = require('./data-access/anomaly-report-cache.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
-const monitor = require('../helpers/monitor')
 
 const anomalyReportService = {}
 anomalyReportService.reportedAnomalies = []
@@ -458,4 +457,4 @@ anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   return output
 }
 
-module.exports = monitor('anomaly-report.service', anomalyReportService)
+module.exports = anomalyReportService

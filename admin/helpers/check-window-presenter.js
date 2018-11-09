@@ -1,8 +1,6 @@
 'use strict'
 const moment = require('moment')
 
-const monitor = require('./monitor')
-
 const checkWindowPresenter = {}
 
 /**
@@ -54,4 +52,4 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
   return checkWindowViewData
 }
 
-module.exports = monitor('check-window-presenter', checkWindowPresenter)
+module.exports = checkWindowPresenter

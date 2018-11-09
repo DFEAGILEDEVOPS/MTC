@@ -9,7 +9,6 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const checkWindowService = require('../services/check-window.service')
 const config = require('../config')
 const random = require('../lib/random-generator')
-const monitor = require('../helpers/monitor')
 
 const checkFormService = {
   /**
@@ -345,4 +344,4 @@ const checkFormService = {
   }
 }
 
-module.exports = monitor('check-form.service', checkFormService)
+module.exports = checkFormService

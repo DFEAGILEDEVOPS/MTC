@@ -1,6 +1,5 @@
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
-const monitor = require('../helpers/monitor')
 
 const pupilService = {}
 
@@ -116,4 +115,4 @@ pupilService.getPupilsWithFullNames = async (dfeNumber) => {
   }))
 }
 
-module.exports = monitor('pupil.service', pupilService)
+module.exports = pupilService

@@ -4,7 +4,6 @@ const featureToggles = require('feature-toggles')
 const attendanceCodeService = require('../services/attendance.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
-const monitor = require('../helpers/monitor')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
@@ -178,10 +177,10 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   }
 }
 
-module.exports = monitor('pupils-not-taking-the-check.controller', {
+module.exports = {
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
   savePupilNotTakingCheck,
   removePupilNotTakingCheck,
   viewPupilsNotTakingTheCheck
-})
+}
