@@ -8,7 +8,7 @@ Then(/^pupil not taking check page is displayed as per design$/) do
   expect(pupils_not_taking_check_page).to have_info_text
   expect(pupils_not_taking_check_page).to have_add_reason
   expect(pupils_not_taking_check_page).to have_back_to_top
-  expect(pupils_not_taking_check_page).to have_generate_pins
+  binding.pry
   step 'I should see related content on the pupils not taking a check page'
 end
 
