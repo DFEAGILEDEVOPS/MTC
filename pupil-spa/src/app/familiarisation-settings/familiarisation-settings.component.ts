@@ -54,7 +54,7 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
   }
 
   onClick() {
-    if (this.config.inputAssistance) {
+    if (this.config.inputAssistance && !this.config.practice) {
       this.formSubmitted = true;
       if (!this.inputAssistantForm.valid) {
         return;
