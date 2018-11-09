@@ -7,6 +7,7 @@ import {
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
 import { RouteService } from '../services/route/route.service';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
   selector: 'app-aa-colours',
@@ -22,7 +23,8 @@ export class AAColoursComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
-    private routeService: RouteService
+    private routeService: RouteService,
+    private pupilPrefsService: PupilPrefsService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
     this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
@@ -41,10 +43,11 @@ export class AAColoursComponent implements OnInit {
     this.selectedContrast = selectedContrast;
   }
 
-  onClick() {
-    const accessArrangements = new AccessArrangements;
-    accessArrangements.contrast = this.selectedContrast || 'bow';
-    this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
+  async onClick() {
+    this.accessArrangements.contrast = this.selectedContrast;
+    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    await this.pupilPrefsService.storePupilPrefs();
+
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);
     } else {

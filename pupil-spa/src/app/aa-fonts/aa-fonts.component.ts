@@ -1,21 +1,16 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { APP_CONFIG } from '../services/config/config.service';
-import { AuditService } from '../services/audit/audit.service';
-import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { TokenService } from '../services/token/token.service';
 import {
   AccessArrangements,
   AccessArrangementsConfig,
   accessArrangementsDataKey
 } from '../access-arrangements';
-import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../services/audit/auditEntry';
-import { queueNames } from '../services/azure-queue/queue-names';
 import { RouteService } from '../services/route/route.service';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -23,79 +18,37 @@ import { RouteService } from '../services/route/route.service';
   styleUrls: ['./aa-fonts.component.scss']
 })
 export class AAFontsComponent {
-  accessArrangements;
-  featureUseHpa;
   pupil: Pupil;
   validSelection = false;
   selectedSize;
   fontSettings;
-  pupilPrefsAPIErrorDelay;
-  pupilPrefsAPIErrorMaxAttempts;
+  accessArrangements;
 
   constructor(
-    private auditService: AuditService,
-    private azureQueueService: AzureQueueService,
     private routeService: RouteService,
     private questionService: QuestionService,
     private router: Router,
     private storageService: StorageService,
-    private tokenService: TokenService,
+    private pupilPrefsService: PupilPrefsService,
 
 ) {
-    const { featureUseHpa, pupilPrefsAPIErrorDelay, pupilPrefsAPIErrorMaxAttempts } = APP_CONFIG;
-    this.accessArrangements = new AccessArrangements;
-    this.featureUseHpa = featureUseHpa;
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.pupilPrefsAPIErrorDelay = pupilPrefsAPIErrorDelay;
-    this.pupilPrefsAPIErrorMaxAttempts = pupilPrefsAPIErrorMaxAttempts;
-    const pupilData = storageService.getItem('pupil');
-    this.pupil = new Pupil;
-    this.pupil.firstName = pupilData.firstName;
-    this.pupil.lastName = pupilData.lastName;
-    this.pupil.checkCode = pupilData.checkCode;
-    const config = this.storageService.getItem('config');
-    const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
-    this.selectedSize = (fontSetting && fontSetting.val) || 'regular';
-    this.setFontSize(this.selectedSize);
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
+
+    this.pupil = storageService.getItem('pupil') as Pupil;
   }
 
-  setFontSize(fontValue) {
-    this.accessArrangements.fontSize = fontValue;
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-  }
-
-    selectionChange(selectedFont) {
+  selectionChange(selectedFont) {
     this.selectedSize = selectedFont;
     this.checkValidSelection();
   }
 
   async onClick() {
-    this.setFontSize(this.selectedSize);
-    const fontSetting = this.fontSettings.find(f => f.val === this.accessArrangements.fontSize);
-    const fontCode = fontSetting.code;
-    if (this.featureUseHpa === true) {
-      const queueName = queueNames.pupilPreferences;
-      const { url, token } = this.tokenService.getToken('pupilPreferences');
-      const payload = {
-        preferences: {
-          fontSizeCode: fontCode,
-        },
-        checkCode: this.pupil.checkCode
-      };
-      const retryConfig = {
-        errorDelay: this.pupilPrefsAPIErrorDelay,
-        errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
-      };
-      try {
-        this.auditService.addEntry(new PupilPrefsAPICalled());
-        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-        this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
-      } catch (error) {
-        this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
-      }
-    }
+    this.accessArrangements.fontSize = this.selectedSize;
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    await this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);
