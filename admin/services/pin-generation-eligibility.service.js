@@ -1,7 +1,6 @@
 'use strict'
 
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
-const monitor = require('../helpers/monitor')
 
 const pinGenerationEligibilityService = {}
 
@@ -33,4 +32,4 @@ pinGenerationEligibilityService.determinePinGenerationEligibility = async (isLiv
   }
 }
 
-module.exports = monitor('pin-generation-eligibility-service', pinGenerationEligibilityService)
+module.exports = pinGenerationEligibilityService
