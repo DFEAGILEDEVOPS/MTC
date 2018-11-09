@@ -160,13 +160,18 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   res.locals.pageTitle = 'View pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
+  let checkWindowData
+  let pinGenerationEligibilityData
   try {
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
       messages: res.locals.messages,
-      highlight
+      highlight,
+      pinGenerationEligibilityData
     })
   } catch (error) {
     return next(error)

@@ -339,6 +339,8 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#viewPupilsNotTakingTheCheck', () => {
       it('should make a call to get the pupils', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(
@@ -352,9 +354,13 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       })
       it('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(Promise.reject(new Error())))
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(
@@ -368,6 +374,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
       })
