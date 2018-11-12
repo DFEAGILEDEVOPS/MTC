@@ -1,117 +1,147 @@
-// Questions
-
-$vertical-breakpoint-1: 600px;
-$vertical-breakpoint-2: 500px;
-$small-screen-breakpoint: 485px; // screens below this threshold get a fallback stacked view
+$horizontal-breakpoint-1: 641px;
+$horizontal-breakpoint-2: 721px;
+$horizontal-breakpoint-3: 781px;
 
 @mixin mtc-core-59($line-height: (64 / 64), $line-height-640: (55 / 53), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 59px;
   $font-size-640: 46px;
   $font-size-print: 28pt;
+
   @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-.question-container {
-  margin: 0 15px;
-  max-width: 960px;
-  vertical-align: top;
+.practice-box {
+  color: $white;
+  background-color: $grey-1;
+  float: left;
+  padding: 2px 5px;
+  text-transform: uppercase;
+  width: auto;
+}
 
-  @media (min-width: 641px) {
-    margin: 0 30px;
+/*
+  Our .question-container is set to inline block to ensure its
+  only as wide as its contents (variable font sizing) which means
+  we cannot center it using its margin. Instead text-align: center
+  is set on an outer container.
+*/
+.question-wrapper {
+  text-align: center;
+}
+
+/*
+  The familiarisation title content needs to change based on screen size.
+  An empty div is used in the question component and the contents
+  is set using css :after
+*/
+.familiarisation-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  &:after {
+    content: "Familiarisation Check";
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    left: -50%;
   }
-  @media (min-width: 1020px) {
-    margin: 0 auto;
+}
+
+/*
+  See comment above. Here we chance the contents of the familiarisation-title
+  when the user has set the default font and is on a small screen
+*/
+.copy-size-regular .familiarisation-title:after {
+  @media (max-width: $horizontal-breakpoint-1) {
+    content: "Learn";
   }
+}
+
+.question-header {
+  @extend %contain-floats;
+
+  margin: 0 auto;
+}
+
+// set maximum header widths based on font size
+.copy-size-xxlarge .question-header {
+  max-width: 980px;
+}
+
+.copy-size-xlarge .question-header {
+  max-width: 790px;
+}
+
+.copy-size-large .question-header {
+  max-width: 660px;
+}
+
+.copy-size-regular .question-header {
+  max-width: 570px;
+}
+
+.copy-size-small .question-header {
+  max-width: 450px;
+}
+
+.copy-size-xsmall .question-header {
+  max-width: 360px;
+}
+
+.question-container {
+  display: inline-block;
+  margin: 0;
+  vertical-align: top;
 }
 
 .question-and-answer {
   @include mtc-core-59;
 
   text-align: center;
-  margin-top: 35px;
+  margin: 0;
 
-  @include media(tablet) {
-    text-align: left;
-    margin-top: 65px; // condense this space for small screens
-  }
-
-  @include media(desktop) {
-    @include core-80;
-    margin-top: 70px;
-    text-align: center;
-  }
-
-  @media only screen
-  and (max-height: $vertical-breakpoint-1) {
+  @media (min-width: $horizontal-breakpoint-1) {
     margin-top: 35px;
-  }
-
-  @media only screen
-  and (max-height: $vertical-breakpoint-2) {
-    margin-top: 5px;
   }
 }
 
 .question {
-  // mobile view
   display: block;
-  line-height: 1.15 !important;
   margin: 0 auto; // center it in the page
-  text-align: right;
-  vertical-align: top;
-  width: 223px;  // mobile
+  text-align: left;
+  padding: 0 10px;
 
-  // For tablets we want the question and answer to be on the same line
-  @include media(tablet) {
+  @media (min-width: $horizontal-breakpoint-1) {
     margin: 0;
-    width: 3.7em;
+    padding: 0;
+    vertical-align: top;
+    text-align: right;
     display: inline-block;
-    line-height: 1.425em !important;
-  }
-
-  @include media(desktop) {
-    margin: 0;
   }
 }
 
 // Answers
 .answer-container {
   display: inline-block;
-
-  @include media(tablet) {
-    text-align: left;
-    padding: 0;
-  }
+  margin: 0;
 }
 
 .answer {
   border: 2px solid $black;
   box-shadow: 0 0 0 3px $focus-colour;
   display: block;
-  height: pem(80px, 64);
-  margin: auto;
+  margin: 0 10px;
   text-align: right;
-  width: 223px;  // mobile
-
+  max-width: 100%;
   line-height: 1.35em;
-
-  // Tablet : question and answer on one line
-  @include media(tablet) {
-    width: 319px;
-    text-align: left;
-    margin: 0 0 0 10px;
-    line-height: 1.4em;
-  }
+  height: 100px;
 }
 
 // Numpad
 .numpad-container {
-  margin-top: 2px;
+  margin: 10px 0 0 0;
   text-align: center;
-
-  @include media(tablet) {
-    margin-top: 12px;
-  }
 }
 
 

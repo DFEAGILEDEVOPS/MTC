@@ -102,51 +102,86 @@ span.contrast-bow,  span.contrast-bob, span.contrast-bop {
 }
 
 .multiple-choice {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 p {
   margin: 30px 0;
 }
 
-label span {
-  padding: 10px 20px;
-  margin-left: 10px;
+label > span {
+  padding: 10px 0;
   border: none;
+  display: inline-block;
+  text-align: center;
+  width: 150px;
+  margin-top: -10px;
+}
+
+span.xxlarge {
+  width: 280px !important;
+}
+
+span.xlarge {
+  width: 220px !important;
+}
+
+span.large {
+  width: 180px !important;
+}
+
+span.small {
+  width: 120px !important;
+}
+
+span.xsmall {
+  width: 100px !important;
 }
 
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 0 0 20% 0;
-  width: 100%;
+  width: 500px;
+  height: 350px;
   position: relative;
+  margin: 10px 0 0 40px;
+
+  @media (max-width: 640px) {
+    margin: 0;
+    max-width: 100%;
+    height: 250px;
+    padding-bottom: 20px;
+  }
 
   > .badge {
     position: absolute;
     top: 0;
     left: 0;
     display: inline-block;
-    font-weight: bold;
+    text-transform: uppercase;
     padding: 8px 15px;
     width: auto;
   }
 
-  > .question-text {
-    margin-top: 20%;
-    text-align: center;
-    font-size: inherit;
-  }
+  > .preview-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 
-  table {
-    border-spacing: 10px;
-    margin: auto;
-  }
+    > .question-text {
+      text-align: center;
+    }
 
-  > table .button {
-    border: none;
-    padding: 0;
-    width: 70px;
-    height: 50px;
+    table {
+      border-spacing: 10px;
+      margin: auto;
+    }
+
+    > table button {
+      background-color: #6f777b;
+      border: none;
+      color: #fff;
+    }
   }
 }

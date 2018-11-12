@@ -2,38 +2,45 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FamiliarisationColourComponent } from './familiarisation-colour.component';
+import { AAColoursComponent } from './aa-colours.component';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
-describe('FamiliarisationColourComponent', () => {
+describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
-  let component: FamiliarisationColourComponent;
-  let fixture: ComponentFixture<FamiliarisationColourComponent>;
+  let mockPupilPrefsService;
+  let component: AAColoursComponent;
+  let fixture: ComponentFixture<AAColoursComponent>;
 
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
+    mockPupilPrefsService = {
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
+    };
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ FamiliarisationColourComponent ],
+      declarations: [ AAColoursComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock }
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
       ]
     });
 
     mockRouteService = injector.get(RouteService);
+    mockPupilPrefsService = injector.get(PupilPrefsService);
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FamiliarisationColourComponent);
+    fixture = TestBed.createComponent(AAColoursComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
   });
@@ -64,5 +71,10 @@ describe('FamiliarisationColourComponent', () => {
     fixture.whenStable().then(() => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
     });
+  });
+
+  it('should store pupil prefs when navigating away', async () => {
+    component.onClick();
+    expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
   });
 });
