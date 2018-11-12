@@ -1,0 +1,121 @@
+Using the default profile...
+[36m@check[0m
+Feature: Check questions
+
+  Scenario: Loading page should display for configured number of seconds[90m      # features/check.feature:4[0m
+    [32mGiven I have started the check[90m                                            # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mThen the loading page should display for the configured number of seconds[90m # features/step_definitions/check_steps.rb:16[0m[0m
+
+  Scenario: Check page has a question and a timer[90m # features/check.feature:8[0m
+    [32mGiven I have started the check[90m                # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mWhen the loading screen has expired[90m           # features/step_definitions/check_steps.rb:21[0m[0m
+    [32mThen I should see the question and timer[90m      # features/step_definitions/check_steps.rb:158[0m[0m
+
+  Scenario: Question should display for configured number of seconds[90m      # features/check.feature:13[0m
+    [32mGiven I have started the check[90m                                        # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mWhen the loading screen has expired[90m                                   # features/step_definitions/check_steps.rb:21[0m[0m
+    [32mThen the question should display for the configured number of seconds[90m # features/step_definitions/check_steps.rb:29[0m[0m
+    [32mAnd I should be moved to the next question[90m                            # features/step_definitions/check_steps.rb:42[0m[0m
+
+  Scenario: Route remains /check during the check[90m # features/check.feature:19[0m
+    [32mGiven I have started the check[90m                # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mThen the route remains the same[90m               # features/step_definitions/check_steps.rb:47[0m[0m
+
+  Scenario: Users can enter answers by using their phsyical keyboard[90m # features/check.feature:23[0m
+    [32mGiven I have started the check[90m                                   # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mThen I can answer the question using their phsyical keyboard[90m     # features/step_definitions/check_steps.rb:71[0m[0m
+
+  [36m@local_storage[0m
+  Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB[90m # features/check.feature:28[0m
+    [32mGiven I have started the check[90m                                                                          # features/step_definitions/check_steps.rb:1[0m[0m
+    [31mThen I should be able to use the on screen keyboard to complete the test[90m                                # features/step_definitions/check_steps.rb:82[0m[0m
+[31m      Unable to find css "span.question" (Capybara::ElementNotFound)[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block (2 levels) in complete_check_with_correct_answers'[0m
+[31m      ./features/support/helpers.rb:5:in `block in wait_until'[0m
+[31m      ./features/support/helpers.rb:4:in `wait_until'[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block in complete_check_with_correct_answers'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `times'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `complete_check_with_correct_answers'[0m
+[31m      ./features/step_definitions/check_steps.rb:84:in `/^I should be able to use the on screen keyboard to complete the test$/'[0m
+[31m      features/check.feature:30:in `Then I should be able to use the on screen keyboard to complete the test'[0m
+    [36mAnd I should see all the data from the check stored in the DB[90m                                           # features/step_definitions/check_steps.rb:117[0m[0m
+
+  Scenario: Users can correct their answer[90m                          # features/check.feature:33[0m
+    [32mGiven I have started the check[90m                                  # features/step_definitions/check_steps.rb:1[0m[0m
+    [32mWhen I have entered an incorrect answer[90m                         # features/step_definitions/check_steps.rb:89[0m[0m
+    [32mThen I should be able to correct my answer if i am quick enough[90m # features/step_definitions/check_steps.rb:95[0m[0m
+
+  Scenario: Check loading page states the question number[90m # features/check.feature:38[0m
+    [32mGiven I am on the check loading page[90m                  # features/step_definitions/check_steps.rb:107[0m[0m
+    [32mThen I should see the number of the next questions[90m    # features/step_definitions/check_steps.rb:113[0m[0m
+
+  Scenario: MTC check start page shows number of questions[90m # features/check.feature:42[0m
+    [32mGiven I am on the MTC check start page[90m                 # features/step_definitions/check_steps.rb:143[0m[0m
+    [31mThen I should see the number of questions[90m              # features/step_definitions/check_steps.rb:152[0m[0m
+[31m      expected "There will be 5 questions." to include "There will be 10 questions." (RSpec::Expectations::ExpectationNotMetError)[0m
+[31m      ./features/step_definitions/check_steps.rb:154:in `/^I should see the number of questions$/'[0m
+[31m      features/check.feature:44:in `Then I should see the number of questions'[0m
+
+[36m@event_auditing[0m
+Feature: Event Auditing
+
+  Scenario: Events are recorded into local storage[90m # features/event_auditing.feature:4[0m
+    [31mGiven I am on the complete page[90m                # features/step_definitions/header_footer_steps.rb:38[0m[0m
+[31m      Unable to find css "span.question" (Capybara::ElementNotFound)[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block (2 levels) in complete_check_with_correct_answers'[0m
+[31m      ./features/support/helpers.rb:5:in `block in wait_until'[0m
+[31m      ./features/support/helpers.rb:4:in `wait_until'[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block in complete_check_with_correct_answers'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `times'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `complete_check_with_correct_answers'[0m
+[31m      ./features/step_definitions/check_steps.rb:84:in `/^I should be able to use the on screen keyboard to complete the test$/'[0m
+[31m      ./features/step_definitions/header_footer_steps.rb:40:in `/^I am on the complete page$/'[0m
+[31m      features/event_auditing.feature:5:in `Given I am on the complete page'[0m
+    [36mWhen I inspect local storage[90m                   # features/step_definitions/event_auditing_steps.rb:1[0m[0m
+    [36mThen all the events should be captured[90m         # features/step_definitions/event_auditing_steps.rb:6[0m[0m
+
+[36m@feedback[0m
+Feature: Feedback page
+
+  Scenario: Users can submit their feedback[90m # features/feedback.feature:4[0m
+    [31mGiven I am on the complete page[90m         # features/step_definitions/header_footer_steps.rb:38[0m[0m
+[31m      Unable to find css "span.question" (Capybara::ElementNotFound)[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block (2 levels) in complete_check_with_correct_answers'[0m
+[31m      ./features/support/helpers.rb:5:in `block in wait_until'[0m
+[31m      ./features/support/helpers.rb:4:in `wait_until'[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block in complete_check_with_correct_answers'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `times'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `complete_check_with_correct_answers'[0m
+[31m      ./features/step_definitions/check_steps.rb:84:in `/^I should be able to use the on screen keyboard to complete the test$/'[0m
+[31m      ./features/step_definitions/header_footer_steps.rb:40:in `/^I am on the complete page$/'[0m
+[31m      features/feedback.feature:5:in `Given I am on the complete page'[0m
+    [36mWhen I choose to give feedback[90m          # features/step_definitions/feedback_steps.rb:2[0m[0m
+    [36mAnd I submit my feedback[90m                # features/step_definitions/feedback_steps.rb:108[0m[0m
+    [36mThen my feedback should be saved[90m        # features/step_definitions/feedback_steps.rb:93[0m[0m
+
+  Scenario: Users cannot submit feedback if they have not entered a method of entry[90m # features/feedback.feature:10[0m
+    [31mGiven I am on the complete page[90m                                                 # features/step_definitions/header_footer_steps.rb:38[0m[0m
+[31m      Unable to find css "span.question" (Capybara::ElementNotFound)[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block (2 levels) in complete_check_with_correct_answers'[0m
+[31m      ./features/support/helpers.rb:5:in `block in wait_until'[0m
+[31m      ./features/support/helpers.rb:4:in `wait_until'[0m
+[31m      ./features/support/page_objects/check_page.rb:80:in `block in complete_check_with_correct_answers'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `times'[0m
+[31m      ./features/support/page_objects/check_page.rb:77:in `complete_check_with_correct_answers'[0m
+[31m      ./features/step_definitions/check_steps.rb:84:in `/^I should be able to use the on screen keyboard to complete the test$/'[0m
+[31m      ./features/step_definitions/header_footer_steps.rb:40:in `/^I am on the complete page$/'[0m
+[31m      features/feedback.feature:11:in `Given I am on the complete page'[0m
+    [36mWhen I choose to give feedback[90m                                                  # features/step_definitions/feedback_steps.rb:2[0m[0m
+    [36mAnd I feedback on how difficult the check was[90m                                   # features/step_definitions/feedback_steps.rb:37[0m[0m
+    [36mThen I should see the submit button disabled[90m                                    # features/step_definitions/feedback_steps.rb:41[0m[0m
+
+[31mFailing Scenarios:[0m
+[31mcucumber features/check.feature:28[0m[90m # Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB[0m
+[31mcucumber features/check.feature:42[0m[90m # Scenario: MTC check start page shows number of questions[0m
+[31mcucumber features/event_auditing.feature:4[0m[90m # Scenario: Events are recorded into local storage[0m
+[31mcucumber features/feedback.feature:4[0m[90m # Scenario: Users can submit their feedback[0m
+[31mcucumber features/feedback.feature:10[0m[90m # Scenario: Users cannot submit feedback if they have not entered a method of entry[0m
+
+12 scenarios ([31m5 failed[0m, [32m7 passed[0m)
+34 steps ([31m5 failed[0m, [36m9 skipped[0m, [32m20 passed[0m)
+897m3.841s
