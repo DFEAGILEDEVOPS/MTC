@@ -69,6 +69,16 @@ export class FamiliarisationAreaComponent {
     this.setFontSize(this.selectedSize);
     const fontSetting = this.fontSettings.find(f => f.val === this.accessArrangements.fontSize);
     const fontCode = fontSetting.code;
+    await this.submitAzureQueueMessage(fontCode);
+    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    if (this.questionService.getConfig().colourContrast) {
+      this.router.navigate(['colour-choice']);
+    } else {
+      this.router.navigate(['access-settings']);
+    }
+  }
+
+  async submitAzureQueueMessage(fontCode) {
     if (this.featureUseHpa === true) {
       const queueName = queueNames.pupilPreferences;
       const { url, token } = this.tokenService.getToken('pupilPreferences');
@@ -90,12 +100,5 @@ export class FamiliarisationAreaComponent {
         this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
       }
     }
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    if (this.questionService.getConfig().colourContrast) {
-      this.router.navigate(['colour-choice']);
-    } else {
-      this.router.navigate(['access-settings']);
-    }
   }
-
 }
