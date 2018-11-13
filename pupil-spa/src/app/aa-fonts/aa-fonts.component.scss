@@ -10,7 +10,7 @@ label {
   border: 1px solid #6f777b;
   float: left;
   width: 500px;
-  height: 350px;
+  height: 360px;
   position: relative;
   margin: 10px 0 0 40px;
 
@@ -29,7 +29,7 @@ label {
     background-color: #6f777b;
     display: inline-block;
     text-transform: uppercase;
-    padding: 8px 15px;
+    padding: 5px 10px;
     width: auto;
   }
 
@@ -37,7 +37,7 @@ label {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -45%);
 
     > .question-text {
       text-align: center;

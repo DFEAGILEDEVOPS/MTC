@@ -33,20 +33,20 @@
 
   .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button {
     @include button($grey-1);
-    @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
 
-    line-height: $button-number-size !important;
-    padding: 0.1em 0 0 0;
+    font-size: $button-number-size !important;
+    line-height: $button-height !important;
+    padding: 0.1em 0 0 0 !important;
     width: $button-width !important;
     height: $button-height !important;
   }
 
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
     @include button($grey-1);
-    @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
 
-    line-height: $button-text-size !important;
-    padding: 0.1em 0 0 0;
+    font-size: $button-text-size !important;
+    line-height: $button-height !important;
+    padding: 0.1em 0 0 0 !important;
     width: $button-width !important;
     height: $button-height !important;
   }
