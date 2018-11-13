@@ -1,2 +1,0 @@
-features/header_footer.feature:16
-features/instructions_page.feature:6
