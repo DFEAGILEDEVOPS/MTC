@@ -79,7 +79,12 @@
     }
   }
 
-  // links
+  /*
+    The styles below are hijaking other styles
+    which we're trying to avoid
+  */
+
+  // Links
   .colour-contrast-#{$key} a {
     color: $fg-colour !important;
   }
@@ -120,10 +125,18 @@
   }
 }
 
-//Standard bow colours
+/*
+  BOW styles, we dont want to use the entire mixin
+*/
 .aa-contrast-bow {
+  // Used to override app-page-modifications on the preview box
   color: #000 !important;
   background-color: #fff !important;
+}
+
+.colour-contrast-bow span.aa-contrast-bow {
+  // Used to set a border on the bow option when viewing with bow
+  border: 2px solid #000 !important;
 }
 
 @include colour-contrast(
