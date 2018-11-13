@@ -1,5 +1,14 @@
 #!/bin/bash -x
 
+# start pupil-api
+cd ../../pupil-api && npm start > server.auth.log 2>&1 &
+
+# start function
+cd ../../function && npm start > server.auth.log 2>&1 &
+
+# start pupil app
+cd ../../pupil-spa && npm start &
+
 cd ../../admin && yarn start > server.log 2>&1 &
 PID=$!
 
