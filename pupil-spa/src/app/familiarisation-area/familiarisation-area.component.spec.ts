@@ -52,6 +52,7 @@ describe('FamiliarisationAreaComponent', () => {
   describe('when config does not include existing font size selection', () => {
     beforeEach(async(() => {
       spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b', checkCode: 'checkCode' });
+      spyOn(mockStorageService, 'setItem');
       fixture = TestBed.createComponent(FamiliarisationAreaComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
@@ -62,9 +63,12 @@ describe('FamiliarisationAreaComponent', () => {
       });
     });
 
-    it('should set the font size if it is detected in the config', () => {
-      spyOn(mockStorageService, 'setItem');
-      expect (mockStorageService.setItem).not.toHaveBeenCalled();
+    it('should set the font size to default value (regular) if it is not detected in the config', () => {
+      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
+      const accessArrangements = new AccessArrangements();
+      accessArrangements.fontSize = 'regular';
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('access_arrangements', accessArrangements);
+
     });
 
     it('should redirect to colour contrast when enabled', async () => {
@@ -91,7 +95,6 @@ describe('FamiliarisationAreaComponent', () => {
         spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
         spyOn(azureQueueService, 'addMessage');
         spyOn(auditService, 'addEntry');
-        spyOn(mockStorageService, 'setItem');
         await component.onClick();
         fixture.whenStable().then(() => {
           expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
