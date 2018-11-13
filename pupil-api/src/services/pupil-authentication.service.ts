@@ -3,7 +3,10 @@ import * as bluebird from 'bluebird'
 import { clone, path } from 'ramda'
 import * as winston from 'winston'
 import * as moment from 'moment'
+import * as azureQueueService from './azure-queue.service'
+import * as dotenv from 'dotenv'
 
+dotenv.config()
 let azureTableService: any
 const authTable = 'preparedCheck'
 
@@ -68,6 +71,14 @@ export const pupilAuthenticationService = {
       winston.error(error.message)
       throw error
     }
+
+    // Emit a successful login to the queue
+    const pupilLoginMessage = {
+      checkCode: result.checkCode._,
+      loginAt: new Date(),
+      version: 1
+    }
+    azureQueueService.addMessage('pupil-login', pupilLoginMessage)
 
     return data
   },
