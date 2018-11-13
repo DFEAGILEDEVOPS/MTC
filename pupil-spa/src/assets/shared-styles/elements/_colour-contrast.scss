@@ -34,6 +34,20 @@
     color: $copy-colour !important;
   }
 
+  input[type=text], textarea {
+    background-color: $background-colour !important;
+    color: $copy-colour !important;
+    border-color: $copy-colour !important;
+  }
+
+  .panel {
+    border-color: $copy-colour !important;
+  }
+
+  .error-message {
+    color: #b10e1e !important;
+  }
+
   .back-link {
     border-bottom-color: $copy-colour !important;
 
@@ -85,7 +99,11 @@
 
   @include colour-contrast($background-colour, $copy-colour);
 
-  // Some YOB colour are inverted
+  /*
+    Some YOB colour are inverted so we need to redefine the styles here.
+    TODO: Refactor this. Try to use a similar setup to fonts where we
+    declare styles that are applied instead of hijacking already defined selectors
+  */
   .numpad-button, .numpad-enter-button {
     background-color: $background-colour !important;
     color: $copy-colour !important;
@@ -109,10 +127,6 @@
     background-color: $background-colour !important;
     color: $copy-colour !important;
     border: 2px solid $copy-colour !important;
-  }
-
-  label {
-    color: $copy-colour !important;
   }
 
   .button-start {

@@ -36,7 +36,7 @@
                       <ng-container *ngTemplateOutlet="error; context:{control: inputAssistantFirstName, field: 'first name'}"></ng-container>
                     </label>
                     <input id="inputAssistantFirstName" #inputAssistantFirstName="ngModel" ngModel required maxlength="128" [pattern]="validationPattern"
-                            [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantFirstName.invalid}"
+                            [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantFirstName.invalid}" type="text"
                             name="inputAssistantFirstName" spellcheck="false" autocorrect="off" autocomplete="off">
                   </div>
                   <div tabindex="0" [ngClass]="{ 'form-group': true, 'form-group-error': formSubmitted && inputAssistantLastName.invalid}">
@@ -45,7 +45,7 @@
                       <ng-container *ngTemplateOutlet="error; context:{control: inputAssistantLastName, field: 'last name'}"></ng-container>
                     </label>
                     <input id="inputAssistantLastName" #inputAssistantLastName="ngModel" ngModel required maxlength="128" [pattern]="validationPattern"
-                            [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantLastName.invalid}"
+                            [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantLastName.invalid}" type="text"
                             name="inputAssistantLastName" spellcheck="false" autocorrect="off" autocomplete="off">
                   </div>
                 </div>   
