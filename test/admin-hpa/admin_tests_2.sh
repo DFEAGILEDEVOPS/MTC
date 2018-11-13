@@ -4,7 +4,7 @@
 cd ../../pupil-api && npm start > server.auth.log 2>&1 &
 
 # start function
-cd ../../function && npm start > server.auth.log 2>&1 &
+cd ../../functions && npm start > server.auth.log 2>&1 &
 
 # start pupil app
 cd ../../pupil-spa && npm start &
