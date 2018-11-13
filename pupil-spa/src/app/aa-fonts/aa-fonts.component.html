@@ -47,13 +47,11 @@
             </div>
           </div>
         </div>
-        <div class="sign-out-link">
-            <p class="lede aa-link-size">
-              <a routerLink="/sign-out" >This is not me, sign out</a>
-            </p>
-          </div>
-          <button [disabled]="!validSelection" class="button aa-button-size" (click)="onClick()">Next</button>
-        </div>
+        <p class="aa-copy-size" tabindex="0">
+          If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>
+        </p>
+        <button [disabled]="!validSelection" class="button aa-button-size" (click)="onClick()">Next</button>
+      </div>
     </div>
   </main>
 </app-page-modifications>
