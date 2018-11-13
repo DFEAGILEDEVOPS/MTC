@@ -1,8 +1,12 @@
 import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
-import { clone } from 'ramda'
+import { clone, path } from 'ramda'
 import * as winston from 'winston'
+import * as moment from 'moment'
+import * as azureQueueService from './azure-queue.service'
+import * as dotenv from 'dotenv'
 
+dotenv.config()
 let azureTableService: any
 const authTable = 'preparedCheck'
 
@@ -29,6 +33,13 @@ function initAzureTableService (): void {
 }
 
 export const pupilAuthenticationService = {
+
+  /**
+   * Authenticate the user against the preparedCheck table storage table
+   * @param {string} pupilPin - the pupil pin supplied by the user
+   * @param {string} schoolPin - the school password supplied by the user
+   * @param {object} tableService - optional table service driver
+   */
   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any): Promise<object> {
     // set tableService to azureTableService if not provided, but only instantiate it once.
     if (!tableService) {
@@ -36,18 +47,38 @@ export const pupilAuthenticationService = {
       tableService = azureTableService
     }
 
+    // This will throw if the pupil is not found
     const { result } = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
+
+    if (!path(['pinExpiresAt', '_'], result)) {
+      throw new Error(`PIN expiry is missing ${result.checkCode._}`)
+    }
+
+    const pinExpires = moment(result.pinExpiresAt._)
+    const now = moment()
+
+    if (pinExpires.isBefore(now)) {
+      throw new Error(`PIN has expired ${result.checkCode._}`)
+    }
 
     // Prepare the pupil data for use by the SPA
     const data = this.preparePupilData(result)
 
-    // Mark the data as having been collected
+    // Mark the data in the preparedCheck table as having been collected
     try {
       await this.markAsCollected(tableService, clone(result))
     } catch (error) {
       winston.error(error.message)
       throw error
     }
+
+    // Emit a successful login to the queue
+    const pupilLoginMessage = {
+      checkCode: result.checkCode._,
+      loginAt: new Date(),
+      version: 1
+    }
+    azureQueueService.addMessage('pupil-login', pupilLoginMessage)
 
     return data
   },
@@ -72,6 +103,11 @@ export const pupilAuthenticationService = {
     return pupilData
   },
 
+  /**
+   * Mark the pupil record as having been collected in the preparedCheck table
+   * @param {object} tableService - table driver service
+   * @param {object} update - the entire object to update/replace the previous version
+   */
   markAsCollected: async function (tableService, update): Promise<void> {
     const entGen = azureStorage.TableUtilities.entityGenerator
     const now = entGen.DateTime(new Date()) // this works, column gets DateTime type
