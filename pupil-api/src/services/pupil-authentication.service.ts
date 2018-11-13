@@ -30,6 +30,13 @@ function initAzureTableService (): void {
 }
 
 export const pupilAuthenticationService = {
+
+  /**
+   * Authenticate the user against the preparedCheck table storage table
+   * @param {string} pupilPin - the pupil pin supplied by the user
+   * @param {string} schoolPin - the school password supplied by the user
+   * @param {object} tableService - optional table service driver
+   */
   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any): Promise<object> {
     // set tableService to azureTableService if not provided, but only instantiate it once.
     if (!tableService) {
@@ -85,6 +92,11 @@ export const pupilAuthenticationService = {
     return pupilData
   },
 
+  /**
+   * Mark the pupil record as having been collected in the preparedCheck table
+   * @param {object} tableService - table driver service
+   * @param {object} update - the entire object to update/replace the previous version
+   */
   markAsCollected: async function (tableService, update): Promise<void> {
     const entGen = azureStorage.TableUtilities.entityGenerator
     const now = entGen.DateTime(new Date()) // this works, column gets DateTime type
