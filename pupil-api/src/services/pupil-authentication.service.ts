@@ -1,7 +1,8 @@
 import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
-import { clone } from 'ramda'
+import { clone, path } from 'ramda'
 import * as winston from 'winston'
+import * as moment from 'moment'
 
 let azureTableService: any
 const authTable = 'preparedCheck'
@@ -36,12 +37,24 @@ export const pupilAuthenticationService = {
       tableService = azureTableService
     }
 
+    // This will throw if the pupil is not found
     const { result } = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
+
+    if (!path(['pinExpiresAt', '_'], result)) {
+      throw new Error(`PIN expiry is missing ${result.checkCode._}`)
+    }
+
+    const pinExpires = moment(result.pinExpiresAt._)
+    const now = moment()
+
+    if (pinExpires.isBefore(now)) {
+      throw new Error(`PIN has expired ${result.checkCode._}`)
+    }
 
     // Prepare the pupil data for use by the SPA
     const data = this.preparePupilData(result)
 
-    // Mark the data as having been collected
+    // Mark the data in the preparedCheck table as having been collected
     try {
       await this.markAsCollected(tableService, clone(result))
     } catch (error) {
