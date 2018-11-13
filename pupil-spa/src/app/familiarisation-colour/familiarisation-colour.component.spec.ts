@@ -51,6 +51,7 @@ describe('FamiliarisationColourComponent', () => {
   describe('when config does not include existing colour contrast selection', () => {
     beforeEach(() => {
       spyOn(mockStorageService, 'getItem').and.returnValue({ checkCode: 'checkCode' });
+      spyOn(mockStorageService, 'setItem');
       fixture = TestBed.createComponent(FamiliarisationColourComponent);
       fixture.detectChanges();
       component = fixture.componentInstance;
@@ -60,9 +61,12 @@ describe('FamiliarisationColourComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should set the colour contrast if it is detected in the config', () => {
-      spyOn(mockStorageService, 'setItem');
-      expect(mockStorageService.setItem).not.toHaveBeenCalled();
+    it('should set the colour contrast to default value (bow) if it is not detected in the config', () => {
+      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
+      const accessArrangements = new AccessArrangements();
+      accessArrangements.contrast = 'bow';
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('access_arrangements', accessArrangements);
+
     });
 
     it('should redirect to the access-settings page on click if the user has navigated from access-settings', () => {
@@ -96,7 +100,6 @@ describe('FamiliarisationColourComponent', () => {
         spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
         spyOn(azureQueueService, 'addMessage');
         spyOn(auditService, 'addEntry');
-        spyOn(mockStorageService, 'setItem');
         spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
         await component.onClick();
         fixture.whenStable().then(() => {

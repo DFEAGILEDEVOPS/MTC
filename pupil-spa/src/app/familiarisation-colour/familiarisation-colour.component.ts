@@ -66,6 +66,16 @@ export class FamiliarisationColourComponent {
     this.setColourContrast(this.selectedContrast);
     const colourContrastSetting = this.contrastSettings.find(f => f.val === this.accessArrangements.contrast);
     const colourContrastCode = colourContrastSetting.code;
+    await this.submitAzureQueueMessage(colourContrastCode);
+    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    if (this.routeService.getPreviousUrl() === '/access-settings') {
+      this.router.navigate(['access-settings']);
+    } else {
+      this.router.navigate(['sign-in-success']);
+    }
+  }
+
+  async submitAzureQueueMessage(colourContrastCode) {
     if (this.featureUseHpa === true) {
       const queueName = queueNames.pupilPreferences;
       const { url, token } = this.tokenService.getToken('pupilPreferences');
@@ -86,12 +96,6 @@ export class FamiliarisationColourComponent {
       } catch (error) {
         this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
       }
-    }
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    if (this.routeService.getPreviousUrl() === '/access-settings') {
-      this.router.navigate(['access-settings']);
-    } else {
-      this.router.navigate(['sign-in-success']);
     }
   }
 }
