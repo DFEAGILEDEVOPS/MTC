@@ -10,7 +10,7 @@ $horizontal-breakpoint-3: 781px;
   @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-.practice-box {
+.practice-box, .badge {
   color: $white;
   background-color: $grey-1;
   float: left;

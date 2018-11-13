@@ -1,18 +1,18 @@
-<header role="banner" id="global-header" class="with-proposition" aria-hidden="true">
-  <div class="header-wrapper">
+<header role="banner" id="global-header" class="with-proposition aa-contrast-header" aria-hidden="true">
+  <div class="header-wrapper aa-contrast-header">
     <div class="header-global">
       <div class="header-logo">
-        <span id="logo" class="content">
+        <span id="logo" class="content aa-contrast-header">
           <img src="{{govukAssetPath}}/images/gov.uk_logotype_crown_invert_trans.png" width="36" height="32" alt=""> {{globalHeaderText}}
         </span>
       </div>
     </div>
     <div class="header-proposition">
       <div class="content">
-        <span id="proposition-name">{{appTitle}}</span>
+        <span id="proposition-name" class="aa-contrast-header">{{appTitle}}</span>
       </div>
     </div>
   </div>
 </header>
 <div *ngIf="!shouldShowFamiliarisationBar" id="global-header-bar"></div>
-<div *ngIf="shouldShowFamiliarisationBar" id="familiarisation-header-bar">Familiarisation check</div>
+<div *ngIf="shouldShowFamiliarisationBar" id="familiarisation-header-bar" class="aa-contrast-block">Familiarisation check</div>

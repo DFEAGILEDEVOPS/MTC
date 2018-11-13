@@ -24,15 +24,15 @@
             </fieldset>
           </div>
           <div class="column-two-thirds">
-            <div *ngIf="validSelection" class="preview-box">
-              <div class="badge aa-copy-size-{{selectedSize}}">Size preview</div>
+            <div *ngIf="validSelection" class="preview-box aa-contrast-border">
+              <div class="badge aa-copy-size-{{selectedSize}} aa-contrast-invert">Size preview</div>
               <div class="preview-content">
                   <div class="question-text aa-question-size-{{selectedSize}}">123</div>
                   <table>
                       <tr>
-                          <td><button class="numpad-button-{{selectedSize}}" type="button">1</button></td>
-                          <td><button class="numpad-button-{{selectedSize}}" type="button">2</button></td>
-                          <td><button class="numpad-button-{{selectedSize}}" type="button">3</button></td>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">1</button></td>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">2</button></td>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">3</button></td>
                       </tr>
                   </table>
               </div>
@@ -50,7 +50,7 @@
         <p class="aa-copy-size" tabindex="0">
           If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>
         </p>
-        <button [disabled]="!validSelection" class="button aa-button-size" (click)="onClick()">Next</button>
+        <button [disabled]="!validSelection" class="button aa-button-size aa-contrast-button" (click)="onClick()">Next</button>
       </div>
     </div>
   </main>
