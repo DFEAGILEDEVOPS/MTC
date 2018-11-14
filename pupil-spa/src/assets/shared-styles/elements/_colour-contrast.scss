@@ -127,6 +127,10 @@
   .colour-contrast-#{$key} .svg-crown path {
     fill: $bg-colour !important;
   }
+
+  .colour-contrast-#{$key} .svg-warning path {
+    fill: $fg-colour !important;
+  }
 }
 
 /*
