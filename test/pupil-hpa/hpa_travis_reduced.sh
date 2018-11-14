@@ -3,9 +3,6 @@
 # start pupil-api
 cd ../../pupil-api && npm start > api.log 2>&1 &
 
-# start function
-cd ../../functions && npm start > functions.log 2>&1 &
-
 # start pupil app
 cd ../../pupil-spa && npm start &
 
@@ -30,10 +27,5 @@ echo "***********"
 echo " API LOG"
 echo "***********"
 cat ../api.log
-
-echo "**************"
-echo " FUNCTIONS LOG"
-echo "**************"
-cat ../functions.log
 
 exit $CUCUMBER_EXIT_CODE
