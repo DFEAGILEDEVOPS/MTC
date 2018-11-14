@@ -37,7 +37,7 @@
                     </label>
                     <input id="inputAssistantFirstName" #inputAssistantFirstName="ngModel" ngModel required maxlength="128" [pattern]="validationPattern"
                             [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantFirstName.invalid}" type="text"
-                            name="inputAssistantFirstName" spellcheck="false" autocorrect="off" autocomplete="off" class="aa-contrast aa-contrast-border">
+                            name="inputAssistantFirstName" spellcheck="false" autocorrect="off" autocomplete="off" class="aa-contrast aa-contrast-border aa-copy-size">
                   </div>
                   <div tabindex="0" [ngClass]="{ 'form-group': true, 'form-group-error': formSubmitted && inputAssistantLastName.invalid}">
                     <label for="inputAssistantLastName" class="form-label aa-copy-size aa-contrast">
@@ -46,7 +46,7 @@
                     </label>
                     <input id="inputAssistantLastName" #inputAssistantLastName="ngModel" ngModel required maxlength="128" [pattern]="validationPattern"
                             [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantLastName.invalid}" type="text"
-                            name="inputAssistantLastName" spellcheck="false" autocorrect="off" autocomplete="off" class="aa-contrast aa-contrast-border">
+                            name="inputAssistantLastName" spellcheck="false" autocorrect="off" autocomplete="off" class="aa-contrast aa-contrast-border aa-copy-size">
                   </div>
                 </div>   
             </li>
