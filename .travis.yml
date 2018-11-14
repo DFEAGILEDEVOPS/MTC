@@ -1,12 +1,6 @@
 language: node_js
 
-dist: xenial
-addons:
-  apt:
-    sources:
-    - google-chrome
-    packages:
-    - google_chrome
+dist: trusty
 
 branches:
   only:

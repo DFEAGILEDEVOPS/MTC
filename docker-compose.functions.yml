@@ -1,7 +1,10 @@
-# This does NOT work in combination with the *-test.yml files.  Use it only with the base compose file.
 version: '3'
 services:
   functions:
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${STORAGE_CONNECTION}"
+      StorageAccount: "${STORAGE_CONNECTION}"
+      AzureWebJobsStorage: "${STORAGE_CONNECTION}"
     build: ./functions
     container_name: mtc_funcs
     ports:
