@@ -16,12 +16,6 @@ cache:
     - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
-  matrix:
-    - TEST_TYPE=admin-e2e-1
-    - TEST_TYPE=admin-e2e-2
-    - TEST_TYPE=admin-e2e-3
-    - TEST_TYPE=pupil-e2e-1
-    - TEST_TYPE=pupil-e2e-2
   global:
     - OVERRIDE_PIN_EXPIRY=true
     - ENVIRONMENT_NAME=hpa-travis
@@ -46,13 +40,15 @@ before_install:
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
+  - sudo apt-get update && curl -O https://dot.net/v1/dotnet-install.sh && source dotnet-install.sh --channel Current
+  - npm i -g azure-functions-core-tools@core --unsafe-perm true
 
 install:
   - docker-compose up --build -d && sleep 30
   - docker info
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/functions && travis_retry yarn install --frozen-lockfile
+  - cd ${TRAVIS_BUILD_DIR}/functions && travis_retry yarn install --frozen-lockfile && func extensions install
   - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && gem install bundler --conservative && bundle install
   - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && gem install bundler --conservative && bundle install
@@ -60,11 +56,7 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 
 script:
-  - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_2.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./pupil_spa_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./pupil_spa_tests_2.sh; fi
+  - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 
 after_script:
   - docker-compose down

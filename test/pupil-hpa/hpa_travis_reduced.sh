@@ -16,9 +16,7 @@ MSG='admin app is running under process '
 MSG+=$PID
 echo $MSG
 
-# cd test
-# rake features OPTS='-t @generate_pupil_pins,@manage_check_window,@phase_banner,@pupils_not_taking_check,@pupil_register,@question_time_limits,@restarts'
-rake features OPTS='-t @generate_pupil_pins,@manage_check_window,@phase_banner,@pupil_register,@question_time_limits'
+rake features OPTS='-t @travis'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
