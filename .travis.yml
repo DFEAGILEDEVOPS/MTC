@@ -41,7 +41,8 @@ before_install:
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
   - sudo apt-get update && curl -O https://dot.net/v1/dotnet-install.sh && source dotnet-install.sh --channel Current
-  - npm i -g azure-functions-core-tools@core --unsafe-perm true
+ # - npm i -g azure-functions-core-tools@core --unsafe-perm true
+  - sudo apt-get install azure-functions-core-tools
 
 install:
   - docker-compose up --build -d && sleep 30
