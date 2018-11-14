@@ -63,6 +63,7 @@ import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azure
 import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
 import { SvgCrownComponent } from './svg/svg.crown.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
+import { SvgLoadingComponent } from './svg/svg.loading.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -112,7 +113,8 @@ const appRoutes: Routes = [
     AASettingsComponent,
     PageModificationsComponent,
     SvgCrownComponent,
-    SvgWarningComponent
+    SvgWarningComponent,
+    SvgLoadingComponent
   ],
   imports: [
     RouterModule.forRoot(
