@@ -65,6 +65,7 @@ import { SvgCrownComponent } from './svg/svg.crown.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
 import { SvgArrowComponent } from './svg/svg.arrow.component';
+import { SvgGirlComponent } from './svg/svg.girl.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -116,7 +117,8 @@ const appRoutes: Routes = [
     SvgCrownComponent,
     SvgWarningComponent,
     SvgLoadingComponent,
-    SvgArrowComponent
+    SvgArrowComponent,
+    SvgGirlComponent
   ],
   imports: [
     RouterModule.forRoot(
