@@ -4,9 +4,8 @@ import { clone, path } from 'ramda'
 import * as winston from 'winston'
 import * as moment from 'moment'
 import * as azureQueueService from './azure-queue.service'
-import * as dotenv from 'dotenv'
+require('../config')
 
-dotenv.config()
 let azureTableService: any
 const authTable = 'preparedCheck'
 
