@@ -1,21 +1,13 @@
 // When showing the time remaining we want to prevent the "remaining time" label
 // from moving at all - so we give the dynamic timer element enough space for 2 digits
-// and prevent it from shrinking when display '1'.
 .timer {
   display: inline-block;
-  width: $gutter-half;
+  width: 2ex;
 }
 
 .remaining-time {
   font-size: 19px;
   margin-top: 5px;
-  float: right;
-  vertical-align: top;
-}
-
-.remaining-time-warmup {
-  font-size: 19px;
-  margin-top: -40px;
   float: right;
   vertical-align: top;
 }
