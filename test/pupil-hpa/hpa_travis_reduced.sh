@@ -16,24 +16,24 @@ MSG='admin app is running under process '
 MSG+=$PID
 echo $MSG
 
-rake features OPTS='-t @travis'
+rake features OPTS='-t @traviss'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
 
-#echo "************"
-#echo " ADMIN LOG"
-#echo "************"
-#cat ../admin.log
+echo "************"
+echo " ADMIN LOG"
+echo "************"
+cat ../../admin/admin.log
 
 echo "***********"
 echo " API LOG"
 echo "***********"
-cat ../api.log
+cat ../../pupil-api/api.log
 
 echo "**************"
 echo " FUNCTIONS LOG"
 echo "**************"
-cat ../functions.log
+cat ../../functions/functions.log
 
 exit $CUCUMBER_EXIT_CODE
