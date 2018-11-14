@@ -40,7 +40,7 @@
     These styles use gov uk selectors which we're trying to avoid
   */
   .button-start.aa-button-size-#{$size}, .copy-size-#{$size} .button-start.aa-button-size {
-    width: calc(#{$button-width} * 2.1) !important;
+    width: calc(#{$button-width} * 1.6) !important;
   }
 
   .copy-size-#{$size} .back-link.aa-link-size {
