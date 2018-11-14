@@ -27,7 +27,8 @@
     width: $button-width !important;
     height: $button-height !important;
     line-height: $button-height !important;
-    padding: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .aa-button-size-#{$size}.wider, .copy-size-#{$size} .aa-button-size.wider {

@@ -129,12 +129,13 @@
     fill: if($special-invert == false, $bg-colour, $fg-colour) !important;
   }
 
-  .colour-contrast-#{$key} .svg-warning path {
+  .colour-contrast-#{$key} .svg-warning path,
+  .colour-contrast-#{$key} .svg-loading rect {
     fill: $fg-colour !important;
   }
 
-  .colour-contrast-#{$key} .svg-loading rect {
-    fill: $fg-colour !important;
+  .colour-contrast-#{$key} .svg-arrow polygon {
+    fill: $bg-colour !important;
   }
 }
 

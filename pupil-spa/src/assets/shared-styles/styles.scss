@@ -259,7 +259,7 @@ body {
   height: 100%;
 }
 
-/* float columns for aa settings pages */
+/* Float columns for aa settings pages */
 
 .column-float {
   min-width: 25%;
@@ -268,10 +268,21 @@ body {
   overflow: hidden;
 }
 
-/* svg icons */
+/* SVG icons */
 .notice .svg-warning {
   position: absolute;
   left: 0;
   top: 50%;
   margin-top: -20px;
+}
+
+.button-start {
+  background-image: none;
+
+  .svg-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
 }

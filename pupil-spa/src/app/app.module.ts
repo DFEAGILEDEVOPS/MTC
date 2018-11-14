@@ -64,6 +64,7 @@ import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
 import { SvgCrownComponent } from './svg/svg.crown.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
+import { SvgArrowComponent } from './svg/svg.arrow.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -114,7 +115,8 @@ const appRoutes: Routes = [
     PageModificationsComponent,
     SvgCrownComponent,
     SvgWarningComponent,
-    SvgLoadingComponent
+    SvgLoadingComponent,
+    SvgArrowComponent
   ],
   imports: [
     RouterModule.forRoot(
