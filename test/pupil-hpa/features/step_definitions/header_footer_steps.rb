@@ -16,6 +16,7 @@ end
 
 Given(/^I have logged in$/) do
   sign_in_page.load
+  p 'login credentials ' + @pupil_credentials[:school_password], @pupil_credentials[:pin]
   sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
 end
