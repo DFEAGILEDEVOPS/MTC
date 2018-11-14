@@ -18,14 +18,14 @@ CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
 
-#echo "************"
-#echo " ADMIN LOG"
-#echo "************"
-#cat ../admin.log
+echo "************"
+echo " ADMIN LOG"
+echo "************"
+cat ../../admin/admin.log
 
 echo "***********"
 echo " API LOG"
 echo "***********"
-cat ../api.log
+cat ../../pupil-api/api.log
 
 exit $CUCUMBER_EXIT_CODE
