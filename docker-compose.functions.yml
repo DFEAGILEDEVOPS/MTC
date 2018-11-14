@@ -2,9 +2,9 @@ version: '3'
 services:
   functions:
     environment:
-      AZURE_STORAGE_CONNECTION_STRING: "${STORAGE_CONNECTION}"
-      StorageAccount: "${STORAGE_CONNECTION}"
-      AzureWebJobsStorage: "${STORAGE_CONNECTION}"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      StorageAccount: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       SQL_SERVER: "sqldb"
     build: ./functions
     container_name: mtc_funcs
