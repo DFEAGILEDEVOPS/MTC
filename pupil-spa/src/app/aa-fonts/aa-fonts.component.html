@@ -1,0 +1,57 @@
+<app-page-modifications>
+  <app-header class="full-width"></app-header>
+  <main id="content" class="js-content" role="main">
+    <div class="grid-row">
+      <div class="column-full">
+        <header class="page-header">
+          <h1 class="aa-title-size" tabindex="0">Welcome, {{pupil.firstName}} {{pupil.lastName}}</h1>
+        </header>
+        <p class="aa-lead-size">
+          Choose size of words and numbers
+        </p>
+        <div class="grid-row">
+          <div class="column-one-third">
+            <fieldset>
+              <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
+                <input type="radio"
+                      value="{{selectedFont.val}}"
+                      id="font-{{selectedFont.val}}"
+                      name="font-size"
+                      [checked]="selectedSize == selectedFont.val"
+                      (change)="selectionChange(selectedFont.val)">
+                <label class="aa-copy-size-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="column-two-thirds">
+            <div *ngIf="validSelection" class="preview-box aa-contrast-border">
+              <div class="badge aa-copy-size-{{selectedSize}} aa-contrast-invert">Size preview</div>
+              <div class="preview-content">
+                  <div class="question-text aa-question-size-{{selectedSize}}">123</div>
+                  <table>
+                      <tr>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">1</button></td>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">2</button></td>
+                          <td><button class="numpad-button-{{selectedSize}} aa-contrast-invert" type="button">3</button></td>
+                      </tr>
+                  </table>
+              </div>
+            </div>
+            <div *ngIf="!validSelection" class="notice warning-box" tabindex="0">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <p>
+                  This size won't work on your screen. Please choose another size or use a device with a larger screen.
+                </p>
+            </div>
+          </div>
+        </div>
+        <p class="aa-copy-size" tabindex="0">
+          If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>
+        </p>
+        <button [disabled]="!validSelection" class="button aa-button-size aa-contrast-button" (click)="onClick()">Next</button>
+      </div>
+    </div>
+  </main>
+</app-page-modifications>
