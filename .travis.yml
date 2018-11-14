@@ -40,7 +40,8 @@ before_install:
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
-  - sudo apt-get update && curl -O https://dot.net/v1/dotnet-install.sh && source dotnet-install.sh --channel Current && rm dotnet-install.sh && npm i -g azure-functions-core-tools@core --unsafe-perm true
+  - sudo apt-get update && curl -O https://dot.net/v1/dotnet-install.sh && source dotnet-install.sh --channel Current
+  - npm i -g azure-functions-core-tools@core --unsafe-perm true
 
 install:
   - docker-compose up --build -d && sleep 30
