@@ -10,7 +10,7 @@
           Choose size of words and numbers
         </p>
         <div class="grid-row">
-          <div class="column-one-third">
+          <div class="column-float">
             <fieldset>
               <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
                 <input type="radio"
@@ -23,7 +23,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="column-two-thirds">
+          <div class="column-float">
             <div *ngIf="validSelection" class="preview-box aa-contrast-border">
               <div class="badge aa-copy-size-{{selectedSize}} aa-contrast-invert">Size preview</div>
               <div class="preview-content">

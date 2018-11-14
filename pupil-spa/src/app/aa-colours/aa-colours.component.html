@@ -7,7 +7,7 @@
          Choose colour of page
         </p>
         <div class="grid-row">
-          <div class="column-one-third">
+          <div class="column-float">
             <fieldset>
               <div class="multiple-choice" *ngFor="let contrastSetting of contrastSettings">
                 <input type="radio"
@@ -20,7 +20,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="column-two-thirds">
+          <div class="column-float">
             <div class="preview-box aa-contrast-{{selectedContrast}} aa-contrast-border-{{selectedContrast}} {{accessArrangements.fontSize}}">
               <div class="badge aa-copy-size aa-contrast-invert-{{selectedContrast}}">Colour preview</div>
               <div class="preview-content">

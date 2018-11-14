@@ -258,3 +258,12 @@ body {
   min-height: 100vh;
   height: 100%;
 }
+
+/* float columns for aa settings pages */
+
+.column-float {
+  min-width: 25%;
+  padding: 0 15px;
+  float: left;
+  overflow: hidden;
+}

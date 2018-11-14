@@ -35,19 +35,20 @@ span.xsmall {
   width: 100px !important;
 }
 
+.column-full > p {
+  margin-top: 15px;
+}
+
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
   width: 500px;
   height: 360px;
   position: relative;
-  margin: 10px 0 0 40px;
+  margin: 0 auto;
 
-  @media (max-width: 640px) {
-    margin: 0;
+  @media (max-width: 750px) {
     max-width: 100%;
-    height: 250px;
-    padding-bottom: 20px;
   }
 
   > .badge {
