@@ -2,8 +2,6 @@
 
 const R = require('ramda')
 
-
-
 module.exports = {
   /**
    * Re-compute the pupil status of a single pupil.
