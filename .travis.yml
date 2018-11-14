@@ -16,12 +16,6 @@ cache:
     - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
-  matrix:
-    - TEST_TYPE=admin-e2e-1
-    - TEST_TYPE=admin-e2e-2
-    - TEST_TYPE=admin-e2e-3
-    - TEST_TYPE=pupil-e2e-1
-    - TEST_TYPE=pupil-e2e-2
   global:
     - OVERRIDE_PIN_EXPIRY=true
     - ENVIRONMENT_NAME=hpa-travis
@@ -60,11 +54,7 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 
 script:
-  - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_2.sh; fi
-#  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && ./admin_tests_3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./pupil_spa_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./pupil_spa_tests_2.sh; fi
+  - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 
 after_script:
   - docker-compose down
