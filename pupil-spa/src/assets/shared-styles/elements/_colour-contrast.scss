@@ -102,7 +102,7 @@
     display: none !important;
   }
 
-  // Style the submission svg
+  // Style the svgs
   .colour-contrast-#{$key} .wait {
 
     .background-fill {
@@ -122,6 +122,10 @@
         fill: $fg-colour !important;
       }
     }
+  }
+
+  .colour-contrast-#{$key} .svg-crown path {
+    fill: $bg-colour !important;
   }
 }
 

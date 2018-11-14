@@ -61,6 +61,7 @@ import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
 import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
+import { SvgCrownComponent } from './svg/svg.crown.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
     AAColoursComponent,
     AASettingsComponent,
     PageModificationsComponent,
+    SvgCrownComponent
   ],
   imports: [
     RouterModule.forRoot(
