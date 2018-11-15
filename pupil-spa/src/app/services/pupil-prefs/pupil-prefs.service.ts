@@ -17,6 +17,7 @@ export class PupilPrefsService {
   pupilPrefsAPIErrorDelay;
   pupilPrefsAPIErrorMaxAttempts;
   fontSettings;
+  contrastSettings;
 
   constructor(private azureQueueService: AzureQueueService,
               private http: Http,
@@ -31,11 +32,13 @@ export class PupilPrefsService {
     this.pupilPrefsAPIErrorDelay = pupilPrefsAPIErrorDelay;
     this.pupilPrefsAPIErrorMaxAttempts = pupilPrefsAPIErrorMaxAttempts;
     this.fontSettings = AccessArrangementsConfig.fontSettings;
+    this.contrastSettings = AccessArrangementsConfig.contrastSettings;
   }
 
   public async storePupilPrefs() {
     const accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
+    const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getItem('pupil') as Pupil;
     if (this.featureUseHpa === true) {
       const queueName = queueNames.pupilPreferences;
@@ -46,10 +49,17 @@ export class PupilPrefsService {
       };
       const payload = {
         preferences: {
-          fontSizeCode: fontSetting.code,
+          fontSizeCode: null,
+          contrastCode: null
         },
         checkCode: pupil.checkCode
       };
+      if (fontSetting) {
+        payload.preferences.fontSizeCode = fontSetting.code;
+      }
+      if (contrastSetting) {
+        payload.preferences.contrastCode = contrastSetting.code;
+      }
       try {
         this.auditService.addEntry(new PupilPrefsAPICalled());
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
