@@ -36,6 +36,11 @@
     text-align: center !important;
   }
 
+  .aa-button-size-#{$size}.wider, .copy-size-#{$size} .aa-button-size.ultrawider {
+    width: calc(#{$button-width} * 1.9) !important;
+    text-align: center !important;
+  }
+
   /*
     These styles use gov uk selectors which we're trying to avoid
   */

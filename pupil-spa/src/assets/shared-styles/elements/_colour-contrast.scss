@@ -85,7 +85,7 @@
   */
 
   // Links
-  .colour-contrast-#{$key} a {
+  .colour-contrast-#{$key} a, .colour-contrast-#{$key} details summary {
     color: $fg-colour !important;
   }
 
