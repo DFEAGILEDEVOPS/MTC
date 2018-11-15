@@ -24,6 +24,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected storageService: StorageService,
               protected questionService: QuestionService) {
     super(auditService, windowRefService, questionService, storageService, speechService);
+    this.isWarmUpQuestion = true;
   }
 
   ngOnInit() {
