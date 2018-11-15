@@ -2,24 +2,23 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FamiliarisationColourComponent } from './familiarisation-colour.component';
-import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
-import { RouteService } from '../services/route/route.service';
-import { RouteServiceMock } from '../services/route/route.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { TokenService } from '../services/token/token.service';
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { AccessArrangements } from '../access-arrangements';
+import { AzureQueueSubmissionService } from '../services/azure-queue-submission/azure-queue-submission';
+import { FamiliarisationColourComponent } from './familiarisation-colour.component';
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
+import { RouteService } from '../services/route/route.service';
+import { RouteServiceMock } from '../services/route/route.service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
+import { TokenService } from '../services/token/token.service';
 
 describe('FamiliarisationColourComponent', () => {
-  let auditService: AuditService;
-  let azureQueueService: AzureQueueService;
+  let azureQueueSubmissionService: AzureQueueSubmissionService;
   let mockRouter;
   let mockRouteService;
   let mockStorageService;
-  let tokenService: TokenService;
   let component: FamiliarisationColourComponent;
   let fixture: ComponentFixture<FamiliarisationColourComponent>;
 
@@ -38,19 +37,18 @@ describe('FamiliarisationColourComponent', () => {
         {provide: QUEUE_STORAGE_TOKEN},
         AuditService,
         AzureQueueService,
+        AzureQueueSubmissionService,
         TokenService
       ]
     });
 
     mockRouteService = injector.get(RouteService);
     mockStorageService = injector.get(StorageService);
-    tokenService = injector.get(TokenService);
-    auditService = injector.get(AuditService);
-    azureQueueService = injector.get(AzureQueueService);
+    azureQueueSubmissionService = injector.get(AzureQueueSubmissionService);
   }));
   describe('when config does not include existing colour contrast selection', () => {
     beforeEach(() => {
-      spyOn(mockStorageService, 'getItem').and.returnValue({ checkCode: 'checkCode' });
+      spyOn(mockStorageService, 'getItem').and.returnValue({checkCode: 'checkCode'});
       spyOn(mockStorageService, 'setItem');
       fixture = TestBed.createComponent(FamiliarisationColourComponent);
       fixture.detectChanges();
@@ -92,57 +90,15 @@ describe('FamiliarisationColourComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
-    describe('When featureUseHpa is enabled', () => {
-      beforeEach(() => {
-        component.featureUseHpa = true;
-      });
-      it('should call pupil prefs azure queue storage', async () => {
-        spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-        spyOn(azureQueueService, 'addMessage');
-        spyOn(auditService, 'addEntry');
-        spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
-          expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(mockStorageService.getItem).toHaveBeenCalled();
-          expect(tokenService.getToken).toHaveBeenCalled();
-          expect(azureQueueService.addMessage).toHaveBeenCalled();
-          expect(mockStorageService.setItem).toHaveBeenCalled();
-        });
-      });
-      it('should audit log the error when azureQueueService add Message fails', async () => {
-        spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-        spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
-        spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
-        const addEntrySpy = spyOn(auditService, 'addEntry');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
-          expect(mockStorageService.getItem).toHaveBeenCalled();
-          expect(tokenService.getToken).toHaveBeenCalled();
-          expect(azureQueueService.addMessage).toHaveBeenCalled();
-          expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
-        });
-      });
-    });
-    describe('when featureHpa is not enabled', () => {
-      beforeEach(() => {
-        component.featureUseHpa = false;
-      });
-      it('should not call pupil prefs azure queue storage', async () => {
-        spyOn(tokenService, 'getToken');
-        spyOn(azureQueueService, 'addMessage');
-        spyOn(auditService, 'addEntry');
-        spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
-          expect(auditService.addEntry).not.toHaveBeenCalled();
-          expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
-          expect(tokenService.getToken).not.toHaveBeenCalled();
-          expect(azureQueueService.addMessage).not.toHaveBeenCalled();
-        });
+    it('should call pupil prefs azure queue storage', async () => {
+      spyOn(azureQueueSubmissionService, 'submitAzureQueueMessage');
+      spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
+      await component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        expect(mockStorageService.getItem).toHaveBeenCalled();
+        expect(azureQueueSubmissionService.submitAzureQueueMessage).toHaveBeenCalled();
+        expect(mockStorageService.setItem).toHaveBeenCalled();
       });
     });
   });
