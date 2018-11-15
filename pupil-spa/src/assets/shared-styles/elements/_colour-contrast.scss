@@ -1,131 +1,176 @@
-#page-modifications {
-  min-height: 100vh;
-  height: 100%;
-}
+@mixin colour-contrast($key, $fg-colour, $bg-colour, $special-invert: false) {
 
-@mixin colour-contrast($background-colour, $copy-colour) {
-  background-color: $background-colour;
-
-  #global-header {
-    background-color: $copy-colour !important;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
-
-    .header-wrapper, .header-logo {
-      background: none;
-    }
-
-    #proposition-name, #logo {
-      color: $background-colour !important;
-    }
+  .colour-contrast-#{$key} {
+    color: $fg-colour !important;
+    background-color: $bg-colour !important;
   }
 
-  #familiarisation-header-bar, .familiarisation-title {
-    color: $copy-colour !important;
+  .aa-contrast-text-#{$key}, .colour-contrast-#{$key} .aa-contrast-text {
+    color: $fg-colour !important;
   }
 
-  #familiarisation-header-bar {
-    background-color: $background-colour !important;
+  .aa-contrast-text-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-text-invert {
+    color: $bg-colour !important;
   }
 
-  h1, h2, h3, h4, p, strong, li, span, a, label, .timer, .remaining-time {
-    color: $copy-colour !important;
+  .aa-contrast-background-#{$key}, .colour-contrast-#{$key} .aa-contrast-background {
+    background-color: $bg-colour !important;
   }
 
-  .back-link {
-    border-bottom-color: $copy-colour !important;
-
-    &:before {
-      border-right-color: $copy-colour !important;
-    }
+  .aa-contrast-background-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-background-invert {
+    background-color: $fg-colour !important;
   }
 
-  .button, button, .numpad-button, .numpad-enter-button {
-    background-color: $copy-colour !important;
-    color: $background-colour !important;
+  .aa-contrast-border-#{$key}, .colour-contrast-#{$key} .aa-contrast-border {
+    border-color: $fg-colour !important;
+  }
+
+  .aa-contrast-#{$key}, .colour-contrast-#{$key} .aa-contrast {
+    color: $fg-colour !important;
+    background-color: $bg-colour !important;
+  }
+
+  .aa-contrast-button-#{$key}, .colour-contrast-#{$key} .aa-contrast-button {
+    background-color: $fg-colour !important;
+    color: $bg-colour !important;
+    border: none !important;
     box-shadow: none;
   }
 
-  .answer {
-    box-shadow: 0 0 0 3px $copy-colour !important;
-    border: 1px solid $copy-colour !important;
+  .colour-contrast-#{$key} span.aa-contrast-#{$key} {
+    border: 2px solid $fg-colour !important;
   }
 
-  .practice-box {
-    background-color: $background-colour !important;
-    color: $copy-colour !important;
-    border: 2px solid $copy-colour !important;
-  }
+  @if $special-invert == false {
 
-  .wait {
-
-    .background-fill {
-      fill: $background-colour !important;
+    .aa-contrast-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-invert {
+      color: $bg-colour !important;
+      background-color: $fg-colour !important;
     }
 
-    .copy-stroke {
-      stroke: $copy-colour !important;
+    .aa-contrast-block-#{$key}, .colour-contrast-#{$key} .aa-contrast-block {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
     }
 
-    .copy-fill {
-      fill: $copy-colour !important;
+    .colour-contrast-#{$key} .aa-contrast-header {
+      background-color: $fg-colour !important;
+      color: $bg-colour !important;
     }
   }
 
-  //hide the blue header bar on all contrast pages
+  @else {
+
+    .aa-contrast-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-invert {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
+      border: 2px solid $fg-colour !important;
+    }
+
+    .aa-contrast-block-#{$key}, .colour-contrast-#{$key} .aa-contrast-block {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
+      border: 2px solid $fg-colour !important;
+    }
+
+    .colour-contrast-#{$key} .aa-contrast-header {
+      background-color: $bg-colour !important;
+      color: $fg-colour !important;
+    }
+  }
+
+  /*
+    The styles below are hijaking other styles
+    which we're trying to avoid
+  */
+
+  // Links
+  .colour-contrast-#{$key} a {
+    color: $fg-colour !important;
+  }
+
+  .colour-contrast-#{$key} .back-link {
+    border-bottom-color: $fg-colour !important;
+
+    &:before {
+      border-right-color: $fg-colour !important;
+    }
+  }
+
+  // Hide the blue header bar on all contrast pages
   #global-header-bar {
     display: none !important;
   }
-}
 
-.colour-contrast-yob {
-  $copy-color: #ff0;
-  $background-colour: #000;
+  // Style the svgs
+  .colour-contrast-#{$key} .svg-girl {
 
-  @include colour-contrast($background-colour, $copy-color);
-
-  // Some YOB colour are inverted
-  .numpad-button, .numpad-enter-button {
-    background-color: $background-colour !important;
-    color: $copy-color !important;
-    border: 2px solid $copy-color !important;
-  }
-
-  #global-header {
-    border: 2px solid $copy-color !important;
-    background-color: $background-colour !important;
-
-    .header-wrapper, .header-logo {
-      background: none;
+    .background-fill {
+      fill: $bg-colour !important;
     }
 
-    #proposition-name, #logo {
-      color: $copy-color !important;
+    .copy-stroke {
+      stroke: $fg-colour !important;
+    }
+
+    .copy-fill {
+      fill: $fg-colour !important;
+    }
+
+    @if $key == 'yob' {
+      .eye-cover {
+        fill: $fg-colour !important;
+      }
     }
   }
 
-  .button-start {
-    background: none;
+
+  .colour-contrast-#{$key} .svg-crown path {
+    fill: if($special-invert == false, $bg-colour, $fg-colour) !important;
   }
 
-  // Fill eyes when YOB
-  .wait {
-    .eye-cover {
-      fill: $copy-color !important;
-    }
+  .colour-contrast-#{$key} .svg-warning path,
+  .colour-contrast-#{$key} .svg-loading rect {
+    fill: $fg-colour !important;
+  }
+
+  .colour-contrast-#{$key} .svg-arrow polygon {
+    fill: $bg-colour !important;
   }
 }
 
-.colour-contrast-bob {
-  @include colour-contrast(#96adfc, #000000);
+/*
+  BOW styles, we dont want to use the entire mixin
+*/
+.aa-contrast-bow {
+  // Used to override app-page-modifications on the preview box
+  color: #000 !important;
+  background-color: #fff !important;
 }
 
-.colour-contrast-bop {
-  @include colour-contrast(#edd1b0, #000000);
+.colour-contrast-bow span.aa-contrast-bow {
+  // Used to set a border on the bow option when viewing with bow
+  border: 2px solid #000 !important;
 }
 
-.colour-contrast-boc {
-  @include colour-contrast(#fff5cd, #00008b);
-}
+@include colour-contrast(
+  "yob",
+  #ff0,
+  #000,
+  true
+);
+@include colour-contrast(
+  "bob",
+  #000,
+  #96adfc
+);
+@include colour-contrast(
+  "bop",
+  #000,
+  #edd1b0
+);
+@include colour-contrast(
+  "boc",
+  #00008b,
+  #fff5cd
+);

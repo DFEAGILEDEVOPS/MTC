@@ -2,40 +2,40 @@
     <app-header class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
         <div class="grid-row">
-            <div class="column-two-thirds">
+            <div class="column-full">
                 <header class="page-header">
-                    <h1 class="heading-xlarge" tabindex="0">Welcome, {{ pupil.firstName }}</h1>
+                    <h1 class="aa-title-size" tabindex="0">Welcome, {{ pupil.firstName }}</h1>
                 </header>
-                <p id="first-name" class="lede" tabindex="0">First name: <strong
-                    class="bold-medium"
+                <p id="first-name" class="aa-copy-size" tabindex="0">First name: <strong
+                    class="bold-medium aa-copy-size"
                 >
                 {{pupil.firstName}}
                 </strong></p>
-                <p id="last-name" class="lede" tabindex="0">Last name: <strong
-                    class="bold-medium"
+                <p id="last-name" class="aa-copy-size" tabindex="0">Last name: <strong
+                    class="bold-medium aa-copy-size"
                 >
                 {{pupil.lastName}}
                 </strong></p>
-                <p id="dob" class="lede" tabindex="0">Date of birth: <strong
-                    class="bold-medium"
+                <p id="dob" class="aa-copy-size" tabindex="0">Date of birth: <strong
+                    class="bold-medium aa-copy-size"
                 >
                     {{pupil.dob}}
                 </strong></p>
-                <p id="school" class="lede" tabindex="0">School: <strong
-                    class="bold-medium"
+                <p id="school" class="aa-copy-size" tabindex="0">School: <strong
+                    class="bold-medium aa-copy-size"
                 >
                     {{school.name}}
                 </strong></p>
                 <p class="notice" tabindex="0">
-                    <i class="icon icon-important">
+                    <app-svg-warning>
                         <strong class="visually-hidden">Warning</strong>
-                    </i>
-                    <strong class="bold-small">
+                    </app-svg-warning>
+                    <strong class="aa-copy-size">
                         Do not press 'Next' if this is not you,
                         <a routerLink="/sign-out">sign out</a>
                     </strong>
                 </p>
-                <button id="confirm-identity-button" role="button" class="button" (click)="onClick()">
+                <button id="confirm-identity-button" role="button" class="button aa-button-size aa-contrast-button" (click)="onClick()">
                 Next
                 </button>
             </div>
