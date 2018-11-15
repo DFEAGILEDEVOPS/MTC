@@ -59,12 +59,12 @@ if ENV['MONGO_CONNECTION_STRING']
 else
   CLIENT = Mongo::Client.new('mongodb://mongo/mtc')
 end
-sleep 20
-database = ENV['SQL_DATABASE'] || 'mtc'
-server = ENV['SQL_SERVER'] || 'localhost'
-port =  ENV['SQL_PORT'] || 1433
-admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
-admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+# sleep 20
+# database = ENV['SQL_DATABASE'] || 'mtc'
+# server = ENV['SQL_SERVER'] || 'localhost'
+# port =  ENV['SQL_PORT'] || 1433
+# admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
+# admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 
 # begin
 #   SQL_CLIENT = TinyTds::Client.new(username: admin_user,

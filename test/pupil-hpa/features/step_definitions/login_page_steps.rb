@@ -172,7 +172,7 @@ When(/^I add a pupil$/) do
   step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
   step "I submit the form with the name fields set as #{@name}"
-  step "the pupil details should be stored"
+  # step "the pupil details should be stored"
 end
 
 When(/^I login to the admin app with (.+)$/) do |user|
