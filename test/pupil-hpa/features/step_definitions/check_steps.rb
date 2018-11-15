@@ -2,9 +2,11 @@ Given(/^I have started the check(?: using the (.+))?$/) do |input|
   input_type = (input ? input : 'numpad')
   step 'I have generated a live pin'
   step 'I have logged in'
+  p current_url
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
+  p current_url
   step "I complete the warm up questions using the #{input_type}"
   warm_up_complete_page.start_check.click
   mtc_check_start_page.start_now.click
@@ -83,7 +85,8 @@ end
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
-  complete_page.wait_for_complete_page
+  p current_url
+  # complete_page.wait_for_complete_page
   # expect(complete_page).to have_heading
 end
 
