@@ -41,7 +41,11 @@ After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
     embed("data:image/png;base64,#{Capybara.current_session.driver.browser.screenshot_as(:base64)}", 'image/png', 'Failure')
-    page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png")
-    p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
+    name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
+    page.save_screenshot("screenshots/#{name}")
+    p "Screenshot raised - " + "screenshots/#{name}"
+    content = File.open("screenshots/#{name}", 'rb') { |file| file.read }
+    AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
+    p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
 end

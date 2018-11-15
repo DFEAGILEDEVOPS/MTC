@@ -18,6 +18,7 @@ require_relative '../../features/support/request_helper'
 require 'azure/storage/table'
 require 'azure/storage/queue'
 require 'azure/storage/blob'
+require_relative '../../features/support/azure_blob_helper'
 
 require_relative 'helpers'
 include Helpers
@@ -61,6 +62,7 @@ end
 sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
+p server[0..5]
 port =  ENV['SQL_PORT'] || 1433
 admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
@@ -104,5 +106,5 @@ fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCO
 AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
-
+BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
 Capybara.visit Capybara.app_host
