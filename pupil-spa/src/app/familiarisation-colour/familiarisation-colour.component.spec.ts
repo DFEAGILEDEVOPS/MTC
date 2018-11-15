@@ -13,6 +13,7 @@ import { RouteServiceMock } from '../services/route/route.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { TokenService } from '../services/token/token.service';
+import { PupilPrefsAPICalled, PupilPrefsAPICallFailed, PupilPrefsAPICallSucceeded } from '../services/audit/auditEntry';
 
 describe('FamiliarisationColourComponent', () => {
   let azureQueueSubmissionService: AzureQueueSubmissionService;
@@ -90,14 +91,32 @@ describe('FamiliarisationColourComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
-    it('should call pupil prefs azure queue storage', async () => {
-      spyOn(azureQueueSubmissionService, 'submitAzureQueueMessage');
+    it('should call azure queue submission service', async () => {
+      const submitAzureQueueMessageSpy = spyOn(azureQueueSubmissionService, 'submitAzureQueueMessage');
       spyOn(mockRouteService, 'getPreviousUrl').and.returnValue('/something-else');
+      const payload = {
+        preferences: {
+          colourContrastCode: 'BOW'
+        },
+        checkCode: 'checkCode'
+      };
+      const retryConfig = {
+        errorDelay: component.pupilPrefsAPIErrorDelay,
+        errorMaxAttempts: component.pupilPrefsAPIErrorMaxAttempts
+      };
+      const auditMessages = {
+        APICalled: PupilPrefsAPICalled,
+        APICallSucceeded: PupilPrefsAPICallSucceeded,
+        APICallFailed: PupilPrefsAPICallFailed
+      };
       await component.onClick();
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
         expect(mockStorageService.getItem).toHaveBeenCalled();
-        expect(azureQueueSubmissionService.submitAzureQueueMessage).toHaveBeenCalled();
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[0]).toEqual(payload);
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[1]).toEqual(retryConfig);
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[2]).toEqual('pupilPreferences');
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[3]).toEqual(auditMessages);
         expect(mockStorageService.setItem).toHaveBeenCalled();
       });
     });
