@@ -2,19 +2,16 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../services/config/config.service';
-import { AuditService } from '../services/audit/audit.service';
-import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
+import { AzureQueueSubmissionService } from '../services/azure-queue-submission/azure-queue-submission';
 import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { TokenService } from '../services/token/token.service';
 import {
   AccessArrangements,
   AccessArrangementsConfig,
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../services/audit/auditEntry';
-import { queueNames } from '../services/azure-queue/queue-names';
 
 @Component({
   selector: 'app-familiarisation-area',
@@ -23,7 +20,6 @@ import { queueNames } from '../services/azure-queue/queue-names';
 })
 export class FamiliarisationAreaComponent {
   accessArrangements;
-  featureUseHpa;
   pupil: Pupil;
   selectedSize;
   fontSettings;
@@ -31,17 +27,13 @@ export class FamiliarisationAreaComponent {
   pupilPrefsAPIErrorMaxAttempts;
 
   constructor(
-    private auditService: AuditService,
-    private azureQueueService: AzureQueueService,
+    private azureQueueSubmissionService: AzureQueueSubmissionService,
     private questionService: QuestionService,
     private router: Router,
     private storageService: StorageService,
-    private tokenService: TokenService,
-
 ) {
-    const { featureUseHpa, pupilPrefsAPIErrorDelay, pupilPrefsAPIErrorMaxAttempts } = APP_CONFIG;
+    const { pupilPrefsAPIErrorDelay, pupilPrefsAPIErrorMaxAttempts } = APP_CONFIG;
     this.accessArrangements = new AccessArrangements;
-    this.featureUseHpa = featureUseHpa;
     this.fontSettings = AccessArrangementsConfig.fontSettings;
     this.pupilPrefsAPIErrorDelay = pupilPrefsAPIErrorDelay;
     this.pupilPrefsAPIErrorMaxAttempts = pupilPrefsAPIErrorMaxAttempts;
@@ -69,27 +61,22 @@ export class FamiliarisationAreaComponent {
     this.setFontSize(this.selectedSize);
     const fontSetting = this.fontSettings.find(f => f.val === this.accessArrangements.fontSize);
     const fontCode = fontSetting.code;
-    if (this.featureUseHpa === true) {
-      const queueName = queueNames.pupilPreferences;
-      const { url, token } = this.tokenService.getToken('pupilPreferences');
-      const payload = {
-        preferences: {
-          fontSizeCode: fontCode,
-        },
-        checkCode: this.pupil.checkCode
-      };
-      const retryConfig = {
-        errorDelay: this.pupilPrefsAPIErrorDelay,
-        errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
-      };
-      try {
-        this.auditService.addEntry(new PupilPrefsAPICalled());
-        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-        this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
-      } catch (error) {
-        this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
-      }
-    }
+    const payload = {
+      preferences: {
+        fontSizeCode: fontCode,
+      },
+      checkCode: this.pupil.checkCode
+    };
+    const retryConfig = {
+      errorDelay: this.pupilPrefsAPIErrorDelay,
+      errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
+    };
+    const auditMessages = {
+      APICalled: PupilPrefsAPICalled,
+      APICallSucceeded: PupilPrefsAPICallSucceeded,
+      APICallFailed: PupilPrefsAPICallFailed
+    };
+    await this.azureQueueSubmissionService.submitAzureQueueMessage(payload, retryConfig, 'pupilPreferences', auditMessages);
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
     if (this.questionService.getConfig().colourContrast) {
       this.router.navigate(['colour-choice']);
@@ -97,5 +84,4 @@ export class FamiliarisationAreaComponent {
       this.router.navigate(['access-settings']);
     }
   }
-
 }

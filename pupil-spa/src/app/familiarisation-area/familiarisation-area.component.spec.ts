@@ -1,25 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { AccessArrangements } from '../access-arrangements';
 import { AuditService } from '../services/audit/audit.service';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
+import { AzureQueueSubmissionService } from '../services/azure-queue-submission/azure-queue-submission';
+import { FamiliarisationAreaComponent } from './familiarisation-area.component';
+import { PupilPrefsAPICalled, PupilPrefsAPICallFailed, PupilPrefsAPICallSucceeded } from '../services/audit/auditEntry';
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { TokenService } from '../services/token/token.service';
 
-import { FamiliarisationAreaComponent } from './familiarisation-area.component';
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
-
 describe('FamiliarisationAreaComponent', () => {
-  let auditService: AuditService;
-  let azureQueueService: AzureQueueService;
+  let azureQueueSubmissionService: AzureQueueSubmissionService;
   let mockRouter;
   let mockStorageService;
   let mockQuestionService;
-  let tokenService: TokenService;
   let component: FamiliarisationAreaComponent;
   let fixture: ComponentFixture<FamiliarisationAreaComponent>;
 
@@ -38,20 +38,20 @@ describe('FamiliarisationAreaComponent', () => {
         { provide: QUEUE_STORAGE_TOKEN },
         AuditService,
         AzureQueueService,
+        AzureQueueSubmissionService,
         TokenService
       ]
     });
 
     mockStorageService = injector.get(StorageService);
     mockQuestionService = injector.get(QuestionService);
-    tokenService = injector.get(TokenService);
-    auditService = injector.get(AuditService);
-    azureQueueService = injector.get(AzureQueueService);
+    azureQueueSubmissionService = injector.get(AzureQueueSubmissionService);
   }));
 
   describe('when config does not include existing font size selection', () => {
     beforeEach(async(() => {
-      spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b', checkCode: 'checkCode' });
+      spyOn(mockStorageService, 'getItem').and.returnValue({firstName: 'a', lastName: 'b', checkCode: 'checkCode'});
+      spyOn(mockStorageService, 'setItem');
       fixture = TestBed.createComponent(FamiliarisationAreaComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
@@ -62,13 +62,16 @@ describe('FamiliarisationAreaComponent', () => {
       });
     });
 
-    it('should set the font size if it is detected in the config', () => {
-      spyOn(mockStorageService, 'setItem');
-      expect (mockStorageService.setItem).not.toHaveBeenCalled();
+    it('should set the font size to default value (regular) if it is not detected in the config', () => {
+      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
+      const accessArrangements = new AccessArrangements();
+      accessArrangements.fontSize = 'regular';
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('access_arrangements', accessArrangements);
+
     });
 
     it('should redirect to colour contrast when enabled', async () => {
-      spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: true });
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: true});
       await component.onClick();
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice']);
@@ -76,64 +79,39 @@ describe('FamiliarisationAreaComponent', () => {
     });
 
     it('should redirect to the settings page when colour contrast not enabled', async () => {
-      spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: false });
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       await component.onClick();
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
       });
     });
-    describe('When featureUseHpa is enabled', () => {
-      beforeEach(() => {
-        component.featureUseHpa = true;
-      });
-      it('should call pupil prefs azure queue storage', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
-        spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-        spyOn(azureQueueService, 'addMessage');
-        spyOn(auditService, 'addEntry');
-        spyOn(mockStorageService, 'setItem');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
-          expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(mockStorageService.getItem).toHaveBeenCalled();
-          expect(tokenService.getToken).toHaveBeenCalled();
-          expect(azureQueueService.addMessage).toHaveBeenCalled();
-          expect(mockStorageService.setItem).toHaveBeenCalled();
-        });
-      });
-      it('should audit log the error when azureQueueService add Message fails', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
-        spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-        spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
-        const addEntrySpy = spyOn(auditService, 'addEntry');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
-          expect(mockStorageService.getItem).toHaveBeenCalled();
-          expect(tokenService.getToken).toHaveBeenCalled();
-          expect(azureQueueService.addMessage).toHaveBeenCalled();
-          expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
-        });
-      });
-    });
-    describe('when featureHpa is not enabled', () => {
-      beforeEach(() => {
-        component.featureUseHpa = false;
-      });
-      it('should not call pupil prefs azure queue storage', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: false });
-        spyOn(tokenService, 'getToken');
-        spyOn(azureQueueService, 'addMessage');
-        spyOn(auditService, 'addEntry');
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
-          expect(auditService.addEntry).not.toHaveBeenCalled();
-          expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
-          expect(tokenService.getToken).not.toHaveBeenCalled();
-          expect(azureQueueService.addMessage).not.toHaveBeenCalled();
-        });
+    it('should call azure queue submission service', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
+      const submitAzureQueueMessageSpy = spyOn(azureQueueSubmissionService, 'submitAzureQueueMessage');
+      const payload = {
+        preferences: {
+          fontSizeCode: 'RGL'
+        },
+        checkCode: 'checkCode'
+      };
+      const retryConfig = {
+        errorDelay: component.pupilPrefsAPIErrorDelay,
+        errorMaxAttempts: component.pupilPrefsAPIErrorMaxAttempts
+      };
+      const auditMessages = {
+        APICalled: PupilPrefsAPICalled,
+        APICallSucceeded: PupilPrefsAPICallSucceeded,
+        APICallFailed: PupilPrefsAPICallFailed
+      };
+      await component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+        expect(mockStorageService.getItem).toHaveBeenCalled();
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[0]).toEqual(payload);
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[1]).toEqual(retryConfig);
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[2]).toEqual('pupilPreferences');
+        expect(submitAzureQueueMessageSpy.calls.all()[0].args[3]).toEqual(auditMessages);
+        expect(mockStorageService.setItem).toHaveBeenCalled();
       });
     });
   });
