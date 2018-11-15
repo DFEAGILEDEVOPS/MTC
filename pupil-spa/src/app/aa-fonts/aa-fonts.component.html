@@ -3,11 +3,8 @@
   <main id="content" class="js-content" role="main">
     <div class="grid-row">
       <div class="column-full">
-        <header class="page-header">
-          <h1 class="aa-title-size" tabindex="0">Welcome, {{pupil.firstName}} {{pupil.lastName}}</h1>
-        </header>
-        <p class="aa-lead-size">
-          Choose size of words and numbers
+        <p class="aa-title-size" tabindex="0">
+          <strong>Choose size of words and numbers</strong>
         </p>
         <div class="grid-row">
           <div class="column-float">
@@ -48,7 +45,7 @@
           </div>
         </div>
         <p class="aa-copy-size" tabindex="0">
-          If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>
+          If you don’t need this setting, <a routerLink="/sign-out">please tell your teacher and sign out.</a>
         </p>
         <button [disabled]="!validSelection" class="button aa-button-size aa-contrast-button" (click)="onClick()">Next</button>
       </div>

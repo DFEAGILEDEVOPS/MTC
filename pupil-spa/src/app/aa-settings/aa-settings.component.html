@@ -24,7 +24,7 @@
           </p>
           <ol class="list list-number aa-copy-size">
             <li tabindex="0" *ngIf="config.colourContrast"><a routerLink="/colour-choice">Edit colour</a> of page</li>
-            <li tabindex="0" *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+            <li tabindex="0" *ngIf="config.fontSize"><a routerLink="/font-choice">Edit size of words and numbers</a></li>
             <li tabindex="0" *ngIf="config.inputAssistance" [ngClass]="{'extra-space': !config.practice}">
               Input assistant
                 <div *ngIf="!config.practice" class="panel panel-border-wide padding-left no-padding aa-contrast-border">
@@ -48,7 +48,7 @@
                             [ngClass]="{ 'form-control': true, 'form-control-error': formSubmitted && inputAssistantLastName.invalid}" type="text"
                             name="inputAssistantLastName" spellcheck="false" autocorrect="off" autocomplete="off" class="aa-contrast aa-contrast-border aa-copy-size">
                   </div>
-                </div>   
+                </div>
             </li>
             <li tabindex="0" *ngIf="config.questionReader">Question reader</li>
             <li tabindex="0" *ngIf="config.numpadRemoval">Remove number pad</li>
@@ -64,7 +64,7 @@
     </form>
   </main>
 </app-page-modifications>
-<ng-template #errorSummary let-control="control" let-field="field" let-focus="focus">   
+<ng-template #errorSummary let-control="control" let-field="field" let-focus="focus">
     <p class="aa-copy-size" tabindex="0" *ngIf="control.errors && (control.errors.required || control.errors.maxlength)">
       <label [for]="focus">Enter a {{field}} in no more than 128 characters</label>
     </p>
