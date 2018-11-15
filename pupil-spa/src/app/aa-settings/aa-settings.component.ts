@@ -7,11 +7,11 @@ import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-familiarisation-settings',
-  templateUrl: './familiarisation-settings.component.html',
-  styleUrls: ['./familiarisation-settings.component.scss']
+  selector: 'app-aa-settings',
+  templateUrl: './aa-settings.component.html',
+  styleUrls: ['./aa-settings.component.scss']
 })
-export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestroy {
+export class AASettingsComponent implements AfterViewInit, OnDestroy {
 
   public config: Config;
   public speechListenerEvent: any;
