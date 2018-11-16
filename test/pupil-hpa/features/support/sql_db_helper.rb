@@ -247,6 +247,14 @@ class SqlDbHelper
     data
   end
 
+  def self.get_check_result_id
+    sql = "SELECT id FROM [mtc_admin].[checkResult]"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
   def self.pupil_details(upn)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
     result = SQL_CLIENT.execute(sql)

@@ -124,9 +124,12 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  wait_until(300, 1){SqlDbHelper.get_check(storage_pupil['checkCode'])}
+  wait_until(300, 30){SqlDbHelper.get_check(storage_pupil['checkCode'])}
   check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  wait_until(300, 1){SqlDbHelper.get_check_result(check['id'])}
+  p check
+  wait_until(300, 30){SqlDbHelper.get_check_result_id} #DELETE once travis working
+  p SqlDbHelper.get_check_result_id #DELETE once travis working
+  wait_until(300, 30){SqlDbHelper.get_check_result(check['id'])}
   check_result = SqlDbHelper.get_check_result(check['id'])
   check = JSON.parse(check_result['payload'])
   storage_answers.each {|answer| expect(check['answers']).to include answer}
