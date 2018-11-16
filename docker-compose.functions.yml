@@ -6,10 +6,6 @@ services:
       StorageAccount: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
-      SQL_SERVER: "${SQL_SERVER}"
-      SQL_DATABASE: "${SQL_DATABASE}"
-      SQL_APP_USER_PASSWORD: "${SQL_APP_USER_PASSWORD}"
-      SQL_APP_USER: "${SQL_APP_USER}"
     build: ./functions
     container_name: mtc_funcs
     ports:
