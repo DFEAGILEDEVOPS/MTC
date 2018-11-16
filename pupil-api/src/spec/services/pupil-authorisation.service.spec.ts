@@ -3,6 +3,7 @@
 /* global describe beforeEach */
 
 import { pupilAuthenticationService } from '../../services/pupil-authentication.service'
+import * as moment from 'moment'
 
 describe('pupilAuthenticationService', () => {
   let mockResult
@@ -15,11 +16,11 @@ describe('pupilAuthenticationService', () => {
       Timestamp: { '$': 'Edm.DateTime', _: new Date() },
       checkCode: { _: '09520D0D-A9CB-4651-9630-DD6698710120' },
       collectedAt: { '$': 'Edm.DateTime', _: '' },
+      pinExpiresAt: { '$': 'Edm.DateTime', _: moment().add(8, 'hours').toDate() },
       config: {
         _: '{\n  "questionTime": 6,\n  "loadingTime": 3,\n  "speechSynthesis": false\n}'
       },
       createdAt: { '$': 'Edm.DateTime', _: new Date() },
-      hasCheckStarted: { _: false },
       isCollected: { _: false },
       pupil: {
         _: '{\n  "firstName": "Unit",\n  "lastName": "Test",\n  "dob": "1 December 1970",\n  "checkCode": "09520D0D-A9CB-4651-9630-DD6698710120"\n}'
@@ -53,5 +54,25 @@ describe('pupilAuthenticationService', () => {
   it('makes a call to retrieveEntityAsync', async () => {
     await pupilAuthenticationService.authenticate('1234', 'pin1', dummyDriver)
     expect(dummyDriver.retrieveEntityAsync).toHaveBeenCalled()
+  })
+
+  it('denies authentication if the pin expiry is missing', async () => {
+    delete mockResult.pinExpiresAt
+    try {
+      await pupilAuthenticationService.authenticate('1234', 'pin1', dummyDriver)
+      fail('expected to throw')
+    } catch (error) {
+      expect(error.message).toBe('PIN expiry is missing 09520D0D-A9CB-4651-9630-DD6698710120')
+    }
+  })
+
+  it('denies authentication if the pin expiry date has past', async () => {
+    mockResult.pinExpiresAt = { '$': 'Edm.DateTime', _: moment().subtract(1, 'minute').toDate() }
+    try {
+      await pupilAuthenticationService.authenticate('1234', 'pin1', dummyDriver)
+      fail('expected to throw')
+    } catch (error) {
+      expect(error.message).toBe('PIN has expired 09520D0D-A9CB-4651-9630-DD6698710120')
+    }
   })
 })
