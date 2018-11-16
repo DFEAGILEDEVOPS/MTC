@@ -23,7 +23,7 @@ const schema = '[mtc_admin]'
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, checkStartMessage) {
-  context.log('check-started message received', checkStartMessage.checkCode)
+  context.log('check-started: message received', checkStartMessage.checkCode)
 
   // Update the admin database to update the check status to Check Started
   try {

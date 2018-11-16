@@ -7,7 +7,7 @@ const R = require('ramda')
  * @param {} prepareCheckMessage
  */
 module.exports = function (context, prepareCheckMessage) {
-  context.log('prepare-check message received', prepareCheckMessage.checkCode)
+  context.log('prepare-check: message received', prepareCheckMessage.checkCode)
   // TODO: Add a version strategy: version field, version handler.
   // TODO: Add batch processing: e.g. handle 100 at a time
   try {
