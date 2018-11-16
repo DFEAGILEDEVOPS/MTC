@@ -1,47 +1,128 @@
-@mixin copy-size($copy-size, $question-text-size, $button-text-size) {
-  p, strong, li, span {
-    font-size: $copy-size;
+@import "./aa-variables.scss";
+
+@mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
+
+  .aa-copy-size-#{$size}, .copy-size-#{$size} .aa-copy-size {
+    font-size: $copy-size !important;
   }
 
-  .button {
-    font-size: $button-text-size;
+  .aa-title-size-#{$size}, .copy-size-#{$size} .aa-title-size {
+    font-size: $title-size !important;
   }
 
-  .question-and-answer {
-    font-size: $question-text-size;
-    line-height: $question-text-size !important;
+  .aa-lead-size-#{$size}, .copy-size-#{$size} .aa-lead-size {
+    font-size: $lead-size !important;
   }
 
-  .question {
-    font-size: $question-text-size;
-    max-width: 444px;
+  .aa-link-size-#{$size}, .copy-size-#{$size} .aa-link-size {
+    font-size: $link-size !important;
   }
 
-  .answer {
-    font-size: $question-text-size;
+  .aa-question-size-#{$size}, .copy-size-#{$size} .aa-question-size {
+    font-size: $question-size !important;
+  }
+
+  .aa-button-size-#{$size}, .copy-size-#{$size} .aa-button-size {
+    font-size: $button-text-size !important;
+    width: $button-width !important;
+    height: $button-height !important;
+    line-height: $button-height !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .aa-button-size-#{$size}.wider, .copy-size-#{$size} .aa-button-size.wider {
+    width: calc(#{$button-width} * 1.5) !important;
+    text-align: center !important;
+  }
+
+  .aa-button-size-#{$size}.wider, .copy-size-#{$size} .aa-button-size.ultrawider {
+    width: calc(#{$button-width} * 2.5) !important;
+    text-align: center !important;
+  }
+
+  /*
+    These styles use gov uk selectors which we're trying to avoid
+  */
+  .button-start.aa-button-size-#{$size}, .copy-size-#{$size} .button-start.aa-button-size {
+    width: calc(#{$button-width} * 1.6) !important;
+  }
+
+  .copy-size-#{$size} .back-link.aa-link-size {
+    padding-left: calc(#{$link-size} / 1.5) !important;
+
+    &:before {
+      border-top-width: calc(#{$link-size} / 2.2) !important;
+      border-bottom-width: calc(#{$link-size} / 2.2) !important;
+      border-right-width: calc(#{$link-size} / 2) !important;
+      margin-top: calc(calc(#{$link-size} / 2) * -1) !important;
+    }
   }
 }
 
-.copy-size-xsmall {
-  @include copy-size(9px, 20px, 12px);
-}
-
-.copy-size-small {
-  @include copy-size(12px, 40px, 19px);
-}
-
-.copy-size-regular {
-  @include copy-size(14px, 60px, 27px);
-}
-
-.copy-size-large {
-  @include copy-size(24px, 100px, 40px);
-}
-
-.copy-size-xlarge {
-  @include copy-size(28px, 120px, 45px);
-}
-
-.copy-size-xxlarge {
-  @include copy-size(30px, 160px, 50px);
-}
+@include copy-size(
+  "xsmall",
+  $aa-question-size-xsmall,
+  $aa-title-size-xsmall,
+  $aa-lead-size-xsmall,
+  $aa-copy-size-xsmall,
+  $aa-link-size-xsmall,
+  $aa-button-size-xsmall,
+  $aa-button-width-xsmall,
+  $aa-button-height-xsmall
+);
+@include copy-size(
+  "small",
+  $aa-question-size-small,
+  $aa-title-size-small,
+  $aa-lead-size-small,
+  $aa-copy-size-small,
+  $aa-link-size-small,
+  $aa-button-size-small,
+  $aa-button-width-small,
+  $aa-button-height-small
+);
+@include copy-size(
+  "regular",
+  $aa-question-size-regular,
+  $aa-title-size-regular,
+  $aa-lead-size-regular,
+  $aa-copy-size-regular,
+  $aa-link-size-regular,
+  $aa-button-size-regular,
+  $aa-button-width-regular,
+  $aa-button-height-regular
+);
+@include copy-size(
+  "large",
+  $aa-question-size-large,
+  $aa-title-size-large,
+  $aa-lead-size-large,
+  $aa-copy-size-large,
+  $aa-link-size-large,
+  $aa-button-size-large,
+  $aa-button-width-large,
+  $aa-button-height-large
+);
+@include copy-size(
+  "xlarge",
+  $aa-question-size-xlarge,
+  $aa-title-size-xlarge,
+  $aa-lead-size-xlarge,
+  $aa-copy-size-xlarge,
+  $aa-link-size-xlarge,
+  $aa-button-size-xlarge,
+  $aa-button-width-xlarge,
+  $aa-button-height-xlarge
+);
+@include copy-size(
+  "xxlarge",
+  $aa-question-size-xxlarge,
+  $aa-title-size-xxlarge,
+  $aa-lead-size-xxlarge,
+  $aa-copy-size-xxlarge,
+  $aa-link-size-xxlarge,
+  $aa-button-size-xxlarge,
+  $aa-button-width-xxlarge,
+  $aa-button-height-xxlarge
+);
