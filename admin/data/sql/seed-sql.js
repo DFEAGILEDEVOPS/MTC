@@ -27,6 +27,7 @@ const loadSeeds = () => (new Promise((resolve, reject) => {
 
 const processSeed = async (seed) => {
   const { name, format, filename } = seed
+  const filepath = path.join(seedsDirectory, filename)
 
   if (!supportedFileFormats.includes(format)) {
     throw new Error(`Unsupported format: ${format} for seed ${filename}`)
@@ -37,7 +38,7 @@ const processSeed = async (seed) => {
     // handle TSV
     content = []
     await new Promise((resolve, reject) => {
-      csv.fromPath(path.join(seedsDirectory, filename), { delimiter: '\t', headers: true, trim: true })
+      csv.fromPath(filepath, { delimiter: '\t', headers: true, trim: true })
         .on('data', (data) => {
           content.push(data)
         })
@@ -54,14 +55,15 @@ const processSeed = async (seed) => {
     params = generatedSql.params
   } else if (format === 'sql') {
     // handle SQL
-    content = fs.readFileSync(filename, 'utf8')
-    sql = [content]
+    content = fs.readFileSync(filepath, 'utf8')
+    sql = content
   } else if (format === 'js') {
     // handle JS
-    content = require(filename)
+    content = require(filepath)
     sql = content.generateSql()
   }
 
+  winston.info(sql, params)
   await sqlService.modify(sql, params)
 }
 
