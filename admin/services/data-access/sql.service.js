@@ -50,6 +50,14 @@ const extractColumns = R.compose(
 const paramName = (s) => '@' + s
 
 /**
+ * Prefix a string with '@' and its index
+ * @param idx
+ * @param s
+ * @return {string}
+ */
+const paramNameWithIdx = R.curry((idx, s) => '@' + s + idx)
+
+/**
  * Return a function that takes the keys from an object joins them together into a list
  * of sql parameter identifiers.
  * @type {Function}
@@ -59,6 +67,17 @@ const createParamIdentifiers = R.compose(
   R.map(paramName),
   R.keys
 )
+
+/**
+ * Return a function that takes the keys from each object in an array and joins them
+ * together into a list of sql parameter identifiers with specific IDs.
+ * @type {Function}
+ */
+const createMultipleParamIdentifiers = (data) => data.map((d, idx) => R.compose(
+    R.join(' , '),
+    R.map(paramNameWithIdx(idx)),
+    R.keys
+)(d))
 
 /**
  * Return a string for use in a SQL UPDATE statement
@@ -327,7 +346,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
 }
 
 /**
- * Provide the INSERT statement for passing to modify and parameters given a kay/value object
+ * Provide the INSERT statement for passing to modify and parameters given a key/value object
  * @param {string} table
  * @param {object} data
  * @return {{sql: string, params}}
@@ -339,6 +358,38 @@ sqlService.generateInsertStatement = async (table, data) => {
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY()`
   return { sql, params }
+}
+
+/**
+ * Provide the INSERT statements for passing to modify and parameters an array
+ * @param {string} table
+ * @param {array} data
+ * @return {{sql: string, params}}
+ */
+sqlService.generateMultipleInsertStatements = async (table, data) => {
+    if (!Array.isArray(data)) throw new Error('Insert data is not an array')
+    const paramsWithTypes = await generateParams(table, R.head(data))
+    const headers = extractColumns(R.head(data))
+    const values = createMultipleParamIdentifiers(data).join('), (')
+    let params = []
+    data.forEach((datum, idx) => {
+      params.push(
+        R.map((key) => {
+          const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
+          return {
+            ...sameParamWithType,
+            name: `${key}${idx}`,
+            value: (sameParamWithType.type.type === 'DATETIMEOFFSETN' ? moment(datum[key]) : datum[key])
+          }
+        }, R.keys(datum))
+      )
+    })
+    params = R.flatten(params)
+    winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+    const sql = `
+  INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
+  SELECT SCOPE_IDENTITY()`
+    return { sql, params }
 }
 
 /**
