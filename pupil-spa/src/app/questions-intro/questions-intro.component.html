@@ -1,17 +1,17 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
-  <br style="clear: both">
   <div class="grid-row">
-    <div class="column-two-thirds">
+    <div class="column-full">
       <header class="page-header">
-        <h1 class="heading-xlarge" tabindex="0">Multiplication tables check questions</h1>
+        <h1 class="aa-title-size" tabindex="0">Multiplication tables check questions</h1>
       </header>
-      <p class="lede" tabindex="0">
+      <p class="lede aa-copy-size" tabindex="0">
         There will be {{count}} questions.
       </p>
       <div>
-        <button type="button" class="button button-start" id="start-now-button" (click)="onClick()">
+        <button type="button" class="button button-start aa-button-size aa-contrast-button" id="start-now-button" (click)="onClick()">
           Start now
+          <app-svg-arrow aria-hidden="true"></app-svg-arrow>
         </button>
       </div>
     </div>

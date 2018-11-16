@@ -8,13 +8,13 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { FormsModule } from '@angular/forms';
 
-import { FamiliarisationSettingsComponent } from './familiarisation-settings.component';
+import { AASettingsComponent } from './aa-settings.component';
 
-describe('FamiliarisationSettingsComponent', () => {
+describe('AASettingsComponent', () => {
   let mockRouter;
   let mockQuestionService;
-  let component: FamiliarisationSettingsComponent;
-  let fixture: ComponentFixture<FamiliarisationSettingsComponent>;
+  let component: AASettingsComponent;
+  let fixture: ComponentFixture<AASettingsComponent>;
   let storageService: StorageService;
 
   beforeEach(async(() => {
@@ -24,7 +24,7 @@ describe('FamiliarisationSettingsComponent', () => {
     mockQuestionService = jasmine.createSpyObj('QuestionService', ['getConfig']);
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ FamiliarisationSettingsComponent ],
+      declarations: [ AASettingsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
@@ -41,7 +41,7 @@ describe('FamiliarisationSettingsComponent', () => {
 
     beforeEach(() => {
       mockQuestionService.getConfig.and.returnValue({ inputAssistance: false });
-      fixture = TestBed.createComponent(FamiliarisationSettingsComponent);
+      fixture = TestBed.createComponent(AASettingsComponent);
       fixture.detectChanges();
       component = fixture.componentInstance;
     });
@@ -62,7 +62,7 @@ describe('FamiliarisationSettingsComponent', () => {
     describe('and when check type is live', () => {
       beforeEach(() => {
         mockQuestionService.getConfig.and.returnValue({inputAssistance: true});
-        fixture = TestBed.createComponent(FamiliarisationSettingsComponent);
+        fixture = TestBed.createComponent(AASettingsComponent);
         fixture.detectChanges();
         component = fixture.componentInstance;
       });
@@ -121,7 +121,7 @@ describe('FamiliarisationSettingsComponent', () => {
     describe('and when check type is familiarisation', () => {
       beforeEach(() => {
         mockQuestionService.getConfig.and.returnValue({inputAssistance: true, practice: true});
-        fixture = TestBed.createComponent(FamiliarisationSettingsComponent);
+        fixture = TestBed.createComponent(AASettingsComponent);
         fixture.detectChanges();
         component = fixture.componentInstance;
       });

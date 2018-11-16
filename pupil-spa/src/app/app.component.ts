@@ -4,6 +4,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service';
 import { AppInsights } from 'applicationinsights-js';
+import { RouteService } from './services/route/route.service';
 
 // import { NGXLogger } from 'ngx-logger';
 
@@ -26,7 +27,8 @@ export class AppComponent {
   constructor(
     protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
     protected windowRefService: WindowRefService,
-    private meta: Meta
+    private meta: Meta,
+    private routeService: RouteService
   ) {
     this.window = windowRefService.nativeWindow;
     if (APP_CONFIG.googleAnalyticsTrackingCode) {
@@ -44,5 +46,7 @@ export class AppComponent {
         });
       });
     }
+    // start listening for route changes
+    this.routeService.setup();
   }
 }

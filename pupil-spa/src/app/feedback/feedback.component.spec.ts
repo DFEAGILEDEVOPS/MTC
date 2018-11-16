@@ -74,7 +74,7 @@ describe('FeedbackComponent', () => {
 
   it('should include a H1 header title', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1.heading-xlarge').textContent).toMatch(/Give feedback/);
+    expect(compiled.querySelector('.page-header h1').textContent).toMatch(/Give feedback/);
   });
 
   it('should include three questions', () => {
