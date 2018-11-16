@@ -1,69 +1,57 @@
 language: node_js
-
 dist: trusty
-
 branches:
   only:
-    - master
-
+  - master
 cache:
   yarn: true
   directories:
-    - /home/travis/.rvm/
-    - ${TRAVIS_BUILD_DIR}/admin/node_modules
-    - ${TRAVIS_BUILD_DIR}/pupil-api/node_modules
-    - ${TRAVIS_BUILD_DIR}/functions/node_modules
-    - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
-
+  - "/home/travis/.rvm/"
+  - "${TRAVIS_BUILD_DIR}/admin/node_modules"
+  - "${TRAVIS_BUILD_DIR}/pupil-api/node_modules"
+  - "${TRAVIS_BUILD_DIR}/functions/node_modules"
+  - "${TRAVIS_BUILD_DIR}/pupil-spa/node_modules"
 env:
-  matrix:
-    - TEST_TYPE=admin-e2e-1
-    - TEST_TYPE=admin-e2e-2
-    - TEST_TYPE=admin-e2e-3
-    - TEST_TYPE=pupil-e2e-1
-    - TEST_TYPE=pupil-e2e-2
   global:
-    - OVERRIDE_PIN_EXPIRY=true
-# uncomment below to enable HPA mode.  There is a travis feature toggle profile under admin/config
-#    - ENVIRONMENT_NAME=hpa-travis
-    - secure: "eNQ7oPdxw3AhzBL0qg+M/nEzZa0vK4P0BG6usUJhX0BP2kqbwQNw9zyihiQzAwqLF9Npnfro1GLvDjcSzRqSOWoKJpLtG7Ze87LqusCKKJ35cMs1Xb8b42YJPrIliVgaLVK+1l6kj383xh/kjDM95NftH7dvyjPpXi1uCxz6NyvfQbp8a0ZRntp7/A+fL1UwUgjeF9v6JEyW6t/A3bvBuLmUkP1ArHPlFRvHUIEj7giE671b2nNsWVBOHzgH/bPnFlEbe+jTNcYGTshguILIIbNWbcIY4w5gzwja1VaMDdnAbdRNbPgIbeR+aRslq3qCACHTGrGU4QhwKb+SbYj4n0mc/Vbc4tAuUjocv9GS1Ziszs2Gpe2Vn8tu5XY1JC4CgWdXm/A0HQ/NSXvs0LIQsLIeNtJEdzrz3t3zVKZbQPYNO0tlDkz4jyW9i5CFGdGTOqVElsBTcVlHGeMdEUxy6EQ6oOjsrDPsnwOntl3ERHMrYrSP4XtjsVWXBIeXD9c0jmsERvRf14o0L1+0Vwpbo/1UBmrI5xtIeWxE84ljUh+ndQ8b4jgeyON0gDXavcPdQvCMjQKMKaYPtfdHiuWOHY/2HhMGnHMcpIbUBT/zKk4jr/6Yj0Z7CPo+gvEucX2DYKItex1zDL3g+NLavYkAB7UvKwMxSOj5m08qOu10VEE="
-    - secure: "LXdzM1Tf3EuIweD6iDJBfSZ1NibgC+DFz/gBWPx8DA+cpjwgl5c1C25EH0vOCj8p8TutL8WbsJ8Umn3sxCG3VfnghGbA9sYyKvme0F4aKAoNqz1eriOXKaE65dD4Jq17TMukf5Kl+sFAo7PRzIFj6Z5QtwwbSJBXQKfQjHu5P3t1k0ALyShruGcOs8PdeJ+S8zUMxS3YASY7xLzNVIK4qaI+xY4Ew8UpZH39kJJxoWFYrpxiv58ZP4r5W6EzeTTzUe0RLXTpKI2lEmOaKxO7W5Ax2r4qiN0km02d5V+gltzOqil8PpyPktINOqd4D1zaFhDHHW9sYH3K3my3do52GmLrLpfbiJJElJm3w6ff0zLoGi8IWCQBkqqv/snX5d//4JQ0shxCBMkIiSAIcKymjhYJ5SKVwq+3LRf/erMhuQgaE7w/Ew6+LL90M3L0trs819jCETXcW2rsGIkgrcX/alcz6W+q1D7pcVQZ+vdrUVhmXVfrvhVH/rAPGSbHjHFWzvBR+zURstirNLMKuk1SyBpyR9EMv7ZXgL6fkwSiMo0S595oXTJev2YbImm7tIA+oCE7PW01o5VPfFjMYuYJfsrK13WtoF/CF61rRtD21d+i8qORpCkRCYWsEufrb5vMrBFHai0rhXpWCzOYTcu7zK6NdmVffA031BBFDD4Cs+4="
-    - secure: "hrNaM8No5syQEIQiVbVjuo4AbwpgQ+qxlB5+IJWyPF2niWroh6q/zEkf+TnCx7MiLcz3sXCFiedKR2y+Fkvna2eablqbL5LZcbcSx1nMn5mBVnUtpIG0HZHcpBDrIC703aD1xuK2Baf4ZVO2VpevyTJO+/RRSF/wp5Cr61lvLjlpdchfFXenAQ5G5Fs64m7XpmI5PkdbdFEN89tP3lJz82/PudGLDIHK/Y34xgO/xCc5Ytvs5YnRNsMZH2DrB3Oq4Cj9OidqIu00vPgQA4ciHiZ6mkuyMbwU7QsOr34V3q8CnuRerLZil/S/bPdGti1ZIsHiKgHWdJsPkoOBbSlepBnx+UdeADXDfetvK85ebSEmrbpSfsCACvm3WD8CRddiUSt8jL+jiNiOZuhuGTUirVa8CuzS1TUNZUHZT2LQy9cP3bMrG3GA/2DtdeYPwKdQNOkwPCQMjxAa1AaIjZBhzTbJrfeJQQU52mSGazqYPKaI5LvyufKWyn5fcrEvubVabpynvnz8FHnbwOEqBdMk5ZKstBUj3w39g4UZisvCt7mICFDb8SvGISR2SUVbIt+jVOtBO2qiCMRuZ5+YVpK6mSN8Zc1CA9SK9/ugaOiIrMw8hY1gWiE0kBQWEMIGH8Z1oO9YgjXMNzkekzyuPwbbDog+iR2IJCrddodlVnljrb0="
+  - OVERRIDE_PIN_EXPIRY=true
+  - ENVIRONMENT_NAME=hpa-travis
+  - FEATURE_USE_HPA=true
+  - SQL_DATABASE=travis
+  - SQL_AZURE_SCALE=S0
+  - AUTH_URL=http://localhost:3003/auth
+  - secure: eNQ7oPdxw3AhzBL0qg+M/nEzZa0vK4P0BG6usUJhX0BP2kqbwQNw9zyihiQzAwqLF9Npnfro1GLvDjcSzRqSOWoKJpLtG7Ze87LqusCKKJ35cMs1Xb8b42YJPrIliVgaLVK+1l6kj383xh/kjDM95NftH7dvyjPpXi1uCxz6NyvfQbp8a0ZRntp7/A+fL1UwUgjeF9v6JEyW6t/A3bvBuLmUkP1ArHPlFRvHUIEj7giE671b2nNsWVBOHzgH/bPnFlEbe+jTNcYGTshguILIIbNWbcIY4w5gzwja1VaMDdnAbdRNbPgIbeR+aRslq3qCACHTGrGU4QhwKb+SbYj4n0mc/Vbc4tAuUjocv9GS1Ziszs2Gpe2Vn8tu5XY1JC4CgWdXm/A0HQ/NSXvs0LIQsLIeNtJEdzrz3t3zVKZbQPYNO0tlDkz4jyW9i5CFGdGTOqVElsBTcVlHGeMdEUxy6EQ6oOjsrDPsnwOntl3ERHMrYrSP4XtjsVWXBIeXD9c0jmsERvRf14o0L1+0Vwpbo/1UBmrI5xtIeWxE84ljUh+ndQ8b4jgeyON0gDXavcPdQvCMjQKMKaYPtfdHiuWOHY/2HhMGnHMcpIbUBT/zKk4jr/6Yj0Z7CPo+gvEucX2DYKItex1zDL3g+NLavYkAB7UvKwMxSOj5m08qOu10VEE=
+  - secure: LXdzM1Tf3EuIweD6iDJBfSZ1NibgC+DFz/gBWPx8DA+cpjwgl5c1C25EH0vOCj8p8TutL8WbsJ8Umn3sxCG3VfnghGbA9sYyKvme0F4aKAoNqz1eriOXKaE65dD4Jq17TMukf5Kl+sFAo7PRzIFj6Z5QtwwbSJBXQKfQjHu5P3t1k0ALyShruGcOs8PdeJ+S8zUMxS3YASY7xLzNVIK4qaI+xY4Ew8UpZH39kJJxoWFYrpxiv58ZP4r5W6EzeTTzUe0RLXTpKI2lEmOaKxO7W5Ax2r4qiN0km02d5V+gltzOqil8PpyPktINOqd4D1zaFhDHHW9sYH3K3my3do52GmLrLpfbiJJElJm3w6ff0zLoGi8IWCQBkqqv/snX5d//4JQ0shxCBMkIiSAIcKymjhYJ5SKVwq+3LRf/erMhuQgaE7w/Ew6+LL90M3L0trs819jCETXcW2rsGIkgrcX/alcz6W+q1D7pcVQZ+vdrUVhmXVfrvhVH/rAPGSbHjHFWzvBR+zURstirNLMKuk1SyBpyR9EMv7ZXgL6fkwSiMo0S595oXTJev2YbImm7tIA+oCE7PW01o5VPfFjMYuYJfsrK13WtoF/CF61rRtD21d+i8qORpCkRCYWsEufrb5vMrBFHai0rhXpWCzOYTcu7zK6NdmVffA031BBFDD4Cs+4=
+  - secure: hrNaM8No5syQEIQiVbVjuo4AbwpgQ+qxlB5+IJWyPF2niWroh6q/zEkf+TnCx7MiLcz3sXCFiedKR2y+Fkvna2eablqbL5LZcbcSx1nMn5mBVnUtpIG0HZHcpBDrIC703aD1xuK2Baf4ZVO2VpevyTJO+/RRSF/wp5Cr61lvLjlpdchfFXenAQ5G5Fs64m7XpmI5PkdbdFEN89tP3lJz82/PudGLDIHK/Y34xgO/xCc5Ytvs5YnRNsMZH2DrB3Oq4Cj9OidqIu00vPgQA4ciHiZ6mkuyMbwU7QsOr34V3q8CnuRerLZil/S/bPdGti1ZIsHiKgHWdJsPkoOBbSlepBnx+UdeADXDfetvK85ebSEmrbpSfsCACvm3WD8CRddiUSt8jL+jiNiOZuhuGTUirVa8CuzS1TUNZUHZT2LQy9cP3bMrG3GA/2DtdeYPwKdQNOkwPCQMjxAa1AaIjZBhzTbJrfeJQQU52mSGazqYPKaI5LvyufKWyn5fcrEvubVabpynvnz8FHnbwOEqBdMk5ZKstBUj3w39g4UZisvCt7mICFDb8SvGISR2SUVbIt+jVOtBO2qiCMRuZ5+YVpK6mSN8Zc1CA9SK9/ugaOiIrMw8hY1gWiE0kBQWEMIGH8Z1oO9YgjXMNzkekzyuPwbbDog+iR2IJCrddodlVnljrb0=
+  - secure: GI+4Y7Mj5iYnag9jc93t2Vk5zJKi74RHWwSy5059YDV3nx3NLivdthKvA/uvdCEqZP8VqCTVKpGjaMYQgbuxk9q6D4ulugSbczlIcrzilmiQSp9Q2kFSlb2yqREAcvzf674nIZ7CstSNdkNUMo2dC9kxou5gNGgLZ1TQ5yay7I4tbuMn78dOaGqAKZ56ZVLwW1ZKTnuCHOB5Tuvk4gYHcPrq113NPrWgl6EoZIkUogqOGfPXZNhRaVFOx2XqdOI0VubkiA2gvBWPt0n5WfxLeHGeZuRBmYbsC99NB5ol7Lp74DFmtGpjYve0pkpFxTFnYbIC1WG//QWvI+It/anidnvHZ8ElClsPj4FeSmhZ1Ft4rI7k0B/ZWIYX/yWonep9iJJDTUIjqr/19v8biO8O6c8zYoKhqgN2GASlqIKYz81D/JUUNWBKGBGepBGKvLfGXWl5OIw6Sq3/GS5QfgQ6sCzmnEfthyuoINrExj0J/dvsdGqrIWEH5Pb8QN8raP2cUE5DrbNUaA2FlF1MbjDIa6l7qsNmqs+poLfNEr3526DioD4bBhaqgiyAqpMTPkrmlIZuNhc+XqS3FdqJ2+jX3VaPsefF609g39kEXI3j0sPhIvPoFPpGfzXlrUd40KuQlzgBqHWGN+iLoc4horA2T2ZRcPpqRq+7qPpj+W6jztc=
+  - secure: Xb3V8Ff0Np95h1Gu5Z9RMd/HghzyFTUfADPgWN4Ki0BgzFoRs/p9ucnUq91L4wuiBXD6fhPNG5RFdNzoD5v6lte3KvLVGzeFK1o9pTovqsNATAuASe91R+rpeveTGUQlqPpDRpI4S6IF+Aw0koQjE+rWq7wCkkFhk5x3rHHcELLO0a73HLW/oRgVEcw0gfB4A2FupaqXNOfs6V7BbsBNiyReDmomxqBrmlI42LtpPRWv93SfDSNHKVyujY5rQOypHdotULOjZxlgPm8mXNBtTr24sYDI2YEFhEF4jSKrMUyp2nM0qWhi77Njwywkxmy8hM89cVBgQZmwBbJHJv8Q+yjnbz+Bd6y2FM9WcNFGymSbq4H3GrJ2c0dBpqJAlO6Ea2p5cGc2bFdHYhW/tP5fSipRQP1sKiu2tnx1qqSDv3/WL8/t7ln7RGZ8KjkFqmYHf4aMqcwfdsMO5/N4+7TIBabzarnjuTxs/5iLLvyfe6TCQTbkG2KyGchotzx3K6qgtWBUjZYorjVyhAfh99PWi9IfRpfUNQVVSFTwMmqcDdzkI8haWDGWZkn498reBygY9gv5iDQQrConuQ1Nef0K6fNLGc7c3l6x5VsxkTSHtf2TMvuemfjwppifDM8tshnJlKPybZzv/C8ukK8GNdcPf3P44IrtSlyW/JKG3yRi5VM=
+  - secure: WLLaEo5xWjn3JvGciS9BUSjHewVSzZSzZX5iQlAwFOhkIPswLSnrouVhUr51kpEzdPFWR+c+L4OXxPg8CwH+LHVd0wBKZv9PwGTw+C9TiNyNThh0vzzRZP3kedMB5YYnt9MR8cPw05AOeAbB+gcRo5HaqwDRWdk8sSYsMx7DyydsdFLJrpJkE2efiG0tbT87MxtB+sDh0w3M1ar+hW00urGFgHvU+QxkCDQALbzXIpeNoTwOI4dLSKB+joG5oXNAk3XY+Awhv1qy5RavmTP+xPc1U49RywDitQe1nk4R+CcB9rouIzh6FoYRfVAiUcfpA+7/YHB8vBKjJJCqaNv9FokF59mEvo+C9ct71usyPrhBnWpN4tobsK4dUrC2lrAfnHW1xEtwgGNmM2QXH3TkMozpy/y3Pi1sBwA1G+/N6KMDQhmssybNHGrbqFX3XVVGm8MUNpLhLg4K09EwlcPjs8E5kpEIgY2yY55Xs/C+AbF5UfIo0YsOoZL0vjM6h4HsZyRJG/vIF8jQtkD+2Nk3aJXc5sCqKmTLe1YA4Xt1MA+onUmr/2xNb/Doutfo2foMr77i0/WAIfcn07B2bbgiPYkJ/3efhyYlBXCN4n0rxEBPLPdCmbV7HeiUkyr0IYwohKNz2fYIvb1sy1st561hO/NG4M978+Txl32S7j17qfM=
+  - secure: hTWMMPg13tqJaYYURwo855oOOLj5y/nopwZ6GQ2i94OM6FoAwb2CpnTZEh5TSYKoTQ/I7zAzzgm+0f8CekUuNCh7Dvx/5hHLzXzMEDHVRRQOsJ8H1XlkiH1s1lG1BGSFwKCQAwlIcibccg6qNAcPB+yiLSKt2MQTNxxieUyw6W5l/Du8lZQz2kAeavhSLLkoqdEjDTiOKoMSr1HX9zvXHQHoyHaQQL1ItFLedN4lf3Nbow8RBlt3f4F3tQfHdIArZ1fjwwTlxW7mQfqdUwp/cVvY3OG+WyNCf7TOrpuL2PBlkdDgJQXXgjIbJYC/9HdcWE7ENi9KR3sZBrd2tXUsc8j8nPB2REu/F90mjmK2hQ0dlxj1vRVp7eXenYr1yxkjAmKF6MIZeI6h76FscpDA5WnQUQNMUTsLKB8TNDvgkve09mM3EQ4kghyboF7d4MrJAmIH9j3FJ0lip3uC86B4dWGT0QMhMvBvRVvvn3egxpsaj6vuyXdPlG7RzQmMVhFhkf5YkU+aWmttlbwmLMOO5BldejmUcHkQENoaPd131PTqV5KKCNjZ6v1BbpO3he6kv57iQbmqwG1g+4j42s2kp21ixF17Gpuae+sYSuCuxzAVTvpc79SxvdTM0vZSr3OKfLnwETUzeOdU16xsLtNGTwoyAjQ4VEPnSKwdkyFKmnY=
+  - secure: gO8HjuXgrWNeMRmKprsPXILjeF/NebCvM+UbCY01LrRmTCRsfLHkJjKVZKue9OkEsyG0SULaRCqEP/XL/M/P9eY5VDuOQE8Zy6wy9NvHAfK98pR4pu3v6JU0cRBt2QvTArveCUE+14QCJbEUkj2u9s/BoUQnJcqF0YH11Tw3jKy9Dw4i9wuMyyfHzAUmWEdag4Zjd7+o9xUy+Hr4VdNk6Afsz/QVVPA5s3zA+d0LRiV1wvE3xhdEY4esTz7HVeGqrUN/x1v+un3NAThNjMJ0yn/arChH3VyPzKvHBPkf+sr21qRLJr7ApvNBo7eOg0ImJXiYsRk5kz6o7PUkrp2Zayzppz2hFWeY8p3D8cR3km4meZMRQ7gYhm7Yd4yc2uGtkR0YWf5zWZhP3BE16MF8zUJoi0FBt4eOlrDnWsTQQ8Og5oRQqcH96d1YWmEp6llHMOCtIoK2qBggTEcf1zopyLzwouVigp3H65IjyTw4bW4dUbQhDmAs18z9qdt+GgI/8SeNLhRcZfryHijzIQosF0lJdUya4/3q+vvnZy+ML/eeN1MtscymeL+pS902jkdgByhZKck7GWytygPkx+uoGbH0CJdth8N3BeLXIqVcK/rdD04TWffsGnf/Kkip1tolUaHW9bow6yBeuNeb7aCAL2yNrUsM/3UHnD8de5zqEII=
 node_js:
-  - 8
-
+- 8
 addons:
   chrome: stable
-
 services:
-  - docker
-
+- docker
 sudo: required
-
 before_install:
-  - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-  - rvm reload && rvm use ruby 2.4.1
-  - sudo apt-get install google-chrome-stable
-  - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
-
+- node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
+- rvm reload && rvm use ruby 2.4.1
+- sudo apt-get install google-chrome-stable
+- "${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh"
 install:
-  - docker-compose up --build -d && sleep 30
-  - docker info
-  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/functions && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/test/admin && gem install bundler --conservative && bundle install
-  - cd ${TRAVIS_BUILD_DIR}/test/pupil && gem install bundler --conservative && bundle install
-  - docker-compose logs
-  - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
-
+- docker-compose -f docker-compose.functions.yml up --build -d && sleep 30
+- docker info
+- cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
+- cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
+- cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
+- cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && gem install bundler --conservative && bundle
+  install
+- cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && gem install bundler --conservative && bundle
+  install
+- docker-compose logs
+- cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 script:
-  - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_2.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil && ./pupil_spa_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil && ./pupil_spa_tests_2.sh; fi
-
+- cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 after_script:
-  - docker-compose down
+- docker-compose down
