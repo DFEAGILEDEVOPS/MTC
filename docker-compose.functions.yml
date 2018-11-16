@@ -6,11 +6,12 @@ services:
       StorageAccount: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_SERVER: "sqldb"
     build: ./functions
     container_name: mtc_funcs
     ports:
     - "8080:80"
-#    depends_on:
-#    - sqldb
-#    links:
-#    - sqldb
+    depends_on:
+    - sqldb
+    links:
+    - sqldb
