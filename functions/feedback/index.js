@@ -5,6 +5,8 @@ const sqlService = require('less-tedious')
 const { TYPES } = require('tedious')
 
 const sqlUtil = require('../lib/sql-helper')
+const config = require('../config')
+sqlService.initialise(config)
 const schema = '[mtc_admin]'
 const feedbackTable = '[pupilFeedback]'
 
