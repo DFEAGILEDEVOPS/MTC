@@ -1,0 +1,19 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "message",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "check-expiry",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "pupilEventsTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "pupilEvent",
+      "connection": "StorageAccount"
+    }
+  ]
+}

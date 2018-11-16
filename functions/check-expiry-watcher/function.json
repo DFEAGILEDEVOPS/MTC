@@ -1,0 +1,11 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "schedule": "0 */5 * * * *",
+      "name": "checkExpiryTimer",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ]
+}
