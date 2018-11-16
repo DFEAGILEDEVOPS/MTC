@@ -50,7 +50,7 @@ export class PupilPrefsService {
       const payload = {
         preferences: {
           fontSizeCode: null,
-          contrastCode: null
+          colourContrastCode: null
         },
         checkCode: pupil.checkCode
       };
@@ -58,7 +58,7 @@ export class PupilPrefsService {
         payload.preferences.fontSizeCode = fontSetting.code;
       }
       if (contrastSetting) {
-        payload.preferences.contrastCode = contrastSetting.code;
+        payload.preferences.colourContrastCode = contrastSetting.code;
       }
       try {
         this.auditService.addEntry(new PupilPrefsAPICalled());
