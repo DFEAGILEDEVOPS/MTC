@@ -15,7 +15,7 @@ export class PageModificationsComponent {
   ) {
     const accessArrangementsData = this.storageService.getItem(accessArrangementsDataKey);
     this.accessArrangements = new AccessArrangements;
-    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'default';
+    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
     this.accessArrangements.contrast = (accessArrangementsData && accessArrangementsData.contrast) || 'bow';
   }
 }
