@@ -36,39 +36,38 @@ export class PupilPrefsService {
   }
 
   public async storePupilPrefs() {
+    if (!this.featureUseHpa) {
+      return;
+    }
     const accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getItem('pupil') as Pupil;
-    if (this.featureUseHpa === true) {
-      const queueName = queueNames.pupilPreferences;
-      const { url, token } = this.tokenService.getToken('pupilPreferences');
-      const retryConfig = {
-        errorDelay: this.pupilPrefsAPIErrorDelay,
-        errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
-      };
-      const payload = {
-        preferences: {
-          fontSizeCode: null,
-          contrastCode: null
-        },
-        checkCode: pupil.checkCode
-      };
-      if (fontSetting) {
-        payload.preferences.fontSizeCode = fontSetting.code;
-      }
-      if (contrastSetting) {
-        payload.preferences.contrastCode = contrastSetting.code;
-      }
-      try {
-        this.auditService.addEntry(new PupilPrefsAPICalled());
-        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-        this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
-      } catch (error) {
-        this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
-      }
-    } else {
-      // Legacy api post functionality not implemented
+    const queueName = queueNames.pupilPreferences;
+    const {url, token} = this.tokenService.getToken('pupilPreferences');
+    const retryConfig = {
+      errorDelay: this.pupilPrefsAPIErrorDelay,
+      errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
+    };
+    const payload = {
+      preferences: {
+        fontSizeCode: null,
+        colourContrastCode: null
+      },
+      checkCode: pupil.checkCode
+    };
+    if (fontSetting) {
+      payload.preferences.fontSizeCode = fontSetting.code;
+    }
+    if (contrastSetting) {
+      payload.preferences.colourContrastCode = contrastSetting.code;
+    }
+    try {
+      this.auditService.addEntry(new PupilPrefsAPICalled());
+      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
+    } catch (error) {
+      this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
     }
   }
 }
