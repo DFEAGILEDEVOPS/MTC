@@ -79,10 +79,8 @@ class CheckPage < SitePrism::Page
       wait_for_question(15)
       wait_until {check_page.question.visible?}
       @question = check_page.question.text
-      p 'question = ' + @question
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
-      p 'answer = ' + answer.to_s
       @array_of_answers << answer
       answer_question_via(input_type, answer)
       number_pad.enter.click if input_type == 'numpad'

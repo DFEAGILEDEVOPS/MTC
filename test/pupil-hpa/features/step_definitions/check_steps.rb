@@ -83,12 +83,8 @@ end
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
-  p Time.now
-  sleep 30
-  p Time.now
-  p current_url
-  # complete_page.wait_for_complete_page
-  # expect(complete_page).to have_heading
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_heading
 end
 
 When(/^I have entered an incorrect answer$/) do
@@ -130,7 +126,6 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   wait_until(300, 1){SqlDbHelper.get_check(storage_pupil['checkCode'])}
   check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  p check
   wait_until(300, 1){SqlDbHelper.get_check_result(check['id'])}
   check_result = SqlDbHelper.get_check_result(check['id'])
   check = JSON.parse(check_result['payload'])

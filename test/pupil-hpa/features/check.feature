@@ -28,7 +28,7 @@ Feature: Check questions
   Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB
     Given I have started the check
     Then I should be able to use the on screen keyboard to complete the test
-#    And I should see all the data from the check stored in the DB
+    And I should see all the data from the check stored in the DB
 
   Scenario: Users can correct their answer
     Given I have started the check

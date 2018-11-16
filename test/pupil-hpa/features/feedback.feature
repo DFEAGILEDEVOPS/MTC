@@ -1,6 +1,7 @@
 @feedback
 Feature: Feedback page
 
+  @travis
   Scenario: Users can submit their feedback
     Given I am on the complete page
     When I choose to give feedback
