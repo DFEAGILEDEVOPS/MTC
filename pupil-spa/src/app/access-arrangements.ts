@@ -15,10 +15,10 @@ export class AccessArrangementsConfig {
     { label: 'Largest', val: 'xxlarge', code: 'XXL' }
   ];
   static contrastSettings: Array<Object> = [
-    { label: 'Black on White', val: 'bow', code: 'BOW' },
-    { label: 'Yellow on Black', val: 'yob', code: 'YOB' },
-    { label: 'Black on Blue', val: 'bob', code: 'BOB' },
-    { label: 'Black on Peach', val: 'bop', code: 'BOP' },
-    { label: 'Blue on Cream', val: 'boc', code: 'BOC' }
+    { label: 'Black on white', val: 'bow', code: 'BOW' },
+    { label: 'Yellow on black', val: 'yob', code: 'YOB' },
+    { label: 'Black on blue', val: 'bob', code: 'BOB' },
+    { label: 'Black on peach', val: 'bop', code: 'BOP' },
+    { label: 'Blue on cream', val: 'boc', code: 'BOC' }
   ];
 }

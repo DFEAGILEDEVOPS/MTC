@@ -44,7 +44,6 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppUsageService } from './services/app-usage/app-usage.service';
 import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
-import { AzureQueueSubmissionService } from './services/azure-queue-submission/azure-queue-submission'
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
@@ -56,11 +55,17 @@ import { SpokenQuestionComponent } from './spoken-question/spoken-question.compo
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
-import { FamiliarisationAreaComponent } from './familiarisation-area/familiarisation-area.component';
-import { FamiliarisationSettingsComponent } from './familiarisation-settings/familiarisation-settings.component';
-import { FamiliarisationColourComponent } from './familiarisation-colour/familiarisation-colour.component';
+import { AAFontsComponent } from './aa-fonts/aa-fonts.component';
+import { AASettingsComponent } from './aa-settings/aa-settings.component';
+import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
+import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
+import { SvgCrownComponent } from './svg/svg.crown.component';
+import { SvgWarningComponent } from './svg/svg.warning.component';
+import { SvgLoadingComponent } from './svg/svg.loading.component';
+import { SvgArrowComponent } from './svg/svg.arrow.component';
+import { SvgGirlComponent } from './svg/svg.girl.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -75,9 +80,9 @@ const appRoutes: Routes = [
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
-  {path: 'font-choice', component: FamiliarisationAreaComponent },
-  {path: 'colour-choice', component: FamiliarisationColourComponent },
-  {path: 'access-settings', component: FamiliarisationSettingsComponent }
+  {path: 'font-choice', component: AAFontsComponent },
+  {path: 'colour-choice', component: AAColoursComponent },
+  {path: 'access-settings', component: AASettingsComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -105,10 +110,15 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     QuestionsIntroComponent,
-    FamiliarisationAreaComponent,
-    FamiliarisationColourComponent,
-    FamiliarisationSettingsComponent,
+    AAFontsComponent,
+    AAColoursComponent,
+    AASettingsComponent,
     PageModificationsComponent,
+    SvgCrownComponent,
+    SvgWarningComponent,
+    SvgLoadingComponent,
+    SvgArrowComponent,
+    SvgGirlComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -149,9 +159,9 @@ const appRoutes: Routes = [
     AppUsageService,
     CheckStartService,
     CheckCompleteService,
+    PupilPrefsService,
     TokenService,
     AzureQueueService,
-    AzureQueueSubmissionService,
     RouteService,
     {
       provide: QUEUE_STORAGE_TOKEN,
