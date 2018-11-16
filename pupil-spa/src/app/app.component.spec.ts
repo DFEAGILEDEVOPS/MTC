@@ -8,6 +8,7 @@ import { AppConfigService, loadConfigMockService } from './services/config/confi
 
 
 import { AppComponent } from './app.component';
+import { RouteService } from './services/route/route.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -17,6 +18,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         AppConfigService,
+        RouteService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         WindowRefService,
       ],
