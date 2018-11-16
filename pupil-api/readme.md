@@ -1,10 +1,18 @@
-# Pupil-api API end-points
+# MTC Pupil API
+
+Required environment variables
+
+`AZURE_STORAGE_CONNECTION_STRING` - connection to azure storage account.
+
+Optional environment variables
+`ENVIRONMENT_NAME` - name of the environment this API is running in.
 
 ## Application healthcheck
 
 **Endpoint**: GET - http://localhost:3003/ping
 
-**Description**: Returns git details and the server time
+**Description**: Returns current server time.  
+Also inclues last commit and build deployment details if generated during build. 
 
 
 #### Header
@@ -16,7 +24,6 @@
 
 #### Body
 ```
-
 ```
 
 ## Authentication and data collection

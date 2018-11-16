@@ -11,20 +11,19 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
 const config = require('../config')
-
-const azureStorageHelper = require('../lib/azure-storage-helper')
-
-winston.level = 'error'
 sqlService.initialise(config)
+winston.level = 'error'
+
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 const schema = '[mtc_admin]'
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, checkStartMessage) {
-  context.log('check-started message received', checkStartMessage.checkCode)
+  context.log('check-started: message received', checkStartMessage.checkCode)
 
   // Update the admin database to update the check status to Check Started
   try {
