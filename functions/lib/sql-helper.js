@@ -6,6 +6,8 @@ const sqlService = require('less-tedious')
 const checkTable = '[check]'
 const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
+const config = require('../config')
+sqlService.initialise(config)
 
 /**
  * Retrieve the checkFormAllocation data from the db
