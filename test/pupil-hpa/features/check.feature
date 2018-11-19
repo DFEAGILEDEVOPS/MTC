@@ -26,7 +26,7 @@ Feature: Check questions
 
   @local_storage @travis
   Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB
-    Given I have started the check
+    Given I have started the check using the keyboard
     Then I should be able to use the on screen keyboard to complete the test
     And I should see all the data from the check stored in the DB
 
