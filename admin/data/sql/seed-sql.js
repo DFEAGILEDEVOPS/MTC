@@ -63,8 +63,18 @@ const processSeed = async (seed) => {
     sql = content.generateSql()
   }
 
-  winston.info(sql, params)
-  await sqlService.modify(sql, params)
+  winston.info(name)
+  try {
+    await sqlService.modify(sql, params)
+  } catch (error) {
+    const ignoreErrorCodes = [
+      2601, // Cannot insert duplicate key
+      2627 // Violation of UNIQUE KEY constraint
+    ]
+    if (!~ignoreErrorCodes.indexOf(error.number)) {
+      throw error
+    }
+  }
 }
 
 const runSeeds = async (version) => {
@@ -90,7 +100,10 @@ const runSeeds = async (version) => {
     }
 
     if (version === 'all') {
-      await Promise.all(seeds.map(processSeed))
+      //await Promise.all(seeds.map(processSeed))
+      for (let i = 0; i < seeds.length; i++) {
+        await processSeed(seeds[i])
+      }
     } else {
       const foundSeed = seeds.find(({ filename }) => filename === version)
       if (!foundSeed) throw new Error(`Seed not found: ${version}`)
