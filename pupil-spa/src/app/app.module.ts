@@ -44,6 +44,7 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppUsageService } from './services/app-usage/app-usage.service';
 import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
+import { SyncAccessArrangementsService } from './services/sync-access-arrangements/sync-access-arrangements.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
@@ -163,6 +164,7 @@ const appRoutes: Routes = [
     TokenService,
     AzureQueueService,
     RouteService,
+    SyncAccessArrangementsService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue
