@@ -21,7 +21,7 @@ sqlService.initialise(config)
 module.exports = async function (context, pupilPrefsMessage) {
   const { checkCode, preferences } = pupilPrefsMessage
   const { fontSizeCode, colourContrastCode } = preferences
-  context.log('pupil-prefs message received', checkCode, fontSizeCode, colourContrastCode)
+  context.log('pupil-prefs: message received', checkCode, fontSizeCode, colourContrastCode)
 
   if (!checkCode) {
     const error = new Error('pupil-prefs: checkCode not present')
