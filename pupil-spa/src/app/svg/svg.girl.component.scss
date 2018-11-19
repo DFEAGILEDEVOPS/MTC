@@ -1,0 +1,26 @@
+.svg-girl {
+  height: 200px;
+  margin: 20px auto 40px;
+  display: block;
+
+  .cls-1, .cls-4 {
+    fill: #fff;
+  }
+  .cls-2 {
+    fill: none;
+  }
+  .cls-2, .cls-3, .cls-4 {
+    stroke: #000;
+    stroke-miterlimit: 10;
+  }
+  .cls-2, .cls-4 {
+    stroke-width: 4px;
+  }
+  .cls-3 {
+    stroke-width: 1.333px;
+  }
+  .eye-cover {
+    fill: none;
+    stroke: none;
+  }
+}
