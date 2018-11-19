@@ -9,6 +9,7 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { AAFontsComponent } from './aa-fonts.component';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { SyncAccessArrangementsService } from '../services/sync-access-arrangements/sync-access-arrangements.service';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
@@ -17,6 +18,7 @@ describe('AAFontsComponent', () => {
   let mockPupilPrefsService;
   let component: AAFontsComponent;
   let fixture: ComponentFixture<AAFontsComponent>;
+  let mockSyncAccessArrangementsService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -25,24 +27,35 @@ describe('AAFontsComponent', () => {
     mockPupilPrefsService = {
       storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
+    mockSyncAccessArrangementsService = {
+      sync: jasmine.createSpy('sync')
+    };
 
     const injector = TestBed.configureTestingModule({
       declarations: [ AAFontsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
-        RouteService,
         { provide: Router, useValue: mockRouter },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        { provide: SyncAccessArrangementsService, useValue: mockSyncAccessArrangementsService },
+        RouteService,
       ]
     });
 
     mockStorageService = injector.get(StorageService);
     mockQuestionService = injector.get(QuestionService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
+    mockSyncAccessArrangementsService = injector.get(SyncAccessArrangementsService);
 
-    spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b' });
+    spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'pupil') {
+        return { firstName: 'a', lastName: 'b' };
+      } else if (arg === 'access_arrangements') {
+        return { fontSize: 'regular', contrast: 'bow' };
+      }
+    });
   }));
 
   beforeEach(() => {
