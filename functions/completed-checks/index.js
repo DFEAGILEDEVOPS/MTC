@@ -90,7 +90,6 @@ module.exports = async function (context, completedCheckMessage) {
  * @return {Promise<void>}
  */
 async function savePayloadToAdminDatabase (completedCheckMessage, checkData, logger) {
-
   // Don't process any checks more than once
   if (checkData.receivedByServerAt) {
     const msg = `completed-check: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
@@ -216,5 +215,5 @@ async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
     { name: 'startedAt', value: clientTimestamp, type: TYPES.DateTimeOffset }
   ]
 
-  return await sqlService.modify(sql, params)
+  return sqlService.modify(sql, params)
 }
