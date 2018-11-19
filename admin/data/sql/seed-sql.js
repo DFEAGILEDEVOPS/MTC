@@ -74,7 +74,7 @@ const runSeeds = async (version) => {
     const seedList = await loadSeeds()
     const seeds = seedList
       // split the filename to get each part in the format
-      .map(seed => seed.split("."))
+      .map(seed => seed.split('.'))
       // filter out the ones that don't respect the format
       .filter(seed => seed.length === seedFilenameFormat.length)
       // create an object with { formatProperty: seedProperty } from the format
@@ -92,10 +92,10 @@ const runSeeds = async (version) => {
     if (version === 'all') {
       await Promise.all(seeds.map(processSeed))
     } else {
-        const foundSeed = seeds.find(({ filename }) => filename === version)
-        if (!foundSeed) throw new Error(`Seed not found: ${version}`)
+      const foundSeed = seeds.find(({ filename }) => filename === version)
+      if (!foundSeed) throw new Error(`Seed not found: ${version}`)
 
-        await processSeed(foundSeed)
+      await processSeed(foundSeed)
     }
 
     winston.info(chalk.green('SQL Seeds complete'))
