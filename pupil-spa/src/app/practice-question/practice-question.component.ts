@@ -129,7 +129,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     const accessArrangementsData = storageService.getItem(accessArrangementsDataKey);
     this.accessArrangements = new AccessArrangements;
-    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'default';
+    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
     this.shouldShowQuestion = true;
   }
 
