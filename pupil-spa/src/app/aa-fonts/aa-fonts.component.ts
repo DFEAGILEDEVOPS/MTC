@@ -10,7 +10,7 @@ import {
 } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
-import { SyncAccessArrangementsService } from '../services/sync-access-arrangements/sync-access-arrangements.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -30,10 +30,10 @@ export class AAFontsComponent {
     private router: Router,
     private storageService: StorageService,
     private pupilPrefsService: PupilPrefsService,
-    private syncAccessArrangementsService: SyncAccessArrangementsService,
+    private pupilPrefsSyncService: PupilPrefsSyncService,
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.syncAccessArrangementsService.sync();
+    this.pupilPrefsSyncService.sync();
     this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();

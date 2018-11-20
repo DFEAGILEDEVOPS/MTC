@@ -8,7 +8,7 @@ import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
-import { SyncAccessArrangementsService } from '../services/sync-access-arrangements/sync-access-arrangements.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 describe('AAColoursComponent', () => {
   let mockRouter;
@@ -17,7 +17,7 @@ describe('AAColoursComponent', () => {
   let mockStorageService;
   let component: AAColoursComponent;
   let fixture: ComponentFixture<AAColoursComponent>;
-  let mockSyncAccessArrangementsService;
+  let mockPupilPrefsSyncService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -26,7 +26,7 @@ describe('AAColoursComponent', () => {
     mockPupilPrefsService = {
       storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
-    mockSyncAccessArrangementsService = {
+    mockPupilPrefsSyncService = {
       sync: jasmine.createSpy('sync')
     };
 
@@ -38,14 +38,14 @@ describe('AAColoursComponent', () => {
         { provide: RouteService, useClass: RouteServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
-        { provide: SyncAccessArrangementsService, useValue: mockSyncAccessArrangementsService },
+        { provide: PupilPrefsSyncService, useValue: mockPupilPrefsSyncService },
       ]
     });
 
     mockRouteService = injector.get(RouteService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
     mockStorageService = injector.get(StorageService);
-    mockSyncAccessArrangementsService = injector.get(SyncAccessArrangementsService);
+    mockPupilPrefsSyncService = injector.get(PupilPrefsSyncService);
 
     spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'regular', contrast: 'bow' });
   }));

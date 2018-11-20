@@ -9,7 +9,7 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { AAFontsComponent } from './aa-fonts.component';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
-import { SyncAccessArrangementsService } from '../services/sync-access-arrangements/sync-access-arrangements.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
@@ -18,7 +18,7 @@ describe('AAFontsComponent', () => {
   let mockPupilPrefsService;
   let component: AAFontsComponent;
   let fixture: ComponentFixture<AAFontsComponent>;
-  let mockSyncAccessArrangementsService;
+  let mockPupilPrefsSyncService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -27,7 +27,7 @@ describe('AAFontsComponent', () => {
     mockPupilPrefsService = {
       storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
-    mockSyncAccessArrangementsService = {
+    mockPupilPrefsSyncService = {
       sync: jasmine.createSpy('sync')
     };
 
@@ -39,7 +39,7 @@ describe('AAFontsComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
-        { provide: SyncAccessArrangementsService, useValue: mockSyncAccessArrangementsService },
+        { provide: PupilPrefsSyncService, useValue: mockPupilPrefsSyncService },
         RouteService,
       ]
     });
@@ -47,7 +47,7 @@ describe('AAFontsComponent', () => {
     mockStorageService = injector.get(StorageService);
     mockQuestionService = injector.get(QuestionService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
-    mockSyncAccessArrangementsService = injector.get(SyncAccessArrangementsService);
+    mockPupilPrefsSyncService = injector.get(PupilPrefsSyncService);
 
     spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
       if (arg === 'pupil') {
