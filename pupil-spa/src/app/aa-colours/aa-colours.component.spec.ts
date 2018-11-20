@@ -7,27 +7,23 @@ import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
-import { PupilPrefsSubmissionService } from '../services/pupil-prefs-submission/pupil-prefs-submission.service';
-import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
-  let mockPupilPrefsSubmissionService;
+  let mockPupilPrefsService;
   let mockStorageService;
   let component: AAColoursComponent;
   let fixture: ComponentFixture<AAColoursComponent>;
-  let mockPupilPrefsSyncService;
 
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
-    mockPupilPrefsSubmissionService = {
-      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
-    };
-    mockPupilPrefsSyncService = {
-      sync: jasmine.createSpy('sync')
+    mockPupilPrefsService = {
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs'),
+      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
@@ -37,15 +33,13 @@ describe('AAColoursComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
-        { provide: PupilPrefsSubmissionService, useValue: mockPupilPrefsSubmissionService },
-        { provide: PupilPrefsSyncService, useValue: mockPupilPrefsSyncService },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
       ]
     });
 
     mockRouteService = injector.get(RouteService);
-    mockPupilPrefsSubmissionService = injector.get(PupilPrefsSubmissionService);
+    mockPupilPrefsService = injector.get(PupilPrefsService);
     mockStorageService = injector.get(StorageService);
-    mockPupilPrefsSyncService = injector.get(PupilPrefsSyncService);
 
     spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'regular', contrast: 'bow' });
   }));
@@ -56,8 +50,9 @@ describe('AAColoursComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should load the component', () => {
     expect(component).toBeTruthy();
+    expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
   });
 
   it('should redirect to the access-settings page on click if the user has navigated from access-settings', () => {
@@ -86,6 +81,6 @@ describe('AAColoursComponent', () => {
 
   it('should store pupil prefs when navigating away', async () => {
     component.onClick();
-    expect(mockPupilPrefsSubmissionService.storePupilPrefs).toHaveBeenCalledTimes(1);
+    expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
   });
 });
