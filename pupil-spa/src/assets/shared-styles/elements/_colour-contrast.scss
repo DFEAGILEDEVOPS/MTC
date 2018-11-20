@@ -98,7 +98,7 @@
   }
 
   // Hide the blue header bar on all contrast pages
-  #global-header-bar {
+  .colour-contrast-#{$key} #global-header-bar {
     display: none !important;
   }
 
