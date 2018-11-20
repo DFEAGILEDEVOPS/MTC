@@ -51,18 +51,3 @@ async function findExpiredChecks() {
                AND cs.code IN ('NEW', 'COL')`
     return sqlService.query(sql)
 }
-
-/**
- * Find all checks that were started more than x minutes ago (e.g. 30 mins) so we can mark the check as not received.
- * @return {Promise<*>}
- */
-async function findIncompleteChecks() {
-  const sql = `SELECT chk.id 
-               FROM [mtc_admin].[check] chk
-                  JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
-               WHERE chkStatus.code = 'STD'
-               AND chk.startedAt IS NOT NULL
-               AND chk.startedAt < DATEADD(minute, 1, chk.startedAt)`
-
-  return sqlService.query(sql)
-}
