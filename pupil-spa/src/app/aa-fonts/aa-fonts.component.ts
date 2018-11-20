@@ -31,7 +31,6 @@ export class AAFontsComponent {
     private pupilPrefsService: PupilPrefsService,
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.pupilPrefsService.loadPupilPrefs();
     this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();

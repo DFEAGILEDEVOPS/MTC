@@ -14,6 +14,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -25,6 +26,7 @@ describe('LoginComponent', () => {
   let mockWarmupQuestionService;
   let mockRegisterInputService;
   let mockCheckStatusService;
+  let mockPupilPrefsService;
   let mockLoginModel;
   let hasUnfinishedCheckSpy;
 
@@ -37,6 +39,10 @@ describe('LoginComponent', () => {
       login: function () {
         return undefined;
       }
+    };
+
+    mockPupilPrefsService = {
+      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
     };
 
     const loginPromise = new Promise((resolve, reject) => {
@@ -60,7 +66,8 @@ describe('LoginComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
-        { provide: CheckStatusService, useClass: CheckStatusServiceMock }
+        { provide: CheckStatusService, useClass: CheckStatusServiceMock },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
       ]
     });
     mockQuestionService = injector.get(QuestionService);
@@ -68,6 +75,7 @@ describe('LoginComponent', () => {
     mockRegisterInputService = injector.get(RegisterInputService);
     mockLoginModel = injector.get(Login);
     mockCheckStatusService = injector.get(CheckStatusService);
+    mockPupilPrefsService = injector.get(PupilPrefsService);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
@@ -104,6 +112,7 @@ describe('LoginComponent', () => {
         expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockRegisterInputService.initialise).toHaveBeenCalledTimes(1);
+        expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });
 
@@ -113,6 +122,7 @@ describe('LoginComponent', () => {
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalled();
         expect(mockUserService.login).toHaveBeenCalledTimes(1);
+        expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });
 
@@ -121,6 +131,7 @@ describe('LoginComponent', () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });
 
@@ -130,6 +141,7 @@ describe('LoginComponent', () => {
       fixture.whenStable().then(() => {
         expect(mockQuestionService.getConfig).toHaveBeenCalled();
         expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
+        expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });
 
@@ -139,6 +151,7 @@ describe('LoginComponent', () => {
       fixture.whenStable().then(() => {
         expect(mockQuestionService.getConfig).toHaveBeenCalled();
         expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice']);
+        expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });
   });
@@ -152,6 +165,7 @@ describe('LoginComponent', () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
+        expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
       });
     });
   });

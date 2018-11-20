@@ -23,8 +23,7 @@ describe('AAFontsComponent', () => {
       navigate: jasmine.createSpy('navigate')
     };
     mockPupilPrefsService = {
-      storePupilPrefs: jasmine.createSpy('storePupilPrefs'),
-      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
@@ -60,7 +59,6 @@ describe('AAFontsComponent', () => {
 
   it('should load the component', () => {
     expect(component).toBeTruthy();
-    expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
   });
 
   it('should redirect to colour contrast when enabled', () => {

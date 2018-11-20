@@ -22,8 +22,7 @@ describe('AAColoursComponent', () => {
       navigate: jasmine.createSpy('navigate')
     };
     mockPupilPrefsService = {
-      storePupilPrefs: jasmine.createSpy('storePupilPrefs'),
-      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
@@ -52,7 +51,6 @@ describe('AAColoursComponent', () => {
 
   it('should load the component', () => {
     expect(component).toBeTruthy();
-    expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
   });
 
   it('should redirect to the access-settings page on click if the user has navigated from access-settings', () => {

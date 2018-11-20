@@ -26,7 +26,6 @@ export class AAColoursComponent implements OnInit {
     private pupilPrefsService: PupilPrefsService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.pupilPrefsService.loadPupilPrefs();
     this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
