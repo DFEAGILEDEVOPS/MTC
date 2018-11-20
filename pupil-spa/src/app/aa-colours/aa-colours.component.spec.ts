@@ -7,13 +7,13 @@ import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSubmissionService } from '../services/pupil-prefs-submission/pupil-prefs-submission.service';
 import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
-  let mockPupilPrefsService;
+  let mockPupilPrefsSubmissionService;
   let mockStorageService;
   let component: AAColoursComponent;
   let fixture: ComponentFixture<AAColoursComponent>;
@@ -23,7 +23,7 @@ describe('AAColoursComponent', () => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
-    mockPupilPrefsService = {
+    mockPupilPrefsSubmissionService = {
       storePupilPrefs: jasmine.createSpy('storePupilPrefs')
     };
     mockPupilPrefsSyncService = {
@@ -37,13 +37,13 @@ describe('AAColoursComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        { provide: PupilPrefsSubmissionService, useValue: mockPupilPrefsSubmissionService },
         { provide: PupilPrefsSyncService, useValue: mockPupilPrefsSyncService },
       ]
     });
 
     mockRouteService = injector.get(RouteService);
-    mockPupilPrefsService = injector.get(PupilPrefsService);
+    mockPupilPrefsSubmissionService = injector.get(PupilPrefsSubmissionService);
     mockStorageService = injector.get(StorageService);
     mockPupilPrefsSyncService = injector.get(PupilPrefsSyncService);
 
@@ -86,6 +86,6 @@ describe('AAColoursComponent', () => {
 
   it('should store pupil prefs when navigating away', async () => {
     component.onClick();
-    expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
+    expect(mockPupilPrefsSubmissionService.storePupilPrefs).toHaveBeenCalledTimes(1);
   });
 });

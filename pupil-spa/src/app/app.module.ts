@@ -61,7 +61,7 @@ import { AASettingsComponent } from './aa-settings/aa-settings.component';
 import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
-import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSubmissionService } from './services/pupil-prefs-submission/pupil-prefs-submission.service';
 import { SvgCrownComponent } from './svg/svg.crown.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
@@ -160,7 +160,7 @@ const appRoutes: Routes = [
     AppUsageService,
     CheckStartService,
     CheckCompleteService,
-    PupilPrefsService,
+    PupilPrefsSubmissionService,
     TokenService,
     AzureQueueService,
     RouteService,
