@@ -57,13 +57,15 @@ server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
 admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+is_azure = ENV['AZURE'] || false
 
 begin
 SQL_CLIENT = TinyTds::Client.new(username: admin_user,
                                  password: admin_password,
                                  host: server,
                                  port: port,
-                                 database: database)
+                                 database: database,
+                                 azure:is_azure)
 rescue TinyTds::Error => e
   abort 'Test run failed due to - ' + e.to_s
 end
