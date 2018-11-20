@@ -6,7 +6,44 @@ const winston = require('winston')
 const Postgrator = require('postgrator')
 const path = require('path')
 const chalk = require('chalk')
+const {
+  sortMigrationsAsc,
+  sortMigrationsDesc
+} = require('postgrator/lib/utils.js')
 const createDatabaseIfNotExists = require('./createDatabase')
+
+class Migrator extends Postgrator {
+  /*
+    The getRunnableMigrations method returns ALL pending
+    migrations up to the specified migration
+  */
+  async getRunnableMigrations (databaseVersion, targetVersion) {
+    const result = await this.runQuery(`SELECT version FROM ${this.config.schemaTable}`)
+    const appliedMigrations = result.rows.map(r => parseInt(r.version))
+    const { migrations } = this
+    if (targetVersion >= databaseVersion) {
+      return migrations
+        .filter(
+          migration =>
+            migration.action === 'do' &&
+            (migration.version > databaseVersion || !~appliedMigrations.indexOf(migration.version)) &&
+            migration.version <= targetVersion
+        )
+        .sort(sortMigrationsAsc)
+    }
+    if (targetVersion < databaseVersion) {
+      return migrations
+        .filter(
+          migration =>
+            migration.action === 'undo' &&
+            migration.version <= databaseVersion &&
+            migration.version > targetVersion
+        )
+        .sort(sortMigrationsDesc)
+    }
+    return []
+  }
+}
 
 const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
@@ -26,16 +63,17 @@ const migratorConfig = {
   validateChecksums: false
 }
 
-const runMigrations = async () => {
+const runMigrations = async (version) => {
   await createDatabaseIfNotExists()
 
-  const postgrator = new Postgrator(migratorConfig)
+  // @ts-ignore
+  const postgrator = new Migrator(migratorConfig)
+
   // subscribe to useful events
-  postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
+  postgrator.on('migration-started', migration => winston.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
   postgrator.on('error', error => winston.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
-  const version = process.argv.length > 2 ? process.argv[2] : 'max'
   winston.info(chalk.green('Migrating to version:'), chalk.green.bold(version))
 
   try {
@@ -47,16 +85,14 @@ const runMigrations = async () => {
     error.appliedMigrations.forEach(migration => {
       winston.error(migration.name)
     })
-    throw new Error(error)
   }
 }
 
-winston.info('Preparing migrations...')
-
 try {
-  runMigrations()
+  runMigrations(process.argv[2] || 'max')
     .then(() => {
-      winston.info(chalk.green('all done'))
+      winston.info(chalk.green('Done'))
+      process.exit(0)
     },
     (error) => {
       winston.info(chalk.red(error.message))
