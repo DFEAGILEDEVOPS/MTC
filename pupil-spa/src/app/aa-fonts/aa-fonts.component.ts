@@ -5,12 +5,12 @@ import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import {
-  AccessArrangements,
   AccessArrangementsConfig,
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -30,10 +30,11 @@ export class AAFontsComponent {
     private router: Router,
     private storageService: StorageService,
     private pupilPrefsService: PupilPrefsService,
-
+    private pupilPrefsSyncService: PupilPrefsSyncService,
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.pupilPrefsSyncService.sync();
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
 

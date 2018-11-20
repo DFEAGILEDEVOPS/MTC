@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
-  AccessArrangements,
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 @Component({
   selector: 'app-aa-colours',
@@ -24,10 +24,12 @@ export class AAColoursComponent implements OnInit {
     private router: Router,
     private storageService: StorageService,
     private routeService: RouteService,
-    private pupilPrefsService: PupilPrefsService
+    private pupilPrefsService: PupilPrefsService,
+    private pupilPrefsSyncService: PupilPrefsSyncService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.pupilPrefsSyncService.sync();
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
