@@ -58,6 +58,8 @@ module.exports = {
         return 'COMPLETED'
       case 'EXP':
         return 'UNALLOC'
+      case 'NTR':
+        return 'STARTED'
     }
 
     // default
