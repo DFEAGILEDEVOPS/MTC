@@ -1,4 +1,3 @@
-@wip
 @feature-toggle
 Feature:
   Check window validation
