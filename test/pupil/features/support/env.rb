@@ -88,7 +88,18 @@ if File.exist?('../../admin/.env')
   credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
   @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
   @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+else
+  credentials = ENV['AZURE_STORAGE_CONNECTION_STRING'].split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
+  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
 end
+
+ENV["AZURE_ACCOUNT_NAME"] ||= @account_name
+ENV["AZURE_ACCOUNT_KEY"] ||= @account_key
+
+fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCOUNT_NAME"].nil?
+fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCOUNT_KEY"].nil?
+
 
 ENV["AZURE_ACCOUNT_NAME"] ||= @account_name
 ENV["AZURE_ACCOUNT_KEY"] ||= @account_key

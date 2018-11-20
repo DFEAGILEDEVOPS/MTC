@@ -23,18 +23,19 @@ describe('AAFontsComponent', () => {
       navigate: jasmine.createSpy('navigate')
     };
     mockPupilPrefsService = {
-      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs'),
+      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
       declarations: [ AAFontsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
-        RouteService,
         { provide: Router, useValue: mockRouter },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        RouteService
       ]
     });
 
@@ -42,7 +43,13 @@ describe('AAFontsComponent', () => {
     mockQuestionService = injector.get(QuestionService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
 
-    spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b' });
+    spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'pupil') {
+        return { firstName: 'a', lastName: 'b' };
+      } else if (arg === 'access_arrangements') {
+        return { fontSize: 'regular', contrast: 'bow' };
+      }
+    });
   }));
 
   beforeEach(() => {
@@ -51,8 +58,9 @@ describe('AAFontsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should load the component', () => {
     expect(component).toBeTruthy();
+    expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
   });
 
   it('should redirect to colour contrast when enabled', () => {

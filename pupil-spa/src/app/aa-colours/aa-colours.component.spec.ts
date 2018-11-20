@@ -13,6 +13,7 @@ describe('AAColoursComponent', () => {
   let mockRouter;
   let mockRouteService;
   let mockPupilPrefsService;
+  let mockStorageService;
   let component: AAColoursComponent;
   let fixture: ComponentFixture<AAColoursComponent>;
 
@@ -21,7 +22,8 @@ describe('AAColoursComponent', () => {
       navigate: jasmine.createSpy('navigate')
     };
     mockPupilPrefsService = {
-      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs'),
+      loadPupilPrefs: jasmine.createSpy('loadPupilPrefs')
     };
 
     const injector = TestBed.configureTestingModule({
@@ -31,12 +33,15 @@ describe('AAColoursComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
       ]
     });
 
     mockRouteService = injector.get(RouteService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
+    mockStorageService = injector.get(StorageService);
+
+    spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'regular', contrast: 'bow' });
   }));
 
   beforeEach(() => {
@@ -45,8 +50,9 @@ describe('AAColoursComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should load the component', () => {
     expect(component).toBeTruthy();
+    expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
   });
 
   it('should redirect to the access-settings page on click if the user has navigated from access-settings', () => {
