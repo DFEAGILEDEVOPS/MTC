@@ -44,6 +44,7 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppUsageService } from './services/app-usage/app-usage.service';
 import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
+import { PupilPrefsSyncService } from './services/pupil-prefs-sync/pupil-prefs-sync.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
@@ -60,7 +61,7 @@ import { AASettingsComponent } from './aa-settings/aa-settings.component';
 import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
-import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSubmissionService } from './services/pupil-prefs-submission/pupil-prefs-submission.service';
 import { SvgCrownComponent } from './svg/svg.crown.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
@@ -159,10 +160,11 @@ const appRoutes: Routes = [
     AppUsageService,
     CheckStartService,
     CheckCompleteService,
-    PupilPrefsService,
+    PupilPrefsSubmissionService,
     TokenService,
     AzureQueueService,
     RouteService,
+    PupilPrefsSyncService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

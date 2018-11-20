@@ -5,12 +5,12 @@ import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import {
-  AccessArrangements,
   AccessArrangementsConfig,
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSubmissionService } from '../services/pupil-prefs-submission/pupil-prefs-submission.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -29,11 +29,12 @@ export class AAFontsComponent {
     private questionService: QuestionService,
     private router: Router,
     private storageService: StorageService,
-    private pupilPrefsService: PupilPrefsService,
-
+    private pupilPrefsSubmissionService: PupilPrefsSubmissionService,
+    private pupilPrefsSyncService: PupilPrefsSyncService,
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.pupilPrefsSyncService.sync();
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
 
@@ -48,7 +49,7 @@ export class AAFontsComponent {
   async onClick() {
     this.accessArrangements.fontSize = this.selectedSize;
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    await this.pupilPrefsService.storePupilPrefs();
+    await this.pupilPrefsSubmissionService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);

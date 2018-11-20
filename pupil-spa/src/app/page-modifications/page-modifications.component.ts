@@ -8,14 +8,14 @@ import { AccessArrangements, accessArrangementsDataKey } from '../access-arrange
   styleUrls: ['./page-modifications.component.scss']
 })
 export class PageModificationsComponent {
-  accessArrangements: AccessArrangements;
+  accessArrangements;
 
   constructor(
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {
+    this.accessArrangements = new AccessArrangements();
     const accessArrangementsData = this.storageService.getItem(accessArrangementsDataKey);
-    this.accessArrangements = new AccessArrangements;
-    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
-    this.accessArrangements.contrast = (accessArrangementsData && accessArrangementsData.contrast) || 'bow';
+    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize);
+    this.accessArrangements.contrast = (accessArrangementsData && accessArrangementsData.contrast);
   }
 }

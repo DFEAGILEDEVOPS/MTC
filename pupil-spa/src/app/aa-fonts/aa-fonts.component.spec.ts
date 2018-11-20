@@ -8,41 +8,54 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 
 import { AAFontsComponent } from './aa-fonts.component';
 import { RouteService } from '../services/route/route.service';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { PupilPrefsSubmissionService } from '../services/pupil-prefs-submission/pupil-prefs-submission.service';
+import { PupilPrefsSyncService } from '../services/pupil-prefs-sync/pupil-prefs-sync.service';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
   let mockStorageService;
   let mockQuestionService;
-  let mockPupilPrefsService;
+  let mockPupilPrefsSubmissionService;
   let component: AAFontsComponent;
   let fixture: ComponentFixture<AAFontsComponent>;
+  let mockPupilPrefsSyncService;
 
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
-    mockPupilPrefsService = {
+    mockPupilPrefsSubmissionService = {
       storePupilPrefs: jasmine.createSpy('storePupilPrefs')
+    };
+    mockPupilPrefsSyncService = {
+      sync: jasmine.createSpy('sync')
     };
 
     const injector = TestBed.configureTestingModule({
       declarations: [ AAFontsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
-        RouteService,
         { provide: Router, useValue: mockRouter },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
+        { provide: PupilPrefsSubmissionService, useValue: mockPupilPrefsSubmissionService },
+        { provide: PupilPrefsSyncService, useValue: mockPupilPrefsSyncService },
+        RouteService,
       ]
     });
 
     mockStorageService = injector.get(StorageService);
     mockQuestionService = injector.get(QuestionService);
-    mockPupilPrefsService = injector.get(PupilPrefsService);
+    mockPupilPrefsSubmissionService = injector.get(PupilPrefsSubmissionService);
+    mockPupilPrefsSyncService = injector.get(PupilPrefsSyncService);
 
-    spyOn(mockStorageService, 'getItem').and.returnValue({ firstName: 'a', lastName: 'b' });
+    spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'pupil') {
+        return { firstName: 'a', lastName: 'b' };
+      } else if (arg === 'access_arrangements') {
+        return { fontSize: 'regular', contrast: 'bow' };
+      }
+    });
   }));
 
   beforeEach(() => {
@@ -73,6 +86,6 @@ describe('AAFontsComponent', () => {
 
   it('should store pupil prefs when navigating away', async () => {
     component.onClick();
-    expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
+    expect(mockPupilPrefsSubmissionService.storePupilPrefs).toHaveBeenCalledTimes(1);
   });
 });
