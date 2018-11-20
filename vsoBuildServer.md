@@ -4,7 +4,7 @@ Pre-reqs for ubuntu: https://github.com/Microsoft/vsts-agent/blob/master/docs/st
 
 ## Pre-reqs for MTC
 
-Install docker
+### Install docker
 ** check to see if docker works.  if you get a permissions error, run the following...
 ``` bash
 sudo usermod -a -G docker $USER
@@ -13,6 +13,15 @@ Install docker-compose if installing docker alone does not include it.
 Install nvm
 Install yarn
 [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+
+### Install FreeTDS for ruby SQL driver
+
+execute `admin/bin/install-freetds.sh` on the build server.
+
+### Install google chrome for ruby headless automation tests
+
+`wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb`
+`sudo apt -y install ./google-chrome*.deb`
 
 ## Install the VSTS agent
 
@@ -50,6 +59,8 @@ The agent should be configured to run as a service...
 https://github.com/Microsoft/vsts-agent/blob/master/docs/start/svcsystemd.md
 
 ## Known issues
+
+retained docker images can fill up the disks regularly.  run `docker system prune -f` to purge
 
 ### PATH updates
 
