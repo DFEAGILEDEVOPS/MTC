@@ -64,7 +64,7 @@ if azure_test == 'true'
 else
   azure_var = false
 end
-p database, server, port, admin_password, admin_user
+
 begin
   SQL_CLIENT = TinyTds::Client.new(username: admin_user,
                                    password: admin_password,
