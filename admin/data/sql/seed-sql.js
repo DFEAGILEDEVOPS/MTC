@@ -63,10 +63,14 @@ const processSeed = async (seed) => {
     sql = content.generateSql()
   }
 
-  winston.info(name)
+  winston.info(filename)
   try {
     await sqlService.modify(sql, params)
   } catch (error) {
+    /*
+      We can ignore certain error codes and
+      assume the migration is being re run
+    */
     const ignoreErrorCodes = [
       2601, // Cannot insert duplicate key
       2627 // Violation of UNIQUE KEY constraint
@@ -100,12 +104,11 @@ const runSeeds = async (version) => {
     }
 
     if (version === 'all') {
-      //await Promise.all(seeds.map(processSeed))
       for (let i = 0; i < seeds.length; i++) {
         await processSeed(seeds[i])
       }
     } else {
-      const foundSeed = seeds.find(({ filename }) => filename === version)
+      const foundSeed = seeds.find((seed) => seed.version === version)
       if (!foundSeed) throw new Error(`Seed not found: ${version}`)
 
       await processSeed(foundSeed)
