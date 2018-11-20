@@ -5,6 +5,8 @@ const sqlService = require('less-tedious')
 const { TYPES } = require('tedious')
 
 const sqlUtil = require('../lib/sql-helper')
+const config = require('../config')
+sqlService.initialise(config)
 const schema = '[mtc_admin]'
 const feedbackTable = '[pupilFeedback]'
 
@@ -13,13 +15,13 @@ module.exports = async function (context, feedbackMessage) {
     throw new Error('Badly formed message')
   }
 
-  context.log('feedback message received', feedbackMessage.checkCode)
+  context.log('feedback: message received', feedbackMessage.checkCode)
   // TODO: purpose: process feedback messages and put into pupilEvents table
 
   try {
     await sqlSaveFeedback(feedbackMessage)
   } catch (error) {
-    context.log.error(`Failed to save feedback for checkCode [${feedbackMessage.checkCode}]`)
+    context.log.error(`feedback: Failed to save feedback for checkCode [${feedbackMessage.checkCode}]`)
     throw error
   }
 

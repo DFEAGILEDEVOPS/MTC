@@ -17,7 +17,7 @@ const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
  * @return {Promise<void>}
  */
 module.exports = async function (context, pupilStatusMessage) {
-  context.log(`pupil-status message received for pupilId ${pupilStatusMessage.pupilId} with checkCode ${pupilStatusMessage.checkCode}`)
+  context.log(`pupil-status: message received for pupilId ${pupilStatusMessage.pupilId} with checkCode ${pupilStatusMessage.checkCode}`)
 
   if (typeof pupilStatusMessage !== 'object') {
     throw new Error('pupil-status: Badly formed message')
