@@ -71,6 +71,15 @@ test/pupil/*.html
 /pupil-spa/src/public/styles/styles.css
 /pupil-spa/src/public/styles/helpers/helpers.css
 
+# pupil-hpa
+test/pupil-hpa/reports/
+test/pupil-hpa/screenshots/*.png
+test/pupil-hpa/test/screenshots/*.html
+test/pupil-hpa/test/screenshots/*/*.png
+test/pupil-hpa/reports/*
+test/pupil-hpa/*.png
+test/pupil-hpa/*.html
+
 
 #admin
 test/admin/reports/
