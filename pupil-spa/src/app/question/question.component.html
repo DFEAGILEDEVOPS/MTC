@@ -1,41 +1,43 @@
-<div class="question-header">
-    <div *ngIf="isWarmUpQuestion" class="practice-box">practice</div>
-    <div class="remaining-time" id="js-page-time-settings">
-        Time left: <span id="js-page-timer" class="bold timer">{{remainingTime}}</span>
+<div class="question-wrapper">
+    <div class="question-header">
+        <div *ngIf="isWarmUpQuestion" class="practice-box aa-copy-size aa-contrast-invert">practice</div>
+        <div class="remaining-time aa-copy-size" id="js-page-time-settings">
+            Time left: <span id="js-page-timer" class="bold timer aa-copy-size">{{remainingTime}}</span>
+        </div>
+        <div *ngIf="familiarisationCheck" class="familiarisation-title aa-copy-size"><!-- contents set in _check.scss --></div>
     </div>
-    <div *ngIf="familiarisationCheck" class="familiarisation-title">Familiarisation check</div>
-</div>
-<div class="question-container">
-    <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div class="question-and-answer"><span class="question"><span *ngIf="shouldShowQuestion">{{ factor1 }} &times; {{ factor2 }} = </span></span>
-            <div class="answer-container"><span class="answer" id="js-answer" [innerText]="answer"></span>
-                <div class="numpad-container" *ngIf="!config.numpadRemoval">
-                    <table class="numpad-{{accessArrangements.fontSize}}" id="js-numpad">
-                        <tr>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb1" (click)="onClickAnswer(1)">1</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb2" (click)="onClickAnswer(2)">2</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb3" (click)="onClickAnswer(3)">3</button></td>
-                        </tr>
-                        <tr>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb4" (click)="onClickAnswer(4)">4</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb5" (click)="onClickAnswer(5)">5</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb6" (click)="onClickAnswer(6)">6</button></td>
-                        </tr>
-                        <tr>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb7" (click)="onClickAnswer(7)">7</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb8" (click)="onClickAnswer(8)">8</button></td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb9" (click)="onClickAnswer(9)">9</button></td>
-                        </tr>
-                        <tr>
-                            <td class="key js-key">
-                                <button type="button" id="kb-backspace" class="numpad-button" (click)="onClickBackspace()">&#9003;</button>
-                            </td>
-                            <td class="key js-key"><button type="button" class="numpad-button" id="kb0" (click)="onClickAnswer(0)">0</button></td>
-                            <td class="key js-key"><button type="button" id="kb-enter" class="numpad-enter-button" (click)="onClickSubmit()">Enter</button></td>
-                        </tr>
-                    </table>
+    <div class="question-container">
+        <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="question-and-answer"><span class="question aa-question-size"><span *ngIf="shouldShowQuestion">{{ factor1 }}&times;{{ factor2 }}=</span></span>
+                <div class="answer-container"><span class="answer aa-question-size aa-contrast-border" id="js-answer" [innerText]="answer"></span>
+                    <div class="numpad-container" *ngIf="!config.numpadRemoval">
+                        <table class="numpad" id="js-numpad">
+                            <tr>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb1" (click)="onClickAnswer(1)">1</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb2" (click)="onClickAnswer(2)">2</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb3" (click)="onClickAnswer(3)">3</button></td>
+                            </tr>
+                            <tr>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb4" (click)="onClickAnswer(4)">4</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb5" (click)="onClickAnswer(5)">5</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb6" (click)="onClickAnswer(6)">6</button></td>
+                            </tr>
+                            <tr>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb7" (click)="onClickAnswer(7)">7</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb8" (click)="onClickAnswer(8)">8</button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb9" (click)="onClickAnswer(9)">9</button></td>
+                            </tr>
+                            <tr>
+                                <td class="key js-key">
+                                    <button type="button" id="kb-backspace" class="numpad-button aa-contrast-invert" (click)="onClickBackspace()">&#9003;</button>
+                                </td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb0" (click)="onClickAnswer(0)">0</button></td>
+                                <td class="key js-key"><button type="button" id="kb-enter" class="numpad-enter-button aa-contrast-invert" (click)="onClickSubmit()">Enter</button></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

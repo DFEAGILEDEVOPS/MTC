@@ -22,7 +22,7 @@ const checkTable = '[check]'
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, completedCheckMessage) {
-  context.log('completed-check message received', completedCheckMessage.checkCode)
+  context.log('completed-check: message received', completedCheckMessage.checkCode)
 
   let checkData
   try {
@@ -35,14 +35,14 @@ module.exports = async function (context, completedCheckMessage) {
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
-    context.log.error(`ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
+    context.log.error(`completed-check: ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
     throw error
   }
 
   try {
     await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
   } catch (error) {
-    context.log.error(`ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
+    context.log.error(`completed-check: ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
     throw error
   }
 
@@ -53,7 +53,7 @@ module.exports = async function (context, completedCheckMessage) {
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
-      context.log.error(`ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
+      context.log.error(`completed-check: ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
       throw error
     }
   }
@@ -66,7 +66,7 @@ module.exports = async function (context, completedCheckMessage) {
       await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
     }
   } catch (error) {
-    context.log.error(`check-started: Error requesting a pupil-status change for checkCode ${completedCheckMessage.checkCode}}`)
+    context.log.error(`completed-check: Error requesting a pupil-status change for checkCode ${completedCheckMessage.checkCode}}`)
     throw error
   }
 
@@ -90,7 +90,6 @@ module.exports = async function (context, completedCheckMessage) {
  * @return {Promise<void>}
  */
 async function savePayloadToAdminDatabase (completedCheckMessage, checkData, logger) {
-
   // Don't process any checks more than once
   if (checkData.receivedByServerAt) {
     const msg = `completed-check: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
@@ -216,5 +215,5 @@ async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
     { name: 'startedAt', value: clientTimestamp, type: TYPES.DateTimeOffset }
   ]
 
-  return await sqlService.modify(sql, params)
+  return sqlService.modify(sql, params)
 }
