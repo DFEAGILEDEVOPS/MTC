@@ -7,6 +7,7 @@
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
     "migrate-sql": "node ./data/sql/migrate-sql.js",
+    "seed-sql": "node ./data/sql/seed-sql.js",
     "postinstall": "gulp build",
     "sasswatch": "gulp watch",
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
