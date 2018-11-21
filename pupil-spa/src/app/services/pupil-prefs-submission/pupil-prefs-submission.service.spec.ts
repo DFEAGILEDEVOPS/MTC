@@ -3,7 +3,7 @@ import { APP_INITIALIZER } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { PupilPrefsService } from './pupil-prefs.service';
+import { PupilPrefsSubmissionService } from './pupil-prefs-submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
@@ -13,17 +13,16 @@ import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { queueNames } from '../azure-queue/queue-names';
-import { AccessArrangements } from '../../access-arrangements';
 
 let azureQueueService: AzureQueueService;
-let pupilPrefsService: PupilPrefsService;
+let pupilPrefsSubmissionService: PupilPrefsSubmissionService;
 let mockStorageService: StorageServiceMock;
 let auditService: AuditService;
 let mockQuestionService;
 let tokenService: TokenService;
 let storedPrefs;
 
-describe('PupilPrefsService', () => {
+describe('PupilPrefsSubmissionService', () => {
   beforeEach(() => {
 
     const injector = TestBed.configureTestingModule({
@@ -33,7 +32,7 @@ describe('PupilPrefsService', () => {
         {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
         {provide: QUEUE_STORAGE_TOKEN},
         AzureQueueService,
-        PupilPrefsService,
+        PupilPrefsSubmissionService,
         TokenService,
         AuditService,
         { provide: StorageService, useClass: StorageServiceMock },
@@ -42,7 +41,7 @@ describe('PupilPrefsService', () => {
       ]
     });
     azureQueueService = injector.get(AzureQueueService);
-    pupilPrefsService = injector.get(PupilPrefsService);
+    pupilPrefsSubmissionService = injector.get(PupilPrefsSubmissionService);
     tokenService = injector.get(TokenService);
     mockQuestionService = injector.get(QuestionService);
     auditService = injector.get(AuditService);
@@ -55,13 +54,13 @@ describe('PupilPrefsService', () => {
   });
 
   it('should be created', () => {
-    expect(pupilPrefsService).toBeTruthy();
+    expect(pupilPrefsSubmissionService).toBeTruthy();
   });
 
   describe('storePupilPrefs ', () => {
     describe('when featureUseHpa is false', () => {
       beforeEach(() => {
-        pupilPrefsService.featureUseHpa = false;
+        pupilPrefsSubmissionService.featureUseHpa = false;
       });
       it('should not call pupil prefs azure queue storage and immediately return', async () => {
         spyOn(mockQuestionService, 'getConfig');
@@ -70,7 +69,7 @@ describe('PupilPrefsService', () => {
         spyOn(auditService, 'addEntry');
         spyOn(mockStorageService, 'setItem');
         spyOn(mockStorageService, 'getItem');
-        await pupilPrefsService.storePupilPrefs();
+        await pupilPrefsSubmissionService.storePupilPrefs();
         expect(auditService.addEntry).toHaveBeenCalledTimes(0);
         expect(mockStorageService.getItem).not.toHaveBeenCalled();
         expect(tokenService.getToken).not.toHaveBeenCalled();
@@ -79,7 +78,7 @@ describe('PupilPrefsService', () => {
     });
     describe('when featureUseHpa is true', () => {
       beforeEach(() => {
-        pupilPrefsService.featureUseHpa = true;
+        pupilPrefsSubmissionService.featureUseHpa = true;
       });
       it('should call pupil prefs azure queue storage', async () => {
         const pupil = { checkCode: 'checkCode' };
@@ -89,7 +88,7 @@ describe('PupilPrefsService', () => {
         const addEntrySpy = spyOn(auditService, 'addEntry');
         spyOn(mockStorageService, 'setItem');
         spyOn(mockStorageService, 'getItem').and.returnValues(storedPrefs, pupil);
-        await pupilPrefsService.storePupilPrefs();
+        await pupilPrefsSubmissionService.storePupilPrefs();
         expect(auditService.addEntry).toHaveBeenCalledTimes(2);
         expect(mockStorageService.getItem).toHaveBeenCalled();
         expect(tokenService.getToken).toHaveBeenCalled();
@@ -101,8 +100,8 @@ describe('PupilPrefsService', () => {
           checkCode: 'checkCode'
         };
         const retryConfig = {
-          errorDelay: pupilPrefsService.pupilPrefsAPIErrorDelay,
-          errorMaxAttempts: pupilPrefsService.pupilPrefsAPIErrorMaxAttempts
+          errorDelay: pupilPrefsSubmissionService.pupilPrefsAPIErrorDelay,
+          errorMaxAttempts: pupilPrefsSubmissionService.pupilPrefsAPIErrorMaxAttempts
         };
         expect(addMessageSpy.calls.all()[0].args[0]).toEqual(queueNames.pupilPreferences);
         expect(addMessageSpy.calls.all()[0].args[1]).toEqual('url');
@@ -117,41 +116,12 @@ describe('PupilPrefsService', () => {
         spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
         const addEntrySpy = spyOn(auditService, 'addEntry');
         spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);
-        await pupilPrefsService.storePupilPrefs();
+        await pupilPrefsSubmissionService.storePupilPrefs();
         expect(mockStorageService.getItem).toHaveBeenCalled();
         expect(tokenService.getToken).toHaveBeenCalled();
         expect(azureQueueService.addMessage).toHaveBeenCalled();
         expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
       });
-    });
-  });
-  describe('loadPupilPrefs', () => {
-    it('should load prefs from local storage access_arrangements key and return', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValue({ contrast: 'bow', fontSize: 'regular' });
-      const accessArrangements = new AccessArrangements();
-      accessArrangements.fontSize = 'regular';
-      accessArrangements.contrast = 'bow';
-      pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
-      expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
-    });
-    it('should load prefs from local storage config key', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValues(undefined, { colourContrastCode: 'BOB', fontSizeCode: 'SML' });
-      const accessArrangements = new AccessArrangements();
-      accessArrangements.fontSize = 'small';
-      accessArrangements.contrast = 'bob';
-      pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
-      expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
-    });
-    it('should provide defaults if local storage does not provide existing values', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValues(undefined, undefined);
-      const accessArrangements = new AccessArrangements();
-      accessArrangements.fontSize = 'regular';
-      accessArrangements.contrast = 'bow';
-      pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
-      expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
     });
   });
 });
