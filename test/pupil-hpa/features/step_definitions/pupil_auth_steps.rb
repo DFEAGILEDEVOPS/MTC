@@ -18,7 +18,6 @@ Then(/^I should see meta data stored in the DB$/) do
 end
 
 Given(/^I have failed to login$/) do
-  @checks_count = SqlDbHelper.number_of_checks
   step "I have attempted to enter a school I do not attend upon login"
 end
 

@@ -145,6 +145,7 @@ end
 
 
 Given(/^I am on the MTC check start page$/) do
+  step 'I have generated a live pin'
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
