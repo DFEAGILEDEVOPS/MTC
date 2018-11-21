@@ -39,17 +39,16 @@ async function deleteExpiredChecks (logger) {
   }
   const entities = pathOr([], ['response', 'body', 'value'], data)
 
-  for (let preparedCheck of entities) {
-    try {
-      const entity = {
-        PartitionKey: preparedCheck.PartitionKey,
-        RowKey: preparedCheck.RowKey
-      }
-      await azureTableService.deleteEntityAsync(preparedCheckTable, entity)
-      await updatePupilEventTable(preparedCheck.checkCode.toUpperCase())
-    } catch (error) {
-      logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${preparedCheck.checkCode}: ${error.message}`)
-    }
+  try {
+    const deletes = entities.map(entity => {
+      return azureTableService.deleteEntityAsync(preparedCheckTable, entity)
+    })
+    const pupilEventInsertions = entities.map(entity => {
+      return updatePupilEventTable(entity.checkCode.toUpperCase())
+    })
+    await Promise.all(deletes, pupilEventInsertions)
+  } catch (error) {
+    logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${preparedCheck.checkCode}: ${error.message}`)
   }
 
   return {
