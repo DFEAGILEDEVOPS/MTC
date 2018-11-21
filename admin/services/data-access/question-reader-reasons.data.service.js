@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
+
 const questionReaderReasonsDataService = {}
 const questionReaderCodes = {}
 
@@ -61,4 +61,4 @@ const init = async () => {
   })
 }
 
-module.exports = monitor('question-reader-reason.data-service', questionReaderReasonsDataService)
+module.exports = questionReaderReasonsDataService

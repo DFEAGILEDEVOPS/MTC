@@ -23,6 +23,7 @@ describe('RouteService', () => {
       ]
     });
     service = injector.get(RouteService);
+    service.setup();
   });
 
   it('should be created', () => {

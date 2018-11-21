@@ -6,14 +6,17 @@ const httpMocks = require('node-mocks-http')
 
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
+const pupilStatusService = require('../../../services/pupil.status.service')
 const groupService = require('../../../services/group.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const groupsMock = require('../mocks/groups')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
 
 describe('pupils-not-taking-the-check controller:', () => {
   function getRes () {
@@ -42,6 +45,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
+      spyOn(pupilStatusService, 'recalculateStatusByPupilSlugs')
     })
 
     afterEach(() => {
@@ -56,6 +60,8 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -65,12 +71,16 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).not.toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         done()
       })
 
       it('should execute next if initial page fails to render', async (done) => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -78,6 +88,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         done()
       })
     })
@@ -166,6 +178,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
         done()
       })
 
@@ -223,6 +236,7 @@ describe('pupils-not-taking-the-check controller:', () => {
       it('should redirect to the select pupils page if pupilId is not supplied', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
         spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -266,6 +280,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.School)
         expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
+        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
       })
 
       it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {
@@ -324,6 +339,8 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#viewPupilsNotTakingTheCheck', () => {
       it('should make a call to get the pupils', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(
@@ -337,9 +354,13 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       })
       it('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(Promise.reject(new Error())))
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(
@@ -353,6 +374,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
       })

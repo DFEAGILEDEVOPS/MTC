@@ -61,11 +61,11 @@ $path: "../../assets/govuk_frontend_toolkit/images/";
 @import './elements/headings';
 @import './elements/timer';
 @import './elements/check';
-@import './elements/warm-up';
 @import './elements/manage-pins';
+@import './elements/aa-variables';
 @import './elements/virtual-keyboard';
 @import './elements/font-size-copy';
-
+@import './elements/colour-contrast';
 
 /* Header and footer */
 
@@ -250,5 +250,39 @@ body {
 
     margin-top: 0.3em;
     margin-bottom: 0.5em;
+  }
+}
+
+/* AA Page Modification */
+#page-modifications {
+  min-height: 100vh;
+  height: 100%;
+}
+
+/* Float columns for aa settings pages */
+
+.column-float {
+  min-width: 25%;
+  padding: 0 15px;
+  float: left;
+  overflow: hidden;
+}
+
+/* SVG icons */
+.notice .svg-warning {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -20px;
+}
+
+.button-start {
+  background-image: none;
+
+  .svg-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate(0, -50%);
   }
 }

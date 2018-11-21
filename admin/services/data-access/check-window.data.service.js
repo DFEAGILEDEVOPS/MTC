@@ -4,7 +4,7 @@ const moment = require('moment')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
-const monitor = require('../../helpers/monitor')
+
 const table = '[checkWindow]'
 
 const checkWindowDataService = {
@@ -326,7 +326,19 @@ const checkWindowDataService = {
     WHERE isDeleted=0
     ORDER BY name ASC`
     return sqlService.query(sql)
+  },
+
+  /**
+   * Fetch active check window
+   * @return {Object}
+   */
+  sqlFindActiveCheckWindow: async () => {
+    const sql = `SELECT TOP 1 *
+    FROM ${sqlService.adminSchema}.${table}
+    WHERE GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
+    const result = await sqlService.query(sql)
+    return R.head(result)
   }
 }
 
-module.exports = monitor('checkWindow.data-service', checkWindowDataService)
+module.exports = checkWindowDataService

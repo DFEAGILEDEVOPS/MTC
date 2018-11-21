@@ -2,7 +2,6 @@
 const { TYPES } = require('tedious')
 
 const sqlService = require('./sql.service')
-const monitor = require('../../helpers/monitor')
 
 const table = '[answer]'
 
@@ -82,4 +81,4 @@ const answerDataService = {
   }
 }
 
-module.exports = monitor('answer.data-service', answerDataService)
+module.exports = answerDataService

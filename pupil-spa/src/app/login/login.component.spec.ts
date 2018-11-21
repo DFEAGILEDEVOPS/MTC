@@ -116,39 +116,29 @@ describe('LoginComponent', () => {
       });
     });
 
-    it('should redirect to success page given a valid schoolPin and pupilPin', () => {
+    it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({});
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
 
-    describe('for access arrangements', () => {
-      it('should redirect to the font selection page when fontSize is enabled', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true });
-        component.onSubmit('goodPin', 'goodPin');
-        fixture.whenStable().then(() => {
-          expect(mockQuestionService.getConfig).toHaveBeenCalled();
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
-        });
+    it('should redirect to the font selection page when fontSize is enabled', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true });
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(mockQuestionService.getConfig).toHaveBeenCalled();
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
       });
+    });
 
-      it('should redirect to the AA settings page when audibleSounds is enabled', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({ audibleSounds: true });
-        component.onSubmit('goodPin', 'goodPin');
-        fixture.whenStable().then(() => {
-          expect(mockQuestionService.getConfig).toHaveBeenCalled();
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
-        });
-      });
-
-      it('should redirect to the AA settings page when numpadRemoval is enabled', async () => {
-        spyOn(mockQuestionService, 'getConfig').and.returnValue({ numpadRemoval: true });
-        component.onSubmit('goodPin', 'goodPin');
-        fixture.whenStable().then(() => {
-          expect(mockQuestionService.getConfig).toHaveBeenCalled();
-          expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
-        });
+    it('should redirect to the colour contrast page when colourContrast is enabled', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: true });
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(mockQuestionService.getConfig).toHaveBeenCalled();
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice']);
       });
     });
   });

@@ -5,7 +5,6 @@ const R = require('ramda')
 const pupilDataService = require('./data-access/pupil.data.service')
 const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
-const monitor = require('../helpers/monitor')
 
 const service = {}
 
@@ -63,4 +62,4 @@ service.upload = async (school, uploadFile) => {
   return pr
 }
 
-module.exports = monitor('pupil-upload.service', service)
+module.exports = service

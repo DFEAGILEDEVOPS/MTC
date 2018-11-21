@@ -1,6 +1,5 @@
 'use strict'
 
-const monitor = require('../../helpers/monitor')
 const sqlService = require('./sql.service')
 const accessArrangementsDataService = {}
 const accessArrangementCodes = {}
@@ -87,4 +86,4 @@ const init = async () => {
   })
 }
 
-module.exports = monitor('access-arrangements.data-service', accessArrangementsDataService)
+module.exports = accessArrangementsDataService

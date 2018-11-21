@@ -1,79 +1,81 @@
-<app-header class="full-width"></app-header>
-<main id="content" class="js-content" role="main">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <header class="page-header">
-                <h1 class="heading-xlarge" tabindex="0">Give feedback</h1>
-            </header>
+<app-page-modifications>
+    <app-header class="full-width"></app-header>
+    <main id="content" class="js-content" role="main">
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <header class="page-header">
+                    <h1 class="heading-xlarge aa-title-size" tabindex="0">Give feedback</h1>
+                </header>
 
-            <div *ngIf="(errorInputType || errorSatisfactionRating)"
-                 class="error-summary"
-                 role="group"
-                 aria-labelledby="error-summary-heading-example-1"
-                 tabindex="-1">
-                <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                    There were some problems with your input
-                </h1>
+                <div *ngIf="(errorInputType || errorSatisfactionRating)"
+                    class="error-summary"
+                    role="group"
+                    aria-labelledby="error-summary-heading-example-1"
+                    tabindex="-1">
+                    <h1 class="heading-medium error-summary-heading aa-copy-size" id="error-summary-heading-example-1">
+                        There were some problems with your input
+                    </h1>
+                </div>
+
+                <form (ngSubmit)="onSubmit(commentText.value)" autocomplete="off">
+                    <h2 class="heading-medium no-top-margin aa-copy-size" tabindex="0">How did you enter your answers today?</h2>
+
+                    <div [ngClass]="(errorInputType === true)?'form-group-error':'form-group'" class="text">
+                        <fieldset>
+                            <legend class="visually-hidden" aria-hidden="true">How did you enter your answers today?</legend>
+                            <span *ngIf="errorInputType" class="error-message aa-copy-size">Please choose an option below</span>
+                            <div class="multiple-choice" *ngFor="let inputType of inputTypes">
+                                <input type="radio"
+                                    name="inputType"
+                                    id="input-type-{{inputType.id}}"
+                                    [value]="inputType.id"
+                                    (change)="onSelectionChange('inputType', inputType)">
+                                <label class="aa-copy-size" for="input-type-{{inputType.id}}">{{inputType.value}}</label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <br style="clear:both">
+
+                    <h2 class="heading-medium no-top-margin aa-copy-size" tabindex="0">How easy or difficult was it to enter your answers today?</h2>
+
+                    <div [ngClass]="(errorSatisfactionRating === true)?'form-group-error':'form-group'" class="text">
+                        <fieldset>
+                            <legend class="visually-hidden" aria-hidden="true">How easy or difficult was it to enter your answers today?
+                            </legend>
+                            <span *ngIf="errorSatisfactionRating" class="error-message aa-copy-size">Please choose an option below</span>
+                            <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
+                                <input type="radio"
+                                    name="satisfactionRating"
+                                    id="satisfaction-rating-{{satisfactionRating.id}}"
+                                    [value]="satisfactionRating.id"
+                                    (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
+                                <label class="aa-copy-size" for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <br style="clear:both">
+
+                    <div [ngClass]="(errorCommentExists === true)?'form-group-error':'form-group'" class="text">
+                        <h2 class="heading-medium no-top-margin aa-copy-size" tabindex="0">What would make it better?</h2>
+                        <span *ngIf="errorCommentExists" class="error-message">
+            (Comment error message)
+            </span>
+                        <p>
+                            <textarea #commentText name="commentText" class="textarea form-control aa-contrast aa-contrast-border aa-copy-size"></textarea>
+                            <br>
+                            <span class="aa-copy-size">(Limit is 1200 characters)</span>
+                        </p>
+                    </div>
+
+                    <br style="clear:both">
+
+                    <div class="form-group">
+                        <input class="button ultrawider aa-button-size aa-contrast-button" type="submit" value="Send feedback" [disabled]="!enableSubmit">
+                    </div>
+                </form>
             </div>
-
-            <form (ngSubmit)="onSubmit(commentText.value)" autocomplete="off">
-                <h2 class="heading-medium no-top-margin" tabindex="0">How did you enter your answers today?</h2>
-
-                <div [ngClass]="(errorInputType === true)?'form-group-error':'form-group'" class="text">
-                    <fieldset>
-                        <legend class="visually-hidden" aria-hidden="true">How did you enter your answers today?</legend>
-                        <span *ngIf="errorInputType" class="error-message">Please choose an option below</span>
-                        <div class="multiple-choice" *ngFor="let inputType of inputTypes">
-                            <input type="radio"
-                                   name="inputType"
-                                   id="input-type-{{inputType.id}}"
-                                   [value]="inputType.id"
-                                   (change)="onSelectionChange('inputType', inputType)">
-                            <label for="input-type-{{inputType.id}}">{{inputType.value}}</label>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <br style="clear:both">
-
-                <h2 class="heading-medium no-top-margin" tabindex="0">How easy or difficult was it to enter your answers today?</h2>
-
-                <div [ngClass]="(errorSatisfactionRating === true)?'form-group-error':'form-group'" class="text">
-                    <fieldset>
-                        <legend class="visually-hidden" aria-hidden="true">How easy or difficult was it to enter your answers today?
-                        </legend>
-                        <span *ngIf="errorSatisfactionRating" class="error-message">Please choose an option below</span>
-                        <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
-                            <input type="radio"
-                                   name="satisfactionRating"
-                                   id="satisfaction-rating-{{satisfactionRating.id}}"
-                                   [value]="satisfactionRating.id"
-                                   (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
-                            <label for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <br style="clear:both">
-
-                <div [ngClass]="(errorCommentExists === true)?'form-group-error':'form-group'" class="text">
-                    <h2 class="heading-medium no-top-margin" tabindex="0">What would make it better?</h2>
-                    <span *ngIf="errorCommentExists" class="error-message">
-          (Comment error message)
-        </span>
-                    <p>
-                        <textarea #commentText name="commentText" class="textarea form-control"></textarea>
-                        <br>
-                        (Limit is 1200 characters)
-                    </p>
-                </div>
-
-                <br style="clear:both">
-
-                <div class="form-group">
-                    <input class="button button-start" type="submit" value="Send feedback" [disabled]="!enableSubmit">
-                </div>
-            </form>
         </div>
-    </div>
-</main>
+    </main>
+</app-page-modifications>

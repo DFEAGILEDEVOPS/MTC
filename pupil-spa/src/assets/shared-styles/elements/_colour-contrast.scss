@@ -1,0 +1,176 @@
+@mixin colour-contrast($key, $fg-colour, $bg-colour, $special-invert: false) {
+
+  .colour-contrast-#{$key} {
+    color: $fg-colour !important;
+    background-color: $bg-colour !important;
+  }
+
+  .aa-contrast-text-#{$key}, .colour-contrast-#{$key} .aa-contrast-text {
+    color: $fg-colour !important;
+  }
+
+  .aa-contrast-text-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-text-invert {
+    color: $bg-colour !important;
+  }
+
+  .aa-contrast-background-#{$key}, .colour-contrast-#{$key} .aa-contrast-background {
+    background-color: $bg-colour !important;
+  }
+
+  .aa-contrast-background-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-background-invert {
+    background-color: $fg-colour !important;
+  }
+
+  .aa-contrast-border-#{$key}, .colour-contrast-#{$key} .aa-contrast-border {
+    border-color: $fg-colour !important;
+  }
+
+  .aa-contrast-#{$key}, .colour-contrast-#{$key} .aa-contrast {
+    color: $fg-colour !important;
+    background-color: $bg-colour !important;
+  }
+
+  .aa-contrast-button-#{$key}, .colour-contrast-#{$key} .aa-contrast-button {
+    background-color: $fg-colour !important;
+    color: $bg-colour !important;
+    border: none !important;
+    box-shadow: none;
+  }
+
+  .colour-contrast-#{$key} span.aa-contrast-#{$key} {
+    border: 2px solid $fg-colour !important;
+  }
+
+  @if $special-invert == false {
+
+    .aa-contrast-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-invert {
+      color: $bg-colour !important;
+      background-color: $fg-colour !important;
+    }
+
+    .aa-contrast-block-#{$key}, .colour-contrast-#{$key} .aa-contrast-block {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
+    }
+
+    .colour-contrast-#{$key} .aa-contrast-header {
+      background-color: $fg-colour !important;
+      color: $bg-colour !important;
+    }
+  }
+
+  @else {
+
+    .aa-contrast-invert-#{$key}, .colour-contrast-#{$key} .aa-contrast-invert {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
+      border: 2px solid $fg-colour !important;
+    }
+
+    .aa-contrast-block-#{$key}, .colour-contrast-#{$key} .aa-contrast-block {
+      color: $fg-colour !important;
+      background-color: $bg-colour !important;
+      border: 2px solid $fg-colour !important;
+    }
+
+    .colour-contrast-#{$key} .aa-contrast-header {
+      background-color: $bg-colour !important;
+      color: $fg-colour !important;
+    }
+  }
+
+  /*
+    The styles below are hijaking other styles
+    which we're trying to avoid
+  */
+
+  // Links
+  .colour-contrast-#{$key} a, .colour-contrast-#{$key} details summary {
+    color: $fg-colour !important;
+  }
+
+  .colour-contrast-#{$key} .back-link {
+    border-bottom-color: $fg-colour !important;
+
+    &:before {
+      border-right-color: $fg-colour !important;
+    }
+  }
+
+  // Hide the blue header bar on all contrast pages
+  #global-header-bar {
+    display: none !important;
+  }
+
+  // Style the svgs
+  .colour-contrast-#{$key} .svg-girl {
+
+    .background-fill {
+      fill: $bg-colour !important;
+    }
+
+    .copy-stroke {
+      stroke: $fg-colour !important;
+    }
+
+    .copy-fill {
+      fill: $fg-colour !important;
+    }
+
+    @if $key == 'yob' {
+      .eye-cover {
+        fill: $fg-colour !important;
+      }
+    }
+  }
+
+
+  .colour-contrast-#{$key} .svg-crown path {
+    fill: if($special-invert == false, $bg-colour, $fg-colour) !important;
+  }
+
+  .colour-contrast-#{$key} .svg-warning path,
+  .colour-contrast-#{$key} .svg-loading rect {
+    fill: $fg-colour !important;
+  }
+
+  .colour-contrast-#{$key} .svg-arrow polygon {
+    fill: $bg-colour !important;
+  }
+}
+
+/*
+  BOW styles, we dont want to use the entire mixin
+*/
+.aa-contrast-bow {
+  // Used to override app-page-modifications on the preview box
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+.colour-contrast-bow span.aa-contrast-bow {
+  // Used to set a border on the bow option when viewing with bow
+  border: 2px solid #000 !important;
+}
+
+@include colour-contrast(
+  "yob",
+  #ff0,
+  #000,
+  true
+);
+@include colour-contrast(
+  "bob",
+  #000,
+  #96adfc
+);
+@include colour-contrast(
+  "bop",
+  #000,
+  #edd1b0
+);
+@include colour-contrast(
+  "boc",
+  #00008b,
+  #fff5cd
+);

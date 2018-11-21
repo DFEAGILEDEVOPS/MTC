@@ -83,7 +83,7 @@ describe('LoginSuccessComponent', () => {
 
   it('asks the user to confirm their details', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.notice .bold-small').textContent).toMatch(/Do not press 'Next' if this is not you,/);
+    expect(compiled.querySelector('.notice .aa-copy-size').textContent).toMatch(/Do not press 'Next' if this is not you,/);
   });
 
   describe('for no access arrangements', () => {
@@ -96,11 +96,11 @@ describe('LoginSuccessComponent', () => {
   });
 
   describe('for access arrangements', () => {
-    it('should redirect to the font selection page when fontSize is enabled', async () => {
+    it('should redirect to the AA settings page when fontSize is enabled', async () => {
       spyOnProperty(component.config, 'fontSize').and.returnValue(true);
       component.onClick();
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
       });
     });
 
@@ -134,5 +134,4 @@ describe('LoginSuccessComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
     });
   });
-
 });

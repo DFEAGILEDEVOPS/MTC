@@ -1,21 +1,21 @@
-<app-header class="full-width"></app-header>
 <app-page-modifications>
-<main id="content" class="js-content" role="main">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <header class="page-header">
-                <h1 class="heading-xlarge" tabindex="0">Thank you</h1>
-            </header>
-            <p class="lede" tabindex="0" *ngIf='familiarisationCheck'>
-                You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
-            </p>
-            <p class="lede" tabindex="0" *ngIf='!familiarisationCheck'>
-                Please leave <a routerLink="/feedback">feedback.</a>
-            </p>
-            <p class="form-buttons">
-                <a id='sign-out' routerLink="/sign-out" class="button">Sign out</a>
-            </p>
+    <app-header class="full-width"></app-header>
+    <main id="content" class="js-content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                <header class="page-header">
+                    <h1 class="aa-title-size" tabindex="0">Thank you</h1>
+                </header>
+                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck'>
+                    You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
+                </p>
+                <p class="lede aa-copy-size" tabindex="0" *ngIf='!familiarisationCheck'>
+                    Please leave <a routerLink="/feedback">feedback.</a>
+                </p>
+                <p>
+                    <a id='sign-out' routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button">Sign out</a>
+                </p>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 </app-page-modifications>

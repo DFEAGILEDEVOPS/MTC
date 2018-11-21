@@ -1,11 +1,13 @@
-const R = require('ramda')
-const moment = require('moment')
-const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
-const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
+const azureQueueService = require('./azure-queue.service')
 const checkDataService = require('./data-access/check.data.service')
+const moment = require('moment')
+
 const pinValidator = require('../lib/validator/pin-validator')
+const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
+const pupilDataService = require('./data-access/pupil.data.service')
+const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
-const monitor = require('../helpers/monitor')
+const R = require('ramda')
 
 const pupilStatusService = {}
 
@@ -50,7 +52,7 @@ pupilStatusService.getStatus = async (pupil) => {
   const hasCheckStarted = latestStartedCheck && latestStartedCheck.startedAt && !latestStartedCheck.data && !isActivePin
   if (hasCheckStarted) return getStatusDescription('CHS')
   // Pupil has a result
-  if (latestStartedCheck.data) return getStatusDescription('COM')
+  if (latestStartedCheck && latestStartedCheck.data) return getStatusDescription('COM')
 }
 
 /**
@@ -67,4 +69,39 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
   return initialLogIn || restartLogIn
 }
 
-module.exports = monitor('pupil-status.service', pupilStatusService)
+/**
+ * Make a request to the pupil status service to recalculate the status for one or more pupils.
+ * This function has to fabricate a checkCode as in the not-taking-check example one isn't available.
+ * @param {[number]}postedPupilSlugs
+ */
+pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) => {
+  if (!(Array.isArray(pupilSlugs) && pupilSlugs.length > 0)) {
+    throw new Error('Invalid parameter: pupilSlugs')
+  }
+
+  const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(pupilSlugs, schoolId)
+
+  for (let pupil of pupils) {
+    azureQueueService.addMessage('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
+  }
+}
+
+/**
+ * Make a request to the pupil status service to recalculate the status for one or more pupils.
+ * Same as recalculateStatusByPupilSlugs, but using pupil Ids as that is what the restart controller is using.
+ * @param {[number]} pupilIds - array of numeric pupil IDs
+ * @param {number} schoolId - ID of school in school table
+ */
+pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
+  if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
+    throw new Error('Invalid parameter: pupilIds')
+  }
+
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
+
+  for (let pupil of pupils) {
+    azureQueueService.addMessage('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
+  }
+}
+
+module.exports = pupilStatusService

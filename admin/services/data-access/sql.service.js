@@ -7,7 +7,7 @@ const winston = require('winston')
 
 const sqlPoolService = require('./sql.pool.service')
 const dateService = require('../date.service')
-const monitor = require('../../helpers/monitor')
+
 const moment = require('moment')
 let cache = {}
 
@@ -534,4 +534,4 @@ END CATCH
   `
   return sqlService.modify(wrappedSQL, params)
 }
-module.exports = monitor('sql.data-service', sqlService)
+module.exports = sqlService

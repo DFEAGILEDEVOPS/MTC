@@ -1,28 +1,28 @@
-<app-header class="full-width"></app-header>
 <app-page-modifications>
+  <app-header class="full-width"></app-header>
   <main id="content" class="js-content" role="main">
       <div class="grid-row">
           <div class="column-two-thirds">
-              <header class="page-header">
-                  <h1 class="heading-xlarge" tabindex="0">Not able to upload</h1>
-              </header>
+            <p class="aa-title-size" tabindex="0">
+              <strong>Not able to upload</strong>
+            </p>
             <div class="notice">
-              <i class="icon icon-important">
+              <app-svg-warning>
                 <span class="visually-hidden">Warning</span>
-              </i>
-              <strong class="bold-small">
+              </app-svg-warning>
+              <strong class="aa-copy-size">
                 Please tell your teacher
               </strong>
             </div>
             <br />
             <details>
-              <summary><span class="summary">Instructions for teacher</span></summary>
+              <summary><span class="summary aa-copy-size">Instructions for teacher</span></summary>
               <div class="panel no-border">
-                <ol class="list list-number">
+                <ol class="list list-number aa-copy-size">
                   <li>Press the ‘Try upload again’ button</li>
                   <li>If that still doesn't work please contact the helpline for advice on how to upload the check.</li>
-                  <div class="panel panel-border-wide">
-                    <div class="bold-small">Standards and testing agency helpline</div>
+                  <div class="panel panel-border-wide aa-copy-size aa-contrast-border">
+                    <div class="bold-small aa-copy-size">Standards and testing agency helpline</div>
                     <div>Telephone: 0345 278 8080</div>
                     <div>Monday to Friday, 9am to 5pm</div>
                   </div>
@@ -30,7 +30,7 @@
               </div>
             </details>
             <br />
-            <a routerLink="/check" [queryParams]="{unfinishedCheck: true}" class="button" id="retry-button">
+            <a routerLink="/check" [queryParams]="{unfinishedCheck: true}" class="button aa-button-size aa-contrast-button ultrawider" id="retry-button">
               Try upload again
             </a>
           </div>
