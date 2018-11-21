@@ -7,7 +7,7 @@
                     <h1 class="aa-title-size" tabindex="0">Thank you</h1>
                 </header>
                 <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck'>
-                    You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
+                    You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go <span *ngIf="hasAccessSettings">or you can <a routerLink="/access-settings">edit your settings</a></span>.
                 </p>
                 <p class="lede aa-copy-size" tabindex="0" *ngIf='!familiarisationCheck'>
                     Please leave <a routerLink="/feedback">feedback.</a>
@@ -15,12 +15,6 @@
                 <p>
                     <a id='sign-out' routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button">Sign out</a>
                 </p>
-            </div>
-            <div class="column-one-third more-links aa-copy-size">
-                <strong class='aa-contrast-border'>More</strong>
-                <ul>
-                    <li><a routerLink="/access-settings">Edit your settings</a></li>
-                </ul>
             </div>
         </div>
     </main>
