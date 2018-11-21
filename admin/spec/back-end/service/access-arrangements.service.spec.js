@@ -9,6 +9,8 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 const accessArrangementsValidator = require('../../../lib/validator/access-arrangements-validator.js')
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
+const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
+const azureQueueService = require('../../../services/azure-queue.service')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -33,11 +35,28 @@ describe('accessArrangementsService', () => {
       spyOn(accessArrangementsService, 'process')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
       spyOn(accessArrangementsService, 'save')
+      spyOn(pinGenerationDataService, 'sqlFindActivePinsByUrlSlug').and.returnValue([])
+      spyOn(azureQueueService, 'addMessage')
       await accessArrangementsService.submit({}, 12345, 1)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
       expect(accessArrangementsService.process).toHaveBeenCalled()
       expect(accessArrangementsService.save).toHaveBeenCalled()
+      expect(azureQueueService.addMessage).not.toHaveBeenCalled()
+    })
+    it('adds a message to the queue if there is one or more records with active pins ', async () => {
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
+      spyOn(accessArrangementsService, 'process')
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
+      spyOn(accessArrangementsService, 'save')
+      spyOn(pinGenerationDataService, 'sqlFindActivePinsByUrlSlug').and.returnValue([{ urlSlug: 'urlSlug1' }, { urlSlug: 'urlSlug2' }])
+      spyOn(azureQueueService, 'addMessage')
+      await accessArrangementsService.submit({}, 12345, 1)
+      expect(accessArrangementsValidator.validate).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
+      expect(accessArrangementsService.process).toHaveBeenCalled()
+      expect(accessArrangementsService.save).toHaveBeenCalled()
+      expect(azureQueueService.addMessage).toHaveBeenCalled()
     })
     it('throws a validation error if validation is unsuccessful', async () => {
       const validationError = new ValidationError()

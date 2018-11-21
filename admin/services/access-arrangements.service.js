@@ -2,8 +2,10 @@ const R = require('ramda')
 const accessArrangementsDataService = require('../services/data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const questionReaderReasonsDataService = require('../services/data-access/question-reader-reasons.data.service')
+const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
+const azureQueueService = require('../services/azure-queue.service')
 
 const accessArrangementsService = {}
 
@@ -30,7 +32,16 @@ accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
   const processedData = await accessArrangementsService.process(submittedData, pupil, dfeNumber, userId)
-  return accessArrangementsService.save(processedData, pupil)
+  const displayData = await accessArrangementsService.save(processedData, pupil)
+  const results = await pinGenerationDataService.sqlFindActivePinsByUrlSlug(urlSlug)
+  // Sync existing preparedCheck(s) when 1 or more active pins exist
+  if (results.length > 0) {
+    const checkCodes = results.map(r => r.checkCode)
+    checkCodes.forEach(checkCode => {
+      azureQueueService.addMessage('prepared-check-sync', { version: 1, checkCode: checkCode })
+    })
+  }
+  return displayData
 }
 
 /**
