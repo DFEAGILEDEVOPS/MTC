@@ -24,12 +24,16 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private speechListenerEvent: any;
 
+  public shouldShowMore: boolean;
+
   constructor(private auditService: AuditService,
               protected windowRefService: WindowRefService,
               private questionService: QuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
+    const config = questionService.getConfig();
+    this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
   }
 
   ngOnInit() {
