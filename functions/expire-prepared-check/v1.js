@@ -46,9 +46,9 @@ async function deleteExpiredChecks (logger) {
         RowKey: preparedCheck.RowKey
       }
       await azureTableService.deleteEntityAsync(preparedCheckTable, entity)
-      await updatePupilEventTable(preparedCheck.checkCode)
+      await updatePupilEventTable(preparedCheck.checkCode.toUpperCase())
     } catch (error) {
-      logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${error.message}`)
+      logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${preparedCheck.checkCode}: ${error.message}`)
     }
   }
 
