@@ -62,13 +62,14 @@ async function updateChecksNotReceived() {
  * @return {Promise<*|Promise<*>>}
  */
 async function updatePupilStatuses(checks) {
-  for (let check of checks) {
-    await azureStorageHelper.addMessageToQueue('pupil-status', {
+  const messages = checks.map(check => {
+    azureStorageHelper.addMessageToQueue('pupil-status', {
       version: 1,
       pupilId: check.pupilId,
       checkCode: check.checkCode
     })
-  }
+  })
+  return Promise.all(messages)
 }
 
 module.exports = v1
