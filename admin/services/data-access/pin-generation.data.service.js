@@ -123,7 +123,7 @@ const serviceToExport = {
     return sqlService.modify(sql, params)
   },
 
-  sqlFindActivePinsByUrlSlug: async (urlSlug) => {
+  sqlFindActivePinRecordsByUrlSlug: async (urlSlug) => {
     const view = 'vewPupilsWithActivePins'
     const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
     const sql = `SELECT *

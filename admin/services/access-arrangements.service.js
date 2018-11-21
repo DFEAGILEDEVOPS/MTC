@@ -33,7 +33,7 @@ accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
   const processedData = await accessArrangementsService.process(submittedData, pupil, dfeNumber, userId)
   const displayData = await accessArrangementsService.save(processedData, pupil)
-  const results = await pinGenerationDataService.sqlFindActivePinsByUrlSlug(urlSlug)
+  const results = await pinGenerationDataService.sqlFindActivePinRecordsByUrlSlug(urlSlug)
   // Sync existing preparedCheck(s) when 1 or more active pins exist
   if (results.length > 0) {
     const checkCodes = results.map(r => r.checkCode)
