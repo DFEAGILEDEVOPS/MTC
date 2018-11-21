@@ -1,7 +1,7 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
-    <div class="column-two-thirds">
+    <div [class]="shouldShowMore ? 'column-two-thirds' : 'column-full'">
       <div class="back-link-wrapper">
         <a routerLink="/check-start" class="back-link aa-link-size">Back</a>
       </div>

@@ -1,7 +1,7 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
-    <div class="column-two-thirds">
+    <div [class]="shouldShowMore ? 'column-two-thirds' : 'column-full'">
       <header class="page-header" tabindex="0">
         <h1 class="aa-title-size">Practice completed</h1>
       </header>
