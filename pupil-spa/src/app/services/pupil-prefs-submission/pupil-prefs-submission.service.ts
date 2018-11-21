@@ -5,18 +5,17 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
-import { accessArrangementsDataKey, AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
+import { accessArrangementsDataKey, AccessArrangementsConfig } from '../../access-arrangements';
 import { Pupil } from '../../pupil';
 import { AuditService } from '../audit/audit.service';
 import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../audit/auditEntry';
 
 @Injectable()
-export class PupilPrefsService {
+export class PupilPrefsSubmissionService {
 
   featureUseHpa;
   pupilPrefsAPIErrorDelay;
   pupilPrefsAPIErrorMaxAttempts;
-  accessArrangements;
   fontSettings;
   contrastSettings;
 
@@ -70,29 +69,5 @@ export class PupilPrefsService {
     } catch (error) {
       this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
     }
-  }
-
-  public loadPupilPrefs() {
-    this.accessArrangements = new AccessArrangements();
-    const appliedAccessArrangements = this.storageService.getItem(accessArrangementsDataKey);
-    // Fetch prefs from current session stored within local storage
-    this.accessArrangements.fontSize = appliedAccessArrangements && appliedAccessArrangements.fontSize;
-    this.accessArrangements.contrast = appliedAccessArrangements && appliedAccessArrangements.contrast;
-    if (this.accessArrangements.fontSize && this.accessArrangements.contrast) {
-      return;
-    }
-    // Fetch prefs from check config or assign default values
-    const config = this.storageService.getItem('config');
-    if (!this.accessArrangements.contrast) {
-      this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-      const contrastSetting = config && this.contrastSettings.find(f => f.code === config.colourContrastCode);
-      this.accessArrangements.contrast = (contrastSetting && contrastSetting.val) || 'bow';
-    }
-    if (!this.accessArrangements.fontSize) {
-      this.fontSettings = AccessArrangementsConfig.fontSettings;
-      const fontSetting = config && this.fontSettings.find(f => f.code === config.fontSizeCode);
-      this.accessArrangements.fontSize = (fontSetting && fontSetting.val) || 'regular';
-    }
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
   }
 }
