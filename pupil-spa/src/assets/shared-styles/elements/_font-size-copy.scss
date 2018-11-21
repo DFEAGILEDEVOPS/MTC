@@ -59,6 +59,11 @@
     }
   }
 
+  .copy-size-#{$size} .notice .svg-warning {
+    width: $lead-size;
+    left: calc(35px - #{$lead-size});
+  }
+
   .multiple-choice [type=radio] + label.aa-copy-size-#{$size},
   .copy-size-#{$size} .multiple-choice [type=radio]:not([name=font-size]) + label {
     &::before {
