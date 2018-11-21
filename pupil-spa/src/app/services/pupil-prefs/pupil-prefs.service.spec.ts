@@ -58,11 +58,7 @@ describe('PupilPrefsService', () => {
     expect(pupilPrefsService).toBeTruthy();
   });
 
-  describe('when featureHpa is enabled', () => {
-
-    beforeEach(() => {
-      pupilPrefsService.featureUseHpa = true;
-    });
+  describe('storePupilPrefs ', () => {
 
     it('should call pupil prefs azure queue storage', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
@@ -89,26 +85,6 @@ describe('PupilPrefsService', () => {
       expect(tokenService.getToken).toHaveBeenCalled();
       expect(azureQueueService.addMessage).toHaveBeenCalled();
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
-    });
-  });
-
-  describe('when featureHpa is not enabled', () => {
-
-    beforeEach(() => {
-      pupilPrefsService.featureUseHpa = false;
-    });
-
-    it('should not call pupil prefs azure queue storage', async () => {
-      spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: false });
-      spyOn(tokenService, 'getToken');
-      spyOn(azureQueueService, 'addMessage');
-      spyOn(auditService, 'addEntry');
-      spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);
-      await pupilPrefsService.storePupilPrefs();
-      expect(auditService.addEntry).not.toHaveBeenCalled();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
-      expect(tokenService.getToken).not.toHaveBeenCalled();
-      expect(azureQueueService.addMessage).not.toHaveBeenCalled();
     });
   });
 });
