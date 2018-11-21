@@ -1,5 +1,5 @@
 CREATE VIEW [mtc_admin].[vewPupilsWithActivePins] AS
-    -- include live checks that are either new, collected
+    -- include live checks that are either new or collected
   SELECT
          p.id,
          p.foreName,
