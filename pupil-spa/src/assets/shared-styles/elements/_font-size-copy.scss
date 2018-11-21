@@ -1,6 +1,6 @@
 @import "./aa-variables.scss";
 
-@mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
+@mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height, $radio-outside) {
 
   .aa-copy-size-#{$size}, .copy-size-#{$size} .aa-copy-size {
     font-size: $copy-size !important;
@@ -58,6 +58,27 @@
       margin-top: calc(calc(#{$link-size} / 2) * -1) !important;
     }
   }
+
+  .copy-size-#{$size} .notice .svg-warning {
+    width: $lead-size;
+    left: calc(35px - #{$lead-size});
+  }
+
+  .multiple-choice [type=radio] + label.aa-copy-size-#{$size},
+  .copy-size-#{$size} .multiple-choice [type=radio]:not([name=font-size]) + label {
+    &::before {
+      width: $radio-outside;
+      height: $radio-outside;
+      top: calc((34px - #{$radio-outside}) / 2);
+      left: calc((34px - #{$radio-outside}) / 2);
+    }
+
+    &::after {
+      border: calc(#{$radio-outside} / 3) solid;
+      top: calc(19px - (#{$radio-outside} / 3));
+      left: calc(19px - (#{$radio-outside} / 3));
+    }
+  }
 }
 
 @include copy-size(
@@ -69,7 +90,8 @@
   $aa-link-size-xsmall,
   $aa-button-size-xsmall,
   $aa-button-width-xsmall,
-  $aa-button-height-xsmall
+  $aa-button-height-xsmall,
+  $aa-radio-outside-xsmall
 );
 @include copy-size(
   "small",
@@ -80,7 +102,8 @@
   $aa-link-size-small,
   $aa-button-size-small,
   $aa-button-width-small,
-  $aa-button-height-small
+  $aa-button-height-small,
+  $aa-radio-outside-small
 );
 @include copy-size(
   "regular",
@@ -91,7 +114,8 @@
   $aa-link-size-regular,
   $aa-button-size-regular,
   $aa-button-width-regular,
-  $aa-button-height-regular
+  $aa-button-height-regular,
+  $aa-radio-outside-regular
 );
 @include copy-size(
   "large",
@@ -102,7 +126,8 @@
   $aa-link-size-large,
   $aa-button-size-large,
   $aa-button-width-large,
-  $aa-button-height-large
+  $aa-button-height-large,
+  $aa-radio-outside-large
 );
 @include copy-size(
   "xlarge",
@@ -113,7 +138,8 @@
   $aa-link-size-xlarge,
   $aa-button-size-xlarge,
   $aa-button-width-xlarge,
-  $aa-button-height-xlarge
+  $aa-button-height-xlarge,
+  $aa-radio-outside-xlarge
 );
 @include copy-size(
   "xxlarge",
@@ -124,5 +150,6 @@
   $aa-link-size-xxlarge,
   $aa-button-size-xxlarge,
   $aa-button-width-xxlarge,
-  $aa-button-height-xxlarge
+  $aa-button-height-xxlarge,
+  $aa-radio-outside-xxlarge
 );
