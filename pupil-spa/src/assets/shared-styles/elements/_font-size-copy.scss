@@ -66,13 +66,19 @@
     left: calc(35px - #{$lead-size});
   }
 
+  .copy-size-#{$size} .multiple-choice {
+    padding-left: 0;
+  }
+
   .multiple-choice [type=radio] + label.aa-copy-size-#{$size},
   .copy-size-#{$size} .multiple-choice [type=radio]:not([name=font-size]) + label {
+    margin-left: $radio-outside;
+
     &::before {
       width: $radio-outside;
       height: $radio-outside;
-      top: calc((34px - #{$radio-outside}) / 2);
-      left: calc((34px - #{$radio-outside}) / 2);
+      top: 50%;
+      transform: translate(0, -50%);
     }
 
     &::after {
@@ -81,8 +87,9 @@
       border: 0;
       background: #000;
       border-radius: 50%;
-      top: calc((38px - #{$radio-inside}) / 2);
-      left: calc((38px - #{$radio-inside}) / 2);
+      left: 4px;
+      top: 50%;
+      transform: translate(0, -50%);
     }
   }
 }
