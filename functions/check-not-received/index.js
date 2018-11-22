@@ -1,6 +1,6 @@
 'use strict'
 
-const { performance } = require('perf_hooks');
+const { performance } = require('perf_hooks')
 
 const v1 = require('./v1')
 

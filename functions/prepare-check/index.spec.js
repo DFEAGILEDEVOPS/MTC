@@ -1,4 +1,4 @@
-/* global describe it expect spyOn */
+/* global describe it expect spyOn fail beforeEach */
 
 const func = require('./index')
 const R = require('ramda')
@@ -55,7 +55,7 @@ describe('prepare-check function', () => {
       try {
         await func(context, validMessage)
         expect(true).toBe(true) // no jasmine success()
-      } catch(error) {
+      } catch (error) {
         fail()
       }
     })

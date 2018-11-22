@@ -9,7 +9,7 @@ const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const pathOr = require('ramda').pathOr
 
 const v1 = {
-  process: async function process(logger) {
+  process: async function process (logger) {
     // Update the check status in the SQL DB
     const meta = await deleteExpiredChecks(logger)
 
@@ -48,7 +48,7 @@ async function deleteExpiredChecks (logger) {
     })
     await Promise.all(deletes, pupilEventInsertions)
   } catch (error) {
-    logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${preparedCheck.checkCode}: ${error.message}`)
+    logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${error.message}`)
   }
 
   return {

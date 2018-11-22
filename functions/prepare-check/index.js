@@ -22,7 +22,6 @@ module.exports = async function (context, prepareCheckMessage) {
     throw error
   }
 
-
   const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
   const preparedCheckTable = 'preparedCheck'
 

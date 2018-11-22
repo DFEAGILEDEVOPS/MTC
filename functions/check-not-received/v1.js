@@ -7,7 +7,7 @@ sqlService.initialise(config)
 const azureStorageHelper = require('../lib/azure-storage-helper')
 
 const v1 = {
-  process: async function process(logger) {
+  process: async function process (logger) {
     // Update the check status in the SQL DB
     const checks = await updateChecksNotReceived()
 
@@ -25,7 +25,7 @@ const v1 = {
  * Return the updated checkIds and pupilIds
  * @return {Promise}
  */
-async function updateChecksNotReceived() {
+async function updateChecksNotReceived () {
   const sql = `
     DECLARE @updateLog table (
       checkId int NOT NULL,
@@ -61,7 +61,7 @@ async function updateChecksNotReceived() {
  * @param {[{checkId, pupilId, checkCode}]} checks - array of micro check objects
  * @return {Promise<*|Promise<*>>}
  */
-async function updatePupilStatuses(checks) {
+async function updatePupilStatuses (checks) {
   const messages = checks.map(check => {
     azureStorageHelper.addMessageToQueue('pupil-status', {
       version: 1,
