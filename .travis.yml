@@ -43,7 +43,7 @@ install:
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && gem install bundler --conservative && bundle
   install
 - docker-compose logs
-- cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
+- cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql && yarn seed-sql
 script:
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 after_script:
