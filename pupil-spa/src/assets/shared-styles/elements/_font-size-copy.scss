@@ -1,6 +1,6 @@
 @import "./aa-variables.scss";
 
-@mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height, $radio-outside) {
+@mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height, $radio-outside, $radio-inside) {
 
   .aa-copy-size-#{$size}, .copy-size-#{$size} .aa-copy-size {
     font-size: $copy-size !important;
@@ -74,9 +74,13 @@
     }
 
     &::after {
-      border: calc(#{$radio-outside} / 3) solid;
-      top: calc(19px - (#{$radio-outside} / 3));
-      left: calc(19px - (#{$radio-outside} / 3));
+      width: $radio-inside;
+      height: $radio-inside;
+      border: 0;
+      background: #000;
+      border-radius: 50%;
+      top: calc((38px - #{$radio-inside}) / 2);
+      left: calc((38px - #{$radio-inside}) / 2);
     }
   }
 }
@@ -91,7 +95,8 @@
   $aa-button-size-xsmall,
   $aa-button-width-xsmall,
   $aa-button-height-xsmall,
-  $aa-radio-outside-xsmall
+  $aa-radio-outside-xsmall,
+  $aa-radio-inside-xsmall
 );
 @include copy-size(
   "small",
@@ -103,7 +108,8 @@
   $aa-button-size-small,
   $aa-button-width-small,
   $aa-button-height-small,
-  $aa-radio-outside-small
+  $aa-radio-outside-small,
+  $aa-radio-inside-small
 );
 @include copy-size(
   "regular",
@@ -115,7 +121,8 @@
   $aa-button-size-regular,
   $aa-button-width-regular,
   $aa-button-height-regular,
-  $aa-radio-outside-regular
+  $aa-radio-outside-regular,
+  $aa-radio-inside-regular
 );
 @include copy-size(
   "large",
@@ -127,7 +134,8 @@
   $aa-button-size-large,
   $aa-button-width-large,
   $aa-button-height-large,
-  $aa-radio-outside-large
+  $aa-radio-outside-large,
+  $aa-radio-inside-large
 );
 @include copy-size(
   "xlarge",
@@ -139,7 +147,8 @@
   $aa-button-size-xlarge,
   $aa-button-width-xlarge,
   $aa-button-height-xlarge,
-  $aa-radio-outside-xlarge
+  $aa-radio-outside-xlarge,
+  $aa-radio-inside-xlarge
 );
 @include copy-size(
   "xxlarge",
@@ -151,5 +160,6 @@
   $aa-button-size-xxlarge,
   $aa-button-width-xxlarge,
   $aa-button-height-xxlarge,
-  $aa-radio-outside-xxlarge
+  $aa-radio-outside-xxlarge,
+  $aa-radio-inside-xxlarge
 );
