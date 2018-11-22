@@ -5,7 +5,6 @@ import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import {
-  AccessArrangements,
   AccessArrangementsConfig,
   accessArrangementsDataKey
 } from '../access-arrangements';
@@ -30,10 +29,9 @@ export class AAFontsComponent {
     private router: Router,
     private storageService: StorageService,
     private pupilPrefsService: PupilPrefsService,
-
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
 
