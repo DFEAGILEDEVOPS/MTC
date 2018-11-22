@@ -74,7 +74,10 @@ export class CheckCompleteService {
       const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
       excludedItems.forEach(i => delete payload[i]);
       payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-      payload.device.appUsageCounter = this.appUsageService.getCounterValue();
+      if (payload.device) {
+        payload.device.appUsageCounter = this.appUsageService.getCounterValue();
+      }
+
       try {
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
