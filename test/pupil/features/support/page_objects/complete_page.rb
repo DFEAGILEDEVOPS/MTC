@@ -1,7 +1,7 @@
 class CompletePage < SitePrism::Page
   set_url '/check-complete'
 
-  element :heading, '.heading-xlarge', text: "Thank you"
+  element :heading, '.aa-title-size', text: "Thank you"
   element :completion_text, 'p.lede', text: "Please leave feedback."
   element :sign_out, 'a[href="/sign-out"]'
   element :feedback, 'p > a[href="/feedback"]'
