@@ -2,18 +2,13 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "message",
-      "type": "queueTrigger",
-      "direction": "in",
-      "queueName": "check-expiry",
-      "connection": "StorageAccount"
-    },
-    {
-      "name": "pupilEventsTable",
-      "type": "table",
-      "direction": "out",
-      "tableName": "pupilEvent",
-      "connection": "StorageAccount"
+      "schedule": "0 */5 * * * *",
+      "name": "checkExpiryTimer",
+      "type": "timerTrigger",
+      "direction": "in"
     }
-  ]
+  ],
+  "tracing": {
+    "consoleLevel": "verbose"
+  }
 }
