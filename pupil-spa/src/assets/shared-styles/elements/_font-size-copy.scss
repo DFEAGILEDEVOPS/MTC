@@ -50,10 +50,12 @@
 
   .copy-size-#{$size} .back-link.aa-link-size {
     padding-left: calc(#{$link-size} / 1.5) !important;
+    height: $link-size !important;
+    line-height: $link-size !important;
 
     &:before {
-      border-top-width: calc(#{$link-size} / 2.2) !important;
-      border-bottom-width: calc(#{$link-size} / 2.2) !important;
+      border-top-width: calc(#{$link-size} / 2.5) !important;
+      border-bottom-width: calc(#{$link-size} / 2.5) !important;
       border-right-width: calc(#{$link-size} / 2) !important;
       margin-top: calc(calc(#{$link-size} / 2) * -1) !important;
     }
