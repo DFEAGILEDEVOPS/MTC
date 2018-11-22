@@ -7,6 +7,7 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private warmupQuestionService: WarmupQuestionService,
     private elRef: ElementRef,
     private registerInputService: RegisterInputService,
-    private checkStatusService: CheckStatusService
+    private checkStatusService: CheckStatusService,
+    private pupilPrefsService: PupilPrefsService
   ) { }
 
   ngOnInit() {
@@ -67,6 +69,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.registerInputService.initialise();
 
         const config = this.questionService.getConfig();
+        this.pupilPrefsService.loadPupilPrefs();
         if (config.fontSize) {
           this.router.navigate(['font-choice']);
         } else if (config.colourContrast) {
