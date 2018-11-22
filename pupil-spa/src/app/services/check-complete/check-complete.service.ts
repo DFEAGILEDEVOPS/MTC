@@ -1,6 +1,7 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AppUsageService } from '../app-usage/app-usage.service';
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
@@ -29,7 +30,8 @@ export class CheckCompleteService {
               private router: Router,
               private storageService: StorageService,
               private submissionService: SubmissionService,
-              private tokenService: TokenService) {
+              private tokenService: TokenService,
+              private appUsageService: AppUsageService) {
     const { featureUseHpa,
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -72,6 +74,7 @@ export class CheckCompleteService {
       const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
       excludedItems.forEach(i => delete payload[i]);
       payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
+      payload.device.appUsageCounter = this.appUsageService.getCounterValue();
       try {
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
