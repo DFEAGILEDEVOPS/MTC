@@ -26,14 +26,23 @@ async function deleteTableEntities (tables) {
   const deletions = []
   for (let index = 0; index < tables.length; index++) {
     const table = tables[index]
-    const query = new azure.TableQuery()
-    const data = await tableService.queryEntitiesAsync(table, query, null)
-    const entities = data.result.entries
-    entities.forEach(entity => {
-      deletions.push(tableService.deleteEntityAsync(table, entity))
-    })
+    const query = new azure.TableQuery() // Azure Table Storage has a max of 1000 records returned
+    let done = false
+    let batch = 1;
+    while (!done) {
+      const data = await tableService.queryEntitiesAsync(table, query, null)
+      const entities = data.result.entries
+      if (entities.length === 0) {
+        done = true
+      }
+      console.log(`Found ${entities.length} entities to delete in batch ${batch++} from ${table}`)
+      entities.forEach(entity => {
+        deletions.push(tableService.deleteEntityAsync(table, entity))
+      })
+      await Promise.all(deletions)
+    }
   }
-  await Promise.all(deletions)
+
 }
 
 async function createTables (tables) {
