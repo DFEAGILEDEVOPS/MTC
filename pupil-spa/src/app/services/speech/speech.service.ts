@@ -146,14 +146,7 @@ export class SpeechService implements OnDestroy {
     this.speak(utterance, false);
   }
 
-  /**
-   * Parse the source of a NativeElement and speak the text
-   * @param nativeElement
-   */
-  speakElement(nativeElement): Promise<{}> {
-    this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
-
+  removeUnspokenElements(nativeElement): HTMLElement {
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
 
@@ -162,6 +155,18 @@ export class SpeechService implements OnDestroy {
     for (let i = 0; i < elementsToRemove.length; i++) {
       elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
     }
+    return clonedElement;
+  }
+
+  /**
+   * Parse the source of a NativeElement and speak the text
+   * @param nativeElement
+   */
+  speakElement(nativeElement): Promise<{}> {
+    this.focusInterruptedPageSpeech = false;
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
+
+    const clonedElement = this.removeUnspokenElements(nativeElement);
 
     let speechText = '';
 
@@ -189,7 +194,9 @@ export class SpeechService implements OnDestroy {
                 // remove empty lines
                 .replace(/^\s+$/gm, '')
                 // replace newlines with commas
-                .replace(/[\n\r]+/g, ' , '));
+                .replace(/[\n\r]+/g, ' , ')
+                // Remove first leading comma
+                .replace(/^\s*,\s*/g, ''));
   }
 
   /**
@@ -199,7 +206,7 @@ export class SpeechService implements OnDestroy {
   speakFocusedElement(nativeElement): void {
     const { id, nodeName, parentNode } = nativeElement;
 
-    let toSpeak = nativeElement;
+    let toSpeak = this.removeUnspokenElements(nativeElement);
 
     if (nodeName === 'INPUT' && id && parentNode) {
       // if there is a label for this input element
