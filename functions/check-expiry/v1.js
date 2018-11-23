@@ -37,10 +37,13 @@ async function expireChecks () {
   UPDATE TOP (500) [mtc_admin].[check]
   SET checkStatus_id = (SELECT TOP (1) id from [mtc_admin].[checkStatus] where code = 'EXP')
   OUTPUT [inserted].id, [inserted].pupil_id, [inserted].[checkCode] INTO @updateLog
-  FROM [mtc_admin].[check] chk join [mtc_admin].[checkPin] cp
-    ON (chk.id = cp.check_id)
+  FROM [mtc_admin].[check] chk 
+    join [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
+    join [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
   WHERE
-    cp.pinExpiresAt < GETUTCDATE();
+    cp.pinExpiresAt < GETUTCDATE()
+  AND 
+    cs.code IN ('NEW', 'COL');
     
   SELECT
        checkId,
@@ -68,7 +71,7 @@ async function updatePupilStatus (logger, checkData) {
     try {
       const msgs = checks.map(check => azureStorageHelper.addMessageToQueue('pupil-status', {
         version: 1,
-        pupilId: check.pupil_id,
+        pupilId: check.pupilId,
         checkCode: check.checkCode
       }))
       await Promise.all(msgs)
