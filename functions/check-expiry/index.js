@@ -9,7 +9,7 @@ module.exports = async function (context, message) {
 
   let meta
   try {
-    meta = v1.process(context.log)
+    meta = await v1.process(context.log)
   } catch (error) {
     context.log.error(`check-expiry: ERROR: ${error.message}`)
     throw error
