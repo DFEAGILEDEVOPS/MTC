@@ -9,13 +9,13 @@ const azureStorageHelper = require('../lib/azure-storage-helper')
 const v1 = {
   process: async function process (logger) {
     // Update the check status in the SQL DB
-    const checks = await updateChecksNotReceived()
+    const checkData = await updateChecksNotReceived()
 
     // Make requests for pupil status updates
-    await updatePupilStatuses(checks)
+    await azureStorageHelper.updatePupilStatus(logger, 'check-not-received', checkData)
 
     return {
-      checksUpdated: checks.length
+      checksUpdated: checkData.length
     }
   }
 }
@@ -33,7 +33,7 @@ async function updateChecksNotReceived () {
       checkCode uniqueidentifier NOT NULL
     );
 
-  UPDATE [mtc_admin].[check]
+  UPDATE TOP (500) [mtc_admin].[check]
       SET [checkStatus_id] = (SELECT TOP (1) id FROM [mtc_admin].[checkStatus] WHERE code = 'NTR')       
       OUTPUT [inserted].id, [inserted].pupil_id, [inserted].[checkCode] INTO @updateLog       
       FROM [mtc_admin].[check] chk
@@ -54,22 +54,6 @@ async function updateChecksNotReceived () {
   ]
 
   return sqlService.query(sql, params)
-}
-
-/**
- * Make a request for the pupil-status to be updated
- * @param {[{checkId, pupilId, checkCode}]} checks - array of micro check objects
- * @return {Promise<*|Promise<*>>}
- */
-async function updatePupilStatuses (checks) {
-  const messages = checks.map(check => {
-    azureStorageHelper.addMessageToQueue('pupil-status', {
-      version: 1,
-      pupilId: check.pupilId,
-      checkCode: check.checkCode
-    })
-  })
-  return Promise.all(messages)
 }
 
 module.exports = v1
