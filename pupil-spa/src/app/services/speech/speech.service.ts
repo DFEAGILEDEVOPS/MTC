@@ -146,6 +146,11 @@ export class SpeechService implements OnDestroy {
     this.speak(utterance, false);
   }
 
+  /**
+   * Removes aria-hidden child elements
+   * @param nativeElement
+   * @returns {clonedElement}
+   */
   removeUnspokenElements(nativeElement): HTMLElement {
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
