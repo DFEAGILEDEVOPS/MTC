@@ -1,4 +1,4 @@
 {
-  "queues": ["check-started", "check-complete", "prepare-check", "pupil-feedback", "pupil-login", "pupil-prefs",  "pupil-status", "prepared-check-sync"],
+  "queues": ["check-started", "check-complete", "prepare-check", "pupil-feedback", "pupil-login", "pupil-prefs",  "pupil-status", "check-expiry", "prepared-check-sync"],
   "tables": ["preparedCheck", "pupilEvent"]
 }
