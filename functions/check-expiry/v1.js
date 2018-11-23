@@ -1,6 +1,5 @@
 'use strict'
 
-const R = require('ramda')
 const sqlService = require('less-tedious')
 
 const config = require('../config')
