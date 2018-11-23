@@ -14,6 +14,10 @@ const v1 = {
 
     // step 2: update the pupil status
     await updatePupilStatus(logger, checkData)
+
+    return {
+      processCount: checkData.length
+    }
   }
 }
 
@@ -30,7 +34,7 @@ async function expireChecks () {
       checkCode uniqueidentifier NOT NULL
   );
       
-  UPDATE [mtc_admin].[check]
+  UPDATE TOP (500) [mtc_admin].[check]
   SET checkStatus_id = (SELECT TOP (1) id from [mtc_admin].[checkStatus] where code = 'EXP')
   OUTPUT [inserted].id, [inserted].pupil_id, [inserted].[checkCode] INTO @updateLog
   FROM [mtc_admin].[check] chk join [mtc_admin].[checkPin] cp
@@ -54,11 +58,11 @@ async function expireChecks () {
  */
 async function updatePupilStatus (logger, checkData) {
   logger.info(`check-expiry: updatePupilStatus(): got ${checkData.length} pupils`)
-  // Let's say we can expire 200K checks in one go
-  // we need to put 200K messages on the queue
-  // so we batch them at 1000 a time
-  const batches = R.splitEvery(1000, checkData)
+  // Batch the async messages up, to limit max concurrency
+  const batches = R.splitEvery(100, checkData)
   checkData = null
+
+  logger.verbose('check-expiry: updatePupilStatus(): ' + batches.length + ' batches detected')
 
   batches.forEach(async (checks, batchNumber) => {
     try {
@@ -68,7 +72,7 @@ async function updatePupilStatus (logger, checkData) {
         checkCode: check.checkCode
       }))
       await Promise.all(msgs)
-      console.log(`Batch ${batchNumber} complete`)
+      logger.verbose(`check-expiry: batch ${batchNumber} complete`)
     } catch (error) {
       logger.error(`check-expiry: updatePupilStatus(): ERROR: ${error.message}`)
     }
