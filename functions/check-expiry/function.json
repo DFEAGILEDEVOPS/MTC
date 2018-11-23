@@ -2,7 +2,7 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "0 */5 * * * *",
+      "schedule": "*/3 0-6,16-23 * * *",
       "name": "checkExpiryTimer",
       "type": "timerTrigger",
       "direction": "in"
