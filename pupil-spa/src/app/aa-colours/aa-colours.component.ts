@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
-  AccessArrangements,
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
@@ -27,7 +26,7 @@ export class AAColoursComponent implements OnInit {
     private pupilPrefsService: PupilPrefsService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
