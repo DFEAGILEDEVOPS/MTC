@@ -13,10 +13,10 @@ CREATE VIEW [mtc_admin].[vewPupilsWithActivePins] AS
          g.group_id,
          chk.checkCode
   FROM [mtc_admin].[pupil] p
-         INNER JOIN [mtc_admin].[school] s ON p.school_id = s.id
-         LEFT JOIN  [mtc_admin].[pupilGroup] g ON g.pupil_id = p.id
-         INNER JOIN [mtc_admin].[check] chk ON chk.pupil_id = p.id
-         INNER JOIN [mtc_admin].[checkStatus] chkStatus ON chk.checkStatus_id = chkStatus.id
+         INNER JOIN [mtc_admin].[school] s ON (p.school_id = s.id)
+         LEFT JOIN  [mtc_admin].[pupilGroup] g ON (g.pupil_id = p.id)
+         INNER JOIN [mtc_admin].[check] chk ON (chk.pupil_id = p.id)
+         INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
          INNER JOIN [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
          INNER JOIN [mtc_admin].[pin] pin ON (cp.pin_id = pin.id)
   WHERE  cp.pinExpiresAt > GETUTCDATE()
