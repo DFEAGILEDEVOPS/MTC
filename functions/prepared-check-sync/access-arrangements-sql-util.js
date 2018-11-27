@@ -28,8 +28,12 @@ sqlUtil.AACODES = Object.freeze({
 
 sqlUtil.sqlFindPupilAccessArrangementsByCheckCode = async function (checkCode) {
   const sql = `
-  SELECT pAA.*
+  SELECT pAA.*, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
   FROM ${schema}.${pupilAccessArrangementsTable} pAA
+  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
+    ON pAA.pupilFontSizes_id = pfs.id
+  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
+    ON pAA.pupilColourContrasts_id = pcc.id
   INNER JOIN ${schema}.${pupilTable} p
     ON pAA.pupil_id = p.id
   INNER JOIN ${schema}.${checkTable} chk
