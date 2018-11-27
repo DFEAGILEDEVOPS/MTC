@@ -2,7 +2,6 @@
 Feature: Record device information in local storage and persist to DB
 
 
-  @bug_26288 @wip
   Scenario: Device information recorded contains battery, cpu, navigation, network, screen information
     Given I am on the instructions page
     Then I should see device information populated in local storage
