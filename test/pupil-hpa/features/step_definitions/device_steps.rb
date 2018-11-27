@@ -34,33 +34,16 @@ When(/^I have completed 2 checks$/) do
   step 'I am on the complete page'
   visit ENV["PUPIL_BASE_URL"] + '/sign-out'
   step 'I am on the complete page'
-  # step 'I have logged in'
-  # step 'I go from the instructions page to the complete page'
-  # complete_page.sign_out.click
-  # ct = Time.now
-  # new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  # SqlDbHelper.expire_pin("Standard","Pupil",1,false)
-  # SqlDbHelper.reset_pin("Standard","Pupil",1, new_time, "9999")
-  # @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
-  # sign_in_page.login("abc12345","9999")
-  # sign_in_page.sign_in_button.click
-  # step 'I go from the instructions page to the complete page'
-  # check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  # data = SqlDbHelper.get_check_data(check_code)
-  # local_info = JSON.parse data['data']
-  # @db_device_info = local_info['data']['device']
 end
 
 Then(/^the app counter should be set to (\d+)$/) do |count|
-  expect(@db_device_info['appUsageCounter']).to eql count
+  check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
+  check_id = SqlDbHelper.get_check(check_code)['id']
+  expect(JSON.parse(SqlDbHelper.get_check_result(check_id)['payload'])['device']['appUsageCounter']).to eql count
 end
 
 Given(/^I have refreshed a page during the check$/) do
   step 'I am on question 1 of the check'
   step 'I attempt to refresh the page'
   step 'the next question has loaded so I continue with the check'
-  check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  data = SqlDbHelper.get_check_data(check_code)
-  local_info = JSON.parse data['data']
-  @db_device_info = local_info['data']['device']
 end
