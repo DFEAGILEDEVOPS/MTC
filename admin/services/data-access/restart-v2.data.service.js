@@ -9,7 +9,7 @@ module.exports.sqlFindPupilsEligibleForRestart = async function sqlFindPupilsEli
   const sql = `SELECT *
                FROM   [mtc_admin].[vewPupilsEligibleForRestart]
                WHERE  school_id = @schoolId
-               AND    totalCheckCount <= @maxRestartsAllowed`
+               AND    totalCheckCount <= (@maxRestartsAllowed + 1)`
 
   const params = [
     {
