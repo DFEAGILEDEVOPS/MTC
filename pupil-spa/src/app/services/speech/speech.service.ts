@@ -169,7 +169,7 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, span, fieldset, div > button, div > a';
 
     const clonedElement = this.removeUnspokenElements(nativeElement);
 
@@ -184,7 +184,8 @@ export class SpeechService implements OnDestroy {
       // in order to avoid duplication
       const elem = elements[i].querySelectorAll('a, button');
       for (let j = 0; j < elem.length; j++) {
-        elem[j].parentNode.removeChild(elem[j]);
+        const textNode = document.createTextNode(this.addTextBeforeSpeakingElement(elem[j]) + elem[j].textContent);
+        elem[j].parentNode.replaceChild(textNode, elem[j]);
       }
 
       // if there is no text to be spoken, skip this element
