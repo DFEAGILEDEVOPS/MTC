@@ -9,8 +9,7 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 const accessArrangementsValidator = require('../../../lib/validator/access-arrangements-validator.js')
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
-const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
-const azureQueueService = require('../../../services/azure-queue.service')
+const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -30,33 +29,18 @@ describe('accessArrangementsService', () => {
     })
   })
   describe('submit', () => {
-    it('calls and returns access arrangements list', async () => {
+    it('calls preparedCheckSync service and returns access arrangements list', async () => {
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsService, 'process')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
       spyOn(accessArrangementsService, 'save')
-      spyOn(pinGenerationDataService, 'sqlFindActivePinRecordsByUrlSlug').and.returnValue([])
-      spyOn(azureQueueService, 'addMessage')
+      spyOn(preparedCheckSyncService, 'addMessages')
       await accessArrangementsService.submit({}, 12345, 1)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
       expect(accessArrangementsService.process).toHaveBeenCalled()
       expect(accessArrangementsService.save).toHaveBeenCalled()
-      expect(azureQueueService.addMessage).not.toHaveBeenCalled()
-    })
-    it('adds a message to the queue if there is one or more records with active pins ', async () => {
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsService, 'process')
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
-      spyOn(accessArrangementsService, 'save')
-      spyOn(pinGenerationDataService, 'sqlFindActivePinRecordsByUrlSlug').and.returnValue([{ urlSlug: 'urlSlug1' }, { urlSlug: 'urlSlug2' }])
-      spyOn(azureQueueService, 'addMessage')
-      await accessArrangementsService.submit({}, 12345, 1)
-      expect(accessArrangementsValidator.validate).toHaveBeenCalled()
-      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
-      expect(accessArrangementsService.process).toHaveBeenCalled()
-      expect(accessArrangementsService.save).toHaveBeenCalled()
-      expect(azureQueueService.addMessage).toHaveBeenCalled()
+      expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
     it('throws a validation error if validation is unsuccessful', async () => {
       const validationError = new ValidationError()
@@ -66,6 +50,7 @@ describe('accessArrangementsService', () => {
       spyOn(accessArrangementsService, 'process')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
       spyOn(accessArrangementsService, 'save')
+      spyOn(preparedCheckSyncService, 'addMessages')
       try {
         await accessArrangementsService.submit({}, 12345, 1)
       } catch (error) {
@@ -75,6 +60,7 @@ describe('accessArrangementsService', () => {
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
       expect(accessArrangementsService.process).not.toHaveBeenCalled()
       expect(accessArrangementsService.save).not.toHaveBeenCalled()
+      expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
   describe('process', () => {

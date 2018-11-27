@@ -30,7 +30,7 @@ module.exports = async function (context, preparedCheckSyncMessage) {
     throw error
   }
   const newConfig = await getUpdatedConfig(preparedCheck.config, pupilAccessArrangements, context)
-  preparedCheckSchemaValidator.validateConfig(newConfig);
+  preparedCheckSchemaValidator.validateConfig(newConfig)
   const preparedCheckTable = 'preparedCheck'
   const updatedEntity = {
     PartitionKey: preparedCheck.PartitionKey,
