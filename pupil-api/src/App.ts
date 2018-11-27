@@ -50,6 +50,13 @@ class App {
     this.express.use(cors(corsOptions))
     this.express.use(helmet())
 
+    /* Swagger API documentation */
+
+    if (process.env.NODE_ENV !== 'production') {
+      const swaggerUI = require('swagger-ui-express')
+      this.express.use('/api-docs', swaggerUI.serve, swaggerUI.setup(require('./swagger.json')))
+    }
+
     // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
     const oneYearInSeconds = 31536000
     this.express.use(helmet.hsts({
