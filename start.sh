@@ -22,4 +22,7 @@ echo ""
 echo "Running migrations..."
 (cd ${scriptDir}/admin && yarn migrate-sql)
 
+echo "Running seeds..."
+(cd ${scriptDir}/admin && yarn seed-sql)
+
 echo "MTC Infrastructure ready!"
