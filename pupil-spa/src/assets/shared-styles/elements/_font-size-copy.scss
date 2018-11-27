@@ -57,7 +57,7 @@
       border-top-width: calc(#{$link-size} / 2.5) !important;
       border-bottom-width: calc(#{$link-size} / 2.5) !important;
       border-right-width: calc(#{$link-size} / 2) !important;
-      margin-top: calc(calc(#{$link-size} / 2) * -1) !important;
+      margin-top: calc(#{$link-size} * -0.5) !important;
     }
   }
 
