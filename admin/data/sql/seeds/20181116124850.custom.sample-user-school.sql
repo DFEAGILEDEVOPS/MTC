@@ -7,7 +7,7 @@ END TRY
 BEGIN CATCH
 SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991001
 END CATCH
-INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id) 
+INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
   VALUES ('teacher1', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3);
 
 BEGIN TRY
@@ -15,9 +15,9 @@ INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name) VALUES
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
-SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991001
+SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991002
 END CATCH
-INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id) 
+INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
   VALUES ('teacher2', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3);
 
 BEGIN TRY
@@ -25,9 +25,9 @@ INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name) VALUES
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
-SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991001
+SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991003
 END CATCH
-INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id) 
+INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
   VALUES ('teacher3', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3);
 
 BEGIN TRY
@@ -35,9 +35,9 @@ INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name) VALUES
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
-SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991001
+SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991004
 END CATCH
-INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id) 
+INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
   VALUES ('teacher4', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3);
 
 BEGIN TRY
@@ -45,7 +45,7 @@ INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name) VALUES
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
-SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991001
+SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991005
 END CATCH
-INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id) 
+INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
   VALUES ('teacher5', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3);
