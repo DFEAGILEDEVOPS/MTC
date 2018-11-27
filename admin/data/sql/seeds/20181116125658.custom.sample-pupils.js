@@ -3,13 +3,14 @@
 const moment = require('moment')
 const upnService = require('../../../services/upn.service')
 const pupilsData = require('../../fixtures/dummy-users.json')
+const sqlService = require('../../../services/data-access/sql.service')
 
-function generatePupils () {
+async function generatePupils () {
   const pupils = []
   const baseUpn = '801200001'
   let pupilIdx = 1
   // TODO load in actual example schools or add them in this migration and add teachers afterward?
-  const schools = [2, 3, 4, 5, 6]
+  const schools = await getTestSchoolIds()
   const numPupils = [15, 30, 30, 60, 90]
   for (let i = 0; i < schools.length; i++) {
     let school = schools[i]
@@ -48,7 +49,13 @@ function randomDob () {
   return dob.toDate()
 }
 
-module.exports.generateSql = function () {
-  const statements = generatePupils()
+async function getTestSchoolIds () {
+  const sql = `select id from mtc_admin.school where dfeNumber in (9991001, 9991002, 9991003, 9991004, 9991005)`
+  const data = await sqlService.query(sql)
+  return data.map(s => s.id)
+}
+
+module.exports.generateSql = async function () {
+  const statements = await generatePupils()
   return statements.join('\n')
 }

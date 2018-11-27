@@ -60,7 +60,7 @@ const processSeed = async (seed) => {
   } else if (format === 'js') {
     // handle JS
     content = require(filepath)
-    sql = content.generateSql()
+    sql = await content.generateSql()
   }
 
   winston.info(filename)
@@ -117,6 +117,7 @@ const runSeeds = async (version) => {
     winston.info(chalk.green('SQL Seeds complete'))
   } catch (error) {
     winston.error(chalk.red('ERROR: ', error.message))
+    winston.error(chalk.red('ERROR: ', error.stack))
   }
 }
 
