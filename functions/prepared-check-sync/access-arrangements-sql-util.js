@@ -60,12 +60,9 @@ sqlUtil.sqlFindAccessArrangementsCodesWithIds = async function (ids) {
     // init
     await init()
   }
-  const result = []
-  Object.keys(accessArrangementCodes).forEach(code => {
-    if (!accessArrangementCodes[code] || !ids.includes(accessArrangementCodes[code].id)) return
-    result.push(code)
-  })
-  return result
+  return Object.keys(accessArrangementCodes).filter(code =>
+    accessArrangementCodes[code] && ids.includes(accessArrangementCodes[code].id)
+  )
 }
 
 /**
