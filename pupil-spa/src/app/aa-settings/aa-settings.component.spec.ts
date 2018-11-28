@@ -9,6 +9,7 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { FormsModule } from '@angular/forms';
 
 import { AASettingsComponent } from './aa-settings.component';
+import { RouteService } from '../services/route/route.service';
 
 describe('AASettingsComponent', () => {
   let mockRouter;
@@ -30,6 +31,7 @@ describe('AASettingsComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useValue: mockQuestionService },
         { provide: SpeechService, useClass: SpeechServiceMock },
+        RouteService,
         StorageService
       ],
       imports: [FormsModule]

@@ -286,3 +286,20 @@ body {
     transform: translate(0, -50%);
   }
 }
+
+.more-links {
+  
+  > strong {
+    margin-top: 75px;
+    padding-top: 15px;
+    width: 100%;
+    display: block;
+    border-top: 10px solid #005ea5;
+  }
+
+  > ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.8rem 0;
+  }
+}
