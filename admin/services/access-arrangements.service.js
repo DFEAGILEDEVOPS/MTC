@@ -2,6 +2,7 @@ const R = require('ramda')
 const accessArrangementsDataService = require('../services/data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const questionReaderReasonsDataService = require('../services/data-access/question-reader-reasons.data.service')
+const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
 
@@ -30,7 +31,9 @@ accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
   const processedData = await accessArrangementsService.process(submittedData, pupil, dfeNumber, userId)
-  return accessArrangementsService.save(processedData, pupil)
+  const displayData = await accessArrangementsService.save(processedData, pupil)
+  await preparedCheckSyncService.addMessages(urlSlug)
+  return displayData
 }
 
 /**

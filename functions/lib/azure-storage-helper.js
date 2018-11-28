@@ -8,7 +8,7 @@ let azureTableService
 let azureQueueService
 
 const azureStorageHelper = {
-  deleteFromPreparedCheckTableStorage: async function deleteFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
+  getFromPreparedCheckTableStorage: async function getFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
     const query = new azureStorage.TableQuery()
       .top(1)
       .where('checkCode eq ?', checkCode)
@@ -18,20 +18,24 @@ const azureStorageHelper = {
       const data = await azureTableService.queryEntitiesAsync(preparedCheckTable, query, null)
       check = data.response.body.value[0]
     } catch (error) {
-      const msg = `deleteFromPreparedCheckTableStorage(): error during retrieve for table storage check for checkCode [${checkCode}]`
+      const msg = `getFromPreparedCheckTableStorage(): error during retrieve for table storage check for checkCode [${checkCode}]`
       logger.error(msg)
       logger.error(error.message)
       throw new Error(msg)
     }
 
     if (!check) {
-      const msg = `deleteFromPreparedCheckTableStorage(): check does not exist: [${checkCode}]`
+      const msg = `getFromPreparedCheckTableStorage(): check does not exist: [${checkCode}]`
       logger.info(msg)
       const error = new Error(msg)
       error.type = 'NOT_FOUND'
       throw error
     }
+    return check
+  },
 
+  deleteFromPreparedCheckTableStorage: async function deleteFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
+    const check = await azureStorageHelper.getFromPreparedCheckTableStorage(azureTableService, checkCode, logger)
     const entity = {
       PartitionKey: check.PartitionKey,
       RowKey: check.RowKey
