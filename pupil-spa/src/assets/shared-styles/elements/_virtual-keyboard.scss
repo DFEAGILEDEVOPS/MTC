@@ -10,16 +10,14 @@
     td {
       padding: 0;
       margin: 0;
+      vertical-align: top;
     }
 
     td > button {
-      background-color: $grey-1;
       color: $white;
       border: 0;
       cursor: pointer;
       font-weight: 400;
-      height: $button-height;
-      width: $button-width;
       text-align: center;
       margin: 0;
       padding: 0;
@@ -31,14 +29,28 @@
     }
   }
 
+  .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button,
+  .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
+    position: relative;
+    font-family: Arial, sans-serif !important;
+
+    span {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
   .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button {
     @include button($grey-1);
 
     font-size: $button-number-size !important;
     line-height: $button-height !important;
-    padding: 0.1em 0 0 0 !important;
     width: $button-width !important;
     height: $button-height !important;
+    max-height: $button-height !important;
+    max-width: $button-width !important;
   }
 
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
@@ -46,9 +58,10 @@
 
     font-size: $button-text-size !important;
     line-height: $button-height !important;
-    padding: 0.1em 0 0 0 !important;
     width: $button-width !important;
     height: $button-height !important;
+    max-height: $button-height !important;
+    max-width: $button-width !important;
   }
 }
 
