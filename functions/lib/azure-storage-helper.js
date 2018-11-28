@@ -1,6 +1,8 @@
 'use strict'
 
 const azureStorage = require('azure-storage')
+const QueryComparisons = azureStorage.TableUtilities.QueryComparisons
+const TableQuery = azureStorage.TableQuery
 const bluebird = require('bluebird')
 const R = require('ramda')
 
@@ -12,7 +14,7 @@ const azureStorageHelper = {
   deleteFromPreparedCheckTableStorage: async function deleteFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
     const query = new azureStorage.TableQuery()
       .top(1)
-      .where('checkCode eq ?', checkCode)
+      .where(TableQuery.guidFilter('checkCode', QueryComparisons.EQUAL, checkCode))
 
     let check
     try {
