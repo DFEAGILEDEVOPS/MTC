@@ -25,7 +25,13 @@
       padding: 0;
     }
 
-    .answer, .question {
+    .question {
+      min-width: $answer-width !important;
+      height: $answer-height !important;
+      line-height: $answer-height !important;
+    }
+
+    .answer {
       width: $answer-width !important;
       height: $answer-height !important;
       line-height: $answer-height !important;
