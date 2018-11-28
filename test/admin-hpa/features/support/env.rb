@@ -20,6 +20,8 @@ require 'base64'
 require 'nokogiri'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require 'azure/storage/blob'
+require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 include Helpers
 
