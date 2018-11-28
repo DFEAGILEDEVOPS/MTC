@@ -1,24 +1,8 @@
 'use strict'
 
-/* global describe expect it spyOn beforeEach fail */
+/* global describe expect it spyOn fail */
 
-'use strict'
-
-const moment = require('moment')
-const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
-const uuid = require('uuid/v4')
-const winston = require('winston')
-
-const accessArrangementsTable = '[accessArrangements]'
 const azureStorageHelper = require('../lib/azure-storage-helper')
-const config = require('../config')
-const checkTable = '[check]'
-const pupilAccessArrangementsTable = '[pupilAccessArrangements]'
-const pupilFontSizesTable = '[pupilFontSizes]'
-const pupilColourContrastsTable = '[pupilColourContrasts]'
-const pupilTable = '[pupil]'
-const schema = '[mtc_admin]'
 const context = require('../mock-context')
 const v1 = require('./v1')
 
