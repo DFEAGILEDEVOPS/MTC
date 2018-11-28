@@ -169,7 +169,7 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, span, fieldset, div > button, div > a';
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label';
 
     const clonedElement = this.removeUnspokenElements(nativeElement);
 
@@ -186,11 +186,6 @@ export class SpeechService implements OnDestroy {
       for (let j = 0; j < elem.length; j++) {
         const textNode = document.createTextNode(this.addTextBeforeSpeakingElement(elem[j]) + elem[j].textContent);
         elem[j].parentNode.replaceChild(textNode, elem[j]);
-      }
-
-      // if there is no text to be spoken, skip this element
-      if (/\S/.test(elements[i].textContent) === false) {
-        continue;
       }
 
       speechText += '\n' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
@@ -216,7 +211,7 @@ export class SpeechService implements OnDestroy {
 
     if (nodeName === 'INPUT' && id && parentNode) {
       // if there is a label for this input element
-      toSpeak = parentNode.querySelector(`label[for="${id}"]`) || toSpeak;
+      toSpeak = parentNode.querySelector(`label[for="${id}"]`).cloneNode(true) || toSpeak;
     }
 
     const element = document.createElement('div');
@@ -258,7 +253,9 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   addTextBeforeSpeakingElement(nativeElement): string {
-    if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
+    if (nativeElement.tagName === 'INPUT' && nativeElement.type === 'submit') {
+      return 'Button: ' + nativeElement.value;
+    } else if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
       return 'Button: ';
     } else if (nativeElement.tagName === 'A') {
       return 'Link: ';
