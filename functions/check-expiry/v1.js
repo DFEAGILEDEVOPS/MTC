@@ -91,6 +91,10 @@ async function expireRestarts (checkData) {
   // Find any restarts in the checks that just got expired
   const checkIds = checkData.map(c => c.checkId)
   const pupilRestarts = await sqlFindPupilRestarts(checkIds)
+  if (!pupilRestarts) {
+    return
+  }
+  
   const pupilRestartIds = pupilRestarts.map(p => p.id)
 
   // Clear the `check_id` fields of the pupil restarts, so they can generate another pin
