@@ -31,7 +31,8 @@ v1.process = async function (context, pupilPrefsMessage) {
     if (fontSizeCode) {
       await v1.updatePupilAccessArrangementsPreference(checkCode, 'pupilfontSizes_id', pupilFontSizesTable, fontSizeCode, 'FTS')
       context.log(`pupil-prefs: SUCCESS: pupil access arrangement row updated for checkCode ${checkCode} and font size code ${fontSizeCode}`)
-    } else if (colourContrastCode) {
+    }
+    if (colourContrastCode) {
       await v1.updatePupilAccessArrangementsPreference(checkCode, 'pupilColourContrasts_id', pupilColourContrastsTable, colourContrastCode, 'CCT')
       context.log(`pupil-prefs: SUCCESS: pupil access arrangement row updated for checkCode ${checkCode} and colour contrast code ${fontSizeCode}`)
     }
