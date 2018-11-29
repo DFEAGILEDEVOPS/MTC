@@ -30,15 +30,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
               private router: Router) {
     this.window = windowRefService.nativeWindow;
     const config = questionService.getConfig();
-    this.hasAccessSettings = config && (
-      config.fontSize
-        || config.audibleSounds
-        || config.colourContrast
-        || config.fontSize
-        || config.inputAssistance
-        || config.questionReader
-        || config.numpadRemoval
-    );
+    this.hasAccessSettings = config && (config.fontSize || config.colourContrast);
   }
 
   ngOnInit() {
