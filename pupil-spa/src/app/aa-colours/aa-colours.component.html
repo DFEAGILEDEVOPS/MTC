@@ -3,8 +3,8 @@
   <main id="content" class="js-content" role="main">
     <div class="grid-row">
       <div class="column-full">
-        <p class="aa-title-size" tabindex="0">
-          <strong>Choose colour of page</strong>
+        <p class="aa-lead-size"  tabindex="0">
+         Choose colour of page
         </p>
         <div class="grid-row">
           <div class="column-float">
@@ -20,16 +20,16 @@
               </div>
             </fieldset>
           </div>
-          <div class="column-float">
+          <div class="column-float" aria-hidden="true">
             <div class="preview-box aa-contrast-{{selectedContrast}} aa-contrast-border-{{selectedContrast}} {{accessArrangements.fontSize}}">
               <div class="badge aa-copy-size aa-contrast-invert-{{selectedContrast}}">Colour preview</div>
               <div class="preview-content">
                 <div class="question-text aa-question-size"><span>123</span></div>
                 <table>
                   <tr>
-                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button"><span>1</span></button></td>
-                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button"><span>2</span></button></td>
-                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button"><span>3</span></button></td>
+                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button" tabindex="-1"><span>1</span></button></td>
+                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button" tabindex="-1"><span>2</span></button></td>
+                    <td><button class="numpad-button aa-contrast-invert-{{selectedContrast}}" type="button" tabindex="-1"><span>3</span></button></td>
                   </tr>
                 </table>
               </div>
@@ -37,9 +37,9 @@
           </div>
         </div>
         <p class="aa-copy-size" tabindex="0">
-          If you don’t need this setting, <a routerLink="/sign-out">please tell your teacher and sign out.</a>
+          If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>.
         </p>
-        <button class="button aa-button-size  aa-contrast-button" (click)="onClick()">Next</button>
+        <button class="button aa-button-size  aa-contrast-button" (click)="onClick()" id="next">Next</button>
       </div>
     </div>
   </main>
