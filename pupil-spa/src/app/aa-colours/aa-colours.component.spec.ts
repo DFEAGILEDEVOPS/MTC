@@ -8,6 +8,10 @@ import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { QuestionService } from '../services/question/question.service';
 
 describe('AAColoursComponent', () => {
   let mockRouter;
@@ -33,6 +37,8 @@ describe('AAColoursComponent', () => {
         { provide: RouteService, useClass: RouteServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     });
 
