@@ -55,6 +55,7 @@ export class PupilPrefsService {
         fontSizeCode: null,
         colourContrastCode: null
       },
+      version: 1,
       checkCode: pupil.checkCode
     };
     if (fontSetting) {
