@@ -2,7 +2,6 @@
 'use strict'
 
 // require('dotenv').config()
-const { performance } = require('perf_hooks');
 const winston = require('winston')
 const upnService = require('../../admin/services/upn.service')
 winston.level = 'info'
@@ -10,6 +9,7 @@ const moment = require('moment')
 
 const poolService = require('../../admin/services/data-access/sql.pool.service')
 const sqlService = require('../../admin/services/data-access/sql.service')
+const pupilCountPerSchool = 40
 
 async function main () {
   try {
@@ -20,8 +20,14 @@ async function main () {
       leaCode          
     from [mtc_admin].[school]`)
 
-    for (let school of schools) {
+    console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
+    let c = 1;
+    for (const school of schools) {
       await insertPupils(school, 40)
+      c += 1
+      if (c % 1000 === 0) {
+        console.log(`${c} schools`)
+      }
     }
   } catch (error) {
     console.log(error.message)
