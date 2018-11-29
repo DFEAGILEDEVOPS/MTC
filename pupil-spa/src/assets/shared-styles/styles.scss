@@ -253,6 +253,17 @@ body {
   }
 }
 
+/* Lists */
+
+ol, ul {
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+.list-number, .list-bullet {
+  padding-left: 0;
+}
+
 /* AA Page Modification */
 #page-modifications {
   min-height: 100vh;
@@ -288,7 +299,7 @@ body {
 }
 
 .more-links {
-  
+
   > strong {
     margin-top: 75px;
     padding-top: 15px;
