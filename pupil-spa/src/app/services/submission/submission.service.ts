@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
-import { AppUsageService } from '../app-usage/app-usage.service';
 import { CheckStartedAPICallFailed, CheckSubmissionAPIFailed } from '../audit/auditEntry';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/take';
@@ -29,8 +28,7 @@ export class SubmissionService {
 
   constructor(private http: HttpClient,
               private storageService: StorageService,
-              private auditService: AuditService,
-              private appUsageService: AppUsageService) {
+              private auditService: AuditService) {
     const {
       checkStartAPIErrorDelay,
       checkStartAPIErrorMaxAttempts,
@@ -74,7 +72,6 @@ export class SubmissionService {
   }
 
   submitData() {
-    this.appUsageService.store();
     const localStorageData = this.storageService.getAllItems();
     return this.http.post(`${this.checkSubmissionURL}`,
       // Explanation for response type text

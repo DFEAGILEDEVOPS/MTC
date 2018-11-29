@@ -21,6 +21,7 @@ import { TokenService } from '../services/token/token.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AppUsageService } from '../services/app-usage/app-usage.service';
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>;

@@ -13,6 +13,7 @@ import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
+import { AppUsageService } from '../app-usage/app-usage.service';
 
 /**
  * Declaration of check start service
@@ -58,6 +59,7 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   public async submit(startTime): Promise<void> {
+    this.appUsageService.store();
     const config = this.storageService.getItem('config');
     if (config.practice) {
       return this.onSuccess(startTime);
