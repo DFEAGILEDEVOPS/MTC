@@ -6,8 +6,11 @@
                 <header class="page-header">
                     <h1 class="aa-title-size" tabindex="0">Thank you</h1>
                 </header>
-                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck'>
-                    You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go <span *ngIf="hasAccessSettings">or you can <a routerLink="/access-settings">edit your settings</a></span>.
+                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && !hasAccessSettings'>
+                    You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
+                </p>
+                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && hasAccessSettings'>
+                    <a href="" (click)="onStartAgainClick($event)">Start again</a> if you would like another go or you can <a routerLink="/access-settings">edit your settings</a>.
                 </p>
                 <p class="lede aa-copy-size" tabindex="0" *ngIf='!familiarisationCheck'>
                     Please leave <a routerLink="/feedback">feedback.</a>
