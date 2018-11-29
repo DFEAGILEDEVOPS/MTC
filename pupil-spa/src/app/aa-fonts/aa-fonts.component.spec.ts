@@ -9,6 +9,8 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { AAFontsComponent } from './aa-fonts.component';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
@@ -34,6 +36,7 @@ describe('AAFontsComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        { provide: SpeechService, useClass: SpeechServiceMock },
         RouteService
       ]
     });
