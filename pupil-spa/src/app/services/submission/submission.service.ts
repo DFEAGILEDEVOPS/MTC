@@ -74,10 +74,8 @@ export class SubmissionService {
   }
 
   submitData() {
+    this.appUsageService.store();
     const localStorageData = this.storageService.getAllItems();
-    if (localStorageData.device) {
-      localStorageData.device.appUsageCounter = this.appUsageService.getCounterValue();
-    }
     return this.http.post(`${this.checkSubmissionURL}`,
       // Explanation for response type text
       // https://github.com/angular/angular/issues/21211
