@@ -124,7 +124,6 @@
     }
   }
 
-
   .colour-contrast-#{$key} .svg-crown path {
     fill: if($special-invert == false, $bg-colour, $fg-colour) !important;
   }
@@ -136,6 +135,17 @@
 
   .colour-contrast-#{$key} .svg-arrow polygon {
     fill: $bg-colour !important;
+  }
+
+  .colour-contrast-#{$key} .multiple-choice [type=radio] + label {
+
+    &::before {
+      border-color: $fg-colour !important;
+    }
+
+    &::after {
+      background: $fg-colour !important;
+    }
   }
 }
 
