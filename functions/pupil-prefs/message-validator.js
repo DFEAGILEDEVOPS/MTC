@@ -18,8 +18,8 @@ function validateMessage (pupilPrefsMessage) {
   if (!(typeof pupilPrefsMessage.preferences === 'object')) {
     throw new Error('pupil-prefs: Preferences are invalid')
   }
-  if (!pupilPrefsMessage.preferences.fontSizeCode && !pupilPrefsMessage.preferences.colourContrastCode) {
-    throw new Error('pupil-prefs: Pupil preference code value is not provided')
+  if (!pupilPrefsMessage.preferences.fontSizeCode || !pupilPrefsMessage.preferences.colourContrastCode) {
+    throw new Error('pupil-prefs: One or more pupil preference code values are missing')
   }
 }
 module.exports = validateMessage
