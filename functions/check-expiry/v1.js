@@ -1,6 +1,7 @@
 'use strict'
 
 const sqlService = require('less-tedious')
+const { TYPES } = require('tedious')
 
 const config = require('../config')
 sqlService.initialise(config)
@@ -8,10 +9,14 @@ const azureStorageHelper = require('../lib/azure-storage-helper')
 
 const v1 = {
   process: async function process (logger) {
-    // step 1: change the check status
+    // change the check status
     const checkData = await expireChecks(logger)
 
-    // step 2: update the pupil status
+    // if we have just expired a restart check we need to also remove the pupilRestart.check_id
+    // field as the check it refers to was never taken.
+    await expireRestarts(checkData)
+
+    // finally, update the pupil status
     await azureStorageHelper.updatePupilStatus(logger, 'check-expiry', checkData)
 
     return {
@@ -51,6 +56,47 @@ async function expireChecks () {
   FROM @updateLog;`
 
   return sqlService.query(sql)
+}
+
+async function sqlFindPupilRestarts (checkIds) {
+  if (!Array.isArray(checkIds)) {
+    checkIds = []
+  }
+  if (checkIds.length === 0) {
+    return
+  }
+  const select = `SELECT *
+                    FROM [mtc_admin].[pupilRestart]
+                    WHERE isDeleted = 0
+                      AND check_id IN`
+  const { params, paramIdentifiers } = sqlService.buildParameterList(checkIds, TYPES.Int)
+  const sql = [select, '(', paramIdentifiers.join(', '), ')'].join(' ')
+  return sqlService.query(sql, params)
+}
+
+async function sqlClearCheckIdField (pupilRestartIds) {
+  if (!Array.isArray(pupilRestartIds)) {
+    pupilRestartIds = []
+  }
+  if (pupilRestartIds.length === 0) {
+    return
+  }
+  const update = `UPDATE [mtc_admin].[pupilRestart] SET check_id = null`
+  const { params, paramIdentifiers } = sqlService.buildParameterList(pupilRestartIds, TYPES.Int)
+  const sql = [update, 'WHERE id IN (', paramIdentifiers.join(', '), ')'].join(' ')
+  return sqlService.modify(sql, params)
+}
+
+async function expireRestarts (checkData) {
+  // Find any restarts in the checks that just got expired
+  const checkIds = checkData.map(c => c.checkId)
+  const pupilRestarts = await sqlFindPupilRestarts(checkIds)
+  const pupilRestartIds = pupilRestarts.map(p => p.id)
+
+  // Clear the `check_id` fields of the pupil restarts, so they can generate another pin
+  if (pupilRestartIds.length > 0) {
+    await sqlClearCheckIdField(pupilRestartIds)
+  }
 }
 
 module.exports = v1
