@@ -1,7 +1,9 @@
-/* global describe it expect spyOn */
+/* global describe it expect spyOn fail beforeEach */
 
 const func = require('./index')
 const R = require('ramda')
+const azureStorageHelper = require('../lib/azure-storage-helper')
+const mockTableService = require('../lib/mock-table-service')
 
 describe('prepare-check function', () => {
   describe('validates the incoming message', () => {
@@ -49,191 +51,216 @@ describe('prepare-check function', () => {
 
     const context = require('../mock-context')
 
-    it('validates a valid message', () => {
-      spyOn(context, 'done')
-      func(context, validMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args.length).toBe(0) // we expect done() to have been called without args.  args is an array.
+    beforeEach(() => {
+      spyOn(azureStorageHelper, 'getPromisifiedAzureTableService').and.returnValue(mockTableService)
+      spyOn(mockTableService, 'insertEntityAsync')
     })
 
-    it('rejects a message that is missing a schoolPin', () => {
+    it('validates a valid message', async () => {
+      spyOn(context, 'done')
+      try {
+        await func(context, validMessage)
+        expect(true).toBe(true) // no jasmine success()
+      } catch (error) {
+        fail()
+      }
+    })
+
+    it('rejects a message that is missing a schoolPin', async () => {
       const mockMessage = R.omit(['schoolPin'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: schoolPin')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Message failed validation check: missing field: schoolPin')
+      }
     })
 
-    it('rejects a message that is missing a pupilPin', () => {
+    it('rejects a message that is missing a pupilPin', async () => {
       const mockMessage = R.omit(['pupilPin'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: pupilPin')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Message failed validation check: missing field: pupilPin')
+      }
     })
 
-    it('rejects a message that is missing a pupil', () => {
+    it('rejects a message that is missing a pupil', async () => {
       const mockMessage = R.omit(['pupil'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: pupil')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Message failed validation check: missing field: pupil')
+      }
     })
 
-    it('rejects a message that is missing a school', () => {
+    it('rejects a message that is missing a school', async () => {
       const mockMessage = R.omit(['school'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: school')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Message failed validation check: missing field: school')
+      }
     })
 
-    it('rejects a message that is missing a sasToken', () => {
+    it('rejects a message that is missing a sasToken', async () => {
       const mockMessage = R.omit(['tokens'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: tokens')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Message failed validation check: missing field: tokens')
+      }
     })
 
-    it('rejects a message when the pupil property is not an object', () => {
+    it('rejects a message when the pupil property is not an object', async () => {
       const mockMessage = R.clone(validMessage)
       mockMessage.pupil = 'Pupil Name Instead Of Object'
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('pupil is not an object')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupil is not an object')
+      }
     })
 
-    it('rejects a message that is missing a pupil.firstName field', () => {
+    it('rejects a message that is missing a pupil.firstName field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.pupil.firstName
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing pupil field: firstName')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing pupil field: firstName')
+      }
     })
 
-    it('rejects a message that is missing a pupil.lastName field', () => {
+    it('rejects a message that is missing a pupil.lastName field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.pupil.lastName
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing pupil field: lastName')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing pupil field: lastName')
+      }
     })
 
-    it('rejects a message that is missing a pupil.dob field', () => {
+    it('rejects a message that is missing a pupil.dob field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.pupil.dob
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing pupil field: dob')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing pupil field: dob')
+      }
     })
 
-    it('rejects a message that is missing a set of questions', () => {
+    it('rejects a message that is missing a set of questions', async () => {
       const mockMessage = R.clone(validMessage)
       mockMessage.questions = 'a string instead of an array'
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Questions is not an Array')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Questions is not an Array')
+      }
     })
 
-    it('rejects a message that is entirely composed of questions objects', () => {
+    it('rejects a message that is entirely composed of questions objects', async () => {
       const mockMessage = R.clone(validMessage)
       mockMessage.questions = [
         { order: 1, factor1: 1, factor2: 1 },
         { order: 2, factor1: 1, factor2: 2 },
         { invalid: 'object' }
       ]
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Invalid question')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Invalid question')
+      }
     })
 
-    it('rejects a message when the school property is not an object', () => {
+    it('rejects a message when the school property is not an object', async () => {
       const mockMessage = R.clone(validMessage)
       mockMessage.school = 'School of many pupils'
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('school is not an object')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('school is not an object')
+      }
     })
 
-    it('rejects a message that is missing the school.id field', () => {
+    it('rejects a message that is missing the school.id field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.school.id
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing school field: id')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing school field: id')
+      }
     })
 
-    it('rejects a message that is missing the school.name field', () => {
+    it('rejects a message that is missing the school.name field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.school.name
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing school field: name')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing school field: name')
+      }
     })
 
-    it('rejects a message when the config property is not an object', () => {
+    it('rejects a message when the config property is not an object', async () => {
       const mockMessage = R.clone(validMessage)
       mockMessage.config = 'erroneous config string'
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('config is not an object')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('config is not an object')
+      }
     })
 
-    it('rejects a message that is missing the config.questionTime field', () => {
+    it('rejects a message that is missing the config.questionTime field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.config.questionTime
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing config field: questionTime')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing config field: questionTime')
+      }
     })
 
-    it('rejects a message that is missing the config.loadingTime field', () => {
+    it('rejects a message that is missing the config.loadingTime field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.config.loadingTime
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing config field: loadingTime')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing config field: loadingTime')
+      }
     })
 
-    it('rejects a message that is missing the config.speechSynthesis field', () => {
+    it('rejects a message that is missing the config.speechSynthesis field', async () => {
       const mockMessage = R.clone(validMessage)
       delete mockMessage.config.speechSynthesis
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Missing config field: speechSynthesis')
+      try {
+        await func(context, mockMessage)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing config field: speechSynthesis')
+      }
     })
   })
 })

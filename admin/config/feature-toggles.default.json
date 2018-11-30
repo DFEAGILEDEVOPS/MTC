@@ -8,5 +8,6 @@
   "dependencyTracking": true,
   "accessArrangements": false,
   "prepareCheckMessaging": false,
-  "newCheckWindow": true
+  "newCheckWindow": true,
+  "newCheckForm": false
 }
