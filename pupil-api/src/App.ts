@@ -94,6 +94,14 @@ class App {
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
 
+    if (process.env.VERIFY_OWNER) {
+      const token = process.env.VERIFY_OWNER
+      this.express.get(`/${token}`, (req, res) => {
+        res.contentType('text/plain')
+        res.send(token)
+      })
+    }
+
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {
       let err: any = new Error('Not Found')
