@@ -17,6 +17,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
   public count: number;
   public loadingTime: number;
   public questionTime: number;
+  public shouldShowMore: boolean;
   protected window: any;
   private speechListenerEvent: any;
 
@@ -32,6 +33,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingTime = config.loadingTime;
     this.questionTime = config.questionTime;
     this.window = windowRefService.nativeWindow;
+    this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
   }
 
   ngOnInit() {
