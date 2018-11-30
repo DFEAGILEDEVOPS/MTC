@@ -1,22 +1,24 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
+import { RouteService } from '../services/route/route.service';
 
 @Component({
   selector: 'app-aa-settings',
   templateUrl: './aa-settings.component.html',
   styleUrls: ['./aa-settings.component.scss']
 })
-export class AASettingsComponent implements AfterViewInit, OnDestroy {
+export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public config: Config;
   public speechListenerEvent: any;
   public formSubmitted = false;
   public validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
+  public backLinkUrl;
 
   @ViewChild('inputAssistantForm') public inputAssistantForm: NgForm;
 
@@ -25,9 +27,17 @@ export class AASettingsComponent implements AfterViewInit, OnDestroy {
     private elRef: ElementRef,
     private questionService: QuestionService,
     private storageService: StorageService,
-    private speechService: SpeechService
+    private speechService: SpeechService,
+    private routeService: RouteService
   ) {
     this.config = questionService.getConfig();
+  }
+
+  ngOnInit() {
+    const validBackLinks = ['/check-complete'];
+    if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
+      this.backLinkUrl = this.routeService.getPreviousUrl();
+    }
   }
 
   // wait for the component to be rendered first, before parsing the text
