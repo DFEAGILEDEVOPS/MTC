@@ -16,9 +16,6 @@
               <ng-container *ngTemplateOutlet="errorSummary; context:{control: inputAssistantForm.controls.inputAssistantLastName, focus: 'inputAssistantLastName', field: 'last name'}"></ng-container>
             </div>
           </div>
-          <div *ngIf="backLinkUrl" class="back-link-wrapper">
-            <a [routerLink]="backLinkUrl" class="back-link aa-link-size">Back</a>
-          </div>
           <header class="page-header" tabindex="0">
             <h1 class="heading-xlarge aa-title-size">Your settings</h1>
           </header>

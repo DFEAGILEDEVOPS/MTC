@@ -6,6 +6,7 @@ import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
 import { RouteService } from '../services/route/route.service';
+import { CheckComponent } from '../check/check.component';
 
 @Component({
   selector: 'app-aa-settings',
@@ -18,7 +19,6 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   public speechListenerEvent: any;
   public formSubmitted = false;
   public validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
-  public backLinkUrl;
 
   @ViewChild('inputAssistantForm') public inputAssistantForm: NgForm;
 
@@ -27,17 +27,15 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
     private elRef: ElementRef,
     private questionService: QuestionService,
     private storageService: StorageService,
-    private speechService: SpeechService,
-    private routeService: RouteService
+    private speechService: SpeechService
   ) {
     this.config = questionService.getConfig();
   }
 
   ngOnInit() {
-    const validBackLinks = ['/check-complete'];
-    if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
-      this.backLinkUrl = this.routeService.getPreviousUrl();
-    }
+    // Reset the check state when visitng the settings page
+    this.storageService.removeItem(CheckComponent.checkStateKey);
+    this.storageService.setItem('completed_submission', false);
   }
 
   // wait for the component to be rendered first, before parsing the text

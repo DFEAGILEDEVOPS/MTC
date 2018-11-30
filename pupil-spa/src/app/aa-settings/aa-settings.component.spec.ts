@@ -3,13 +3,11 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { FormsModule } from '@angular/forms';
 
 import { AASettingsComponent } from './aa-settings.component';
-import { RouteService } from '../services/route/route.service';
 
 describe('AASettingsComponent', () => {
   let mockRouter;
@@ -31,7 +29,6 @@ describe('AASettingsComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useValue: mockQuestionService },
         { provide: SpeechService, useClass: SpeechServiceMock },
-        RouteService,
         StorageService
       ],
       imports: [FormsModule]
