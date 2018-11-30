@@ -6,7 +6,7 @@ const v1 = require('./v1')
 const sqlHelper = require('../lib/sql-helper')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 
-describe('v1-process', () => {
+describe('pupil-login: v1-process', () => {
   const message = { checkCode: 'abc-def-123', loginAt: '2018-12-31T16:23:59.123Z', version: 1 }
 
   beforeEach(() => {
