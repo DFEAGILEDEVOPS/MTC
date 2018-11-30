@@ -180,4 +180,20 @@ describe('pupil-status-analysis.service', () => {
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
     expect(targetStatus).toBe('COMPLETED')
   })
+
+  it('keeps the status as STARTED when the check has been started but then changes to NOT RECEIVED', async () => {
+    const data = [
+      {
+        pupil_id: 12,
+        pupilStatusCode: 'STARTED',
+        check_id: 1,
+        checkStatusCode: 'NTR',
+        pupilAttendance_id: null,
+        pupilRestart_id: null,
+        pupilRestart_check_id: null
+      }
+    ]
+    const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
+    expect(targetStatus).toBe('STARTED')
+  })
 })
