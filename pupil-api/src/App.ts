@@ -11,9 +11,8 @@ import * as uuidV4 from 'uuid/v4'
 import * as winston from 'winston'
 import * as expressWinston from 'express-winston'
 import * as azure from './azure'
-const config = require('./config')
-const corsOptions = require('../../admin/helpers/cors-options')
-const setupLogging = require('../../admin/helpers/logger')
+const corsOptions = require('./helpers/cors-options')
+const setupLogging = require('./helpers/logger')
 
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
