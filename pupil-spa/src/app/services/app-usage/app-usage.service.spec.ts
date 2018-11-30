@@ -38,30 +38,10 @@ describe('AppUsageService', () => {
     expect(counter).toBe(1);
   });
 
-
-  describe('with local storage', () => {
-
-    beforeAll(async() => {
-      mockStorageService.getItem.and.returnValue({appUsageCounter: 9});
-    });
-
-    it('should fetch the counter value from local storage', () => {
-      const counter = appUsageService.getCounterValue();
-      expect(counter).toBe(9);
-    });
-
-    it('should increment the app usage counter by 1', () => {
-      appUsageService.increment();
-      const counter = appUsageService.getCounterValue();
-      expect(counter).toBe(10);
-    });
-
-    it('should store the app usage counter', () => {
-      appUsageService.increment();
-      appUsageService.store();
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
-      expect(mockStorageService.setItem).toHaveBeenCalledWith('device', {appUsageCounter: 10});
-    });
-
+  it('should store the app usage counter', () => {
+    appUsageService.increment();
+    appUsageService.store();
+    expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
+    expect(mockStorageService.setItem).toHaveBeenCalledWith('device', {appUsageCounter: 2});
   });
 });

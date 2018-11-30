@@ -6,24 +6,24 @@ import { DeviceService } from '../device/device.service';
 @Injectable()
 export class AppUsageService {
 
-  private appUsageCounter: number;
+  private static appUsageCounter = 0;
 
   constructor(private storageService: StorageService) {
-    const deviceData = storageService.getItem(DeviceService.storageKey);
-    this.appUsageCounter = deviceData && deviceData.appUsageCounter || 0;
   }
 
   store(): void {
+    // Store the appUsageCounter in the device data so it is
+    // picked up later by storageService.getAllItems()
     const deviceData = this.storageService.getItem(DeviceService.storageKey) || {};
-    deviceData.appUsageCounter = this.appUsageCounter;
+    deviceData.appUsageCounter = this.getCounterValue();
     this.storageService.setItem(DeviceService.storageKey, deviceData);
   }
 
   increment(): void {
-    this.appUsageCounter += 1;
+    AppUsageService.appUsageCounter += 1;
   }
 
   getCounterValue(): number {
-    return this.appUsageCounter;
+    return AppUsageService.appUsageCounter;
   }
 }
