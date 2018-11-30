@@ -22,7 +22,11 @@ controller.getRestartOverview = async (req, res, next) => {
   let restarts
   let pinGenerationEligibilityData
   try {
-    restarts = await restartService.getSubmittedRestarts(req.user.School)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
+    } else {
+      restarts = await restartService.getSubmittedRestarts(req.user.School)
+    }
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
