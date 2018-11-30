@@ -147,13 +147,11 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
-   * Parse the source of a NativeElement and speak the text
+   * Removes aria-hidden child elements
    * @param nativeElement
+   * @returns {clonedElement}
    */
-  speakElement(nativeElement): Promise<{}> {
-    this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
-
+  removeUnspokenElements(nativeElement): HTMLElement {
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
 
@@ -162,6 +160,18 @@ export class SpeechService implements OnDestroy {
     for (let i = 0; i < elementsToRemove.length; i++) {
       elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
     }
+    return clonedElement;
+  }
+
+  /**
+   * Parse the source of a NativeElement and speak the text
+   * @param nativeElement
+   */
+  speakElement(nativeElement): Promise<{}> {
+    this.focusInterruptedPageSpeech = false;
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label';
+
+    const clonedElement = this.removeUnspokenElements(nativeElement);
 
     let speechText = '';
 
@@ -174,12 +184,8 @@ export class SpeechService implements OnDestroy {
       // in order to avoid duplication
       const elem = elements[i].querySelectorAll('a, button');
       for (let j = 0; j < elem.length; j++) {
-        elem[j].parentNode.removeChild(elem[j]);
-      }
-
-      // if there is no text to be spoken, skip this element
-      if (/\S/.test(elements[i].textContent) === false) {
-        continue;
+        const textNode = document.createTextNode(this.addTextBeforeSpeakingElement(elem[j]) + elem[j].textContent);
+        elem[j].parentNode.replaceChild(textNode, elem[j]);
       }
 
       speechText += '\n' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
@@ -189,7 +195,9 @@ export class SpeechService implements OnDestroy {
                 // remove empty lines
                 .replace(/^\s+$/gm, '')
                 // replace newlines with commas
-                .replace(/[\n\r]+/g, ' , '));
+                .replace(/[\n\r]+/g, ' , ')
+                // Remove first leading comma
+                .replace(/^\s*,\s*/g, ''));
   }
 
   /**
@@ -199,16 +207,16 @@ export class SpeechService implements OnDestroy {
   speakFocusedElement(nativeElement): void {
     const { id, nodeName, parentNode } = nativeElement;
 
-    let toSpeak = nativeElement;
+    let toSpeak = nativeElement.cloneNode(true);
 
     if (nodeName === 'INPUT' && id && parentNode) {
       // if there is a label for this input element
-      toSpeak = parentNode.querySelector(`label[for="${id}"]`) || toSpeak;
+      toSpeak = parentNode.querySelector(`label[for="${id}"]`).cloneNode(true) || toSpeak;
     }
 
-    const speechText = this.addTextBeforeSpeakingElement(toSpeak) + toSpeak.textContent;
-
-    this.speak(speechText);
+    const element = document.createElement('div');
+    element.appendChild(toSpeak);
+    this.speakElement(element);
   }
 
   /**
@@ -245,7 +253,9 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   addTextBeforeSpeakingElement(nativeElement): string {
-    if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
+    if (nativeElement.tagName === 'INPUT' && nativeElement.type === 'submit') {
+      return 'Button: ' + nativeElement.value;
+    } else if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
       return 'Button: ';
     } else if (nativeElement.tagName === 'A') {
       return 'Link: ';
