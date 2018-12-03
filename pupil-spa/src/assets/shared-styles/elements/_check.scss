@@ -62,24 +62,29 @@ $horizontal-breakpoint-3: 781px;
   @extend %contain-floats;
 
   margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 // set maximum header widths based on font size
 .copy-size-xxlarge .question-header {
   max-width: 980px;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .copy-size-xlarge .question-header,
 .copy-size-large .question-header,
-.copy-size-regular .question-header,
-.copy-size-small .question-header,
-.copy-size-xsmall .question-header {
+.copy-size-regular .question-header {
   max-width: 950px;
-  padding-left: 10px;
-  padding-right: 10px;
 }
+
+.copy-size-small .question-header {
+  max-width: 490px;
+}
+
+.copy-size-xsmall .question-header {
+  max-width: 430px;
+}
+
 
 .question-container {
   display: inline-block;
