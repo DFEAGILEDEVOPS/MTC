@@ -9,7 +9,7 @@ const checkWindowV2AddService = require('../../../services/check-window-v2-add.s
 const checkWindowV2UpdateService = require('../../../services/check-window-v2-update.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
-describe('access arrangements controller:', () => {
+describe('check window controller:', () => {
   let next
 
   function getRes () {
