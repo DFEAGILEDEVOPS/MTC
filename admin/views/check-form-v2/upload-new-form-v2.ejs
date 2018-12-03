@@ -1,0 +1,122 @@
+<% const err = error %>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds check-forms">
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                There is a problem with the file name
+            </h2>
+            <p><%= messages.error %></p>
+            <ul class="error-summary-list">
+                <li><a href="#file-upload">Please try uploading a file again</a></li>
+            </ul>
+        </div>
+        <% } %>
+
+        <% if (error) { %>
+        <% if (error.hasOwnProperty('message')) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-2">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-2">
+                <%= error.message %>
+            </h2>
+
+            <p>The form upload spreadsheet:</p>
+
+            <ul class="list list-bullet">
+                <li> must be in CSV format - <a href="#csv-guidance">see guidance for instructions</a></li>
+                <li> must only contain 2 columns</li>
+                <li> must not have a header row</li>
+                <li> must only contain numbers between 1 and 12</li>
+                <li> must contain exactly 25 rows of data</li>
+            </ul>
+
+            <ul class="error-summary-list">
+                <li><a href="#file-upload">Please try uploading a file again</a></li>
+            </ul>
+        </div>
+        <% } %>
+        <% } %>
+
+        <h1 class="heading-xlarge">Upload new form</h1>
+
+        <%- partial('partials/_session_expiry') %>
+
+        <h2 class="heading-medium top-padding-30"><a name="csv-guidance">Download example</a></h2>
+
+        <ol class="numeric-list">
+            <li>
+                Download the example
+                <div class="panel panel-border-wide short">
+                    <a href="<%= assetPath %>csv/check-form-sample.csv" class="heading-small icon-download">Check form example (CSV, 4KB)</a>
+                </div>
+            </li>
+            <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+            <li>Add check questions using the given format</li>
+            <li>Save as a CSV file on your computer</li>
+            <li>Select 'Choose file' button and navigate to the file on your computer</li>
+            <li>Choose the file(s) to upload</li>
+        </ol>
+
+        <h2 class="heading-medium">Upload file(s)</h2>
+
+        <form action="/check-form-v2/submit-check-form-v2" method="post" enctype="multipart/form-data" encoding="multipart/form-data" id="upload-form">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <div class="form-group<% if (err.hasError()) { %> form-group-error<% } %>">
+                <% if (err) { %>
+                <label class="error-message"><%= err.message %></label>
+                <% } %>
+                <div class="font-xsmall">
+                    <input type="file" name="csvFile" id="file-upload" accept=".csv" aria-label="Choose a file to upload" multiple />
+                </div>
+                <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove files" aria-label="Remove uploaded files." />
+            </div>
+
+            <div class="form-group <%= err.isError('checkFormType') ? 'form-group-error' : '' %>" id="check-form-type">
+                <fieldset role="radiogroup">
+                    <div class="inline">
+                        <div class="multiple-choice">
+                            <input id="live-check-form"
+                                   type="radio"
+                                   role="radio"
+                                   aria-checked="false"
+                                   name="check-form-type"
+                                   value="L"
+                                   <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'L') { %>checked="checked"
+                                    <% } %>
+                            />
+                            <label for="live-check-form">Live</label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input id="familiarisation-check-form"
+                                   type="radio"
+                                   role="radio"
+                                   aria-checked="false"
+                                   name="check-form-type"
+                                   value="F"
+                                   <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'F') { %>checked="checked"
+                                    <% } %>
+                            />
+                            <label for="familiarisation-check-form">Familiarisation</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="form-buttons">
+                <input type="submit" class="button" id="upload-form-submit" value="Upload" disabled="disabled" />
+                <a href="/test-developer/upload-and-view-forms" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

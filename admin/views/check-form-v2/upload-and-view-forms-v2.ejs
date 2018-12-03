@@ -1,0 +1,42 @@
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Upload and view forms</h1>
+
+        <%- partial('partials/_session_expiry') %>
+
+        <p class="lede" id="lead-paragraph">
+            Upload, view or remove check forms.
+        </p>
+        <div class="button-wrapper">
+            <a class="button button-primary" href="/check-form-v2/upload-new-form-v2">Upload new form</a>
+        </div>
+
+        <% if (Array.isArray(checkForms) && checkForms.length > 0) { %>
+        <% } else {%>
+        <br>
+        <p>Please upload a check form</p>
+        <% } %>
+    </div>
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="">Assign forms to check window</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
