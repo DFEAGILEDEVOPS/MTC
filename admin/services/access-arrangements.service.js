@@ -30,21 +30,21 @@ accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
     throw validationError
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
-  const processedData = await accessArrangementsService.process(submittedData, pupil, dfeNumber, userId)
+  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, dfeNumber, userId)
   const displayData = await accessArrangementsService.save(processedData, pupil)
   await preparedCheckSyncService.addMessages(urlSlug)
   return displayData
 }
 
 /**
- * Process access arrangements data
+ * Prepares access arrangements data for submission to the database
  * @param {Object} requestData
  * @param {Object} pupil
  * @param {Number} dfeNumber
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId) => {
+accessArrangementsService.prepareData = async (requestData, pupil, dfeNumber, userId) => {
   const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
   const pupilAccessArrangements = R.clone(requestData)
   pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)
@@ -67,6 +67,14 @@ accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId
   }
   if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.QUESTION_READER)) {
     questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(pupilAccessArrangements.questionReaderReasonCode)
+  }
+  if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.COLOUR_CONTRAST)) {
+    const pupilColourContrastAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'CCT')
+    pupilColourContrastAA['pupilColourContrasts_id'] = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA['id'])
+  }
+  if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.FONT_SIZE)) {
+    const pupilFontSizeAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'FTS')
+    pupilFontSizeAA['pupilFontSizes_id'] = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA['id'])
   }
   if (questionReaderReasonId) {
     pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReasonId

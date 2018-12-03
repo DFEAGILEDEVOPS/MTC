@@ -31,14 +31,14 @@ describe('accessArrangementsService', () => {
   describe('submit', () => {
     it('calls preparedCheckSync service and returns access arrangements list', async () => {
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsService, 'process')
+      spyOn(accessArrangementsService, 'prepareData')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
       spyOn(accessArrangementsService, 'save')
       spyOn(preparedCheckSyncService, 'addMessages')
       await accessArrangementsService.submit({}, 12345, 1)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
-      expect(accessArrangementsService.process).toHaveBeenCalled()
+      expect(accessArrangementsService.prepareData).toHaveBeenCalled()
       expect(accessArrangementsService.save).toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
@@ -47,7 +47,7 @@ describe('accessArrangementsService', () => {
       validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
       validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
       spyOn(accessArrangementsValidator, 'validate').and.returnValue(validationError)
-      spyOn(accessArrangementsService, 'process')
+      spyOn(accessArrangementsService, 'prepareData')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
       spyOn(accessArrangementsService, 'save')
       spyOn(preparedCheckSyncService, 'addMessages')
@@ -58,12 +58,12 @@ describe('accessArrangementsService', () => {
       }
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
-      expect(accessArrangementsService.process).not.toHaveBeenCalled()
+      expect(accessArrangementsService.prepareData).not.toHaveBeenCalled()
       expect(accessArrangementsService.save).not.toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
-  describe('process', () => {
+  describe('prepareData', () => {
     it('returns a processed access arrangements submission object', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
@@ -73,7 +73,9 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }])
-      const result = await accessArrangementsService.process(requestData, { id: 1 }, 12345, 1)
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId')
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId')
+      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes).toHaveBeenCalled()
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -81,6 +83,8 @@ describe('accessArrangementsService', () => {
         recordedBy_user_id: 1,
         questionReaderReasonCode: ''
       }))
+      expect(pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId).not.toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlFindPupilFontSizesId).not.toHaveBeenCalled()
     })
     it('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
@@ -92,7 +96,7 @@ describe('accessArrangementsService', () => {
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([])
       try {
-        await accessArrangementsService.process(requestData, { id: 1 }, 12345, 1)
+        await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
       } catch (error) {
         expect(error.message).toBe('No access arrangements found')
       }
@@ -107,7 +111,7 @@ describe('accessArrangementsService', () => {
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([1])
       try {
-        await accessArrangementsService.process(requestData, {}, 12345, 1)
+        await accessArrangementsService.prepareData(requestData, {}, 12345, 1)
       } catch (error) {
         expect(error.message).toBe('Pupil object is not found')
       }
@@ -124,7 +128,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
-      const result = await accessArrangementsService.process(requestData, { id: 1 }, 12345, 1)
+      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
@@ -152,7 +156,7 @@ describe('accessArrangementsService', () => {
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
-      const result = await accessArrangementsService.process(requestData, { id: 1 }, 12345, 1)
+      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -181,7 +185,7 @@ describe('accessArrangementsService', () => {
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
-      const result = await accessArrangementsService.process(requestData, { id: 1 }, 12345, 1)
+      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
@@ -193,6 +197,37 @@ describe('accessArrangementsService', () => {
         questionReaderReasons_id: 4,
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }))
+    })
+    it('expects pupilFontSizes_id property and pupilColourContrasts_id property to be set from existing ', async () => {
+      const requestData = {
+        pupilUrlSlug: 'pupilUrlSlug',
+        accessArrangements: [
+          accessArrangementsDataService.CODES.FONT_SIZE,
+          accessArrangementsDataService.CODES.COLOUR_CONTRAST
+        ],
+        questionReaderReason: '',
+        inputAssistanceInformation: '',
+        questionReaderOtherInformation: ''
+      }
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').and.returnValue(2)
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId').and.returnValue(4)
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+        { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST },
+        { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE }
+      ])
+      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      expect(pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId).toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlFindPupilFontSizesId).toHaveBeenCalled()
+      expect(result).toEqual(Object({
+        pupil_id: 1,
+        accessArrangementsIdsWithCodes: [
+          { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST, pupilColourContrasts_id: 2 },
+          { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE, pupilFontSizes_id: 4 }
+        ],
+        recordedBy_user_id: 1,
+        questionReaderReasonCode: ''
+      })
+      )
     })
   })
   describe('save', () => {

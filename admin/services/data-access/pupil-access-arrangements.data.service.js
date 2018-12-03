@@ -19,7 +19,7 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
   LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
   ON paa.pupilFontSizes_id = pfs.id
   LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
-  ON paa.pupilColourContrasts_id = pcc.id
+  ON paa.pupilColourContrasts_Id = pcc.id
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
@@ -57,7 +57,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   }
 
   accessArrangementsIdsWithCodes.forEach((aa, idx) => {
-    inserts.push(`(@pupil_id${idx}, @recordedBy_user_id${idx}, @accessArrangements_id${idx}, @questionReaderReasons_id${idx}, @inputAssistanceInformation${idx}, @questionReaderOtherInformation${idx})`)
+    inserts.push(`(@pupil_id${idx}, @recordedBy_user_id${idx}, @accessArrangements_id${idx}, @questionReaderReasons_id${idx}, @inputAssistanceInformation${idx}, @questionReaderOtherInformation${idx}, @pupilFontSizes_id${idx}, @pupilColourContrasts_id${idx})`)
     params.push({
       name: `pupil_id${idx}`,
       value: pupilId,
@@ -88,6 +88,16 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       value: aa.code === 'QNR' && questionReaderReasonCode === 'OTH' ? questionReaderOtherInformation : '',
       type: TYPES.NVarChar
     })
+    params.push({
+      name: `pupilFontSizes_id${idx}`,
+      value: aa['pupilFontSizes_id'] || null,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `pupilColourContrasts_id${idx}`,
+      value: aa['pupilColourContrasts_id'] || null,
+      type: TYPES.Int
+    })
   })
 
   const insertSql = `INSERT INTO ${sqlService.adminSchema}.[pupilAccessArrangements] (
@@ -96,7 +106,9 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       accessArrangements_id,
       questionReaderReasons_id,
       inputAssistanceInformation,
-      questionReaderOtherInformation
+      questionReaderOtherInformation,
+      pupilFontSizes_id,
+      pupilColourContrasts_id
       ) VALUES`
 
   queries.push([insertSql, inserts.join(', \n')].join(' '))
@@ -178,6 +190,50 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
   ]
   const result = await sqlService.query(sql, params)
   return R.head(result)
+}
+
+pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {
+  const sql = `SELECT pupilColourContrasts_id FROM ${sqlService.adminSchema}.[pupilAccessArrangements]
+    WHERE pupil_id = @pupilId
+    AND accessArrangements_id = @accessArrangementsId`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    },
+    {
+      name: 'accessArrangementsId',
+      value: accessArrangementsId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  const row = R.head(result)
+  return row && row['pupilColourContrasts_id']
+}
+
+pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, accessArrangementsId) => {
+  const sql = `SELECT pupilFontSizes_id FROM ${sqlService.adminSchema}.[pupilAccessArrangements]
+    WHERE pupil_id = @pupilId
+    AND accessArrangements_id = @accessArrangementsId`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    },
+    {
+      name: 'accessArrangementsId',
+      value: accessArrangementsId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  const row = R.head(result)
+  return row && row['pupilFontSizes_id']
 }
 
 module.exports = pupilAccessArrangementsDataService
