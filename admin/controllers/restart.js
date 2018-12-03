@@ -147,9 +147,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   let pupil
   const pupilSlug = req.body && req.body.pupil
   try {
-    console.log('marking as deleted')
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
-    console.log('marking as deleted DONE')
   } catch (error) {
     return next(error)
   }
