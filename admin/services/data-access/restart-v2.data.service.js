@@ -37,7 +37,8 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
            p.foreName,
            p.lastName,
            p.middleNames,
-           p.dateOfBirth,          
+           p.dateOfBirth,
+           p.urlSlug,
            pr.check_id as restartCheckAllocation,
            vct.totalCheckCount
     FROM   
