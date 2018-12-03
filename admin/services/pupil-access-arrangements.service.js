@@ -1,4 +1,5 @@
 const R = require('ramda')
+const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
@@ -66,6 +67,7 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, d
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
+  await preparedCheckSyncService.addMessages(urlSlug)
   return pupil
 }
 module.exports = pupilAccessArrangementsService

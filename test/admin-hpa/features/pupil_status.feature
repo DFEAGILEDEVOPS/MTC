@@ -9,13 +9,13 @@ Feature: Pupil Status Outcome
 
   @manual
   Scenario: Pupil status is Not Started when PIN is expired
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     And I expired the pupil pin
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Not started'
 
   Scenario: Pupil status is Pin Generated when PIN is generated and active
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'PIN generated'
 

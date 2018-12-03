@@ -1,6 +1,6 @@
 
 Given(/^I am on view and custom print for live check page$/) do
-  step "I have generated a pin for a pupil"
+  step "I have generated a live pin for a pupil"
   step "I am on the generate pupil pins page"
   step "I click View all pins button"
 
