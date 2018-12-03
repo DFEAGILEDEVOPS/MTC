@@ -27,7 +27,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   public nextButtonDelayFinished = false;
 
   @Input()
-  public nextQuestionButtonDelay = 1;
+  public nextQuestionButtonDelay = 2;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
