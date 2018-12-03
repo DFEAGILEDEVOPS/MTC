@@ -13,7 +13,7 @@ const controller = {}
 controller.uploadAndViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   req.breadcrumbs(res.locals.pageTitle)
-  return res.render('check-form-v2/upload-and-view-forms-v2', {
+  return res.render('check-form/upload-and-view-forms', {
     checkForms: [],
     breadcrumbs: req.breadcrumbs()
   })
@@ -27,13 +27,13 @@ controller.uploadAndViewFormsPage = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.uploadCheckFormPage = async (req, res, next) => {
-  req.breadcrumbs('Upload and view forms', '/check-form-v2/upload-and-view-forms-v2')
+  req.breadcrumbs('Upload and view forms', '/check-form/upload-and-view-forms')
   res.locals.pageTitle = 'Upload new form'
   let error
   let formData
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('check-form-v2/upload-new-form-v2', {
+    res.render('check-form/upload-new-form', {
       breadcrumbs: req.breadcrumbs(),
       error: error || new ValidationError(),
       formData
@@ -58,7 +58,7 @@ controller.submitCheckForm = async (req, res, next) => {
     return next(error)
   }
   req.flash('info', 'File has been uploaded')
-  res.redirect('/check-form-v2/upload-and-view-forms-v2')
+  res.redirect('/check-form/upload-and-view-forms')
 }
 
 module.exports = controller
