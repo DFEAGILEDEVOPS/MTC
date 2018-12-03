@@ -173,3 +173,18 @@
   $aa-radio-outside-xxlarge,
   $aa-radio-inside-xxlarge
 );
+
+/*
+  The following styles change the column-two-thrids, column-one-third behaviour
+  when the font-size is xxlarge
+*/
+
+.copy-size-xxlarge .column-two-thirds {
+  display: block;
+  width: 100%;
+}
+
+.copy-size-xxlarge .column-one-third {
+  display: block;
+  width: 100%;
+}
