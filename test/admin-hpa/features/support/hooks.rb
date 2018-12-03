@@ -8,6 +8,7 @@ Before("@add_a_pupil") do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
+  visit ENV['BASE_URL'] + '/sign-out'
 end
 
 Before("@timer_reset") do
@@ -54,32 +55,6 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
-# Before("@reset_all_pins") do
-#   SqlDbHelper.reset_all_pins
-#   SqlDbHelper.reset_all_pin_expiry_times
-# end
-#
-# Before("@reset_pin_restart_check") do
-#   SqlDbHelper.reset_all_pins
-#   SqlDbHelper.reset_all_pin_expiry_times
-#   SqlDbHelper.delete_all_checks
-#   SqlDbHelper.delete_all_restarts
-# end
-
-# Before("@reset_checks") do
-#   SqlDbHelper.delete_all_checks
-# end
-#
-# Before("@reset_pin_restart_check") do
-#   SqlDbHelper.reset_all_pins
-#   SqlDbHelper.reset_all_pin_expiry_times
-#   SqlDbHelper.delete_all_checks
-#   SqlDbHelper.delete_all_restarts
-# end
-#
-# Before("@reset_checks") do
-#   SqlDbHelper.delete_all_checks
-# end
 
 After("@delete_census") do
   step "I am logged in with a service manager"
@@ -88,9 +63,6 @@ After("@delete_census") do
 end
 
 Before("@remove_all_groups") do
-  # step 'I am on the groups page'
-  # group_pupils_page.remove_all_groups
-  # visit Capybara.app_host + '/sign-out'
   SqlDbHelper.delete_all_from_pupil_group
   SqlDbHelper.delete_all_from_group
 end
@@ -112,7 +84,7 @@ After("@multiple_pupil_upload") do
 end
 
 After("@remove_access_arrangements") do
-  step 'I have signed in with teacher2'
+  step 'I have signed in with teacher1'
   school_landing_page.access_arrangements.click
   access_arrangements_page.remove_all_pupils
 end

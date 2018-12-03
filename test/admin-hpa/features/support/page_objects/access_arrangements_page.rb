@@ -10,9 +10,9 @@ class AccessArrangementsPage < SitePrism::Page
   section :pupil_list, '#submitted-pupil-access-arrangements' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
-      element :highlighted_pupil, '.highlight-item'
+      element :highlighted_pupil, '.green-panel'
       element :pupil_name, 'td:nth-of-type(1) a'
-      elements :access_arrangement_name, 'td:nth-of-type(2) span'
+      elements :access_arrangement_name, '.access-arrangements-list div'
       element :remove, 'td:nth-of-type(3) a'
     end
   end
@@ -26,7 +26,7 @@ class AccessArrangementsPage < SitePrism::Page
   end
 
   def remove_all_pupils
-    pupil_list.rows.each {|row| row.remove.click; modal.confirm.click} unless has_no_pupils_message?
+    pupil_list.rows.each.size.times {|a| pupil_list.rows.first.remove.click; modal.confirm.click } unless has_no_pupils_message?
   end
 
   def find_pupil_row(name)
