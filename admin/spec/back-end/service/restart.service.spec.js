@@ -194,7 +194,7 @@ describe('restart.service', () => {
 
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
-      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(pupilMock)
       spyOn(checkDataService, 'sqlFindLastStartedCheckByPupilId').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
