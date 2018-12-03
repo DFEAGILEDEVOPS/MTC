@@ -19,7 +19,7 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
   LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
   ON paa.pupilFontSizes_id = pfs.id
   LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
-  ON paa.pupilColourContrasts_Id = pcc.id
+  ON paa.pupilColourContrasts_id = pcc.id
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
