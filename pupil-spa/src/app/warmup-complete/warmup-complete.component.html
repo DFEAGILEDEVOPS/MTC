@@ -1,14 +1,24 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
-  <header class="page-header" tabindex="0">
-    <h1 class="aa-title-size">Practice completed</h1>
-  </header>
   <div class="grid-row">
-    <br />
-    <div class="column-two-thirds">
-      <button type="button" class="button aa-button-size aa-contrast-button" id="start-now-button" (click)="onClick()">
-        Next
-      </button>
+    <div [class]="shouldShowMore ? 'column-two-thirds' : 'column-full'">
+      <header class="page-header" tabindex="0">
+        <h1 class="aa-title-size">Practice completed</h1>
+      </header>
+      <div class="grid-row">
+        <br />
+        <div class="column-two-thirds">
+          <button type="button" class="button aa-button-size aa-contrast-button" id="start-now-button" (click)="onClick()">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="shouldShowMore" class="column-one-third more-links aa-copy-size">
+        <strong class='aa-contrast-border'>More</strong>
+        <ul>
+            <li><a routerLink="/access-settings">Edit your settings</a></li>
+        </ul>
     </div>
   </div>
 </main>
