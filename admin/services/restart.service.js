@@ -160,7 +160,8 @@ restartService.getSubmittedRestarts = async schoolId => {
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames,
-        dateOfBirth: p.dateOfBirth
+        dateOfBirth: p.dateOfBirth,
+        urlSlug: p.urlSlug
       })
     }
   }))
