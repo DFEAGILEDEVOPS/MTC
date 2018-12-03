@@ -1,0 +1,14 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "schedule": "*/3 0-6,16-23 * * *",
+      "name": "checkExpiryTimer",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ],
+  "tracing": {
+    "consoleLevel": "verbose"
+  }
+}
