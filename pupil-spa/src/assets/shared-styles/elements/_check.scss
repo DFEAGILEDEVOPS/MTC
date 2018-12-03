@@ -78,7 +78,7 @@ $horizontal-breakpoint-3: 781px;
 }
 
 .copy-size-regular .question-header {
-  max-width: 570px;
+  max-width: 660px;
 }
 
 .copy-size-small .question-header {
@@ -138,6 +138,9 @@ $horizontal-breakpoint-3: 781px;
   max-width: 100%;
   line-height: 1.35em;
   height: 100px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 // Numpad
