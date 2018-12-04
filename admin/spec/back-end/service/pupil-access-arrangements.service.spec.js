@@ -1,6 +1,7 @@
 'use strict'
 /* global describe, it, expect spyOn beforeEach fail */
 
+const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
@@ -164,14 +165,17 @@ describe('pupilAccessArrangementsService', () => {
     it('returns pupil data when successfully deleting relevant access arrangements', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
+      spyOn(preparedCheckSyncService, 'addMessages')
       const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements('urlSlug', 9991001)
       expect(pupilData).toEqual({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).toHaveBeenCalled()
+      expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
     it('rejects if url slug is not present', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
+      spyOn(preparedCheckSyncService, 'addMessages')
       try {
         await pupilAccessArrangementsService.deletePupilAccessArrangements()
         fail('deletePupilAccessArrangements method did not throw an error')
@@ -180,6 +184,7 @@ describe('pupilAccessArrangementsService', () => {
       }
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).not.toHaveBeenCalled()
+      expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
 })

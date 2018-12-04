@@ -9,10 +9,10 @@
       "connection": "StorageAccount"
     },
     {
+      "name": "pupilEventsTable",
       "type": "table",
       "direction": "out",
-      "name": "data",
-      "tableName": "preparedCheck",
+      "tableName": "pupilEvent",
       "connection": "StorageAccount"
     }
   ]
