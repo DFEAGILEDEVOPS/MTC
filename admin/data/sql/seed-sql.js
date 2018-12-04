@@ -3,7 +3,6 @@
 require('dotenv').config()
 const R = require('ramda')
 const chalk = require('chalk')
-const config = require('../../config')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
@@ -26,14 +25,14 @@ const loadSeeds = () => (new Promise((resolve, reject) => {
 }))
 
 const processSeed = async (seed) => {
-  const { name, format, filename } = seed
+  const { format, filename } = seed
   const filepath = path.join(seedsDirectory, filename)
 
   if (!supportedFileFormats.includes(format)) {
     throw new Error(`Unsupported format: ${format} for seed ${filename}`)
   }
 
-  let content, sql, params = []
+  let content; let sql; let params = []
   if (format === 'tsv') {
     // handle TSV
     content = []

@@ -66,7 +66,7 @@ module.exports = async function (context, checkStartMessage) {
   // Store the raw message to an audit log
   context.bindings.pupilEventsTable = []
   const entity = {
-    PartitionKey: checkStartMessage.checkCode,
+    PartitionKey: checkStartMessage.checkCode.toUpperCase(),
     RowKey: uuid(),
     eventType: 'check-started',
     payload: JSON.stringify(checkStartMessage),
