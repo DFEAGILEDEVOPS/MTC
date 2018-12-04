@@ -12,6 +12,7 @@ const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
 const featureToggles = require('feature-toggles')
+const azureQueueService = require('../services/azure-queue.service')
 
 const restartService = {}
 
@@ -204,11 +205,11 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     if (restart.check_id) {
       const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
       await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
-      // ToDo: write a function to delete prepared-checks explicitly before the expiry time
-      // await queueService.addMessage('delete-prepared-check', {version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId)
+      azureQueueService.addMessage('prepared-check-delete', {version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId})
     }
   } else {
     let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupil.id)
+    await checkStateService.changeState(lastStartedCheck.checkCode, checkStateService.States.Expired)
     pupil.pinExpiresAt = lastStartedCheck.startedAt
     await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
   }
