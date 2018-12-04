@@ -86,7 +86,7 @@ Then(/^I should be taken to the restarts page$/) do
 end
 
 Given(/^I have single pupils for restart$/) do
-  step 'I have generated a pin for a pupil'
+  step 'I have generated a live pin for a pupil'
   step 'pupil logs in and completed the check'
   step 'I am on the Restarts Page'
 end
