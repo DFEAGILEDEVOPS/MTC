@@ -25,7 +25,7 @@ const loadSeeds = () => (new Promise((resolve, reject) => {
 }))
 
 const processSeed = async (seed) => {
-  const { name, format, filename } = seed
+  const { format, filename } = seed
   const filepath = path.join(seedsDirectory, filename)
 
   if (!supportedFileFormats.includes(format)) {
