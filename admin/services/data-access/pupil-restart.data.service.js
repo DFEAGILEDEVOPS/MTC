@@ -2,7 +2,6 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const sqlService = require('./sql.service')
-const checkStateService = require('../check-state.service')
 
 const table = '[pupilRestart]'
 const pupilRestartDataService = {}

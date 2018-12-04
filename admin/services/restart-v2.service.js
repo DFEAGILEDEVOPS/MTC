@@ -32,7 +32,7 @@ module.exports.getPupilsEligibleForRestart = async function getPupilsEligibleFor
         dateOfBirth: p.dateOfBirth
     }
  */
-module.exports.getRestartsForSchool = async function getRestartsForSchool(schoolId) {
+module.exports.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
   const restarts = await restartDataService.getRestartsForSchool(schoolId)
   restarts.forEach(r => {
     if (r.totalCheckCount === undefined || r.totalCheckCount === null) {
