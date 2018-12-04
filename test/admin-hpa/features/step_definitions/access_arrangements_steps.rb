@@ -10,7 +10,7 @@ Then(/^the access arrangements page is displayed as per the design$/) do
 end
 
 Given(/^I am on the select access arrangements page$/) do
-  step 'I have signed in with teacher2'
+  step 'I have signed in with teacher1'
   school_landing_page.access_arrangements.click
   access_arrangements_page.select_pupil_and_arrangement_btn.click
 end
@@ -73,27 +73,27 @@ When(/^I save access arrangements without selecting pupil$/) do
 end
 
 When(/^I save access arrangements without selecting any access arrangements$/) do
-  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without providing explanation for input assistance$/) do
-  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
   select_access_arrangements_page.select_access_arrangement("Input assistance (reason required)")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without selecting any question reader reason$/) do
-  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
   select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without providing explanation for other reason for question reader$/) do
-  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
   select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
   question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
@@ -117,7 +117,7 @@ end
 
 Given(/^I have added a pupil with an access arrangement$/) do
   step 'I am on the select access arrangements page'
-  @pupil_name = 'School 3, Pupil 02'
+  @pupil_name = "#{@details_hash[:last_name]}, #{@details_hash[:first_name]}"
   select_access_arrangements_page.search_pupil.set(@pupil_name.gsub(',', ''))
   select_access_arrangements_page.auto_search_list[0].click
   @access_arrangement_name = "Audible time alert"
@@ -148,7 +148,7 @@ end
 
 Given(/^I have a pupil who needs all possible access arrangements$/) do
   step 'I am on the select access arrangements page'
-  @pupil_name = 'School 3, Pupil 03'
+  @pupil_name = "#{@details_hash[:last_name]}, #{@details_hash[:first_name]}"
   select_access_arrangements_page.search_pupil.set(@pupil_name.gsub(',', ''))
   select_access_arrangements_page.auto_search_list[0].click
   SqlDbHelper.access_arrangements.map{|a| a['description']}.each do |aa|
@@ -210,9 +210,9 @@ end
 
 Then(/^the pupil is removed from the access arrangmenet pupil list$/) do
   expect(access_arrangements_page.success_message.text.eql?("Access arrangements removed for #{@details_hash[:last_name]}, #{@details_hash[:first_name]}"))
-
-  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text}
-  expect(pupils_from_page.include?(@details_hash[:first_name])).to be_falsy, "#{@details_hash[:first_name]} is displayed in the list ... Expected - It Shouldn't"
+  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text} if access_arrangements_page.has_pupil_list?
+  expect(pupils_from_page.include?(@details_hash[:first_name])).to be_falsy, "#{@details_hash[:first_name]} is displayed in the list ... Expected - It Shouldn't" if access_arrangements_page.has_pupil_list?
+  expect(access_arrangements_page).to have_no_pupils_message unless access_arrangements_page.has_pupil_list?
 end
 
 Then(/^the pupil is not removed from the access arrangmenet pupil list$/) do
@@ -241,4 +241,33 @@ Then(/^I should be able to remove any access arrangements for the pupil from the
   select_access_arrangements_page.confirm_removal.click
   expect(access_arrangements_page.success_message.text).to eql "Access arrangements removed for #{@pupil_name}"
   expect(access_arrangements_page).to have_no_pupils_message
+end
+
+
+And(/^I have applied the (.+) access arrangement to the pupil$/) do |access_arrangement_type|
+  access_arrangements_page.load
+  access_arrangements_page.select_pupil_and_arrangement_btn.click
+  step "I search for pupil '#{@details_hash[:first_name]}'"
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement(access_arrangement_type)
+  select_access_arrangements_page.save.click
+  @first_aa = access_arrangement_type
+end
+
+And(/^I decide to update the pupils access arrangements by adding (.+)$/) do |access_arrangement_type|
+  access_arrangements_page.load
+  pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
+  pupil_row.pupil_name.click
+  select_access_arrangements_page.select_access_arrangement(access_arrangement_type)
+  select_access_arrangements_page.save.click
+  @second_aa = access_arrangement_type
+end
+
+And(/^these updates should be saved in the DB$/) do
+  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])['id']
+  pupil_access_arrangements = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id)
+  access_id_array = pupil_access_arrangements.map {|a| a['accessArrangements_id']}
+  expect(access_id_array.size).to eql 2
+  aa_descriptions = access_id_array.map {|aa_id| SqlDbHelper.find_access_arrangements_by_id(aa_id).first['description']}
+  expect(aa_descriptions.sort).to eql [@first_aa, @second_aa].sort
 end
