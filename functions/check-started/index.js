@@ -25,6 +25,12 @@ const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 module.exports = async function (context, checkStartMessage) {
   context.log('check-started: message received', checkStartMessage.checkCode)
 
+  const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
+  if (checkData.isLiveCheck && !canCheckBeStarted(checkData.code)) {
+    context.log.error(`check-started: ERROR: Unable to process a check-started message for check ${checkData.checkCode}`)
+    return
+  }
+
   // Update the admin database to update the check status to Check Started
   try {
     await updateAdminDatabaseForCheckStarted(
@@ -39,34 +45,21 @@ module.exports = async function (context, checkStartMessage) {
   }
 
   // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.]
-  let checkData
   try {
-    checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
     if (checkData.isLiveCheck) {
       await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
       context.log('check-started: SUCCESS: pupil check row deleted from preparedCheck table for', checkStartMessage.checkCode)
+      await requestPupilStatusChange(checkData.pupil_id, checkData.checkCode)
     }
   } catch (error) {
-    context.log.error(`check-started: ERROR: unable to delete from table storage for ${checkStartMessage.checkCode}`)
-    throw error
-  }
-
-  // Request a pupil status change
-  try {
-    if (checkData.isLiveCheck) {
-      const pupilStatusQueueName = 'pupil-status'
-      const message = { version: 1, pupilId: checkData.pupil_id, checkCode: checkStartMessage.checkCode }
-      await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
-    }
-  } catch (error) {
-    context.log.error(`check-started: Error requesting a pupil-status change for checkCode ${checkStartMessage.checkCode}`)
+    context.log.error(`check-started: ERROR: ${checkStartMessage.checkCode}: ${error.message}`)
     throw error
   }
 
   // Store the raw message to an audit log
   context.bindings.pupilEventsTable = []
   const entity = {
-    PartitionKey: checkStartMessage.checkCode,
+    PartitionKey: checkStartMessage.checkCode.toUpperCase(),
     RowKey: uuid(),
     eventType: 'check-started',
     payload: JSON.stringify(checkStartMessage),
@@ -113,4 +106,28 @@ async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger)
     logger(`check-started: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode}: ${error.message}`)
     throw error
   }
+}
+
+/**
+ * Check if we are allowed to transition to check started
+ * E.g. A restart may be cancelled even though it has been issued to the user.  If so, the user
+ * could go ahead and complete the test.  In those cases the SQL DB would report the check in Expired
+ * state.
+ * @param code
+ * @return {boolean}
+ */
+function canCheckBeStarted (code) {
+  return code === 'COL'
+}
+
+/**
+ * Place a request for a pupil status change on the queue
+ * @param pupilId
+ * @param checkCode
+ * @return {Promise<*>}
+ */
+async function requestPupilStatusChange (pupilId, checkCode) {
+  const pupilStatusQueueName = 'pupil-status'
+  const message = { version: 1, pupilId, checkCode }
+  return await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
 }

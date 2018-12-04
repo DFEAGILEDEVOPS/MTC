@@ -15,7 +15,10 @@ sqlService.initialise(config)
  * @return {Promise<object>}
  */
 module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
-  const sql = `SELECT TOP 1 * FROM ${schema}.${checkTable} WHERE checkCode = @checkCode`
+  const sql = `SELECT TOP 1 chk.* , cs.code
+               FROM ${schema}.${checkTable} chk JOIN 
+                    ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id) 
+               WHERE checkCode = @checkCode`
   const params = [
     {
       name: 'checkCode',

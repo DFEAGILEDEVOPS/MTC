@@ -1,0 +1,19 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "queueMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "prepared-check-delete",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "pupilEventsTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "pupilEvent",
+      "connection": "StorageAccount"
+    }
+  ]
+}
