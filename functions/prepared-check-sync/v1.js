@@ -48,6 +48,12 @@ v1.process = async function process (context, preparedCheckSyncMessage) {
 
 v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangements, context) {
   const newCheckConfig = JSON.parse(preparedCheckConfig)
+  if (newCheckConfig.colourContrastCode) {
+    delete newCheckConfig.colourContrastCode
+  }
+  if (newCheckConfig.fontSizeCode) {
+    delete newCheckConfig.fontSizeCode
+  }
   let aaConfig = {
     audibleSounds: false,
     inputAssistance: false,
