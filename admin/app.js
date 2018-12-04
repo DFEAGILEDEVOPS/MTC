@@ -69,6 +69,7 @@ const pupilRegister = require('./routes/pupil-register')
 const attendance = require('./routes/attendance')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
+const checkForm = require('./routes/check-form')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 
@@ -257,6 +258,7 @@ app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
 app.use('/access-arrangements', accessArrangements)
 app.use('/check-window', checkWindow)
+app.use('/check-form', checkForm)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
