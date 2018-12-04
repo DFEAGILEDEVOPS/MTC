@@ -10,7 +10,7 @@ Feature: Generate Pupil PINs Familiarisation
 
   @wip
   Scenario: Generate Pins familiarisation Pupil List page display pupil with active pin
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     And I am on the generate pupil pins familiarisation page
     When I click Generate PINs button
     Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page

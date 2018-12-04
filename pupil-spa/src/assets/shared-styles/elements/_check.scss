@@ -62,6 +62,8 @@ $horizontal-breakpoint-3: 781px;
   @extend %contain-floats;
 
   margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 // set maximum header widths based on font size
@@ -69,25 +71,20 @@ $horizontal-breakpoint-3: 781px;
   max-width: 980px;
 }
 
-.copy-size-xlarge .question-header {
-  max-width: 790px;
-}
-
-.copy-size-large .question-header {
-  max-width: 660px;
-}
-
+.copy-size-xlarge .question-header,
+.copy-size-large .question-header,
 .copy-size-regular .question-header {
-  max-width: 570px;
+  max-width: 950px;
 }
 
 .copy-size-small .question-header {
-  max-width: 450px;
+  max-width: 490px;
 }
 
 .copy-size-xsmall .question-header {
-  max-width: 360px;
+  max-width: 430px;
 }
+
 
 .question-container {
   display: inline-block;
@@ -138,6 +135,9 @@ $horizontal-breakpoint-3: 781px;
   max-width: 100%;
   line-height: 1.35em;
   height: 100px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 // Numpad

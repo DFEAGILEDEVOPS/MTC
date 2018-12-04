@@ -22,6 +22,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
   clickEvent: EventEmitter<any> = new EventEmitter();
 
   public count: number;
+  public shouldShowMore: boolean;
 
   constructor(
     private auditService: AuditService,
@@ -31,6 +32,8 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
     private elRef: ElementRef
   ) {
     this.count = this.questionService.getNumberOfQuestions();
+    const config = this.questionService.getConfig();
+    this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
   }
 
   ngOnInit() {

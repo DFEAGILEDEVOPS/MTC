@@ -39,7 +39,7 @@ end
 #   # @pupil_forename = @details_hash[:first_name]
 #   # SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
 #
-#   step 'I have generated a pin for a pupil'
+#   step 'I have generated a live pin for a pupil'
 # end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -124,7 +124,7 @@ When(/^I select multiple pupils from Generate Pin Page$/) do
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
 
-When(/^I have generated a pin for a pupil$/) do
+When(/^I have generated a live pin for a pupil$/) do
   name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am logged in"
   step "I am on the add pupil page"
