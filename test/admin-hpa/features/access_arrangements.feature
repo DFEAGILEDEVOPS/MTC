@@ -1,4 +1,4 @@
-@access_arrangements @feature_toggle @remove_access_arrangements @wip
+@access_arrangements @feature_toggle @remove_access_arrangements @add_a_pupil
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design
@@ -92,3 +92,9 @@ Feature: Access Arrangements
   Scenario: Access arrangements can be removed from the edit page
     Given I have added a pupil with an access arrangement
     Then I should be able to remove any access arrangements for the pupil from the edit page
+
+  Scenario: Access arrangements can be updated after pin generation
+    Given I have generated a live pin for a pupil
+    And I have applied the Audible time alert access arrangement to the pupil
+    When I decide to update the pupils access arrangements by adding Colour contrast
+    Then these updates should be saved in the DB
