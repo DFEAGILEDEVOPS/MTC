@@ -70,7 +70,7 @@
 
         <h2 class="heading-medium">Upload file(s)</h2>
 
-        <form action="/check-form/submit-check-form" method="post" enctype="multipart/form-data" encoding="multipart/form-data" id="upload-form">
+        <form action="/check-form/submit-check-form" method="post" enctype="multipart/form-data" id="upload-form">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group<% if (err.hasError()) { %> form-group-error<% } %>">
                 <% if (err) { %>
