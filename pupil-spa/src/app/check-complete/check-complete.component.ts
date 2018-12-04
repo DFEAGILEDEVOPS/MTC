@@ -19,6 +19,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   protected window: any;
   private speechListenerEvent: any;
   public familiarisationCheck: boolean;
+  public hasAccessSettings: boolean;
 
   constructor(protected windowRefService: WindowRefService,
               private questionService: QuestionService,
@@ -28,6 +29,8 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
               private warmupQuestionService: WarmupQuestionService,
               private router: Router) {
     this.window = windowRefService.nativeWindow;
+    const config = questionService.getConfig();
+    this.hasAccessSettings = config && (config.fontSize || config.colourContrast);
   }
 
   ngOnInit() {

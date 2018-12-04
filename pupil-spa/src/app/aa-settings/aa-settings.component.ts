@@ -1,17 +1,19 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
+import { RouteService } from '../services/route/route.service';
+import { CheckComponent } from '../check/check.component';
 
 @Component({
   selector: 'app-aa-settings',
   templateUrl: './aa-settings.component.html',
   styleUrls: ['./aa-settings.component.scss']
 })
-export class AASettingsComponent implements AfterViewInit, OnDestroy {
+export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public config: Config;
   public speechListenerEvent: any;
@@ -28,6 +30,12 @@ export class AASettingsComponent implements AfterViewInit, OnDestroy {
     private speechService: SpeechService
   ) {
     this.config = questionService.getConfig();
+  }
+
+  ngOnInit() {
+    // Reset the check state when visitng the settings page
+    this.storageService.removeItem(CheckComponent.checkStateKey);
+    this.storageService.setItem('completed_submission', false);
   }
 
   // wait for the component to be rendered first, before parsing the text
