@@ -51,13 +51,13 @@ controller.uploadCheckFormPage = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 controller.submitCheckForm = async (req, res, next) => {
+  // This is placeholder method
   const uploadedFile = req.files && req.files.csvFile
   try {
     await checkFormV2Service.submit(uploadedFile)
   } catch (error) {
     return next(error)
   }
-  req.flash('info', 'File has been uploaded')
   res.redirect('/check-form/upload-and-view-forms')
 }
 
