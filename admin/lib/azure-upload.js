@@ -26,16 +26,20 @@ module.exports = function (req, res, next) {
     // Container exists and is private
     Object.getOwnPropertyNames(req.files).forEach(field => {
       // TODO: add _userid to the filename
-      const fileObj = req.files[field]
-      const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + fileObj.field
-      const localFilename = path.join(__dirname, '/../', fileObj.file)
-      blobService.createBlockBlobFromLocalFile(container, remoteFilename, localFilename, function (error) {
-        if (error) {
-          winston.error('Failed to upload file to azure')
-          winston.error(error)
-        } else {
-          winston.info(`Uploaded ${remoteFilename} to Azure Blob Storage`)
-        }
+      const files = req.files[field]
+      // If only 1 file is being upload created an array with a single file object
+      const submittedFilesObj = Array.isArray(files) ? files : [files]
+      submittedFilesObj.forEach(fileObj => {
+        const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + fileObj.field
+        const localFilename = path.join(__dirname, '/../', fileObj.file)
+        blobService.createBlockBlobFromLocalFile(container, remoteFilename, localFilename, function (error) {
+          if (error) {
+            winston.error('Failed to upload file to azure')
+            winston.error(error)
+          } else {
+            winston.info(`Uploaded ${remoteFilename} to Azure Blob Storage`)
+          }
+        })
       })
     })
     next()
