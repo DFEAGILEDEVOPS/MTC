@@ -2,6 +2,7 @@
 
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
+const config = require('../config')
 
 /**
  * Find pupils who are eligible for a restart
@@ -15,4 +16,36 @@ module.exports.getPupilsEligibleForRestart = async function getPupilsEligibleFor
   const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
 
   return guiPupils
+}
+
+/**
+ * Find restarts for a particular school
+ * Returns: array of objects:
+ * {
+        id: record.id,
+        pupilId: p.id,
+        reason: reason,
+        status: record.status,
+        foreName: p.foreName,
+        lastName: p.lastName,
+        middleNames: p.middleNames,
+        dateOfBirth: p.dateOfBirth
+    }
+ */
+module.exports.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
+  const restarts = await restartDataService.getRestartsForSchool(schoolId)
+  restarts.forEach(r => {
+    if (r.totalCheckCount === undefined || r.totalCheckCount === null) {
+      r.totalCheckCount = 0
+    }
+    if (r.totalCheckCount === config.RESTART_MAX_ATTEMPTS + 1) {
+      r.status = 'Maximum number of restarts taken'
+    } else if (r.code === 'NEW' || r.code === 'COL' || r.code === null) {
+      r.status = 'Remove restart'
+    } else {
+      r.status = 'Restart taken'
+    }
+  })
+  pupilIdentificationFlagService.addIdentificationFlags(restarts)
+  return restarts
 }
