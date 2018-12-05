@@ -26,3 +26,25 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
   const res = await sqlService.query(sql, params)
   return R.head(res)
 }
+
+/**
+ * Retrieve all pupil checks based on check code
+ * @param checkCode
+ * @return {Promise<object>}
+ */
+module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
+  const sql = `SELECT * from mtc.mtc_admin.[check]
+  WHERE pupil_id = (
+    SELECT pupil_id from mtc.mtc_admin.[check]
+    WHERE checkCode = @checkCode
+  )`
+
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  return sqlService.query(sql, params)
+}
