@@ -28,7 +28,7 @@ module.exports = async function (context, checkStartMessage) {
   const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
   if (checkData.isLiveCheck && !canCheckBeStarted(checkData.code)) {
     context.log.error(`check-started: ERROR: Unable to process a check-started message for check ${checkData.checkCode}`)
-    return
+    return // consume the message
   }
 
   // Update the admin database to update the check status to Check Started
