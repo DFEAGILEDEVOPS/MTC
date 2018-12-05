@@ -33,9 +33,9 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
  * @return {Promise<Array>}
  */
 module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
-  const sql = `SELECT * from mtc.mtc_admin.[check]
+  const sql = `SELECT * from ${schema}.${checkTable}
   WHERE pupil_id = (
-    SELECT pupil_id from mtc.mtc_admin.[check]
+    SELECT pupil_id from ${schema}.${checkTable}
     WHERE checkCode = @checkCode
   )`
 
