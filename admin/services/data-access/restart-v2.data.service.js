@@ -40,7 +40,8 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
            p.dateOfBirth,
            p.urlSlug,
            pr.check_id as restartCheckAllocation,
-           vct.totalCheckCount
+           vct.totalCheckCount,
+           cs.code
     FROM   
            [mtc_admin].[pupilRestart] pr join
            [mtc_admin].[pupil] p ON (pr.pupil_id = p.id) join

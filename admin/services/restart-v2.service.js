@@ -40,7 +40,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
     }
     if (r.totalCheckCount === config.RESTART_MAX_ATTEMPTS + 1) {
       r.status = 'Maximum number of restarts taken'
-    } else if (r.totalCheckCount < config.RESTART_MAX_ATTEMPTS + 1) {
+    } else if (r.code === 'NEW' || r.code === 'COL' || r.code === null) {
       r.status = 'Remove restart'
     } else {
       r.status = 'Restart taken'
