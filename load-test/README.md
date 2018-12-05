@@ -46,35 +46,35 @@ https://jmeter-plugins.org/wiki/Functions/
 ## Execute pupil load test
 * Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter pupil check load test in CLI mode
 * mkdir reports
-``* jmeter -n -t ./scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -Jhost=localhost -Jthreads=3600 -Jramp=50
+``* jmeter -n -t ./scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -JpupilApiHost=localhost -Jthreads=3600 -Jramp=50
 ``
 
 This command above takes the following arguments:
-* -n Run in CLI mode
-* -t Test file in jmx format
-* -l Report to be stored in csv format
-* -D Overwrites the jmeter system properties. In above command we are overwriting the property to save report in csv format
-* -e Generate HTML report after load test finishes
-* -o Generated HTML Report with visual outputs of the test
-* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
-* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
-* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
+* `-n` Run in CLI mode
+* `-t` Test file in jmx format
+* `-l` Report to be stored in csv format
+* `-D` Overwrites the jmeter system properties. In above command we are overwriting the property to save report in csv format
+* `-e` Generate HTML report after load test finishes
+* `-o` Generated HTML Report with visual outputs of the test
+* `-JpupilApiHost` Admin app Host URL (pupilApiHost is the variable name used in jmeter host field)
+* `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
+* `-Jramp` Ramp-up period in milliseconds (ramp is the variable name used for ramp up field)
 
 In order to rerun the test execute `undo-generate-pupil-load-test-data.sql` as SA to undo the test data population.
 
 ## Execute Admin load test
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter Admin load test in CLI mode:
 
-`` jmeter -n  -t ../scenarios/mtc_admin_login.jmx -l reports/mtc_admin_test_result.csv  -Djmeter.save.saveservice.output_format=csv -e -o reports/MTCAdminHTMLReports -Jhost=admin-as-feb-mtc-staging.azurewebsites.net -Jthreads=80 -Jramp=1600
+`` jmeter -n  -t ../scenarios/mtc_admin_login.jmx -l reports/mtc_admin_test_result.csv  -Djmeter.save.saveservice.output_format=csv -e -o reports/MTCAdminHTMLReports -JadminAppHost=admin-as-feb-mtc-staging.azurewebsites.net -Jthreads=80 -Jramp=1600
 ``
 
 This command above takes the following arguments:
-* -n Run in CLI mode
-* -t Test file in jmx format
-* -l Report to be stored in csv format
-* -D Overwrites the jmeter system properties. in above command we are overwriting the property to save report in csv format
-* -e Generate HTML report after load test finishes
-* -o Generated HTML Report with visual outputs of the test
-* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
-* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
-* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
+* `-n` Run in CLI mode
+* `-t` Test file in jmx format
+* `-l` Report to be stored in csv format
+* `-D` Overwrites the jmeter system properties. in above command we are overwriting the property to save report in csv format
+* `-e` Generate HTML report after load test finishes
+* `-o` Generated HTML Report with visual outputs of the test
+* `-JadminAppHost` Admin app Host URL (adminAppHost is the variable name used in jmeter host field)
+* `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
+* `-Jramp` Ramp-up period  in milliseconds (ramp is the variable name used for ramp up field)
