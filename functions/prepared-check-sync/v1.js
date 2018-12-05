@@ -14,9 +14,9 @@ v1.process = async function process (context, preparedCheckSyncMessage) {
   const { checkCode } = preparedCheckSyncMessage
   context.log('prepared-check-sync: message received', checkCode)
   const checks = await sqlUtils.sqlFindChecksByCheckCode(checkCode)
-  await Promise.all(checks.map(async (check) => {
+  checks.map(async (check) => {
     await v1.updatePreparedChecks(context, check.checkCode)
-  }))
+  })
   context.bindings.pupilEventsTable = []
   const entity = {
     PartitionKey: checkCode,
