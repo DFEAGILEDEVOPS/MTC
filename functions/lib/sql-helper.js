@@ -30,7 +30,7 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
 /**
  * Retrieve all pupil checks based on check code
  * @param checkCode
- * @return {Promise<object>}
+ * @return {Promise<Array>}
  */
 module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
   const sql = `SELECT * from mtc.mtc_admin.[check]
