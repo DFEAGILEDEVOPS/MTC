@@ -28,7 +28,7 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
 }
 
 /**
- * Retrieve all pupil checks based on check code
+ * Find all checks for a particular pupil based on one of the pupil's checkCodes
  * @param checkCode
  * @return {Promise<Array>}
  */
