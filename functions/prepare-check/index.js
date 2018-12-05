@@ -52,6 +52,7 @@ module.exports = async function (context, prepareCheckMessage) {
     PartitionKey: prepareCheckMessage.checkCode,
     RowKey: uuid(),
     eventType: 'check-prepare',
-    payload: JSON.stringify(prepareCheckMessage)
+    payload: JSON.stringify(prepareCheckMessage),
+    processedAt: moment().toDate()
   })
 }
