@@ -1,7 +1,8 @@
 
 const checkFormV2Service = {}
 
-checkFormV2Service.submit = async () => {
+checkFormV2Service.process = async (uploadedFile, requestData) => {
+  // TBC
 }
 
 module.exports = checkFormV2Service

@@ -53,8 +53,9 @@ controller.uploadCheckFormPage = async (req, res, next) => {
 controller.submitCheckForm = async (req, res, next) => {
   // This is placeholder method
   const uploadedFile = req.files && req.files.csvFile
+  const requestData = req.body
   try {
-    await checkFormV2Service.submit(uploadedFile)
+    await checkFormV2Service.process(uploadedFile, requestData)
   } catch (error) {
     return next(error)
   }
