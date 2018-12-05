@@ -60,7 +60,6 @@ describe('CheckCompleteService', () => {
     storageService = TestBed.get(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
-    appUsageService = TestBed.get(AppUsageService);
   });
   it('should be created', () => {
     expect(checkCompleteService).toBeTruthy();
@@ -164,15 +163,5 @@ describe('CheckCompleteService', () => {
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
       expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
     });
-    it('should append appUsageCounter data to device property before submission when device property not null', async () => {
-      spyOn(appUsageService, 'getCounterValue');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems').and.returnValue({device: {}});
-      spyOn(azureQueueService, 'addMessage');
-      await(checkCompleteService.submit(Date.now()));
-      expect(appUsageService.getCounterValue).toHaveBeenCalledTimes(1);
-    })
   });
 });
