@@ -58,6 +58,7 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   public async submit(startTime): Promise<void> {
+    this.appUsageService.store();
     const config = this.storageService.getItem('config');
     if (config.practice) {
       return this.onSuccess(startTime);
