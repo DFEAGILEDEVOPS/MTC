@@ -61,9 +61,9 @@ describe('check form v2 controller:', () => {
     it('submits uploaded check form for validation and submission', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(checkFormV2Service, 'submit')
+      spyOn(checkFormV2Service, 'process')
       await controller.submitCheckForm(req, res, next)
-      expect(checkFormV2Service.submit).toHaveBeenCalled()
+      expect(checkFormV2Service.process).toHaveBeenCalled()
     })
   })
 })
