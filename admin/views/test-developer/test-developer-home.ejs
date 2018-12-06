@@ -14,8 +14,9 @@
         <%- partial('partials/_session_expiry') %>
 
         <ol class="list">
+            <% const hrefValue = isNewCheckForm ? '/check-form/view-forms' : '/test-developer/upload-and-view-forms' %>
             <li>
-                <h2 class="heading-small"><a href="/test-developer/upload-and-view-forms">Upload and view forms</a></h2>
+                <h2 class="heading-small"><a  href="<%= hrefValue %>">Upload and view forms</a></h2>
                 <p>Add, view, remove and edit check forms</p>
             </li>
 
