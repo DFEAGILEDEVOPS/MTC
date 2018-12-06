@@ -40,6 +40,10 @@ describe('pupil-register.service', () => {
       const status = pupilRegisterService.getProcessStatus('UNALLOC', null, 1, null)
       expect(status).toBe('Restart')
     })
+    it('blanks it out if unknown', () => {
+      const status = pupilRegisterService.getProcessStatus('KJSDHFOHDF', null, null, null)
+      expect(status).toBe('')
+    })
   })
 
   describe('#getPupilRegsitee', () => {
