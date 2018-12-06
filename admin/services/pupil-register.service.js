@@ -13,7 +13,7 @@ const pupilRegisterService = {
    * @param dfeNumber
    * @param schoolId
    * @param sortDirection
-   * @depractated
+   * @deprecated
    * @returns {Promise<any>}
    */
   getPupils: async (dfeNumber, schoolId, sortDirection) => {
