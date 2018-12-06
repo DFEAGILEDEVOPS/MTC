@@ -57,7 +57,7 @@ describe('check form v2 controller:', () => {
       method: 'POST',
       url: '/check-forms/upload',
       files: {
-        csvFile: [{ name: 'name' }]
+        csvFile: [{ filename: 'filename1' }, { filename: 'filename2' }]
       },
       body: {
         checkFormType: 'L'

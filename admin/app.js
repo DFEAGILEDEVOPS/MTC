@@ -126,7 +126,7 @@ busboy.extend(app, {
 const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url) ||
   (/^\/service-manager\/upload-pupil-census\/upload$/).test(url) ||
-  (/^\/check-form\/submit-check-form$/).test(url)
+  (/^\/check-form\/upload$/).test(url)
 
 // as we run in container over http, we must set up proxy trust for secure cookies
 let secureCookie = false

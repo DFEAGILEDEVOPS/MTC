@@ -12,7 +12,7 @@ const controller = {}
 controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   req.breadcrumbs(res.locals.pageTitle)
-  return res.render('check-form/upload-and-view-forms', {
+  return res.render('check-form/view-forms', {
     checkForms: [],
     breadcrumbs: req.breadcrumbs()
   })
@@ -27,11 +27,11 @@ controller.getViewFormsPage = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getUploadNewFormsPage = async (req, res, next, error) => {
-  req.breadcrumbs('Upload and view forms', '/check-form/upload-and-view-forms')
+  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
   res.locals.pageTitle = 'Upload new form'
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('check-form/upload-new-form', {
+    res.render('check-form/upload-new-forms', {
       breadcrumbs: req.breadcrumbs(),
       error: error || new ValidationError(),
       formData: req.body
@@ -50,7 +50,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error) => {
  */
 controller.postUpload = async (req, res, next) => {
   // This is placeholder method
-  res.redirect('/check-form/upload-and-view-forms')
+  res.redirect('/check-form/view-forms')
 }
 
 module.exports = controller
