@@ -82,7 +82,14 @@ const pupilRegisterService = {
     return pupilRegister
   },
 
-
+  /**
+   * Return the 'process status' of the pupil for the GUI
+   * @param pupilStatusCode
+   * @param checkStatusCode
+   * @param pupilRestartId
+   * @param pupilRestartCheckId
+   * @return {string}
+   */
   getProcessStatus: function (pupilStatusCode, checkStatusCode, pupilRestartId, pupilRestartCheckId) {
     let status
     switch (pupilStatusCode) {
