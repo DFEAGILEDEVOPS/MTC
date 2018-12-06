@@ -2,6 +2,7 @@
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
+const featureToggles = require('feature-toggles')
 
 const listPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
@@ -11,9 +12,13 @@ const listPupils = async (req, res, next) => {
   let pupilsFormatted = []
 
   try {
-    pupilsFormatted = await pupilRegisterService.getPupils(req.user.School, req.user.schoolId, sortDirection)
-    pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
-    pupilRegisterService.sortPupils(pupilsFormatted, sortField, sortDirection)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
+    } else {
+      pupilsFormatted = await pupilRegisterService.getPupils(req.user.School, req.user.schoolId, sortDirection)
+      pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
+      pupilRegisterService.sortPupils(pupilsFormatted, sortField, sortDirection)
+    }
   } catch (error) {
     next(error)
   }
