@@ -1,7 +1,6 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { AppUsageService } from '../app-usage/app-usage.service';
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
@@ -13,6 +12,7 @@ import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
+import { AppUsageService } from '../app-usage/app-usage.service';
 
 /**
  * Declaration of check start service
@@ -58,6 +58,7 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   public async submit(startTime): Promise<void> {
+    this.appUsageService.store();
     const config = this.storageService.getItem('config');
     if (config.practice) {
       return this.onSuccess(startTime);
@@ -74,9 +75,6 @@ export class CheckCompleteService {
       const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
       excludedItems.forEach(i => delete payload[i]);
       payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-      if (payload.device) {
-        payload.device.appUsageCounter = this.appUsageService.getCounterValue();
-      }
 
       try {
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
