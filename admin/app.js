@@ -69,6 +69,7 @@ const pupilRegister = require('./routes/pupil-register')
 const attendance = require('./routes/attendance')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
+const checkForm = require('./routes/check-form')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 
@@ -124,7 +125,8 @@ busboy.extend(app, {
 
 const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url) ||
-  (/^\/service-manager\/upload-pupil-census\/upload$/).test(url)
+  (/^\/service-manager\/upload-pupil-census\/upload$/).test(url) ||
+  (/^\/check-form\/upload$/).test(url)
 
 // as we run in container over http, we must set up proxy trust for secure cookies
 let secureCookie = false
@@ -257,6 +259,7 @@ app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
 app.use('/access-arrangements', accessArrangements)
 app.use('/check-window', checkWindow)
+app.use('/check-form', checkForm)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

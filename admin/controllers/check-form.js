@@ -1,9 +1,12 @@
 'use strict'
 
+const featureToggles = require('feature-toggles')
+const fs = require('fs-extra')
 const moment = require('moment')
 const path = require('path')
-const fs = require('fs-extra')
 const R = require('ramda')
+const winston = require('winston')
+
 const checkFormService = require('../services/check-form.service')
 const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
@@ -11,7 +14,6 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const dateService = require('../services/date.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
-const winston = require('winston')
 
 /**
  * Display landing page for 'test developer' role.
@@ -22,10 +24,12 @@ const winston = require('winston')
  */
 const getTestDeveloperHomePage = async (req, res, next) => {
   res.locals.pageTitle = 'MTC for test development'
+  const isNewCheckFormFeatureToggleEnabled = featureToggles.isFeatureEnabled('newCheckForm')
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {
-      breadcrumbs: ''
+      breadcrumbs: '',
+      isNewCheckFormFeatureToggleEnabled
     })
   } catch (error) {
     next(error)
