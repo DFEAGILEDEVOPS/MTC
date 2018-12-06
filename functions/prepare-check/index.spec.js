@@ -35,7 +35,13 @@ describe('prepare-check function', () => {
       config: {
         questionTime: 6,
         loadingTime: 3,
-        speechSynthesis: false
+        speechSynthesis: false,
+        audibleSounds: false,
+        inputAssistance: false,
+        numpadRemoval: false,
+        fontSize: false,
+        colourContrast: false,
+        questionReader: false
       },
       tokens: {
         sasToken: '0f824632-8fab-49c6-a5ac-818b485fff96',

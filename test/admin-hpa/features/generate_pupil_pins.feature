@@ -21,7 +21,7 @@ Feature: Generate Pupil PINs
 
 
   Scenario: Generate Pins Pupil List page do not display pupil with active pin
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     And I am on the generate pupil pins page
     When I click Generate PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
@@ -86,13 +86,13 @@ Feature: Generate Pupil PINs
     Then I should be taken to Generate Pupil Pins Page
 
   Scenario: Cancel returns user to Generated Pin page if there are pupils with activepins
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     And I select a Pupil to Generate more pins
     When I choose to cancel
     Then I should be taken to Generated Pins Page
 
   Scenario: Check Form is assigned when Pin is generated and the Pin consist of 4 characters
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     Then the pin should consist of 4 characters
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
@@ -109,16 +109,16 @@ Feature: Generate Pupil PINs
 
   @wip
   Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     Then the pupil pin should be unique
 
   Scenario: Generated Pin Page is displayed as per the design
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     Then I should see generated pin page as per design
     And the displayed school password is generated as per the requirement
 
   Scenario: Pin is expired when pupil is not taking the check
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     When I decide the pupil should not be taking the check
     Then the status of the pupil should be Not taking the Check
     And the pin should be expired
@@ -162,7 +162,7 @@ Feature: Generate Pupil PINs
     Then I should see related content on the generate pins page
 
   Scenario: Live Pin Overview page is displayed after generating some pin as per design
-    Given I have generated a pin for a pupil
+    Given I have generated a live pin for a pupil
     And I am on the generate pupil pins page
     Then generated pin overview page for live check with some pin generated is displayed as per design
 
