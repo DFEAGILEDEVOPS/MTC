@@ -5,7 +5,7 @@ const moment = require('moment')
 const blobService = require('../services/data-access/azure-blob.data.service')
 
 // Files get uploaded to this container.  dns naming conventions.
-const container = 'check-development-app-upload-files'
+const container = 'admin-app-uploaded-files'
 
 module.exports = async function (req, res, next) {
   // We only want to handle requests files uploads
