@@ -16,9 +16,9 @@ describe('pupil-register.service', () => {
       const status = pupilRegisterService.getProcessStatus('ALLOC', 'NEW', null, null)
       expect(status).toBe('PIN generated')
     })
-    it('identifies "Logged In"', () => {
+    it('identifies "Logged in"', () => {
       const status = pupilRegisterService.getProcessStatus('LOGGED_IN', 'COL', null, null)
-      expect(status).toBe('Logged In')
+      expect(status).toBe('Logged in')
     })
     it('identifies "Check started"', () => {
       const status = pupilRegisterService.getProcessStatus('STARTED', 'STD', null, null)

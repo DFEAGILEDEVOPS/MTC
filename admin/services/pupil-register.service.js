@@ -93,7 +93,7 @@ const pupilRegisterService = {
         status = 'PIN generated'
         break
       case 'LOGGED_IN':
-        status = 'Logged In'
+        status = 'Logged in'
         break
       case 'STARTED':
         status = 'Check started'
