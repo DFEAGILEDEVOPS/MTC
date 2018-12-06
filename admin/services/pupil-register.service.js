@@ -4,6 +4,8 @@ const pupilService = require('../services/pupil.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
+const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
+const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 
 const pupilRegisterService = {
   /**
@@ -11,6 +13,7 @@ const pupilRegisterService = {
    * @param dfeNumber
    * @param schoolId
    * @param sortDirection
+   * @deprecated
    * @returns {Promise<any>}
    */
   getPupils: async (dfeNumber, schoolId, sortDirection) => {
@@ -38,6 +41,7 @@ const pupilRegisterService = {
    * @param pupilList
    * @param sortField
    * @param sortDirection
+   * @deprecated
    * @returns {*}
    */
   sortPupils: (pupilList, sortField, sortDirection) => {
@@ -50,6 +54,78 @@ const pupilRegisterService = {
     if (sortField === 'group') {
       return pupilService.sortByGroup(pupilList, sortDirection)
     }
+  },
+
+  /**
+   * Return the pupil register
+   * @param schoolId
+   * @return {Promise<*>}
+   */
+  getPupilRegister: async function (schoolId) {
+    const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
+    const pupilRegister = pupilRegisterData.map(d => {
+      return {
+        urlSlug: d.urlSlug,
+        foreName: d.foreName,
+        lastName: d.lastName,
+        middleNames: d.middleNames,
+        dateOfBirth: d.dateOfBirth,
+        group: d.groupName,
+        outcome: pupilRegisterService.getProcessStatus(
+          d.pupilStatusCode,
+          d.lastCheckStatusCode,
+          d.pupilRestartId,
+          d.pupilResartCheckId)
+      }
+    })
+    pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
+    return pupilRegister
+  },
+
+  /**
+   * Return the 'process status' of the pupil for the GUI
+   * @param pupilStatusCode
+   * @param checkStatusCode
+   * @param pupilRestartId
+   * @param pupilRestartCheckId
+   * @return {string}
+   */
+  getProcessStatus: function (pupilStatusCode, checkStatusCode, pupilRestartId, pupilRestartCheckId) {
+    let status
+    switch (pupilStatusCode) {
+      case 'UNALLOC':
+        status = 'Not started'
+        break
+      case 'ALLOC':
+        status = 'PIN generated'
+        break
+      case 'LOGGED_IN':
+        status = 'Logged in'
+        break
+      case 'STARTED':
+        status = 'Check started'
+        if (checkStatusCode === 'NTR') {
+          status = 'Incomplete'
+        }
+        break
+      case 'NOT_TAKING':
+        status = 'Not taking the Check'
+        break
+      case 'COMPLETED':
+        status = 'Complete'
+        break
+      default:
+        status = ''
+    }
+
+    if (pupilRestartId) {
+      if (!pupilRestartCheckId) {
+        // unconsumed restart
+        status = 'Restart'
+      }
+    }
+
+    return status
   }
 }
 
