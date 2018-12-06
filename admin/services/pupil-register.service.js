@@ -13,6 +13,7 @@ const pupilRegisterService = {
    * @param dfeNumber
    * @param schoolId
    * @param sortDirection
+   * @depractated
    * @returns {Promise<any>}
    */
   getPupils: async (dfeNumber, schoolId, sortDirection) => {
@@ -40,6 +41,7 @@ const pupilRegisterService = {
    * @param pupilList
    * @param sortField
    * @param sortDirection
+   * @deprecated
    * @returns {*}
    */
   sortPupils: (pupilList, sortField, sortDirection) => {
@@ -54,6 +56,11 @@ const pupilRegisterService = {
     }
   },
 
+  /**
+   * Return the pupil register
+   * @param schoolId
+   * @return {Promise<*>}
+   */
   getPupilRegister: async function (schoolId) {
     const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {

@@ -1,8 +1,10 @@
 'use strict'
 
-/* global describe expect it */
+/* global describe expect it beforeEach spyOn */
 
 const pupilRegisterService = require('../../../services/pupil-register.service')
+const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
+const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 
 describe('pupil-register.service', () => {
   describe('#getProcessStatus', () => {
@@ -37,6 +39,21 @@ describe('pupil-register.service', () => {
     it('identifies "Restart"', () => {
       const status = pupilRegisterService.getProcessStatus('UNALLOC', null, 1, null)
       expect(status).toBe('Restart')
+    })
+  })
+
+  describe('#getPupilRegsitee', () => {
+    beforeEach(() => {
+      spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+    })
+    it('calls the data service to get the raw data', async () => {
+      await pupilRegisterService.getPupilRegister(42)
+      expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
+    })
+    it('calls the pupil identification flag service', async () => {
+      await pupilRegisterService.getPupilRegister(42)
+      expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
     })
   })
 })
