@@ -4,6 +4,8 @@ const pupilService = require('../services/pupil.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
+const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
+const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 
 const pupilRegisterService = {
   /**
@@ -50,6 +52,66 @@ const pupilRegisterService = {
     if (sortField === 'group') {
       return pupilService.sortByGroup(pupilList, sortDirection)
     }
+  },
+
+  getPupilRegister: async function (schoolId) {
+    const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
+    const pupilRegister = pupilRegisterData.map(d => {
+      return {
+        urlSlug: d.urlSlug,
+        foreName: d.foreName,
+        lastName: d.lastName,
+        middleNames: d.middleNames,
+        dateOfBirth: d.dateOfBirth,
+        group: d.groupName,
+        outcome: pupilRegisterService.getProcessStatus(
+          d.pupilStatusCode,
+          d.lastCheckStatusCode,
+          d.pupilRestartId,
+          d.pupilResartCheckId)
+      }
+    })
+    pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
+    return pupilRegister
+  },
+
+
+  getProcessStatus: function (pupilStatusCode, checkStatusCode, pupilRestartId, pupilRestartCheckId) {
+    let status
+    switch (pupilStatusCode) {
+      case 'UNALLOC':
+        status = 'Not started'
+        break
+      case 'ALLOC':
+        status = 'PIN generated'
+        break
+      case 'LOGGED_IN':
+        status = 'Logged In'
+        break
+      case 'STARTED':
+        status = 'Check started'
+        if (checkStatusCode === 'NTR') {
+          status = 'Incomplete'
+        }
+        break
+      case 'NOT_TAKING':
+        status = 'Not taking the Check'
+        break
+      case 'COMPLETED':
+        status = 'Complete'
+        break
+      default:
+        status = ''
+    }
+
+    if (pupilRestartId) {
+      if (!pupilRestartCheckId) {
+        // unconsumed restart
+        status = 'Restart'
+      }
+    }
+
+    return status
   }
 }
 
