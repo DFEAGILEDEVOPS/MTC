@@ -38,11 +38,12 @@ const service = {
            SELECT *,
                       ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
            FROM [mtc_admin].[pupilRestart]
+           WHERE isDeleted = 0
            ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
       WHERE
                 (lastCheck.rank = 1 or lastCheck.rank IS NULL)
       AND       (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL)
-      AND       p.school_id = 18601
+      AND       p.school_id = @schoolId
       ORDER BY  p.lastName, p.foreName ASC`
 
     const params = [
