@@ -11,7 +11,7 @@
 
 ### Mac OS
 * Install JDK 7 or later
-* Install latest JMeter using brew: `brew install jmeter`
+* Install latest JMeter using brew: `brew install jmeter --with-plugins`
 * Run JMeter: `open /usr/local/bin/jmeter`
 
 ### Windows
@@ -19,20 +19,31 @@
 * Download [JMeter 5.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
-
-## Teacher load test data preparation
-* Ensure admin application is running and the migrations have been applied
-* If a password is not specified the passwords will be set to 'password'
-* While in `load-test/bin` directory:
-    * The following command will execute a node script which takes a password as an optional argument and will generate one teacher for each school in the database: `node generate-teacher-load-test-data.js`
-    * To set a custom password (i.e. 'newpassword') run: `node generate-teacher-load-test-data.js newpassword`
-
-### Install Jmeter Plugins - Custom JMeter Functions
+### Install Jmeter Plugins - Custom JMeter Functions (not required)
 * download Jmeter plugin manager
 https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
 * download the Custom JMeter Functions plugin
 https://jmeter-plugins.org/wiki/Functions/
 
+## Best practices
+* **Use a HTTP defaults item for each scenario** You can specify defaults for protocol, port & hostname for the target and parameterise each property.  This ensures you do not have to set them for each request.
+* **Do not hardcode data** It does not work at scale.  Instead use tools such as the XPath extractor to find elements in web pages and obtain record IDs from the value property (see the `admin-generate-pins.jmx` scenario as an example).
+* **Use the Debug Sampler for local scenario development** Use it to output variables and other useful information after a local test run.  This can help you see what data / parameters / values are being produced at runtime.
+* **Run a small load test locally after making changes**  The JMeter UI can handle running 1-5 user load on a local instance of the app.  The UI can sometimes be flaky, but its useful for viewing results and debug sampler information as you build out your scenarios.  If you encounter issues with the UI, run from the command line.
+
+
+## Teacher pin generation load test preparation (local test)
+### Initialise storage services
+Execute `./start.sh` to clear storage account contents, start SQL Server Docker instance, execute migrations and seed default data set.
+* **NOTE**: in order to successfully clear storage account contents, you must have the `AZURE_STORAGE_CONNECTION_STRING` variable set for the admin app.  Either in a `.env` file or as environment variable.
+### Start the admin application
+start the admin app with `yarn start`
+
+## Seed load test data (non-local test only)
+The scenarios have low defaults (2 users) so they can be executed quickly in a local environment.  However, when performing load test at scale you will want to seed the database with a high volume of users (teachers) and pupils  
+* While in `load-test/bin` directory:
+    * The following command will execute a node script which takes a password as an optional argument and will generate one teacher for each school in the database: `node generate-teacher-load-test-data.js`
+    * To set a custom password (i.e. 'newpassword') run: `node generate-teacher-load-test-data.js newpassword`
 
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
@@ -46,35 +57,35 @@ https://jmeter-plugins.org/wiki/Functions/
 ## Execute pupil load test
 * Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter pupil check load test in CLI mode
 * mkdir reports
-``* jmeter -n -t ./scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -Jhost=localhost -Jthreads=3600 -Jramp=50
+``* jmeter -n -t ./scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -JpupilApiHost=localhost -Jthreads=3600 -Jramp=50
 ``
 
 This command above takes the following arguments:
-* -n Run in CLI mode
-* -t Test file in jmx format
-* -l Report to be stored in csv format
-* -D Overwrites the jmeter system properties. In above command we are overwriting the property to save report in csv format
-* -e Generate HTML report after load test finishes
-* -o Generated HTML Report with visual outputs of the test
-* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
-* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
-* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
+* `-n` Run in CLI mode
+* `-t` Test file in jmx format
+* `-l` Report to be stored in csv format
+* `-D` Overwrites the jmeter system properties. In above command we are overwriting the property to save report in csv format
+* `-e` Generate HTML report after load test finishes
+* `-o` Generated HTML Report with visual outputs of the test
+* `-JpupilApiHost` Admin app Host URL (pupilApiHost is the variable name used in jmeter host field)
+* `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
+* `-Jramp` Ramp-up period in milliseconds (ramp is the variable name used for ramp up field)
 
 In order to rerun the test execute `undo-generate-pupil-load-test-data.sql` as SA to undo the test data population.
 
 ## Execute Admin load test
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter Admin load test in CLI mode:
 
-`` jmeter -n  -t ../scenarios/mtc_admin_login.jmx -l reports/mtc_admin_test_result.csv  -Djmeter.save.saveservice.output_format=csv -e -o reports/MTCAdminHTMLReports -Jhost=admin-as-feb-mtc-staging.azurewebsites.net -Jthreads=80 -Jramp=1600
+`` jmeter -n  -t ../scenarios/mtc_admin_login.jmx -l reports/mtc_admin_test_result.csv  -Djmeter.save.saveservice.output_format=csv -e -o reports/MTCAdminHTMLReports -JadminAppHost=admin-as-feb-mtc-staging.azurewebsites.net -Jthreads=80 -Jramp=1600
 ``
 
 This command above takes the following arguments:
-* -n Run in CLI mode
-* -t Test file in jmx format
-* -l Report to be stored in csv format
-* -D Overwrites the jmeter system properties. in above command we are overwriting the property to save report in csv format
-* -e Generate HTML report after load test finishes
-* -o Generated HTML Report with visual outputs of the test
-* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
-* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
-* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
+* `-n` Run in CLI mode
+* `-t` Test file in jmx format
+* `-l` Report to be stored in csv format
+* `-D` Overwrites the jmeter system properties. in above command we are overwriting the property to save report in csv format
+* `-e` Generate HTML report after load test finishes
+* `-o` Generated HTML Report with visual outputs of the test
+* `-JadminAppHost` Admin app Host URL (adminAppHost is the variable name used in jmeter host field)
+* `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
+* `-Jramp` Ramp-up period  in milliseconds (ramp is the variable name used for ramp up field)
