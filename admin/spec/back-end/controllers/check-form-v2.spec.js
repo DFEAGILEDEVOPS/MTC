@@ -3,7 +3,6 @@
 /* global describe beforeEach it expect jasmine spyOn */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-form-v2')
-const checkFormV2Service = require('../../../services/check-form-v2.service')
 
 describe('check form v2 controller:', () => {
   let next
@@ -67,9 +66,9 @@ describe('check form v2 controller:', () => {
     it('submits uploaded check form for validation and submission', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(checkFormV2Service, 'process')
+      spyOn(res, 'redirect')
       await controller.postUpload(req, res, next)
-      expect(checkFormV2Service.process).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
     })
   })
 })

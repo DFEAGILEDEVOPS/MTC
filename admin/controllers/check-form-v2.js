@@ -1,4 +1,3 @@
-const checkFormV2Service = require('../services/check-form-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -51,13 +50,6 @@ controller.getUploadNewFormsPage = async (req, res, next, error) => {
  */
 controller.postUpload = async (req, res, next) => {
   // This is placeholder method
-  const uploadedFiles = req.files
-  const requestData = req.body
-  try {
-    await checkFormV2Service.process(uploadedFiles, requestData)
-  } catch (error) {
-    return next(error)
-  }
   res.redirect('/check-form/upload-and-view-forms')
 }
 
