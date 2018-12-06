@@ -6,6 +6,7 @@ const accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const context = require('../mock-context')
+const sqlUtils = require('../lib/sql-helper')
 const v1 = require('./v1')
 
 const aaConfig = {
@@ -26,8 +27,18 @@ const checkConfig = {
 
 describe('prepared-check-sync: v1', () => {
   describe('process', () => {
+    it('fetches all checks for a pupil and updates each preparedCheck', async () => {
+      const message = { checkCode: 'abc-def-123', version: 1 }
+      spyOn(sqlUtils, 'sqlFindChecksByCheckCode').and.returnValue([{ id: 1, checkCode: 'abc-def-123' }, { id: 2, checkCode: 'abc-def-234' }])
+      spyOn(v1, 'updatePreparedChecks')
+      await v1.process(context, message)
+      expect(sqlUtils.sqlFindChecksByCheckCode).toHaveBeenCalled()
+      expect(v1.updatePreparedChecks).toHaveBeenCalledTimes(2)
+    })
+  })
+  describe('updatePreparedChecks', () => {
+    const checkCode = 'abc-def-123'
     describe('when async methods do not throw errors', () => {
-      const message = {checkCode: 'abc-def-123', version: 1}
       beforeEach(() => {
         spyOn(azureStorageHelper, 'getFromPreparedCheckTableStorage').and.returnValue({
           PartitionKey: 'key1',
@@ -40,22 +51,22 @@ describe('prepared-check-sync: v1', () => {
       })
 
       it('makes a call to get prepared check from table storage', async () => {
-        await v1.process(context, message)
+        await v1.updatePreparedChecks(context, checkCode)
         expect(azureStorageHelper.getFromPreparedCheckTableStorage).toHaveBeenCalled()
       })
 
       it('makes a call to get pupil access arrangements', async () => {
-        await v1.process(context, message)
+        await v1.updatePreparedChecks(context, checkCode)
         expect(accessArrangementsSqlUtil.sqlFindPupilAccessArrangementsByCheckCode).toHaveBeenCalled()
       })
 
       it('makes a call to get the updated config', async () => {
-        await v1.process(context, message)
+        await v1.updatePreparedChecks(context, checkCode)
         expect(v1.getUpdatedConfig).toHaveBeenCalled()
       })
 
       it('makes a call to merge the new props into the table storage entity', async () => {
-        await v1.process(context, message)
+        await v1.updatePreparedChecks(context, checkCode)
         expect(azureTableService.insertOrMergeEntityAsync).toHaveBeenCalled()
       })
     })
@@ -65,9 +76,8 @@ describe('prepared-check-sync: v1', () => {
         spyOn(accessArrangementsSqlUtil, 'sqlFindPupilAccessArrangementsByCheckCode')
         spyOn(v1, 'getUpdatedConfig').and.returnValue(checkConfig)
         spyOn(azureTableService, 'insertOrMergeEntityAsync')
-        const message = { checkCode: 'abc-def-123', version: 1 }
         try {
-          await v1.process(context, message)
+          await v1.updatePreparedChecks(context, checkCode)
           fail()
         } catch (error) {
           expect(error.message).toBe('error')
@@ -86,9 +96,8 @@ describe('prepared-check-sync: v1', () => {
         spyOn(accessArrangementsSqlUtil, 'sqlFindPupilAccessArrangementsByCheckCode').and.returnValue(Promise.reject(new Error('error')))
         spyOn(v1, 'getUpdatedConfig').and.returnValue(checkConfig)
         spyOn(azureTableService, 'insertOrMergeEntityAsync')
-        const message = { checkCode: 'abc-def-123', version: 1 }
         try {
-          await v1.process(context, message)
+          await v1.updatePreparedChecks(context, checkCode)
           fail()
         } catch (error) {
           expect(error.message).toBe('error')
@@ -107,9 +116,8 @@ describe('prepared-check-sync: v1', () => {
         spyOn(accessArrangementsSqlUtil, 'sqlFindPupilAccessArrangementsByCheckCode')
         spyOn(v1, 'getUpdatedConfig').and.returnValue(checkConfig).and.returnValue(Promise.reject(new Error('error')))
         spyOn(azureTableService, 'insertOrMergeEntityAsync')
-        const message = { checkCode: 'abc-def-123', version: 1 }
         try {
-          await v1.process(context, message)
+          await v1.updatePreparedChecks(context, checkCode)
           fail()
         } catch (error) {
           expect(error.message).toBe('error')
@@ -128,9 +136,8 @@ describe('prepared-check-sync: v1', () => {
         spyOn(accessArrangementsSqlUtil, 'sqlFindPupilAccessArrangementsByCheckCode')
         spyOn(v1, 'getUpdatedConfig').and.returnValue(checkConfig)
         spyOn(azureTableService, 'insertOrMergeEntityAsync').and.returnValue(Promise.reject(new Error('error')))
-        const message = { checkCode: 'abc-def-123', version: 1 }
         try {
-          await v1.process(context, message)
+          await v1.updatePreparedChecks(context, checkCode)
           fail()
         } catch (error) {
           expect(error.message).toBe('error')
