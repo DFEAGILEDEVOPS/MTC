@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Select pupils - GOV.UK
+  </title>
+</head>
+
+<body class="">
+
+  <div id="skiplink-container">
+    <div>
+      <a href="#content" class="skiplink">Skip to main content</a>
+    </div>
+  </div>
+
+  <div id="global-cookie-message">
+
+    <p>The Multiplication tables check service uses cookies to make the site simpler. <a href="/cookies">Find out more
+        about cookies</a></p>
+
+
+  </div>
+
+
+  <header role="banner" id="global-header" class="with-proposition no-print">
+    <div class="header-wrapper">
+      <div class="header-global">
+        <div class="header-logo">
+          <a href="/" title="Go to the home page" id="logo" class="content">
+            <img src="/govuk_template/images/gov.uk_logotype_crown_invert_trans.png?0.23.0" width="36" height="32" alt="">
+            GOV.UK
+          </a>
+        </div>
+
+
+      </div>
+      <div class="header-proposition">
+        <div class="content">
+          <nav id="proposition-menu">
+            <a href="/" title="" id="proposition-name">
+              Multiplication Tables Check
+            </a>
+          </nav>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+
+
+
+
+  <div id="global-header-bar"></div>
+
+  <main id="content" role="main">
+    <a name="top" id="top"></a>
+    <div class="phase-banner no-print">
+      <p aria-describedby="beta-service">
+        <span id="beta-service"><strong class="phase-tag">BETA</strong>This is a new service – your <a target="_blank"
+            rel="noopener noreferrer" href="https://www.smartsurvey.co.uk/s/MTCTrial3SchoolSurvey/">feedback</a> will
+          help us to improve it.</span>
+      </p>
+    </div>
+    <div class="grid-row">
+      <div class="column-one-half">
+        <div class="breadcrumbs">
+
+
+
+
+          <div>
+
+            <a href="/">Home</a>
+
+
+            <span class="breadcrumb-separator">&gt;</span>
+
+          </div>
+
+
+
+          <div>
+
+            <a href="/pupil-pin/generate-live-pins-overview">PINs for live check</a>
+
+
+            <span class="breadcrumb-separator">&gt;</span>
+
+          </div>
+
+
+
+          <div>
+
+            Select pupils
+
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+      <div class="column-one-half">
+
+        <div id="sign-out">
+          <a href="/sign-out">Sign out</a>
+        </div>
+
+        <div class="signed-in-as">Signed in as teacher1</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="grid-row">
+      <div class="column-two-thirds">
+
+        <header class="page-header">
+          <h1 class="heading-xlarge">Select pupils to generate PINs - live check</h1>
+        </header>
+
+
+        <div class="error-session-expiration error-summary top-padding-30" role="group" aria-labelledby="error-summary-1">
+          <p>Your session will expire in <span class="session-expiration-countdown">5 minutes</span>.</p>
+          <p>Would you like to continue this session?</p>
+
+          <p><button class="button" id="continue-session-expiration">Yes</button></p>
+        </div>
+
+
+
+        <h3>Filter by name</h3>
+        <div class="form-group filter-name">
+          <label for="search-name">
+            <img src="/images/icon-search.png" />
+          </label>
+          <span>
+            <input class="form-control" id="search-name" type="text" name="search-name">
+          </span>
+        </div>
+
+
+
+
+        <form method="post" action="/pupil-pin/generate-live-pins" method="post" autocomplete="off">
+          <input type="hidden" name="_csrf" value="z2VLxkqw-ZHGrQ7wrVjxePBsCHIR0y_f6vec" />
+
+          <table class="spacious reduced-top-margin" id="generatePins" role="listbox" aria-label="Select pupils.">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <a class="sortingLink">
+                    Pupil <span class="sort-icon asc"></span>
+                  </a>
+                </th>
+                <th scope="col">
+                  <div class="tick-all-checkboxes-wrapper">
+                    <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                    <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                    <div class="multiple-choice-mtc">
+                      <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                      <div></div>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td>
+                  <label for="pupil-12">
+                    Brewer, Juliana
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-12" name="pupil[0]" type="checkbox" value="12" aria-label="Tick pupil Brewer, Juliana."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-9">
+                    Daniels, Ebony
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-9" name="pupil[1]" type="checkbox" value="9" aria-label="Tick pupil Daniels, Ebony."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-16">
+                    Duke, Gregory
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-16" name="pupil[2]" type="checkbox" value="16" aria-label="Tick pupil Duke, Gregory."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-13">
+                    Dunn, Nieves
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-13" name="pupil[3]" type="checkbox" value="13" aria-label="Tick pupil Dunn, Nieves."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-14">
+                    Flowers, Burns
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-14" name="pupil[4]" type="checkbox" value="14" aria-label="Tick pupil Flowers, Burns."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-5">
+                    Hobbs, Koch
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-5" name="pupil[5]" type="checkbox" value="5" aria-label="Tick pupil Hobbs, Koch."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-11">
+                    Jimenez, Bessie
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-11" name="pupil[6]" type="checkbox" value="11" aria-label="Tick pupil Jimenez, Bessie."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-17">
+                    Mcintyre, Kristine
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-17" name="pupil[7]" type="checkbox" value="17" aria-label="Tick pupil Mcintyre, Kristine."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-3">
+                    Mendoza, Davenport
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-3" name="pupil[8]" type="checkbox" value="3" aria-label="Tick pupil Mendoza, Davenport."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-7">
+                    Mosley, Hallie
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-7" name="pupil[9]" type="checkbox" value="7" aria-label="Tick pupil Mosley, Hallie."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-10">
+                    Spence, Letitia
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-10" name="pupil[10]" type="checkbox" value="10" aria-label="Tick pupil Spence, Letitia."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-6">
+                    Stafford, Blankenship
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-6" name="pupil[11]" type="checkbox" value="6" aria-label="Tick pupil Stafford, Blankenship."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-8">
+                    Stanton, Charmaine
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-8" name="pupil[12]" type="checkbox" value="8" aria-label="Tick pupil Stanton, Charmaine."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-15">
+                    Whitaker, Watkins
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-15" name="pupil[13]" type="checkbox" value="15" aria-label="Tick pupil Whitaker, Watkins."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="pupil-4">
+                    Wolfe, Sweeney
+                  </label>
+
+                </td>
+                <td>
+                  <div class="multiple-choice-mtc">
+                    <input id="pupil-4" name="pupil[14]" type="checkbox" value="4" aria-label="Tick pupil Wolfe, Sweeney."
+                      aria-checked="false" role="checkbox">
+                    <div></div>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+          </div>
+
+
+
+          <div class="sticky-banner-wrapper" id="stickyBanner">
+            <div id="content">
+              <div class="grid-row">
+                <div class="column-half first-half">
+                  Pupil(s) selected: <span id="totalPupilsSelected"></span>
+                </div>
+                <div class="column-half">
+                  <input type="submit" class="button" value="Confirm" id="stickyConfirm">
+                  <a href="/pupil-pin/generate-live-pins-overview" class="button-secondary" id="stickyCancel">Cancel</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+
+  <footer class="group js-footer" id="footer" role="contentinfo">
+
+    <div class="footer-wrapper">
+
+
+      <div class="footer-meta">
+        <div class="footer-meta-inner">
+          <h2 class="visuallyhidden">Support links</h2>
+          <ul>
+            <li><a href="/cookies">Cookies</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/privacy">Privacy notice</a></li>
+            <li>Built by the <a href="https://www.gov.uk/government/organisations/standards-and-testing-agency">Standards
+                and Testing Agency</a></li>
+          </ul>
+
+
+          <div class="open-government-licence">
+            <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open
+                Government Licence</a></p>
+
+            <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+
+
+          </div>
+        </div>
+
+        <div class="copyright">
+          <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">&copy;
+            Crown copyright</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="global-app-error" class="app-error hidden"></div>
+
+</body>
+
+</html>
