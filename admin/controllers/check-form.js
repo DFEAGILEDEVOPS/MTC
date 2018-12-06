@@ -24,12 +24,12 @@ const anomalyReportService = require('../services/anomaly-report.service')
  */
 const getTestDeveloperHomePage = async (req, res, next) => {
   res.locals.pageTitle = 'MTC for test development'
-  const isNewCheckForm = featureToggles.isFeatureEnabled('newCheckForm')
+  const isNewCheckFormFeatureToggleEnabled = featureToggles.isFeatureEnabled('newCheckForm')
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {
       breadcrumbs: '',
-      isNewCheckForm
+      isNewCheckFormFeatureToggleEnabled
     })
   } catch (error) {
     next(error)
