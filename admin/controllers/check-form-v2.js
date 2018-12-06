@@ -10,7 +10,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<*>}
  */
-controller.uploadAndViewFormsPage = async (req, res, next) => {
+controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('check-form/upload-and-view-forms', {
@@ -20,23 +20,22 @@ controller.uploadAndViewFormsPage = async (req, res, next) => {
 }
 
 /**
- * Upload check form view.
+ * Upload check form(s) view.
  * @param req
  * @param res
  * @param next
+ * @param error
  * @returns {Promise.<void>}
  */
-controller.uploadCheckFormPage = async (req, res, next) => {
+controller.getUploadNewFormsPage = async (req, res, next, error) => {
   req.breadcrumbs('Upload and view forms', '/check-form/upload-and-view-forms')
   res.locals.pageTitle = 'Upload new form'
-  let error
-  let formData
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('check-form/upload-new-form', {
       breadcrumbs: req.breadcrumbs(),
       error: error || new ValidationError(),
-      formData
+      formData: req.body
     })
   } catch (error) {
     next(error)
@@ -44,18 +43,18 @@ controller.uploadCheckFormPage = async (req, res, next) => {
 }
 
 /**
- * Submit check form.
+ * Upload check form(s).
  * @param req
  * @param res
  * @param next
  * @returns {Promise.<*>}
  */
-controller.submitCheckForm = async (req, res, next) => {
+controller.postUpload = async (req, res, next) => {
   // This is placeholder method
-  const uploadedFile = req.files && req.files.csvFile
+  const uploadedFiles = req.files
   const requestData = req.body
   try {
-    await checkFormV2Service.process(uploadedFile, requestData)
+    await checkFormV2Service.process(uploadedFiles, requestData)
   } catch (error) {
     return next(error)
   }

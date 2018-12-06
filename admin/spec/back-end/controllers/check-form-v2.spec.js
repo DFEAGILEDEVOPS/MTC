@@ -25,44 +25,50 @@ describe('check form v2 controller:', () => {
     return req
   }
 
-  describe('uploadAndViewFormsPage route', () => {
+  describe('getViewFormsPage route', () => {
     let reqParams = {
       method: 'GET',
-      url: '/check-forms-v2/upload-and-view-forms-v2'
+      url: '/check-forms/view-forms'
     }
-    it('renders upload and view forms v2 view', async () => {
+    it('renders upload and view forms view', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      await controller.uploadAndViewFormsPage(req, res, next)
+      await controller.getViewFormsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Upload and view forms')
       expect(res.render).toHaveBeenCalled()
     })
   })
-  describe('uploadCheckFormPage route', () => {
+  describe('getUploadNewFormsPage route', () => {
     let reqParams = {
       method: 'GET',
-      url: '/check-forms-v2/upload-new-form-v2'
+      url: '/check-forms/upload-new-forms'
     }
-    it('renders upload new form v2 view', async () => {
+    it('renders upload new form view', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      await controller.uploadCheckFormPage(req, res, next)
+      await controller.getUploadNewFormsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Upload new form')
       expect(res.render).toHaveBeenCalled()
     })
   })
-  describe('submitCheckForm route', () => {
+  describe('postUpload route', () => {
     let reqParams = {
       method: 'POST',
-      url: '/check-forms-v2/submit-check-form-v2'
+      url: '/check-forms/upload',
+      files: {
+        csvFile: [{ name: 'name' }]
+      },
+      body: {
+        checkFormType: 'L'
+      }
     }
     it('submits uploaded check form for validation and submission', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(checkFormV2Service, 'process')
-      await controller.submitCheckForm(req, res, next)
+      await controller.postUpload(req, res, next)
       expect(checkFormV2Service.process).toHaveBeenCalled()
     })
   })

@@ -9,9 +9,9 @@ const featureToggles = require('feature-toggles')
 
 if (featureToggles.isFeatureEnabled('newCheckForm')) {
   /* Check Form v2 routing */
-  router.get('/upload-and-view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.uploadAndViewFormsPage(req, res, next))
-  router.get('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.uploadCheckFormPage(req, res, next))
-  router.post('/submit-check-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.submitCheckForm(req, res, next))
+  router.get('/view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getViewFormsPage(req, res, next))
+  router.get('/upload-new-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getUploadNewFormsPage(req, res, next))
+  router.post('/upload', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.postUpload(req, res, next))
 }
 
 module.exports = router
