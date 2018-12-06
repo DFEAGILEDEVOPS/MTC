@@ -12,6 +12,10 @@ XPath for pupil checkboxes
 //*[1]/input[1 and @type='checkbox' and position()<6]/@value
 #######################################
 
+XPath for _csrf
+
+//*/input[@name='_csrf']/@value
+
 
 //*[@id="generatePins"]//input[@type="checkbox"] - selects all including 'select all'
 //input[@type="checkbox"] - selects all including 'select all'
@@ -26,4 +30,6 @@ For load testing, use NON GUI Mode:
 & increase Java Heap to meet your test requirements:
    Modify current env variable HEAP="-Xms1g -Xmx1g -XX:MaxMetaspaceSize=256m" in the jmeter batch file
 Check : https://jmeter.apache.org/usermanual/best-practices.html
+
+${__V(teacher${__threadNum})}
 
