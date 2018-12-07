@@ -33,7 +33,7 @@
     "csurf": "^1.9.0",
     "debug": "^4.1.0",
     "device": "^0.3.9",
-    "dotenv": "^4.0.0",
+    "dotenv": "^6.2.0",
     "ejs": "~2.5.6",
     "express": "^4.16.2",
     "express-breadcrumbs": "0.0.2",
