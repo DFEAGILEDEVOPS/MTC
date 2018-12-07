@@ -2357,10 +2357,10 @@ express-breadcrumbs@0.0.2:
   dependencies:
     lodash "~2.1.0"
 
-express-busboy@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/express-busboy/-/express-busboy-6.0.1.tgz#f353147fb64cd98e4f6e404d7a2a76fbc0affafe"
-  integrity sha1-81MUf7ZM2Y5PbkBNeip2+8Cv+v4=
+express-busboy@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/express-busboy/-/express-busboy-7.0.1.tgz#44c750b2475f5ae3ceb6b490097da87e540e463a"
+  integrity sha512-ZMR9uUJp4Rx6y7YBML2Cxr5C314WECIClslfu+zgDqANx0aDyPcqesVLef0bjlQKD7X+va6p1xX0/G5WK+9JbA==
   dependencies:
     body "~5.1.0"
     connect-busboy "~0.0.1"
