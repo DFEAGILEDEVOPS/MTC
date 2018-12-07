@@ -154,7 +154,7 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Generate-Pin" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
-<elementProp name="pupil[0]" elementType="HTTPArgument">
+              <elementProp name="pupil[0]" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">${PUPIL_ID_1}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
