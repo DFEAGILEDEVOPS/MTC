@@ -1,6 +1,8 @@
 const moment = require('moment')
 const bluebird = require('bluebird')
 const R = require('ramda')
+
+const checkStateService = require('../services/check-state.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -9,6 +11,8 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
+const featureToggles = require('feature-toggles')
+const azureQueueService = require('../services/azure-queue.service')
 
 const restartService = {}
 
@@ -133,7 +137,6 @@ restartService.canRestart = async pupilId => {
  * @param schoolId
  * @returns {Array}
  */
-
 restartService.getSubmittedRestarts = async schoolId => {
   let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(schoolId, 'lastName', 'asc')
   if (!pupils || pupils.length === 0) return []
@@ -158,7 +161,8 @@ restartService.getSubmittedRestarts = async schoolId => {
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames,
-        dateOfBirth: p.dateOfBirth
+        dateOfBirth: p.dateOfBirth,
+        urlSlug: p.urlSlug
       })
     }
   }))
@@ -191,14 +195,26 @@ restartService.getStatus = async pupilId => {
  * @param userId
  * @returns {String}
  */
+restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
+  const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
 
-restartService.markDeleted = async (pupilId, userId) => {
-  // TODO: add security to restrict it to the user's school
-  const pupil = await pupilDataService.sqlFindOneById(pupilId)
-  let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupilId)
-  pupil.pinExpiresAt = lastStartedCheck.startedAt
-  await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
-  await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId, userId)
+  if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+    // see if there is a check associated with this restart, ideally the slug
+    // would refer to the restart itself, and not the pupil.
+    const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
+    if (restart.check_id) {
+      const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
+      await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
+      azureQueueService.addMessage('prepared-check-delete', { version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId })
+    }
+  } else {
+    let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupil.id)
+    await checkStateService.changeState(lastStartedCheck.checkCode, checkStateService.States.Expired)
+    pupil.pinExpiresAt = lastStartedCheck.startedAt
+    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
+  }
+
+  await pupilRestartDataService.sqlMarkRestartAsDeleted(pupil.id, userId)
   return pupil
 }
 

@@ -160,4 +160,55 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   return sqlService.modify(sql, params)
 }
 
+/**
+ * Find latest open restarts by pupil slug and, for security, schoolId
+ * @param pupilUrlSlug
+ * @param schoolId
+ * @return {Promise<void>}
+ */
+pupilRestartDataService.sqlFindOpenRestartForPupil = async (pupilUrlSlug, schoolId) => {
+  const sql = `SELECT TOP (1) pr.* 
+               FROM [mtc_admin].[pupilRestart] pr JOIN 
+                    [mtc_admin].[pupil] p ON (pr.pupil_id = p.id)
+               WHERE isDeleted = 0
+               AND p.urlSlug = @pupilUrlSlug
+               AND p.school_id = @schoolId
+               ORDER BY pr.createdAt DESC`
+
+  const params = [
+    { name: 'pupilUrlSlug', value: pupilUrlSlug, type: TYPES.UniqueIdentifier },
+    { name: 'schoolId', value: schoolId, type: TYPES.Int }
+  ]
+
+  const restarts = await sqlService.query(sql, params)
+
+  return R.head(restarts)
+}
+
+/**
+ * Find a check by id
+ * @param checkId
+ * @param schoolId
+ * @return {Promise<void>}
+ */
+pupilRestartDataService.sqlFindCheckById = async function (checkId, schoolId) {
+  const sql = `SELECT 
+                chk.*,
+                cs.code
+               FROM [mtc_admin].[check] chk join
+                    [mtc_admin].[pupil] p ON (chk.pupil_id = p.id) join
+                    [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+               WHERE
+                    chk.id = @checkId
+               AND p.school_id = @schoolId`
+
+  const params = [
+    { name: 'checkId', value: checkId, type: TYPES.Int },
+    { name: 'schoolId', value: schoolId, type: TYPES.Int }
+  ]
+
+  const check = await sqlService.query(sql, params)
+  return R.head(check)
+}
+
 module.exports = pupilRestartDataService
