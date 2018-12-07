@@ -71,7 +71,8 @@ async function getCurrentPupilData (pupilId) {
     chk.id as check_id,
     chkStatus.code as checkStatusCode,
     pr.id as pupilRestart_id,
-    pr.check_id as pupilRestart_check_id 
+    pr.check_id as pupilRestart_check_id,
+    pa.id as pupilAttendance_id
   FROM 
         ${sqlService.adminSchema}.[pupil] p
         INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
