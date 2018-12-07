@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "applicationinsights": "^1.0.7",
-    "archiver": "^2.1.1",
+    "archiver": "^3.0.0",
     "azure-storage": "^2.8.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
