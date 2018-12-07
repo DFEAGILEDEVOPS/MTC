@@ -11,7 +11,7 @@ CREATE VIEW [mtc_admin].[vewPupilRegister] AS
          ISNULL(g.name, '-') as groupName,
          ps.code as pupilStatusCode,
          lastCheck.id as lastCheckId,
-         cs.code as checkStatusCode,
+         cs.code as lastCheckStatusCode,
          lastPupilRestart.id as pupilRestartId,
          lastPupilRestart.check_id as pupilRestartCheckId
 
