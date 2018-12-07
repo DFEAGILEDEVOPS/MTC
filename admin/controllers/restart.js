@@ -22,7 +22,11 @@ controller.getRestartOverview = async (req, res, next) => {
   let restarts
   let pinGenerationEligibilityData
   try {
-    restarts = await restartService.getSubmittedRestarts(req.user.School)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
+    } else {
+      restarts = await restartService.getSubmittedRestarts(req.user.School)
+    }
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
@@ -140,10 +144,10 @@ controller.postSubmitRestartList = async (req, res, next) => {
 }
 
 controller.postDeleteRestart = async (req, res, next) => {
-  let deleted
-  const pupilId = req.body && req.body.pupilId
+  let pupil
+  const pupilSlug = req.body && req.body.pupil
   try {
-    deleted = await restartService.markDeleted(pupilId, req.user.id)
+    pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
@@ -151,14 +155,14 @@ controller.postDeleteRestart = async (req, res, next) => {
   // Ask for these pupils to have their status updated
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      await pupilStatusService.recalculateStatusByPupilIds([pupilId], req.user.schoolId)
+      await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
     }
   } catch (error) {
     winston.error('Failed to recalculate pupil status')
     throw error
   }
 
-  req.flash('info', `Restart removed for ${deleted.lastName}, ${deleted.foreName}`)
+  req.flash('info', `Restart removed for ${pupil.lastName}, ${pupil.foreName}`)
   return res.redirect('/restart/overview')
 }
 
