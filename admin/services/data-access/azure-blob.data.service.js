@@ -1,6 +1,7 @@
 'use strict'
 
 const azureStorage = require('azure-storage')
+const bluebird = require('bluebird')
 const config = require('../../config')
 
 let blobService
@@ -9,18 +10,21 @@ if (config.AZURE_STORAGE_CONNECTION_STRING) {
   blobService = azureStorage.createBlobService()
 }
 
-const service = {
-  getBlobText: async (containerName, blobName) => {
+bluebird.promisifyAll(blobService, {
+  promisifier: (originalFunction) => function (...args) {
     return new Promise((resolve, reject) => {
-      if (!blobService) {
-        return reject(new Error('Azure Storage Connection String required'))
+      try {
+        originalFunction.call(this, ...args, (error, result, response) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve({ result, response })
+        })
+      } catch (error) {
+        return reject(error)
       }
-      blobService.getBlobToText(containerName, blobName, (error, text) => {
-        if (error) return reject(error)
-        return resolve(text)
-      })
     })
   }
-}
+})
 
-module.exports = service
+module.exports = blobService
