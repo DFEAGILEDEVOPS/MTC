@@ -3,10 +3,7 @@
 # exit on error
 set -e
 
-<<<<<<< HEAD
-=======
 # depends on admin modules, so need install first
->>>>>>> feature/27185-load-test-data
 cd ../admin
 npm install
 cd ../load-test

@@ -7,6 +7,10 @@ const fs = require('fs-extra')
 const path = require('path')
 const winston = require('winston')
 
+/*
+Creates a CSV of logins for teacher1.....teacher18000 for use in JMeter
+*/
+
 async function main () {
   winston.info('Writing to CSV...')
   const csvHeaders = ['username', 'password']
