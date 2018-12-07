@@ -10,7 +10,7 @@ const service = {
       return ncaPublicKey
     }
     if (config.Certificates.Azure.BlobContainer) {
-      const file = await azureBlobDataService.getBlobText(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.NcaToolsPublicKeyName)
+      const file = await azureBlobDataService.getBlobToTextAsync(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.NcaToolsPublicKeyName)
       ncaPublicKey = file
       return ncaPublicKey
     }
@@ -23,7 +23,7 @@ const service = {
     }
 
     if (config.Certificates.Azure.BlobContainer) {
-      const file = await azureBlobDataService.getBlobText(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.MtcPrivateKeyName)
+      const file = await azureBlobDataService.getBlobToTextAsync(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.MtcPrivateKeyName)
       mtcPrivateKey = file
       return mtcPrivateKey
     }
