@@ -94,7 +94,7 @@ async function expireRestarts (checkData) {
   if (!pupilRestarts) {
     return
   }
-  
+
   const pupilRestartIds = pupilRestarts.map(p => p.id)
 
   // Clear the `check_id` fields of the pupil restarts, so they can generate another pin
