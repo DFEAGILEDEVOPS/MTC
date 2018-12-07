@@ -32,6 +32,11 @@ module.exports = async function (context, completedCheckMessage) {
     throw error
   }
 
+  if (!canCompleteCheck(checkData.code)) {
+    context.log.error(`completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.code}`)
+    return // consume the message
+  }
+
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
@@ -216,4 +221,24 @@ async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
   ]
 
   return sqlService.modify(sql, params)
+}
+
+/**
+ * Function that determines if the check should be accepted or rejected
+ * @param code - the current check status `code` from the master DB
+ * @return {boolean}
+ */
+function canCompleteCheck (code) {
+  let result = false
+  switch (code) {
+    case 'COL': // Collected (started msg may have git lost)
+    case 'STD': // Started
+    case 'NTR': // Not received
+    case 'EXP': // Expired
+      result = true
+      break
+    default:
+      result = false
+  }
+  return result
 }
