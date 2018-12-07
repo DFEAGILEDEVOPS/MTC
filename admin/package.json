@@ -22,7 +22,7 @@
     "node": ">= 8.11"
   },
   "dependencies": {
-    "applicationinsights": "^0.22.0",
+    "applicationinsights": "^1.0.7",
     "archiver": "^2.1.1",
     "azure-storage": "^2.8.0",
     "bcryptjs": "^2.4.3",
