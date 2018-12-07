@@ -24,7 +24,7 @@ async function main () {
 
   try {
     const teacherCount = 18000
-    let current = 1
+    let current = 0
     while (current < teacherCount) {
       current++
       csvStream.write([`teacher${current}`, 'password'])
