@@ -15,7 +15,7 @@ const groupsNamesMock = groupsMock.map(g => g.name)
 describe('group.service', () => {
   let sandbox
 
-  beforeEach(() => { sandbox = sinon.sandbox.create() })
+  beforeEach(() => { sandbox = sinon.createSandbox() })
   afterEach(() => { sandbox.restore() })
 
   describe('#getGroups', () => {
