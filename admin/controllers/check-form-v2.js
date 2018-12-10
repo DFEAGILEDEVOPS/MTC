@@ -1,3 +1,4 @@
+const checkFormV2Service = require('../services/check-form-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -26,7 +27,7 @@ controller.getViewFormsPage = async (req, res, next) => {
  * @param error
  * @returns {Promise.<void>}
  */
-controller.getUploadNewFormsPage = async (req, res, next, error) => {
+controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
   req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
   res.locals.pageTitle = 'Upload new form'
   try {
@@ -49,7 +50,17 @@ controller.getUploadNewFormsPage = async (req, res, next, error) => {
  * @returns {Promise.<*>}
  */
 controller.postUpload = async (req, res, next) => {
-  // This is placeholder method
+  const uploadData = req.files && req.files.csvFile
+  const requestData = req.body
+  try {
+    await checkFormV2Service.processData(uploadData, requestData)
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return controller.getUploadNewFormsPage(req, res, next, error)
+    }
+    return next(error)
+  }
+  // req.flash('info', `Successfully uploaded`)
   res.redirect('/check-form/view-forms')
 }
 
