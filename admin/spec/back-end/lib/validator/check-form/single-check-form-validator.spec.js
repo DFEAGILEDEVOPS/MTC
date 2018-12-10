@@ -35,7 +35,7 @@ describe('singleCheckFormValidator', function () {
         const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
         expect(singleCheckFormErrors).toEqual([
           `${fileName} ${checkFormErrorMessages.invalidNumberOfItems}`,
-          `${fileName} ${checkFormErrorMessages.invalidNumberOfIntegers}`
+          `${fileName} ${checkFormErrorMessages.invalidNumberOfTotalQuestionFactors}`
         ])
       })
       it('and returns a validation error object with not a readable file', async () => {
@@ -50,7 +50,7 @@ describe('singleCheckFormValidator', function () {
         const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
         expect(singleCheckFormErrors).toEqual([
           `${fileName} ${checkFormErrorMessages.invalidNumberOfColumns}`,
-          `${fileName} ${checkFormErrorMessages.invalidNumberOfIntegers}`
+          `${fileName} ${checkFormErrorMessages.invalidNumberOfTotalQuestionFactors}`
         ])
       })
       it('and returns a validation error object with invalid characters', async () => {

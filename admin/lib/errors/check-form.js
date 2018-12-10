@@ -7,7 +7,7 @@ module.exports = {
   'duplicateCheckFormName': 'already exists. Rename and upload again',
   'isNotReadable': 'can\'t be read',
   'invalidNumberOfItems': `must contain exactly ${config.LINES_PER_CHECK_FORM} items`,
-  'invalidNumberOfIntegers': `must contain exactly ${config.LINES_PER_CHECK_FORM * 2} integers`,
+  'invalidNumberOfTotalQuestionFactors': `must contain exactly ${config.LINES_PER_CHECK_FORM * 2} integers`,
   'invalidIntegers': `must only contain numbers ${config.CHECK_FORM_MIN_INTEGER} to ${config.CHECK_FORM_MAX_INTEGER}`,
   'invalidNumberOfColumns': 'must contain exactly 2 columns',
   'invalidFileCharacters': 'Check file format for',

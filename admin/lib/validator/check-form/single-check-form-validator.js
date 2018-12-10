@@ -81,7 +81,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     csvErrors.push(`${checkFormErrorMessages.invalidFileCharacters} ${checkFormName}`)
   }
   if (checkFormIntegerCount !== (config.LINES_PER_CHECK_FORM * 2)) {
-    csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfIntegers}`)
+    csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfTotalQuestionFactors}`)
   }
   return csvErrors
 }
