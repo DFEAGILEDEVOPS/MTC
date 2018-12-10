@@ -7,12 +7,20 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
-export = {
+export default {
   PORT: process.env.PORT || '3003',
   Logging: {
+    LogLevel: process.env.LOG_LEVEL || 'debug',
     Express: {
       UseWinston: process.env.hasOwnProperty('EXPRESS_LOGGING_WINSTON') ? toBool(process.env.EXPRESS_LOGGING_WINSTON) : false
+    },
+    ApplicationInsights: {
+      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
+      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
+  },
+  Cors: {
+    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
   },
   Environment: getEnvironment(),
   AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING
