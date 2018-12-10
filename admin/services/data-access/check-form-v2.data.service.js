@@ -19,10 +19,14 @@ const checkFormV2DataService = {
     `
     return sqlService.query(sql)
   },
-  sqlInsertCheckForms: async (checkFormData) => {
+  sqlInsertCheckForms: async (checkFormData, isFamiliarisationCheckFormUpdate) => {
     const params = []
     const queries = []
     const inserts = []
+
+    if (isFamiliarisationCheckFormUpdate) {
+      queries.push(`DELETE ${sqlService.adminSchema}.${table} WHERE isLiveCheckForm = 0`)
+    }
 
     checkFormData.forEach((cf, idx) => {
       inserts.push(`(@name${idx}, @formData${idx}, @isLiveCheckForm${idx})`)
@@ -44,9 +48,9 @@ const checkFormV2DataService = {
     })
 
     const insertSql = `INSERT INTO ${sqlService.adminSchema}.${table} (
-      name, 
-      formData, 
-      isLiveCheckForm 
+      name,
+      formData,
+      isLiveCheckForm
       ) VALUES`
 
     queries.push([insertSql, inserts.join(', \n')].join(' '))

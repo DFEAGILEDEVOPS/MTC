@@ -18,12 +18,9 @@ checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   if (validationError.hasError()) {
     throw validationError
   }
-  const hasExistingFamiliarisationCheckForms = existingCheckForms.some(ecf => !ecf.isLiveCheckForm)
-  if (checkFormType === 'F' && hasExistingFamiliarisationCheckForms) {
-    await checkFormV2DataService.sqlDeleteFamiliarisationCheckForm()
-  }
+  const isFamiliarisationCheckFormUpdate = checkFormType === 'F' && existingCheckForms.some(ecf => !ecf.isLiveCheckForm)
   const checkFormData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, checkFormType)
-  return checkFormV2DataService.sqlInsertCheckForms(checkFormData)
+  return checkFormV2DataService.sqlInsertCheckForms(checkFormData, isFamiliarisationCheckFormUpdate)
 }
 
 /**

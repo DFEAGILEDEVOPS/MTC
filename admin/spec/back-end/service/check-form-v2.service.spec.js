@@ -13,7 +13,6 @@ describe('check-form-v2.service', () => {
     let requestData
     beforeEach(() => {
       spyOn(checkFormV2Service, 'prepareSubmissionData')
-      spyOn(checkFormV2DataService, 'sqlDeleteFamiliarisationCheckForm')
       spyOn(checkFormV2DataService, 'sqlInsertCheckForms')
       uploadData = { filename: 'filename' }
       requestData = { checkFormType: 'L' }
@@ -46,35 +45,6 @@ describe('check-form-v2.service', () => {
       expect(checkFormsValidator.validate).toHaveBeenCalled()
       expect(checkFormV2Service.prepareSubmissionData).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).not.toHaveBeenCalled()
-    })
-    it('deletes existing familiarisation check forms if a new one is being submitted', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([{ id: 1, isLiveCheckForm: false }])
-      spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
-      try {
-        requestData.checkFormType = 'F'
-        await checkFormV2Service.saveCheckForms(uploadData, requestData)
-      } catch (error) {
-        fail()
-      }
-      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
-      expect(checkFormsValidator.validate).toHaveBeenCalled()
-      expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlDeleteFamiliarisationCheckForm).toHaveBeenCalled()
-    })
-    it('does not delete existing familiarisation check forms if the submitted type is live', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([{ id: 1, isLiveCheckForm: false }])
-      spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
-      try {
-        await checkFormV2Service.saveCheckForms(uploadData, requestData)
-      } catch (error) {
-        fail()
-      }
-      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
-      expect(checkFormsValidator.validate).toHaveBeenCalled()
-      expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlDeleteFamiliarisationCheckForm).not.toHaveBeenCalled()
     })
   })
   describe('prepareSubmissionData', () => {
