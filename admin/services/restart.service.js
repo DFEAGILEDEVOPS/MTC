@@ -197,11 +197,11 @@ restartService.getStatus = async pupilId => {
  */
 restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
+  const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
 
   if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
     // see if there is a check associated with this restart, ideally the slug
     // would refer to the restart itself, and not the pupil.
-    const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
     if (restart.check_id) {
       const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
       await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
@@ -214,7 +214,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
   }
 
-  await pupilRestartDataService.sqlMarkRestartAsDeleted(pupil.id, userId)
+  await pupilRestartDataService.sqlMarkRestartAsDeleted(restart.id, userId)
   return pupil
 }
 

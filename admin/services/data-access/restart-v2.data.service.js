@@ -42,16 +42,21 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
            pr.check_id as restartCheckAllocation,
            vct.totalCheckCount,
            cs.code
-    FROM   
-           [mtc_admin].[pupilRestart] pr join
+    FROM
+           (
+              SELECT *,
+              ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
+              FROM [mtc_admin].[pupilRestart]
+              WHERE isDeleted = 0
+           )  pr join
            [mtc_admin].[pupil] p ON (pr.pupil_id = p.id) join
            [mtc_admin].[pupilRestartReason] rr ON (pr.pupilRestartReason_id = rr.id) left join
            [mtc_admin].[check] c ON (pr.check_id = c.id) left join
            [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id) left join
            [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
     WHERE
-           p.school_id = @schoolId
-    AND    pr.isDeleted = 0
+           pr.rank = 1
+    AND    p.school_id = @schoolId
     ORDER BY
            p.lastName, p.foreName, p.middleNames, p.dateOfBirth;
   `
