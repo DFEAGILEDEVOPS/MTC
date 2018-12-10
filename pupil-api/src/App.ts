@@ -3,23 +3,17 @@
 import 'dotenv/config'
 
 import * as express from 'express'
-import * as morgan from 'morgan'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as helmet from 'helmet'
 import * as uuidV4 from 'uuid/v4'
 import * as winston from 'winston'
-import * as expressWinston from 'express-winston'
 import * as azure from './azure'
-const config = require('./config')
+const corsOptions = require('./helpers/cors-options')
+const setupLogging = require('./helpers/logger')
 
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
-
-let logLevel = 'error'
-if (process.env.NODE_ENV !== 'production') {
-  logLevel = 'debug'
-}
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -38,34 +32,22 @@ class App {
 
   // Configure Express middleware.
   private middleware (): void {
-    if (config.Logging.Express.UseWinston === true) {
-      /**
-       * Express logging to winston
-       */
-      this.express.use(expressWinston.logger({
-        transports: [
-          new winston.transports.Console({
-            json: true,
-            colorize: true,
-            level: logLevel
-          })
-        ],
-        meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-        // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-        expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-        colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-        ignoreRoute: function (req, res) {
-          return false
-        } // optional: allows to skip some log messages based on request and/or response
-      }))
-    } else {
-      this.express.use(morgan('dev'))
-    }
+
+    /* Logging */
+
+    setupLogging(this.express)
 
     /* Security Directives */
 
-    this.express.use(cors())
+    this.express.use(cors(corsOptions))
     this.express.use(helmet())
+
+    /* Swagger API documentation */
+
+    if (process.env.NODE_ENV !== 'production') {
+      const swaggerUI = require('swagger-ui-express')
+      this.express.use('/api-docs', swaggerUI.serve, swaggerUI.setup(require('./swagger.json')))
+    }
 
     // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
     const oneYearInSeconds = 31536000
