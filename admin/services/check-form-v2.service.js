@@ -6,18 +6,18 @@ const checkFormV2Service = {}
 
 /**
  * Validates and submits check form file(s)
- * @param uploadData
- * @param requestData
+ * @param {Array | Object} uploadData
+ * @param {Object} requestData
  */
 checkFormV2Service.processData = async (uploadData, requestData) => {
-  // If single file is being attempted only convert it to an array for consistency
+  // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
   const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()
   const validationError = await checkFormsValidator.validate(uploadedFiles, requestData, existingCheckForms)
   if (validationError.hasError()) {
     throw validationError
   }
-  const checkFormData = await checkFormV2Service.prepareData(uploadedFiles, requestData)
+  const checkFormData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, requestData)
   return checkFormV2DataService.sqlInsertCheckForms(checkFormData)
 }
 
@@ -27,7 +27,7 @@ checkFormV2Service.processData = async (uploadData, requestData) => {
  * @param requestData
  * @returns checkFormData
  */
-checkFormV2Service.prepareData = async (uploadedFiles, requestData) => {
+checkFormV2Service.prepareSubmissionData = async (uploadedFiles, requestData) => {
   const { checkFormType } = requestData
   return Promise.all(uploadedFiles.map(async uploadedFile => {
     const singleFormData = []

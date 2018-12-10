@@ -16,8 +16,9 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   let fileBuffer
   const csvErrors = []
   // No file provided
-  if (!uploadedFile) {
+  if (!uploadedFile || !uploadedFile.filename) {
     csvErrors.push(checkFormErrorMessages.noFile)
+    return csvErrors
   }
   const checkFormName = uploadedFile.filename.replace(/\.[^/.]+$/, '')
   // File type not CSV
@@ -33,9 +34,10 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     fileBuffer = fs.readFileSync(uploadedFile.file, 'utf8')
   } catch (err) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.isNotReadable}`)
+    return csvErrors
   }
-  const fileContent = fileBuffer.toString()
-  const fileLines = fileContent.split('\n').length - 1
+  const fileContent = fileBuffer && fileBuffer.toString()
+  const fileLines = fileContent && fileContent.split('\n').length - 1
   // Invalid total file lines
   if (fileLines !== config.LINES_PER_CHECK_FORM) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfItems}`)
@@ -52,11 +54,13 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
           hasInvalidNumberOfColumns = true
         }
         // Invalid integers
-        if (row && row[0] && row[1] && (row[0] < config.CHECK_FORM_MIN_INTEGER || row[0] > config.CHECK_FORM_MAX_INTEGER || row[1] < config.CHECK_FORM_MIN_INTEGER || row[1] > config.CHECK_FORM_MAX_INTEGER)) {
+        if (row && row[0] && row[1] &&
+          (row[0] < config.CHECK_FORM_MIN_INTEGER || row[0] > config.CHECK_FORM_MAX_INTEGER ||
+            row[1] < config.CHECK_FORM_MIN_INTEGER || row[1] > config.CHECK_FORM_MAX_INTEGER)) {
           hasInvalidIntegers = true
         }
         // Invalid characters
-        if (row[0].match(/[^0-9]/) || row[1].match(/[^0-9]/)) {
+        if ((row[0] && row[0].match(/[^0-9]/)) || (row[1] && row[1].match(/[^0-9]/))) {
           hasInvalidFileCharacters = true
         }
         checkFormIntegerCount += row.length
