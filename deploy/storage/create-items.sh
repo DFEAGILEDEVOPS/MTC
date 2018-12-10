@@ -1,5 +1,8 @@
 #!/bin/bash
 
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+jsonSource="$scriptDir/tables-queues.json"
+
 # exit on error
 set -e
 
@@ -16,7 +19,7 @@ allowedOrigins=$3
 # set the cors rule for the queues
 az storage cors add --methods POST --origins $allowedOrigins --services q --account-name $storageAccountName --account-key $storageAccountKey
 
-declare -a queuenames=('check-started' 'check-complete' 'prepare-check' 'pupil-feedback' 'pupil-login' 'pupil-prefs' 'pupil-status' 'prepared-check-sync')
+declare -a queuenames=( $(jq -r '.queues[]' $jsonSource) )
 # create queues if they do not exist
 for q in "${queuenames[@]}"
 do
@@ -24,7 +27,7 @@ do
 	az storage queue create --name $q --account-name $storageAccountName --account-key $storageAccountKey
 done
 
-declare -a tablenames=('preparedCheck' 'pupilEvent')
+declare -a tablenames=( $(jq -r '.tables[]' $jsonSource) )
 # create tables if they do not exist
 for t in "${tablenames[@]}"
 do
