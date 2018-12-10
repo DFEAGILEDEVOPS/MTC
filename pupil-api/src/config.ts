@@ -20,7 +20,7 @@ export default {
     }
   },
   Cors: {
-    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
+    Whitelist: process.env.CORS_WHITELIST || ''
   },
   Environment: getEnvironment(),
   AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING

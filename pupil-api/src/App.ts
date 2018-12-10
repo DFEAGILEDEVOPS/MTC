@@ -3,24 +3,17 @@
 import 'dotenv/config'
 
 import * as express from 'express'
-import * as morgan from 'morgan'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as helmet from 'helmet'
 import * as uuidV4 from 'uuid/v4'
 import * as winston from 'winston'
-import * as expressWinston from 'express-winston'
 import * as azure from './azure'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
 
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
-
-let logLevel = 'error'
-if (process.env.NODE_ENV !== 'production') {
-  logLevel = 'debug'
-}
 
 // Creates and configures an ExpressJS web server.
 class App {
