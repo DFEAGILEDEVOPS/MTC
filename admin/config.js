@@ -23,7 +23,11 @@ module.exports = {
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   TIME_BETWEEN_QUESTIONS: 3,
+  CHECK_FORM_NAME_MAX_CHARACTERS: 128,
+  CHECK_FORM_MIN_INTEGER: 1,
+  CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: 25,
+  MAX_CHECK_FORM_FILES_SINGLE_UPLOAD: 10,
   MIGRATE_FULL_SCHOOL_DATASET: process.env.hasOwnProperty('MIGRATE_FULL_SCHOOL_DATASET') ? toBool(process.env.MIGRATE_FULL_SCHOOL_DATASET) : true,
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
