@@ -3,8 +3,7 @@
 import * as http from 'http'
 import * as debug from 'debug'
 import * as winston from 'winston'
-
-const config = require('./config')
+import config from './config'
 
 import App from './App'
 
