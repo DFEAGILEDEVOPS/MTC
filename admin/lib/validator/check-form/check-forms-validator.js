@@ -20,7 +20,7 @@ module.exports.validate = async (uploadedFiles, requestData, existingCheckForms)
   const multipleFileErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormType)
   const fileErrors = R.flatten(R.concat(singleFileErrors, multipleFileErrors))
   if (fileErrors.length > 0) {
-    validationError.addError('csvFile', fileErrors)
+    validationError.addError('csvFiles', fileErrors)
   }
   // Missing check form type
   if (!checkFormType || (checkFormType !== 'L' && checkFormType !== 'F')) {

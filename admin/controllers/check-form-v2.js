@@ -15,7 +15,8 @@ controller.getViewFormsPage = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('check-form/view-forms', {
     checkForms: [],
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    messages: res.locals.messages
   })
 }
 
@@ -34,7 +35,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('check-form/upload-new-forms', {
       breadcrumbs: req.breadcrumbs(),
-      error: error || new ValidationError(),
+      errors: error || new ValidationError(),
       formData: req.body
     })
   } catch (error) {
@@ -60,7 +61,7 @@ controller.postUpload = async (req, res, next) => {
     }
     return next(error)
   }
-  // req.flash('info', `Successfully uploaded`)
+  req.flash('info', `${req.files.csvFiles.length} check forms have been successfully uploaded`)
   res.redirect('/check-form/view-forms')
 }
 
