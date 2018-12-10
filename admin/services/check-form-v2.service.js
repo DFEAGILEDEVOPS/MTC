@@ -5,11 +5,11 @@ const checkFormsValidator = require('../lib/validator/check-form/check-forms-val
 const checkFormV2Service = {}
 
 /**
- * Validates and submits check form file(s)
+ * Validates and save check form file(s) to the db
  * @param {Array | Object} uploadData
  * @param {Object} requestData
  */
-checkFormV2Service.processData = async (uploadData, requestData) => {
+checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
   const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()

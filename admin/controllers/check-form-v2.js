@@ -50,10 +50,10 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
  * @returns {Promise.<*>}
  */
 controller.postUpload = async (req, res, next) => {
-  const uploadData = req.files && req.files.csvFile
+  const uploadData = req.files && req.files.csvFiles
   const requestData = req.body
   try {
-    await checkFormV2Service.processData(uploadData, requestData)
+    await checkFormV2Service.saveCheckForms(uploadData, requestData)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return controller.getUploadNewFormsPage(req, res, next, error)

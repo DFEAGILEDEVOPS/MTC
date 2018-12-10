@@ -8,7 +8,7 @@ const checkFormsValidator = require('../../../lib/validator/check-form/check-for
 const ValidationError = require('../../../lib/validation-error')
 
 describe('check-form-v2.service', () => {
-  describe('processData', () => {
+  describe('saveCheckForms', () => {
     let uploadData
     let requestData
     beforeEach(() => {
@@ -21,7 +21,7 @@ describe('check-form-v2.service', () => {
     it('calls prepareData and sqlInsertCheckForms when no validation error is detected', async () => {
       spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
       try {
-        await checkFormV2Service.processData(uploadData, requestData)
+        await checkFormV2Service.saveCheckForms(uploadData, requestData)
       } catch (error) {
         fail()
       }
@@ -35,7 +35,7 @@ describe('check-form-v2.service', () => {
       validationError.addError('csvFile', 'error')
       spyOn(checkFormsValidator, 'validate').and.returnValue(validationError)
       try {
-        await checkFormV2Service.processData(uploadData, requestData)
+        await checkFormV2Service.saveCheckForms(uploadData, requestData)
         fail()
       } catch (error) {
         expect(error.name).toBe('ValidationError')
