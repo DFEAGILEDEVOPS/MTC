@@ -1,8 +1,9 @@
 'use strict'
-
 /* global describe beforeEach it expect jasmine spyOn */
+
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-form-v2')
+const checkFormV2Service = require('../../../services/check-form-v2.service')
 
 describe('check form v2 controller:', () => {
   let next
@@ -57,18 +58,31 @@ describe('check form v2 controller:', () => {
       method: 'POST',
       url: '/check-forms/upload',
       files: {
-        csvFile: [{ filename: 'filename1' }, { filename: 'filename2' }]
+        csvFiles: [{ filename: 'filename1' }, { filename: 'filename2' }]
       },
       body: {
         checkFormType: 'L'
       }
     }
-    it('submits uploaded check form for validation and submission', async () => {
+    it('submits uploaded check form data processing', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
+      spyOn(checkFormV2Service, 'saveCheckForms')
       await controller.postUpload(req, res, next)
+      expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
+    })
+    it('submits uploaded check form data processing', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      const error = new Error('error')
+      spyOn(checkFormV2Service, 'saveCheckForms').and.returnValue(Promise.reject(error))
+      await controller.postUpload(req, res, next)
+      expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
     })
   })
 })
