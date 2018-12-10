@@ -1,50 +1,51 @@
 # MTC Pupil API
 
-Required environment variables
+## Dependencies
 
-`AZURE_STORAGE_CONNECTION_STRING` - connection to azure storage account.
+You need to have node installed
 
-Optional environment variables
-`ENVIRONMENT_NAME` - name of the environment this API is running in.
+- [node](https://nodejs.org/) - Node javascript runtime
+- [NPM packages](https://www.npmjs.org) installed globally (for developers): `yarn`
+- [Docker](https://www.docker.com/get-docker) - Docker to run containers
 
-## Application healthcheck
+We recommend developers manage their `node` and `npm` packages using [nvm](http://nvm.sh)
 
-**Endpoint**: GET - http://localhost:3003/ping
+## Packages
 
-**Description**: Returns current server time.  
-Also inclues last commit and build deployment details if generated during build. 
+You _can_ use npm to install application packages, but we prefer [yarn](https://yarnpkg.com/lang/en/)
+You can then install all required dependencies by running:
 
+`yarn install`
 
-#### Header
-```
-{
-}
-```
+See the [package.json](./package.json) file for the full list of npm dependencies.
 
+## Running the application
 
-#### Body
-```
-```
+`AZURE_STORAGE_CONNECTION_STRING=xxx yarn start`
 
-## Authentication and data collection
+Will launch the app in development mode on http://localhost:3003/
 
-**Endpoint**: POST - http://localhost:3003/auth
+CORS is disabled in development. In production the whitelist can be configured using the CORS_WHITELIST environment variable.
 
-**Description**: Used to authenticate a pupil logging in on the SPA and send back the SPA data required to take a check.
+## Swagger API Documentation
 
-#### Header
-```
-{
-	Content-Type: application/json
-}
-```
+When running in development the api documentation can be found at http://localhost:3003/api-docs
 
+## Environment Variables
 
-#### Body
-```
-{
-	"pupilPin": "<some pin>",
-	"schoolPin": "<some pin>"
-}
-```
+dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,
+if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
+* AZURE_STORAGE_CONNECTION_STRING - (required) - Storage account for upload file storage and queues.  Upload is only enabled for
+    production environments, but the queues are used by all environments.
+* ENVIRONMENT_NAME - string - defaults to `Local-Dev`
+* PORT - number - defaults to `3003`
+* LOG_LEVEL - string - defaults to `debug`
+* EXPRESS_LOGGING_WINSTON - bool - defaults to `false`
+* CORS_WHITELIST - string - defaults to `http://localhost:4200` Can be a comma separated list
+* APPINSIGHTS_WINSTON_LOGGER - bool - defaults to `false`
+* APPINSIGHTS_INSTRUMENTATIONKEY - string
+
+## Running the test suite
+
+`yarn test`
