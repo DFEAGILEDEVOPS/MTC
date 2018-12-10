@@ -47,10 +47,21 @@ describe('check form v2 controller:', () => {
     it('renders upload new form view', async () => {
       const res = getRes()
       const req = getReq(reqParams)
+      spyOn(checkFormV2Service, 'hasExistingFamiliarisationCheckForm')
       spyOn(res, 'render')
       await controller.getUploadNewFormsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Upload new form')
       expect(res.render).toHaveBeenCalled()
+    })
+    it('returns next if service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      const error = new Error('error')
+      spyOn(checkFormV2Service, 'hasExistingFamiliarisationCheckForm').and.returnValue(Promise.reject(error))
+      spyOn(res, 'render')
+      await controller.getUploadNewFormsPage(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
     })
   })
   describe('postUpload route', () => {

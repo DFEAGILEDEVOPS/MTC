@@ -1,5 +1,6 @@
 'use strict'
 
+const R = require('ramda')
 const { TYPES } = require('tedious')
 
 const sqlService = require('./sql.service')
@@ -51,6 +52,22 @@ const checkFormV2DataService = {
     queries.push([insertSql, inserts.join(', \n')].join(' '))
     const sql = queries.join('\n')
     return sqlService.modify(sql, params)
+  },
+
+  sqlFindFamiliarisationCheckForm: async () => {
+    const sql = `
+    SELECT *
+    FROM ${sqlService.adminSchema}.${table}
+    WHERE isLiveCheckForm = 0`
+    const result = await sqlService.query(sql)
+    return R.head(result)
+  },
+
+  sqlDeleteFamiliarisationCheckForm: async () => {
+    const sql = `
+    DELETE FROM ${sqlService.adminSchema}.${table}
+    WHERE isLiveCheckForm = 0`
+    return sqlService.modify(sql)
   }
 }
 

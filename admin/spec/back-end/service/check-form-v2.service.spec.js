@@ -12,13 +12,14 @@ describe('check-form-v2.service', () => {
     let uploadData
     let requestData
     beforeEach(() => {
-      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms')
       spyOn(checkFormV2Service, 'prepareSubmissionData')
+      spyOn(checkFormV2DataService, 'sqlDeleteFamiliarisationCheckForm')
       spyOn(checkFormV2DataService, 'sqlInsertCheckForms')
       uploadData = { filename: 'filename' }
       requestData = { checkFormType: 'L' }
     })
     it('calls prepareData and sqlInsertCheckForms when no validation error is detected', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
       spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
       try {
         await checkFormV2Service.saveCheckForms(uploadData, requestData)
@@ -31,6 +32,7 @@ describe('check-form-v2.service', () => {
       expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
     })
     it('does not call prepareData and sqlInsertCheckForms when validation error is detected', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
       const validationError = new ValidationError()
       validationError.addError('csvFile', 'error')
       spyOn(checkFormsValidator, 'validate').and.returnValue(validationError)
@@ -45,11 +47,40 @@ describe('check-form-v2.service', () => {
       expect(checkFormV2Service.prepareSubmissionData).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).not.toHaveBeenCalled()
     })
+    it('deletes existing familiarisation check forms if a new one is being submitted', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([{ id: 1, isLiveCheckForm: false }])
+      spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
+      try {
+        requestData.checkFormType = 'F'
+        await checkFormV2Service.saveCheckForms(uploadData, requestData)
+      } catch (error) {
+        fail()
+      }
+      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
+      expect(checkFormsValidator.validate).toHaveBeenCalled()
+      expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlDeleteFamiliarisationCheckForm).toHaveBeenCalled()
+    })
+    it('does not delete existing familiarisation check forms if the submitted type is live', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([{ id: 1, isLiveCheckForm: false }])
+      spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
+      try {
+        await checkFormV2Service.saveCheckForms(uploadData, requestData)
+      } catch (error) {
+        fail()
+      }
+      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
+      expect(checkFormsValidator.validate).toHaveBeenCalled()
+      expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlDeleteFamiliarisationCheckForm).not.toHaveBeenCalled()
+    })
   })
   describe('prepareSubmissionData', () => {
     it('reads valid csv and extracts submission data', async () => {
       const fileDir = 'spec/back-end/mocks/check-forms/check-form-valid.csv'
-      const requestData = { checkFormType: 'L' }
+      const checkFormType = 'L'
       const uploadedFiles = [
         {
           filename: 'filename1',
@@ -67,11 +98,23 @@ describe('check-form-v2.service', () => {
         question.f2 = parseInt(dataRow[1], 10)
         formData.push(question)
       })
-      const submissionData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, requestData)
+      const submissionData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, checkFormType)
       expect(submissionData).toBeDefined()
       expect(submissionData[0].name).toBe('filename1')
       expect(submissionData[0].isLiveCheckForm).toBe(1)
       expect(submissionData[0].formData).toEqual(JSON.stringify(formData))
+    })
+  })
+  describe('hasExistingFamiliarisationCheckForm', () => {
+    it('finds a familiarisation check form and returns true to indicate it exists', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindFamiliarisationCheckForm').and.returnValue({ id: 1 })
+      const result = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
+      expect(result).toBeTruthy()
+    })
+    it('finds a familiarisation check form and returns true to indicate it exists', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindFamiliarisationCheckForm').and.returnValue({})
+      const result = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
+      expect(result).toBeFalsy()
     })
   })
 })

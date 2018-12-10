@@ -51,8 +51,9 @@
 
         <h2 class="heading-medium">Upload file(s)</h2>
 
-        <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="upload-form">
+        <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="<%= hasExistingFamiliarisationCheckForm %>" />
             <% const csvErrors = errors.get('csvFiles') %>
             <div class="form-group<% if (csvErrors && csvErrors.length > 0) { %> form-group-error<% } %>">
                 <% if (csvErrors) { %>
@@ -115,3 +116,18 @@
         </form>
     </div>
 </div>
+
+<%- partial('partials/_modal_box', {
+  modalTitle: 'Overwrite form',
+  modalText: 'There can only be one familiarisation form. Are you sure you want to overwrite the current form?',
+  modalConfirmationLabel: 'Yes',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'No',
+  modalCancelUrl: '#'
+}) %>
+
+<script>
+  $(function () {
+    window.GOVUK.checkForms()
+  })
+</script>

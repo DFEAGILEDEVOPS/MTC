@@ -10,6 +10,7 @@ const checkFormV2Service = {}
  * @param {Object} requestData
  */
 checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
+  const { checkFormType } = requestData
   // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
   const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()
@@ -17,18 +18,21 @@ checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   if (validationError.hasError()) {
     throw validationError
   }
-  const checkFormData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, requestData)
+  const hasExistingFamiliarisationCheckForms = existingCheckForms.some(ecf => !ecf.isLiveCheckForm)
+  if (checkFormType === 'F' && hasExistingFamiliarisationCheckForms) {
+    await checkFormV2DataService.sqlDeleteFamiliarisationCheckForm()
+  }
+  const checkFormData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, checkFormType)
   return checkFormV2DataService.sqlInsertCheckForms(checkFormData)
 }
 
 /**
  * Prepares data for submission to the db
- * @param uploadedFiles
- * @param requestData
+ * @param {Array} uploadedFiles
+ * @param {String} checkFormType
  * @returns checkFormData
  */
-checkFormV2Service.prepareSubmissionData = async (uploadedFiles, requestData) => {
-  const { checkFormType } = requestData
+checkFormV2Service.prepareSubmissionData = async (uploadedFiles, checkFormType) => {
   return Promise.all(uploadedFiles.map(async uploadedFile => {
     const singleFormData = []
     const checkForm = {}
@@ -49,6 +53,15 @@ checkFormV2Service.prepareSubmissionData = async (uploadedFiles, requestData) =>
         .on('error', error => reject(error))
     })
   }))
+}
+
+/**
+ * Identifies whether a familiarisation check form already exists in the db
+ * @returns {Boolean}
+ */
+checkFormV2Service.hasExistingFamiliarisationCheckForm = async () => {
+  const familiarisationCheckForm = await checkFormV2DataService.sqlFindFamiliarisationCheckForm()
+  return Boolean(familiarisationCheckForm && familiarisationCheckForm.id)
 }
 
 module.exports = checkFormV2Service

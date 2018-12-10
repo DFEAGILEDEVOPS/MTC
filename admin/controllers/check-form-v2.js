@@ -31,16 +31,19 @@ controller.getViewFormsPage = async (req, res, next) => {
 controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
   req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
   res.locals.pageTitle = 'Upload new form'
+  let hasExistingFamiliarisationCheckForm
   try {
-    req.breadcrumbs(res.locals.pageTitle)
-    res.render('check-form/upload-new-forms', {
-      breadcrumbs: req.breadcrumbs(),
-      errors: error || new ValidationError(),
-      formData: req.body
-    })
+    hasExistingFamiliarisationCheckForm = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
   } catch (error) {
-    next(error)
+    return next(error)
   }
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('check-form/upload-new-forms', {
+    breadcrumbs: req.breadcrumbs(),
+    errors: error || new ValidationError(),
+    formData: req.body,
+    hasExistingFamiliarisationCheckForm
+  })
 }
 
 /**
@@ -61,7 +64,8 @@ controller.postUpload = async (req, res, next) => {
     }
     return next(error)
   }
-  req.flash('info', `${req.files.csvFiles.length} check forms have been successfully uploaded`)
+  const checkFormsLength = Array.isArray(req.files.csvFiles) ? req.files.csvFiles.length : 1
+  req.flash('info', `${checkFormsLength} check forms have been successfully uploaded`)
   res.redirect('/check-form/view-forms')
 }
 
