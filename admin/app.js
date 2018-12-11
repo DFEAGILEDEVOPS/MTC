@@ -88,19 +88,6 @@ app.use((req, res, next) => {
   next()
 })
 
-// force HTTPS in azure
-app.use((req, res, next) => {
-  if (azure.isAzure()) {
-    if (req.protocol !== 'https') {
-      res.redirect(`https://${req.header('host')}${req.url}`)
-    }
-  } else {
-    next()
-  }
-})
-
-/* END:Security Directives */
-
 require('./helpers/index')(app)
 
 // view engine setup
