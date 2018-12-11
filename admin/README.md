@@ -118,19 +118,15 @@ In devDependencies, make sure you have npm-run-all:
 
 `"npm-run-all": "^4.0.2",`
 
-`"nodemon": "^1.11.0",`
-
 If not, install them.
 
 In scripts, have the following:
-
-`"startn": "nodemon ./server.js",`
 
 `"sasswatch": "gulp watch"`
 
 On the console:
 
-`npm-run-all --parallel sasswatch startn`
+`npm-run-all --parallel sasswatch`
 
 ## Docker Compose
 
