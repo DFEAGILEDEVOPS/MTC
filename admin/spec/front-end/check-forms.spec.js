@@ -109,7 +109,6 @@ describe('check-forms', function () {
     const checkFormSubmit = $('#upload-check-forms')
     checkFormSubmit.trigger('click')
     $('#js-modal-confirmation-button').trigger('click')
-    expect($('#js-modal-box')[0].classList[1]).toBeUndefined()
     expect(formSubmitSpy).toHaveBeenCalled()
   })
 })
