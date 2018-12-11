@@ -5,7 +5,7 @@ class AccessArrangementsSettingPage < SitePrism::Page
   element :information, '.aa-lead-size', text: 'You have the following settings on your check'
   elements :access_arrangements_list, '.list li'
 
-  element :input_assistance_message, '.column-two-thirds', text: 'Please enter the first and last name of the input assistant that will be helping you through the check'
+  element :input_assistance_message, '.aa-contrast-border', text: 'Please enter the first and last name of the input assistant that will be helping you through the check'
   element :input_assistance_first_name, '#inputAssistantFirstName'
   element :input_assistance_last_name, '#inputAssistantLastName'
 

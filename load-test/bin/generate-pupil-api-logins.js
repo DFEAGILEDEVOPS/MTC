@@ -1,5 +1,11 @@
 'use strict'
 
+/*
+NO LONGER USED.
+generates sequenced pupil and school pins as a json array.
+Created for testing the pupil API in isolation from loader.io.
+*/
+
 require('dotenv').config()
 
 const entriesToCreate = process.env.LOAD_COUNT || 1000
