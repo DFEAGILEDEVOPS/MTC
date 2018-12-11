@@ -41,7 +41,7 @@ describe('completed check controller', () => {
       }
     })
 
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
 
     goodReq = httpMocks.createRequest({
       method: 'POST',

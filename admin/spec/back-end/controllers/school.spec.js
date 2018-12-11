@@ -35,7 +35,7 @@ describe('school controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
     })
 
