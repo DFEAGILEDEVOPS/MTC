@@ -2,9 +2,8 @@
 
 // these modules must be loaded first
 require('dotenv').config()
-const config = require('./config')
 // telemetry
-if (config.Monitoring.NewRelic.LicenceKey) {
+if (process.env.NEW_RELIC_LICENSE_KEY) {
   // use newrelic over app insights
   console.log('initialising newrelic for telemetry')
   require('newrelic')
@@ -17,6 +16,7 @@ if (config.Monitoring.NewRelic.LicenceKey) {
 // non priority modules...
 const breadcrumbs = require('express-breadcrumbs')
 const busboy = require('express-busboy')
+const config = require('./config')
 const csurf = require('csurf')
 const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
