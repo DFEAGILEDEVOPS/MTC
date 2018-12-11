@@ -45,7 +45,7 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
     })
 
@@ -158,7 +158,7 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
       controller = require('../../../controllers/pupil.js').getAddMultiplePupils
     })
@@ -204,7 +204,7 @@ describe('pupil controller:', () => {
       }
     }
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
     })
 
@@ -318,7 +318,7 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
       controller = require('../../../controllers/pupil.js').getErrorCSVFile
     })

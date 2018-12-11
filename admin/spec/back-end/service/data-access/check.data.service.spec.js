@@ -10,7 +10,7 @@ describe('check.data.service', () => {
   let service, sandbox
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
 
   afterEach(() => sandbox.restore())
