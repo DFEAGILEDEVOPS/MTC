@@ -76,10 +76,7 @@ module.exports = {
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     },
-    ApplicationInsights: {
-      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
-      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
-    }
+    SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
   },
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   Certificates: {
@@ -106,5 +103,16 @@ module.exports = {
   Azure: {
     queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',
     tablePrefix: process.env.AZURE_TABLE_PREFIX || ''
+  },
+  Monitoring: {
+    NewRelic: {
+      LicenceKey: process.env.NEW_RELIC_LICENSE_KEY,
+      ApplicationName: process.env.NEW_RELIC_APP_NAME
+    },
+    ApplicationInsights: {
+      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS,
+      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS
+    }
   }
 }
