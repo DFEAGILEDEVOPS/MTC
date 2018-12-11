@@ -1,33 +1,43 @@
 'use strict'
 
+// these modules must be loaded first
 require('dotenv').config()
+// telemetry
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+  // use newrelic over app insights
+  console.log('initialising newrelic for telemetry')
+  require('newrelic')
+} else {
+  // fallback to app insights, if configured
+  const appInsights = require('./helpers/app-insights')
+  appInsights.startInsightsIfConfigured()
+}
 
+// non priority modules...
+const breadcrumbs = require('express-breadcrumbs')
+const busboy = require('express-busboy')
+const config = require('./config')
+const csurf = require('csurf')
+const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
+const expressValidator = require('express-validator')
+const featureToggles = require('feature-toggles')
+const flash = require('connect-flash')
+const LocalStrategy = require('passport-local').Strategy
 const piping = require('piping')
 const path = require('path')
-const busboy = require('express-busboy')
 const partials = require('express-partials')
-const uuidV4 = require('uuid/v4')
-const expressValidator = require('express-validator')
 const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const CustomStrategy = require('passport-custom').Strategy
-const session = require('express-session')
-const TediousSessionStore = require('connect-tedious')(session)
-const breadcrumbs = require('express-breadcrumbs')
-const flash = require('connect-flash')
-const config = require('./config')
-const azure = require('./azure')
-const featureToggles = require('feature-toggles')
-const winston = require('winston')
 const R = require('ramda')
-const csurf = require('csurf')
-const setupLogging = require('./helpers/logger')
+const session = require('express-session')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
+const setupLogging = require('./helpers/logger')
+const TediousSessionStore = require('connect-tedious')(session)
+const uuidV4 = require('uuid/v4')
+const winston = require('winston')
 
 const app = express()
 setupLogging(app)
-azure.startInsightsIfConfigured()
 
 /**
  * Load feature toggles
@@ -77,16 +87,6 @@ setupBrowserSecurity(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
-
-// azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
-// if production ensure x-forwarded-proto is https OR x-arr-ssl is present
-app.use((req, res, next) => {
-  if (azure.isAzure()) {
-    app.enable('trust proxy')
-    req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
-  }
-  next()
-})
 
 require('./helpers/index')(app)
 
