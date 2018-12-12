@@ -21,11 +21,11 @@ async function batched () {
   let teacherIndex = 1
   while (currentBatch < totalBatches) {
     winston.info(`creating batch ${currentBatch}`)
-    const csvHeaders = ['username', 'password']
+    // const csvHeaders = ['username', 'password']
     const csvStream = csv.format()
     const writableStream = fs.createWriteStream(path.join(__dirname, `${currentBatch}-teacherLogins.csv`))
     csvStream.pipe(writableStream)
-    csvStream.write(csvHeaders)
+    // csvStream.write(csvHeaders)
     let batchIndex = 0
     while (batchIndex < batchSize) {
       batchIndex++
