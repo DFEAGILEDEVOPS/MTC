@@ -88,4 +88,4 @@ This command above takes the following arguments:
 * `-o` Generated HTML Report with visual outputs of the test
 * `-JadminAppHost` Admin app Host URL (adminAppHost is the variable name used in jmeter host field)
 * `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
-* `-Jramp` Ramp-up period  in milliseconds (ramp is the variable name used for ramp up field)
+* `-Jramp` Ramp-up period  in seconds (ramp is the variable name used for ramp up field)
