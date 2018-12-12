@@ -15,12 +15,11 @@ const teacherCount = 18000
 const batchSize = 1000
 const totalBatches = teacherCount / batchSize
 
-async function main () {
+async function batched () {
   winston.info(`creating ${totalBatches} csv file `)
   let currentBatch = 0
   let teacherIndex = 1
   while (currentBatch < totalBatches) {
-    currentBatch++
     winston.info(`creating batch ${currentBatch}`)
     const csvHeaders = ['username', 'password']
     const csvStream = csv.format()
@@ -34,10 +33,11 @@ async function main () {
       teacherIndex++
     }
     csvStream.end()
+    currentBatch++
   }
 }
 
-async function old () {
+async function single () {
   winston.info('Writing to CSV...')
   const csvHeaders = ['username', 'password']
   const csvStream = csv.format()
@@ -61,4 +61,4 @@ async function old () {
   }
 }
 
-main()
+batched()
