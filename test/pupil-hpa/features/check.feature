@@ -20,12 +20,6 @@ Feature: Check questions
     Given I have started the check
     Then the route remains the same
 
-  Scenario: Users can see the answer box with numpad removal enabled
-    Given I logged in with user with access arrangement 'Remove on-screen number pad'
-    Given I have started the check
-    When the loading screen has expired
-    Then I should be able to see the input answer box
-
   Scenario: Users can enter answers by using their physical keyboard
     Given I have started the check
     Then I can answer the question using their physical keyboard

@@ -39,18 +39,6 @@ Then(/^I could not answer the question within the configured number of seconds$/
   expect(check_page).to have_preload
 end
 
-Then(/^I should be able to see the input answer box$/) do
-  size = page.driver.evaluate_script <<-EOS
-    function() {
-      var ele  = document.getElementById('js-answer');
-      var rect = ele.getBoundingClientRect();
-      return [rect.width, rect.height];
-    }();
-  EOS
-  expect(size[0]).to be > 0
-  expect(size[1]).to be > 0
-end
-
 Then(/^I should be moved to the next question$/) do
   check_page.wait_for_question
   expect(check_page.question.text).to_not eql @question
