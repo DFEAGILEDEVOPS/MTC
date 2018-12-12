@@ -10,3 +10,4 @@ DELETE FROM mtc_admin.answer
 DELETE FROM mtc_admin.checkResult
 DELETE FROM mtc_admin.sessions
 DELETE FROM mtc_admin.auditLog
+UPDATE mtc_admin.pupil SET pupilStatus_id = 1
