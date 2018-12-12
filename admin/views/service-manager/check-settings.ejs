@@ -12,18 +12,18 @@
 
         <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
         <div class="info-message">
-            Changes have been saved
+            Question timings updated
         </div>
         <% } %>
 
         <% if (error.hasError()) { %>
         <div class="error-summary top-padding-30" role="group" aria-labelledby="error-summary-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-1">Check the settings details</h2>
-            <p>Question time and time between questions are measured in seconds.</p>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
 
             <% if (error.hasError()) { %>
             <ul class="error-summary-list">
-            <% ['questionTimeLimit', 'loadingTimeLimit'].map(errorKey => { %>
+            <% ['questionTimeLimit', 'loadingTimeLimit', 'checkTimeLimit'].map(errorKey => { %>
                 <% if (error.isError(errorKey)) { %>
                 <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
                 <% } %>
@@ -37,14 +37,14 @@
 
         <%- partial('partials/_session_expiry') %>
 
-        <p class="lede" id="lead-paragraph">Adjust question timings.</p>
+        <p class="lede" id="lead-paragraph">Adjust settings which apply to the pupil check only</p>
 
         <form action="/service-manager/check-settings" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group">
                 <label for="questionTimeLimit" class="form-label-bold">
                     Question time limit
-                    <span class="form-hint">For example, 5 for 5 seconds</span>
+                    <span class="form-hint">For example, 6  for 6 seconds. Possible to 2 decimal places.</span>
                     <% if (error.isError('questionTimeLimit')) { %>
                     <span class="error-message"><%= error.get('questionTimeLimit') %></span>
                     <% } %>
@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label for="loadingTimeLimit" class="form-label-bold">
                     Time between questions
-                    <span class="form-hint">For example, 2 for 2 seconds</span>
+                    <span class="form-hint">For example, 3 for 3 seconds. Possible to 2 decimal places.</span>
                     <% if (error.isError('loadingTimeLimit')) { %>
                     <span class="error-message"><%= error.get('loadingTimeLimit') %></span>
                     <% } %>
@@ -72,6 +72,22 @@
                        value="<%= settings.loadingTimeLimit %>"
                        aria-required="true"
                        aria-label="Time between questions.">
+            </div>
+            <div class="form-group">
+                <label for="loadingTimeLimit" class="form-label-bold">
+                    Maximum length of check
+                    <span class="form-hint">How long an individual has to complete the check before being signed out automatically. For example, 30 for 30 minutes.</span>
+                    <% if (error.isError('checkTimeLimit')) { %>
+                    <span class="error-message"><%= error.get('checkTimeLimit') %></span>
+                    <% } %>
+                </label>
+                <input class="form-control narrow-width"
+                       id="checkTimeLimit"
+                       name="checkTimeLimit"
+                       type="text"
+                       value="<%= settings.checkTimeLimit %>"
+                       aria-required="true"
+                       aria-label="Maximum length of check.">
             </div>
 
             <div class="form-buttons">
