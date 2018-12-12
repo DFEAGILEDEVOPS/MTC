@@ -2,16 +2,42 @@
 
 'use strict'
 
+/*
+Creates a CSV of logins for teacher1.....teacher18000 for use in JMeter
+*/
+
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 const path = require('path')
 const winston = require('winston')
 
-/*
-Creates a CSV of logins for teacher1.....teacher18000 for use in JMeter
-*/
+const teacherCount = 18000
+const batchSize = 1000
+const totalBatches = teacherCount / batchSize
 
-async function main () {
+async function batched () {
+  winston.info(`creating ${totalBatches} csv file `)
+  let currentBatch = 0
+  let teacherIndex = 1
+  while (currentBatch < totalBatches) {
+    winston.info(`creating batch ${currentBatch}`)
+    // const csvHeaders = ['username', 'password']
+    const csvStream = csv.format()
+    const writableStream = fs.createWriteStream(path.join(__dirname, `${currentBatch}-teacherLogins.csv`))
+    csvStream.pipe(writableStream)
+    // csvStream.write(csvHeaders)
+    let batchIndex = 0
+    while (batchIndex < batchSize) {
+      batchIndex++
+      csvStream.write([`teacher${teacherIndex}`, 'password'])
+      teacherIndex++
+    }
+    csvStream.end()
+    currentBatch++
+  }
+}
+
+async function single () {
   winston.info('Writing to CSV...')
   const csvHeaders = ['username', 'password']
   const csvStream = csv.format()
@@ -23,7 +49,6 @@ async function main () {
   })
 
   try {
-    const teacherCount = 18000
     let current = 0
     while (current < teacherCount) {
       current++
@@ -36,4 +61,4 @@ async function main () {
   }
 }
 
-main()
+batched()
