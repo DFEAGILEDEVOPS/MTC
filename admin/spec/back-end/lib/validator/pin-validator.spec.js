@@ -8,7 +8,7 @@ describe('pin-validator', () => {
   let pinExpiredAt
   describe('isActivePin', () => {
     let sandbox
-    beforeEach(() => { sandbox = sinon.sandbox.create() })
+    beforeEach(() => { sandbox = sinon.createSandbox() })
     afterEach(() => sandbox.restore())
     describe('returns true if the pin is active', () => {
       beforeEach(() => {

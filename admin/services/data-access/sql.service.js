@@ -74,9 +74,9 @@ const createParamIdentifiers = R.compose(
  * @type {Function}
  */
 const createMultipleParamIdentifiers = (data) => data.map((d, idx) => R.compose(
-    R.join(' , '),
-    R.map(paramNameWithIdx(idx)),
-    R.keys
+  R.join(' , '),
+  R.map(paramNameWithIdx(idx)),
+  R.keys
 )(d))
 
 /**
@@ -367,29 +367,29 @@ sqlService.generateInsertStatement = async (table, data) => {
  * @return {{sql: string, params}}
  */
 sqlService.generateMultipleInsertStatements = async (table, data) => {
-    if (!Array.isArray(data)) throw new Error('Insert data is not an array')
-    const paramsWithTypes = await generateParams(table, R.head(data))
-    const headers = extractColumns(R.head(data))
-    const values = createMultipleParamIdentifiers(data).join('), (')
-    let params = []
-    data.forEach((datum, idx) => {
-      params.push(
-        R.map((key) => {
-          const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
-          return {
-            ...sameParamWithType,
-            name: `${key}${idx}`,
-            value: (sameParamWithType.type.type === 'DATETIMEOFFSETN' ? moment(datum[key]) : datum[key])
-          }
-        }, R.keys(datum))
-      )
-    })
-    params = R.flatten(params)
-    winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
-    const sql = `
+  if (!Array.isArray(data)) throw new Error('Insert data is not an array')
+  const paramsWithTypes = await generateParams(table, R.head(data))
+  const headers = extractColumns(R.head(data))
+  const values = createMultipleParamIdentifiers(data).join('), (')
+  let params = []
+  data.forEach((datum, idx) => {
+    params.push(
+      R.map((key) => {
+        const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
+        return {
+          ...sameParamWithType,
+          name: `${key}${idx}`,
+          value: (sameParamWithType.type.type === 'DATETIMEOFFSETN' ? moment(datum[key]) : datum[key])
+        }
+      }, R.keys(datum))
+    )
+  })
+  params = R.flatten(params)
+  winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`
-    return { sql, params }
+  return { sql, params }
 }
 
 /**

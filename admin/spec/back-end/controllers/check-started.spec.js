@@ -32,7 +32,7 @@ describe('check started controller', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

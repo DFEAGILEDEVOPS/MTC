@@ -43,7 +43,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
+      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
       spyOn(pupilStatusService, 'recalculateStatusByPupilSlugs')
     })

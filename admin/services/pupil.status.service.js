@@ -15,6 +15,7 @@ const pupilStatusService = {}
  * Fetch pupil's status description
  * @param pupil
  * @returns {String}
+ * @deprecated - this makes too many SQL calls
  */
 pupilStatusService.getStatus = async (pupil) => {
   // pupils is from SQL server

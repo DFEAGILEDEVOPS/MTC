@@ -3,6 +3,7 @@ const moment = require('moment')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
+const checkStateService = require('../../../services/check-state.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
 const pinService = require('../../../services/pin.service')
 const restartService = require('../../../services/restart.service')
@@ -19,7 +20,7 @@ describe('restart.service', () => {
   let sandbox
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
 
   afterEach(() => sandbox.restore())
@@ -194,10 +195,15 @@ describe('restart.service', () => {
 
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
-      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(pupilMock)
       spyOn(checkDataService, 'sqlFindLastStartedCheckByPupilId').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
+      spyOn(checkStateService, 'changeState')
+      spyOn(pupilRestartDataService, 'sqlFindOpenRestartForPupil').and.returnValue({
+        id: 1,
+        check_id: 42
+      })
       const deleted = await restartService.markDeleted(pupilMock.id)
       expect(deleted).toBeDefined()
     })

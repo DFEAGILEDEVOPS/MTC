@@ -5,6 +5,7 @@ const uuid = require('uuid/v4')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
+const sqlUtils = require('../lib/sql-helper')
 const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-validator')
 
 const v1 = {}
@@ -12,6 +13,22 @@ const v1 = {}
 v1.process = async function process (context, preparedCheckSyncMessage) {
   const { checkCode } = preparedCheckSyncMessage
   context.log('prepared-check-sync: message received', checkCode)
+  const checks = await sqlUtils.sqlFindChecksByCheckCode(checkCode)
+  checks.map(async (check) => {
+    await v1.updatePreparedChecks(context, check.checkCode)
+  })
+  context.bindings.pupilEventsTable = []
+  const entity = {
+    PartitionKey: checkCode,
+    RowKey: uuid(),
+    eventType: 'prepared-check-sync',
+    payload: JSON.stringify(preparedCheckSyncMessage),
+    processedAt: moment().toDate()
+  }
+  context.bindings.pupilEventsTable.push(entity)
+}
+
+v1.updatePreparedChecks = async function (context, checkCode) {
   let preparedCheck
   try {
     preparedCheck = await azureStorageHelper.getFromPreparedCheckTableStorage(azureTableService, checkCode, context.log)
@@ -35,15 +52,6 @@ v1.process = async function process (context, preparedCheckSyncMessage) {
     config: JSON.stringify(newConfig)
   }
   await azureTableService.insertOrMergeEntityAsync(preparedCheckTable, updatedEntity, null)
-  context.bindings.pupilEventsTable = []
-  const entity = {
-    PartitionKey: checkCode,
-    RowKey: uuid(),
-    eventType: 'prepared-check-sync',
-    payload: JSON.stringify(preparedCheckSyncMessage),
-    processedAt: moment().toDate()
-  }
-  context.bindings.pupilEventsTable.push(entity)
 }
 
 v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangements, context) {

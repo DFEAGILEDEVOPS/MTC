@@ -39,7 +39,7 @@ const v1 = {
 
     await azureStorageHelper.addMessageToQueue('pupil-status', {
       version: 1,
-      checkCode: message.checkCode,
+      checkCode: message.checkCode.toUpperCase(),
       pupilId: check.pupil_id
     })
   }
