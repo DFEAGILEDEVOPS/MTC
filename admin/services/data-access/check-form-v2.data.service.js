@@ -33,7 +33,7 @@ const checkFormV2DataService = {
     const inserts = []
 
     if (isFamiliarisationCheckFormUpdate) {
-      queries.push(`DELETE ${sqlService.adminSchema}.${table} WHERE isLiveCheckForm = 0`)
+      queries.push(`UPDATE ${sqlService.adminSchema}.${table} SET isDeleted = 1 WHERE isLiveCheckForm = 0`)
     }
 
     checkFormData.forEach((cf, idx) => {
