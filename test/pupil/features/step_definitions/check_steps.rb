@@ -68,7 +68,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
   expect(check_page.question.text).to_not eql @question
 end
 
-Then(/^I can answer the question using their phsyical keyboard$/) do
+Then(/^I can answer the question using their physical keyboard$/) do
   check_page.wait_for_preload
   check_page.wait_for_question
   @question = check_page.question.text
