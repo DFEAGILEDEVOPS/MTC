@@ -5,9 +5,11 @@ const config = require('../config')
 const {
   getBuildNumber
 } = require('./healthcheck')
+const winston = require('winston')
 
 const startInsightsIfConfigured = async () => {
   if (config.Monitoring.ApplicationInsights.Key) {
+    winston.info('initialising application insights module')
     appInsights.setup()
       .setAutoDependencyCorrelation(true)
       .setAutoCollectRequests(true)
