@@ -40,10 +40,10 @@ Execute `./start.sh` to clear storage account contents, start SQL Server Docker 
 start the admin app with `yarn start`
 
 ## Seed load test data (non-local test only)
-The scenarios have low defaults (2 users) so they can be executed quickly in a local environment.  However, when performing load test at scale you will want to seed the database with a high volume of users (teachers) and pupils  
-* While in `load-test/bin` directory:
-    * The following command will execute a node script which takes a password as an optional argument and will generate one teacher for each school in the database: `node generate-teacher-load-test-data.js`
-    * To set a custom password (i.e. 'newpassword') run: `node generate-teacher-load-test-data.js newpassword`
+The scenarios have low defaults (2 users) so they can be executed quickly in a local environment.  However, when performing load test at scale you will want to seed the database with a high volume of users (teachers) and pupils
+* From the `load-test` directory:
+    * Execute: `node bin/generate-teacher-for-each-school.js` to generate a teacher for each school (will not overwrite existing ones)
+    * Execute: `node bin/generate-pupil-data.js` to generate 40 pupils for each school
 
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
@@ -53,7 +53,7 @@ The scenarios have low defaults (2 users) so they can be executed quickly in a l
 * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing:
     * While in the `load-test` directory:
     * `node bin/extract-pins-to-csv.js`
-    
+
 ## Execute pupil load test
 * Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter pupil check load test in CLI mode
 * mkdir reports
@@ -88,4 +88,4 @@ This command above takes the following arguments:
 * `-o` Generated HTML Report with visual outputs of the test
 * `-JadminAppHost` Admin app Host URL (adminAppHost is the variable name used in jmeter host field)
 * `-Jthreads` Number of Threads(users) (threads is the variable name used in thread field)
-* `-Jramp` Ramp-up period  in milliseconds (ramp is the variable name used for ramp up field)
+* `-Jramp` Ramp-up period  in seconds (ramp is the variable name used for ramp up field)

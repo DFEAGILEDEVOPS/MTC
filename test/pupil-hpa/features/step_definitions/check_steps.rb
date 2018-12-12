@@ -40,6 +40,12 @@ Then(/^I could not answer the question within the configured number of seconds$/
   expect(check_page).to have_preload
 end
 
+Then(/^I should be able to see the input answer box and no number pad$/) do
+  check_page.wait_for_question
+  expect(check_page).to have_answer
+  expect(check_page).to have_no_number_pad
+end
+
 Then(/^I should be moved to the next question$/) do
   check_page.wait_for_question
   expect(check_page.question.text).to_not eql @question
@@ -69,7 +75,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
   expect(check_page.question.text).to_not eql @question
 end
 
-Then(/^I can answer the question using their phsyical keyboard$/) do
+Then(/^I can answer the question using their physical keyboard$/) do
   check_page.wait_for_preload
   check_page.wait_for_question
   @question = check_page.question.text
@@ -143,7 +149,6 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   end
 end
 
-
 Given(/^I am on the MTC check start page$/) do
   step 'I have generated a live pin'
   step 'I have logged in'
@@ -158,7 +163,6 @@ Then(/^I should see the number of questions$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   expect(mtc_check_start_page.questions.text).to include "There will be #{questions.size} questions."
 end
-
 
 Then(/^I should see the question and timer$/) do
   step 'I should see a question'

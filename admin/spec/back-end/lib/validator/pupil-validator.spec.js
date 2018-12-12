@@ -41,7 +41,7 @@ describe('pupil validator', function () {
     }
 
     // Mock the call to check uniqueness on the pupil
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     done()
   })
 

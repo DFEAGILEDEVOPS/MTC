@@ -47,3 +47,9 @@ Feature: Access Arrangements
     Given I logged in with user with the access arrangement 'Colour contrast'
     Then I should see the colour contrast page matches design
     And I should be taken to the Welcome page once i have chosen a colour
+
+  Scenario: Users can see the answer box with numpad removal enabled
+    Given I logged in with user with access arrangement 'Remove on-screen number pad'
+    When I start the check with no numpad
+    When the loading screen has expired
+    Then I should be able to see the input answer box and no number pad

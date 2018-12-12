@@ -11,7 +11,7 @@ describe('File validator', function () {
   let sandbox
 
   beforeEach(function (done) {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     done()
   })
   afterEach(() => {
