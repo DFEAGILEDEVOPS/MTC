@@ -52,9 +52,11 @@ $(function () {
 
     applySortClass: function (headerEl) {
       // Remove sort classes from headers
-      document.querySelectorAll('thead tr th span').forEach(function (el) {
-        el.className = 'sort-icon'
-      })
+      var nodeList = document.querySelectorAll('thead tr th span')
+      for (var i=0; i<nodeList.length; i++) {
+        nodeList[i].className = 'sort-icon'
+      }
+
       // Display sorting class based on sorting behavior
       if (headerEl.asc === undefined) {
         headerEl.getElementsByTagName('span')[0].className = 'sort-icon desc'
@@ -64,22 +66,35 @@ $(function () {
     },
 
     /**
-     * Performs sorting for the supplied table
+     * Setup sorting for the supplied table
      * @param {Object} document
      * @param {String} tableId
      * @param {String} config
      */
     applySorting: function (document, tableId, config) {
       // Listen for click events and perform sorting
-      document.querySelectorAll('th').forEach(function (th) {
-        return th.addEventListener('click', function () {
-          window.GOVUK.tableSort.applySortClass(this)
-          var tbody = document.querySelector('#' + tableId + ' tbody')
-          Array.from(tbody.querySelectorAll('tr'))
-            .sort(window.GOVUK.tableSort.comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = this.asc !== undefined ? !this.asc : false, config))
-            .forEach(function (tr) {
-              return tbody.appendChild(tr)
-            })
+      var thNodeList = document.querySelectorAll('th')
+
+      for (var i=0; i<thNodeList.length; i++) {
+        var th = thNodeList[i]
+        window.GOVUK.tableSort.setUpClickHandler(th, i, tableId, config)
+      }
+    },
+
+    setUpClickHandler: function (th, i, tableId, config) {
+      th.addEventListener('click', function () {
+        window.GOVUK.tableSort.applySortClass(this)
+        var tbody = document.querySelector('#' + tableId + ' tbody')
+        var trNodeList = tbody.querySelectorAll('tr')
+        var trList = [].slice.call(trNodeList)
+
+        trList.sort(window.GOVUK.tableSort.comparer(
+          i,
+          this.asc = this.asc !== undefined ? !this.asc : false,
+          config)
+        )
+        .forEach(function (tr) {
+          return tbody.appendChild(tr)
         })
       })
     }

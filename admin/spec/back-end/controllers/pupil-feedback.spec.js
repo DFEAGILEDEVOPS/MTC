@@ -20,7 +20,7 @@ const reject = () => Promise.reject(new Error('pupil feedback mock error'))
 
 describe('Pupil Feedback controller', () => {
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
 
     const jwtPromise = new Promise((resolve, reject) => {
       jwtPromiseHelper = {
