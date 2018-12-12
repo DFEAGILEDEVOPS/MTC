@@ -74,7 +74,8 @@ const checkFormV2DataService = {
     const sql = `
     SELECT *
     FROM ${sqlService.adminSchema}.${table}
-    WHERE isLiveCheckForm = 0`
+    WHERE isLiveCheckForm = 0
+    AND isDeleted = 0`
     const result = await sqlService.query(sql)
     return R.head(result)
   }
