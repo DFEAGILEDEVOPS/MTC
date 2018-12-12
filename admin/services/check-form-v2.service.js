@@ -1,5 +1,6 @@
 const csv = require('fast-csv')
 
+const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2DataService = require('./data-access/check-form-v2.data.service')
 const checkFormsValidator = require('../lib/validator/check-form/check-forms-validator')
 const checkFormV2Service = {}
@@ -64,6 +65,11 @@ checkFormV2Service.prepareSubmissionData = async (uploadedFiles, checkFormType) 
 checkFormV2Service.hasExistingFamiliarisationCheckForm = async () => {
   const familiarisationCheckForm = await checkFormV2DataService.sqlFindFamiliarisationCheckForm()
   return Boolean(familiarisationCheckForm && familiarisationCheckForm.id)
+}
+
+checkFormV2Service.getSavedForms = async () => {
+  const savedForms = await checkFormV2DataService.sqlFindAllCheckForms()
+  return checkFormPresenter.getPresentationListData(savedForms)
 }
 
 module.exports = checkFormV2Service

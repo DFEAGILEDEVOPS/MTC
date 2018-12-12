@@ -3,6 +3,7 @@
 
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-form-v2')
+const checkFormPresenter = require('../../../helpers/check-form-presenter')
 const checkFormV2Service = require('../../../services/check-form-v2.service')
 
 describe('check form v2 controller:', () => {
@@ -34,8 +35,10 @@ describe('check form v2 controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(checkFormV2Service, 'getSavedForms')
       await controller.getViewFormsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Upload and view forms')
+      expect(checkFormV2Service.getSavedForms).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
   })
@@ -80,8 +83,10 @@ describe('check form v2 controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
       spyOn(checkFormV2Service, 'saveCheckForms')
+      spyOn(checkFormPresenter, 'getHighlightData')
       await controller.postUpload(req, res, next)
       expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
+
       expect(res.redirect).toHaveBeenCalled()
     })
     it('submits uploaded check form data processing', async () => {
@@ -90,8 +95,10 @@ describe('check form v2 controller:', () => {
       spyOn(res, 'redirect')
       const error = new Error('error')
       spyOn(checkFormV2Service, 'saveCheckForms').and.returnValue(Promise.reject(error))
+      spyOn(checkFormPresenter, 'getHighlightData')
       await controller.postUpload(req, res, next)
       expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
+      expect(checkFormPresenter.getHighlightData).not.toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
     })

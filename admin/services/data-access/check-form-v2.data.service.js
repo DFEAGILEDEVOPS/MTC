@@ -63,7 +63,7 @@ const checkFormV2DataService = {
 
     queries.push([insertSql, inserts.join(', \n')].join(' '))
     const sql = queries.join('\n')
-    return sqlService.modify(sql, params)
+    return sqlService.query(sql, params)
   },
 
   /**

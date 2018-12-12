@@ -1,3 +1,4 @@
+const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2Service = require('../services/check-form-v2.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -12,9 +13,15 @@ const controller = {}
  */
 controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
+  let checkForms
+  try {
+    checkForms = await checkFormV2Service.getSavedForms()
+  } catch (error) {
+    return next(error)
+  }
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('check-form/view-forms', {
-    checkForms: [],
+    checkForms,
     breadcrumbs: req.breadcrumbs(),
     messages: res.locals.messages
   })
@@ -64,8 +71,8 @@ controller.postUpload = async (req, res, next) => {
     }
     return next(error)
   }
-  const checkFormsLength = Array.isArray(req.files.csvFiles) ? req.files.csvFiles.length : 1
-  req.flash('info', `${checkFormsLength} check forms have been successfully uploaded`)
+  const highlightData = checkFormPresenter.getHighlightData(uploadData)
+  req.flash('info', highlightData)
   res.redirect('/check-form/view-forms')
 }
 
