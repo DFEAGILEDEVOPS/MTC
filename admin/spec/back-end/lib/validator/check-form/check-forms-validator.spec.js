@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect, spyOn */
+/* global describe, it, expect, spyOn beforeEach */
 
 const checkFormErrorMessages = require('../../../../../lib/errors/check-form')
 const checkFormValidator = require('../../../../../lib/validator/check-form/check-forms-validator')
@@ -7,6 +7,13 @@ const singleCheckFormValidator = require('../../../../../lib/validator/check-for
 const multipleCheckFormsValidator = require('../../../../../lib/validator/check-form/multiple-check-forms-validator')
 
 describe('checkFormValidator', function () {
+  let checkFormTypes
+  beforeEach(() => {
+    checkFormTypes = {
+      familiarisation: 'F',
+      live: 'L'
+    }
+  })
   describe('validate', function () {
     describe('calls single check form, multiple check form validation and validates check form type', () => {
       it('and returns a validation error object with no errors', async () => {
@@ -15,7 +22,7 @@ describe('checkFormValidator', function () {
         const uploadedFiles = [{ filename: 'filename' }]
         const requestData = { checkFormType: 'L' }
         const existingCheckForms = {}
-        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms)
+        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
         expect(validationError.hasError()).toBeFalsy()
       })
       it('and returns a validation error object with errors occurring from singleCheckFormValidator and multipleCheckFormsValidator validators', async () => {
@@ -24,7 +31,7 @@ describe('checkFormValidator', function () {
         const uploadedFiles = [{ filename: 'filename' }]
         const requestData = { checkFormType: 'L' }
         const existingCheckForms = {}
-        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms)
+        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
         expect(validationError.errors).toEqual({
           csvFiles: [ 'error1', 'error2' ]
         })
@@ -35,7 +42,7 @@ describe('checkFormValidator', function () {
         const uploadedFiles = [{ filename: 'filename' }]
         const requestData = { checkFormType: '' }
         const existingCheckForms = {}
-        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms)
+        const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
         expect(validationError.errors).toEqual({
           checkFormType: checkFormErrorMessages.missingCheckFormType
         })

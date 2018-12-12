@@ -5,19 +5,15 @@ const multipleCheckFormsValidator = require('./multiple-check-forms-validator')
 const singleCheckFormValidator = require('./single-check-form-validator')
 const ValidationError = require('../../validation-error')
 
-const checkFormTypes = {
-  familiarisation: 'F',
-  live: 'L'
-}
-
 /**
  * Check form data validation
  * @param {Array} uploadedFiles
  * @param {Object} requestData
  * @param {Array} existingCheckForms
+ * @param {Object} checkFormTypes
  * @returns Object - Validation Errors
  */
-module.exports.validate = async (uploadedFiles, requestData, existingCheckForms) => {
+module.exports.validate = async (uploadedFiles, requestData, existingCheckForms, checkFormTypes) => {
   const { checkFormType } = requestData
   let validationError = new ValidationError()
 

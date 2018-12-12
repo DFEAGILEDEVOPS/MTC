@@ -4,6 +4,11 @@ const checkFormV2DataService = require('./data-access/check-form-v2.data.service
 const checkFormsValidator = require('../lib/validator/check-form/check-forms-validator')
 const checkFormV2Service = {}
 
+const checkFormTypes = {
+  familiarisation: 'F',
+  live: 'L'
+}
+
 /**
  * Validates and save check form file(s) to the db
  * @param {Array | Object} uploadData
@@ -14,11 +19,11 @@ checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
   const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()
-  const validationError = await checkFormsValidator.validate(uploadedFiles, requestData, existingCheckForms)
+  const validationError = await checkFormsValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
   if (validationError.hasError()) {
     throw validationError
   }
-  const isFamiliarisationCheckFormUpdate = checkFormType === 'F' && existingCheckForms.some(ecf => !ecf.isLiveCheckForm)
+  const isFamiliarisationCheckFormUpdate = checkFormType === checkFormTypes.familiarisation && existingCheckForms.some(ecf => !ecf.isLiveCheckForm)
   const checkFormData = await checkFormV2Service.prepareSubmissionData(uploadedFiles, checkFormType)
   return checkFormV2DataService.sqlInsertCheckForms(checkFormData, isFamiliarisationCheckFormUpdate)
 }
