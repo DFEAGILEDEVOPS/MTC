@@ -46,8 +46,8 @@ module.exports = {
       Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
     },
     Pooling: {
-      MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
-      MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
+      MinCount: process.env.SQL_POOL_MIN_COUNT || 100,
+      MaxCount: process.env.SQL_POOL_MAX_COUNT || 200,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     Migrator: {
