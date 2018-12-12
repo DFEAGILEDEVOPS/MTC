@@ -11,6 +11,11 @@ Feature: Warm up questions
   Scenario: Warm up complete page has a heading
     Given I am on the warm up complete page
     Then I should see the warm up complete page meets design
+  
+  Scenario: Users can see the answer box with numpad removal enabled
+    Given I logged in with user with access arrangement 'Remove on-screen number pad'
+    Given I am on the warm up check page
+    Then I should be able to see the input answer box
 
   Scenario: Users can complete the warm up questions using the on screen keyboard
     Given I am on the warm up check page
