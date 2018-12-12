@@ -20,7 +20,7 @@ describe('restart.service', () => {
   let sandbox
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
 
   afterEach(() => sandbox.restore())
@@ -200,6 +200,10 @@ describe('restart.service', () => {
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
       spyOn(checkStateService, 'changeState')
+      spyOn(pupilRestartDataService, 'sqlFindOpenRestartForPupil').and.returnValue({
+        id: 1,
+        check_id: 42
+      })
       const deleted = await restartService.markDeleted(pupilMock.id)
       expect(deleted).toBeDefined()
     })
