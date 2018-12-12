@@ -14,11 +14,19 @@ const checkFormV2DataService = {
    */
   sqlFindAllCheckForms: async () => {
     const sql = `
-    SELECT *
-    FROM ${sqlService.adminSchema}.${table}
+    SELECT cf.*, cFW.checkWindow_id
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+      ON cF.id = cFW.checkForm_id
     `
     return sqlService.query(sql)
   },
+  /**
+   * Deletes if required existing familiarisation form and inserts checkform(s)
+   * @param {Array} checkFormData
+   * @param {Boolean} isFamiliarisationCheckFormUpdate
+   * @returns {Promise<*>}
+   */
   sqlInsertCheckForms: async (checkFormData, isFamiliarisationCheckFormUpdate) => {
     const params = []
     const queries = []
@@ -58,6 +66,10 @@ const checkFormV2DataService = {
     return sqlService.modify(sql, params)
   },
 
+  /**
+   * Finds existing familiarisation check form
+   * @returns {Object}
+   */
   sqlFindFamiliarisationCheckForm: async () => {
     const sql = `
     SELECT *
@@ -65,13 +77,6 @@ const checkFormV2DataService = {
     WHERE isLiveCheckForm = 0`
     const result = await sqlService.query(sql)
     return R.head(result)
-  },
-
-  sqlDeleteFamiliarisationCheckForm: async () => {
-    const sql = `
-    DELETE FROM ${sqlService.adminSchema}.${table}
-    WHERE isLiveCheckForm = 0`
-    return sqlService.modify(sql)
   }
 }
 

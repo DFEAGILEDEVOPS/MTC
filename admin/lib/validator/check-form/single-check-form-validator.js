@@ -9,7 +9,7 @@ const singleCheckFormValidator = {}
 
 /**
  * Single check form data validation
- * @param uploadedFile
+ * @param {Object} uploadedFile
  * @returns Array - list of errors
  */
 singleCheckFormValidator.validate = async (uploadedFile) => {
@@ -20,6 +20,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     csvErrors.push(checkFormErrorMessages.noFile)
     return csvErrors
   }
+  // Fetch file name without extension
   const checkFormName = uploadedFile.filename.replace(/\.[^/.]+$/, '')
   // File type not CSV
   if (path.extname(uploadedFile.filename.toLowerCase()) !== '.csv') {
