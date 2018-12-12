@@ -78,7 +78,8 @@ When(/^I completed the check anyway$/) do
 end
 
 When(/^I start the check$/) do
-  confirmation_page.read_instructions.click
+  confirmation_page.read_instructions.click if current_url.include? confirmation_page.url
+  access_arrangements_setting_page.next_btn.click if current_url.include? access_arrangements_setting_page.url
   start_page.start_warm_up.click
   warm_up_page.start_now.click
   step 'I should be able to use the numpad to complete the warm up questions'
