@@ -80,25 +80,21 @@ const runMigrations = async (version) => {
     await postgrator.migrate(version)
     winston.info(chalk.green('SQL Migrations complete'))
   } catch (error) {
-    winston.error(chalk.red('ERROR:', error.message))
+    winston.error(chalk.red('Migration error:', error.message))
     winston.error(`${error.appliedMigrations.length} migrations were applied...`)
     error.appliedMigrations.forEach(migration => {
       winston.error(migration.name)
     })
+    throw error
   }
 }
 
-try {
-  runMigrations(process.argv[2] || 'max')
-    .then(() => {
-      winston.info(chalk.green('Done'))
-      process.exit(0)
-    },
-    (error) => {
-      winston.info(chalk.red(error.message))
-      process.exit(1)
-    })
-} catch (error) {
-  winston.error(`Error caught: ${error.message}`)
-  process.exit(1)
-}
+runMigrations(process.argv[2] || 'max')
+  .then(() => {
+    winston.info(chalk.green('Done'))
+    process.exit(0)
+  })
+  .catch(() => {
+    winston.info(chalk.red('Failed'))
+    process.exit(1)
+  })
