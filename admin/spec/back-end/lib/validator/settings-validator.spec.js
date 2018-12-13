@@ -11,7 +11,8 @@ describe('Settings validator', function () {
   function getBody () {
     return {
       questionTimeLimit: 20,
-      loadingTimeLimit: 3
+      loadingTimeLimit: 3,
+      checkTimeLimit: 30
     }
   }
 
@@ -88,6 +89,33 @@ describe('Settings validator', function () {
     let validationError = await settingsValidator.validate(req.checkBody, req.getValidationResult)
     expect(validationError.hasError()).toBe(true)
     expect(validationError.isError('loadingTimeLimit')).toBe(true)
+    done()
+  })
+
+  it('should require checkTimeLimit as mandatory', async function (done) {
+    req.body = getBody()
+    req.body.checkTimeLimit = ''
+    let validationError = await settingsValidator.validate(req.checkBody, req.getValidationResult)
+    expect(validationError.hasError()).toBe(true)
+    expect(validationError.isError('checkTimeLimit')).toBe(true)
+    done()
+  })
+
+  it('should require checkTimeLimit to be at least 10', async function (done) {
+    req.body = getBody()
+    req.body.checkTimeLimit = '9'
+    let validationError = await settingsValidator.validate(req.checkBody, req.getValidationResult)
+    expect(validationError.hasError()).toBe(true)
+    expect(validationError.isError('checkTimeLimit')).toBe(true)
+    done()
+  })
+
+  it('should require checkTimeLimit to be not greater than 90', async function (done) {
+    req.body = getBody()
+    req.body.checkTimeLimit = '91'
+    let validationError = await settingsValidator.validate(req.checkBody, req.getValidationResult)
+    expect(validationError.hasError()).toBe(true)
+    expect(validationError.isError('checkTimeLimit')).toBe(true)
     done()
   })
 })
