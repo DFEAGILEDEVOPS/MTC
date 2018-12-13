@@ -65,7 +65,8 @@ controller.postUpload = async (req, res, next) => {
     return next(error)
   }
   const checkFormsLength = Array.isArray(req.files.csvFiles) ? req.files.csvFiles.length : 1
-  req.flash('info', `${checkFormsLength} check forms have been successfully uploaded`)
+  const message = `Successfully uploaded ${checkFormsLength} ${checkFormsLength > 1 ? 'forms' : 'form'}`
+  req.flash('info', message)
   res.redirect('/check-form/view-forms')
 }
 
