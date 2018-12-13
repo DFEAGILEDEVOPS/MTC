@@ -31,21 +31,11 @@ And(/^I click Generate PINs button$/) do
   generated_pins_page.generate_more_pin_btn.click if generated_pins_page.has_generate_more_pin_btn?
 end
 
-# Given(/^I have a pupil with active pin$/) do
-#   # name = (0...8).map {(65 + rand(26)).chr}.join
-#   # step "I am on the add pupil page"
-#   # step "I submit the form with the name fields set as #{name}"
-#   # step "the pupil details should be stored"
-#   # @pupil_forename = @details_hash[:first_name]
-#   # SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
-#
-#   step 'I have generated a live pin for a pupil'
-# end
-
 Given(/^I have a pupil not taking the check$/) do
   step 'I am on the pupil reason page'
   step 'I add Absent as a reason for a particular pupil'
   step 'the Absent reason should be stored against the pupils'
+  sleep 3
 end
 
 Given(/I have a pupil not taking the check with reason '(.*)'/) do |reason|
@@ -265,6 +255,7 @@ When(/^I choose to filter via group on the generate pins page$/) do
 end
 
 When(/^I choose to filter via group on the generate pins familiarisation page$/) do
+  sleep 4
   generate_pins_familiarisation_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_familiarisation_overview_page

@@ -8,7 +8,7 @@ Before("@add_a_pupil") do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
-  visit ENV['BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 Before("@timer_reset") do
@@ -55,6 +55,9 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
+Before("@reset_all_pins") do
+  SqlDbHelper.reset_all_pin_expiry_times
+end
 
 After("@delete_census") do
   step "I am logged in with a service manager"

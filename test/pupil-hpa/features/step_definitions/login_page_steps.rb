@@ -77,7 +77,7 @@ end
 
 
 Then(/^I should see all the correct pupil details$/) do
-  school = SqlDbHelper.find_school(2)['name']
+  school = SqlDbHelper.find_school(SqlDbHelper.pupil_details(@details_hash[:upn])['school_id'])['name']
   expect(confirmation_page.first_name.text).to eql "First name: #{@details_hash[:first_name]}"
   expect(confirmation_page.last_name.text).to eql "Last name: #{@details_hash[:last_name]}"
   expect(confirmation_page.school_name.text).to eql "School: #{school}"

@@ -120,6 +120,7 @@ When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
   @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
   @pupil_row.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
+
 end
 
 Then(/^the (.+) reason should be stored against the pupils$/) do |reason|

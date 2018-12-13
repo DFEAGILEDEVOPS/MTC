@@ -28,4 +28,10 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
   end
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+
+  def find_pupil_row(name)
+    wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}
+    pupil_list.rows.find {|pupil| pupil.text.include? name}
+  end
+
 end

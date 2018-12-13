@@ -14,6 +14,7 @@ Feature: Restarts
     Given I have multiple pupils for restart
     Then I should have a option to select all pupils for restarts
 
+  @wip @bug
   Scenario: Sticky banner displays total pupil count for restarts when all pupil is selected
     Given I have multiple pupils for restart
     When I select all pupils for Restarts
@@ -59,6 +60,7 @@ Feature: Restarts
     When Pupil has taken a 3rd check
     Then I should see the Restart Status 'Maximum number of restarts taken' for the pupil
 
+  @wip @bug
   Scenario: Flash message is displayed when a pupil is removed from restart
     Given I submitted pupils for Restart
     When I remove restart for that pupil
@@ -69,7 +71,7 @@ Feature: Restarts
     When I remove restart for that pupil
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @wip @refactor
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group

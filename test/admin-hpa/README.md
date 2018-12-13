@@ -49,7 +49,7 @@ If you want to run a particular test, then tag the scenario with a tag like @tes
 
 If you want to run the tests on a different url:
 
-`cucumber BASE_URL='https://check-development.herokuapp.com'`
+`cucumber ADMIN_BASE_URL='https://check-development.herokuapp.com'`
 
 #####Parallel
 

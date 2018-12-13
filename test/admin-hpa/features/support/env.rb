@@ -18,14 +18,17 @@ require 'httparty'
 require 'json'
 require 'base64'
 require 'nokogiri'
+require 'numbers_in_words'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require 'azure/storage/table'
 require 'azure/storage/blob'
 require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '180'
 
@@ -105,6 +108,7 @@ fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCO
 fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCOUNT_KEY"].nil?
 
 AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
 
 sleep 10
