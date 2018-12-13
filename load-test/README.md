@@ -4,19 +4,20 @@
 ### Linux
 * Run `sudo apt-get update` to refresh packages metadata
 * Install JDK 7 or later
-* Download JMeter 5.0: `wget -c http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.0.tgz`
-* Unpack JMeter `tar -xf apache-jmeter-5.0.tgz`
+* Download JMeter 4: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz`
+* Unpack JMeter `tar -xf apache-jmeter-4.0.tgz`
 * Ensure JMeter works by running a simple test:
-`apache-jmeter-5.0/bin/./jmeter -n -t apache-jmeter-5.0/extras/Test.jmx`
+`apache-jmeter-4.0/bin/./jmeter -n -t apache-jmeter-4.0/extras/Test.jmx`
 
 ### Mac OS
 * Install JDK 7 or later
-* Install latest JMeter using brew: `brew install jmeter --with-plugins`
-* Run JMeter: `open /usr/local/bin/jmeter`
+* Install v4 JMeter by downloading and installing to preferred location (typically `~/jmeter4/`)
+* set up a symlink in `/usr/local/bin/` that points to the executable (typically `~/jmeter4/bin/jmeter`)
+* Run JMeter from terminal `> jmeter4`
 
 ### Windows
 * Install JDK 7 or later
-* Download [JMeter 5.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.0.tgz)
+* Download [JMeter 4.0](http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
 ### Install Jmeter Plugins - Custom JMeter Functions (not required)
