@@ -1,4 +1,4 @@
-Given(/^I logged in with user with access arrangement '(.*)'$/) do|access_arrangments_type|
+Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arrangments_type|
   @pupil_details = SqlDbHelper.find_pupil_from_school(@details_hash[:first_name], SqlDbHelper.find_teacher('teacher1')['school_id'])
   step 'I login to the admin app with teacher1'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
@@ -43,7 +43,7 @@ When(/^I click Next button on setting page$/) do
   access_arrangements_setting_page.next_btn.click
 end
 
-Then(/^I can see following message for input assistance$/) do|table|
+Then(/^I can see following message for input assistance$/) do |table|
   table.hashes.each do |hash|
     expect(access_arrangements_setting_page.error_summary.error_list.text.include?(hash['error_message'])).to be_truthy, "Expected: #{hash['error_message']}....but Got #{access_arrangements_setting_page.error_summary.error_list.text} "
   end
@@ -63,7 +63,6 @@ Given(/^I logged in with user with the access arrangement '(.+)'$/) do |access_a
   sign_in_page.sign_in_button.click
 end
 
-
 Then(/^I should see the colour contrast page matches design$/) do
   expect(colour_contrast_page).to be_displayed
   expect(colour_contrast_page).to have_heading
@@ -82,12 +81,10 @@ Then(/^I should see the colour contrast page matches design$/) do
   expect(colour_contrast_page).to have_logout
 end
 
-
 Then(/^I should be taken to the Welcome page once i have chosen a colour$/) do
   colour_contrast_page.next.click
   expect(confirmation_page).to be_displayed
 end
-
 
 Then(/^I should see the font size page matches design$/) do
   expect(font_size_page).to be_displayed
@@ -109,8 +106,14 @@ Then(/^I should see the font size page matches design$/) do
   expect(font_size_page).to have_logout
 end
 
-
 Then(/^I should be taken to the Welcome page once i have chosen a font size$/) do
   font_size_page.next.click
   expect(confirmation_page).to be_displayed
+end
+
+When(/^I start the check with no numpad$/) do
+  confirmation_page.read_instructions.click if current_url.include? confirmation_page.url
+  access_arrangements_setting_page.next_btn.click if current_url.include? access_arrangements_setting_page.url
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
 end

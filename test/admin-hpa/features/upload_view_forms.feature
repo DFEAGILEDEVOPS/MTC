@@ -18,6 +18,11 @@ Feature: Upload and View Forms
     When I upload a csv file
     Then it should be added to the list of forms
     Then I should see a flash message to state that new form is uploaded
+  
+  Scenario: Users can upload multiple csv files
+    When I upload multiple csv files
+    Then they should be added to the list of forms
+    Then I should see a flash message to state that new forms are uploaded
 
   Scenario: Check Forms that have a remove button can be removed
     When I decide to remove a check form
@@ -39,6 +44,17 @@ Feature: Upload and View Forms
 
   Scenario: Users are shown the errors if they try to upload a csv containing minus characters
     Then I should see error messages stating why the csv has failed to upload when I upload one of the following csv files
+      | data/header-row.csv        |
+      | data/minus-chars.csv       |
+      | data/letters.csv           |
+      | data/3-columns.csv         |
+      | data/greater-than-12.csv   |
+      | data/format.txt            |
+      | data/decimals.csv          |
+      | data/quotes-around-row.csv |
+  
+  Scenario: Users are shown the errors if they try to upload a valid csv with another csv containing minus characters
+    Then I should see error messages stating why the csv has failed to upload when I upload a valid csv with one of the following csv files
       | data/header-row.csv        |
       | data/minus-chars.csv       |
       | data/letters.csv           |
