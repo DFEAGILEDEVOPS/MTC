@@ -209,7 +209,7 @@ checkStartService.prepareCheck2 = async function (
     }
   }
 
-  // Create and save JWT Tokens for all pupils
+  /*   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
     const token = await jwtService.createToken(
@@ -222,7 +222,7 @@ checkStartService.prepareCheck2 = async function (
       jwtSecret: token.jwtSecret
     })
   }
-  await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
+  await pupilDataService.sqlUpdateTokensBatch(pupilUpdates) */
 
   // Prepare a bunch of messages ready to be inserted into the queue
   const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
@@ -400,7 +400,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
           url: pupilFeedbackSasToken.url
         },
         jwt: {
-          token: o.pupil_jwtToken
+          token: 'token-disabled' // o.pupil_jwtToken
         }
       },
       questions: checkFormService.prepareQuestionData(
