@@ -3,6 +3,7 @@ class CheckSettingsPage < SitePrism::Page
 
   element :question_time_limit, "#questionTimeLimit"
   element :loading_time_limit, "#loadingTimeLimit"
+  element :check_time_limit, "#checkTimeLimit"
   element :save_changes, "input[value='Save']"
   element :cancel, "a", text: 'Cancel'
   element :error_message, '.error-message'
@@ -20,6 +21,12 @@ class CheckSettingsPage < SitePrism::Page
   def update_loading_time_limit(value)
     loading_time_limit.set ''
     loading_time_limit.set value
+    save_changes.click
+  end
+
+  def update_check_time_limit(value)
+    check_time_limit.set ''
+    check_time_limit.set value
     save_changes.click
   end
 end
