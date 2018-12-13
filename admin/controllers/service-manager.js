@@ -90,7 +90,7 @@ const controller = {
           breadcrumbs: req.breadcrumbs()
         })
       }
-      await settingService.update(req.body.loadingTimeLimit, req.body.questionTimeLimit, req.user.id)
+      await settingService.update(req.body.loadingTimeLimit, req.body.questionTimeLimit, req.body.checkTimeLimit, req.user.id)
     } catch (error) {
       return next(error)
     }

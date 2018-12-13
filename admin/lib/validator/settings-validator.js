@@ -18,6 +18,13 @@ const settingsValidationSchema = {
       options: [{ min: 1, max: 5 }] // Max number to be confirmed
     },
     errorMessage: settingsErrorMessages.loadingTimeLimit
+  },
+  'checkTimeLimit': {
+    notEmpty: true,
+    isInt: {
+      options: [{ min: 10, max: 90 }] // Max number to be confirmed
+    },
+    errorMessage: settingsErrorMessages.checkTimeLimit
   }
 }
 
