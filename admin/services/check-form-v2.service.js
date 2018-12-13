@@ -68,7 +68,7 @@ checkFormV2Service.hasExistingFamiliarisationCheckForm = async () => {
 }
 
 checkFormV2Service.getSavedForms = async () => {
-  const savedForms = await checkFormV2DataService.sqlFindAllCheckForms()
+  const savedForms = await checkFormV2DataService.sqlFindActiveCheckForms()
   return checkFormPresenter.getPresentationListData(savedForms)
 }
 

@@ -2,6 +2,7 @@
 /* global describe, it, expect, spyOn beforeEach fail */
 const fs = require('fs-extra')
 
+const checkFormPresenter = require('../../../helpers/check-form-presenter')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')
 const checkFormV2Service = require('../../../services/check-form-v2.service')
 const checkFormsValidator = require('../../../lib/validator/check-form/check-forms-validator')
@@ -85,6 +86,15 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindFamiliarisationCheckForm').and.returnValue({})
       const result = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
       expect(result).toBeFalsy()
+    })
+  })
+  describe('getSavedForms', () => {
+    it('find non deleted check forms and converts the data for the presentation layer ', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindActiveCheckForms')
+      spyOn(checkFormPresenter, 'getPresentationListData')
+      await checkFormV2Service.getSavedForms()
+      expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationListData).toHaveBeenCalled()
     })
   })
 })

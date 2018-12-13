@@ -9,7 +9,7 @@ const table = '[checkForm]'
 
 const checkFormV2DataService = {
   /**
-   * Find existing check forms
+   * Find all check forms
    * @returns {Promise<*>}
    */
   sqlFindAllCheckForms: async () => {
@@ -21,6 +21,21 @@ const checkFormV2DataService = {
     `
     return sqlService.query(sql)
   },
+
+  /**
+   * Find all non deleted check forms
+   * @returns {Promise<*>}
+   */
+  sqlFindActiveCheckForms: async () => {
+    const sql = `
+    SELECT cf.*, cFW.checkWindow_id
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+      ON cF.id = cFW.checkForm_id
+    WHERE cf.isDeleted = 0`
+    return sqlService.query(sql)
+  },
+
   /**
    * Deletes if required existing familiarisation form and inserts checkform(s)
    * @param {Array} checkFormData
