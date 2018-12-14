@@ -67,9 +67,22 @@ checkFormV2Service.hasExistingFamiliarisationCheckForm = async () => {
   return Boolean(familiarisationCheckForm && familiarisationCheckForm.id)
 }
 
+/**
+ * Fetches saved check forms and returns the data in the appropriate format for the presentation layer
+ * @returns {Promise<*>}
+ */
 checkFormV2Service.getSavedForms = async () => {
   const savedForms = await checkFormV2DataService.sqlFindActiveCheckForms()
   return checkFormPresenter.getPresentationListData(savedForms)
+}
+
+/**
+ * Calls relevant data service method to perform soft deletion
+ * @param {String} urlSlug
+ * @returns {Promise<*>}
+ */
+checkFormV2Service.deleteCheckForm = async (urlSlug) => {
+  return checkFormV2DataService.sqlMarkDeletedCheckForm(urlSlug)
 }
 
 module.exports = checkFormV2Service

@@ -76,4 +76,24 @@ controller.postUpload = async (req, res, next) => {
   res.redirect('/check-form/view-forms')
 }
 
+/**
+ * Delete check form
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+controller.getDelete = async (req, res, next) => {
+  const urlSlug = req.params && req.params.urlSlug
+  const checkFormName = req.params && req.params.checkFormName
+  try {
+    await checkFormV2Service.deleteCheckForm(urlSlug)
+  } catch (error) {
+    return next(error)
+  }
+  const highlightData = { message: `Successfully deleted form ${checkFormName}` }
+  req.flash('info', highlightData)
+  return res.redirect(`/check-form/view-forms`)
+}
+
 module.exports = controller

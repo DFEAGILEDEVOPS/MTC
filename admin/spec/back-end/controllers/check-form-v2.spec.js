@@ -103,4 +103,32 @@ describe('check form v2 controller:', () => {
       expect(next).toHaveBeenCalledWith(error)
     })
   })
+  describe('getDelete route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/check-forms/delete/urlSlug/checkFormName',
+      params: {
+        urlSlug: 'urlSlug',
+        checkFormName: 'checkFormName'
+      }
+    }
+    it('redirects to view forms page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(checkFormV2Service, 'deleteCheckForm')
+      spyOn(res, 'redirect')
+      await controller.getDelete(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('returns next if service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      const error = new Error('error')
+      spyOn(checkFormV2Service, 'deleteCheckForm').and.returnValue(Promise.reject(error))
+      spyOn(res, 'redirect')
+      await controller.getDelete(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
 })

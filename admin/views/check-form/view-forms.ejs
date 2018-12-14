@@ -31,9 +31,17 @@
           <table class="spacious" id="checkFormsList" role="group">
             <thead>
             <tr>
-              <th scope="col">Form</th>
-              <th scope="col">Type</th>
-              <th scope="col">Uploaded on</th>
+              <th scope="col">
+                <a class="sortingLink">
+                  Form <span class="sort-icon asc"></span>
+                </a>
+              </th>
+              <th scope="col">
+                <a class="sortingLink">Type<span class="sort-icon"></span></a>
+              </th>
+              <th scope="col">
+                <a class="sortingLink">Uploaded on<span class="sort-icon"></span></a>
+              </th>
               <th scope="col"></th>
             </tr>
             </thead>
@@ -50,7 +58,7 @@
               <td><%= cf.createdAt %></td>
               <td class="align-right">
                 <% if (cf.canRemoveCheckForm) { %>
-                <a href="" class="modal-link" id="js-modal-link">Remove</a>
+                <a class="modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>/<%= cf.checkFormName %>">Remove</a>
                 <% } %>
               </td>
             </tr>
@@ -76,3 +84,19 @@
         </aside>
     </div>
 </div>
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'checkFormsList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
+<%- partial('partials/_modal_box', {
+  modalTitle: 'Remove form',
+  modalText: 'Are you sure you want to remove this?',
+  modalConfirmationLabel: 'Yes',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'No',
+  modalCancelUrl: '#'
+}) %>

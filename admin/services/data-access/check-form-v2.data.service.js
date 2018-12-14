@@ -32,7 +32,8 @@ const checkFormV2DataService = {
     FROM ${sqlService.adminSchema}.${table} cF
     LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
       ON cF.id = cFW.checkForm_id
-    WHERE cf.isDeleted = 0`
+    WHERE cf.isDeleted = 0
+    ORDER BY cf.name ASC`
     return sqlService.query(sql)
   },
 
@@ -93,6 +94,25 @@ const checkFormV2DataService = {
     AND isDeleted = 0`
     const result = await sqlService.query(sql)
     return R.head(result)
+  },
+
+  /**
+   * Mark check form as deleted
+   * @param {String} urlSlug
+   * @returns {Promise<*>}
+   */
+  sqlMarkDeletedCheckForm: async (urlSlug) => {
+    const sql = `UPDATE ${sqlService.adminSchema}.${table}
+    SET isDeleted = 1 WHERE urlSlug = @urlSlug`
+    const params = [
+      {
+        name: 'urlSlug',
+        value: urlSlug,
+        type: TYPES.NVarChar
+      }
+    ]
+
+    return sqlService.modify(sql, params)
   }
 }
 

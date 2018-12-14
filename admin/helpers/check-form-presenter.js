@@ -4,15 +4,15 @@ const checkFormPresenter = {}
 
 /**
  * Fetch data for presenting check forms list
- * @param checkFormData
+ * @param {Array} checkFormData
  * @returns {Array}
  */
-checkFormPresenter.getPresentationListData = async (checkFormData) => {
+checkFormPresenter.getPresentationListData = (checkFormData) => {
   return checkFormData.map(cf => ({
     checkFormName: cf.name,
     checkFormType: cf.isLiveCheckForm ? 'Live' : 'Familiarisation',
-    createdAt: moment(cf.createdAt).format('DD MMMM YYYY'),
-    canRemoveCheckForm: true,
+    createdAt: moment(cf.createdAt).format('YYYY-MM-DD'),
+    canRemoveCheckForm: !cf.checkWindow_id,
     urlSlug: cf.urlSlug
   }))
 }
@@ -25,7 +25,7 @@ checkFormPresenter.getPresentationListData = async (checkFormData) => {
 checkFormPresenter.getHighlightData = (uploadData) => {
   const highlightData = {}
   const checkFormsLength = Array.isArray(uploadData) ? uploadData.length : 1
-  highlightData.message = `${checkFormsLength} check forms have been successfully uploaded`
+  highlightData.message = `Successfully uploaded ${checkFormsLength} ${checkFormsLength > 1 ? 'forms' : 'form'}`
   highlightData.checkForms = []
   if (Array.isArray(uploadData)) {
     uploadData.forEach(cf => highlightData.checkForms.push({ checkFormName: cf.filename.replace(/\.[^/.]+$/, '') }))
