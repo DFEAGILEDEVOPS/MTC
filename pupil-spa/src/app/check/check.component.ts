@@ -88,6 +88,8 @@ export class CheckComponent implements OnInit {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
 
+    this.questionService.setCheckStartTime();
+
     this.familiarisationCheck = this.config && this.config.practice;
 
     this.initStates();

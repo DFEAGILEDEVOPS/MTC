@@ -1,6 +1,7 @@
 export class Config {
   private _questionTime: number;
   private _loadingTime: number;
+  private _checkTime: number;
   private _questionReader: boolean;
   private _audibleSounds: boolean;
   private _inputAssistance: boolean;
@@ -24,6 +25,14 @@ export class Config {
 
   set loadingTime(value: number) {
     this._loadingTime = value;
+  }
+
+  get checkTime(): number {
+    return this._checkTime;
+  }
+
+  set checkTime(value: number) {
+    this._checkTime = value;
   }
 
   get questionReader(): boolean {

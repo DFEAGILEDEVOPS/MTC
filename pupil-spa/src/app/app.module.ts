@@ -66,6 +66,7 @@ import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
 import { SvgArrowComponent } from './svg/svg.arrow.component';
 import { SvgGirlComponent } from './svg/svg.girl.component';
+import { IdleModalComponent } from './modal/idle.modal.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -118,7 +119,8 @@ const appRoutes: Routes = [
     SvgWarningComponent,
     SvgLoadingComponent,
     SvgArrowComponent,
-    SvgGirlComponent
+    SvgGirlComponent,
+    IdleModalComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -167,6 +169,9 @@ const appRoutes: Routes = [
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue
     }
+  ],
+  entryComponents: [
+    IdleModalComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -31,6 +31,8 @@ export class UserService {
           this.loggedIn = true;
           this.storageService.clear();
           this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
+          // TODO: temporary, requires changes from 27445
+          data[configDataKey]['checkTime'] = 30;
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
           this.storageService.setItem(schoolDataKey, data[schoolDataKey]);

@@ -1,0 +1,50 @@
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+div.modal-box {
+  background-color: $white;
+  border-width: 0;
+  margin: 0;
+  position: fixed;
+  padding: 8px;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+
+  h1 {
+    background-color: $govuk-blue;
+    color: $white;
+    font-size: 22px;
+    margin-bottom: 10px;
+    padding: 12px 12px 10px 12px;
+
+    &:before {
+      background-image: url('/images/icon-warning-white.png');
+      background-repeat: no-repeat;
+      background-size: 25px 25px;
+      content: " ";
+      padding-left: 35px;
+    }
+  }
+
+  .modal-content {
+    padding: 10px 12px 10px 12px;
+  }
+
+  .modal-buttons {
+    margin-bottom: 4px;
+  }
+
+  .modal-confirm {
+    .button-secondary {
+      margin-left: 0;
+    }
+  }
+}

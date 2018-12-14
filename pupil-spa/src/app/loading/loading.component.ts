@@ -6,7 +6,10 @@ import { Component,
   HostListener,
   ElementRef,
   OnDestroy,
-  AfterViewChecked
+  AfterViewChecked,
+  ComponentFactoryResolver,
+  ComponentRef,
+  ViewContainerRef
 } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
@@ -14,6 +17,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
+import { IdleModalComponent } from '../modal/idle.modal.component';
 
 @Component({
   selector: 'app-loading',
@@ -23,11 +27,15 @@ import { Config } from '../config.model';
 
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
 
-  public config: Config;
-  public nextButtonDelayFinished = false;
+  protected config: Config;
+  protected speechListenerEvent: any;
+  protected nextButtonDelayFinished = false;
 
   @Input()
   public nextQuestionButtonDelay = 2;
+
+  @Input()
+  public nextQuestionIdleTimeout = 5;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
@@ -46,7 +54,9 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   constructor(protected auditService: AuditService,
               protected questionService: QuestionService,
               protected speechService: SpeechService,
-              protected elRef: ElementRef) {
+              protected elRef: ElementRef,
+              protected componentFactoryResolver: ComponentFactoryResolver,
+              protected viewContainerRef: ViewContainerRef) {
     this.config = this.questionService.getConfig();
   }
 
@@ -80,9 +90,29 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     }));
   }
 
+  showWarningModal() {
+    const factory = this.componentFactoryResolver.resolveComponentFactory(IdleModalComponent);
+    const ref: ComponentRef<IdleModalComponent> = this.viewContainerRef.createComponent(factory);
+    ref.instance.closeCallback = () => {
+      ref.destroy();
+    };
+  }
+
   ngAfterViewInit() {
     this.addAuditServiceEntry();
+
     // wait for the component to be rendered first, before parsing the text
+    if (this.questionService.getConfig().questionReader) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', async (event) => {
+        await this.speechService.waitForEndOfSpeech();
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
+    }
+
+    setTimeout(async () => {
+      this.showWarningModal();
+    }, this.nextQuestionIdleTimeout * 1000);
 
     if (!this.config.nextBetweenQuestions) {
       setTimeout(async () => {
@@ -105,8 +135,10 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.config.questionReader) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 

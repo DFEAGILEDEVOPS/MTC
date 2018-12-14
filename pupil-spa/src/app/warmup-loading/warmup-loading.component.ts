@@ -14,29 +14,10 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
 
   @Input() public familiarisationCheck = false;
 
-  constructor(auditService: AuditService,
-              questionService: QuestionService,
-              speechService: SpeechService,
-              elRef: ElementRef) {
-    super(auditService, questionService, speechService, elRef);
-  }
-
   addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       practiseSequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`
     }));
-
-    // wait for the component to be rendered first, before parsing the text
-    if (this.questionService.getConfig().questionReader) {
-      this.speechService.speakElement(this.elRef.nativeElement);
-    }
-  }
-
-  ngOnDestroy(): void {
-    // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
-      this.speechService.cancel();
-    }
   }
 }
