@@ -2,7 +2,7 @@
     <div class='modal-box'>
         <h1 tabindex="0">Time left</h1>
         <div class='modal-content' tabindex="0">
-            <p>You have {{timeRemaining | date: "m"}} minutes and {{timeRemaining | date: "s"}} seconds left to complete the questions</p>
+            <p>You have {{timerService.timeRemaining | date: "m"}} minutes and {{timerService.timeRemaining | date: "s"}} seconds left to complete the questions</p>
         </div>
         <div class='modal-buttons'>
             <button tabindex="0" type="button" id="continue" class='button button-secondary' (click)="onClick()">Continue</button>

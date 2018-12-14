@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, AfterViewInit, ElementRef } from '@angular
 import { Config } from '../config.model';
 import { QuestionService } from '../services/question/question.service';
 import { SpeechService } from '../services/speech/speech.service';
+import { TimerService } from '../services/timer/timer.service';
 
 @Component({
   selector: 'app-idle-modal-component',
@@ -11,24 +12,14 @@ import { SpeechService } from '../services/speech/speech.service';
 export class IdleModalComponent implements AfterViewInit, OnDestroy {
 
     public closeCallback: Function;
-    protected timeRemaining: number;
     protected speechListenerEvent: any;
-    protected interval: any;
 
     constructor(
       private questionService: QuestionService,
+      private timerService: TimerService,
       private elRef: ElementRef,
       protected speechService: SpeechService
       ) {
-
-      this.timeRemaining = this.questionService.getCheckTimeRemaining();
-
-      this.interval = setInterval(() => {
-        this.timeRemaining = this.questionService.getCheckTimeRemaining();
-        if (this.timeRemaining <= 0) {
-          clearInterval(this.interval);
-        }
-      }, 1000);
     }
 
     onClick(): void {
@@ -50,7 +41,6 @@ export class IdleModalComponent implements AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-      clearInterval(this.interval);
 
       if (this.questionService.getConfig().questionReader) {
         this.speechService.cancel();

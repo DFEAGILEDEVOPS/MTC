@@ -14,7 +14,6 @@ export class QuestionService {
   protected currentQuestion;
   protected questions;
   protected config: Config;
-  private checkStartTime = 0;
 
   constructor(protected storageService: StorageService,
               protected speechService: SpeechService) {
@@ -24,19 +23,6 @@ export class QuestionService {
     if (this.storageService.getItem(questionKey) && this.storageService.getItem(configKey)) {
       this.initialise();
     }
-  }
-
-  public setCheckStartTime() {
-    this.checkStartTime = new Date().getTime();
-  }
-
-  public getTimeSinceCheckStarted(): number {
-    return new Date().getTime() - this.checkStartTime;
-  }
-
-  public getCheckTimeRemaining(): number {
-    const checkTime = (this.getConfig().checkTime * 1000) * 60;
-    return checkTime - this.getTimeSinceCheckStarted();
   }
 
   public getNumberOfQuestions(): number {
