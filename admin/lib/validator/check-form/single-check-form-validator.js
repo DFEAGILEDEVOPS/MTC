@@ -37,8 +37,8 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.isNotReadable}`)
     return csvErrors
   }
-  const fileContent = fileBuffer && fileBuffer.toString()
-  const fileLines = fileContent && fileContent.split('\n').length - 1
+  const fileContent = fileBuffer && fileBuffer.toString().trim()
+  const fileLines = fileContent && fileContent.split('\n').length
   // Invalid total file lines
   if (fileLines !== config.LINES_PER_CHECK_FORM) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfItems}`)
