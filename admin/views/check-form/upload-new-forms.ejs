@@ -1,5 +1,3 @@
-<% const err = error %>
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
@@ -11,41 +9,24 @@
 
 <div class="grid-row">
     <div class="column-two-thirds check-forms">
-
-        <% if (messages && messages.error && messages.error.length) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                There is a problem with the file name
-            </h2>
-            <p><%= messages.error %></p>
-            <ul class="error-summary-list">
-                <li><a href="#file-upload">Please try uploading a file again</a></li>
-            </ul>
+        <% if (errors.hasError()) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+              <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+              <p>See highlighted errors below.</p>
+              <ul class="error-summary-list">
+                <% errors.getUniqueFields(['csvFiles', 'checkFormType']).map(f => { %>
+                <% const errorMessages = errors.get(f) %>
+                <% if (Array.isArray(errorMessages)) { %>
+                <%  errorMessages.map(e => { %>
+                <li><a href="#<%= f %>"><%= e %></a></li>
+                <% }) } else { %>
+                <li><a href="#<%= f %>"><%= errorMessages %></a></li>
+                <% } %>
+                <% }) %>
+              </ul>
+            </div>
+          </div>
         </div>
-        <% } %>
-
-        <% if (error) { %>
-        <% if (error.hasOwnProperty('message')) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-2">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-2">
-                <%= error.message %>
-            </h2>
-
-            <p>The form upload spreadsheet:</p>
-
-            <ul class="list list-bullet">
-                <li> must be in CSV format - <a href="#csv-guidance">see guidance for instructions</a></li>
-                <li> must only contain 2 columns</li>
-                <li> must not have a header row</li>
-                <li> must only contain numbers between 1 and 12</li>
-                <li> must contain exactly 25 rows of data</li>
-            </ul>
-
-            <ul class="error-summary-list">
-                <li><a href="#file-upload">Please try uploading a file again</a></li>
-            </ul>
-        </div>
-        <% } %>
         <% } %>
 
         <h1 class="heading-xlarge">Upload new form</h1>
@@ -70,23 +51,38 @@
 
         <h2 class="heading-medium">Upload file(s)</h2>
 
-        <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="upload-form">
+        <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group<% if (err.hasError()) { %> form-group-error<% } %>">
-                <% if (err) { %>
-                <label class="error-message"><%= err.message %></label>
+            <input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="<%= hasExistingFamiliarisationCheckForm %>" />
+            <% const csvErrors = errors.get('csvFiles') %>
+            <div class="form-group<% if (csvErrors && csvErrors.length > 0) { %> form-group-error<% } %>">
+                <% if (csvErrors) { %>
+                  <% csvErrors.map(e => { %>
+                <label class="error-message"><%= e %></label>
+                  <% }) %>
                 <% } %>
                 <div class="font-xsmall">
-                    <input type="file" name="csvFile" id="file-upload" accept=".csv" aria-label="Choose a file to upload" multiple />
+                    <input
+                      type="file"
+                      name="csvFiles"
+                      id="csvFiles"
+                      accept=".csv"
+                      class="<%= errors.isError('csvFiles') ? 'form-control-error' : '' %>"
+                      aria-label="Choose a file to upload"
+                      multiple
+                    />
                 </div>
                 <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove files" aria-label="Remove uploaded files." />
             </div>
-
-            <div class="form-group <%= err.isError('checkFormType') ? 'form-group-error' : '' %>" id="check-form-type">
+            <% const checkFormType = errors.get('checkFormType') %>
+            <div class="form-group <%= errors.isError('checkFormType') ? 'form-group-error' : '' %>" id="check-form-type">
+              <% if (checkFormType) { %>
+              <label class="error-message"><%= checkFormType %></label>
+              <% } %>
                 <fieldset role="radiogroup">
                     <div class="inline">
                         <div class="multiple-choice">
-                            <input id="live-check-form"
+                            <input id="checkFormType"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
@@ -98,7 +94,7 @@
                             <label for="live-check-form">Live</label>
                         </div>
                         <div class="multiple-choice">
-                            <input id="familiarisation-check-form"
+                            <input id="checkFormType"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
@@ -120,3 +116,18 @@
         </form>
     </div>
 </div>
+
+<%- partial('partials/_modal_box', {
+  modalTitle: 'Overwrite form',
+  modalText: 'There can only be one familiarisation form. Are you sure you want to overwrite the current form?',
+  modalConfirmationLabel: 'Yes',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'No',
+  modalCancelUrl: '#'
+}) %>
+
+<script>
+  $(function () {
+    window.GOVUK.checkForms()
+  })
+</script>
