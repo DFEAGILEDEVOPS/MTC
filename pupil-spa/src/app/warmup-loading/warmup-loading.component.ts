@@ -36,7 +36,7 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
     }
   }

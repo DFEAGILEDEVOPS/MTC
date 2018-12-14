@@ -40,7 +40,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.questionService.getConfig().questionReader) {
+    if (this.config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#next'));
       });
@@ -54,7 +54,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
+    if (this.config.questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);

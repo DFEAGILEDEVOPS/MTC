@@ -86,7 +86,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
 
     if (!this.config.nextBetweenQuestions) {
       setTimeout(async () => {
-        if (this.config.speechSynthesis) {
+        if (this.config.questionReader) {
           await this.speechService.waitForEndOfSpeech();
         }
 
@@ -105,7 +105,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.config.speechSynthesis) {
+    if (this.config.questionReader) {
       this.speechService.cancel();
     }
   }
