@@ -44,7 +44,11 @@
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Teacher Logins DataSet" enabled="true">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding"></stringProp>
+<<<<<<< HEAD:load-test/scenarios/teacher-generate-pins/teacher-generate-pins.jmx
         <stringProp name="filename">${TEACHER_LOGIN_FILE}</stringProp>
+=======
+        <stringProp name="filename">${__P(FLOOD_NODE_INDEX)}-teacherLogins.csv</stringProp>
+>>>>>>> master:load-test/scenarios/teacher-generate-pins/teacher-generate-pins.jmx
         <boolProp name="ignoreFirstLine">false</boolProp>
         <boolProp name="quotedData">false</boolProp>
         <boolProp name="recycle">false</boolProp>

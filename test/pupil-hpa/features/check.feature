@@ -20,9 +20,9 @@ Feature: Check questions
     Given I have started the check
     Then the route remains the same
 
-  Scenario: Users can enter answers by using their phsyical keyboard
+  Scenario: Users can enter answers by using their physical keyboard
     Given I have started the check
-    Then I can answer the question using their phsyical keyboard
+    Then I can answer the question using their physical keyboard
 
   @local_storage @travis
   Scenario: Users can complete the test using the on screen keyboard and the check data is stored in the DB
