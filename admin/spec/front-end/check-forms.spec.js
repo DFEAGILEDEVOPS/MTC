@@ -79,7 +79,7 @@ describe('check-forms', function () {
     formSubmitSpy = spyOn($.fn, 'submit')
     spyOn(checkFormSubmit, 'click').and.returnValue(false)
   })
-  it('should display modal when existing familiarisation form exists', function () {
+  it('should display modal when existing familiarisation form exists and new familiarisation form is pending submission', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
     familiarisationRadioButton.checked = true
