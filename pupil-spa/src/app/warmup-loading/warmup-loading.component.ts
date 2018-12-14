@@ -31,7 +31,6 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
     }
-    this.elRef.nativeElement.querySelector('#goButton').focus();
   }
 
   ngOnDestroy(): void {
