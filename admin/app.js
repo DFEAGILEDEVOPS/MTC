@@ -24,6 +24,7 @@ const expressValidator = require('express-validator')
 const featureToggles = require('feature-toggles')
 const flash = require('connect-flash')
 const LocalStrategy = require('passport-local').Strategy
+const Logger = require('./models/logger')
 const piping = require('piping')
 const path = require('path')
 const partials = require('express-partials')
@@ -34,15 +35,15 @@ const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const TediousSessionStore = require('connect-tedious')(session)
 const uuidV4 = require('uuid/v4')
-const winston = require('winston')
 
+const logger = new Logger()
 const app = express()
 setupLogging(app)
 
 /**
  * Load feature toggles
  */
-winston.info('ENVIRONMENT_NAME : ' + config.Environment)
+logger.info('ENVIRONMENT_NAME : ' + config.Environment)
 const environmentName = config.Environment
 let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
 let featureTogglesSpecificPath, featureTogglesDefaultPath
@@ -56,10 +57,10 @@ try {
   featureTogglesDefault = require(featureTogglesDefaultPath)
 } catch (err) {}
 
-featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
+featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
 
 if (featureTogglesMerged) {
-  winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
+  logger.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
   featureToggles.load(featureTogglesMerged)
 }
 
@@ -262,8 +263,7 @@ app.use(function (err, req, res, next) {
   // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
-  winston.error('ERROR: ' + err.message + ' ID:' + errorId)
-  winston.error(err.stack)
+  logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
