@@ -5,11 +5,10 @@
  */
 
 const app = require('./app')
-const debug = require('debug')('check-development-app:server')
 const http = require('http')
 const config = require('./config')
-const winston = require('winston')
-
+const Logger = require('./models/logger')
+const logger = new Logger()
 /**
  * Get port from environment and store in Express.
  */
@@ -29,7 +28,7 @@ const server = http.createServer(app)
 server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
-winston.info(`${config.Environment} server listening on port ${port}`)
+logger.info(`${config.Environment} server listening on port ${port}`)
 
 /**
  * Normalize a port into a number, string, or false.
@@ -86,5 +85,5 @@ function onListening () {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port
-  debug('Listening on ' + bind)
+  logger.debug('Listening on ' + bind)
 }
