@@ -352,7 +352,7 @@ append-transform@^1.0.0:
   dependencies:
     default-require-extensions "^2.0.0"
 
-applicationinsights@^1.0.7:
+applicationinsights@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-1.0.8.tgz#db6e3d983cf9f9405fe1ee5ba30ac6e1914537b5"
   integrity sha512-KzOOGdphOS/lXWMFZe5440LUdFbrLpMvh2SaRxn7BmiI550KAoSb2gIhiq6kJZ9Ir3AxRRztjhzif+e5P5IXIg==
