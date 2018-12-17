@@ -3,6 +3,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-out-of-time',
@@ -13,16 +14,20 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
   protected numQuestions: number;
-  protected numQuestionsCompleted: number;
+  protected numCompleted: number;
   private speechListenerEvent: any;
 
   constructor(protected windowRefService: WindowRefService,
+              private storageService: StorageService,
               private questionService: QuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
-    this.numQuestions = questionService.getNumberOfQuestions();
-    this.numQuestionsCompleted = questionService.getCurrentQuestionNumber();
+    const timeoutData = this.storageService.getItem('time_out');
+    if (timeoutData) {
+        this.numQuestions = timeoutData.numQuestions;
+        this.numCompleted = timeoutData.numCompleted;
+    }
   }
 
   ngOnInit() {

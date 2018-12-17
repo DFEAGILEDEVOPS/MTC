@@ -94,8 +94,12 @@ export class CheckComponent implements OnInit {
 
     this.timerService.startCheckTimer();
     this.timerService.emitter.subscribe(e => {
+      this.storageService.setItem('time_out', {
+        numQuestions: this.questionService.getNumberOfQuestions(),
+        numCompleted: this.questionService.getCurrentQuestionNumber()
+      });
       this.router.navigate(['/out-of-time']);
-    });
+  });
 
     this.familiarisationCheck = this.config && this.config.practice;
 

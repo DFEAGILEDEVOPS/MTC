@@ -6,6 +6,8 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { OutOfTimeComponent } from './out-of-time.component';
+import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 
 describe('OutOfTimeComponent', () => {
   let component: OutOfTimeComponent;
@@ -18,6 +20,7 @@ describe('OutOfTimeComponent', () => {
       providers: [
         WindowRefService,
         { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
       ]
     })
