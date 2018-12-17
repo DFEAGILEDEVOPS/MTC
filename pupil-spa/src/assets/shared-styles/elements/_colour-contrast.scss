@@ -147,6 +147,8 @@
       background: $fg-colour !important;
     }
   }
+
+  
 }
 
 /*
@@ -161,6 +163,10 @@
 .colour-contrast-bow span.aa-contrast-bow {
   // Used to set a border on the bow option when viewing with bow
   border: 2px solid #000 !important;
+}
+
+.colour-contrast-yob .modal-box.aa-contrast-background {
+  border: 1px solid #ff0;
 }
 
 @include colour-contrast(
