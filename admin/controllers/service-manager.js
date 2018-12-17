@@ -77,9 +77,7 @@ const controller = {
   setUpdateTiming: async (req, res, next) => {
     res.locals.pageTitle = 'Settings on pupil check'
     try {
-      const getValidationResult = req.getValidationResult
-      const checkBody = req.checkBody
-      const validationError = await settingsValidator.validate(checkBody, getValidationResult)
+      const validationError = await settingsValidator.validate(req.body)
       if (validationError.hasError()) {
         res.locals.pageTitle = 'Settings on pupil check'
         req.breadcrumbs(res.locals.pageTitle)

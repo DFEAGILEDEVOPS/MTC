@@ -1,49 +1,19 @@
 'use strict'
 
 const ValidationError = require('../validation-error')
-const errorConverter = require('../error-converter')
+const { isInt, isFloat } = require('validator')
 const settingsErrorMessages = require('../errors/settings')
 
-const settingsValidationSchema = {
-  'questionTimeLimit': {
-    notEmpty: true,
-    isFloat: {
-      options: [{ min: 1, max: 60 }] // Max number to be confirmed
-    },
-    errorMessage: settingsErrorMessages.questionTimeLimit
-  },
-  'loadingTimeLimit': {
-    notEmpty: true,
-    isFloat: {
-      options: [{ min: 1, max: 5 }] // Max number to be confirmed
-    },
-    errorMessage: settingsErrorMessages.loadingTimeLimit
-  },
-  'checkTimeLimit': {
-    notEmpty: true,
-    isInt: {
-      options: [{ min: 10, max: 90 }] // Max number to be confirmed
-    },
-    errorMessage: settingsErrorMessages.checkTimeLimit
+module.exports.validate = async (settingsData) => {
+  let validationError = new ValidationError()
+  if (!settingsData.questionTimeLimit || !isFloat(settingsData.questionTimeLimit, { min: 1, max: 60 })) {
+    validationError.addError('questionTimeLimit', settingsErrorMessages.questionTimeLimit)
   }
-}
-
-/**
- * Update time settings in DB.
- * @param {Function} checkBody
- * @param {Function} getValidationResult
- * @returns {Promise.<*>}
- */
-module.exports.validate = function (checkBody, getValidationResult) {
-  return new Promise(async function (resolve, reject) {
-    let validationError = new ValidationError()
-    try {
-      checkBody(settingsValidationSchema)
-      const result = await getValidationResult()
-      validationError = errorConverter.fromExpressValidator(result.mapped())
-    } catch (error) {
-      return reject(error)
-    }
-    resolve(validationError)
-  })
+  if (!settingsData.loadingTimeLimit || !isFloat(settingsData.loadingTimeLimit, { min: 1, max: 5 })) {
+    validationError.addError('loadingTimeLimit', settingsErrorMessages.loadingTimeLimit)
+  }
+  if (!settingsData.checkTimeLimit || !isInt(settingsData.checkTimeLimit, { min: 10, max: 90 })) {
+    validationError.addError('checkTimeLimit', settingsErrorMessages.checkTimeLimit)
+  }
+  return validationError
 }
