@@ -64,38 +64,6 @@ class SqlDbHelper
     @array_of_pins.map {|row| row['val']}
   end
 
-  # def self.reset_pin(forename,lastname,school_id,flag=nil)
-  #   # sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName=N'#{forename.gsub("'", "''")}' AND lastName=N'#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'"
-  #   # sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{forename.gsub("'", "''")}' AND lastName=N'#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'"
-  #   # result = SQL_CLIENT.execute(sql)
-  #   # pupil_details_res = result.first
-  #   # pupil_id = pupil_details_res['id']
-  #   # result.do
-  #   #
-  #   # sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id in (SELECT id FROM [mtc_admin].[pupil] WHERE foreName=N'#{forename.gsub("'", "''")}' AND lastName=N'#{lastname.gsub("'", "''")}' AND school_id='#{school_id}')"
-  #   # result = SQL_CLIENT.execute(sql)
-  #   # pupil_check_detail = result.first
-  #   # check_id = pupil_check_detail['id']
-  #   # result.do
-  #
-  #   sql = "DELETE FROM [mtc_admin].[checkPin] where check_id in (SELECT id FROM [mtc_admin].[check] WHERE pupil_id in (SELECT id FROM [mtc_admin].[pupil] WHERE foreName=N'#{forename.gsub("'", "''")}' AND lastName=N'#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'))"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
-  # def self.reset_all_pins
-  #   # sql = "UPDATE [mtc_admin].[pupil] set pin=null"
-  #   sql = "DELETE FROM [mtc_admin].[checkPin]"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
-  # def self.reset_all_pin_expiry_times
-  #   sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt=null"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
   def self.delete_all_checks
     sql = "DELETE FROM [mtc_admin].[check]"
     result = SQL_CLIENT.execute(sql)
@@ -107,24 +75,6 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
-
-  # def self.set_pupil_pin(forename, lastname, school_id, newPin)
-  #   sql = "UPDATE [mtc_admin].[pupil] set pin='#{newPin}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-  #
-  # def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
-  #   sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName=N'#{forename}' AND lastName=N'#{lastname}' AND school_id='#{school_id}'"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-  #
-  # def self.set_school_pin_expiry(estab_code,new_time)
-  #   sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{new_time}' WHERE estabCode='#{estab_code}'"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
 
   def self.get_settings
     sql = "SELECT * FROM [mtc_admin].[settings]"
@@ -308,6 +258,12 @@ class SqlDbHelper
 
   def self.delete_all_from_group
     sql = "DELETE FROM [mtc_admin].[group]"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_forms
+    sql = "DELETE FROM [mtc_admin].[checkForm] where name like 'test-check-form%'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
