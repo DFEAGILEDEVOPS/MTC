@@ -12,7 +12,8 @@ const pupilAuthenticationService = require('../services/pupil-authentication.ser
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const R = require('ramda')
-const winston = require('winston')
+const Logger = require('../models/logger')
+const logger = new Logger()
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -25,7 +26,7 @@ const storeLogonEvent = async (pupilId, schoolPin, pupilPin, isAuthenticated, ht
   try {
     await pupilLogonEventService.storeLogonEvent(pupilId, schoolPin, pupilPin, isAuthenticated, httpStatusCode, httpErrorMessage)
   } catch (error) {
-    winston.error('unable to record pupil logon event:', error)
+    logger.error('unable to record pupil logon event:', error)
   }
 }
 
@@ -41,7 +42,7 @@ const getQuestions = async (req, res) => {
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
-    winston.error('Failed to authenticate pupil: ' + error.message)
+    logger.error('Failed to authenticate pupil: ', error)
     await storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
     return apiResponse.unauthorised(res)
   }
@@ -53,14 +54,14 @@ const getQuestions = async (req, res) => {
       const firstWindow = R.head(currentWindows)
       if (!firstWindow) {
         const errorMessage = 'test account unable to login as no current check window available'
-        winston.warn(errorMessage)
+        logger.warn(errorMessage)
         await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
         return apiResponse.serverError(res)
       }
       await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber, data.school.id, 'familiarisation')
     }
   } catch (error) {
-    winston.error('Failed to prepare test account: ' + error.message)
+    logger.error('Failed to prepare test account: ' + error.message)
     return apiResponse.serverError(res)
   }
 
@@ -80,7 +81,7 @@ const getQuestions = async (req, res) => {
   try {
     pupilConfig = await configService.getConfig(data.pupil)
   } catch (error) {
-    winston.error('Failed to get config: ' + error.message)
+    logger.error('Failed to get config: ' + error.message)
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: config')
     return apiResponse.serverError(res)
   }
@@ -90,7 +91,7 @@ const getQuestions = async (req, res) => {
     token = await jwtService.createToken(data.pupil, expiryDate)
     await pupilDataService.sqlUpdate({ id: data.pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret }) // Placeholder until this entire api is removed.
   } catch (error) {
-    winston.error('Failed to create a JWT: ' + error.message)
+    logger.error('Failed to create a JWT: ' + error.message)
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
     return apiResponse.serverError(res)
   }
@@ -102,7 +103,7 @@ const getQuestions = async (req, res) => {
     pupilData.checkCode = checkData.checkCode
     pupilConfig.practice = checkData.practice
   } catch (error) {
-    winston.error('Failed to prepare question data: ' + error.message)
+    logger.error('Failed to prepare question data: ' + error.message)
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: check data')
     return apiResponse.serverError(res)
   }

@@ -39,9 +39,14 @@ describe('logger class', () => {
         logger.info('info level test')
       })
 
-      it('a #debug function', (done) => {
+      it('a #debug function', () => {
         expect(typeof logger.debug).toBe('function')
         logger.debug('debug level test')
       })
+
+      // You can log a single error
+      // it('acceps a single exception param', () => {
+      //   logger.error(new Error('unit test example error'))
+      // })
     })
 })

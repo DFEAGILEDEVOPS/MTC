@@ -1,6 +1,7 @@
 'use strict'
 
-const winston = require('winston')
+const Logger = require('../models/logger')
+const logger = new Logger()
 const rolesConfig = require('../roles-config')
 const config = require('../config')
 
@@ -66,7 +67,7 @@ const getSignInFailure = (req, res) => {
 
 const postAuth = (req, res) => {
   // Please leave this in until we are confident we have identified all the NCA Tools roles.
-  winston.debug('executing postAuth for user in role:', req.user.role)
+  logger.debug('postAuth() executing postAuth for user in role:', req.user.role)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
   return res.redirect(rolesConfig.HOME_TEACHER)

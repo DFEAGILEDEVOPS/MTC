@@ -1,8 +1,8 @@
-const winston = require('winston')
-
 const { verify } = require('../services/jwt.service')
 const checkCompleteService = require('../services/check-complete.service')
 const apiResponse = require('./api-response')
+const Logger = require('../models/logger')
+const logger = new Logger()
 
 /**
  * Posts answers, audit and pupil input data to the database
@@ -51,7 +51,7 @@ const postCheck = async (req, res) => {
       }
     })
   } catch (error) {
-    winston.error(error)
+    logger.error(error)
     return apiResponse.serverError(res)
   }
 
