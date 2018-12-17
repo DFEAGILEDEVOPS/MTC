@@ -16,10 +16,11 @@ settingDataService.sqlFindOne = async () => {
  * Create or Update a document, depending on whether an `_id` field is present
  * @param {number} loadingTimeLimit - the loadingTime for each question
  * @param {number} questionTimeLimit - the time given for each question
+ * @param {number} checkTimeLimit - the maximum length of check
  * @return {Promise.<*>} returns a sql service response object `{ rowsModified: 1 }`
  */
-settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
-  const sql = 'UPDATE [Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
+settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit, checkTimeLimit) => {
+  const sql = 'UPDATE [Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, checkTimeLimit=@checkTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
   const params = [
     {
       name: 'loadingTimeLimit',
@@ -34,6 +35,11 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
       type: TYPES.Decimal,
       scale: 2,
       precision: 5
+    },
+    {
+      name: 'checkTimeLimit',
+      value: checkTimeLimit,
+      type: TYPES.Int
     }
   ]
   return sqlService.modify(sql, params)
