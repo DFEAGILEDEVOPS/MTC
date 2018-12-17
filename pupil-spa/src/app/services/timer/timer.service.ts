@@ -19,16 +19,16 @@ export class TimerService {
         this.config = this.questionService.getConfig();
     }
 
-    private getCheckTimeRemaining(): number {
+    private calculateCheckTimeRemaining(): number {
         const checkTime = (this.config.checkTime * 1000) * 60;
         return checkTime - (new Date().getTime() - this.checkStartTime);
     }
 
     public startCheckTimer() {
         this.checkStartTime = new Date().getTime();
-
+        this.timeRemaining = this.config.checkTime;
         this.interval = setInterval(() => {
-            this.timeRemaining = this.getCheckTimeRemaining();
+            this.timeRemaining = this.calculateCheckTimeRemaining();
             if (this.timeRemaining <= 0) {
                 clearInterval(this.interval);
                 this.timeRemaining = 0;

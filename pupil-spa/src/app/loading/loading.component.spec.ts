@@ -11,6 +11,10 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { Question } from '../services/question/question.model';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { IdleModalComponent } from '../modal/idle.modal.component';
+import { TimerService } from '../services/timer/timer.service';
+import { TimerServiceMock } from '../services/timer/timer.service.mock';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -19,9 +23,16 @@ describe('LoadingComponent', () => {
 
   beforeEach(async(() => {
 
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ IdleModalComponent ],
+      },
+    });
+
     TestBed.configureTestingModule({
-      declarations: [LoadingComponent],
+      declarations: [LoadingComponent, IdleModalComponent],
       providers: [
+        { provide: TimerService, useClass: TimerServiceMock },
         { provide: AuditService, useValue: auditServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
