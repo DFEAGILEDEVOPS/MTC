@@ -1,0 +1,33 @@
+<app-page-modifications>
+    <app-header class="full-width"></app-header>
+    <main id="content" class="js-content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                <header class="page-header">
+                    <h1 class="heading-xlarge aa-title-size" tabindex="0">Out of time</h1>
+                </header>
+                <p class="lede aa-lead-size" tabindex="0">
+                    You have done {{numQuestionsCompleted}} out of {{numQuestions}} questions.
+                </p>
+                <p class="notice" tabindex="0">
+                    <strong class="visually-hidden">Warning</strong>
+                    <app-svg-warning></app-svg-warning>
+                    <strong class="aa-copy-size">Please tell your teacher</strong>
+                </p>
+                <details class='aa-copy-size'>
+                    <summary><span class="summary">Instructions for teacher</span></summary>
+                    <ol class="list list-number">
+                        <li>If your check was interrupted you may want to consider a restart.</li>
+                        <li>If so, sign in to the school administration system.</li>
+                        <li>Go into 'Restarts' & select 'Did not complete' with the reason 'timed out'.</li>
+                        <li>Select pupil.</li>
+                        <li>Generate a new PIN for that pupil.</li>
+                    </ol>
+                </details>
+                <p>
+                    <a id='sign-out' routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button">Sign out</a>
+                </p>
+            </div>
+        </div>
+    </main>
+</app-page-modifications>
