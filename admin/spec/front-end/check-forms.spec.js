@@ -82,7 +82,7 @@ describe('check-forms', function () {
   it('should display modal when existing familiarisation form exists and new familiarisation form is pending submission', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
-    familiarisationRadioButton.checked = true
+    familiarisationRadioButton.attr('checked', true)
     const checkFormSubmit = $('#upload-check-forms')
     checkFormSubmit.trigger('click')
     expect($('#js-modal-box')[0].classList[1]).toBe('show')
@@ -91,21 +91,21 @@ describe('check-forms', function () {
   it('should not display modal when existing familiarisation form does not exists', function () {
     $('#hasExistingFamiliarisationCheckForm').val('false')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
-    familiarisationRadioButton.checked = true
+    familiarisationRadioButton.attr('checked', true)
     checkFormSubmit.trigger('click')
     expect($('#js-modal-box')[0].classList[1]).toBeUndefined()
   })
   it('should not display modal when live check form is being submitted and existing familiarisation form exists', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
-    const familiarisationRadioButton = $('#check-form-type').find(':input[value="L"]')
-    familiarisationRadioButton.checked = true
+    const liveRadioButton = $('#check-form-type').find(':input[value="L"]')
+    liveRadioButton.attr('checked', true)
     checkFormSubmit.trigger('click')
     expect($('#js-modal-box')[0].classList[1]).toBeUndefined()
   })
   it('should submit form when modal confirm is selected', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
-    familiarisationRadioButton.checked = true
+    familiarisationRadioButton.attr('checked', true)
     const checkFormSubmit = $('#upload-check-forms')
     checkFormSubmit.trigger('click')
     $('#js-modal-confirmation-button').trigger('click')
