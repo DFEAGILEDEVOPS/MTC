@@ -32,7 +32,7 @@ settingService.get = async () => {
     settings = {
       'questionTimeLimit': config.QUESTION_TIME_LIMIT,
       'loadingTimeLimit': config.TIME_BETWEEN_QUESTIONS,
-      'checkTimeLimit': config.LENGTH_OF_CHECK
+      'checkTimeLimit': config.LENGTH_OF_CHECK_MINUTES
     }
   }
   return settings
