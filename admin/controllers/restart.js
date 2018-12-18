@@ -10,8 +10,7 @@ const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 const controller = {}
 

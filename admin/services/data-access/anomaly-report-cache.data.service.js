@@ -1,7 +1,7 @@
 'use strict'
 const { TYPES } = require('tedious')
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('../log.service').getLogger()
 
 const sqlService = require('./sql.service')
 
@@ -15,15 +15,15 @@ const anomalyReportCacheDataService = {
    */
   sqlInsertMany: async function (dataObjects) {
     if (!dataObjects) {
-      winston.error('No anomalies to save')
+      logger.error('No anomalies to save')
       throw new Error('No anomalies to save')
     }
     if (!Array.isArray(dataObjects)) {
-      winston.error('dataObjects must be an array')
+      logger.error('dataObjects must be an array')
       throw new Error('dataObjects must be an array')
     }
     if (dataObjects.length === 0) {
-      winston.error('No dataObjects provided to save')
+      logger.error('No dataObjects provided to save')
       throw new Error('No dataObjects provided to save')
     }
     const insertSql = `

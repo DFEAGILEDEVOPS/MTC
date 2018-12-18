@@ -1,5 +1,5 @@
 'use strict'
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const pupilLogonEventDataService = require('./data-access/pupil-logon-event.data.service')
 
@@ -31,7 +31,7 @@ pupilLogonEventService.storeLogonEvent = async function (pupilId, schoolPin, pup
     }
     await pupilLogonEventDataService.sqlCreate(data)
   } catch (error) {
-    winston.warn('Failed to log a pupil logon attempt', error)
+    logger.warn('Failed to log a pupil logon attempt', error)
     return false
   }
   return true

@@ -1,7 +1,6 @@
 'use strict'
 
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 const rolesConfig = require('../roles-config')
 const config = require('../config')
 

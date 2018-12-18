@@ -12,8 +12,7 @@ const pupilAuthenticationService = require('../services/pupil-authentication.ser
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const R = require('ramda')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format

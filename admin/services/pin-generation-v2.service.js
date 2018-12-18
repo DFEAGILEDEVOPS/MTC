@@ -1,7 +1,6 @@
 'use strict'
 const R = require('ramda')
-const logService = require('./log.service')
-const logger = logService.getLogger()
+const logger = require('./log.service').getLogger()
 
 const pinGenerationDataService = require('./data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')

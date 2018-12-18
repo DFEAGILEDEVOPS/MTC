@@ -7,8 +7,7 @@
 const app = require('./app')
 const http = require('http')
 const config = require('./config')
-const Logger = require('./models/logger')
-const logger = new Logger()
+const logger = require('./services/log.service').getLogger()
 /**
  * Get port from environment and store in Express.
  */

@@ -2,8 +2,7 @@
 
 const config = require('../config')
 const morgan = require('morgan')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 let initialised
 

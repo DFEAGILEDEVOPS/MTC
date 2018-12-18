@@ -1,8 +1,7 @@
 const { verify } = require('../services/jwt.service')
 const checkCompleteService = require('../services/check-complete.service')
 const apiResponse = require('./api-response')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Posts answers, audit and pupil input data to the database

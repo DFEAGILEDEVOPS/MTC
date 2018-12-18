@@ -13,8 +13,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const dateService = require('../services/date.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Display landing page for 'test developer' role.

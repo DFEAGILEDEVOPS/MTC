@@ -12,8 +12,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const ValidationError = require('../lib/validation-error')
-const Logger = require('../models/logger')
-const logger = new Logger()
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Get list of pupils.

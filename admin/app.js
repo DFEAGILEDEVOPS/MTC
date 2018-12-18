@@ -24,7 +24,6 @@ const expressValidator = require('express-validator')
 const featureToggles = require('feature-toggles')
 const flash = require('connect-flash')
 const LocalStrategy = require('passport-local').Strategy
-const Logger = require('./models/logger')
 const piping = require('piping')
 const path = require('path')
 const partials = require('express-partials')
@@ -36,7 +35,7 @@ const setupLogging = require('./helpers/logger')
 const TediousSessionStore = require('connect-tedious')(session)
 const uuidV4 = require('uuid/v4')
 
-const logger = new Logger()
+const logger = require('./services/log.service').getLogger()
 const app = express()
 setupLogging(app)
 
