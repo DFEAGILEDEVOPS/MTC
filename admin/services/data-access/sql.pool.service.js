@@ -6,7 +6,8 @@ const logger = require('../log.service').getLogger()
 
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
-  max: config.Sql.Pooling.MaxCount
+  max: config.Sql.Pooling.MaxCount,
+  log: config.Sql.Pooling.LoggingEnabled
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js
