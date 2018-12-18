@@ -13,7 +13,8 @@ describe('config service', () => {
     beforeEach(() => {
       spyOn(settingDataService, 'sqlFindOne').and.returnValue({
         loadingTimeLimit: 20,
-        questionTimeLimit: 50
+        questionTimeLimit: 50,
+        checkTimeLimit: 90
       })
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({})
@@ -24,6 +25,7 @@ describe('config service', () => {
       const config = await configService.getConfig(pupilMock)
       expect(config.loadingTime).toBe(20)
       expect(config.questionTime).toBe(50)
+      expect(config.checkTime).toBe(90)
     })
 
     it('adds the pupil checkOptions into the returned config', async () => {
@@ -36,7 +38,8 @@ describe('config service', () => {
     beforeEach(() => {
       spyOn(settingDataService, 'sqlFindOne').and.returnValue({
         loadingTimeLimit: 20,
-        questionTimeLimit: 50
+        questionTimeLimit: 50,
+        checkTimeLimit: 80
       })
       spyOn(groupDataService, 'sqlFindOneGroupByPupilId').and.returnValue({
         loadingTimeLimit: 40,
@@ -50,6 +53,7 @@ describe('config service', () => {
       const config = await configService.getConfig(pupilMock)
       expect(config.loadingTime).toBe(40)
       expect(config.questionTime).toBe(60)
+      expect(config.checkTime).toBe(80)
     })
   })
 
@@ -181,6 +185,7 @@ describe('config service', () => {
       const config = await configService.getConfig(pupilMock)
       expect(config.loadingTime).toBe(3)
       expect(config.questionTime).toBe(6)
+      expect(config.checkTime).toBe(30)
     })
   })
 })
