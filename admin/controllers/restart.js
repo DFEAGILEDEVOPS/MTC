@@ -1,6 +1,5 @@
 const featureToggles = require('feature-toggles')
 
-
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 

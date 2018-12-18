@@ -6,7 +6,6 @@ const moment = require('moment')
 const path = require('path')
 const R = require('ramda')
 
-
 const checkFormService = require('../services/check-form.service')
 const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')

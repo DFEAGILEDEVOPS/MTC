@@ -119,8 +119,8 @@ const pupilRegisterService = {
     }
 
     if (pupilRestartId && !pupilRestartCheckId) {
-        // unconsumed restart
-        status = 'Restart'
+      // unconsumed restart
+      status = 'Restart'
     }
 
     return status

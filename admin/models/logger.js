@@ -23,7 +23,7 @@ class Logger {
       format = winston.format.simple()
     } else {
       format = winston.format.combine(
-        winston.format.colorize({all: true}),
+        winston.format.colorize({ all: true }),
         winston.format.simple()
       )
     }
@@ -33,7 +33,7 @@ class Logger {
       level: this.level,
       format: format,
       transports: [
-        new winston.transports.Console({ level: this.level, silent: false, consoleWarnLevels: ['warn', 'error']})
+        new winston.transports.Console({ level: this.level, silent: false, consoleWarnLevels: ['warn', 'error'] })
       ],
       meta: true,
       expressFormat: true,
@@ -45,7 +45,7 @@ class Logger {
     if (config.Logging.SendToAppInsights) {
       console.log('app insights config enabled')
       const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
-      const appInsights = require('applicationinsights');
+      const appInsights = require('applicationinsights')
 
       appInsights.setup('config.Monitoring.ApplicationInsights.Key').start()
 
@@ -87,7 +87,6 @@ class Logger {
    */
   info (msg, exception) { this.log('info', msg, exception) }
 
-
   /**
    * AI -> verbose
    * @param {string} msg
@@ -98,7 +97,7 @@ class Logger {
    * Return the underlying `winston` logger
    * @return {winston.Logger | *}
    */
-  getLogger() {
+  getLogger () {
     return this.logger
   }
 }
