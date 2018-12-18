@@ -6,7 +6,7 @@ const chalk = require('chalk')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
-const logger = require('./log.service').getLogger()
+const logger = require('../../services/log.service').getLogger()
 
 const poolService = require('../../services/data-access/sql.pool.service')
 const sqlService = require('../../services/data-access/sql.service')

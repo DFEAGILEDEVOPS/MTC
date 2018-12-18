@@ -3,7 +3,7 @@
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
 const config = require('../../config')
-const logger = require('./log.service').getLogger()
+const logger = require('../../services/log.service').getLogger()
 
 const adminConfig = {
   appName: config.Sql.Application.Name,
