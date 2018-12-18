@@ -48,10 +48,10 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   let hasInvalidFileCharacters = false
   let checkFormIntegerCount = 0
   await new Promise((resolve, reject) => {
-    csv.fromPath(uploadedFile.file, { headers: false, trim: true })
+    csv.fromString(fileContent, { headers: false, trim: true })
       .validate((row) => {
         // Invalid column count
-        if (row.length !== 2) {
+        if (row.length !== 2 && row.length !== 0) {
           hasInvalidNumberOfColumns = true
         }
         // Invalid integers
