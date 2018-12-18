@@ -1,7 +1,7 @@
 'use strict'
 
 /* global describe it spyOn expect fail */
-const winston = require('winston')
+const logger = require('../../../services/log.service').getLogger()
 const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 
@@ -56,6 +56,7 @@ describe('pin-generation-v2.service', () => {
   describe('#checkAndUpdateRestarts', () => {
     it('returns early if there arent any restarts', async () => {
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById')
+      spyOn(logger, 'info') // hush the service
       const schoolId = 42
       const pupils = [
         { id: 1, isRestart: false },
@@ -87,7 +88,7 @@ describe('pin-generation-v2.service', () => {
   it('Logs an error in the data service if it errors while retrieving all the checks ', async () => {
     spyOn(pinGenerationDataService, 'updatePupilRestartsWithCheckInformation')
     spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.reject(new Error('mock error')))
-    spyOn(winston, 'error')
+    spyOn(logger, 'error')
     const schoolId = 42
     const pupils = [
       { id: 1, isRestart: false },
@@ -99,7 +100,7 @@ describe('pin-generation-v2.service', () => {
       await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, checkIds)
       fail()
     } catch (error) {
-      expect(winston.error).toHaveBeenCalled()
+      expect(logger.error).toHaveBeenCalled()
     }
   })
   it('calls updatePupilRestartsWithCheckInformation to write the restart information to the db', async () => {
@@ -129,7 +130,7 @@ describe('pin-generation-v2.service', () => {
       { id: 2, pupil_id: 2 },
       { id: 3, pupil_id: 3 }
     ])
-    spyOn(winston, 'error')
+    spyOn(logger, 'error')
     const schoolId = 42
     const pupils = [
       { id: 1, isRestart: false },
@@ -140,7 +141,7 @@ describe('pin-generation-v2.service', () => {
     try {
       await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, checkIds)
     } catch (error) {
-      expect(winston.error).toHaveBeenCalled()
+      expect(logger.error).toHaveBeenCalled()
     }
   })
 })
