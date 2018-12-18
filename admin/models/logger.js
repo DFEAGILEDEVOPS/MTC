@@ -47,7 +47,7 @@ class Logger {
       const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
       const appInsights = require('applicationinsights')
 
-      appInsights.setup('config.Monitoring.ApplicationInsights.Key').start()
+      appInsights.setup(config.Monitoring.ApplicationInsights.Key).start()
 
       this.logger
         .clear() // remove all transports
