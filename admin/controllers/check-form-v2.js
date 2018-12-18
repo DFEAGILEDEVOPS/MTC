@@ -85,8 +85,9 @@ controller.postUpload = async (req, res, next) => {
  */
 controller.getDelete = async (req, res, next) => {
   const urlSlug = req.params && req.params.urlSlug
-  const checkFormName = req.params && req.params.checkFormName
+  let checkFormName
   try {
+    checkFormName = await checkFormV2Service.getCheckFormName(urlSlug)
     await checkFormV2Service.deleteCheckForm(urlSlug)
   } catch (error) {
     return next(error)
@@ -94,6 +95,30 @@ controller.getDelete = async (req, res, next) => {
   const highlightData = { message: `Successfully deleted form ${checkFormName}` }
   req.flash('info', highlightData)
   return res.redirect(`/check-form/view-forms`)
+}
+
+/**
+ * Check form view.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getViewFormPage = async (req, res, next) => {
+  // req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  const urlSlug = req.params && req.params.urlSlug
+  let checkFormData
+  try {
+    checkFormData = await checkFormV2Service.getCheckForm(urlSlug)
+  } catch (error) {
+    return next(error)
+  }
+  res.locals.pageTitle = checkFormData.checkFormName
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('check-form/view-form', {
+    breadcrumbs: req.breadcrumbs(),
+    checkFormData
+  })
 }
 
 module.exports = controller

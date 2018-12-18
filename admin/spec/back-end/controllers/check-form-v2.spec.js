@@ -106,28 +106,62 @@ describe('check form v2 controller:', () => {
   describe('getDelete route', () => {
     let reqParams = {
       method: 'GET',
-      url: '/check-forms/delete/urlSlug/checkFormName',
+      url: '/check-forms/delete/urlSlug',
       params: {
-        urlSlug: 'urlSlug',
-        checkFormName: 'checkFormName'
+        urlSlug: 'urlSlug'
       }
     }
     it('redirects to view forms page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
+      spyOn(checkFormV2Service, 'getCheckFormName')
       spyOn(checkFormV2Service, 'deleteCheckForm')
       spyOn(res, 'redirect')
       await controller.getDelete(req, res, next)
+      expect(checkFormV2Service.getCheckFormName).toHaveBeenCalled()
+      expect(checkFormV2Service.deleteCheckForm).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
     it('returns next if service method throws an error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       const error = new Error('error')
+      spyOn(checkFormV2Service, 'getCheckFormName')
       spyOn(checkFormV2Service, 'deleteCheckForm').and.returnValue(Promise.reject(error))
       spyOn(res, 'redirect')
       await controller.getDelete(req, res, next)
+      expect(checkFormV2Service.getCheckFormName).toHaveBeenCalled()
+      expect(checkFormV2Service.deleteCheckForm).toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
+  describe('getViewFormPage route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/check-form/view/urlSlug',
+      params: {
+        urlSlug: 'urlSlug'
+      }
+    }
+    it('redirects to view forms page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(checkFormV2Service, 'getCheckForm').and.returnValue({ checkFormName: 'checkFormName' })
+      spyOn(res, 'render')
+      await controller.getViewFormPage(req, res, next)
+      expect(checkFormV2Service.getCheckForm).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
+    })
+    it('returns next if service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      const error = new Error('error')
+      spyOn(checkFormV2Service, 'getCheckForm').and.returnValue(Promise.reject(error))
+      spyOn(res, 'render')
+      await controller.getViewFormPage(req, res, next)
+      expect(checkFormV2Service.getCheckForm).toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
     })
   })

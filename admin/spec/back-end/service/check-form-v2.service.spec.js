@@ -19,20 +19,20 @@ describe('check-form-v2.service', () => {
       requestData = { checkFormType: 'L' }
     })
     it('calls prepareData and sqlInsertCheckForms when no validation error is detected', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
+      spyOn(checkFormV2DataService, 'sqlFindActiveCheckForms').and.returnValue([])
       spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
       try {
         await checkFormV2Service.saveCheckForms(uploadData, requestData)
       } catch (error) {
         fail()
       }
-      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
       expect(checkFormsValidator.validate).toHaveBeenCalled()
       expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
     })
     it('does not call prepareData and sqlInsertCheckForms when validation error is detected', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
+      spyOn(checkFormV2DataService, 'sqlFindActiveCheckForms').and.returnValue([])
       const validationError = new ValidationError()
       validationError.addError('csvFile', 'error')
       spyOn(checkFormsValidator, 'validate').and.returnValue(validationError)
@@ -42,7 +42,7 @@ describe('check-form-v2.service', () => {
       } catch (error) {
         expect(error.name).toBe('ValidationError')
       }
-      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
       expect(checkFormsValidator.validate).toHaveBeenCalled()
       expect(checkFormV2Service.prepareSubmissionData).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).not.toHaveBeenCalled()
@@ -95,6 +95,23 @@ describe('check-form-v2.service', () => {
       await checkFormV2Service.getSavedForms()
       expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
       expect(checkFormPresenter.getPresentationListData).toHaveBeenCalled()
+    })
+  })
+  describe('getCheckFormName', () => {
+    it('fetches the name of the check form based on urlSlug provided', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckFormByUrlSlug').and.returnValue({ id: 1, name: 'name' })
+      const result = await checkFormV2Service.getCheckFormName()
+      expect(checkFormV2DataService.sqlFindCheckFormByUrlSlug).toHaveBeenCalled()
+      expect(result).toBe('name')
+    })
+  })
+  describe('getCheckForm', () => {
+    it('fetches view single check form data for the presentation layer ', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckFormByUrlSlug')
+      spyOn(checkFormPresenter, 'getPresentationCheckFormData')
+      await checkFormV2Service.getCheckForm()
+      expect(checkFormV2DataService.sqlFindCheckFormByUrlSlug).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationCheckFormData).toHaveBeenCalled()
     })
   })
 })

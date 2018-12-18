@@ -1,5 +1,4 @@
 'use strict'
-const moment = require('moment')
 const checkFormPresenter = {}
 
 /**
@@ -11,10 +10,30 @@ checkFormPresenter.getPresentationListData = (checkFormData) => {
   return checkFormData.map(cf => ({
     checkFormName: cf.name,
     checkFormType: cf.isLiveCheckForm ? 'Live' : 'Familiarisation',
-    createdAt: moment(cf.createdAt).format('YYYY-MM-DD'),
-    canRemoveCheckForm: !cf.checkWindow_id,
+    createdAt: cf.createdAt.format('YYYY-MM-DD'),
+    canRemoveCheckForm: !cf['currentCheckWindow_id'],
     urlSlug: cf.urlSlug
   }))
+}
+
+/**
+ * Fetch data for presenting single check form
+ * @param {Object} checkFormData
+ * @returns {Object}
+ */
+checkFormPresenter.getPresentationCheckFormData = (checkFormData) => {
+  const checkFormType = checkFormData.isLiveCheckForm ? 'Live' : 'Familiarisation'
+  return {
+    checkFormName: checkFormData.name,
+    checkFormType,
+    createdAt: checkFormData.createdAt.format('DD MMMM YYYY'),
+    currentCheckWindowAdminStartDate: checkFormData.adminStartDate,
+    currentCheckWindowAdminEndDate: checkFormData.adminEndDate,
+    canRemoveCheckForm: !checkFormData['currentCheckWindow_id'],
+    currentCheckWindowName: checkFormData.currentCheckWindowName,
+    formData: JSON.parse(checkFormData.formData),
+    urlSlug: checkFormData.urlSlug
+  }
 }
 
 /**

@@ -51,14 +51,14 @@
               <td<% if (messages.info && Array.isArray(messages.info[0].checkForms) && messages.info[0].checkForms.some(f => f.checkFormName === cf.checkFormName)) { %> class="highlight-item"<% } %>>
                 <div class="highlight-wrapper">
                   <a name="anchor-<%= cf.checkFormName %>"></a>
-                  <a href="" class="bold"><%= cf.checkFormName %></a>
+                  <a href="/check-form/view/<%= cf.urlSlug %>" class="bold"><%= cf.checkFormName %></a>
                 </div>
               </td>
               <td><%= cf.checkFormType %></td>
               <td><%= cf.createdAt %></td>
               <td class="align-right">
                 <% if (cf.canRemoveCheckForm) { %>
-                <a class="modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>/<%= cf.checkFormName %>">Remove</a>
+                <a class="modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>">Remove</a>
                 <% } %>
               </td>
             </tr>

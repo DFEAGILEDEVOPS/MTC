@@ -10,7 +10,7 @@ describe('checkFormPresenter', () => {
         name: 'name',
         isLiveCheckForm: true,
         createdAt: moment.utc().subtract(1, 'days'),
-        checkWindow_id: null,
+        currentCheckWindow_id: null,
         urlSlug: 'urlSlug'
       }]
       const result = checkFormPresenter.getPresentationListData(checkFormData)
@@ -22,6 +22,34 @@ describe('checkFormPresenter', () => {
           canRemoveCheckForm: true,
           urlSlug: 'urlSlug'
         }])
+    })
+  })
+  describe('getPresentationCheckFormData', () => {
+    it('fetches data for presenting single check form', () => {
+      const checkFormData = {
+        name: 'name',
+        isLiveCheckForm: true,
+        createdAt: moment.utc().subtract(1, 'days'),
+        currentCheckWindow_id: 1,
+        currentCheckWindowName: 'currentCheckWindowName',
+        urlSlug: 'urlSlug',
+        adminStartDate: moment.utc().subtract(5, 'days'),
+        adminEndDate: moment.utc().add(5, 'days'),
+        formData: JSON.stringify([{ f1: 1, f2: 2 }]),
+      }
+      const result = checkFormPresenter.getPresentationCheckFormData(checkFormData)
+      expect(result).toEqual(
+        {
+          checkFormName: 'name',
+          checkFormType: 'Live',
+          createdAt: checkFormData.createdAt.format('DD MMMM YYYY'),
+          currentCheckWindowAdminStartDate: checkFormData.adminStartDate,
+          currentCheckWindowAdminEndDate: checkFormData.adminEndDate,
+          canRemoveCheckForm: false,
+          currentCheckWindowName: 'currentCheckWindowName',
+          formData: JSON.parse(checkFormData.formData),
+          urlSlug: 'urlSlug'
+        })
     })
   })
   describe('getHighlightData', () => {

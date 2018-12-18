@@ -12,7 +12,8 @@ if (featureToggles.isFeatureEnabled('newCheckForm')) {
   router.get('/view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getViewFormsPage(req, res, next))
   router.get('/upload-new-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getUploadNewFormsPage(req, res, next))
   router.post('/upload', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.postUpload(req, res, next))
-  router.get('/delete/:urlSlug/:checkFormName', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getDelete(req, res, next))
+  router.get('/delete/:urlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getDelete(req, res, next))
+  router.get('/view/:urlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getViewFormPage(req, res, next))
 }
 
 module.exports = router

@@ -1,4 +1,5 @@
 const csv = require('fast-csv')
+const R = require('ramda')
 
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2DataService = require('./data-access/check-form-v2.data.service')
@@ -19,7 +20,7 @@ checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   const { checkFormType } = requestData
   // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
-  const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()
+  const existingCheckForms = await checkFormV2DataService.sqlFindActiveCheckForms()
   const validationError = await checkFormsValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
   if (validationError.hasError()) {
     throw validationError
@@ -83,6 +84,26 @@ checkFormV2Service.getSavedForms = async () => {
  */
 checkFormV2Service.deleteCheckForm = async (urlSlug) => {
   return checkFormV2DataService.sqlMarkDeletedCheckForm(urlSlug)
+}
+
+/**
+ * Fetches check form name
+ * @param {String} urlSlug
+ * @returns {String}
+ */
+checkFormV2Service.getCheckFormName = async (urlSlug) => {
+  const checkForm = await checkFormV2DataService.sqlFindCheckFormByUrlSlug(urlSlug)
+  return R.path(['name'], checkForm)
+}
+
+/**
+ * Fetches check form
+ * @param {String} urlSlug
+ * @returns {String}
+ */
+checkFormV2Service.getCheckForm = async (urlSlug) => {
+  const checkForm = await checkFormV2DataService.sqlFindCheckFormByUrlSlug(urlSlug)
+  return checkFormPresenter.getPresentationCheckFormData(checkForm)
 }
 
 module.exports = checkFormV2Service

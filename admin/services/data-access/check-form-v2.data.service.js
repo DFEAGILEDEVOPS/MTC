@@ -8,19 +8,6 @@ const sqlService = require('./sql.service')
 const table = '[checkForm]'
 
 const checkFormV2DataService = {
-  /**
-   * Find all check forms
-   * @returns {Promise<*>}
-   */
-  sqlFindAllCheckForms: async () => {
-    const sql = `
-    SELECT cf.*, cFW.checkWindow_id
-    FROM ${sqlService.adminSchema}.${table} cF
-    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
-      ON cF.id = cFW.checkForm_id
-    `
-    return sqlService.query(sql)
-  },
 
   /**
    * Find all non deleted check forms
@@ -28,12 +15,17 @@ const checkFormV2DataService = {
    */
   sqlFindActiveCheckForms: async () => {
     const sql = `
-    SELECT cf.*, cFW.checkWindow_id
+    SELECT
+    cF.*,
+    cW.id AS currentCheckWindow_id,
+    cW.name AS currentCheckWindowName
     FROM ${sqlService.adminSchema}.${table} cF
     LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
-      ON cF.id = cFW.checkForm_id
-    WHERE cf.isDeleted = 0
-    ORDER BY cf.name ASC`
+      ON cF.id = cFW.checkForm_id AND cF.isDeleted = 0
+    LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+      ON cW.id = cFW.checkWindow_id 
+        AND GETUTCDATE() > cW.adminStartDate
+        AND GETUTCDATE() < cW.adminEndDate`
     return sqlService.query(sql)
   },
 
@@ -113,6 +105,37 @@ const checkFormV2DataService = {
     ]
 
     return sqlService.modify(sql, params)
+  },
+
+  /**
+   * Finds check form by urlSlug
+   * @param {String} urlSlug
+   * @returns {Promise<*>}
+   */
+  sqlFindCheckFormByUrlSlug: async (urlSlug) => {
+    const sql = `SELECT cF.*,
+    cW.id AS currentCheckWindow_id,
+    cW.name AS currentCheckWindowName,
+    cW.adminStartDate,
+    cW.adminEndDate
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+      ON cF.id = cFW.checkForm_id
+    LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+      ON cFW.checkWindow_id = cW.id
+      AND GETUTCDATE() > cW.adminStartDate
+      AND GETUTCDATE() < cW.adminEndDate
+    WHERE cF.urlSlug = @urlSlug
+    AND cF.isDeleted = 0`
+    const params = [
+      {
+        name: 'urlSlug',
+        value: urlSlug,
+        type: TYPES.NVarChar
+      }
+    ]
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
   }
 }
 
