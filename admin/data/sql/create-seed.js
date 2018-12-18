@@ -5,7 +5,8 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const commandLineArgs = require('command-line-args')
-const winston = require('winston')
+const Logger = require('../../models/logger')
+const logger = new Logger()
 
 const seedsDir = path.join(__dirname, 'seeds')
 
@@ -33,13 +34,13 @@ const createSeeder = options => {
     seedFileName = `${seedFile}.${options.format.toLowerCase()}`
     fs.writeFileSync(seedFileName, '')
   }
-  winston.info(`Created ${seedFileName}`)
+  logger.info(`Created ${seedFileName}`)
 }
 
 try {
   const options = commandLineArgs(optionDefinitions)
   if (options.help || !options.name || (options.format === 'tsv' && options.table === 'custom')) {
-    winston.info(`
+    logger.info(`
     Usage: create-seed.js <name> [--table <model|custom>] [--format <tsv|sql|js>] [--help]
     `)
     process.exit(0)
@@ -47,6 +48,6 @@ try {
   createSeeder(options)
   process.exit(0)
 } catch (error) {
-  winston.error(`Error: ${error.message}`)
+  logger.error(`Error: ${error.message}`)
   process.exit(1)
 }

@@ -6,7 +6,8 @@ const chalk = require('chalk')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
-const winston = require('winston')
+const Logger = require('../../models/logger')
+const logger = new Logger()
 
 const poolService = require('../../services/data-access/sql.pool.service')
 const sqlService = require('../../services/data-access/sql.service')
@@ -45,7 +46,7 @@ const processSeed = async (seed) => {
         .on('end', resolve)
     })
     if (content.length === 0) {
-      winston.info(`Empty seed: ${filename}`)
+      logger.info(`Empty seed: ${filename}`)
       return
     }
     const { table } = seed
@@ -62,7 +63,7 @@ const processSeed = async (seed) => {
     sql = await content.generateSql()
   }
 
-  winston.info(filename)
+  logger.info(filename)
   try {
     await sqlService.modify(sql, params)
   } catch (error) {
@@ -81,7 +82,7 @@ const processSeed = async (seed) => {
 }
 
 const runSeeds = async (version) => {
-  winston.info(chalk.green('Migrating seeds: '), chalk.green.bold(version))
+  logger.info(chalk.green('Migrating seeds: '), chalk.green.bold(version))
 
   try {
     const seedList = await loadSeeds()
@@ -113,10 +114,10 @@ const runSeeds = async (version) => {
       await processSeed(foundSeed)
     }
 
-    winston.info(chalk.green('SQL Seeds complete'))
+    logger.info(chalk.green('SQL Seeds complete'))
   } catch (error) {
-    winston.error(chalk.red('ERROR: ', error.message))
-    winston.error(chalk.red('ERROR: ', error.stack))
+    logger.error(chalk.red('ERROR: ', error.message))
+    logger.error(chalk.red('ERROR: ', error.stack))
   }
 }
 
@@ -124,15 +125,15 @@ const main = async () => {
   try {
     runSeeds(process.argv[2] || 'all')
       .then(() => {
-        winston.info(chalk.green('Done'))
+        logger.info(chalk.green('Done'))
         process.exit(0)
       },
       (error) => {
-        winston.info(chalk.red(error.message))
+        logger.info(chalk.red(error.message))
         process.exit(1)
       })
   } catch (error) {
-    winston.error(`Error caught: ${error.message}`)
+    logger.error(`Error caught: ${error.message}`)
     process.exit(1)
   }
 }
