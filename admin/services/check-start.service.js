@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const checkDataService = require('../services/data-access/check.data.service')
 const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
@@ -13,7 +13,7 @@ const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
 const featureToggles = require('feature-toggles')
-const jwtService = require('../services/jwt.service')
+// const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
@@ -63,7 +63,7 @@ checkStartService.prepareCheck = async function (
     pupils
   )
   if (difference.size > 0) {
-    winston.warn(
+    logger.warn(
       `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
       difference
     )
@@ -147,7 +147,7 @@ checkStartService.prepareCheck2 = async function (
     pupils
   )
   if (difference.size > 0) {
-    winston.error(
+    logger.error(
       `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
       difference
     )
@@ -269,7 +269,7 @@ checkStartService.initialisePupilCheck = async function (
     throw new Error('isLiveCheck must be a boolean value')
   }
 
-  winston.debug(
+  logger.debug(
     `checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`
   )
 

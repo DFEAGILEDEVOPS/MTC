@@ -4,26 +4,26 @@
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 function invalidInputTests (method) {
   it('returns an empty string if the parameter is an empty string', () => {
-    spyOn(winston, 'warn')
+    spyOn(logger, 'warn')
     expect(dateService[method]('')).toBe('')
   })
 
   it('returns an empty string if the parameter is missing', () => {
-    spyOn(winston, 'warn')
+    spyOn(logger, 'warn')
     expect(dateService[method]()).toBe('')
   })
 
   it('returns an empty string if the parameter is null', () => {
-    spyOn(winston, 'warn')
+    spyOn(logger, 'warn')
     expect(dateService[method](null)).toBe('')
   })
 
   it('returns an empty string if the date is invalid', () => {
-    spyOn(winston, 'warn')
+    spyOn(logger, 'warn')
     expect(dateService[method]('rotten-input')).toBe('')
   })
 }

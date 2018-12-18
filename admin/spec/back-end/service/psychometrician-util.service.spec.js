@@ -1,6 +1,6 @@
 'use strict'
 /* global describe it expect beforeEach spyOn fail */
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 const service = require('../../../services/psychometrician-util.service')
 
 // Get a marked check mock
@@ -645,7 +645,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getUserInput', () => {
     beforeEach(() => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
     })
 
     it('returns a string showing all the user input for key events', () => {
@@ -677,7 +677,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getLastAnswerInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       const res = service.getLastAnswerInputTime(null, '')
       expect(res).toBe('error')
     })
@@ -753,7 +753,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getFirstInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       const res = service.getLastAnswerInputTime(null)
       expect(res).toBe('error')
     })
@@ -818,7 +818,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getResponseTime', () => {
     it('returns "error" if the arg is not an array', () => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       const res = service.getResponseTime(999)
       expect(res).toBe('error')
     })
@@ -835,7 +835,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getTimeOutFlag', () => {
     it('throws an error if not passed an Array', () => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       const res = service.getTimeoutFlag('', null)
       expect(res).toBe('error')
     })

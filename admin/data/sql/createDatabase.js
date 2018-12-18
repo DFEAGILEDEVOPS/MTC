@@ -3,7 +3,7 @@
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
 const config = require('../../config')
-const winston = require('winston')
+const logger = require('../../services/log.service').getLogger()
 
 const adminConfig = {
   appName: config.Sql.Application.Name,
@@ -44,11 +44,11 @@ const createDatabase = async (connection) => {
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
-    winston.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
+    logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
     const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') 
     BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     const output = await executeRequest(connection, createDbSql)
-    winston.info(output[0][0].value)
+    logger.info(output[0][0].value)
   } catch (error) {
     console.error(error)
   }
@@ -56,31 +56,31 @@ const createDatabase = async (connection) => {
 
 const main = () => {
   return new Promise((resolve, reject) => {
-    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
+    logger.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
     const connection = new Connection(adminConfig)
     connection.on('connect', async (err) => {
       if (err) {
-        winston.error(`Connection error 1: ${err.message}`)
+        logger.error(`Connection error 1: ${err.message}`)
         return reject(err)
       }
-      winston.info('About to create new database')
+      logger.info('About to create new database')
       await createDatabase(connection)
-      winston.info('DB Created')
+      logger.info('DB Created')
       connection.close()
       resolve()
     })
     connection.on('error', (error) => {
-      winston.error(`Connection error 2: ${error.message}`)
+      logger.error(`Connection error 2: ${error.message}`)
       return reject(error)
     })
     connection.on('debug', (text) => {
-      winston.info(`connection debug: ${text}`)
+      logger.info(`connection debug: ${text}`)
     })
     connection.on('infoMessage', (info) => {
-      winston.info(`server info message: ${info.message}`)
+      logger.info(`server info message: ${info.message}`)
     })
     connection.on('errorMessage', (info) => {
-      winston.info(`server error message: ${info.message}`)
+      logger.info(`server error message: ${info.message}`)
     })
   })
 }

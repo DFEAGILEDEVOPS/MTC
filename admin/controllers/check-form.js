@@ -5,7 +5,6 @@ const fs = require('fs-extra')
 const moment = require('moment')
 const path = require('path')
 const R = require('ramda')
-const winston = require('winston')
 
 const checkFormService = require('../services/check-form.service')
 const checkProcessingService = require('../services/check-processing.service')
@@ -14,6 +13,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const dateService = require('../services/date.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Display landing page for 'test developer' role.
@@ -169,7 +169,7 @@ const saveCheckForm = async (req, res, next) => {
       await checkFormService.populateFromFile(checkForm, absFile)
     } catch (error) {
       fs.remove(deleteDir, err => {
-        if (err) winston.error(err.message)
+        if (err) logger.error(err)
       })
       return res.render('test-developer/upload-new-form', {
         error: new Error(`There is a problem with the form content - ${uploadFile[i].filename}`),
@@ -201,7 +201,7 @@ const saveCheckForm = async (req, res, next) => {
     checkForms.push(checkForm)
 
     fs.remove(deleteDir, err => {
-      if (err) winston.error(err.message)
+      if (err) logger.error(err)
     })
   }
 
@@ -509,7 +509,7 @@ const getFileDownloadPupilCheckData = async (req, res, next) => {
 
     await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
   } catch (error) {
-    winston.error(error)
+    logger.error(error)
     return next(error)
   }
 }
@@ -540,8 +540,7 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
       dateGenerated: dateService.formatDateAndTime(dateGenerated)
     })
   } catch (error) {
-    // npm log levels
-    winston.error(error.message)
+    logger.error(error)
     return res.status(500).json({ error: error.message })
   }
 }
