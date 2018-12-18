@@ -1,6 +1,7 @@
 'use strict'
 const R = require('ramda')
-const winston = require('winston')
+const logService = require('./log.service')
+const logger = logService.getLogger()
 
 const pinGenerationDataService = require('./data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
@@ -63,7 +64,7 @@ const serviceToExport = {
   checkAndUpdateRestarts: async function (schoolId, pupils, newCheckIds) {
     const pupilsDoingARestart = R.filter(R.propEq('isRestart', true), pupils)
     if (R.isEmpty(pupilsDoingARestart)) {
-      winston.info('No pupils doing a restart')
+      logger.info('No pupils doing a restart')
       return
     }
 
@@ -72,7 +73,7 @@ const serviceToExport = {
     try {
       restartChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(schoolId, newCheckIds, pupilsDoingARestart.map(p => p.id))
     } catch (error) {
-      winston.error('checkAndUpdateRestarts(): failed to find checks for pupils: ' + error.message)
+      logger.error('checkAndUpdateRestarts(): failed to find checks for pupils: ' + error.message)
       throw error
     }
 
@@ -84,7 +85,7 @@ const serviceToExport = {
     try {
       await pinGenerationDataService.updatePupilRestartsWithCheckInformation(updateData)
     } catch (error) {
-      winston.error('checkAndUpdateRestarts() Failed to update restarts: ' + console.message)
+      logger.error('checkAndUpdateRestarts() Failed to update restarts: ' + console.message)
       throw error
     }
   }
