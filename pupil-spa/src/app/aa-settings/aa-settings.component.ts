@@ -7,6 +7,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
 import { RouteService } from '../services/route/route.service';
 import { CheckComponent } from '../check/check.component';
+import { TimeoutStorageKey, StartTimeStorageKey } from '../services/timer/timer.service';
 
 @Component({
   selector: 'app-aa-settings',
@@ -35,6 +36,8 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
     // Reset the check state when visitng the settings page
     this.storageService.removeItem(CheckComponent.checkStateKey);
+    this.storageService.removeItem(TimeoutStorageKey);
+    this.storageService.removeItem(StartTimeStorageKey);
     this.storageService.setItem('completed_submission', false);
   }
 

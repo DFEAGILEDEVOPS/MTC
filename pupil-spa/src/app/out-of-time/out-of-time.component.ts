@@ -4,6 +4,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
+import { TimeoutStorageKey } from '../services/timer/timer.service';
 
 @Component({
   selector: 'app-out-of-time',
@@ -23,7 +24,7 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
               private speechService: SpeechService,
               private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
-    const timeoutData = this.storageService.getItem('time_out');
+    const timeoutData = this.storageService.getItem(TimeoutStorageKey);
     if (timeoutData) {
         this.numQuestions = timeoutData.numQuestions;
         this.numCompleted = timeoutData.numCompleted;

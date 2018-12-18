@@ -12,7 +12,7 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
-import { TimerService } from '../services/timer/timer.service';
+import { TimerService, TimeoutStorageKey } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -94,7 +94,7 @@ export class CheckComponent implements OnInit {
 
     this.timerService.startCheckTimer();
     this.timerService.emitter.subscribe(e => {
-      this.storageService.setItem('time_out', {
+      this.storageService.setItem(TimeoutStorageKey, {
         numQuestions: this.questionService.getNumberOfQuestions(),
         numCompleted: this.questionService.getCurrentQuestionNumber()
       });

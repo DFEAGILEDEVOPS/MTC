@@ -5,11 +5,14 @@ import { AuditServiceMock } from '../audit/audit.service.mock';
 import { WindowRefService } from '../window-ref/window-ref.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
+import { StorageService } from '../storage/storage.service';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 
 describe('TimerService', () => {
 
     let service: TimerService;
-    let mockQuestionService = {
+    let mockStorageService;
+    const mockQuestionService = {
         getConfig: () => ({checkTime: -100})
     };
 
@@ -19,12 +22,13 @@ describe('TimerService', () => {
             providers: [
                 TimerService,
                 {provide: QuestionService, useValue: mockQuestionService },
+                {provide: StorageService, useClass: StorageServiceMock },
                 WindowRefService,
             ]
         });
 
         service = injector.get(TimerService);
-        mockQuestionService = injector.get(QuestionService);
+        mockStorageService = injector.get(StorageService);
     });
 
     it('should be created', () => {
@@ -35,9 +39,23 @@ describe('TimerService', () => {
     it('should start the timer and set time remaining', () => {
         spyOn(window, 'setInterval').and.callThrough();
         service.startCheckTimer();
-        expect(service.timeRemaining).toBe(-100);
+        expect(service.timeRemaining).toBe(-6000000);
         expect(window.setInterval).toHaveBeenCalledTimes(1);
         service.stopCheckTimer();
+    });
+
+    it('should load the timer from local storage', () => {
+        spyOn(mockStorageService, 'getItem').and.returnValue('1545130114379');
+        service.startCheckTimer();
+        expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
+        expect(service.timeRemaining).toBe(1545124114379);
+        service.stopCheckTimer();
+    });
+
+    it('should clear timer from local storage', () => {
+        spyOn(mockStorageService, 'removeItem');
+        service.clearStartTime();
+        expect(mockStorageService.removeItem).toHaveBeenCalledTimes(1);
     });
 
     it('should stop the timer and clear the interval', () => {
@@ -52,7 +70,7 @@ describe('TimerService', () => {
         service.startCheckTimer();
         const wait = () => {
             return new Promise((resolve, reject) => {
-                setTimeout(resolve, 1010);
+                setTimeout(resolve, 1001);
             });
         };
         await wait();

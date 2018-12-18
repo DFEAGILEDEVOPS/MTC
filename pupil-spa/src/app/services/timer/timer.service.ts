@@ -1,8 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { QuestionService } from '../question/question.service';
 import { Config } from '../../config.model';
+import { StorageService } from '../storage/storage.service';
 
 export const CHECK_TIMEOUT_EVENT = 'CHECK_TIMEOUT_EVENT';
+export const TimeoutStorageKey = 'time_out';
+export const StartTimeStorageKey = 'check_start_time';
 
 @Injectable()
 export class TimerService {
@@ -14,8 +17,7 @@ export class TimerService {
     private interval: any;
     private config: Config;
 
-
-    constructor(private questionService: QuestionService) {
+    constructor(private questionService: QuestionService, private storageService: StorageService) {
         this.config = this.questionService.getConfig();
     }
 
@@ -25,8 +27,15 @@ export class TimerService {
     }
 
     public startCheckTimer() {
-        this.checkStartTime = new Date().getTime();
-        this.timeRemaining = this.config.checkTime;
+        const storedStartTime = this.storageService.getItem(StartTimeStorageKey);
+        if (!storedStartTime) {
+            this.checkStartTime = new Date().getTime();
+            this.storageService.setItem(StartTimeStorageKey, this.checkStartTime);
+        } else {
+            this.checkStartTime = parseInt(storedStartTime, 10);
+        }
+
+        this.timeRemaining = this.calculateCheckTimeRemaining();
         this.interval = setInterval(() => {
             this.timeRemaining = this.calculateCheckTimeRemaining();
             if (this.timeRemaining <= 0) {
@@ -39,5 +48,10 @@ export class TimerService {
 
     public stopCheckTimer() {
         clearInterval(this.interval);
+    }
+
+    public clearStartTime() {
+        this.checkStartTime = 0;
+        this.storageService.removeItem(StartTimeStorageKey);
     }
 }
