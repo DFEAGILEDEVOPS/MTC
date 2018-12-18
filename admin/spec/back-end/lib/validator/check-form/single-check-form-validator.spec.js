@@ -50,7 +50,16 @@ describe('singleCheckFormValidator', function () {
         const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
         expect(singleCheckFormErrors).toEqual([
           `${fileName} ${checkFormErrorMessages.invalidNumberOfColumns}`,
+          `${checkFormErrorMessages.invalidFileCharacters} ${fileName}`,
           `${fileName} ${checkFormErrorMessages.invalidNumberOfTotalQuestionFactors}`
+        ])
+      })
+      it('and returns a validation error object when a value is null', async () => {
+        const uploadedFile = { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-invalid-null-integer.csv' }
+        const fileName = uploadedFile.filename.replace(/\.[^/.]+$/, '')
+        const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
+        expect(singleCheckFormErrors).toEqual([
+          `${checkFormErrorMessages.invalidFileCharacters} ${fileName}`
         ])
       })
       it('and returns a validation error object with invalid characters', async () => {

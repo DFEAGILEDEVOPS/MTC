@@ -37,8 +37,8 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.isNotReadable}`)
     return csvErrors
   }
-  const fileContent = fileBuffer && fileBuffer.toString()
-  const fileLines = fileContent && fileContent.split('\n').length - 1
+  const fileContent = fileBuffer && fileBuffer.toString().trim()
+  const fileLines = fileContent && fileContent.split('\n').length
   // Invalid total file lines
   if (fileLines !== config.LINES_PER_CHECK_FORM) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfItems}`)
@@ -48,7 +48,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   let hasInvalidFileCharacters = false
   let checkFormIntegerCount = 0
   await new Promise((resolve, reject) => {
-    csv.fromPath(uploadedFile.file, { headers: false, trim: true })
+    csv.fromString(fileContent, { headers: false, trim: true })
       .validate((row) => {
         // Invalid column count
         if (row.length !== 2) {
@@ -61,7 +61,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
           hasInvalidIntegers = true
         }
         // Invalid characters
-        if ((row[0] && row[0].match(/[^0-9]/)) || (row[1] && row[1].match(/[^0-9]/))) {
+        if ((!row[0] || row[0].match(/[^0-9]/)) || (!row[1] || row[1].match(/[^0-9]/))) {
           hasInvalidFileCharacters = true
         }
         checkFormIntegerCount += row.length
