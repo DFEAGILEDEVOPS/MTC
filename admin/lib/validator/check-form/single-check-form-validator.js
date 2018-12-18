@@ -51,7 +51,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     csv.fromString(fileContent, { headers: false, trim: true })
       .validate((row) => {
         // Invalid column count
-        if (row.length !== 2 && row.length !== 0) {
+        if (row.length !== 2) {
           hasInvalidNumberOfColumns = true
         }
         // Invalid integers
@@ -61,7 +61,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
           hasInvalidIntegers = true
         }
         // Invalid characters
-        if ((row[0] && row[0].match(/[^0-9]/)) || (row[1] && row[1].match(/[^0-9]/))) {
+        if ((!row[0] || row[0].match(/[^0-9]/)) || (!row[1] || row[1].match(/[^0-9]/))) {
           hasInvalidFileCharacters = true
         }
         checkFormIntegerCount += row.length
