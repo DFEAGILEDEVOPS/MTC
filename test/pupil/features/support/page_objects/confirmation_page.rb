@@ -1,7 +1,7 @@
 class ConfirmationPage < SitePrism::Page
   set_url '/sign-in-success'
 
-  element :heading, '.heading-xlarge'
+  element :heading, '.aa-title-size'
   element :page_instructions, '.lede', text: 'If this is you, please confirm.'
   element :first_name, "#first-name"
   element :last_name, "#last-name"

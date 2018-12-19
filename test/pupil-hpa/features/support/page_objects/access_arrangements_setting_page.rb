@@ -1,7 +1,7 @@
 class AccessArrangementsSettingPage < SitePrism::Page
   set_url '/access-settings'
 
-  element :heading, '.heading-xlarge', text: 'Your settings'
+  element :heading, '.aa-title-size', text: 'Your settings'
   element :information, '.aa-lead-size', text: 'You have the following settings on your check'
   elements :access_arrangements_list, '.list li'
 
