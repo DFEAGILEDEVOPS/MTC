@@ -13,7 +13,7 @@ const v2 = require('./v2.js')
  * @param {Object} prepareCheckMessage
  */
 module.exports = async function (context, prepareCheckMessage) {
-  context.log('prepare-check: message received')
+  context.log(`prepare-check: version:${prepareCheckMessage.version} message received`)
   const start = performance.now()
 
   const outputProp = 'data'

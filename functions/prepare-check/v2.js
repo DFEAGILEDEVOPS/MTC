@@ -1,14 +1,11 @@
 'use strict'
 
 const azure = require('azure-storage')
-const moment = require('moment')
-const entGen = azure.TableUtilities.entityGenerator
-const R = require('ramda')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-validator')
 const preparedCheckTable = 'preparedCheck'
-
+const prepareEntity = require('./prepare-entity')
 
 function validate (context, v2Message) {
   for (const preparedCheck of v2Message.messages) {
@@ -21,27 +18,6 @@ function validate (context, v2Message) {
       throw error
     }
   }
-}
-
-function prepareEntity (preparedCheck) {
-  const entity = {
-    PartitionKey: entGen.String(preparedCheck.schoolPin),
-    RowKey: entGen.String('' + preparedCheck.pupilPin),
-    checkCode: entGen.Guid(preparedCheck.pupil.checkCode),
-    collectedAt: null,
-    config: entGen.String(JSON.stringify(preparedCheck.config)),
-    createdAt: entGen.DateTime(new Date()),
-    isCollected: entGen.Boolean(false),
-    pinExpiresAt: entGen.DateTime(moment(preparedCheck.pupil.pinExpiresAt).toDate()),
-    pupil: entGen.String(JSON.stringify(R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], preparedCheck.pupil))),
-    pupilId: entGen.Int32(preparedCheck.pupil.id),
-    questions: entGen.String(JSON.stringify(preparedCheck.questions)),
-    school: entGen.String(JSON.stringify(preparedCheck.school)),
-    schoolId: entGen.Int32(preparedCheck.school.id),
-    tokens: entGen.String(JSON.stringify(preparedCheck.tokens)),
-    updatedAt: entGen.DateTime(new Date())
-  }
-  return entity
 }
 
 async function process (context, v2Message) {
