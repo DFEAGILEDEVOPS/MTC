@@ -6,7 +6,6 @@ const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const preparedCheckTable = 'preparedCheck'
 const prepareEntity = require('./prepare-entity')
 
-
 async function process (context, v1Message) {
   try {
     preparedCheckSchemaValidator.validateMessage(v1Message)

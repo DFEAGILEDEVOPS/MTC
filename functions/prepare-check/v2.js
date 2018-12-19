@@ -23,7 +23,7 @@ function validate (context, v2Message) {
 async function process (context, v2Message) {
   validate(context, v2Message)
 
-  const batch = new azure.TableBatch();
+  const batch = new azure.TableBatch()
 
   let processCount = 0
   for (let preparedCheck of v2Message.messages) {

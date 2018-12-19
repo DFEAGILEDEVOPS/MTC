@@ -22,20 +22,20 @@ module.exports = async function (context, prepareCheckMessage) {
 
   switch (parseInt(prepareCheckMessage.version, 10)) {
     case 1:
-    try {
-      meta = await v1.process(context, prepareCheckMessage)
-      context.bindings[outputProp].push({
-        PartitionKey: prepareCheckMessage.checkCode,
-        RowKey: uuid(),
-        eventType: 'check-prepare',
-        payload: JSON.stringify(prepareCheckMessage),
-        processedAt: new Date()
-      })
-      break
-    } catch (error) {
-      context.log.error(`prepare-check: ERROR: failed to process message version:${prepareCheckMessage.version}: ${error.message}`)
-      throw error
-    }
+      try {
+        meta = await v1.process(context, prepareCheckMessage)
+        context.bindings[outputProp].push({
+          PartitionKey: prepareCheckMessage.checkCode,
+          RowKey: uuid(),
+          eventType: 'check-prepare',
+          payload: JSON.stringify(prepareCheckMessage),
+          processedAt: new Date()
+        })
+        break
+      } catch (error) {
+        context.log.error(`prepare-check: ERROR: failed to process message version:${prepareCheckMessage.version}: ${error.message}`)
+        throw error
+      }
     case 2:
       try {
         meta = await v2.process(context, prepareCheckMessage)
