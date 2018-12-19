@@ -16,16 +16,22 @@ const checkFormV2DataService = {
   sqlFindActiveCheckForms: async () => {
     const sql = `
     SELECT
-    cF.*,
-    cW.id AS currentCheckWindow_id,
-    cW.name AS currentCheckWindowName
+      cF.*,
+      checkFormRanked.checkWindow_id,
+      checkFormRanked.checkWindowName
     FROM ${sqlService.adminSchema}.${table} cF
-    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
-      ON cF.id = cFW.checkForm_id AND cF.isDeleted = 0
-    LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
-      ON cW.id = cFW.checkWindow_id 
-        AND GETUTCDATE() > cW.adminStartDate
-        AND GETUTCDATE() < cW.adminEndDate`
+    LEFT JOIN (
+        SELECT cF2.*, cFW.checkWindow_id, cW.name AS checkWindowName, ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    AND cF.isDeleted = 0
+    ORDER BY cf.name ASC`
     return sqlService.query(sql)
   },
 
@@ -114,18 +120,28 @@ const checkFormV2DataService = {
    */
   sqlFindCheckFormByUrlSlug: async (urlSlug) => {
     const sql = `SELECT cF.*,
-    cW.id AS currentCheckWindow_id,
-    cW.name AS currentCheckWindowName,
-    cW.adminStartDate,
-    cW.adminEndDate
+    checkFormRanked.checkWindow_id,
+    checkFormRanked.checkWindowName,
+    checkFormRanked.checkWindowAdminStartDate,
+    checkFormRanked.checkWindowAdminEndDate
     FROM ${sqlService.adminSchema}.${table} cF
-    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
-      ON cF.id = cFW.checkForm_id
-    LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
-      ON cFW.checkWindow_id = cW.id
-      AND GETUTCDATE() > cW.adminStartDate
-      AND GETUTCDATE() < cW.adminEndDate
-    WHERE cF.urlSlug = @urlSlug
+    LEFT JOIN (
+        SELECT 
+          cF2.*,
+          cFW.checkWindow_id,
+          cW.name AS checkWindowName,
+          cW.adminStartDate AS checkWindowAdminStartDate,
+          cW.adminEndDate AS checkWindowAdminEndDate,
+          ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id AND cF2.isDeleted = 0
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    AND cF.urlSlug = @urlSlug
     AND cF.isDeleted = 0`
     const params = [
       {

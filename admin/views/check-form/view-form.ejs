@@ -15,9 +15,9 @@
 
     <div class="panel panel-border-wide">
       <div>Type: <%= checkFormData.checkFormType %></div>
-      <div><% if (checkFormData.currentCheckWindowName) { %>
+      <div><% if (checkFormData.checkWindowName) { %>
       Assigned to: <%= checkFormData.checkWindowName %> - <%= checkFormData.checkFormType %> check
-        (<%= checkFormData.currentCheckWindowAdminStartDate.format('D MMMM YYYY') %> to <%= checkFormData.currentCheckWindowAdminEndDate.format('D MMMM YYYY') %>)
+        (<%= checkFormData.checkWindowAdminStartDate.format('D MMMM YYYY') %> to <%= checkFormData.checkWindowAdminEndDate.format('D MMMM YYYY') %>)
         <% } else { %>
       This form is unassigned
       <% } %>

@@ -11,7 +11,7 @@ checkFormPresenter.getPresentationListData = (checkFormData) => {
     checkFormName: cf.name,
     checkFormType: cf.isLiveCheckForm ? 'Live' : 'Familiarisation',
     createdAt: cf.createdAt.format('YYYY-MM-DD'),
-    canRemoveCheckForm: !cf['currentCheckWindow_id'],
+    canRemoveCheckForm: !cf['checkWindow_id'],
     urlSlug: cf.urlSlug
   }))
 }
@@ -27,10 +27,10 @@ checkFormPresenter.getPresentationCheckFormData = (checkFormData) => {
     checkFormName: checkFormData.name,
     checkFormType,
     createdAt: checkFormData.createdAt.format('DD MMMM YYYY'),
-    currentCheckWindowAdminStartDate: checkFormData.adminStartDate,
-    currentCheckWindowAdminEndDate: checkFormData.adminEndDate,
-    canRemoveCheckForm: !checkFormData['currentCheckWindow_id'],
-    currentCheckWindowName: checkFormData.currentCheckWindowName,
+    checkWindowAdminStartDate: checkFormData.checkWindowAdminStartDate,
+    checkWindowAdminEndDate: checkFormData.checkWindowAdminEndDate,
+    canRemoveCheckForm: !checkFormData['checkWindow_id'],
+    checkWindowName: checkFormData.checkWindowName,
     formData: JSON.parse(checkFormData.formData),
     urlSlug: checkFormData.urlSlug
   }

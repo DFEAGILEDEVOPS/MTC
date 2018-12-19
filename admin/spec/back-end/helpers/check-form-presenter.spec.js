@@ -10,7 +10,7 @@ describe('checkFormPresenter', () => {
         name: 'name',
         isLiveCheckForm: true,
         createdAt: moment.utc().subtract(1, 'days'),
-        currentCheckWindow_id: null,
+        checkWindow_id: null,
         urlSlug: 'urlSlug'
       }]
       const result = checkFormPresenter.getPresentationListData(checkFormData)
@@ -30,11 +30,11 @@ describe('checkFormPresenter', () => {
         name: 'name',
         isLiveCheckForm: true,
         createdAt: moment.utc().subtract(1, 'days'),
-        currentCheckWindow_id: 1,
-        currentCheckWindowName: 'currentCheckWindowName',
+        checkWindow_id: 1,
+        checkWindowName: 'checkWindowName',
         urlSlug: 'urlSlug',
-        adminStartDate: moment.utc().subtract(5, 'days'),
-        adminEndDate: moment.utc().add(5, 'days'),
+        checkWindowAdminStartDate: moment.utc().subtract(5, 'days'),
+        checkWindowAdminEndDate: moment.utc().add(5, 'days'),
         formData: JSON.stringify([{ f1: 1, f2: 2 }]),
       }
       const result = checkFormPresenter.getPresentationCheckFormData(checkFormData)
@@ -43,10 +43,10 @@ describe('checkFormPresenter', () => {
           checkFormName: 'name',
           checkFormType: 'Live',
           createdAt: checkFormData.createdAt.format('DD MMMM YYYY'),
-          currentCheckWindowAdminStartDate: checkFormData.adminStartDate,
-          currentCheckWindowAdminEndDate: checkFormData.adminEndDate,
+          checkWindowAdminStartDate: checkFormData.checkWindowAdminStartDate,
+          checkWindowAdminEndDate: checkFormData.checkWindowAdminEndDate,
           canRemoveCheckForm: false,
-          currentCheckWindowName: 'currentCheckWindowName',
+          checkWindowName: 'checkWindowName',
           formData: JSON.parse(checkFormData.formData),
           urlSlug: 'urlSlug'
         })
