@@ -16,6 +16,7 @@ Before("@timer_reset") do
   step 'I am on the check settings page'
   check_settings_page.update_question_time_limit(6)
   check_settings_page.update_loading_time_limit(3)
+  check_settings_page.update_check_time_limit(30)
 end
 
 Before("@add_5_pupils") do
