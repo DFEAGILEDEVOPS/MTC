@@ -229,12 +229,16 @@ checkStartService.prepareCheck2 = async function (
     newCheckIds
   )
 
-  // Inject messages into the queue
+  // Get the queue name
   const prepareCheckQueueName = queueNameService.getName(
     queueNameService.NAMES.PREPARE_CHECK
   )
-  for (let msg of prepareCheckQueueMessages) {
-    azureQueueService.addMessage(prepareCheckQueueName, msg)
+
+  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
+  // for Azure Queues of 64Kb
+  const batches = R.splitEvery(20, prepareCheckQueueMessages)
+  for (let batch of batches) {
+    await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
   }
 }
 
@@ -370,7 +374,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
     // Pass the isLiveCheck config in to the SPA
     config.practice = !o.check_isLiveCheck
     const message = {
-      version: 1,
       checkCode: o.check_checkCode,
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,

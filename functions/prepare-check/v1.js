@@ -38,6 +38,8 @@ async function process (context, v1Message) {
   }
 
   await azureTableService.insertEntityAsync(preparedCheckTable, entity)
+
+  return { processCount: 1 }
 }
 
 module.exports = { process }

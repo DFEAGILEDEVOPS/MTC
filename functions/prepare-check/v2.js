@@ -1,0 +1,75 @@
+'use strict'
+
+const azure = require('azure-storage')
+const moment = require('moment')
+const entGen = azure.TableUtilities.entityGenerator
+const R = require('ramda')
+const azureStorageHelper = require('../lib/azure-storage-helper')
+const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
+const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-validator')
+const preparedCheckTable = 'preparedCheck'
+
+
+function validate (context, v2Message) {
+  for (const preparedCheck of v2Message.messages) {
+    try {
+      preparedCheckSchemaValidator.validateMessage(preparedCheck)
+    } catch (error) {
+      // After 5 attempts at processing the message will be moved to the poison queue
+      // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue#trigger---poison-messages
+      context.log.error('prepare-check v2: message failed validation', preparedCheck.checkCode)
+      throw error
+    }
+  }
+}
+
+function prepareEntity (preparedCheck) {
+  const entity = {
+    PartitionKey: entGen.String(preparedCheck.schoolPin),
+    RowKey: entGen.String('' + preparedCheck.pupilPin),
+    checkCode: entGen.Guid(preparedCheck.pupil.checkCode),
+    collectedAt: null,
+    config: entGen.String(JSON.stringify(preparedCheck.config)),
+    createdAt: entGen.DateTime(new Date()),
+    isCollected: entGen.Boolean(false),
+    pinExpiresAt: entGen.DateTime(moment(preparedCheck.pupil.pinExpiresAt).toDate()),
+    pupil: entGen.String(JSON.stringify(R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], preparedCheck.pupil))),
+    pupilId: entGen.Int32(preparedCheck.pupil.id),
+    questions: entGen.String(JSON.stringify(preparedCheck.questions)),
+    school: entGen.String(JSON.stringify(preparedCheck.school)),
+    schoolId: entGen.Int32(preparedCheck.school.id),
+    tokens: entGen.String(JSON.stringify(preparedCheck.tokens)),
+    updatedAt: entGen.DateTime(new Date())
+  }
+  return entity
+}
+
+async function process (context, v2Message) {
+  validate(context, v2Message)
+
+  const batch = new azure.TableBatch();
+
+  let processCount = 0
+  for (let preparedCheck of v2Message.messages) {
+    context.log.verbose(`prepare-check: v2 process(): checkCode: ${preparedCheck.checkCode}`)
+    batch.insertEntity(prepareEntity(preparedCheck))
+    processCount += 1
+  }
+
+  const batchResult = await azureTableService.executeBatchAsync(preparedCheckTable, batch)
+
+  if (batchResult.response.isSuccessful !== true) {
+    context.error('prepare-check: v2 process(): there were one or more errors in the batch', batchResult.result)
+    for (let result of batchResult.result) {
+      if (result.error) {
+        context.log.error(`prepare-check: v2 process(): error in checkCode ${result.entity.checkCode}: ${result.error}`)
+      }
+    }
+  }
+
+  return {
+    processCount
+  }
+}
+
+module.exports = { process }
