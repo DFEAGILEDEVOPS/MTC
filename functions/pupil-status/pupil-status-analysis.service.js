@@ -22,6 +22,10 @@ module.exports = {
       throw new Error('No data provided')
     }
 
+    if (Array.isArray(data)) {
+      throw new Error('data is an array')
+    }
+
     if (typeof data !== 'object') {
       throw new Error('data is not an object')
     }
