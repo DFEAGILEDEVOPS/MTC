@@ -58,19 +58,6 @@ module.exports = async function (context, pupilStatusMessage) {
       throw new Error('pupil-status: unknown message version')
   }
 
-  // // Store the raw message to an audit log
-  // context.bindings.pupilEventsTable = []
-  // const entity = {
-  //   // TODO will we always have a check code?
-  //   PartitionKey: pupilStatusMessage.checkCode,
-  //   RowKey: uuid(),
-  //   eventType: 'pupil-status',
-  //   payload: JSON.stringify(pupilStatusMessage),
-  //   processedAt: moment().toDate()
-  // }
-  //
-  // context.bindings.pupilEventsTable.push(entity)
-
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
