@@ -99,7 +99,7 @@ restartService.restart = async (
     return pupilRestartDataService.sqlCreate(pupilRestartData)
   }))
   const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
-  return pupilInfo.map(p =>  { return { urlSlug: p.urlSlug } })
+  return pupilInfo.map(p => { return { urlSlug: p.urlSlug } })
 }
 
 /**
