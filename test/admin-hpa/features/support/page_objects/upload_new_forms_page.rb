@@ -4,11 +4,13 @@ class UploadNewFormsPage < SitePrism::Page
   element :heading, '.heading-xlarge', text: 'Upload new form'
   element :download_form_example_template, '.numeric-list a[href="/csv/check-form-sample.csv"]'
   elements :new_form_info_message, '.numeric-list li'
-  element :chose_file, '#file-upload'
+  element :chose_file, '#csvFiles'
   element :live_check_form, "#checkFormType[value='L']"
   element :familiarisation_check_form, "#checkFormType[value='F']"
-  elements :error_messages, '.error-message'
+  elements :error_messages, '.error-summary-list li a'
   element :upload, 'input[value="Upload"]'
+  elements :upload_area_error, '.error_message'
+
   element :cancel, 'a.button-secondary'
   element :confirm_overwrite, '#js-modal-confirmation-button'
   element :cancel_overwrite, '#js-modal-cancel-button'
