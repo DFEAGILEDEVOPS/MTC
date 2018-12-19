@@ -3,6 +3,7 @@
 const uuid = require('uuid/v4')
 const { performance } = require('perf_hooks')
 const v1 = require('./v1')
+const v2 = require('./v2')
 
 /**
  * Re-compute the pupil status and write it to the Admin database
@@ -36,23 +37,23 @@ module.exports = async function (context, pupilStatusMessage) {
         context.log.error(`pupil-status: ERROR: failed to process message version:${pupilStatusMessage.version}: ${error.message}`)
         throw error
       }
-    // case 2:
-    //   try {
-    //     meta = await v2.process(context, prepareCheckMessage)
-    //     for (let msg of prepareCheckMessage.messages) {
-    //       context.bindings.pupilEventsTable.push({
-    //         PartitionKey: msg.checkCode,
-    //         RowKey: uuid(),
-    //         eventType: 'check-prepare',
-    //         payload: JSON.stringify(msg),
-    //         processedAt: new Date()
-    //       })
-    //     }
-    //     break
-    //   } catch (error) {
-    //     context.log.error(`prepare-check: ERROR: failed to process message version:${prepareCheckMessage.version}: ${error.message}`)
-    //     throw error
-    //   }
+    case 2:
+      try {
+        meta = await v2.process(context, pupilStatusMessage)
+        for (let msg of pupilStatusMessage.messages) {
+          context.bindings.pupilEventsTable.push({
+            PartitionKey: msg.checkCode,
+            RowKey: uuid(),
+            eventType: 'pupil-status',
+            payload: JSON.stringify(msg),
+            processedAt: new Date()
+          })
+        }
+        break
+      } catch (error) {
+        context.log.error(`pupil-status: ERROR: failed to process message version:${pupilStatusMessage.version}: ${error.message}`)
+        throw error
+      }
     default:
       throw new Error('pupil-status: unknown message version')
   }
