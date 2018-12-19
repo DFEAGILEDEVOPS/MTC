@@ -204,9 +204,10 @@ checkStartService.prepareCheck2 = async function (
     )
 
     // Request the pupil status be re-computed
-    for (let check of newChecks) {
-      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: check.pupil_id, checkCode: check.checkCode })
-    }
+    const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode }})
+
+    // Send a batch of messages for all the pupils requesting a status change
+    await azureQueueService.addMessage(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
 
   /*   // Create and save JWT Tokens for all pupils
@@ -229,12 +230,16 @@ checkStartService.prepareCheck2 = async function (
     newCheckIds
   )
 
-  // Inject messages into the queue
+  // Get the queue name
   const prepareCheckQueueName = queueNameService.getName(
     queueNameService.NAMES.PREPARE_CHECK
   )
-  for (let msg of prepareCheckQueueMessages) {
-    azureQueueService.addMessage(prepareCheckQueueName, msg)
+
+  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
+  // for Azure Queues of 64Kb
+  const batches = R.splitEvery(20, prepareCheckQueueMessages)
+  for (let batch of batches) {
+    await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
   }
 }
 
