@@ -86,7 +86,7 @@ restartService.restart = async (
     throw new Error(`One of the pupils is not eligible for a restart`)
   }
   const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
-  return Promise.all(pupilsList.map(async pupilId => {
+  await Promise.all(pupilsList.map(async pupilId => {
     const pupilRestartData = {
       pupil_id: pupilId,
       recordedByUser_id: userName,
@@ -98,6 +98,8 @@ restartService.restart = async (
     }
     return pupilRestartDataService.sqlCreate(pupilRestartData)
   }))
+  const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
+  return pupilInfo.map(p =>  { return { urlSlug: p.urlSlug } })
 }
 
 /**
