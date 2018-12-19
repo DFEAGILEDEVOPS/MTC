@@ -2,7 +2,7 @@
 
 const pupilStatusBatchService = require('./pupil-status-batch.service')
 
-  function validate(message) {
+function validate (message) {
   if (!Array.isArray(message.messages)) {
     throw new Error('pupil-status: invalid version:2 message.  `messages` should be an Array.')
   }

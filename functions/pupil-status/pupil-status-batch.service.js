@@ -18,7 +18,7 @@ async function recalculatePupilStatus (context, pupilIds) {
     const currentStatusCode = currentData.pupilStatusCode
     const targetStatusCode = pupilStatusAnalysisService.analysePupilData(row)
     if (currentStatusCode !== targetStatusCode) {
-      updates.push({pupilId: row.pupil_id, targetStatusCode})
+      updates.push({ pupilId: row.pupil_id, targetStatusCode })
     }
   })
 
@@ -58,7 +58,7 @@ async function getCurrentPupilsData (pupilIds) {
          WHERE isDeleted = 0
        ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
   WHERE  
-        p.id IN (${ pupilIds.map((o,i) => '@pupilId' + i).join(', ') })
+        p.id IN (${pupilIds.map((o, i) => '@pupilId' + i).join(', ')})
   AND   (lastCheck.rank = 1 or lastCheck.rank IS NULL)
   AND   (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL);
   `
@@ -70,11 +70,11 @@ async function getCurrentPupilsData (pupilIds) {
  * Update a batch of pupils in one sql call
  * @param {[{pupilId: <number>, targetStatusCode: <string>}]} updates
  */
-function updatePupilStatuses(updates) {
+function updatePupilStatuses (updates) {
   const sql = []
   const params = []
 
-  updates.forEach((o,i) => {
+  updates.forEach((o, i) => {
     sql.push(`UPDATE ${sqlService.adminSchema}.[pupil] 
               SET pupilStatus_id = (SELECT id from ${sqlService.adminSchema}.[pupilStatus] WHERE code = @code${i})
               WHERE id = @pupilId${i};`)
