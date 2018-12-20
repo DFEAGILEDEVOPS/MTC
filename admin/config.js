@@ -114,5 +114,10 @@ module.exports = {
       CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS,
       CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS
     }
+  },
+  Redis: {
+    Host: process.env.REDIS_HOST,
+    Port: process.env.REDIS_PORT,
+    Password: process.env.REDIS_PASSWORD
   }
 }
