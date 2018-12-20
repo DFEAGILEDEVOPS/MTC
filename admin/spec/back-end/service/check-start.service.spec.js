@@ -206,7 +206,7 @@ describe('check-start.service', () => {
       )
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
-      spyOn(azureQueueService, 'addMessage')
+      spyOn(azureQueueService, 'addMessageAsync')
       spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
     })
@@ -258,7 +258,7 @@ describe('check-start.service', () => {
     it('adds messages to the queue', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       // pupil status re-calc and prepare-check queues
-      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(mockPupils.length * 2)
+      expect(azureQueueService.addMessageAsync).toHaveBeenCalledTimes(1)
     })
   })
 
