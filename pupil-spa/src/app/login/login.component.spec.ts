@@ -175,7 +175,7 @@ describe('LoginComponent', () => {
       promiseHelper.reject({ error: 'login failed', status: 0 });
     });
 
-    it('redirects to an error page when the login is rejected', async () => {
+    it('redirects to an error page when the connection fails', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(component.connectionFailed).toBeTruthy();
