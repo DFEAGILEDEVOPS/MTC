@@ -20,7 +20,7 @@ checkFormV2Service.saveCheckForms = async (uploadData, requestData) => {
   const { checkFormType } = requestData
   // If single file is being uploaded only convert it to an array for consistency
   const uploadedFiles = Array.isArray(uploadData) ? uploadData : [uploadData]
-  const existingCheckForms = await checkFormV2DataService.sqlFindActiveCheckForms()
+  const existingCheckForms = await checkFormV2DataService.sqlFindAllCheckForms()
   const validationError = await checkFormsValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
   if (validationError.hasError()) {
     throw validationError

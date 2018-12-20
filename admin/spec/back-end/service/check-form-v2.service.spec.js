@@ -19,20 +19,20 @@ describe('check-form-v2.service', () => {
       requestData = { checkFormType: 'L' }
     })
     it('calls prepareData and sqlInsertCheckForms when no validation error is detected', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindActiveCheckForms').and.returnValue([])
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
       spyOn(checkFormsValidator, 'validate').and.returnValue(new ValidationError())
       try {
         await checkFormV2Service.saveCheckForms(uploadData, requestData)
       } catch (error) {
         fail()
       }
-      expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
       expect(checkFormsValidator.validate).toHaveBeenCalled()
       expect(checkFormV2Service.prepareSubmissionData).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).toHaveBeenCalled()
     })
     it('does not call prepareData and sqlInsertCheckForms when validation error is detected', async () => {
-      spyOn(checkFormV2DataService, 'sqlFindActiveCheckForms').and.returnValue([])
+      spyOn(checkFormV2DataService, 'sqlFindAllCheckForms').and.returnValue([])
       const validationError = new ValidationError()
       validationError.addError('csvFile', 'error')
       spyOn(checkFormsValidator, 'validate').and.returnValue(validationError)
@@ -42,7 +42,7 @@ describe('check-form-v2.service', () => {
       } catch (error) {
         expect(error.name).toBe('ValidationError')
       }
-      expect(checkFormV2DataService.sqlFindActiveCheckForms).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlFindAllCheckForms).toHaveBeenCalled()
       expect(checkFormsValidator.validate).toHaveBeenCalled()
       expect(checkFormV2Service.prepareSubmissionData).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlInsertCheckForms).not.toHaveBeenCalled()

@@ -36,6 +36,31 @@ const checkFormV2DataService = {
   },
 
   /**
+   * Find all check forms with the at least one associated check window
+   * @returns {Promise<*>}
+   */
+  sqlFindAllCheckForms: async () => {
+    const sql = `
+    SELECT
+      cF.*,
+      checkFormRanked.checkWindow_id,
+      checkFormRanked.checkWindowName
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN (
+        SELECT cF2.*, cFW.checkWindow_id, cW.name AS checkWindowName, ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    ORDER BY cf.name ASC`
+    return sqlService.query(sql)
+  },
+
+  /**
    * Deletes if required existing familiarisation form and inserts checkform(s)
    * @param {Array} checkFormData
    * @param {Boolean} isFamiliarisationCheckFormUpdate
