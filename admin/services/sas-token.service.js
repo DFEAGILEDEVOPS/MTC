@@ -2,7 +2,7 @@
 
 const azure = require('azure-storage')
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 const config = require('../config')
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
@@ -45,7 +45,7 @@ const sasTokenService = {
       }
     }
 
-    winston.debug('Generating SAS token for Queue: ' + queueName)
+    logger.debug('Generating SAS token for Queue: ' + queueName)
 
     const sasToken = serviceImplementation.generateSharedAccessSignature(queueName, sharedAccessPolicy)
 

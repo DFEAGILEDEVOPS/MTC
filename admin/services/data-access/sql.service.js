@@ -2,8 +2,7 @@
 
 const R = require('ramda')
 const { Request, TYPES } = require('tedious')
-const winston = require('winston')
-// winston.level = 'debug'
+const logger = require('../log.service').getLogger()
 
 const sqlPoolService = require('./sql.pool.service')
 const dateService = require('../date.service')
@@ -136,7 +135,7 @@ async function generateParams (tableName, data) {
       options.precision = cacheData.precision
       options.scale = cacheData.scale
     }
-    winston.debug(`sql.service: generateParams: options set for [${column}]`, options)
+    logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
@@ -177,7 +176,7 @@ function isInsertStatement (sql = '') {
   if (s.slice(0, 6) !== 'INSERT') {
     return false
   }
-  winston.debug(`sql.service: INSERT statement found: ${sql}`)
+  logger.debug(`sql.service: INSERT statement found: ${sql}`)
   return true
 }
 
@@ -194,8 +193,8 @@ sqlService.adminSchema = '[mtc_admin]'
  * @return {Promise<*>}
  */
 sqlService.query = (sql, params = []) => {
-  winston.debug(`sql.service.query(): ${sql}`)
-  winston.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  logger.debug(`sql.service.query(): ${sql}`)
+  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   return new Promise(async (resolve, reject) => {
     let con
     try {
@@ -210,11 +209,11 @@ sqlService.query = (sql, params = []) => {
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
-        winston.debug('ERROR SQL: ', sql)
+        logger.debug('ERROR SQL: ', sql)
         return reject(err)
       }
       const objects = parseResults(results)
-      winston.debug('RESULTS', JSON.stringify(objects))
+      logger.debug('RESULTS', JSON.stringify(objects))
       resolve(objects)
     })
 
@@ -240,8 +239,8 @@ sqlService.query = (sql, params = []) => {
  * @return {Promise}
  */
 sqlService.modify = (sql, params = []) => {
-  winston.debug('sql.service.modify(): SQL: ' + sql)
-  winston.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  logger.debug('sql.service.modify(): SQL: ' + sql)
+  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
 
   return new Promise(async (resolve, reject) => {
     const isInsert = isInsertStatement(sql)
@@ -254,7 +253,7 @@ sqlService.modify = (sql, params = []) => {
         return reject(err)
       }
       const res = R.assoc('rowsModified', (isInsert ? rowCount - 1 : rowCount), response)
-      winston.debug('sql.service: modify: result:', res)
+      logger.debug('sql.service: modify: result:', res)
       return resolve(res)
     })
 
@@ -275,7 +274,7 @@ sqlService.modify = (sql, params = []) => {
         }
         const opts = param.options ? param.options : options
         if (opts && Object.keys(opts).length) {
-          winston.debug('sql.service: modify(): opts to addParameter are: ', opts)
+          logger.debug('sql.service: modify(): opts to addParameter are: ', opts)
         }
 
         request.addParameter(
@@ -336,12 +335,12 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     await sqlService.updateDataTypeCache()
   }
   if (!cache.hasOwnProperty(key)) {
-    winston.debug(`sql.service: cache miss for ${key}`)
+    logger.debug(`sql.service: cache miss for ${key}`)
     return undefined
   }
   const cacheData = cache[key]
-  winston.debug(`sql.service: cache hit for ${key}`)
-  winston.debug('sql.service: cache', cacheData)
+  logger.debug(`sql.service: cache hit for ${key}`)
+  logger.debug('sql.service: cache', cacheData)
   return cacheData
 }
 
@@ -353,7 +352,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  */
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
-  winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY()`
@@ -385,7 +384,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
     )
   })
   params = R.flatten(params)
-  winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`
@@ -423,7 +422,7 @@ sqlService.create = async (tableName, data) => {
     const res = await sqlService.modify(sql, params)
     return res
   } catch (error) {
-    winston.warn('sql.service: Failed to INSERT', error)
+    logger.warn('sql.service: Failed to INSERT', error)
     throw error
   }
 }
@@ -458,7 +457,7 @@ sqlService.updateDataTypeCache = async function () {
       maxLength: row.CHARACTER_MAX_LENGTH
     }
   })
-  winston.debug('sql.service: updateDataTypeCache() complete')
+  logger.debug('sql.service: updateDataTypeCache() complete')
 }
 
 /**
@@ -480,7 +479,7 @@ sqlService.update = async function (tableName, data) {
     const res = await sqlService.modify(sql, params)
     return res
   } catch (error) {
-    winston.warn('sql.service: Failed to UPDATE', error)
+    logger.warn('sql.service: Failed to UPDATE', error)
     throw error
   }
 }

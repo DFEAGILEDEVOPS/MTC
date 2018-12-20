@@ -3,13 +3,13 @@
 const psychometricianReportDataService = require('../../../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../../../services/psychometrician-report.service')
 const anomalyReportService = require('../../../services/anomaly-report.service')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 describe('checkProcessingService', () => {
   const service = require('../../../services/check-processing.service')
   describe('#markAsProcessed', () => {
     beforeEach(() => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
     })
     it('bails out early if the array is empty', async (done) => {
       spyOn(psychometricianReportDataService, 'sqlFindUnprocessedStartedChecks').and.returnValue([])
@@ -36,7 +36,7 @@ describe('checkProcessingService', () => {
 
   describe('#process', () => {
     it('initially find out if there is any work to do', async (done) => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       spyOn(psychometricianReportDataService, 'sqlHasUnprocessedStartedChecks').and.returnValue(false)
       spyOn(service, 'cachePsychometricanReportData').and.returnValue(true)
       await service.process()

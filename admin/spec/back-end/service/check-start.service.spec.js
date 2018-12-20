@@ -3,7 +3,7 @@
 /* global describe it expect beforeEach spyOn fail */
 
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const azureQueueService = require('../../../services/azure-queue.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
@@ -116,9 +116,9 @@ describe('check-start.service', () => {
           spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
         })
         it('validates the pupils against the database', async () => {
-          // This validation emits a winston.warn() as potentially it is serious, so let's
+          // This validation emits a logger.warn() as potentially it is serious, so let's
           // shut it up for the test
-          spyOn(winston, 'warn')
+          spyOn(logger, 'warn')
           try {
             await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId, 'live')
             fail('expected to throw')
@@ -176,9 +176,9 @@ describe('check-start.service', () => {
           spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
         })
         it('validates the pupils against the database', async () => {
-          // This validation emits a winston.warn() as potentially it is serious, so let's
+          // This validation emits a logger.warn() as potentially it is serious, so let's
           // shut it up for the test
-          spyOn(winston, 'warn')
+          spyOn(logger, 'warn')
           try {
             await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId, 'familiarisation')
             fail('expected to throw')
@@ -231,7 +231,7 @@ describe('check-start.service', () => {
 
     it('throws an error if provided with pupilIds that are not a part of the school', async () => {
       try {
-        spyOn(winston, 'error')
+        spyOn(logger, 'error')
         await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true)
         fail('expected to throw')
       } catch (error) {
