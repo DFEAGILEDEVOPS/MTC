@@ -1,10 +1,10 @@
-const R = require('ramda')
-const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-validator')
-const azure = require('azure-storage')
-const azureStorageHelper = require('../lib/azure-storage-helper')
-const entGen = azure.TableUtilities.entityGenerator
-const moment = require('moment')
+'use strict'
+
+const { performance } = require('perf_hooks')
 const uuid = require('uuid/v4')
+
+const v1 = require('./v1.js')
+const v2 = require('./v2.js')
 
 /**
  * Write to Table Storage for fast pupil authentication
@@ -13,46 +13,52 @@ const uuid = require('uuid/v4')
  * @param {Object} prepareCheckMessage
  */
 module.exports = async function (context, prepareCheckMessage) {
-  context.log('prepare-check: message received', prepareCheckMessage.checkCode)
-  try {
-    preparedCheckSchemaValidator.validateMessage(prepareCheckMessage)
-  } catch (error) {
-    // After 5 attempts at processing the message will be moved to the poison queue
-    // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue#trigger---poison-messages
-    context.log.error('prepareCheck: message failed validation', prepareCheckMessage.checkCode)
-    throw error
-  }
-
-  const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
-  const preparedCheckTable = 'preparedCheck'
-
-  const entity = {
-    PartitionKey: entGen.String(prepareCheckMessage.schoolPin),
-    RowKey: entGen.String('' + prepareCheckMessage.pupilPin),
-    checkCode: entGen.Guid(prepareCheckMessage.pupil.checkCode),
-    collectedAt: null,
-    config: entGen.String(JSON.stringify(prepareCheckMessage.config)),
-    createdAt: entGen.DateTime(new Date()),
-    isCollected: entGen.Boolean(false),
-    pinExpiresAt: entGen.DateTime(moment(prepareCheckMessage.pupil.pinExpiresAt).toDate()),
-    pupil: entGen.String(JSON.stringify(R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], prepareCheckMessage.pupil))),
-    pupilId: entGen.Int32(prepareCheckMessage.pupil.id),
-    questions: entGen.String(JSON.stringify(prepareCheckMessage.questions)),
-    school: entGen.String(JSON.stringify(prepareCheckMessage.school)),
-    schoolId: entGen.Int32(prepareCheckMessage.school.id),
-    tokens: entGen.String(JSON.stringify(prepareCheckMessage.tokens)),
-    updatedAt: entGen.DateTime(new Date())
-  }
-
-  await azureTableService.insertEntityAsync(preparedCheckTable, entity)
+  context.log(`prepare-check: version:${prepareCheckMessage.version} message received`)
+  const start = performance.now()
 
   const outputProp = 'data'
   context.bindings[outputProp] = []
-  context.bindings[outputProp].push({
-    PartitionKey: prepareCheckMessage.checkCode,
-    RowKey: uuid(),
-    eventType: 'check-prepare',
-    payload: JSON.stringify(prepareCheckMessage),
-    processedAt: moment().toDate()
-  })
+  let meta
+
+  switch (parseInt(prepareCheckMessage.version, 10)) {
+    case 1:
+      try {
+        meta = await v1.process(context, prepareCheckMessage)
+        context.bindings[outputProp].push({
+          PartitionKey: prepareCheckMessage.checkCode,
+          RowKey: uuid(),
+          eventType: 'check-prepare',
+          payload: JSON.stringify(prepareCheckMessage),
+          processedAt: new Date()
+        })
+        break
+      } catch (error) {
+        context.log.error(`prepare-check: ERROR: failed to process message version:${prepareCheckMessage.version}: ${error.message}`)
+        throw error
+      }
+    case 2:
+      try {
+        meta = await v2.process(context, prepareCheckMessage)
+        for (let msg of prepareCheckMessage.messages) {
+          context.bindings[outputProp].push({
+            PartitionKey: msg.checkCode,
+            RowKey: uuid(),
+            eventType: 'check-prepare',
+            payload: JSON.stringify(msg),
+            processedAt: new Date()
+          })
+        }
+        break
+      } catch (error) {
+        context.log.error(`prepare-check: ERROR: failed to process message version:${prepareCheckMessage.version}: ${error.message}`)
+        throw error
+      }
+    default:
+      throw new Error('Unknown message version')
+  }
+
+  const end = performance.now()
+  const durationInMilliseconds = end - start
+  const timeStamp = new Date().toISOString()
+  context.log(`prepare-check: ${timeStamp} processed ${meta.processCount} checks, run took ${durationInMilliseconds} ms`)
 }

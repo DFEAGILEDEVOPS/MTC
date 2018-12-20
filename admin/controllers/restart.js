@@ -1,5 +1,4 @@
 const featureToggles = require('feature-toggles')
-const winston = require('winston')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
@@ -11,6 +10,7 @@ const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
+const logger = require('../services/log.service').getLogger()
 
 const controller = {}
 
@@ -136,7 +136,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
       await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
     }
   } catch (error) {
-    winston.error('Failed to recalculate pupil status')
+    logger.error('Failed to recalculate pupil status', error)
     throw error
   }
 
@@ -149,6 +149,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   try {
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {
+    logger.error('Failed to mark restart as deleted', error)
     return next(error)
   }
 
@@ -158,7 +159,7 @@ controller.postDeleteRestart = async (req, res, next) => {
       await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
     }
   } catch (error) {
-    winston.error('Failed to recalculate pupil status')
+    logger.error('Failed to recalculate pupil status', error)
     throw error
   }
 
