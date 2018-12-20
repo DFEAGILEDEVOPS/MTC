@@ -10,7 +10,7 @@ const table = '[checkForm]'
 const checkFormV2DataService = {
 
   /**
-   * Find all non deleted check forms
+   * Find all non deleted check forms with the at least one associated check window
    * @returns {Promise<*>}
    */
   sqlFindActiveCheckForms: async () => {
@@ -77,7 +77,7 @@ const checkFormV2DataService = {
 
     queries.push([insertSql, inserts.join(', \n')].join(' '))
     const sql = queries.join('\n')
-    return sqlService.query(sql, params)
+    return sqlService.modify(sql, params)
   },
 
   /**

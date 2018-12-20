@@ -1,4 +1,5 @@
 'use strict'
+
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
@@ -86,7 +87,6 @@ describe('check form v2 controller:', () => {
       spyOn(checkFormPresenter, 'getHighlightData')
       await controller.postUpload(req, res, next)
       expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
-
       expect(res.redirect).toHaveBeenCalled()
     })
     it('submits uploaded check form data processing', async () => {

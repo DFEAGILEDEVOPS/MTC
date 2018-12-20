@@ -2,7 +2,7 @@
 /* global describe it expect beforeEach jasmine spyOn fail xit */
 
 const httpMocks = require('node-mocks-http')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const restartService = require('../../../services/restart.service')
@@ -244,14 +244,14 @@ describe('restart controller:', () => {
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       try {
         await controller(req, res, next)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('a mock error')
-        expect(winston.error).toHaveBeenCalledTimes(1)
+        expect(logger.error).toHaveBeenCalledTimes(1)
       }
     })
   })
@@ -314,14 +314,14 @@ describe('restart controller:', () => {
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
       const controller = require('../../../controllers/restart').postDeleteRestart
 
       try {
         await controller(req, res, next)
         fail('expected to throw')
       } catch (error) {
-        expect(winston.error).toHaveBeenCalledTimes(1)
+        expect(logger.error).toHaveBeenCalledTimes(1)
         expect(error.message).toBe('a mock error')
       }
     })
