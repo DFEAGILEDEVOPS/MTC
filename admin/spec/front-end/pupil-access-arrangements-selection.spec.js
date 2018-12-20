@@ -2,7 +2,7 @@
 
 /* global $ describe it expect beforeEach */
 
-function initElements () {
+function initAAElements () {
   const $accessArrangementsList = $('<ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)"></ul>')
   const accessArrangements = [
     {
@@ -148,7 +148,7 @@ describe('pupil-access-arrangements-selection', function () {
   describe('after page load', function () {
     beforeEach(function () {
       $('body').empty()
-      initElements()
+      initAAElements()
       window.GOVUK.accessArrangements()
     })
 
@@ -192,7 +192,7 @@ describe('pupil-access-arrangements-selection', function () {
     })
   })
   it('it should add show-checkbox-content if relevant checkbox is checked on page load', function () {
-    initElements()
+    initAAElements()
     const el = $('.checkbox-list').find('input:checkbox')[3]
     el.checked = true
     // Fire method as if page reload occurred

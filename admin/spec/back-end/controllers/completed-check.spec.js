@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const jwtService = require('../../../services/jwt.service')
 const checkCompleteService = require('../../../services/check-complete.service')
@@ -104,7 +104,7 @@ describe('completed check controller', () => {
       jwtPromiseHelper.resolve(true)
       checkCompletePromiseHelper.reject(new Error('a mock error'))
       controller = setupController()
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
     })
     it('returns server error', async () => {
       const req = goodReq
