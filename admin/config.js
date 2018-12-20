@@ -118,6 +118,6 @@ module.exports = {
   Redis: {
     Host: process.env.REDIS_HOST,
     Port: process.env.REDIS_PORT,
-    Password: process.env.REDIS_PASSWORD
+    Key: process.env.REDIS_KEY
   }
 }

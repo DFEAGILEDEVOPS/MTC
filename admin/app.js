@@ -80,7 +80,9 @@ const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
+if (process.env.NODE_ENV === 'development') piping({
+  ignore: [/test/, '/coverage/']
+})
 
 setupBrowserSecurity(app)
 
@@ -125,10 +127,15 @@ let sessionStore
 
 if (config.Redis.Host) {
   const RedisStore = require('connect-redis')(session)
+  const redis = require('redis')
+  const client = redis.createClient(config.Redis.Port, config.Redis.Host, {
+    auth_pass: config.Redis.Key,
+    tls: {
+      servername: config.Redis.Host
+    }
+  })
   sessionStore = new RedisStore({
-    host: config.Redis.Host,
-    port: config.Redis.Port,
-    password: config.Redis.Password
+    client: client
   })
 } else {
   const TediousSessionStore = require('connect-tedious')(session)
@@ -196,8 +203,9 @@ passport.use(new CustomStrategy(
 
 // Passport with local strategy
 passport.use(
-  new LocalStrategy(
-    { passReqToCallback: true },
+  new LocalStrategy({
+      passReqToCallback: true
+    },
     require('./authentication/local-strategy')
   )
 )
