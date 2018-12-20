@@ -147,7 +147,6 @@ When(/^I attempt to upload a file that is not csv file$/) do
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.live_check_form.click
-  binding.pry
   upload_new_forms_page.upload.click
   upload_new_forms_page.delete_csv_file(@file_path)
 end
@@ -242,7 +241,8 @@ end
 Then(/^I should see an error stating the (.*) file needs to be exactly 50 integers$/) do |type|
   live_error_array = ["#{@file1_name.split('.')[0]} must contain exactly 25 items",
                       "#{@file1_name.split('.')[0]} must contain exactly 50 integers",
-                      "Check file format for #{@file2_name.split('.')[0]}"]
+                      "#{@file2_name.split('.')[0]} must contain exactly 25 items",
+                      "#{@file2_name.split('.')[0]} must contain exactly 50 integers"]
   familiarisation_error_array = live_error_array[0..1]
   expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql (type == 'live' ? live_error_array : familiarisation_error_array)
 end
@@ -500,3 +500,50 @@ But(/^when I correct the (.*) file to not be a duplicate file name$/) do |type|
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
+
+Then(/^it should be displayed as a (.*) form on the view forms page$/) do |type|
+  new_form_row = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == @file_name.split('.')[0]}
+  expect(new_form_row).to have_highlighted
+  expect(upload_and_view_forms_v2_page).to have_flash_message
+  expect(new_form_row.type.text).to eql type.capitalize
+  expect(new_form_row.uploaded_on.text).to eql Time.now.strftime("%Y-%m-%d")
+  expect(new_form_row).to have_remove
+end
+
+
+Then(/^i should be able to delete the (.*) form$/) do |type|
+  new_form_row = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == @file_name.split('.')[0]}
+  new_form_row.remove.click
+  upload_and_view_forms_v2_page.confirm_delete.click
+  expect(SqlDbHelper.check_form_details(@file_name.split('.')[0])['isDeleted']).to be true
+end
+
+
+But(/^I delete the (.+) form$/) do |type|
+  step "i should be able to delete the #{type} form"
+end
+
+When(/^I try to reupload the same (.*) form$/) do |type|
+  upload_new_forms_page.load
+  driver = page.driver.browser
+  driver.file_detector = lambda do |args|
+    str = args.first.to_s
+    str if File.exist?(str)
+  end if Capybara.current_driver.to_s.include? 'bs_'
+  upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
+  page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
+  upload_new_forms_page.send("#{type}_check_form").click
+  upload_new_forms_page.upload.click
+  upload_new_forms_page.confirm_overwrite.click unless  SqlDbHelper.familiarisation_check_form
+  upload_new_forms_page.delete_csv_file(@file_path)
+end
+
+Then(/^I should be shown an error stating the (.*) file is a duplicate$/) do |type|
+  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["#{@file_name.split('.')[0]} already exists. Rename and upload again"]
+end
+
+
+Then(/^there should be no way to remove a assigned form$/) do
+  assigned_form = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == 'MTC0100'}
+  expect(assigned_form).to_not have_remove
+end
