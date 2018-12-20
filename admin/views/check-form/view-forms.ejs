@@ -10,6 +10,11 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info) { %>
+        <div class="info-message">
+          <%= messages.info[0] %>
+        </div>
+        <% } %>
         <h1 class="heading-xlarge">Upload and view forms</h1>
 
         <%- partial('partials/_session_expiry') %>
