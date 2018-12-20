@@ -158,12 +158,27 @@ describe('LoginComponent', () => {
 
   describe('should fail logging in when PIN(s) are invalid', () => {
     beforeEach(() => {
-      promiseHelper.reject({ error: 'login failed' });
+      promiseHelper.reject({ error: 'login failed', status: 401 });
     });
 
     it('redirects to an error page when the login is rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
+        expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
+        expect(component.connectionFailed).toBeFalsy();
+      });
+    });
+  });
+  describe('should fail logging when there is no connection and set connectionFailed flag to true', () => {
+    beforeEach(() => {
+      promiseHelper.reject({ error: 'login failed', status: 0 });
+    });
+
+    it('redirects to an error page when the login is rejected', async () => {
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component.connectionFailed).toBeTruthy();
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
         expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
       });
