@@ -12,7 +12,7 @@ ALTER PROCEDURE mtc_admin.spGenAuditTriggers AS
     AND TABLE_SCHEMA=@schema
     AND TABLE_NAME != 'auditLog'
     AND TABLE_NAME != 'sessions'
-    AND TABLE_NAME != 'pupilLogonEvent';
+    AND TABLE_NAME != 'adminLogonEvent';
 
   OPEN db_cursor
   FETCH NEXT FROM db_cursor INTO @schema, @table
