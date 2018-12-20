@@ -105,7 +105,7 @@ controller.getDelete = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getViewFormPage = async (req, res, next) => {
-  // req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  req.breadcrumbs(`Upload and view forms`, `/check-form/view-forms`)
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
   try {

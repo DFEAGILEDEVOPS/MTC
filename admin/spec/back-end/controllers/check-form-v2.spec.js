@@ -151,6 +151,7 @@ describe('check form v2 controller:', () => {
       spyOn(res, 'render')
       await controller.getViewFormPage(req, res, next)
       expect(checkFormV2Service.getCheckForm).toHaveBeenCalled()
+      expect(res.locals.pageTitle).toBe('checkFormName')
       expect(res.render).toHaveBeenCalled()
     })
     it('returns next if service method throws an error', async () => {
