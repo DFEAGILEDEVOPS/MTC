@@ -2,7 +2,7 @@
 /* global describe, expect, it, beforeEach, afterEach, fail, spyOn, jasmine */
 
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const answerDataService = require('../../../services/data-access/answer.data.service')
 const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
@@ -135,7 +135,7 @@ describe('psychometricians-report.service', () => {
 
   describe('#produceReportData', () => {
     it('returns the data', () => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
       const pupil = {
         id: 12,
         foreName: 'Mocky',
@@ -185,7 +185,7 @@ describe('psychometricians-report.service', () => {
     })
 
     it('does not throw an error if an event does not have an eventType', () => {
-      // spyOn(winston, 'info')
+      // spyOn(logger, 'info')
       const pupil = {
         id: 12,
         foreName: 'Mocky',
