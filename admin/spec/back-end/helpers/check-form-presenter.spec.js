@@ -52,12 +52,12 @@ describe('checkFormPresenter', () => {
         })
     })
   })
-  describe('getHighlightData', () => {
-    it('returns highlight data for the list view', () => {
+  describe('getFlashMessageData', () => {
+    it('returns flash message data for the list view', () => {
       const uploadData = [{
         filename: 'filename.csv'
       }]
-      const result = checkFormPresenter.getHighlightData(uploadData)
+      const result = checkFormPresenter.getFlashMessageData(uploadData)
       expect(result).toEqual({
         message: 'Successfully uploaded 1 form',
         checkForms: [{ checkFormName: 'filename' }]

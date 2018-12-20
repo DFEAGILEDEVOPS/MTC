@@ -71,8 +71,8 @@ controller.postUpload = async (req, res, next) => {
     }
     return next(error)
   }
-  const highlightData = checkFormPresenter.getHighlightData(uploadData)
-  req.flash('info', highlightData)
+  const flashMessageData = checkFormPresenter.getFlashMessageData(uploadData)
+  req.flash('info', flashMessageData)
   res.redirect('/check-form/view-forms')
 }
 
@@ -92,8 +92,8 @@ controller.getDelete = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const highlightData = { message: `Successfully deleted form ${checkFormName}` }
-  req.flash('info', highlightData)
+  const flashMessage = { message: `Successfully deleted form ${checkFormName}` }
+  req.flash('info', flashMessage)
   return res.redirect(`/check-form/view-forms`)
 }
 

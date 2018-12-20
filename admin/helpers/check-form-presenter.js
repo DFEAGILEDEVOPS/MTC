@@ -37,11 +37,11 @@ checkFormPresenter.getPresentationCheckFormData = (checkFormData) => {
 }
 
 /**
- * Construct highlight data to be used on check form list view after successful saving
+ * Construct flash message data to be used on check form list view after successful saving
  * @param {Array | Object} uploadData
  * @returns {Object}
  */
-checkFormPresenter.getHighlightData = (uploadData) => {
+checkFormPresenter.getFlashMessageData = (uploadData) => {
   const highlightData = {}
   const checkFormsLength = Array.isArray(uploadData) ? uploadData.length : 1
   highlightData.message = `Successfully uploaded ${checkFormsLength} ${checkFormsLength > 1 ? 'forms' : 'form'}`
