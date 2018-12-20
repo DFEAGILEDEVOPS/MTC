@@ -3,13 +3,13 @@
 const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
 
 pupilAttendanceDataService.sqlInsertBatch = async (ids, attendanceCodeId, userId) => {
-  winston.debug('pupilAttendanceDataService.sqlInsertBatch: called')
+  logger.debug('pupilAttendanceDataService.sqlInsertBatch: called')
   const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
      pupil_id, 
      recordedBy_user_id, 

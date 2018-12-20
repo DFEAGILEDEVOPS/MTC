@@ -3,7 +3,7 @@
 const psychometricianReportDataService = require('./data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('./psychometrician-report.service')
 const anomalyReportService = require('./anomaly-report.service')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const checkProcessingService = {}
 const batchSize = 100
@@ -17,14 +17,14 @@ checkProcessingService.process = async function () {
   try {
     let hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     if (!hasWorkToDo) {
-      winston.info('checkProcessingService.process: nothing to do')
+      logger.info('checkProcessingService.process: nothing to do')
     }
     while (hasWorkToDo) {
       await checkProcessingService.cachePsychometricanReportData(batchSize)
       hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     }
   } catch (error) {
-    winston.error('checkProcessingService.process: Bailed out: ' + error.message)
+    logger.error('checkProcessingService.process: Bailed out: ' + error.message)
   }
 }
 
@@ -38,7 +38,7 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   const batchIds = await psychometricianReportDataService.sqlFindUnprocessedStartedChecks(batchSize)
 
   if (batchIds.length === 0) {
-    winston.info('checkProcessingService.cachePsychometricanReportData: No IDs found')
+    logger.info('checkProcessingService.cachePsychometricanReportData: No IDs found')
     return false
   }
   // Produce and cache the Psychometrician data
@@ -46,7 +46,7 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   // Produce and cache the Anomaly report data
   await anomalyReportService.batchProduceCacheData(batchIds)
 
-  winston.info('checkProcessingService.cachePsychometricanReportData: Processed %d checks', batchIds.length)
+  logger.info('checkProcessingService.cachePsychometricanReportData: Processed %d checks', batchIds.length)
   return true
 }
 

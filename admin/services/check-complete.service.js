@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const checkDataService = require('./data-access/check.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
@@ -32,13 +32,13 @@ checkCompleteService.completeCheck = async function (completedCheck) {
 
   const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
   if (!existingCheck.startedAt) {
-    winston.debug('Check submission for a check that does not have a startedAt date')
+    logger.debug('Check submission for a check that does not have a startedAt date')
     // determine the check started time from the audit log - CAUTION this is client data
     const startedAt = moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', completedCheck))
     if (startedAt.isValid()) {
       await checkDataService.sqlUpdateCheckStartedAt(completedCheck.data.pupil.checkCode, startedAt)
     } else {
-      winston.debug('StartedAt date is not valid')
+      logger.debug('StartedAt date is not valid')
     }
   }
 
