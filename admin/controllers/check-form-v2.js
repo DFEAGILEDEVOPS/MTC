@@ -1,3 +1,4 @@
+const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2Service = require('../services/check-form-v2.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -12,9 +13,15 @@ const controller = {}
  */
 controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
+  let checkForms
+  try {
+    checkForms = await checkFormV2Service.getSavedForms()
+  } catch (error) {
+    return next(error)
+  }
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('check-form/view-forms', {
-    checkForms: [],
+    checkForms,
     breadcrumbs: req.breadcrumbs(),
     messages: res.locals.messages
   })
@@ -64,10 +71,54 @@ controller.postUpload = async (req, res, next) => {
     }
     return next(error)
   }
-  const checkFormsLength = Array.isArray(req.files.csvFiles) ? req.files.csvFiles.length : 1
-  const message = `Successfully uploaded ${checkFormsLength} ${checkFormsLength > 1 ? 'forms' : 'form'}`
-  req.flash('info', message)
+  const flashMessageData = checkFormPresenter.getFlashMessageData(uploadData)
+  req.flash('info', flashMessageData)
   res.redirect('/check-form/view-forms')
+}
+
+/**
+ * Delete check form
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+controller.getDelete = async (req, res, next) => {
+  const urlSlug = req.params && req.params.urlSlug
+  let checkFormName
+  try {
+    checkFormName = await checkFormV2Service.getCheckFormName(urlSlug)
+    await checkFormV2Service.deleteCheckForm(urlSlug)
+  } catch (error) {
+    return next(error)
+  }
+  const flashMessage = { message: `Successfully deleted form ${checkFormName}` }
+  req.flash('info', flashMessage)
+  return res.redirect(`/check-form/view-forms`)
+}
+
+/**
+ * Check form view.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getViewFormPage = async (req, res, next) => {
+  req.breadcrumbs(`Upload and view forms`, `/check-form/view-forms`)
+  const urlSlug = req.params && req.params.urlSlug
+  let checkFormData
+  try {
+    checkFormData = await checkFormV2Service.getCheckForm(urlSlug)
+  } catch (error) {
+    return next(error)
+  }
+  res.locals.pageTitle = checkFormData.checkFormName
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('check-form/view-form', {
+    breadcrumbs: req.breadcrumbs(),
+    checkFormData
+  })
 }
 
 module.exports = controller

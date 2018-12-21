@@ -8,19 +8,58 @@ const sqlService = require('./sql.service')
 const table = '[checkForm]'
 
 const checkFormV2DataService = {
+
   /**
-   * Find existing check forms
+   * Find all non deleted check forms with the at least one associated check window
+   * @returns {Promise<*>}
+   */
+  sqlFindActiveCheckForms: async () => {
+    const sql = `
+    SELECT
+      cF.*,
+      checkFormRanked.checkWindow_id,
+      checkFormRanked.checkWindowName
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN (
+        SELECT cF2.*, cFW.checkWindow_id, cW.name AS checkWindowName, ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    AND cF.isDeleted = 0
+    ORDER BY cf.name ASC`
+    return sqlService.query(sql)
+  },
+
+  /**
+   * Find all check forms with the at least one associated check window
    * @returns {Promise<*>}
    */
   sqlFindAllCheckForms: async () => {
     const sql = `
-    SELECT cf.*, cFW.checkWindow_id
+    SELECT
+      cF.*,
+      checkFormRanked.checkWindow_id,
+      checkFormRanked.checkWindowName
     FROM ${sqlService.adminSchema}.${table} cF
-    LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
-      ON cF.id = cFW.checkForm_id
-    `
+    LEFT JOIN (
+        SELECT cF2.*, cFW.checkWindow_id, cW.name AS checkWindowName, ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    ORDER BY cf.name ASC`
     return sqlService.query(sql)
   },
+
   /**
    * Deletes if required existing familiarisation form and inserts checkform(s)
    * @param {Array} checkFormData
@@ -77,6 +116,66 @@ const checkFormV2DataService = {
     WHERE isLiveCheckForm = 0
     AND isDeleted = 0`
     const result = await sqlService.query(sql)
+    return R.head(result)
+  },
+
+  /**
+   * Mark check form as deleted
+   * @param {String} urlSlug
+   * @returns {Promise<*>}
+   */
+  sqlMarkDeletedCheckForm: async (urlSlug) => {
+    const sql = `UPDATE ${sqlService.adminSchema}.${table}
+    SET isDeleted = 1 WHERE urlSlug = @urlSlug`
+    const params = [
+      {
+        name: 'urlSlug',
+        value: urlSlug,
+        type: TYPES.NVarChar
+      }
+    ]
+
+    return sqlService.modify(sql, params)
+  },
+
+  /**
+   * Finds check form by urlSlug
+   * @param {String} urlSlug
+   * @returns {Promise<*>}
+   */
+  sqlFindCheckFormByUrlSlug: async (urlSlug) => {
+    const sql = `SELECT cF.*,
+    checkFormRanked.checkWindow_id,
+    checkFormRanked.checkWindowName,
+    checkFormRanked.checkWindowAdminStartDate,
+    checkFormRanked.checkWindowAdminEndDate
+    FROM ${sqlService.adminSchema}.${table} cF
+    LEFT JOIN (
+        SELECT 
+          cF2.*,
+          cFW.checkWindow_id,
+          cW.name AS checkWindowName,
+          cW.adminStartDate AS checkWindowAdminStartDate,
+          cW.adminEndDate AS checkWindowAdminEndDate,
+          ROW_NUMBER() OVER (PARTITION BY cF2.id ORDER BY cW.id ASC) as rank
+        FROM ${sqlService.adminSchema}.${table} cF2
+        LEFT JOIN ${sqlService.adminSchema}.checkFormWindow cFW
+          ON cF2.id = cFW.checkForm_id AND cF2.isDeleted = 0
+        LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
+          ON cW.id = cFW.checkWindow_id
+        ) checkFormRanked
+      ON cF.id = checkFormRanked.id
+    WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
+    AND cF.urlSlug = @urlSlug
+    AND cF.isDeleted = 0`
+    const params = [
+      {
+        name: 'urlSlug',
+        value: urlSlug,
+        type: TYPES.NVarChar
+      }
+    ]
+    const result = await sqlService.query(sql, params)
     return R.head(result)
   }
 }
