@@ -12,7 +12,7 @@ preparedCheckSchemaValidator.validateMessage = function (message) {
   preparedCheckSchemaValidator.validateConfig(message.config)
 }
 
-preparedCheckSchemaValidator.validatePupil = function(pupil) {
+preparedCheckSchemaValidator.validatePupil = function (pupil) {
   const pupilProperties = ['firstName', 'lastName', 'dob', 'checkCode']
   preparedCheckSchemaValidator.schemaValidator(pupil, pupilProperties, 'pupil')
 }

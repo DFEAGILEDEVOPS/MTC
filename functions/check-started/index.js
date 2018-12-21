@@ -129,5 +129,5 @@ function canCheckBeStarted (code) {
 async function requestPupilStatusChange (pupilId, checkCode) {
   const pupilStatusQueueName = 'pupil-status'
   const message = { version: 1, pupilId, checkCode }
-  return await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
+  return azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
 }

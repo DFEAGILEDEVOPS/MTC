@@ -1,6 +1,6 @@
 'use strict'
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
@@ -52,7 +52,7 @@ const dateService = {
 
   checkAndFormat: function (date, format) {
     if (!(date instanceof Date || moment.isMoment(date))) {
-      winston.warn(`Date parameter is not a Date or Moment object: ${date}`)
+      logger.warn(`Date parameter is not a Date or Moment object: ${date}`)
       return ''
     }
     const m = moment(date)

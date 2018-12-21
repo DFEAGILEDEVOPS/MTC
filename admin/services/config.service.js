@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const accessArrangementsDataService = require('./data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
@@ -65,7 +65,7 @@ const configService = {
         accessArrangementsCodes = []
       }
     } catch (error) {
-      winston.error('Failed to get access arrangements: ' + error.message)
+      logger.error('Failed to get access arrangements: ' + error.message)
     }
 
     accessArrangementsCodes.forEach(code => {
