@@ -6,7 +6,7 @@ const winston = require('winston')
 const bluebird = require('bluebird')
 const logger = require('./log.service').getLogger()
 let azureQueueService // cache the queueService for repeated use
-let azureQueueServiceAsync  // cache an async version
+let azureQueueServiceAsync // cache an async version
 
 const service = {
   addMessage: function addMessage (queueName, payload, queueService) {
