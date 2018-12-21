@@ -16,7 +16,8 @@
     "test": "nyc -r html ./run-jasmine.js",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
-    "purgestorage": "bin/init-dev-storage.js"
+    "purgestorage": "bin/init-dev-storage.js",
+    "debug": "node --inspect=0.0.0.0:9229 ./server.js"
   },
   "engines": {
     "node": ">= 8.11"
@@ -28,6 +29,7 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
+    "connect-redis": "^3.4.0",
     "connect-tedious": "^1.1.2",
     "cors": "^2.8.4",
     "csurf": "^1.9.0",
