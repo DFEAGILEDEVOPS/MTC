@@ -114,6 +114,7 @@ describe('restart.service', () => {
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ 'ok': 1, 'n': 1 })
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([{ id: 1, urlSlug: 'anc-def' }])
       let results
       try {
         results = await restartService.restart([ pupilMock.id, pupilMock.id ], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
@@ -121,7 +122,7 @@ describe('restart.service', () => {
         expect(error).toBeUndefined()
       }
       expect(pupilRestartDataService.sqlCreate).toHaveBeenCalledTimes(2)
-      expect(results.length).toBe(2)
+      expect(results.length).toBe(1)
     })
     it('it should throw an error if the pupil cannot be restarted', async () => {
       const schoolId = 42
