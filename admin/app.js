@@ -128,7 +128,7 @@ let sessionStore
 if (config.Redis.Host) {
   const RedisStore = require('connect-redis')(session)
   const redis = require('redis')
-  const client = redis.createClient(config.Redis.Port, config.Redis.Host, {
+  /* const client = redis.createClient(config.Redis.Port, config.Redis.Host, {
     auth_pass: config.Redis.Key,
     tls: {
       servername: config.Redis.Host
@@ -136,6 +136,14 @@ if (config.Redis.Host) {
   })
   sessionStore = new RedisStore({
     client: client
+  }) */
+  sessionStore = new RedisStore({
+    host: config.Redis.Host,
+    port: config.Redis.Port,
+    auth_pass: config.Redis.Key,
+    tls: {
+      servername: config.Redis.Host
+    }
   })
 } else {
   const TediousSessionStore = require('connect-tedious')(session)
