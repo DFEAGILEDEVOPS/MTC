@@ -32,7 +32,6 @@ const R = require('ramda')
 const session = require('express-session')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
-const TediousSessionStore = require('connect-tedious')(session)
 const uuidV4 = require('uuid/v4')
 
 const logger = require('./services/log.service').getLogger()
@@ -81,7 +80,9 @@ const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
+if (process.env.NODE_ENV === 'development') piping({
+  ignore: [/test/, '/coverage/']
+})
 
 setupBrowserSecurity(app)
 
@@ -122,18 +123,21 @@ if (process.env.NODE_ENV === 'production') {
   secureCookie = true
 }
 
-const sessionOptions = {
-  name: 'mtc-admin-session-id',
-  secret: config.SESSION_SECRET,
-  resave: false,
-  rolling: true,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000,
-    httpOnly: true,
-    secure: secureCookie
-  },
-  store: new TediousSessionStore({
+let sessionStore
+
+if (config.Redis.Host) {
+  const RedisStore = require('connect-redis')(session)
+  sessionStore = new RedisStore({
+    host: config.Redis.Host,
+    port: config.Redis.Port,
+    auth_pass: config.Redis.Key,
+    tls: {
+      servername: config.Redis.Host
+    }
+  })
+} else {
+  const TediousSessionStore = require('connect-tedious')(session)
+  sessionStore = new TediousSessionStore({
     config: {
       appName: config.Sql.Application.Name,
       userName: config.Sql.Application.Username,
@@ -148,6 +152,20 @@ const sessionOptions = {
     },
     tableName: '[mtc_admin].[sessions]'
   })
+}
+
+const sessionOptions = {
+  name: 'mtc-admin-session-id',
+  secret: config.SESSION_SECRET,
+  resave: false,
+  rolling: true,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000,
+    httpOnly: true,
+    secure: secureCookie
+  },
+  store: sessionStore
 }
 app.use(session(sessionOptions))
 app.use(passport.initialize())
@@ -183,8 +201,9 @@ passport.use(new CustomStrategy(
 
 // Passport with local strategy
 passport.use(
-  new LocalStrategy(
-    { passReqToCallback: true },
+  new LocalStrategy({
+      passReqToCallback: true
+    },
     require('./authentication/local-strategy')
   )
 )
