@@ -146,6 +146,15 @@ class SqlDbHelper
     question_reader_reason_array
   end
 
+
+  def self.familiarisation_check_form
+    sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE isLiveCheckForm=0 AND isDeleted=0"
+    result = SQL_CLIENT.execute(sql)
+    array = result.each{|row| row.map}
+    result.cancel
+    array
+  end
+
   def self.check_form_details(check_form_name)
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE name = '#{check_form_name}'"
     result = SQL_CLIENT.execute(sql)
