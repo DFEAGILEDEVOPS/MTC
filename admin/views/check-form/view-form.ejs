@@ -1,0 +1,75 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge"><%= checkFormData.checkFormName %></h1>
+
+    <%- partial('partials/_session_expiry') %>
+
+    <div class="panel panel-border-wide">
+      <div>Type: <%= checkFormData.checkFormType %></div>
+      <div><% if (checkFormData.checkWindowName) { %>
+      Assigned to: <%= checkFormData.checkWindowName %> - <%= checkFormData.checkFormType %> check
+        (<%= checkFormData.checkWindowAdminStartDate.format('D MMMM YYYY') %> to <%= checkFormData.checkWindowAdminEndDate.format('D MMMM YYYY') %>)
+        <% } else { %>
+      This form is unassigned
+      <% } %>
+      </div>
+      <div>Uploaded: <%= checkFormData.createdAt %></div>
+    </div>
+
+    <div class="top-padding-30">
+      <dl class="inline-definition-list" role="list">
+        <% let num = 1 %>
+        <% checkFormData.formData.forEach((q, i) => { %>
+        <dt class="inline-definition-list" role="listitem">Q<%= num++ %></dt>
+        <dd class="inline-definition-list">
+          <span class="first-factor" role="listitem"><%= q.f1 %></span>
+          <span class="times-sign" role="listitem">&times;</span>
+          <span class="second-factor" role="listitem"><%= q.f2 %></span>
+          <span class="equals-sign" role="listitem">=</span>
+          <span class="fixed-result" role="listitem"><%= (q.f1 * q.f2) %></span>
+        </dd>
+        <% }); %>
+      </dl>
+      <% if (checkFormData.canRemoveCheckForm) { %>
+      <br />
+      <a href="/check-form/delete/<%= checkFormData.urlSlug %>" class="modal-link" id="js-modal-link">Remove form</a>
+      <% } %>
+    </div>
+    <div class="back-to-top-container">
+      <a href="#top">Back to top</a>
+    </div>
+  </div>
+  <div class="column-one-third sidebar" aria-label="sidebar">
+    <aside role="complementary" class="support-column">
+      <h3 class="heading-medium">Related</h3>
+      <nav role="navigation">
+        <ul class="list">
+          <li>
+            <a href="<%- guidancePdf %>" rel="noopener noreferrer" target="_blank">Guidance</a>
+          </li>
+          <li>
+            <a href="">Assign forms to check window</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+<%- partial('partials/_modal_box', {
+  modalTitle: 'Remove form',
+  modalText: 'Are you sure you want to remove this?',
+  modalConfirmationLabel: 'Yes',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'No',
+  modalCancelUrl: '#'
+}) %>
+

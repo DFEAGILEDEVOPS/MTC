@@ -155,3 +155,44 @@ Feature: Upload and View Forms
   Scenario: Users cant overwrite fam form if one has already been assigned
     When I attempt to upload a new familiarisation form whilst the existing familiraisation form has already been assigned
     Then I should see an error stating the familirisation form has already been assigned to a window
+
+
+  @remove_uploaded_forms
+  Scenario Outline: Uploaded forms are displayed on the view forms page
+    When I have uploaded a valid <type> form
+    Then it should be displayed as a <type> form on the view forms page
+
+    Examples:
+      | type            |
+      | live            |
+      | familiarisation |
+
+  @remove_uploaded_forms
+  Scenario Outline: Uploaded forms are displayed on the view forms page
+    When I have uploaded a valid <type> form
+    Then i should be able to delete the <type> form
+
+    Examples:
+      | type            |
+      | live            |
+      | familiarisation |
+
+  @remove_uploaded_forms
+  Scenario Outline: Users cannot re upload a deleted form if the file name has not changed
+    When I have uploaded a valid <type> form
+    But I delete the <type> form
+    When I try to reupload the same <type> form
+    Then I should be shown an error stating the <type> file is a duplicate
+
+
+    Examples:
+      | type            |
+      | live            |
+      | familiarisation |
+
+
+  @remove_uploaded_forms
+  Scenario: Users cannot remove an assigned form
+    Then there should be no way to remove a assigned form
+
+
