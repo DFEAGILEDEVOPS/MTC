@@ -24,6 +24,7 @@ module.exports.getPupilsEligibleForRestart = async function getPupilsEligibleFor
  * {
         id: record.id,
         pupilId: p.id,
+        pupilUrlSlug: p.urlSlug,
         reason: reason,
         status: record.status,
         foreName: p.foreName,
