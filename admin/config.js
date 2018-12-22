@@ -64,7 +64,7 @@ module.exports = {
     }
   },
   Logging: {
-    LogLevel: process.env.LOG_LEVEL || 'debug',
+    LogLevel: process.env.LOG_LEVEL || 'error',
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
@@ -114,5 +114,10 @@ module.exports = {
       CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS,
       CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS
     }
+  },
+  Redis: {
+    Host: process.env.REDIS_HOST,
+    Port: process.env.REDIS_PORT,
+    Key: process.env.REDIS_KEY
   }
 }
