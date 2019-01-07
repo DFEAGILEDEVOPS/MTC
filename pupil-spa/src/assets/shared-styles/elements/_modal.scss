@@ -18,20 +18,20 @@ div.modal-box {
   left: 50%;
   transform: translate(-50%, 0%);
 
+  .modal-icon {
+    float: left;
+    margin: 14px 0 0 12px;
+    padding: 0;
+    height: 25px;
+    width: 25px;
+  }
+
   h1 {
     background-color: $govuk-blue;
     color: $white;
     font-size: 22px;
-    margin-bottom: 10px;
-    padding: 12px 12px 10px 12px;
-
-    &:before {
-      background-image: url('/images/icon-warning-white.png');
-      background-repeat: no-repeat;
-      background-size: 25px 25px;
-      content: " ";
-      padding-left: 35px;
-    }
+    margin: 0 0 10px 0;
+    padding: 12px 12px 10px 50px;
   }
 
   .modal-content {

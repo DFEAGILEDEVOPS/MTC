@@ -148,7 +148,16 @@
     }
   }
 
-  
+  .colour-contrast-#{$key} .svg-clock {
+
+    .cls-1 {
+      stroke: if($special-invert == false, $bg-colour, $fg-colour) !important;
+    }
+
+    .cls-2 {
+      fill: if($special-invert == false, $bg-colour, $fg-colour) !important;
+    }
+  }
 }
 
 /*

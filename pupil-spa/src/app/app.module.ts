@@ -69,6 +69,7 @@ import { SvgGirlComponent } from './svg/svg.girl.component';
 import { IdleModalComponent } from './modal/idle.modal.component';
 import { TimerService } from './services/timer/timer.service';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
+import { SvgClockComponent } from './svg/svg.clock.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -124,6 +125,7 @@ const appRoutes: Routes = [
     SvgLoadingComponent,
     SvgArrowComponent,
     SvgGirlComponent,
+    SvgClockComponent,
     IdleModalComponent
   ],
   imports: [
