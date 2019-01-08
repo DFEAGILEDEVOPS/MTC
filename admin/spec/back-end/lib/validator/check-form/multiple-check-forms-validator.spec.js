@@ -17,7 +17,7 @@ describe('multipleCheckFormsValidator', function () {
       it('and returns a validation error object with no errors', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
-          { filename: 'filename2.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
+          { filename: 'filename2.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]
         const existingCheckForms = [
           { name: 'checkForm1' },
@@ -30,7 +30,7 @@ describe('multipleCheckFormsValidator', function () {
       it('and returns a validation error object with duplicate check form name error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
-          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
+          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]
         const existingCheckForms = [
           { name: 'checkForm1' },
@@ -79,7 +79,7 @@ describe('multipleCheckFormsValidator', function () {
       })
       it('and returns a validation error object with assigned existing familiarisation form error', async () => {
         const uploadedFiles = [
-          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
+          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]
         const existingCheckForms = [
           { name: 'checkForm1', 'checkWindow_id': null, 'isLiveCheckForm': true },
