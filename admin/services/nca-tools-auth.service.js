@@ -3,7 +3,6 @@
 const iconv = require('iconv-lite')
 const crypto = require('crypto')
 const moment = require('moment')
-const logger = require('../services/log.service').getLogger()
 
 const service = {
   /**
@@ -35,9 +34,6 @@ const service = {
       // There is no point continuing.
       throw new Error('Signature failed verification')
     }
-    logger.debug('encKey.length is ' + encKey.length)
-    logger.debug('encIv.length is ' + encIv.length)
-    logger.debug('mtcPrivateKey.length is ' + mtcPrivateKey.length)
 
     const keyBuffer = Buffer.from(encKey, 'base64')
     const key = rsaDecrypt(keyBuffer, mtcPrivateKey)
