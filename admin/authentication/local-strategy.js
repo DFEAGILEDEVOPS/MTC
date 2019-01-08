@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcryptjs')
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('../services/log.service').getLogger()
 
 const userDataService = require('../services/data-access/user.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -80,7 +80,7 @@ module.exports = async function (req, email, password, done) {
     await saveValidLogonEvent(logonEvent, sessionData)
     return done(null, sessionData)
   } catch (error) {
-    winston.warn(error)
+    logger.warn(error)
     await saveInvalidLogonEvent(logonEvent, 'Server error: ' + error.message)
     done(error)
   }
@@ -101,7 +101,7 @@ async function saveInvalidLogonEvent (logonEvent, message) {
     logonEvent.isAuthenticated = false
     await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.warn('Failed to save invalid logon event: ' + error.message)
+    logger.warn('Failed to save invalid logon event: ' + error.message)
   }
 }
 
@@ -110,6 +110,6 @@ async function saveValidLogonEvent (logonEvent, session) {
     logonEvent.isAuthenticated = true
     await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.warn('Failed to save valid logon event: ' + error.message)
+    logger.warn('Failed to save valid logon event: ' + error.message)
   }
 }

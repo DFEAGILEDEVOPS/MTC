@@ -18,7 +18,7 @@ bluebird.promisifyAll(blobService, {
           if (error) {
             return reject(error)
           }
-          return resolve({ result, response })
+          return resolve(result)
         })
       } catch (error) {
         return reject(error)
