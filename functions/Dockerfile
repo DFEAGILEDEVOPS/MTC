@@ -8,6 +8,7 @@ COPY . .
 RUN yarn install
 
 RUN apt-get update && \
+    apt-get install libunwind8 && \
     curl -O https://dot.net/v1/dotnet-install.sh && \
     source dotnet-install.sh --channel Current && \
     rm dotnet-install.sh && \
