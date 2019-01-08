@@ -111,8 +111,8 @@ module.exports = {
     },
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS,
-      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS
+      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS || true,
+      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS || true
     }
   },
   Redis: {
