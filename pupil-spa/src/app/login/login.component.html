@@ -8,7 +8,7 @@
         </header>
     </div>
 
-  <div *ngIf="!loginSucceeded && !connectionFailed" class="grid-row">
+  <div *ngIf="!loginSucceeded && !connectionFailed && submitted !== undefined" class="grid-row">
     <div class="column-two-thirds">
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
         <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div *ngIf="!loginSucceeded && connectionFailed" class="grid-row">
+  <div *ngIf="!loginSucceeded && connectionFailed && submitted !== undefined" class="grid-row">
     <div class="column-two-thirds">
       <div class="error-summary" role="group" aria-labelledby="error-summary-heading-2">
         <h2 class="heading-medium error-summary-heading" id="error-summary-heading-2">Unable to login</h2>
