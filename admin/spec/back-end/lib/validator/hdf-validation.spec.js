@@ -3,73 +3,91 @@
 /* global beforeEach, describe, it, expect */
 
 const hdfValidator = require('../../../../lib/validator/hdf-validator')
-const expressValidator = require('express-validator')()
 
 describe('HDF validator', function () {
-  let req = null
+  let requestData;
 
-  function getBody () {
-    return {
-      declaration: 'confirm',
-      jobTitle: 'Head Teacher',
-      fullName: 'John Smith'
+  beforeEach(() => {
+    requestData = {
+      firstName: 'a',
+      lastName: 'b',
+      isHeadteacher: 'Y',
+      jobTitle: 'c',
     }
-  }
+  })
 
-  beforeEach(function (done) {
-    req = {
-      query: {},
-      body: {},
-      params: {},
-      param: (name) => {
-        this.params[name] = name
-      }
-    }
-
-    return expressValidator(req, {}, function () {
-      done()
+  describe('validate', function () {
+    it('returns validationError object with no errors if the validation is successful', () => {
+      const validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeFalsy()
     })
-  })
 
-  it('allows a valid request', async function (done) {
-    req.body = getBody()
-    let validationError = await hdfValidator.validate(req)
-    expect(validationError.hasError()).toBe(false)
-    done()
-  })
+    it('requires firstName to be non-empty', () => {
+      requestData.firstName = ''
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('firstName')).toBe(true)
+    })
 
-  it('requires a job title', async function (done) {
-    req.body = getBody()
-    req.body.jobTitle = ''
-    let validationError = await hdfValidator.validate(req)
-    expect(validationError.hasError()).toBe(true)
-    expect(validationError.isError('jobTitle')).toBe(true)
-    done()
-  })
+    it('requires firstName to be up to 128 chars long', () => {
+      requestData.firstName = 's'.repeat(129)
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('firstName')).toBe(true)
+    })
 
-  it('allows latin chars, hyphen and apostrophe in the job title', async function (done) {
-    req.body = getBody()
-    req.body.jobTitle = 'Rén-\'e'
-    let validationError = await hdfValidator.validate(req)
-    expect(validationError.hasError()).toBe(false)
-    done()
-  })
+    it('allows latin chars, hyphen and apostrophe in firstName', () => {
+      requestData.firstName = 'Rén-\'e'
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeFalsy()
+    })
 
-  it('Job title can be up to 35 chars long', async function (done) {
-    req.body = getBody()
-    req.body.jobTitle = 's'.repeat(36)
-    let validationError = await hdfValidator.validate(req)
-    expect(validationError.hasError()).toBe(true)
-    expect(validationError.isError('jobTitle')).toBe(true)
-    done()
-  })
+    it('requires lastName to be non-empty', () => {
+      requestData.lastName = ''
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('lastName')).toBe(true)
+    })
 
-  it('signature can include numbers', async function (done) {
-    req.body = getBody()
-    req.body.fullName = 'Smithy99'
-    let validationError = await hdfValidator.validate(req)
-    expect(validationError.hasError()).toBe(false)
-    expect(validationError.isError('fullName')).toBe(false)
-    done()
+    it('requires lastName to be up to 128 chars long', () => {
+      requestData.lastName = 's'.repeat(129)
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('lastName')).toBe(true)
+    })
+
+    it('allows latin chars, hyphen and apostrophe in lastName', () => {
+      requestData.lastName = 'Rén-\'e'
+      let validationError = hdfValidator.validate(requestData)
+      expect(validationError.hasError()).toBeFalsy()
+    })
+
+    describe('when not a headteacher', () => {
+      beforeEach(() => {
+        requestData.isHeadteacher = 'N'
+      })
+
+      it('requires jobTitle to be non-empty', () => {
+        requestData.jobTitle = ''
+        let validationError = hdfValidator.validate(requestData)
+        expect(validationError.hasError()).toBeTruthy()
+        expect(validationError.isError('jobTitle')).toBe(true)
+      })
+
+      it('requires jobTitle to be up to 128 chars long', () => {
+        requestData.jobTitle = 's'.repeat(129)
+        let validationError = hdfValidator.validate(requestData)
+        expect(validationError.hasError()).toBeTruthy()
+        expect(validationError.isError('jobTitle')).toBe(true)
+      })
+    })
+
+    describe('when a headteacher', () => {
+      it('ignores jobTitle', () => {
+        requestData.jobTitle = ''
+        let validationError = hdfValidator.validate(requestData)
+        expect(validationError.hasError()).toBeFalsy()
+      })
+    })
   })
 })

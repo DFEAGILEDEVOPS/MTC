@@ -1,7 +1,11 @@
 'use strict'
 
 module.exports = {
-  declaration: 'Select a declaration option',
-  jobTitle: 'Check the job title',
-  fullName: 'Check the signature'
+  firstNameLength: 'Enter a forename in no more than 128 characters',
+  firstNameInvalidChars: 'Enter a forename without special characters',
+
+  lastNameLength: 'Enter a surname in no more than 128 characters',
+  lastNameInvalidChars: 'Enter a surname without special characters',
+
+  jobTitleLength: 'Enter a job title',
 }
