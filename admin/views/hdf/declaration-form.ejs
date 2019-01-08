@@ -27,6 +27,14 @@
 
         <%- partial('partials/_session_expiry') %>
 
+        <% if (!hdfEligibility) { %>
+        <h1 class="lede">Currently unavailable</h1>
+
+        <p>
+            All pupils should have completed a check or have a reason for not taking the check.
+            Access to this section will then become available.
+        </p>
+        <% } else { %>
         <p class="lede">
           Confirm all pupils taking the check completed it according to MTC guidance.
           In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
@@ -63,7 +71,7 @@
               />
             </div>
 
-            <div class="form-group id="headteacher">
+            <div class="form-group" id="headteacher">
                 <fieldset role="radiogroup">
                     <legend class="form-label-bold">Are you the headteacher?</legend>
                     <div class="multiple-choice">
@@ -114,5 +122,6 @@
 
             <input class="button" type="submit" value="Continue">
         </form>
+        <% } %>
     </div>
 </div>
