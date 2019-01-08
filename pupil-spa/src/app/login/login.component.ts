@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private submitted: boolean;
   public loginModel = new Login('', '');
   public loginSucceeded: boolean;
+  public connectionFailed: boolean;
 
   constructor(
     private userService: UserService,
@@ -64,6 +65,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       .then(
       () => {
         this.loginSucceeded = true;
+        this.connectionFailed = false;
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
@@ -78,13 +80,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.router.navigate(['sign-in-success']);
         }
       },
-      () => {
+      (err) => {
+        this.connectionFailed = err.status === 0;
         this.loginSucceeded = false;
         this.submitted = false;
         this.router.navigate(['sign-in']);
       })
       .catch(() => {
         this.loginSucceeded = false;
+        this.connectionFailed = false;
         this.submitted = false;
         this.router.navigate(['sign-in']);
       });
