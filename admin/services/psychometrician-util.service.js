@@ -3,7 +3,7 @@
 const R = require('ramda')
 const moment = require('moment')
 const momentDurationFormatSetup = require('moment-duration-format')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')
@@ -60,7 +60,7 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
 
   for (let event of inputEvents) {
     if (event === null || event === undefined) {
-      winston.info(`psUtilService.cleanUpInputEvents: empty event found`)
+      logger.info(`psUtilService.cleanUpInputEvents: empty event found`)
       continue
     }
     const eventType = R.prop('eventType', event)
@@ -170,8 +170,8 @@ psUtilService.getUserInput = function getUserInput (inputs) {
         ident = 't'
         break
       default:
-        winston.info('Unknown input type: ' + inp.eventType)
-        winston.info('inp ', inp)
+        logger.info('Unknown input type: ' + inp.eventType)
+        logger.info('inp ', inp)
         ident = 'u'
         break
     }
@@ -188,7 +188,7 @@ psUtilService.getUserInput = function getUserInput (inputs) {
  */
 psUtilService.getLastAnswerInputTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
-    winston.info('Invalid param inputs')
+    logger.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -219,7 +219,7 @@ psUtilService.getLastAnswerInputTime = function (inputs, answer) {
  */
 psUtilService.getFirstInputTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
-    winston.info('Invalid param inputs')
+    logger.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -269,7 +269,7 @@ psUtilService.filterInputsToAnswerKeys = function (inputs) {
  */
 psUtilService.getResponseTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
-    winston.info('Invalid param inputs')
+    logger.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -293,7 +293,7 @@ psUtilService.getResponseTime = function (inputs, answer) {
 psUtilService.getTimeoutFlag = function (answer, inputs) {
   let timeout = 1
   if (!(inputs && Array.isArray(inputs))) {
-    winston.info('invalid input: ', inputs)
+    logger.info('invalid input: ', inputs)
     return 'error'
   }
 
@@ -468,7 +468,7 @@ psUtilService.getInputMethod = function (inputs) {
         break
       default:
         if (eventType) {
-          winston.info('UNKNOWN event type' + eventType)
+          logger.info('UNKNOWN event type' + eventType)
         }
     }
   })

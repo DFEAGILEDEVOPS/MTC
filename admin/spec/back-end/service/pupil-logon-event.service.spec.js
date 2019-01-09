@@ -2,7 +2,7 @@
 
 /* global describe it spyOn expect fail */
 
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const pupilLogonEventDataService = require('../../../services/data-access/pupil-logon-event.data.service')
 
@@ -62,13 +62,13 @@ describe('pupilLogonEventService', () => {
 
   it('produces a warning if the database save threw an error', async () => {
     spyOn(pupilLogonEventDataService, 'sqlCreate').and.throwError('mock')
-    spyOn(winston, 'warn')
+    spyOn(logger, 'warn')
     try {
       const res = await service.storeLogonEvent(pupilId, schoolPin, pupilPin, true, 200)
       expect(res).toBeFalsy()
     } catch (error) {
       fail('expected NOT to throw')
     }
-    expect(winston.warn).toHaveBeenCalled()
+    expect(logger.warn).toHaveBeenCalled()
   })
 })

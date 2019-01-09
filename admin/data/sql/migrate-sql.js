@@ -2,10 +2,9 @@
 
 require('dotenv').config()
 const config = require('../../config')
-const winston = require('winston')
+const logger = require('../../services/log.service').getLogger()
 const Postgrator = require('postgrator')
 const path = require('path')
-const chalk = require('chalk')
 const {
   sortMigrationsAsc,
   sortMigrationsDesc
@@ -70,20 +69,20 @@ const runMigrations = async (version) => {
   const postgrator = new Migrator(migratorConfig)
 
   // subscribe to useful events
-  postgrator.on('migration-started', migration => winston.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
-  postgrator.on('error', error => winston.error(error.message))
+  postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
+  postgrator.on('error', error => logger.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
-  winston.info(chalk.green('Migrating to version:'), chalk.green.bold(version))
+  logger.info('Migrating to version: ' + version)
 
   try {
     await postgrator.migrate(version)
-    winston.info(chalk.green('SQL Migrations complete'))
+    logger.info('SQL Migrations complete')
   } catch (error) {
-    winston.error(chalk.red('Migration error:', error.message))
-    winston.error(`${error.appliedMigrations.length} migrations were applied...`)
+    logger.error('Migration error:', error.message)
+    logger.error(`${error.appliedMigrations.length} migrations were applied...`)
     error.appliedMigrations.forEach(migration => {
-      winston.error(migration.name)
+      logger.error(migration.name)
     })
     throw error
   }
@@ -91,10 +90,10 @@ const runMigrations = async (version) => {
 
 runMigrations(process.argv[2] || 'max')
   .then(() => {
-    winston.info(chalk.green('Done'))
+    logger.info('Done')
     process.exit(0)
   })
   .catch(() => {
-    winston.info(chalk.red('Failed'))
+    logger.alert('Migrations Failed')
     process.exit(1)
   })

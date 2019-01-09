@@ -65,8 +65,5 @@ Given(/^I have refreshed a page during the check$/) do
   step 'I am on question 1 of the check'
   step 'I attempt to refresh the page'
   step 'the next question has loaded so I continue with the check'
-  check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  data = SqlDbHelper.get_check_data(check_code)
-  local_info = JSON.parse data['data']
-  @db_device_info = local_info['data']['device']
+  @check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
 end

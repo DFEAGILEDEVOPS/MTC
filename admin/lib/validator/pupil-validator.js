@@ -95,24 +95,19 @@ module.exports.validate = async (pupilData) => {
   const upn = pupilData['upn'].trim().toUpperCase()
   const expected = upnService.calculateCheckLetter(upn.substring(1))
   if (expected !== upn[0]) {
-    // winston.info(`UPN check letter validation failed for [${upn}]: expected [${expected}] but got [${upn[0]}]`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCheckDigit)
   }
   if (!upnService.hasValidLaCode(upn)) {
-    // winston.info(`upnHasValidLaCode: val: [${upn}] failed check guard`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidLaCode)
   }
   if (!(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
-    // winston.info(`UPN upnHasValidChars5To12 for [${upn}] failed regex check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacters5To12)
   }
   if (upn.length !== 13) {
-    // winston.info(`upnHasValidChar13: val: [${upn}] failed length check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
   }
   const char = upn[12] // 13th char
   if (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(char)) {
-    // winston.info(`upnHasValidChar13: val: [${upn}] failed char 13 check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
   }
   if (isEmpty(upn)) {

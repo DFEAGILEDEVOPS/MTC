@@ -92,6 +92,10 @@ After("@remove_access_arrangements") do
   access_arrangements_page.remove_all_pupils
 end
 
+After("@remove_uploaded_forms") do
+  SqlDbHelper.delete_forms
+end
+
 After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
