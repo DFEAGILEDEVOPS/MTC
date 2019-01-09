@@ -167,15 +167,25 @@ const postSubmitAttendance = async (req, res, next) => {
   return res.redirect('/school/declaration-form')
 }
 
-const getDeclarationForm = async (req, res) => {
-  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)) {
-    return res.redirect('/school/declaration-form-submitted')
-  }
-  req.body[ 'fullName' ] = req.user && req.user[ 'UserName' ]
-  res.locals.pageTitle = 'Headteacher\'s declaration form'
-  req.breadcrumbs('Attendance register')
+const getDeclarationForm = async (req, res, next) => {
+  res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
-  return res.render('school/declaration-form', {
+
+  let hdfEligibility
+
+  try {
+    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    if (!school) {
+      return next(Error(`School [${req.user.school}] not found`))
+    }
+
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(school.dfeNumber)
+  } catch (error) {
+    return next(error)
+  }
+
+  return res.render('hdf/declaration-form', {
+    hdfEligibility,
     formData: req.body,
     error: new ValidationError(),
     breadcrumbs: req.breadcrumbs()
@@ -183,31 +193,22 @@ const getDeclarationForm = async (req, res) => {
 }
 
 const postDeclarationForm = async (req, res, next) => {
-  const { jobTitle, fullName, declaration } = req.body
+  const { firstName, lastName, isHeadteacher, jobTitle } = req.body
+  const form = { firstName, lastName, isHeadteacher, jobTitle }
 
-  let validationError = await hdfValidator.validate(req)
+  let validationError = await hdfValidator.validate(form)
   if (validationError.hasError()) {
-    res.locals.pageTitle = 'Headteacher\'s declaration form'
+    res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)
-    return res.render('school/declaration-form', {
-      formData: req.body,
+    return res.render('hdf/declaration-form', {
+      hdfEligibility: true,
+      formData: form,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
     })
   }
 
-  try {
-    const form = {
-      jobTitle,
-      fullName,
-      declaration
-    }
-    await headteacherDeclarationService.declare(form, req.user.School, req.user.id)
-  } catch (error) {
-    return next(error)
-  }
-
-  return res.redirect('/school/declaration-form-submitted')
+  return res.redirect('/attendance/attendance-wip')
 }
 
 const getHDFSubmitted = async (req, res, next) => {
