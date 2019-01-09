@@ -1,8 +1,7 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe it expect jasmine spyOn */
 
-const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
 const controller = require('../../../controllers/attendance')

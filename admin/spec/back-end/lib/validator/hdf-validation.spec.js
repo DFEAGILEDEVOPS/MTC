@@ -5,14 +5,14 @@
 const hdfValidator = require('../../../../lib/validator/hdf-validator')
 
 describe('HDF validator', function () {
-  let requestData;
+  let requestData
 
   beforeEach(() => {
     requestData = {
       firstName: 'a',
       lastName: 'b',
       isHeadteacher: 'Y',
-      jobTitle: 'c',
+      jobTitle: 'c'
     }
   })
 

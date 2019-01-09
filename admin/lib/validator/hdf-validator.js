@@ -18,7 +18,7 @@ module.exports.validate = function (hdfData) {
     lastName,
     isHeadteacher,
     jobTitle
-  } = hdfData;
+  } = hdfData
 
   const FirstNameValue = firstName.trim()
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(FirstNameValue)) {

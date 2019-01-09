@@ -7,5 +7,5 @@ module.exports = {
   lastNameLength: 'Enter a surname in no more than 128 characters',
   lastNameInvalidChars: 'Enter a surname without special characters',
 
-  jobTitleLength: 'Enter a job title',
+  jobTitleLength: 'Enter a job title'
 }
