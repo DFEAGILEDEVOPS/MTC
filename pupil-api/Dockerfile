@@ -3,7 +3,7 @@ FROM node:8.11.0
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY package.json /usr/src/app
-RUN yarn install --ignore-engines
+RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .
 RUN yarn build

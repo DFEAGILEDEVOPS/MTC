@@ -81,15 +81,17 @@
             <tbody>
             <% restarts.forEach( (restart, index) => { %>
             <tr class="restart-pupil-name">
-                <td<% if (highlight && highlight.has(restart.urlSlug.toString())) { %> class="highlight-item"<% } %>>
-                    <span id="pupil-<%= restart.urlSlug %>">
-                    <%= restart.fullName %>
-                    </span>
-                    <% if (restart.showDoB) { %>
-                    <div class="font-greyed-out font-xsmall">
-                        Date of birth: <%= restart.dateOfBirth %>
+                <td<% if (highlight && highlight.has(restart.urlSlug)) { %> class="highlight-item"<% } %>>
+                    <div class="highlight-wrapper">
+                        <span id="pupil-<%= restart.urlSlug %>">
+                        <%= restart.fullName %>
+                        </span>
+                        <% if (restart.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= restart.dateOfBirth %>
+                            </div>
+                        <% } %>
                     </div>
-                    <% } %>
                 </td>
                 <td class="restart-reason"><%= restart.reason %></td>
                 <% if (restart.status === 'Remove restart') {%>
