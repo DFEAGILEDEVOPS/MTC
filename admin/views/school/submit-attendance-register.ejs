@@ -9,83 +9,67 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Attendance register</h1>
+        <h1 class="heading-xlarge">Review pupil details</h1>
 
         <%- partial('partials/_session_expiry') %>
 
-        <div class="panel panel-border-wide">
-            <p id="intro-paragraph" aria-labelledby="intro-paragraph">Your school’s trial will close when you submit the attendance register.<br>
-                You can only submit this form once.</p>
-        </div>
-
-        <br style="clear: both"/>
-
-        <p class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">Use this page to confirm pupil attendance.</p>
-
-        <ul class="list list-bullet font-small" role="list">
-            <li role="listitem">This page will populate with pupil details when they have taken the check.</li>
-            <li role="listitem">Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
-            <li role="listitem">Please only submit this form when all pupils have completed the check.</li>
-            <li role="listitem">You will then be able to sign the headteacher’s declaration form.</li>
-        </ul>
+        <p class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">
+            Please review your pupil list. All pupils should have an status of 'Complete' or a reason for not taking the check.
+            Click on pupil's name to edit outcome if a reason below is incorrect.
+        </p>
     </div>
 </div>
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <% if (pupils.some((p) => p.hasScore)) { %>
         <form method="post" action="/school/submit-attendance-form" autocomplete="off">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group form-horizontal">
-                <input class="button" type="submit" value="Submit">
-            </div>
 
-            <table class="spacious" id="attendanceList" role="listbox" aria-label="Tick to confirm pupil attendance">
+            <table class="spacious" id="attendanceList" role="listbox">
                 <thead>
                     <tr>
-                        <th scope="col">
-                            <div class="multiple-choice tick-all-boxes">
-                                <% if (pupils.some((p) => !p.hasAttended)) { %>
-                                <input id="tickAllCheckboxes" name="allAttendees" type="checkbox" aria-label="Select all pupils.">
-                                <% } %>
-                                <label for="tickAllCheckboxes">Pupil</label>
-                            </div>
-                            <div class="tick-all-boxes-nojs">Pupil</div>
-                        </th>
-                        <th scope="col">Score</th>
+                        <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
+                        <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
+                    <td><span><%= pupil.fullName %></span></td>
                     <td>
-                        <div class="multiple-choice">
-                            <% if (!pupil.hasAttended) { %>
-                            <input id="attendee-<%= pupil.id %>"
-                                   name="attendee[]"
-                                   type="checkbox"
-                                   value="<%= pupil.id %>"
-                                   aria-label="Tick pupil <%= pupil.fullName %>"
-                                   role="option">
-                            <% } %>
-                            <label for="attendee-<%= pupil.id %>">
-                                <span><%= pupil.fullName %></span><br />
-                            </label>
-                        </div>
+                        <% if (pupil.code === 'COMPLETE') { %>
+                        Complete
+                        <% } else { %>
+                        Status
+                        <% } %>
                     </td>
                     <td>
-                        <% if (pupil.percentage) { %>
-                        <span aria-label="Score is <%= pupil.percentage %>"><%= pupil.percentage %></span>
-                        <% } else { %>
-                        <span class="font-greyed-out" aria-label="Score is not available">n/a</span>
-                        <% } %>
+                      <% if (pupil.code !== 'COMPLETE') { %>
+                        <a href="#edit">Edit</a>
+                      <% } %>
                     </td>
                 </tr>
                 <% }) %>
                 </tbody>
             </table>
 
+            <div class="form-group form-horizontal">
+                <input class="button" type="submit" value="Continue">
+            </div>
         </form>
-        <% } %>
+
+        <div class="back-to-top-container">
+          <a href="#top">Back to top</a>
+        </div>
     </div>
 </div>
+
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'attendanceList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
