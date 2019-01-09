@@ -8,6 +8,7 @@ const {
 
 const startInsightsIfConfigured = async () => {
   if (config.Monitoring.ApplicationInsights.Key) {
+    console.log('initialising application insights module')
     appInsights.setup()
       .setAutoDependencyCorrelation(true)
       .setAutoCollectRequests(true)

@@ -1,7 +1,7 @@
 'use strict'
 /* global describe, beforeEach, it, expect, spyOn, fail */
 
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 const checkDataService = require('../../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../../services/data-access/completed-check.data.service')
 const answerDataService = require('../../../services/data-access/answer.data.service')
@@ -115,7 +115,7 @@ describe('markingService', () => {
         {}, {}, {}
       ])
       // As we know this will output a warning lets shut it up during the test
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
       let callCount = 0
       spyOn(service, 'mark').and.callFake(() => {
         callCount++
@@ -131,7 +131,7 @@ describe('markingService', () => {
 
   describe('#applyMarking', () => {
     beforeEach(() => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
     })
     it('bails out early if the array is empty', async (done) => {
       spyOn(completedCheckDataService, 'sqlFindUnmarked').and.returnValue([])
@@ -154,7 +154,7 @@ describe('markingService', () => {
 
   describe('#process', () => {
     beforeEach(() => {
-      spyOn(winston, 'info')
+      spyOn(logger, 'info')
     })
     it('initially find out if there is any work to do', async () => {
       spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValue(false)

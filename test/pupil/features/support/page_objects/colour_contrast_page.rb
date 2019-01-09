@@ -1,7 +1,7 @@
 class ColourContrastPage < SitePrism::Page
   set_url '/colour-choice'
 
-  element :heading, '.heading-xlarge', text: 'Choose colour of page'
+  element :heading, '.aa-title-size', text: 'Choose colour of page'
   element :black_on_white_contrast, '#contrast-bow'
   element :yellow_on_black_contrast, '#contrast-yob'
   element :black_on_blue_contrast, '#contrast-bob'

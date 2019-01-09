@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const checkDataService = require('../services/data-access/check.data.service')
 const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
@@ -13,7 +13,7 @@ const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
 const featureToggles = require('feature-toggles')
-const jwtService = require('../services/jwt.service')
+// const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
@@ -63,7 +63,7 @@ checkStartService.prepareCheck = async function (
     pupils
   )
   if (difference.size > 0) {
-    winston.warn(
+    logger.warn(
       `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
       difference
     )
@@ -147,7 +147,7 @@ checkStartService.prepareCheck2 = async function (
     pupils
   )
   if (difference.size > 0) {
-    winston.error(
+    logger.error(
       `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
       difference
     )
@@ -204,12 +204,13 @@ checkStartService.prepareCheck2 = async function (
     )
 
     // Request the pupil status be re-computed
-    for (let check of newChecks) {
-      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: check.pupil_id, checkCode: check.checkCode })
-    }
+    const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode }})
+
+    // Send a batch of messages for all the pupils requesting a status change
+    await azureQueueService.addMessage(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
 
-  // Create and save JWT Tokens for all pupils
+  /*   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
     const token = await jwtService.createToken(
@@ -222,19 +223,23 @@ checkStartService.prepareCheck2 = async function (
       jwtSecret: token.jwtSecret
     })
   }
-  await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
+  await pupilDataService.sqlUpdateTokensBatch(pupilUpdates) */
 
   // Prepare a bunch of messages ready to be inserted into the queue
   const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
     newCheckIds
   )
 
-  // Inject messages into the queue
+  // Get the queue name
   const prepareCheckQueueName = queueNameService.getName(
     queueNameService.NAMES.PREPARE_CHECK
   )
-  for (let msg of prepareCheckQueueMessages) {
-    azureQueueService.addMessage(prepareCheckQueueName, msg)
+
+  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
+  // for Azure Queues of 64Kb
+  const batches = R.splitEvery(20, prepareCheckQueueMessages)
+  for (let batch of batches) {
+    await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
   }
 }
 
@@ -269,7 +274,7 @@ checkStartService.initialisePupilCheck = async function (
     throw new Error('isLiveCheck must be a boolean value')
   }
 
-  winston.debug(
+  logger.debug(
     `checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`
   )
 
@@ -400,7 +405,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
           url: pupilFeedbackSasToken.url
         },
         jwt: {
-          token: o.pupil_jwtToken
+          token: 'token-disabled' // o.pupil_jwtToken
         }
       },
       questions: checkFormService.prepareQuestionData(

@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 const R = require('ramda')
 
 const completedCheckDataService = require('./data-access/completed-check.data.service')
@@ -19,7 +19,7 @@ markingService.process = async function () {
   try {
     let hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
     if (!hasWorkToDo) {
-      winston.info('Processing: nothing to do')
+      logger.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await markingService.applyMarking(batchSize)
@@ -38,13 +38,13 @@ markingService.applyMarking = async function (batchSize) {
   const batchIds = await completedCheckDataService.sqlFindUnmarked(batchSize)
 
   if (batchIds.length === 0) {
-    winston.info('No IDs found')
+    logger.info('No IDs found')
     return false
   }
 
   await markingService.batchMark(batchIds)
 
-  winston.info('Processed %d completed checks', batchIds.length)
+  logger.info('Processed %d completed checks', batchIds.length)
   return true
 }
 
@@ -61,7 +61,7 @@ markingService.batchMark = async function (batchIds) {
     try {
       await markingService.mark(cc)
     } catch (error) {
-      winston.error('Error marking document: ', error)
+      logger.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
       // ToDo: add a count to the document of the number of processing attempts?
     }
