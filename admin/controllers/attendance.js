@@ -201,13 +201,14 @@ const postDeclarationForm = async (req, res, next) => {
     res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('hdf/declaration-form', {
+      hdfEligibility: true,
       formData: form,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
     })
   }
 
-  return res.redirect('/attendance/submit-attendance')
+  return res.redirect('/attendance/attendance-wip')
 }
 
 const getHDFSubmitted = async (req, res, next) => {
