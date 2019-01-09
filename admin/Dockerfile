@@ -6,7 +6,7 @@ COPY package.json /usr/src/app
 COPY ./assets /usr/src/app
 COPY ./gulpfile.js /usr/src/app
 COPY ./config.js /usr/src/app
-RUN yarn install --ignore-engines
+RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .
 RUN ./node_modules/.bin/gulp build

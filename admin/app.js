@@ -123,6 +123,18 @@ if (process.env.NODE_ENV === 'production') {
   secureCookie = true
 }
 
+// Serve static files
+// Set up *before* the session is set-up, or each of these
+// causes a session read and write.
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    // force download all .csv files
+    if (path.endsWith('.csv')) {
+      res.attachment(path)
+    }
+  }
+}))
+
 let sessionStore
 
 if (config.Redis.Host) {
@@ -172,14 +184,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(expressValidator())
-app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-    // force download all .csv files
-    if (path.endsWith('.csv')) {
-      res.attachment(path)
-    }
-  }
-}))
 
 // Breadcrumbs
 app.use(breadcrumbs.init())
