@@ -21,8 +21,8 @@ When(/^I attempt to enter question time limit as (.*) seconds$/) do |limit|
 end
 
 Then(/^I should see a validation error for question time limit$/) do
-  expect(check_settings_page.error_message.text).to eql "Question time limit requires a number between 1 and 60, up to two decimals are valid"
-  expect(check_settings_page.error_summary_list.text).to eql "Question time limit requires a number between 1 and 60, up to two decimals are valid"
+  expect(check_settings_page.error_message.text).to eql "Enter a number between 1 and 60"
+  expect(check_settings_page.error_summary_list.text).to eql "Enter a number between 1 and 60"
 end
 
 When(/^I have updated the question time limit to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
@@ -90,6 +90,40 @@ end
 
 Then(/^I should see a historic record appended for Time between questions change to (\d+) in the database$/) do |arg|
   wait_until{SqlDbHelper.latest_setting_log['loadingTimeLimit'] == arg.to_i}
+end
+
+Then(/^I should see that maximum length of check is set to (\d+) minutes$/) do |limit|
+  expect(check_settings_page.check_time_limit.value).to eql limit.to_s
+end
+
+When(/^I have updated the maximum length of check to (\d+) minutes$/) do |limit|
+  step 'I am on the check settings page'
+  check_settings_page.update_check_time_limit(limit.to_s)
+end
+
+When(/^I attempt to enter maximum length of check as (.*) minutes$/) do |limit|
+  step 'I am on the check settings page'
+  check_settings_page.update_check_time_limit(limit)
+end
+
+Then(/^I should see a validation error for maximum length of check$/) do
+  expect(check_settings_page.error_message.text).to eql 'Maximum length of check requires a number between 10 and 90'
+  expect(check_settings_page.error_summary_list.text).to eql 'Maximum length of check requires a number between 10 and 90'
+end
+
+When(/^I update the maximum length of check from (\d+) to (\d+) minutes$/) do |limit, new_limit|
+  step 'I am on the check settings page'
+  check_settings_page.update_check_time_limit(limit)
+  visit current_url
+  check_settings_page.update_check_time_limit(new_limit)
+end
+
+Then(/^I should see a record that has date and time of the maximum length of check change to (\d+) in database$/) do |arg|
+  wait_until{SqlDbHelper.get_settings['checkTimeLimit'] == arg.to_i}
+end
+
+Then(/^I should see a historic record appended for maximum length of check change to (\d+) in the database$/) do |arg|
+  wait_until{SqlDbHelper.latest_setting_log['checkTimeLimit'] == arg.to_i}
 end
 
 And(/^I click cancel$/) do
