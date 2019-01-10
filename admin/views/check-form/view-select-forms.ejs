@@ -15,7 +15,7 @@
       <h1 class="heading-xlarge"><%= pageTitle %></h1>
       <%- partial('partials/_session_expiry') %>
       <div class="panel panel-border-wide">
-          <% if (checkFormData && checkFormData.length) {%>
+          <% if (checkFormData && checkFormData.length) { %>
           <div>Assign forms to <b><%= pageTitle %></b></div>
           <div><%= checkFormTypeFormatted %> check: <%= checkFormTypeFormatted !== 'Live' ?
             `${checkWindowData.familiarisationCheckStartDate.format('D MMMM')} to ${checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY')}` :
