@@ -52,7 +52,7 @@ module.exports = {
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 100,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 200,
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
