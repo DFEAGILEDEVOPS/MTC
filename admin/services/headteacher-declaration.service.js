@@ -3,6 +3,7 @@
 const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
+const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
@@ -16,7 +17,7 @@ const headteacherDeclarationService = {}
 headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
   const pupils = await pupilDataService.sqlFindPupilsWithStatusByDfeNumber(dfeNumber)
   // check the attendance codes for pupils that don't have the completed status
-  const ids = pupils.filter(p => p.code !== 'COMPLETED').map(p => p.id)
+  const ids = pupils.filter(p => p.code !== pupilStatusService.StatusCodes.COMPLETED).map(p => p.id)
   const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
 
   // check if all pupils that don't have the completed status, have an attendance reason

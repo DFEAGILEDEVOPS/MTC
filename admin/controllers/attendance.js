@@ -172,14 +172,8 @@ const getDeclarationForm = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   let hdfEligibility
-
   try {
-    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
-    if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(school.dfeNumber)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -196,12 +190,19 @@ const postDeclarationForm = async (req, res, next) => {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
 
+  let hdfEligibility
+  try {
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
   let validationError = await hdfValidator.validate(form)
   if (validationError.hasError()) {
     res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('hdf/declaration-form', {
-      hdfEligibility: true,
+      hdfEligibility,
       formData: form,
       error: validationError,
       breadcrumbs: req.breadcrumbs()

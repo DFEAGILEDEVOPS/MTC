@@ -20,21 +20,21 @@ module.exports.validate = function (hdfData) {
     jobTitle
   } = hdfData
 
-  const FirstNameValue = firstName.trim()
-  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(FirstNameValue)) {
+  const firstNameValue = firstName.trim()
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(firstNameValue)) {
     validationError.addError('firstName', hdfErrorMessages.firstNameInvalidChars)
   }
 
-  if (isEmpty(FirstNameValue) || FirstNameValue.length > 128) {
+  if (isEmpty(firstNameValue) || firstNameValue.length > 128) {
     validationError.addError('firstName', hdfErrorMessages.firstNameLength)
   }
 
-  const LastNameValue = lastName.trim()
-  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(LastNameValue)) {
+  const lastNameValue = lastName.trim()
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(lastNameValue)) {
     validationError.addError('lastName', hdfErrorMessages.lastNameInvalidChars)
   }
 
-  if (isEmpty(LastNameValue) || LastNameValue.length > 128) {
+  if (isEmpty(lastNameValue) || lastNameValue.length > 128) {
     validationError.addError('lastName', hdfErrorMessages.lastNameLength)
   }
 
