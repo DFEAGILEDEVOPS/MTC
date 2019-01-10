@@ -43,7 +43,7 @@ checkWindowV2Service.getCheckWindows = async () => {
  * @returns {Array} List of check windows
  */
 checkWindowV2Service.getPresentAndFutureCheckWindows = async () => {
-  const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatus()
+  const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatusAndFormCountByFormType()
   return R.reject(R.propEq('status', 'Past'), checkWindows)
 }
 

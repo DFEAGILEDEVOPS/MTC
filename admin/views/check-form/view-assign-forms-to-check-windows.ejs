@@ -22,9 +22,11 @@
       <dl>
         <dd>
           <p class="font-small"><%= cw.name %></p>
-          <div><span class="bold-small"><a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period</a></span> (0 forms assigned)</div>
+          <div><span class="bold-small"><a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period</a></span>
+            (<%= cw['FamiliarisationCheckFormCount'] === 1 ? `${cw['FamiliarisationCheckFormCount']} form` : `${cw['FamiliarisationCheckFormCount']} forms` %> assigned)</div>
           <p><%= cw.familiarisationCheckStartDate.format('D MMMM') %> to <%= cw.familiarisationCheckEndDate.format('D MMMM YYYY') %></p>
-          <div><span class="bold-small"><a href="/check-form/select-form/live/<%= cw.urlSlug %>">Multiplication tables check period</a></span> (0 forms assigned)</div>
+          <div><span class="bold-small"><a href="/check-form/select-form/live/<%= cw.urlSlug %>">Multiplication tables check period</a></span>
+            (<%= cw['LiveCheckFormCount'] === 1 ? `${cw['LiveCheckFormCount']} form` : `${cw['LiveCheckFormCount']} forms` %> assigned)</div>
           <p><%= cw.checkStartDate.format('D MMMM') %> to <%= cw.checkEndDate.format('D MMMM YYYY') %></p>
         </dd>
       </dl>

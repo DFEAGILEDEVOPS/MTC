@@ -64,7 +64,7 @@ describe('check-window-v2.service', () => {
   })
   describe('getPresentAndFutureCheckWindows', () => {
     it('should get check windows that are not in the past', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatus').and.returnValue([
+      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatusAndFormCountByFormType').and.returnValue([
         {
           name: 'name1',
           status: 'Inactive'
