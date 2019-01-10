@@ -4,7 +4,7 @@
 const moment = require('moment')
 const R = require('ramda')
 const TYPES = require('tedious').TYPES
-const winston = require('winston')
+const logger = require('../services/log.service').getLogger()
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
@@ -223,7 +223,7 @@ describe('sql.service:integration', () => {
         scale: 2
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tDecimal) 
+         INSERT into ${table} (tDecimal)
          VALUES (@tDecimal);
          SELECT @@IDENTITY;`,
       params)
@@ -260,7 +260,7 @@ describe('sql.service:integration', () => {
         scale: 3
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tNumeric) 
+         INSERT into ${table} (tNumeric)
          VALUES (@tNumeric);
          SELECT @@IDENTITY;`,
       params)
@@ -295,7 +295,7 @@ describe('sql.service:integration', () => {
         type: TYPES.Float
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tFloat) 
+         INSERT into ${table} (tFloat)
          VALUES (@tFloat);
          SELECT @@IDENTITY;`,
       params)
@@ -330,7 +330,7 @@ describe('sql.service:integration', () => {
         type: TYPES.NVarChar
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tNvarchar) 
+         INSERT into ${table} (tNvarchar)
          VALUES (@tNvarchar);
          SELECT @@IDENTITY;`,
       params)
@@ -351,7 +351,7 @@ describe('sql.service:integration', () => {
     it('raises an error on CREATE when the nvarchar provided is too long', async () => {
       const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
       // This will generate a warning because of the error, we can shut that up for this test
-      spyOn(winston, 'warn')
+      spyOn(logger, 'warn')
       try {
         await sql.create(table, data)
         fail('expected to throw')

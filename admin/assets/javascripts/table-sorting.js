@@ -53,7 +53,7 @@ $(function () {
     applySortClass: function (headerEl) {
       // Remove sort classes from headers
       var nodeList = document.querySelectorAll('thead tr th span')
-      for (var i=0; i<nodeList.length; i++) {
+      for (var i = 0; i < nodeList.length; i++) {
         nodeList[i].className = 'sort-icon'
       }
 
@@ -75,7 +75,7 @@ $(function () {
       // Listen for click events and perform sorting
       var thNodeList = document.querySelectorAll('th')
 
-      for (var i=0; i<thNodeList.length; i++) {
+      for (var i = 0; i < thNodeList.length; i++) {
         var th = thNodeList[i]
         window.GOVUK.tableSort.setUpClickHandler(th, i, tableId, config)
       }
@@ -93,9 +93,9 @@ $(function () {
           this.asc = this.asc !== undefined ? !this.asc : false,
           config)
         )
-        .forEach(function (tr) {
-          return tbody.appendChild(tr)
-        })
+          .forEach(function (tr) {
+            return tbody.appendChild(tr)
+          })
       })
     }
   }

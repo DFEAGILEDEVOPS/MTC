@@ -1,7 +1,7 @@
 'use strict'
 
 const config = require('../config')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 /**
  * Optional environment variables
@@ -32,7 +32,7 @@ const main = (app) => {
   console.log(`unsetVars:${unsetVars.length}`)
   if (unsetVars.length > 0) {
     const errorMessage = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
-    winston.error(errorMessage)
+    logger.alert(errorMessage)
     app.use(function (req, res, next) {
       let err = new Error(errorMessage)
       err.status = 500

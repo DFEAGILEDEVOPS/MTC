@@ -3,7 +3,7 @@ const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
 const useragent = require('useragent')
-const winston = require('winston')
+const logger = require('./log.service').getLogger()
 
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const anomalyReportCacheDataService = require('./data-access/anomaly-report-cache.data.service')
@@ -66,7 +66,7 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
   if (anomalyReportService.reportedAnomalies.length > 0) {
     await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
   } else {
-    winston.info('anomalyReportService.batchProduceCacheData: No anomalies detected')
+    logger.info('anomalyReportService.batchProduceCacheData: No anomalies detected')
   }
 }
 
@@ -345,7 +345,7 @@ anomalyReportService.reconstructAnswerFromInputs = (events) => {
   }
   events.forEach(event => {
     if (event === null || event === undefined) {
-      winston.info('anomalyReportService.reconstructAnswerFromInputs: event is empty')
+      logger.info('anomalyReportService.reconstructAnswerFromInputs: event is empty')
       return
     }
     if (event.eventType !== 'click' && event.eventType !== 'keydown') {

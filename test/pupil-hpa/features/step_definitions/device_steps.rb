@@ -66,6 +66,4 @@ Given(/^I have refreshed a page during the check$/) do
   step 'I attempt to refresh the page'
   step 'the next question has loaded so I continue with the check'
   @check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  binding.pry
-
 end
