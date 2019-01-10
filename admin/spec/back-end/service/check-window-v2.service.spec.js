@@ -62,6 +62,35 @@ describe('check-window-v2.service', () => {
       expect(result[2].canRemove).toBeFalsy()
     })
   })
+  describe('getPresentAndFutureCheckWindows', () => {
+    it('should get check windows that are not in the past', async () => {
+      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatusAndFormCountByFormType').and.returnValue([
+        {
+          name: 'name1',
+          status: 'Inactive'
+        },
+        {
+          name: 'name2',
+          status: 'Active'
+        },
+        {
+          name: 'name3',
+          status: 'Past'
+        }
+      ])
+      const result = await checkWindowV2Service.getPresentAndFutureCheckWindows()
+      expect(result).toEqual([
+        {
+          name: 'name1',
+          status: 'Inactive'
+        },
+        {
+          name: 'name2',
+          status: 'Active'
+        }
+      ])
+    })
+  })
   describe('markDeleted', () => {
     let urlSlug
     beforeEach(() => {
