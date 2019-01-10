@@ -21,8 +21,8 @@ When(/^I attempt to enter question time limit as (.*) seconds$/) do |limit|
 end
 
 Then(/^I should see a validation error for question time limit$/) do
-  expect(check_settings_page.error_message.text).to eql "Question time limit requires a number between 1 and 60, up to two decimals are valid"
-  expect(check_settings_page.error_summary_list.text).to eql "Question time limit requires a number between 1 and 60, up to two decimals are valid"
+  expect(check_settings_page.error_message.text).to eql "Enter a number between 1 and 60"
+  expect(check_settings_page.error_summary_list.text).to eql "Enter a number between 1 and 60"
 end
 
 When(/^I have updated the question time limit to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
@@ -64,8 +64,8 @@ When(/^I attempt to enter time between questions as (.*) seconds$/) do |limit|
 end
 
 Then(/^I should see a validation error for Time between questions$/) do
-  expect(check_settings_page.error_message.text).to eql 'Time between questions requires a number between 1 and 5, up to two decimals are valid'
-  expect(check_settings_page.error_summary_list.text).to eql 'Time between questions requires a number between 1 and 5, up to two decimals are valid'
+  expect(check_settings_page.error_message.text).to eql 'Enter a number between 1 and 5'
+  expect(check_settings_page.error_summary_list.text).to eql 'Enter a number between 1 and 5'
 end
 
 And(/^I have updated the time between questions to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
@@ -107,8 +107,8 @@ When(/^I attempt to enter maximum length of check as (.*) minutes$/) do |limit|
 end
 
 Then(/^I should see a validation error for maximum length of check$/) do
-  expect(check_settings_page.error_message.text).to eql 'Maximum length of check requires a number between 10 and 90'
-  expect(check_settings_page.error_summary_list.text).to eql 'Maximum length of check requires a number between 10 and 90'
+  expect(check_settings_page.error_message.text).to eql 'Enter a number between 10 and 90'
+  expect(check_settings_page.error_summary_list.text).to eql 'Enter a number between 10 and 90'
 end
 
 When(/^I update the maximum length of check from (\d+) to (\d+) minutes$/) do |limit, new_limit|

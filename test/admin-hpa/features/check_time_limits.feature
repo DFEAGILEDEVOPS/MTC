@@ -24,9 +24,8 @@ Feature: Check time limit tests
       | value |
       | zzz   |
       | -3    |
-      | 0     |
-      | 100   |
-
+      | 9     |
+      | 91    |
 
   Scenario: An audit record is created that defines the date and date from which the new
   value of the maximum length of check was applied
