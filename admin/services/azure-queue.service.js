@@ -2,11 +2,10 @@
 
 const azure = require('azure-storage')
 
-const winston = require('winston')
 const bluebird = require('bluebird')
 const logger = require('./log.service').getLogger()
 let azureQueueService // cache the queueService for repeated use
-let azureQueueServiceAsync  // cache an async version
+let azureQueueServiceAsync // cache an async version
 
 const service = {
   addMessage: function addMessage (queueName, payload, queueService) {
@@ -26,8 +25,8 @@ const service = {
     const encodedMessage = Buffer.from(message).toString('base64')
     queueService.createMessage(queueName, encodedMessage, function (error, result, response) {
       if (error) {
-        winston.error(`Error injecting message into queue [${queueName}]: ${error.message}`)
-        winston.error(error)
+        logger.error(`Error injecting message into queue [${queueName}]: ${error.message}`)
+        logger.error(error)
       }
     })
   },
