@@ -1,12 +1,11 @@
 'use strict'
 
 const moment = require('moment')
-const dateService = require('./date.service')
-
+const R = require('ramda')
 const validate = require('uuid-validate')
 
+const dateService = require('./date.service')
 const checkWindowDataService = require('./data-access/check-window.data.service')
-
 const checkWindowV2Service = {}
 
 /**
@@ -37,6 +36,15 @@ checkWindowV2Service.getCheckWindows = async () => {
   const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatus()
   checkWindows.forEach(cw => (cw.canRemove = cw.status === 'Inactive'))
   return checkWindows
+}
+
+/**
+ * Get present and future check windows
+ * @returns {Array} List of check windows
+ */
+checkWindowV2Service.getPresentAndFutureCheckWindows = async () => {
+  const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatus()
+  return R.reject(R.propEq('status', 'Past'), checkWindows)
 }
 
 /**
