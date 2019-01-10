@@ -1,40 +1,49 @@
 'use strict'
+
+const { isEmpty } = require('validator')
+const XRegExp = require('xregexp')
+
 const ValidationError = require('../validation-error')
-const errorConverter = require('../error-converter')
 const hdfErrorMessages = require('../errors/hdf')
 
-const hdfValidationSchema = {
-  'declaration': {
-    notEmpty: true,
-    errorMessage: hdfErrorMessages.declaration
-  },
-  'jobTitle': {
-    notEmpty: true,
-    isLength: {
-      options: [{ min: 1, max: 35 }]
-    },
-    errorMessage: hdfErrorMessages.jobTitle
-  },
-  'fullName': {
-    notEmpty: true,
-    isLength: {
-      options: [{ min: 1, max: 35 }]
-    },
-    errorMessage: hdfErrorMessages.fullName
-  }
-}
+/**
+ * Validates HDF data for submission
+ * @param {Object} hdfData
+ * @returns {Object}
+ */
+module.exports.validate = function (hdfData) {
+  const validationError = new ValidationError()
+  const {
+    firstName,
+    lastName,
+    isHeadteacher,
+    jobTitle
+  } = hdfData
 
-module.exports.validate = function (req) {
-  return new Promise(async function (resolve, reject) {
-    let validationError = new ValidationError()
-    try {
-      // expressValidator
-      req.checkBody(hdfValidationSchema)
-      let result = await req.getValidationResult()
-      validationError = errorConverter.fromExpressValidator(result.mapped())
-    } catch (error) {
-      return reject(error)
+  const firstNameValue = firstName.trim()
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(firstNameValue)) {
+    validationError.addError('firstName', hdfErrorMessages.firstNameInvalidChars)
+  }
+
+  if (isEmpty(firstNameValue) || firstNameValue.length > 128) {
+    validationError.addError('firstName', hdfErrorMessages.firstNameLength)
+  }
+
+  const lastNameValue = lastName.trim()
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(lastNameValue)) {
+    validationError.addError('lastName', hdfErrorMessages.lastNameInvalidChars)
+  }
+
+  if (isEmpty(lastNameValue) || lastNameValue.length > 128) {
+    validationError.addError('lastName', hdfErrorMessages.lastNameLength)
+  }
+
+  if (isHeadteacher !== 'Y') {
+    const JobTitleValue = jobTitle.trim()
+    if (isEmpty(JobTitleValue) || JobTitleValue.length < 1 || JobTitleValue.length > 128) {
+      validationError.addError('jobTitle', hdfErrorMessages.jobTitleLength)
     }
-    resolve(validationError)
-  })
+  }
+
+  return validationError
 }
