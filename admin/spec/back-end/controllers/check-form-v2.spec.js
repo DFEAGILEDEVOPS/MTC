@@ -212,7 +212,7 @@ describe('check form v2 controller:', () => {
       await controller.getSelectFormPage(req, res, next)
       expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
       expect(checkFormV2Service.getCheckFormsByType).toHaveBeenCalled()
-      expect(res.locals.pageTitle).toBe('checkWindowName - Pupil live check period')
+      expect(res.locals.pageTitle).toBe('checkWindowName - MTC')
       expect(res.render).toHaveBeenCalled()
     })
     it('returns next if service method throws an error', async () => {

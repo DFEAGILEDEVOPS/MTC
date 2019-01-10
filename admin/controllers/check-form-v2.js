@@ -162,8 +162,9 @@ controller.getSelectFormPage = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  res.locals.pageTitle = `${checkWindowData.name} - Pupil ${checkFormType} check period`
-  req.breadcrumbs('Assign forms to check windows', `/check-form/view-forms`)
+  const checkPeriod = checkFormType === 'live' ? 'MTC' : 'Try it out'
+  res.locals.pageTitle = `${checkWindowData.name} - ${checkPeriod}`
+  req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/view-select-forms', {
     breadcrumbs: req.breadcrumbs(),

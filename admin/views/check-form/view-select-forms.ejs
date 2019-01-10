@@ -12,33 +12,17 @@
   <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
   <div class="grid-row">
     <div class="column-two-thirds">
-      <% if (messages && messages.info && messages.info.length) { %>
-      <div class="info-message">
-        <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
-      </div>
-      <% } %>
-
-      <% if (messages && messages.error && messages.error.length) { %>
-      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-          <%= messages.error %>
-        </h2>
-      </div>
-      <% } %>
-
-      <h1 class="heading-xlarge"><%= checkWindowData.name %> - Pupil <%= checkFormType %> check period</h1>
-
+      <h1 class="heading-xlarge"><%= pageTitle %></h1>
       <%- partial('partials/_session_expiry') %>
-
       <div class="panel panel-border-wide">
           <% if (checkFormData && checkFormData.length) {%>
-          <div>Assign forms to <b><%= checkWindowData.name %>, <%= checkFormTypeFormatted %> check</b></div>
+          <div>Assign forms to <b><%= pageTitle %></b></div>
           <div><%= checkFormTypeFormatted %> check: <%= checkFormTypeFormatted !== 'Live' ?
             `${checkWindowData.familiarisationCheckStartDate.format('D MMMM')} to ${checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY')}` :
             `${checkWindowData.checkStartDate.format('D MMMM')} to ${checkWindowData.checkEndDate.format('D MMMM YYYY')}` %>
           </div>
           <% } else if (checkFormData && checkFormData.length === 0) { %>
-          There are no available check forms
+          No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and remove forms before assigning forms</a> to check windows.
           <% }%>
       </div>
 
