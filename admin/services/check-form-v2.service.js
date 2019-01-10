@@ -106,4 +106,14 @@ checkFormV2Service.getCheckForm = async (urlSlug) => {
   return checkFormPresenter.getPresentationCheckFormData(checkForm)
 }
 
+/**
+ * Fetch check forms based on check form type
+ * @param {String} checkFormType
+ * @returns {Promise<Array>}
+ */
+checkFormV2Service.getCheckFormsByType = async (checkFormType) => {
+  const isLiveCheckForm = checkFormType === 'live'
+  return checkFormV2DataService.sqlFindActiveCheckFormsByType(isLiveCheckForm)
+}
+
 module.exports = checkFormV2Service
