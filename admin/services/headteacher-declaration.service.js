@@ -10,6 +10,35 @@ const headteacherDeclarationDataService = require('./data-access/headteacher-dec
 const headteacherDeclarationService = {}
 
 /**
+ * Find the pupils for the given dfe number
+ * @param dfeNumber
+ * @return {Promise<object>}
+ */
+headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
+  if (!dfeNumber) {
+    throw new Error('dfeNumber is required')
+  }
+  return pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
+}
+
+/**
+ * Find the a pupil for the given pupilId and dfeNumber
+ * @param pupilId
+ * @param dfeNumber
+ * @return {Promise<object>}
+ */
+headteacherDeclarationService.findPupilByIdAndDfeNumber = async (pupilId, dfeNumber) => {
+  if (!dfeNumber || !pupilId) {
+    throw new Error('pupilId and dfeNumber are required')
+  }
+  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  if (!school) {
+    throw new Error(`School [${dfeNumber}] not found`)
+  }
+  return pupilDataService.sqlFindOneByIdAndSchool(pupilId, school.id)
+}
+
+/**
  * Fetch pupils and return eligibility to generate HDF
  * @param dfeNumber
  * @returns {Array}

@@ -29,25 +29,28 @@
                 <thead>
                     <tr>
                         <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-                        <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
-                        <th scope="col"></th>
+                        <th scope="col"><a class="sortingLink">Outcome<span class="sort-icon"></span></a></th>
                     </tr>
                 </thead>
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
-                    <td><span><%= pupil.fullName %></span></td>
                     <td>
-                        <% if (pupil.code === 'COMPLETE') { %>
-                        Complete
+                    <% if (pupil.reason) { %>
+                        <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.fullName %></strong></a>
+                    <% } else { %>
+                        <span><%= pupil.fullName %></span>
+                    <% } %>
+                    </td>
+                    <td>
+                        <% if (pupil.code === 'COMPLETED') { %>
+                        Completed
                         <% } else { %>
-                        Status
+                        <%= pupil.reason %>
                         <% } %>
                     </td>
                     <td>
-                      <% if (pupil.code !== 'COMPLETE') { %>
-                        <a href="#edit">Edit</a>
-                      <% } %>
+                     
                     </td>
                 </tr>
                 <% }) %>

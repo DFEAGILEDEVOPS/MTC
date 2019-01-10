@@ -1,0 +1,33 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Edit reason for not taking the check</h1>
+
+        <%- partial('partials/_session_expiry') %>
+
+        <div class="panel panel-border-wide">
+            <p><%= pupil.lastName %>, <%= pupil.foreName %></p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        </form>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+</div>
+    
