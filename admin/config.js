@@ -24,7 +24,11 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   TIME_BETWEEN_QUESTIONS: 3,
   LENGTH_OF_CHECK_MINUTES: 30,
+  CHECK_FORM_NAME_MAX_CHARACTERS: 128,
+  CHECK_FORM_MIN_INTEGER: 1,
+  CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: 25,
+  CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
   MIGRATE_FULL_SCHOOL_DATASET: process.env.hasOwnProperty('MIGRATE_FULL_SCHOOL_DATASET') ? toBool(process.env.MIGRATE_FULL_SCHOOL_DATASET) : true,
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
@@ -49,7 +53,7 @@ module.exports = {
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 100,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 200,
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
@@ -61,7 +65,7 @@ module.exports = {
     }
   },
   Logging: {
-    LogLevel: process.env.LOG_LEVEL || 'debug',
+    LogLevel: process.env.LOG_LEVEL || 'error',
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
@@ -108,8 +112,13 @@ module.exports = {
     },
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS,
-      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS
+      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS || true,
+      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS || true
     }
+  },
+  Redis: {
+    Host: process.env.REDIS_HOST,
+    Port: process.env.REDIS_PORT,
+    Key: process.env.REDIS_KEY
   }
 }

@@ -2,7 +2,7 @@
 
 var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
-const winston = require('winston')
+const logger = require('../log.service').getLogger()
 
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
@@ -32,10 +32,12 @@ const sqlPoolService = {}
  * Initialise the connection pool.  Called once per application instance
  */
 sqlPoolService.init = () => {
+  logger.info('sqlPoolService.init() called')
   if (pool !== null) return
+  logger.info('sqlPoolService.init() initialising a new connection pool')
   pool = new ConnectionPool(poolConfig, connectionConfig)
-  pool.on('error', function (err) {
-    winston.error(err)
+  pool.on('error', function (error) {
+    logger.error('sqlPoolService.init() Error initialising new connection', error)
   })
 }
 

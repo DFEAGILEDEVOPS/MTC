@@ -4,7 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
-const winston = require('winston')
+const logger = require('../../../services/log.service.js').getLogger()
 
 const pupilLoginEventService = require('../../../services/pupil-logon-event.service')
 
@@ -140,7 +140,7 @@ describe('Questions controller', () => {
 
   describe('unhappy paths', () => {
     beforeEach(() => {
-      spyOn(winston, 'error') // ignore winston messages from unhappy outcomes
+      spyOn(logger, 'error') // ignore logger messages from unhappy outcomes
     })
 
     it('returns a bad request if the pupil pin is not entered', async (done) => {

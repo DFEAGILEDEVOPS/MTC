@@ -2,7 +2,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "func host start",
-    "test": "jasmine */*.spec.js",
+    "test": "yarn lint && jasmine */*.spec.js",
     "lint": "standard",
     "pack": "funcpack pack ."
   },

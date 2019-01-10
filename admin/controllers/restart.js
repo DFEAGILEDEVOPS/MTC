@@ -1,5 +1,4 @@
 const featureToggles = require('feature-toggles')
-const winston = require('winston')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
@@ -11,6 +10,7 @@ const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
+const logger = require('../services/log.service').getLogger()
 
 const controller = {}
 
@@ -33,6 +33,7 @@ controller.getRestartOverview = async (req, res, next) => {
     return next(error)
   }
   let { hl } = req.query
+
   if (hl) {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
@@ -119,15 +120,15 @@ controller.postSubmitRestartList = async (req, res, next) => {
       error: validationError
     })
   }
-  let submittedRestarts
+  let pupilsRestarted
   try {
-    submittedRestarts = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
+    pupilsRestarted = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
-  const restartInfo = submittedRestarts.length < 2 ? 'Restart made for 1 pupil' : `Restarts made for ${submittedRestarts.length} pupils`
-  const restartIds = submittedRestarts && submittedRestarts.map(r => encodeURIComponent(r.insertId))
-  const ids = restartIds.join()
+  const restartInfo = pupilsRestarted.length < 2 ? 'Restart made for 1 pupil' : `Restarts made for ${pupilsRestarted.length} pupils`
+  const pupilUrlSlugs = pupilsRestarted && pupilsRestarted.map(p => encodeURIComponent(p.urlSlug))
+  const pupilsToHighlight = pupilUrlSlugs.join()
   req.flash('info', restartInfo)
 
   // Ask for these pupils to have their status updated
@@ -136,11 +137,11 @@ controller.postSubmitRestartList = async (req, res, next) => {
       await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
     }
   } catch (error) {
-    winston.error('Failed to recalculate pupil status')
+    logger.error('Failed to recalculate pupil status', error)
     throw error
   }
 
-  return res.redirect(`/restart/overview?hl=${ids}`)
+  return res.redirect(`/restart/overview?hl=${pupilsToHighlight}`)
 }
 
 controller.postDeleteRestart = async (req, res, next) => {
@@ -149,6 +150,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   try {
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {
+    logger.error('Failed to mark restart as deleted', error)
     return next(error)
   }
 
@@ -158,7 +160,7 @@ controller.postDeleteRestart = async (req, res, next) => {
       await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
     }
   } catch (error) {
-    winston.error('Failed to recalculate pupil status')
+    logger.error('Failed to recalculate pupil status', error)
     throw error
   }
 

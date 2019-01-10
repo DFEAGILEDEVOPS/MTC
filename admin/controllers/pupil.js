@@ -12,7 +12,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const ValidationError = require('../lib/validation-error')
-const winston = require('winston')
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Get list of pupils.
@@ -55,7 +55,7 @@ const postAddPupil = async (req, res, next) => {
     if (error.name === 'ValidationError') {
       return getAddPupil(req, res, next, error)
     }
-    winston.warn(error)
+    logger.error(error)
     next(error)
   }
 }
