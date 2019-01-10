@@ -112,7 +112,7 @@ checkFormV2Service.getCheckForm = async (urlSlug) => {
  * @returns {Promise<Array>}
  */
 checkFormV2Service.getCheckFormsByType = async (checkFormType) => {
-  const isLiveCheckForm = checkFormType === 'live'
+  const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
   return checkFormV2DataService.sqlFindActiveCheckFormsByType(isLiveCheckForm)
 }
 
