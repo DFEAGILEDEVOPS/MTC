@@ -156,10 +156,12 @@ controller.getAssignFormsPage = async (req, res, next) => {
 controller.getSelectFormPage = async (req, res, next) => {
   const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
   const checkFormType = req.params && req.params.checkFormType
+  let checkWindow
   let checkWindowData
   let checkFormData
   try {
-    checkWindowData = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    checkWindowData = await checkFormPresenter.getPresentationCheckWindowData(checkWindow)
     checkFormData = await checkFormV2Service.getCheckFormsByType(checkFormType)
   } catch (error) {
     return next(error)

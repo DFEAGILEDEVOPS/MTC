@@ -76,4 +76,20 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
   return checkWindowData
 }
 
+/**
+ * Format check window data for the select check forms view
+ * @param {Object} checkWindow
+ * @returns {Object}
+ */
+checkFormPresenter.getPresentationCheckWindowData = (checkWindow) => {
+  return {
+    name: checkWindow.name,
+    urlSlug: checkWindow.urlSlug,
+    familiarisationCheckStartDate: checkWindow.familiarisationCheckStartDate.format('D MMMM'),
+    familiarisationCheckEndDate: checkWindow.familiarisationCheckEndDate.format('D MMMM YYYY'),
+    checkStartDate: checkWindow.checkStartDate.format('D MMMM'),
+    checkEndDate: checkWindow.checkEndDate.format('D MMMM YYYY')
+  }
+}
+
 module.exports = checkFormPresenter

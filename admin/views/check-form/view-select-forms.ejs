@@ -18,8 +18,8 @@
           <% if (checkFormData && checkFormData.length) { %>
           <div>Assign forms to <b><%= pageTitle %></b></div>
           <div><%= checkFormTypeFormatted %> check: <%= checkFormTypeFormatted !== 'Live' ?
-            `${checkWindowData.familiarisationCheckStartDate.format('D MMMM')} to ${checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY')}` :
-            `${checkWindowData.checkStartDate.format('D MMMM')} to ${checkWindowData.checkEndDate.format('D MMMM YYYY')}` %>
+            `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
+            `${checkWindowData.checkStartDate} to ${checkWindowData.checkEndDate}` %>
           </div>
           <% } else if (checkFormData && checkFormData.length === 0) { %>
           No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and remove forms before assigning forms</a> to check windows.

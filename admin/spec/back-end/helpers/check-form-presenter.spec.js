@@ -89,4 +89,25 @@ describe('checkFormPresenter', () => {
       }])
     })
   })
+  describe('getPresentationCheckWindowData', () => {
+    it('returns check window data formatted', () => {
+      const checkWindow = {
+        name: 'name',
+        urlSlug: 'urlSlug',
+        familiarisationCheckStartDate: moment.utc().subtract(5, 'days'),
+        familiarisationCheckEndDate: moment.utc().add(2, 'days'),
+        checkStartDate: moment.utc().subtract(3, 'days'),
+        checkEndDate: moment.utc().add(2, 'days')
+      }
+      const result = checkFormPresenter.getPresentationCheckWindowData(checkWindow)
+      expect(result).toEqual({
+        name: 'name',
+        urlSlug: 'urlSlug',
+        familiarisationCheckStartDate: moment.utc().subtract(5, 'days').format('D MMMM'),
+        familiarisationCheckEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY'),
+        checkStartDate: moment.utc().subtract(3, 'days').format('D MMMM'),
+        checkEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY')
+      })
+    })
+  })
 })
