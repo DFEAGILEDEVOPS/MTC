@@ -9,6 +9,13 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <a href="#anchor-<%= messages.pupilId %>"><%= messages.info %></a>
+        </div>
+        <% } %>
+            
         <h1 class="heading-xlarge">Review pupil details</h1>
 
         <%- partial('partials/_session_expiry') %>
@@ -35,12 +42,14 @@
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
-                    <td>
-                    <% if (pupil.reason) { %>
-                        <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.fullName %></strong></a>
-                    <% } else { %>
-                        <span><%= pupil.fullName %></span>
-                    <% } %>
+                    <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
+                        <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
+                        <% if (pupil.reason) { %>
+                            <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.fullName %></strong></a>
+                        <% } else { %>
+                            <span><%= pupil.fullName %></span>
+                        <% } %>
+                        </div>
                     </td>
                     <td>
                         <% if (pupil.code === 'COMPLETED') { %>

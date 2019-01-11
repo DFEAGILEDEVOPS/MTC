@@ -143,7 +143,7 @@ const getReviewPupilDetails = async (req, res, next) => {
   if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
     return res.redirect('/attendance/declaration-form')
   }
-  return res.render('hdf/submit-attendance-register', {
+  return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsFormatted
   })
@@ -179,11 +179,19 @@ const getEditReason = async (req, res, next) => {
 
 const postSubmitEditReason = async (req, res, next) => {
   const { pupilId, attendanceCode } = req.body
+  let pupil
   try {
-    await headteacherDeclarationService.updatePupilsAttendanceCode([pupilId], attendanceCode, req.user.id)
+    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(pupilId, req.user.School)
   } catch (error) {
     return next(error)
   }
+  try {
+    await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
+  req.flash('pupilId', pupil.id)
   return res.redirect('/attendance/review-pupil-details')
 }
 
