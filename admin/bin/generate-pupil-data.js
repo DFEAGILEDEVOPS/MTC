@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+
+'use strict'
+
+require('dotenv').config()
+const winston = require('winston')
+const upnService = require('../services/upn.service')
+winston.level = 'info'
+const moment = require('moment')
+
+const poolService = require('../services/data-access/sql.pool.service')
+const sqlService = require('../services/data-access/sql.service')
+const pupilCountPerSchool = 40
+
+async function main () {
+  try {
+    const schools = await sqlService.query(`SELECT
+      id,
+      dfeNumber,
+      estabCode,
+      leaCode
+    from [mtc_admin].[school]`)
+
+    console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
+    let c = 1
+    for (const school of schools) {
+      await insertPupils(school, 40)
+      c += 1
+      if (c % 1000 === 0) {
+        console.log(`${c} schools`)
+      }
+    }
+  } catch (error) {
+    console.log(error.message)
+    throw error
+  }
+}
+
+main()
+  .then(() => {
+    poolService.drain()
+  })
+  .catch(e => {
+    console.warn(e)
+    poolService.drain()
+  })
+
+async function insertPupils (school, count) {
+  const insert = `INSERT INTO [mtc_admin].[pupil] (
+    dateOfBirth,
+    foreName,
+    gender,
+    lastName,
+    school_id,
+    upn
+  ) VALUES`
+  const pupilData = []
+  for (let i = 0; i < count; i++) {
+    pupilData.push([
+      `( '${randomDob()}'`,
+      `'Pupil'`,
+      `'M'`,
+      `'${count.toString()}'`,
+      school.id,
+      `'${genUPN(school.leaCode, school.estabCode, i)}')`
+    ].join(' , '))
+  }
+  const sql = `${insert} ${pupilData.join(', \n')}`
+  return sqlService.modify(sql)
+}
+
+function randomDob () {
+  const rnd = Math.floor(Math.random() * (365 * 2) + 1)
+  const dob = moment().utc().subtract(9, 'years').subtract(rnd, 'days')
+  dob.hours(0).minute(0).second(0)
+  return dob.toISOString()
+}
+
+function genUPN (leaCode, estabCode, serial) {
+  try {
+    const upn = '' + leaCode.toString() + estabCode + (new Date().getFullYear().toString().substr(-2)) +
+      serial.toString().padStart(3, '0')
+    const checkLetter = upnService.calculateCheckLetter(upn)
+    return checkLetter + upn
+  } catch (error) {
+    console.log(`Failed on: leaCode [${leaCode}] estab: [${estabCode}] serial: [${serial}]`)
+  }
+}
