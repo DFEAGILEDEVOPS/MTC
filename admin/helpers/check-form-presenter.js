@@ -1,4 +1,7 @@
 'use strict'
+
+const dateService = require('../services/date.service')
+
 const checkFormPresenter = {}
 
 /**
@@ -65,10 +68,10 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
     checkWindowData.push({
       name: cw.name,
       urlSlug: cw.urlSlug,
-      familiarisationCheckStartDate: cw.familiarisationCheckStartDate.format('D MMMM'),
-      familiarisationCheckEndDate: cw.familiarisationCheckEndDate.format('D MMMM YYYY'),
-      checkStartDate: cw.checkStartDate.format('D MMMM'),
-      checkEndDate: cw.checkEndDate.format('D MMMM YYYY'),
+      familiarisationCheckStartDate: dateService.formatFullGdsDate(cw.familiarisationCheckStartDate),
+      familiarisationCheckEndDate: dateService.formatFullGdsDate(cw.familiarisationCheckEndDate),
+      checkStartDate: dateService.formatFullGdsDate(cw.checkStartDate),
+      checkEndDate: dateService.formatFullGdsDate(cw.checkEndDate),
       familiarisationCheckFormCount: cw['FamiliarisationCheckFormCount'],
       liveCheckFormCount: cw['LiveCheckFormCount']
     })
@@ -85,10 +88,10 @@ checkFormPresenter.getPresentationCheckWindowData = (checkWindow) => {
   return {
     name: checkWindow.name,
     urlSlug: checkWindow.urlSlug,
-    familiarisationCheckStartDate: checkWindow.familiarisationCheckStartDate.format('D MMMM'),
-    familiarisationCheckEndDate: checkWindow.familiarisationCheckEndDate.format('D MMMM YYYY'),
-    checkStartDate: checkWindow.checkStartDate.format('D MMMM'),
-    checkEndDate: checkWindow.checkEndDate.format('D MMMM YYYY')
+    familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
+    familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
+    checkStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
+    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate)
   }
 }
 

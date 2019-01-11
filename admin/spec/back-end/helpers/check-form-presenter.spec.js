@@ -2,6 +2,7 @@
 const moment = require('moment')
 
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
+const dateService = require('../../../services/date.service')
 
 describe('checkFormPresenter', () => {
   describe('getPresentationListData', () => {
@@ -82,10 +83,10 @@ describe('checkFormPresenter', () => {
         urlSlug: 'urlSlug',
         familiarisationCheckFormCount: 1,
         liveCheckFormCount: 2,
-        familiarisationCheckStartDate: moment.utc().subtract(5, 'days').format('D MMMM'),
-        familiarisationCheckEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY'),
-        checkStartDate: moment.utc().subtract(3, 'days').format('D MMMM'),
-        checkEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY')
+        familiarisationCheckStartDate: dateService.formatFullGdsDate(moment.utc().subtract(5, 'days')),
+        familiarisationCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
+        checkStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
+        checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days'))
       }])
     })
   })
@@ -103,10 +104,10 @@ describe('checkFormPresenter', () => {
       expect(result).toEqual({
         name: 'name',
         urlSlug: 'urlSlug',
-        familiarisationCheckStartDate: moment.utc().subtract(5, 'days').format('D MMMM'),
-        familiarisationCheckEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY'),
-        checkStartDate: moment.utc().subtract(3, 'days').format('D MMMM'),
-        checkEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY')
+        familiarisationCheckStartDate: dateService.formatFullGdsDate(moment.utc().subtract(5, 'days')),
+        familiarisationCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
+        checkStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
+        checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days'))
       })
     })
   })
