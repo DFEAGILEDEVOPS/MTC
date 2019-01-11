@@ -14,7 +14,7 @@ const pupilStatusService = {}
 /**
  * Constants
  */
-pupilStatusService.StatusCodes = Object.freeze({
+pupilStatusService.STATUS_CODES = Object.freeze({
   UNALLOC: 'UNALLOC',
   ALLOC: 'ALLOC',
   LOGGED_IN: 'LOGGED_IN',
