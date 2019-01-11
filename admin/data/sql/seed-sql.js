@@ -8,7 +8,6 @@ const fs = require('fs')
 const path = require('path')
 const logger = require('../../services/log.service').getLogger()
 
-const poolService = require('../../services/data-access/sql.pool.service')
 const sqlService = require('../../services/data-access/sql.service')
 
 const seedsDirectory = path.join(__dirname, '/seeds')
@@ -122,6 +121,7 @@ const runSeeds = async (version) => {
 
 const main = async () => {
   try {
+    await sqlService.init()
     runSeeds(process.argv[2] || 'all')
       .then(() => {
         logger.info(chalk.green('Done'))
@@ -139,9 +139,7 @@ const main = async () => {
 
 main()
   .then(() => {
-    poolService.drain()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
   })
