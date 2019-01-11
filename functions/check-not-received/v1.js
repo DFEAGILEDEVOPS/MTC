@@ -41,7 +41,7 @@ async function updateChecksNotReceived () {
       WHERE chkStatus.code = 'STD'
           AND chk.startedAt IS NOT NULL
           AND chk.isLiveCheck = 1
-          AND chk.startedAt < DATEADD(minute, @maxCheckAge, chk.startedAt);
+          AND GETDATE() > DATEADD(minute, @maxCheckAge, chk.startedAt);
                  
     SELECT
        checkId,
