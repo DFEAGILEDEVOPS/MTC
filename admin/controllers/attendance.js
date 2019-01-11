@@ -117,7 +117,7 @@ const downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-const getSubmitAttendance = async (req, res, next) => {
+const getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
@@ -155,7 +155,7 @@ const getEditReason = async (req, res, next) => {
   req.breadcrumbs('Review pupil details', '/attendance/submit-attendance')
   req.breadcrumbs('Edit reason')
   if (!req.params.pupilId) {
-    return res.redirect('/attendance/submit-attendance')
+    return res.redirect('/attendance/review-pupil-details')
   }
 
   let pupil, attendanceCodes
@@ -184,20 +184,7 @@ const postSubmitEditReason = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  return res.redirect('/attendance/submit-attendance')
-}
-
-/**
- * @deprecated potentially superfluous - attached to HDF
- */
-const postSubmitAttendance = async (req, res, next) => {
-  const attendees = req.body[ 'attendee' ]
-  if (!attendees) {
-    return res.redirect('/school/submit-attendance')
-  }
-  // const data = Object.values(req.body[ 'attendee' ] || [])
-  // TODO consider removal as part of HDF refresh
-  return res.redirect('/school/declaration-form')
+  return res.redirect('/attendance/review-pupil-details')
 }
 
 const getDeclarationForm = async (req, res, next) => {
@@ -242,7 +229,7 @@ const postDeclarationForm = async (req, res, next) => {
     })
   }
 
-  return res.redirect('/attendance/submit-attendance')
+  return res.redirect('/attendance/review-pupil-details')
 }
 
 const getHDFSubmitted = async (req, res, next) => {
@@ -262,8 +249,7 @@ const getHDFSubmitted = async (req, res, next) => {
 module.exports = {
   getResults,
   downloadResults,
-  getSubmitAttendance,
-  postSubmitAttendance,
+  getReviewPupilDetails,
   getEditReason,
   postSubmitEditReason,
   getDeclarationForm,
