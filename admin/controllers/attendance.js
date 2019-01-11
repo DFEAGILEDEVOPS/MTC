@@ -125,27 +125,9 @@ const getReviewPupilDetails = async (req, res, next) => {
   if (!pupils) {
     throw new Error('No pupils found')
   }
-
-  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const fullName = `${p.foreName} ${p.lastName}`
-    const score = await scoreService.getScorePercentage(p.id)
-    const hasScore = (score !== undefined)
-
-    return {
-      ...p,
-      fullName,
-      hasScore,
-      score
-    }
-  })).catch((error) => next(error))
-  pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
-  // Redirect to declaration form if at least one has been submitted for attendance
-  if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
-    return res.redirect('/attendance/declaration-form')
-  }
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
-    pupils: pupilsFormatted
+    pupils: pupils
   })
 }
 
@@ -179,17 +161,15 @@ const getEditReason = async (req, res, next) => {
 
 const postSubmitEditReason = async (req, res, next) => {
   const { pupilId, attendanceCode } = req.body
+
   let pupil
   try {
     pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(pupilId, req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-  try {
     await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
   } catch (error) {
     return next(error)
   }
+
   req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
   req.flash('pupilId', pupil.id)
   return res.redirect('/attendance/review-pupil-details')

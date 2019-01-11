@@ -45,9 +45,9 @@
                     <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
                         <% if (pupil.reason) { %>
-                            <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.fullName %></strong></a>
+                            <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.lastName %>, <%= pupil.foreName %></strong></a>
                         <% } else { %>
-                            <span><%= pupil.fullName %></span>
+                            <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
                         <% } %>
                         </div>
                     </td>
