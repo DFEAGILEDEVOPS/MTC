@@ -5,6 +5,7 @@ const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
 const headteacherDeclarationService = {}
@@ -35,7 +36,7 @@ headteacherDeclarationService.findPupilByIdAndDfeNumber = async (pupilId, dfeNum
   if (!school) {
     throw new Error(`School [${dfeNumber}] not found`)
   }
-  return pupilDataService.sqlFindOneByIdAndSchool(pupilId, school.id)
+  return pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool(pupilId, school.id)
 }
 
 /**
@@ -113,6 +114,24 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) 
     return false
   }
   return true
+}
+
+/**
+ * Updates a pupils attendance code
+ * @param pupilIds
+ * @param code
+ * @param userId
+ * @return {Promise<object>}
+ */
+headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId) => {
+  if (!pupilIds || !code || !userId) {
+    throw new Error('pupilIds, code and userId are required')
+  }
+  const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)
+  if (!attendanceCode) {
+    throw new Error(`attendanceCode not found: ${code}`)
+  }
+  return pupilAttendanceDataService.sqlUpdateBatch(pupilIds, attendanceCode.id, userId)
 }
 
 module.exports = headteacherDeclarationService

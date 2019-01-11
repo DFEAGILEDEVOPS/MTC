@@ -143,7 +143,7 @@ const getSubmitAttendance = async (req, res, next) => {
   if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
     return res.redirect('/attendance/declaration-form')
   }
-  return res.render('school/submit-attendance-register', {
+  return res.render('hdf/submit-attendance-register', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsFormatted
   })
@@ -170,11 +170,21 @@ const getEditReason = async (req, res, next) => {
     return next(new Error('Pupil not found in school'))
   }
 
-  return res.render('school/attendance-edit-reason', {
+  return res.render('hdf/attendance-edit-reason', {
     breadcrumbs: req.breadcrumbs(),
     pupil: pupil,
     attendanceCodes: attendanceCodes
   })
+}
+
+const postSubmitEditReason = async (req, res, next) => {
+  const { pupilId, attendanceCode } = req.body
+  try {
+    await headteacherDeclarationService.updatePupilsAttendanceCode([pupilId], attendanceCode, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+  return res.redirect('/attendance/submit-attendance')
 }
 
 /**
@@ -255,6 +265,7 @@ module.exports = {
   getSubmitAttendance,
   postSubmitAttendance,
   getEditReason,
+  postSubmitEditReason,
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted

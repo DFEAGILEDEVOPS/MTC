@@ -1,0 +1,70 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<form method="post" action="/attendance/submit-edit-reason-form">
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+    <input type="hidden" name="pupilId" value="<%= pupil.id %>" />
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">Edit reason for not taking the check</h1>
+
+            <%- partial('partials/_session_expiry') %>
+
+            <div class="panel panel-border-wide">
+                <p><%= pupil.lastName %>, <%= pupil.foreName %></p>
+            </div>
+
+            <br />
+
+            <% if (attendanceCodes && attendanceCodes.length > 1) { %>
+            <h3>Select reason</h3>
+
+            <ul class="list attendance-code-list">
+            <% attendanceCodes.forEach( (aValues) => { %>
+                <li>
+                    <div class="multiple-choice">
+                        <input id="attendance-code-<%= aValues.code %>"
+                                type="radio"
+                                role="radio"
+                                <% if(aValues.code == pupil.reasonCode) { %>
+                                checked="true"
+                                <% } %>
+                                name="attendanceCode"
+                                value="<%= aValues.code %>">
+                        <label for="attendance-code-<%= aValues.code %>"><%= aValues.reason %></label>
+                    </div>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+
+            <%- partial('partials/_attendance_code_reasons') %>
+
+            <div class="button-wrapper">
+                <button class="button" type="submit">Save</button>
+                <a class="button button-secondary" href="/attendance/submit-attendance">Cancel</a>
+            </div>
+            
+        </div>
+    </div>
+</form>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        </form>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+</div>
+    
