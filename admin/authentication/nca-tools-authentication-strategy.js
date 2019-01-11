@@ -3,7 +3,7 @@ const ncaToolsAuthService = require('../services/nca-tools-auth.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
 const ncaToolsUserService = require('../services/nca-tools-user.service')
 const certificateService = require('../services/certificate-store.service')
-const winston = require('winston')
+const logger = require('../services/log.service').getLogger()
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -30,7 +30,7 @@ module.exports = async function (req, done) {
     ncaPublicKey = await certificateService.getNcaPublicKey()
     mtcPrivateKey = await certificateService.getMtcPrivateKey()
   } catch (error) {
-    winston.error('unable to retrieve certificates:', error)
+    logger.error('unable to retrieve certificates:', error)
     return done(error, null)
   }
 
@@ -54,15 +54,14 @@ module.exports = async function (req, done) {
     return done(null, userData)
   } catch (error) {
     // auth failed
-    winston.error(error)
+    logger.error('NCA Tools Authentication failed', error)
     logonEvent.isAuthenticated = false
     logonEvent.errorMsg = error.message
     try {
       await adminLogonEventDataService.sqlCreate(logonEvent)
     } catch (error) {
-      winston.error('Failed to save Logon Event: ' + error.message)
+      logger.error('Failed to save Logon Event', error)
     }
-    winston.error(error)
     return done(error, null)
   }
 }

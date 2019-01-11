@@ -35,7 +35,7 @@ describe('checkFormPresenter', () => {
         urlSlug: 'urlSlug',
         checkWindowAdminStartDate: moment.utc().subtract(5, 'days'),
         checkWindowAdminEndDate: moment.utc().add(5, 'days'),
-        formData: JSON.stringify([{ f1: 1, f2: 2 }]),
+        formData: JSON.stringify([{ f1: 1, f2: 2 }])
       }
       const result = checkFormPresenter.getPresentationCheckFormData(checkFormData)
       expect(result).toEqual(
