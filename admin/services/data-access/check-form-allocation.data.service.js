@@ -38,7 +38,7 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
 }
 
 checkFormAllocationDataService.sqlCreateBatch = async function (checkFormAllocations) {
-  const insert = ` DECLARE @output TABLE (id int);
+  const insert = `DECLARE @output TABLE (id int);
   INSERT INTO ${sqlService.adminSchema}.${table} (
     pupil_id,
     checkForm_id,
