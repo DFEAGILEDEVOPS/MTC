@@ -332,7 +332,7 @@ const checkWindowDataService = {
    * Fetch all check windows with status and check form count by check form type
    * @return {Promise<Array>}
    */
-  sqlFindCheckWindowsWithStatusAndFormCountByFormType: async () => {
+  sqlFindCheckWindowsWithStatusAndFormCountByType: async () => {
     const sql = `SELECT *
     FROM ${sqlService.adminSchema}.[vewCheckWindowsWithStatusAndFormCountByType]
     WHERE isDeleted = 0
