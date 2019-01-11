@@ -132,9 +132,11 @@ controller.getViewFormPage = async (req, res, next) => {
 controller.getAssignFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Assign forms to check window'
   req.breadcrumbs(res.locals.pageTitle)
+  let checkWindows
   let checkWindowData
   try {
-    checkWindowData = await checkWindowV2Service.getPresentAndFutureCheckWindows()
+    checkWindows = await checkWindowV2Service.getPresentAndFutureCheckWindows()
+    checkWindowData = checkFormPresenter.getPresentationCheckWindowListData(checkWindows)
   } catch (error) {
     return next(error)
   }

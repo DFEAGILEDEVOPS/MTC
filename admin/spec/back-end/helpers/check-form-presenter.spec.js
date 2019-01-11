@@ -64,4 +64,29 @@ describe('checkFormPresenter', () => {
       })
     })
   })
+  describe('getPresentationCheckWindowListData', () => {
+    it('returns check window list data formatted', () => {
+      const checkWindows = [{
+        name: 'name',
+        urlSlug: 'urlSlug',
+        FamiliarisationCheckFormCount: 1,
+        LiveCheckFormCount: 2,
+        familiarisationCheckStartDate: moment.utc().subtract(5, 'days'),
+        familiarisationCheckEndDate: moment.utc().add(2, 'days'),
+        checkStartDate: moment.utc().subtract(3, 'days'),
+        checkEndDate: moment.utc().add(2, 'days')
+      }]
+      const result = checkFormPresenter.getPresentationCheckWindowListData(checkWindows)
+      expect(result).toEqual([{
+        name: 'name',
+        urlSlug: 'urlSlug',
+        familiarisationCheckFormCount: 1,
+        liveCheckFormCount: 2,
+        familiarisationCheckStartDate: moment.utc().subtract(5, 'days').format('D MMMM'),
+        familiarisationCheckEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY'),
+        checkStartDate: moment.utc().subtract(3, 'days').format('D MMMM'),
+        checkEndDate: moment.utc().add(2, 'days').format('D MMMM YYYY')
+      }])
+    })
+  })
 })

@@ -54,4 +54,26 @@ checkFormPresenter.getFlashMessageData = (uploadData) => {
   return highlightData
 }
 
+/**
+ * Format check window list data for the assign forms to check windows view
+ * @param {Array} checkWindows
+ * @returns {Array}
+ */
+checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
+  const checkWindowData = []
+  checkWindows.forEach(cw => {
+    checkWindowData.push({
+      name: cw.name,
+      urlSlug: cw.urlSlug,
+      familiarisationCheckStartDate: cw.familiarisationCheckStartDate.format('D MMMM'),
+      familiarisationCheckEndDate: cw.familiarisationCheckEndDate.format('D MMMM YYYY'),
+      checkStartDate: cw.checkStartDate.format('D MMMM'),
+      checkEndDate: cw.checkEndDate.format('D MMMM YYYY'),
+      familiarisationCheckFormCount: cw['FamiliarisationCheckFormCount'],
+      liveCheckFormCount: cw['LiveCheckFormCount']
+    })
+  })
+  return checkWindowData
+}
+
 module.exports = checkFormPresenter
