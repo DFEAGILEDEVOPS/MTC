@@ -1,5 +1,6 @@
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2Service = require('../services/check-form-v2.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -118,6 +119,62 @@ controller.getViewFormPage = async (req, res, next) => {
   res.render('check-form/view-form', {
     breadcrumbs: req.breadcrumbs(),
     checkFormData
+  })
+}
+
+/**
+ * Assign forms view page
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getAssignFormsPage = async (req, res, next) => {
+  res.locals.pageTitle = 'Assign forms to check window'
+  req.breadcrumbs(res.locals.pageTitle)
+  let checkWindows
+  let checkWindowData
+  try {
+    checkWindows = await checkWindowV2Service.getPresentAndFutureCheckWindows()
+    checkWindowData = checkFormPresenter.getPresentationCheckWindowListData(checkWindows)
+  } catch (error) {
+    return next(error)
+  }
+  res.render('check-form/view-assign-forms-to-check-windows', {
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowData
+  })
+}
+
+/**
+ * Select forms to be assigned to check window page
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getSelectFormPage = async (req, res, next) => {
+  const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
+  const checkFormType = req.params && req.params.checkFormType
+  let checkWindow
+  let checkWindowData
+  let checkFormData
+  try {
+    checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    checkWindowData = await checkFormPresenter.getPresentationCheckWindowData(checkWindow)
+    checkFormData = await checkFormV2Service.getCheckFormsByType(checkFormType)
+  } catch (error) {
+    return next(error)
+  }
+  const checkPeriod = checkFormType === 'live' ? 'MTC' : 'Try it out'
+  res.locals.pageTitle = `${checkWindowData.name} - ${checkPeriod}`
+  req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('check-form/view-select-forms', {
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowData,
+    checkFormData,
+    checkFormType
   })
 }
 
