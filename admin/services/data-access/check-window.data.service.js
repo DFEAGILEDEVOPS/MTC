@@ -334,7 +334,7 @@ const checkWindowDataService = {
    */
   sqlFindCheckWindowsWithStatusAndFormCountByFormType: async () => {
     const sql = `SELECT *
-    FROM ${sqlService.adminSchema}.[vewCheckWindowsWithStatusAndFormCountByFormType]
+    FROM ${sqlService.adminSchema}.[vewCheckWindowsWithStatusAndFormCountByType]
     WHERE isDeleted = 0
     ORDER BY createdAt ASC`
     return sqlService.query(sql)
