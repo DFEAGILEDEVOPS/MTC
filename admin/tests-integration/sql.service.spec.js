@@ -253,7 +253,7 @@ describe('sql.service:integration', () => {
         scale: 2
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tDecimal) 
+         INSERT into ${table} (tDecimal)
          VALUES (@tDecimal);
          SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY;`,
       params)
@@ -290,7 +290,7 @@ describe('sql.service:integration', () => {
         scale: 3
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tNumeric) 
+         INSERT into ${table} (tNumeric)
          VALUES (@tNumeric);
          SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY;`,
         params)
@@ -325,7 +325,7 @@ describe('sql.service:integration', () => {
         type: TYPES.Float
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tFloat) 
+         INSERT into ${table} (tFloat)
          VALUES (@tFloat);
          SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY;`,
       params)
@@ -360,7 +360,7 @@ describe('sql.service:integration', () => {
         type: TYPES.NVarChar
       }]
       const insertResult = await sql.modify(`
-         INSERT into ${table} (tNvarchar) 
+         INSERT into ${table} (tNvarchar)
          VALUES (@tNvarchar);
          SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY;`,
       params)

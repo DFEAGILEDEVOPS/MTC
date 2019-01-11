@@ -22,12 +22,11 @@ const service = {
      * Step 1: verify we can decrypt the signature, with the sender's public key
      * @type {boolean}
      */
-    // const isVerified = verifySignature(
-    //   Buffer.from(encSignature, 'base64'),
-    //   Buffer.from(encData, 'base64'),
-    //   ncaToolsPublicKey
-    // )
-    const isVerified = true
+    const isVerified = verifySignature(
+      Buffer.from(encSignature, 'base64'),
+      Buffer.from(encData, 'base64'),
+      ncaToolsPublicKey
+    )
 
     if (!isVerified) {
       // the signature does not verify, so the user cannot be logged in.
@@ -35,8 +34,10 @@ const service = {
       throw new Error('Signature failed verification')
     }
 
-    const key = rsaDecrypt(Buffer.from(encKey, 'base64'), mtcPrivateKey)
-    const iv = rsaDecrypt(Buffer.from(encIv, 'base64'), mtcPrivateKey)
+    const keyBuffer = Buffer.from(encKey, 'base64')
+    const key = rsaDecrypt(keyBuffer, mtcPrivateKey)
+    const vectorBuffer = Buffer.from(encIv, 'base64')
+    const iv = rsaDecrypt(vectorBuffer, mtcPrivateKey)
 
     // Decrypt the message data, which was encrypted with the key and IV
     const plaintext = decryptMessage(Buffer.from(encData, 'base64'), key, iv)
@@ -71,11 +72,11 @@ module.exports = service
  * @param {String} senderPublicKey - String containing the public RSA key (PEM format) of the sender
  * @return {boolean} - true is the sig is verified, false otherwise
  */
-// function verifySignature (sig, data, senderPublicKey) {
-//   const verify = crypto.createVerify('RSA-SHA1')
-//   verify.update(data)
-//   return verify.verify(senderPublicKey, sig)
-// }
+function verifySignature (sig, data, senderPublicKey) {
+  const verify = crypto.createVerify('RSA-SHA1')
+  verify.update(data)
+  return verify.verify(senderPublicKey, sig)
+}
 
 /**
  * Decryption using the MTC RSA private key
