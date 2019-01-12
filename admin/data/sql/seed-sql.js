@@ -2,7 +2,6 @@
 
 require('dotenv').config()
 const R = require('ramda')
-const chalk = require('chalk')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
@@ -80,7 +79,7 @@ const processSeed = async (seed) => {
 }
 
 const runSeeds = async (version) => {
-  logger.info(chalk.green('Migrating seeds: '), chalk.green.bold(version))
+  logger.info(`Migrating seeds: ${version}`)
 
   try {
     const seedList = await loadSeeds()
@@ -111,35 +110,22 @@ const runSeeds = async (version) => {
 
       await processSeed(foundSeed)
     }
-
-    logger.info(chalk.green('SQL Seeds complete'))
+    logger.info('SQL Seeds complete')
   } catch (error) {
-    logger.error(chalk.red('ERROR: ', error.message))
-    logger.error(chalk.red('ERROR: ', error.stack))
+    logger.error('ERROR: ', error)
+    throw error
   }
 }
 
-const main = async () => {
+(async function main () {
   try {
     await sqlService.init()
-    runSeeds(process.argv[2] || 'all')
-      .then(() => {
-        logger.info(chalk.green('Done'))
-        process.exit(0)
-      },
-      (error) => {
-        logger.info(chalk.red(error.message))
-        process.exit(1)
-      })
+    await runSeeds(process.argv[2] || 'all')
   } catch (error) {
+    process.exitCode = 1;
     logger.error(`Error caught: ${error.message}`)
-    process.exit(1)
+  } finally {
+    const drainInfo = await sqlService.drainPool()
+    logger.info('seeds complete: ', drainInfo)
   }
-}
-
-main()
-  .then(() => {
-  })
-  .catch(e => {
-    console.warn(e)
-  })
+})()

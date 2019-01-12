@@ -10,6 +10,7 @@ const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 let cache = {}
+/* @var ConnectionPool */
 let pool
 
 /** Utility functions **/
@@ -210,11 +211,21 @@ const sqlService = {
 sqlService.adminSchema = '[mtc_admin]'
 
 sqlService.init = async () => {
+  if (pool) {
+    throw new Error('The connection pool has already been initialised')
+  }
   pool = new mssql.ConnectionPool(poolConfig)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
   await pool.connect()
+}
+
+sqlService.drainPool = async () => {
+  if (!pool) {
+    throw new Error('pool is not configured')
+  }
+  return pool.close()
 }
 
 /**
@@ -258,10 +269,9 @@ sqlService.modify = async (sql, params = []) => {
   logger.debug('sql.service.modify(): SQL: ' + sql)
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
 
-  const request = new mssql.PreparedStatement(pool)
+  const request = new mssql.Request(pool)
   const isInsert = isInsertStatement(sql)
   const response = {}
-  const paramsObject = {}
 
   if (params) {
     for (let index = 0; index < params.length; index++) {
@@ -283,34 +293,26 @@ sqlService.modify = async (sql, params = []) => {
       }
 
       if (opts.precision) {
-        request.input(param.name, param.type(opts.precision, opts.scale))
+        request.input(param.name, param.type(opts.precision, opts.scale), param.value)
       } else if (opts.length) {
-        request.input(param.name, param.type(opts.length))
+        request.input(param.name, param.type(opts.length), param.value)
       } else {
-        request.input(param.name, param.type)
+        request.input(param.name, param.type, param.value)
       }
-      paramsObject[param.name] = param.value
     }
   }
 
-  await request.prepare(sql)
   const returnValue = {}
   const insertIds = []
 
-  try {
-    const rawResponse = await request.execute(paramsObject)
-    request.unprepare()
-    logger.debug('sql.service: modify: result:', rawResponse)
-    if (rawResponse && rawResponse.recordset) {
-      for (let obj of rawResponse.recordset) {
-        if (obj && obj.SCOPE_IDENTITY) {
-          insertIds.push(obj.SCOPE_IDENTITY)
-        }
+  const rawResponse = await request.query(sql)
+  logger.debug('sql.service: modify: result:', rawResponse)
+  if (rawResponse && rawResponse.recordset) {
+    for (let obj of rawResponse.recordset) {
+      if (obj && obj.SCOPE_IDENTITY) {
+        insertIds.push(obj.SCOPE_IDENTITY)
       }
     }
-  } catch (error) {
-    request.unprepare()
-    throw error
   }
 
   if (insertIds.length === 1) {
