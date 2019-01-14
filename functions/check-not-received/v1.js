@@ -32,16 +32,19 @@ async function updateChecksNotReceived () {
       pupilId int NOT NULL,
       checkCode uniqueidentifier NOT NULL
     );
-
-  UPDATE TOP (500) [mtc_admin].[check]
-      SET [checkStatus_id] = (SELECT TOP (1) id FROM [mtc_admin].[checkStatus] WHERE code = 'NTR')       
-      OUTPUT [inserted].id, [inserted].pupil_id, [inserted].[checkCode] INTO @updateLog       
+    DECLARE @checkTimeLimit int
+    SET @checkTimeLimit = (SELECT TOP (1) checkTimeLimit FROM [mtc_admin].settings)
+    DECLARE @checkStatusId int
+    SET @checkStatusId = (SELECT TOP (1) id FROM [mtc_admin].[checkStatus] WHERE code = 'NTR')
+    UPDATE TOP (500) [mtc_admin].[check]
+      SET [checkStatus_id] = @checkStatusId
+      OUTPUT [inserted].id, [inserted].pupil_id, [inserted].[checkCode] INTO @updateLog
       FROM [mtc_admin].[check] chk
-              JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)       
+              JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
       WHERE chkStatus.code = 'STD'
           AND chk.startedAt IS NOT NULL
           AND chk.isLiveCheck = 1
-          AND chk.startedAt < DATEADD(minute, @maxCheckAge, chk.startedAt);
+          AND GETDATE() > DATEADD(minute, @checkTimeLimit, chk.startedAt);
                  
     SELECT
        checkId,
@@ -49,11 +52,7 @@ async function updateChecksNotReceived () {
        checkCode
     FROM @updateLog;`
 
-  const params = [
-    { name: 'maxCheckAge', value: +config.maximumCheckAgeInMinutes, type: TYPES.Int }
-  ]
-
-  return sqlService.query(sql, params)
+  return sqlService.query(sql)
 }
 
 module.exports = v1

@@ -17,10 +17,10 @@ describe('setting.service', () => {
 
   describe('get', () => {
     it('calls the setting data service', async () => {
-      const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2 }
+      const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2, checkTimeLimit: 30 }
       spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
       const result = await settingService.get()
-      expect(Object.keys(result).length).toBe(2)
+      expect(Object.keys(result).length).toBe(3)
     })
   })
 
@@ -29,7 +29,7 @@ describe('setting.service', () => {
       const updateResult = { rowsAffected: 1 }
       spyOn(settingDataService, 'sqlUpdate').and.returnValue(updateResult)
       spyOn(settingLogDataService, 'sqlCreate').and.returnValue(updateResult)
-      await settingService.update(1, 2, 3)
+      await settingService.update(1, 2, 3, 4)
       expect(settingDataService.sqlUpdate).toHaveBeenCalled()
       expect(settingLogDataService.sqlCreate).toHaveBeenCalled()
     })
