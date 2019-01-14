@@ -18,7 +18,7 @@ phases:
 
       failOnStandardError: true
 
-  - task: Docker@0
+  - task: Docker@
     displayName: 'Create Image'
     inputs:
       azureSubscription: 'MTC EE Dev'
@@ -27,13 +27,13 @@ phases:
 
       dockerFile: admin/Dockerfile
 
-      imageName: 'ymltest:$(Build.BuildNumber)'
+      imageName: '$(ADMIN_IMAGE_NAME):$(Build.BuildNumber)'
 
       includeSourceTags: true
 
       includeLatestTag: true
 
-  - task: Docker@0
+  - task: Docker@1
     displayName: 'Publish Admin Image'
     inputs:
       azureSubscription: 'MTC EE Dev'
@@ -42,7 +42,7 @@ phases:
 
       action: 'Push an image'
 
-      imageName: 'ymltest:$(Build.BuildNumber)'
+      imageName: '$(ADMIN_IMAGE_NAME):$(Build.BuildNumber)'
 
       includeSourceTags: true
 
