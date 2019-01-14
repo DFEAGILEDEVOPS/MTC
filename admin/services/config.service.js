@@ -7,7 +7,7 @@ const accessArrangementsDataService = require('./data-access/access-arrangements
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
-const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
+const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS, LENGTH_OF_CHECK_MINUTES } = require('../config')
 
 /** @namespace */
 
@@ -16,7 +16,7 @@ const configService = {
   /**
    * Fetch the config for a particular pupil for a test
    * @param {Object} pupil - plain pupil object
-   * @return {Promise.<{questionTime: *, loadingTime: *, speechSynthesis: boolean}>}
+   * @return {Promise.<{questionTime: *, loadingTime: *, checkTime: *, speechSynthesis: boolean}>}
    */
   getConfig: async (pupil) => {
     let questionTime = QUESTION_TIME_LIMIT
@@ -33,9 +33,12 @@ const configService = {
       questionTime = timeSettings.questionTimeLimit
     }
 
+    const checkTime = timeSettings ? timeSettings.checkTimeLimit : LENGTH_OF_CHECK_MINUTES
+
     const config = {
       questionTime,
-      loadingTime
+      loadingTime,
+      checkTime
     }
 
     // specific config for a pupil
