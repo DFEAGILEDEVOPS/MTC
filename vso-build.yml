@@ -18,7 +18,7 @@ phases:
 
       failOnStandardError: true
 
-  - task: Docker@
+  - task: Docker@1
     displayName: 'Create Image'
     inputs:
       azureSubscription: 'MTC EE Dev'
