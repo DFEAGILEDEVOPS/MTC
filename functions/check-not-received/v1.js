@@ -1,7 +1,6 @@
 'use strict'
 
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
 const config = require('../config')
 sqlService.initialise(config)
 const azureStorageHelper = require('../lib/azure-storage-helper')
