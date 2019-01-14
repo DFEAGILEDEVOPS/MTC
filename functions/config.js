@@ -48,8 +48,5 @@ module.exports = {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
-  Environment: getEnvironment(),
-  // The length of time we wait before considering a check late.  Taken from when it has been started until it
-  // is marked as check_not_received.
-  maximumCheckAgeInMinutes: 30
+  Environment: getEnvironment()
 }
