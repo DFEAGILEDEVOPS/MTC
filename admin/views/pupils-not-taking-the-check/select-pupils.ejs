@@ -21,12 +21,12 @@
         <%- partial('partials/_session_expiry') %>
 
         <p class="lede">
-            All pupils should be considered for the Multiplication Tables Check at the end of year 4.
+            All pupils must be considered for the multiplication tables check at the end of year 4.
             If a pupil is not going to take the check, a reason must be provided.
         </p>
 
         <div class="button-wrapper">
-            <a class="button" href="/pupils-not-taking-the-check/select-pupils">Add reason</a>
+            <a class="button" href="/pupils-not-taking-the-check/select-pupils">Select pupil and reason</a>
         </div>
 
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -86,7 +86,7 @@
                     </li>
                     <li>
                         <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                        <a href="/pupil-pin/generate-live-pins-overview">Generate live pupil PINs</a>
+                        <a href="/pupil-pin/generate-live-pins-overview">Generate multiplication tables check PINs</a>
                         <% } %>
                     </li>
                 </ul>

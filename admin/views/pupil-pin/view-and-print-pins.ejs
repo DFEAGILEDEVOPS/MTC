@@ -33,12 +33,12 @@
             </p>
         </div>
         <% } %>
-        <h1 class="heading-xlarge">View and print PINs - <%= pinEnv %> check</h1>
+        <h1 class="heading-xlarge">View and print PINs - <%= pinEnv === 'live' ? 'Multiplication tables check' : 'Try it out' %></h1>
 
         <%- partial('partials/_session_expiry') %>
 
         <p class="lede">
-            Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.<br/>
+            Personal Identification Numbers (PIN) have been generated for selected pupils. These expire at 4pm daily.<br/>
             <% if (pupils && pupils.length > 0) { %>
             You can <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
             <% } %>
