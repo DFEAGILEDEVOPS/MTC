@@ -33,7 +33,7 @@
             </p>
         </div>
         <% } %>
-        <h1 class="heading-xlarge">View and custom print PINs - <%= pinEnv %> check</h1>
+        <h1 class="heading-xlarge">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
 
         <%- partial('partials/_session_expiry') %>
 
