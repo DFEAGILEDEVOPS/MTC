@@ -1,4 +1,4 @@
-@restarts @reset_pin_restart_check
+@restarts @reset_pin_restart_check @deactivate_all_test_check_window
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section

@@ -9,7 +9,7 @@ class SqlDbHelper
   end
 
   def self.pupil_details_using_names(firstname, lastname)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{firstname}' AND lastName=N'#{lastname}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -17,7 +17,7 @@ class SqlDbHelper
   end
 
   def self.find_pupil_from_school(first_name, school_id)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{first_name}' AND school_id='#{school_id}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -39,7 +39,7 @@ class SqlDbHelper
   end
 
   def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName=N'#{forename}' AND lastName=N'#{lastname}' AND school_id='#{school_id}'"
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -253,6 +253,12 @@ class SqlDbHelper
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.deactivate_all_test_check_window(check_end_date)
+    sql = "UPDATE [mtc_admin].[checkWindow] set adminStartDate = '#{check_end_date}', adminEndDate= '#{check_end_date}', familiarisationCheckStartDate= '#{check_end_date}', familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}', checkStartDate = '#{check_end_date}' WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

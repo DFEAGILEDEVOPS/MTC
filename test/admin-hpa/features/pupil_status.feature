@@ -1,4 +1,4 @@
-@pupil_status
+@pupil_status @deactivate_all_test_check_window
 Feature: Pupil Status Outcome
 
   Scenario: Pupil status is Not Started when a new pupil is added
