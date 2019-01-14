@@ -1,16 +1,16 @@
 'use strict'
 
 const R = require('ramda')
-const {
-  Request
-} = require('tedious')
+// const {
+//   Request
+// } = require('tedious')
 const mssql = require('mssql')
 const dateService = require('../date.service')
 const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 let cache = {}
-/* @var ConnectionPool */
+/* @var mssql.ConnectionPool */
 let pool
 
 /** Utility functions **/
@@ -191,7 +191,7 @@ function isInsertStatement(sql = '') {
 
 /** SQL Service **/
 const sqlService = {
-  // SQL type mapping adapter.  Add new types as required.
+  // SQL type-mapping adapter.  Add new types as required.
   TYPES: {
     Int: mssql.Int,
     NVarChar: mssql.NVarChar,
@@ -613,7 +613,7 @@ sqlService.updateDataTypeCache = async function () {
       dataType: findDataType(row.DATA_TYPE),
       precision: row.NUMERIC_PRECISION,
       scale: row.NUMERIC_SCALE,
-      maxLength: row.CHARACTER_MAXIMUM_LENGTH
+      maxLength: row.CHARACTER_MAXIMUM_LENGTH && row.CHARACTER_MAXIMUM_LENGTH > 0 ? row.CHARACTER_MAXIMUM_LENGTH : undefined
     }
   })
   logger.debug('sql.service: updateDataTypeCache() complete')

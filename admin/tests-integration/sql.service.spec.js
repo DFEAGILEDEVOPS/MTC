@@ -190,6 +190,12 @@ describe('sql.service:integration', () => {
       expect(retrievedUser.school_id).toBe(user.school_id)
       expect(retrievedUser.role_id).toBe(user.role_id)
     })
+
+    it ('should allow an nvarchar col to be added', async () => {
+      const data = { tNvarCharMax: 'the quick brown fox' }
+      const res = await sql.create('[integrationTest]', data)
+      expect(res.insertId).toBeDefined()
+    })
   })
 
   describe('Inserts', () => {
