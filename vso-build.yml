@@ -285,7 +285,7 @@ phases:
 
       scriptPath: 'deploy/storage/create-items.sh'
 
-      arguments: 'devsamtc $(STORAGE_ACCOUNT_KEY) $(PUPIL_APP_URL)'
+      arguments: '$(STORAGE_ACCOUNT_NAME) $(STORAGE_ACCOUNT_KEY) $(PUPIL_APP_URL)'
 
 
 
