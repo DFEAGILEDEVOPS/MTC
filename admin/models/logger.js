@@ -67,31 +67,31 @@ class Logger {
    * AI -> critical
    * @param {string} msg
    */
-  alert (msg, exception) { this.log('alert', msg, exception) }
+  alert (msg, exception = null) { this.log('alert', msg, exception) }
 
   /**
    * AI -> error
    * @param {string} msg
    */
-  error (msg, exception) { this.log('error', msg, exception) }
+  error (msg, exception = null) { this.log('error', msg, exception) }
 
   /**
    * AI -> warning
-   * @param {string} msgf
+   * @param {string} msg
    */
-  warn (msg, exception) { this.log('warning', msg, exception) }
+  warn (msg, exception = null) { this.log('warning', msg, exception) }
 
   /**
    * AI -> notice
    * @param {string} msg
    */
-  info (msg, exception) { this.log('info', msg, exception) }
+  info (msg, exception = null) { this.log('info', msg, exception) }
 
   /**
    * AI -> verbose
    * @param {string} msg
    */
-  debug (msg, exception) { this.log('debug', msg, exception) }
+  debug (msg, exception = null) { this.log('debug', msg, exception) }
 
   /**
    * Return the underlying `winston` logger
