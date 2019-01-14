@@ -35,8 +35,10 @@ const setupLogging = require('./helpers/logger')
 const uuidV4 = require('uuid/v4')
 
 const logger = require('./services/log.service').getLogger()
+const sqlService = require('./services/data-access/sql.service')
 const app = express()
 setupLogging(app)
+sqlService.initPool()
 
 /**
  * Load feature toggles

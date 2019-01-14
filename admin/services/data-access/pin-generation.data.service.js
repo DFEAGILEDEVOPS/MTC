@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
 const serviceToExport = {
