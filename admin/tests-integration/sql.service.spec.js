@@ -11,7 +11,7 @@ const uuid = require('uuid/v4')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
-    await sql.init()
+    await sql.initPool()
     // await sql.updateDataTypeCache()
   })
 

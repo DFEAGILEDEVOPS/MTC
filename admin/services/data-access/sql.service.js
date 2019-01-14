@@ -210,7 +210,7 @@ const sqlService = {
 // Name of the admin database
 sqlService.adminSchema = '[mtc_admin]'
 
-sqlService.init = async () => {
+sqlService.initPool = async () => {
   if (pool) {
     throw new Error('The connection pool has already been initialised')
   }

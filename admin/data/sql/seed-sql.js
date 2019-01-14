@@ -119,7 +119,7 @@ const runSeeds = async (version) => {
 
 (async function main () {
   try {
-    await sqlService.init()
+    await sqlService.initPool()
     await runSeeds(process.argv[2] || 'all')
   } catch (error) {
     process.exitCode = 1;
