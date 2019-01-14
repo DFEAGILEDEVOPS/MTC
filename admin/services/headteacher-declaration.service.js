@@ -48,8 +48,10 @@ headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
   const pupils = await pupilDataService.sqlFindPupilsWithStatusByDfeNumber(dfeNumber)
   // check the attendance codes for pupils that don't have the completed status
   const ids = pupils.filter(p => p.code !== pupilStatusService.STATUS_CODES.COMPLETED).map(p => p.id)
+  if (ids.length === 0) {
+    return true
+  }
   const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
-
   // check if all pupils that don't have the completed status, have an attendance reason
   return pupilAttendance.length === ids.length
 }

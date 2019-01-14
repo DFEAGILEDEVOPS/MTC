@@ -183,6 +183,14 @@ class SqlDbHelper
     chk_res
   end
 
+  def self.set_all_pupils_check_completed(school_id)
+    sql = "UPDATE [mtc_admin].[pupil] 
+    SET pupilStatus_id = 5
+    WHERE school_id = #{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
