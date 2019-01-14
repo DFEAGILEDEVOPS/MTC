@@ -18,18 +18,34 @@ phases:
 
       failOnStandardError: true
 
-
   - task: Docker@0
     displayName: 'Create Image'
     inputs:
       azureSubscription: 'MTC EE Dev'
 
-      azureContainerRegistry: 'democrmtc.azurecr.io'
+      azureContainerRegistry: '$(CONTAINER_REGISTRY_URL)'
 
       dockerFile: admin/Dockerfile
 
-      imageName: 'vsoyamltest:$(Build.BuildNumber)'
+      imageName: 'ymltest:$(Build.BuildNumber)'
 
       includeSourceTags: true
 
       includeLatestTag: true
+
+  - task: Docker@0
+    displayName: 'Publish Admin Image'
+    inputs:
+      azureSubscription: 'MTC EE Dev'
+
+      azureContainerRegistry: '$(CONTAINER_REGISTRY_URL)'
+
+      action: 'Push an image'
+
+      imageName: 'ymltest:$(Build.BuildNumber)'
+
+      includeSourceTags: true
+
+      includeLatestTag: true
+
+    timeoutInMinutes: 30
