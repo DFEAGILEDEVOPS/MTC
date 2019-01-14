@@ -1,14 +1,17 @@
 'use strict'
 
 const R = require('ramda')
-const { Request, TYPES } = require('tedious')
-const logger = require('../log.service').getLogger()
-
-const sqlPoolService = require('./sql.pool.service')
+const {
+  Request
+} = require('tedious')
+const mssql = require('mssql')
 const dateService = require('../date.service')
-
+const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
+const logger = require('../log.service').getLogger()
 let cache = {}
+/* @var ConnectionPool */
+let pool
 
 /** Utility functions **/
 
@@ -19,8 +22,11 @@ let cache = {}
  * @param {string} type
  * @return {string | undefined}
  */
-const findTediousDataType = (type) => Object.keys(TYPES).find(k => {
-  if (type.toUpperCase() === k.toUpperCase()) { return k }
+const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
+  logger.debug(`findTediousDataType('${type}'): called`)
+  if (type.toUpperCase() === k.toUpperCase()) {
+    return k
+  }
 })
 
 /**
@@ -120,7 +126,7 @@ const convertMomentToJsDate = (m) => {
  * @param {object} data - keys should be col. names
  * @return {Promise<Array>}
  */
-async function generateParams (tableName, data) {
+async function generateParams(tableName, data) {
   const pairs = R.toPairs(data)
   const params = []
   for (const p of pairs) {
@@ -134,19 +140,22 @@ async function generateParams (tableName, data) {
     if (cacheData.dataType === 'Decimal' || cacheData.dataType === 'Numeric') {
       options.precision = cacheData.precision
       options.scale = cacheData.scale
+    } else if (cacheData.maxLength) {
+      options.length = cacheData.maxLength
     }
+
     logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
-      type: R.prop(findTediousDataType(cacheData.dataType), TYPES),
+      type: R.prop(findDataType(cacheData.dataType), sqlService.TYPES),
       options
     })
   }
   return params
 }
 
-function parseResults (results) {
+function parseResults(results) {
   // omit metadata for now, can introduce if useful at later date
   const jsonArray = []
   results.forEach(row => {
@@ -171,7 +180,7 @@ function parseResults (results) {
  * @param sql
  * @return {boolean}
  */
-function isInsertStatement (sql = '') {
+function isInsertStatement(sql = '') {
   const s = sql.replace(/\s/g, '').toUpperCase()
   if (s.slice(0, 6) !== 'INSERT') {
     return false
@@ -181,10 +190,138 @@ function isInsertStatement (sql = '') {
 }
 
 /** SQL Service **/
-const sqlService = {}
+const sqlService = {
+  // SQL type mapping adapter.  Add new types as required.
+  TYPES: {
+    Int: mssql.Int,
+    NVarChar: mssql.NVarChar,
+    Decimal: mssql.Decimal,
+    UniqueIdentifier: mssql.UniqueIdentifier,
+    SmallInt: mssql.SmallInt,
+    Bit: mssql.Bit,
+    Char: mssql.Char,
+    DateTimeOffset: mssql.DateTimeOffset,
+    Numeric: mssql.Numeric,
+    Float: mssql.Float,
+    Real: mssql.Real
+  }
+}
 
 // Name of the admin database
 sqlService.adminSchema = '[mtc_admin]'
+
+sqlService.initPool = async () => {
+  if (pool) {
+    throw new Error('The connection pool has already been initialised')
+  }
+  pool = new mssql.ConnectionPool(poolConfig)
+  pool.on('error', err => {
+    logger.error('SQL Pool Error:', err)
+  })
+  await pool.connect()
+}
+
+sqlService.drainPool = async () => {
+  if (!pool) {
+    throw new Error('pool is not configured')
+  }
+  return pool.close()
+}
+
+/**
+ * Utility service to transform the results before sending to the caller
+ * @type {Function}
+ */
+const log = (obj) =>  { logger.debug(obj); return obj }
+const omitVersion = (obj) => R.omit(['version'], obj)
+sqlService.transformResult = R.compose( R.map(omitVersion), R.prop('recordset') )
+
+/**
+ * Query data from SQL Server via mssql
+ * @param {string} sql - The SELECT statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise<*>}
+ */
+sqlService.query = async (sql, params = []) => {
+  logger.debug(`sql.service.query(): ${sql}`)
+  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+
+  const request = new mssql.Request(pool)
+  if (params) {
+    for (let index = 0; index < params.length; index++) {
+      const param = params[index]
+      // TODO support other options
+      request.input(param.name, param.type, param.value)
+    }
+  }
+
+  const result = await request.query(sql)
+  return sqlService.transformResult(result)
+}
+
+/**
+ * Modify data in SQL Server via mssql library.
+ * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
+ */
+sqlService.modify = async (sql, params = []) => {
+  logger.debug('sql.service.modify(): SQL: ' + sql)
+  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+
+  const request = new mssql.Request(pool)
+  const isInsert = isInsertStatement(sql)
+  const response = {}
+
+  if (params) {
+    for (let index = 0; index < params.length; index++) {
+      let param = params[index]
+      param.value = convertMomentToJsDate(param.value)
+      // TODO add support for other options
+      if (!param.type) {
+        throw new Error('parameter type invalid')
+      }
+      const options = {}
+      if (R.pathEq(['type', 'name'], 'Decimal', param) ||
+        R.pathEq(['type', 'name'], 'Numeric', param)) {
+        options.precision = param.precision || 28
+        options.scale = param.scale || 5
+      }
+      const opts = param.options ? param.options : options
+      if (opts && Object.keys(opts).length) {
+        logger.debug('sql.service: modify(): opts to addParameter are: ', opts)
+      }
+
+      if (opts.precision) {
+        request.input(param.name, param.type(opts.precision, opts.scale), param.value)
+      } else if (opts.length) {
+        request.input(param.name, param.type(opts.length), param.value)
+      } else {
+        request.input(param.name, param.type, param.value)
+      }
+    }
+  }
+
+  const returnValue = {}
+  const insertIds = []
+
+  const rawResponse = await request.query(sql)
+  logger.debug('sql.service: modify: result:', rawResponse)
+  if (rawResponse && rawResponse.recordset) {
+    for (let obj of rawResponse.recordset) {
+      if (obj && obj.SCOPE_IDENTITY) {
+        insertIds.push(obj.SCOPE_IDENTITY)
+      }
+    }
+  }
+
+  if (insertIds.length === 1) {
+    returnValue.insertId = R.head(insertIds)
+  } else if (insertIds.length > 1) {
+    returnValue.insertIds = insertIds
+  }
+  return returnValue
+}
 
 /**
  * Query data from the SQL Server Database
@@ -192,7 +329,7 @@ sqlService.adminSchema = '[mtc_admin]'
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise<*>}
  */
-sqlService.query = (sql, params = []) => {
+sqlService.queryOrig = (sql, params = []) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   return new Promise(async (resolve, reject) => {
@@ -238,7 +375,7 @@ sqlService.query = (sql, params = []) => {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = (sql, params = []) => {
+sqlService.modifyOrig = (sql, params = []) => {
   logger.debug('sql.service.modify(): SQL: ' + sql)
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
 
@@ -310,7 +447,11 @@ sqlService.modify = (sql, params = []) => {
  * @return {Promise<void>}
  */
 sqlService.findOneById = async (table, id) => {
-  const paramId = { name: 'id', type: TYPES.Int, value: id }
+  const paramId = {
+    name: 'id',
+    type: sqlService.TYPES.Int,
+    value: id
+  }
   const sql = `
       SELECT *    
       FROM ${sqlService.adminSchema}.${table}
@@ -355,8 +496,12 @@ sqlService.generateInsertStatement = async (table, data) => {
   logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
-  SELECT SCOPE_IDENTITY()`
-  return { sql, params }
+  SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]`
+  return {
+    sql,
+    params,
+    outputParams: { SCOPE_IDENTITY: sqlService.TYPES.Int }
+  }
 }
 
 /**
@@ -374,7 +519,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
   data.forEach((datum, idx) => {
     params.push(
       R.map((key) => {
-        const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
+        const sameParamWithType = paramsWithTypes.find(( { name } ) => name === key)
         return {
           ...sameParamWithType,
           name: `${key}${idx}`,
@@ -388,7 +533,10 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`
-  return { sql, params }
+  return {
+    sql,
+    params
+  }
 }
 
 /**
@@ -406,7 +554,10 @@ sqlService.generateUpdateStatement = async (table, data) => {
     generateSetStatements(R.omit(['id'], data)),
     'WHERE id=@id'
   ])
-  return { sql, params }
+  return {
+    sql,
+    params
+  }
 }
 
 /**
@@ -417,9 +568,13 @@ sqlService.generateUpdateStatement = async (table, data) => {
  */
 sqlService.create = async (tableName, data) => {
   const preparedData = convertMomentToJsDate(data)
-  const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
+  const {
+    sql,
+    params,
+    outputParams
+  } = await sqlService.generateInsertStatement(tableName, preparedData)
   try {
-    const res = await sqlService.modify(sql, params)
+    const res = await sqlService.modify(sql, params, outputParams)
     return res
   } catch (error) {
     logger.warn('sql.service: Failed to INSERT', error)
@@ -443,7 +598,11 @@ sqlService.updateDataTypeCache = async function () {
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema
     `
-  const paramSchema = { name: 'schema', value: 'mtc_admin', type: TYPES.NVarChar }
+  const paramSchema = {
+    name: 'schema',
+    value: 'mtc_admin',
+    type: sqlService.TYPES.NVarChar
+  }
   // delete any existing cache
   cache = {}
   const rows = await sqlService.query(sql, [paramSchema])
@@ -451,10 +610,10 @@ sqlService.updateDataTypeCache = async function () {
     const key = cacheKey(row.TABLE_NAME, row.COLUMN_NAME)
     // add the datatype to the cache
     cache[key] = {
-      dataType: findTediousDataType(row.DATA_TYPE),
+      dataType: findDataType(row.DATA_TYPE),
       precision: row.NUMERIC_PRECISION,
       scale: row.NUMERIC_SCALE,
-      maxLength: row.CHARACTER_MAX_LENGTH
+      maxLength: row.CHARACTER_MAXIMUM_LENGTH
     }
   })
   logger.debug('sql.service: updateDataTypeCache() complete')
@@ -474,7 +633,10 @@ sqlService.update = async function (tableName, data) {
   }
   // Convert any moment objects to JS Date objects as that's required by Tedious
   const preparedData = convertMomentToJsDate(data)
-  const { sql, params } = await sqlService.generateUpdateStatement(tableName, preparedData)
+  const {
+    sql,
+    params
+  } = await sqlService.generateUpdateStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params)
     return res
@@ -494,10 +656,17 @@ sqlService.buildParameterList = (ary, type) => {
   const params = []
   const paramIdentifiers = []
   for (let i = 0; i < ary.length; i++) {
-    params.push({ name: `p${i}`, type, value: ary[i] })
+    params.push({
+      name: `p${i}`,
+      type,
+      value: ary[i]
+    })
     paramIdentifiers.push(`@p${i}`)
   }
-  return { params, paramIdentifiers }
+  return {
+    params,
+    paramIdentifiers
+  }
 }
 
 sqlService.modifyWithTransaction = async (sqlStatements, params) => {
