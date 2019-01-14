@@ -18,7 +18,7 @@ phases:
 
       failOnStandardError: true
 
-  - task: Docker@1
+  - task: Docker@0
     displayName: 'Create Image'
     inputs:
       azureSubscription: '$(AZURE_SUBSCRIPTION)'
@@ -33,7 +33,7 @@ phases:
 
       includeLatestTag: true
 
-  - task: Docker@1
+  - task: Docker@0
     displayName: 'Publish Admin Image'
     inputs:
       azureSubscription: '$(AZURE_SUBSCRIPTION)'
