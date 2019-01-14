@@ -14,7 +14,7 @@ const pupilCensusService = {}
  * Upload handler for pupil census
  * Reads the file contents and creates of the pupil census record
  * @param uploadFile
- * @return {Promise<void>}
+ * @return {Object}
  */
 pupilCensusService.upload = async (uploadFile) => {
   let stream
@@ -48,7 +48,11 @@ pupilCensusService.upload = async (uploadFile) => {
     throw new Error('No result has been returned from pupil bulk insertion')
   }
   // Update pupil census record with corresponding output
-  pupilCensusService.updateJobOutput(job.insertId, submissionResult)
+  const updateResult = await pupilCensusService.updateJobOutput(job.insertId, submissionResult)
+  if (submissionResult.errorOutput) {
+    throw submissionResult.errorOutput
+  }
+  return updateResult
 }
 
 /**
