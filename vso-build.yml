@@ -1,0 +1,35 @@
+resources:
+- repo: self
+  clean: true
+phases:
+- phase: Phase_1
+  displayName: Admin Image
+
+  condition: succeeded()
+  queue:
+    name: MTC LIVE
+    demands: sh
+
+  steps:
+  - task: ShellScript@2
+    displayName: 'create build and commit details file'
+    inputs:
+      scriptPath: 'admin/vso-add-build-and-commit.sh'
+
+      failOnStandardError: true
+
+
+  - task: Docker@0
+    displayName: 'Create Image'
+    inputs:
+      azureSubscription: 'MTC EE Dev'
+
+      azureContainerRegistry: 'democrmtc.azurecr.io'
+
+      dockerFile: admin/Dockerfile
+
+      imageName: 'vsoyamltest:$(Build.BuildNumber)'
+
+      includeSourceTags: true
+
+      includeLatestTag: true
