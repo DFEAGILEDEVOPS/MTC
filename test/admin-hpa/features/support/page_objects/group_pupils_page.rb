@@ -7,7 +7,7 @@ class GroupPupilsPage < SitePrism::Page
   element :related_heading, ".heading-medium", text: 'Related'
   element :guidance, "a", text: 'Guidance'
   element :pupil_register, "a[href='/pupil-register/pupils-list']", text: 'Pupil register'
-  element :generate_pins, "a[href='/pupil-pin/generate-pins-overview']", text: 'Generate pupil PINs'
+  element :generate_pins, "a[href='/pupil-pin/generate-live-pins-overview']", text: 'Generate live pupil PINs'
   element :info_message, '.info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 

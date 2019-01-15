@@ -12,7 +12,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :related_heading, ".heading-medium", text: 'Related'
-  element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
+  element :guidance, "a", text: 'Guidance'
   element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
   element :restarts, "a[href='/restart/overview']", text: 'Restarts'
   element :csrf, 'input[name="_csrf"]', visible: false

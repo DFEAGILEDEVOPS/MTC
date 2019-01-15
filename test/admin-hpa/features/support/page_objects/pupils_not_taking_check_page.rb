@@ -14,7 +14,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :related_heading, ".heading-medium", text: 'Related'
   element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
   element :access_arrangements, ".disabled-link", text: 'Access arrangements'
-  element :generate_pins, "a[href='/pupil-pin/generate-pins-overview']", text: 'Generate pupil PINs'
+  element :generate_pins, "aside ul li:nth-child(3) a", text: 'Generate live pupil PINs'
 
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do
