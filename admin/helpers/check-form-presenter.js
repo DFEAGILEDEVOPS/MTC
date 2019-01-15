@@ -82,16 +82,18 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
 /**
  * Format check window data for the select check forms view
  * @param {Object} checkWindow
+ * @param {String} checkFormType
  * @returns {Object}
  */
-checkFormPresenter.getPresentationCheckWindowData = (checkWindow) => {
+checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType) => {
   return {
     name: checkWindow.name,
     urlSlug: checkWindow.urlSlug,
     familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
     familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
     checkStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
-    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate)
+    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
+    checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out'
   }
 }
 

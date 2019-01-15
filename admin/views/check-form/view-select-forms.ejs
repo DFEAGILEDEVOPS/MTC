@@ -1,4 +1,3 @@
-<% const checkFormTypeFormatted = checkFormType.charAt(0).toUpperCase() + checkFormType.slice(1) %>
 <div class="grid-row">
   <div class="column-two-thirds">
     <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
@@ -17,7 +16,7 @@
       <div class="panel panel-border-wide">
           <% if (checkFormData && checkFormData.length) { %>
           <div>Assign forms to <b><%= pageTitle %></b></div>
-          <div><%= checkFormTypeFormatted %> check: <%= checkFormTypeFormatted !== 'Live' ?
+          <div><%= checkWindowData.checkFormTypeTitle %> period: <%= checkFormType !== 'live' ?
             `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
             `${checkWindowData.checkStartDate} to ${checkWindowData.checkEndDate}` %>
           </div>
@@ -82,7 +81,7 @@
   </div>
   <%- partial('partials/_sticky_confirmation_banner',
     {
-      countingLabel: 'Form(s)',
+      countingLabel: 'Forms',
       cancelLabel: 'Cancel',
       cancelLink: '/check-form/assign-forms-to-check-windows',
       submitLabel: 'Confirm',

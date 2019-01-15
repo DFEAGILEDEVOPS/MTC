@@ -161,7 +161,7 @@ controller.getSelectFormPage = async (req, res, next) => {
   let checkFormData
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    checkWindowData = await checkFormPresenter.getPresentationCheckWindowData(checkWindow)
+    checkWindowData = await checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
     checkFormData = await checkFormV2Service.getCheckFormsByType(checkFormType)
   } catch (error) {
     return next(error)

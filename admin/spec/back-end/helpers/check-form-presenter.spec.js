@@ -100,14 +100,15 @@ describe('checkFormPresenter', () => {
         checkStartDate: moment.utc().subtract(3, 'days'),
         checkEndDate: moment.utc().add(2, 'days')
       }
-      const result = checkFormPresenter.getPresentationCheckWindowData(checkWindow)
+      const result = checkFormPresenter.getPresentationCheckWindowData(checkWindow, 'live')
       expect(result).toEqual({
         name: 'name',
         urlSlug: 'urlSlug',
         familiarisationCheckStartDate: dateService.formatFullGdsDate(moment.utc().subtract(5, 'days')),
         familiarisationCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
         checkStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
-        checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days'))
+        checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
+        checkFormTypeTitle: 'Multiplication tables check'
       })
     })
   })
