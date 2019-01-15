@@ -22,7 +22,7 @@ export class TimerService {
     }
 
     private calculateCheckTimeRemaining(): number {
-        const checkTime = (this.config.checkTime || 30 * 1000) * 60;
+        const checkTime = ((this.config.checkTime || 30) * 1000) * 60;
         return checkTime - (new Date().getTime() - this.checkStartTime);
     }
 
