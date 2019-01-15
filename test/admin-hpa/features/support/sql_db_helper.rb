@@ -257,8 +257,8 @@ class SqlDbHelper
     result.do
   end
 
-  def self.deactivate_all_test_check_window(check_end_date)
-    sql = "UPDATE [mtc_admin].[checkWindow] set adminStartDate = '#{check_end_date}', adminEndDate= '#{check_end_date}', familiarisationCheckStartDate= '#{check_end_date}', familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}', checkStartDate = '#{check_end_date}' WHERE id NOT IN (1,2)"
+  def self.deactivate_all_test_check_window()
+    sql = "UPDATE [mtc_admin].[checkWindow] set isDeleted = 1 WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

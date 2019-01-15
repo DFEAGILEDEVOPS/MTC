@@ -77,9 +77,7 @@ Before("@no_active_check_window") do
 end
 
 Before("@deactivate_all_test_check_window") do
-  today_date = Date.today
-  check_end_date = today_date - 35
-  SqlDbHelper.deactivate_all_test_check_window(check_end_date)
+  SqlDbHelper.deactivate_all_test_check_window()
 end
 
 After("@no_active_check_window") do
