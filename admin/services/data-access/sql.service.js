@@ -134,7 +134,7 @@ const convertDateToMoment = (d) => {
  * @param {object} data - keys should be col. names
  * @return {Promise<Array>}
  */
-async function generateParams(tableName, data) {
+async function generateParams (tableName, data) {
   const pairs = R.toPairs(data)
   const params = []
   for (const p of pairs) {
@@ -378,7 +378,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
   data.forEach((datum, idx) => {
     params.push(
       R.map((key) => {
-        const sameParamWithType = paramsWithTypes.find(( { name } ) => name === key)
+        const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
         return {
           ...sameParamWithType,
           name: `${key}${idx}`,

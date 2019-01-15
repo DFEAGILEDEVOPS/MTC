@@ -122,7 +122,7 @@ const runSeeds = async (version) => {
     await sqlService.initPool()
     await runSeeds(process.argv[2] || 'all')
   } catch (error) {
-    process.exitCode = 1;
+    process.exitCode = 1
     logger.error(`Error caught: ${error.message}`)
   } finally {
     const drainInfo = await sqlService.drainPool()
