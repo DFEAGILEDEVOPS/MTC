@@ -81,6 +81,20 @@ describe('pupilCensusService', () => {
       expect(pupilCensusService.create).toHaveBeenCalled()
       expect(pupilCensusService.updateJobOutput).not.toHaveBeenCalled()
     })
+    it('throws an error if bulk process does return submission result with an error', async () => {
+      spyOn(pupilCensusProcessingService, 'process').and.returnValue({ output: 'output', errorOutput: 'errorOutput' })
+      spyOn(pupilCensusService, 'create').and.returnValue({ insertId: 1 })
+      spyOn(pupilCensusService, 'updateJobOutput')
+      try {
+        await pupilCensusService.upload(pupilCensusUploadMock)
+        fail()
+      } catch (error) {
+        expect(error).toBe('errorOutput')
+      }
+      expect(pupilCensusProcessingService.process).toHaveBeenCalled()
+      expect(pupilCensusService.create).toHaveBeenCalled()
+      expect(pupilCensusService.updateJobOutput).toHaveBeenCalled()
+    })
     it('rejects if process fails', async () => {
       const unsafeReject = p => {
         p.catch(ignore => ignore)
