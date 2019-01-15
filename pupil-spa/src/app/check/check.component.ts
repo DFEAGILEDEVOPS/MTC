@@ -91,8 +91,6 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
-
-    this.timerService.startCheckTimer();
     this.timerService.emitter.subscribe(e => {
       this.storageService.setItem(TimeoutStorageKey, {
         numQuestions: this.questionService.getNumberOfQuestions(),
@@ -236,6 +234,7 @@ export class CheckComponent implements OnInit {
         break;
       }
       case CheckComponent.loadingRe.test(stateDesc): {
+        this.timerService.startCheckTimer();
         // Show the loading screen
         this.isWarmUp = false;
         const matches = CheckComponent.loadingRe.exec(stateDesc);

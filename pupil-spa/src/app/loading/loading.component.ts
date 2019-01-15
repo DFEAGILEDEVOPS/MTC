@@ -32,6 +32,9 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   protected nextButtonDelayFinished = false;
 
   @Input()
+  public shouldShowWarningModal = true;
+
+  @Input()
   public nextQuestionButtonDelay = 2;
 
   @Input()
@@ -110,9 +113,11 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
       }, true);
     }
 
-    setTimeout(async () => {
-      this.showWarningModal();
-    }, this.nextQuestionIdleTimeout * 1000);
+    if (this.shouldShowWarningModal) {
+      setTimeout(async () => {
+        this.showWarningModal();
+      }, this.nextQuestionIdleTimeout * 1000);
+    }
 
     if (!this.config.nextBetweenQuestions) {
       setTimeout(async () => {

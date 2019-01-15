@@ -44,6 +44,14 @@ describe('TimerService', () => {
         service.stopCheckTimer();
     });
 
+    it('should not start a new timer if already started', () => {
+        service.startCheckTimer();
+        spyOn(window, 'setInterval').and.callThrough();
+        service.startCheckTimer();
+        expect(window.setInterval).not.toHaveBeenCalled()
+        service.stopCheckTimer();
+    });
+
     it('should load the timer from local storage', () => {
         spyOn(mockStorageService, 'getItem').and.returnValue('1545130114379');
         service.startCheckTimer();

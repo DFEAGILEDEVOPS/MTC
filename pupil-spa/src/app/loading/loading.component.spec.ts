@@ -15,6 +15,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { IdleModalComponent } from '../modal/idle.modal.component';
 import { TimerService } from '../services/timer/timer.service';
 import { TimerServiceMock } from '../services/timer/timer.service.mock';
+import { SvgClockComponent } from '../svg/svg.clock.component';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -30,7 +31,7 @@ describe('LoadingComponent', () => {
     });
 
     TestBed.configureTestingModule({
-      declarations: [LoadingComponent, IdleModalComponent],
+      declarations: [LoadingComponent, IdleModalComponent, SvgClockComponent],
       providers: [
         { provide: TimerService, useClass: TimerServiceMock },
         { provide: AuditService, useValue: auditServiceMock },

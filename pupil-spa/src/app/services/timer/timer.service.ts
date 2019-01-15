@@ -22,11 +22,14 @@ export class TimerService {
     }
 
     private calculateCheckTimeRemaining(): number {
-        const checkTime = (this.config.checkTime * 1000) * 60;
+        const checkTime = (this.config.checkTime || 30 * 1000) * 60;
         return checkTime - (new Date().getTime() - this.checkStartTime);
     }
 
     public startCheckTimer() {
+        if (this.interval) {
+            return;
+        }
         const storedStartTime = this.storageService.getItem(StartTimeStorageKey);
         if (!storedStartTime) {
             this.checkStartTime = new Date().getTime();
@@ -48,6 +51,7 @@ export class TimerService {
 
     public stopCheckTimer() {
         clearInterval(this.interval);
+        this.interval = undefined;
     }
 
     public clearStartTime() {
