@@ -12,7 +12,6 @@ const uuid = require('uuid/v4')
 describe('sql.service:integration', () => {
   beforeAll(async () => {
     await sql.initPool()
-    // await sql.updateDataTypeCache()
   })
 
   it('should permit select query with no parameters', async () => {
