@@ -24,10 +24,10 @@
           <p class="font-small"><%= cw.name %></p>
           <div><span class="bold-small"><a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period</a></span>
             (<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</div>
-          <p><%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %></p>
+          <p id="<%= cw.urlSlug %>-familiarisation-period"><%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %></p>
           <div><span class="bold-small"><a href="/check-form/select-form/live/<%= cw.urlSlug %>">Multiplication tables check period</a></span>
             (<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)</div>
-          <p><%= cw.checkStartDate %> to <%= cw.checkEndDate %></p>
+          <p id="<%= cw.urlSlug %>-live-period"><%= cw.checkStartDate %> to <%= cw.checkEndDate %></p>
         </dd>
       </dl>
       <% }) %>
