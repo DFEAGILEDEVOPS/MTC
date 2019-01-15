@@ -1,9 +1,6 @@
 'use strict'
 
 const R = require('ramda')
-// const {
-//   Request
-// } = require('tedious')
 const mssql = require('mssql')
 const dateService = require('../date.service')
 const poolConfig = require('../../config/sql.config')
@@ -166,40 +163,6 @@ async function generateParams(tableName, data) {
   return params
 }
 
-function parseResults(results) {
-  // omit metadata for now, can introduce if useful at later date
-  const jsonArray = []
-  results.forEach(row => {
-    const json = {}
-    // const metadata = []
-    row.forEach(col => {
-      if (col.metadata.colName !== 'version') {
-        if (col.metadata.type.type === 'DATETIMEOFFSETN' && col.value) {
-          json[col.metadata.colName] = moment(col.value)
-        } else {
-          json[col.metadata.colName] = col.value
-        }
-      }
-    })
-    jsonArray.push(json)
-  })
-  return jsonArray
-}
-
-/**
- * Return a boolean to indicate if the SQL provided is an insert statement
- * @param sql
- * @return {boolean}
- */
-function isInsertStatement(sql = '') {
-  const s = sql.replace(/\s/g, '').toUpperCase()
-  if (s.slice(0, 6) !== 'INSERT') {
-    return false
-  }
-  logger.debug(`sql.service: INSERT statement found: ${sql}`)
-  return true
-}
-
 /** SQL Service **/
 const sqlService = {
   // SQL type-mapping adapter.  Add new types as required.
@@ -243,8 +206,6 @@ sqlService.drainPool = async () => {
  * Utility service to transform the results before sending to the caller
  * @type {Function}
  */
-const log = (obj) =>  { logger.debug(obj); return obj }
-
 sqlService.transformResult = function (data) {
   const d1 = R.prop('recordset', data) // returns [o1, o2,  ...]
   return R.map(R.pipe(
@@ -287,14 +248,11 @@ sqlService.modify = async (sql, params = []) => {
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
 
   const request = new mssql.Request(pool)
-  const isInsert = isInsertStatement(sql)
-  const response = {}
 
   if (params) {
     for (let index = 0; index < params.length; index++) {
       let param = params[index]
       param.value = convertMomentToJsDate(param.value)
-      // TODO add support for other options
       if (!param.type) {
         throw new Error('parameter type invalid')
       }
@@ -338,122 +296,6 @@ sqlService.modify = async (sql, params = []) => {
     returnValue.insertIds = insertIds
   }
   return returnValue
-}
-
-/**
- * Query data from the SQL Server Database
- * @param {string} sql - The SELECT statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise<*>}
- */
-sqlService.queryOrig = (sql, params = []) => {
-  logger.debug(`sql.service.query(): ${sql}`)
-  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
-  return new Promise(async (resolve, reject) => {
-    let con
-    try {
-      con = await sqlPoolService.getConnection()
-    } catch (error) {
-      reject(error)
-      return
-    }
-    let results = []
-    // http://tediousjs.github.io/tedious/api-request.html
-
-    var request = new Request(sql, function (err, rowCount) {
-      con.release()
-      if (err) {
-        logger.debug('ERROR SQL: ', sql)
-        return reject(err)
-      }
-      const objects = parseResults(results)
-      logger.debug('RESULTS', JSON.stringify(objects))
-      resolve(objects)
-    })
-
-    if (params) {
-      for (let index = 0; index < params.length; index++) {
-        const param = params[index]
-        // TODO support other options
-        request.addParameter(param.name, param.type, param.value)
-      }
-    }
-
-    request.on('row', function (cols) {
-      results.push(cols)
-    })
-    con.execSql(request)
-  })
-}
-
-/**
- * Modify data in the SQL Server Database.
- * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
- */
-sqlService.modifyOrig = (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-
-  return new Promise(async (resolve, reject) => {
-    const isInsert = isInsertStatement(sql)
-    const con = await sqlPoolService.getConnection()
-    const response = {}
-    const output = []
-    const request = new Request(sql, function (err, rowCount) {
-      con.release()
-      if (err) {
-        return reject(err)
-      }
-      const res = R.assoc('rowsModified', (isInsert ? rowCount - 1 : rowCount), response)
-      logger.debug('sql.service: modify: result:', res)
-      return resolve(res)
-    })
-
-    if (params) {
-      for (let index = 0; index < params.length; index++) {
-        let param = params[index]
-        param.value = convertMomentToJsDate(param.value)
-        // TODO add support for other options
-        if (!param.type) {
-          con.release()
-          return reject(new Error('parameter type invalid'))
-        }
-        const options = {}
-        if (R.pathEq(['type', 'name'], 'Decimal', param) ||
-          R.pathEq(['type', 'name'], 'Numeric', param)) {
-          options.precision = param.precision || 28
-          options.scale = param.scale || 5
-        }
-        const opts = param.options ? param.options : options
-        if (opts && Object.keys(opts).length) {
-          logger.debug('sql.service: modify(): opts to addParameter are: ', opts)
-        }
-
-        request.addParameter(
-          param.name,
-          param.type,
-          param.value,
-          opts
-        )
-      }
-    }
-
-    // Pick up any OUTPUT
-    request.on('row', function (cols) {
-      // This output assumes a single column that is the inserted id
-      // You get a scalar if the insert is a single insert,
-      // you get an array of ids if the insert was multiple rows.
-      output.push(cols[0].value)
-      if (output.length === 1) {
-        response.insertId = R.head(output)
-      } else {
-        response.insertId = output
-      }
-    })
-    con.execSql(request)
-  })
 }
 
 /**
