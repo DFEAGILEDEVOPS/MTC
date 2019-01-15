@@ -72,7 +72,8 @@ describe('service manager controller:', () => {
       url: '/service-manager/check-settings',
       body: {
         loadingTimeLimit: 5,
-        questionTimeLimit: 5
+        questionTimeLimit: 5,
+        checkTimeLimit: 30
       },
       user: {
         id: 1

@@ -6,5 +6,6 @@ module.exports = {
   'createdAt': new Date('2017-11-09T16:10:55.032Z'),
   'loadingTimeLimit': 2.3,
   'questionTimeLimit': 6,
+  'checkTimeLimit': 30,
   '__v': 0
 }
