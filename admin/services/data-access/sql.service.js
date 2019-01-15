@@ -121,6 +121,17 @@ const convertMomentToJsDate = (m) => {
 }
 
 /**
+ * Convert Date to Moment object
+ * Useful for converting Data during UPDATES and INSERTS
+ */
+const convertDateToMoment = (d) => {
+  if (!(d instanceof Date)) {
+    return d
+  }
+  return moment(d)
+}
+
+/**
  * Return a list of parameters given a table and an object whose keys are column names
  * @param {string} tableName
  * @param {object} data - keys should be col. names
@@ -233,8 +244,14 @@ sqlService.drainPool = async () => {
  * @type {Function}
  */
 const log = (obj) =>  { logger.debug(obj); return obj }
-const omitVersion = (obj) => R.omit(['version'], obj)
-sqlService.transformResult = R.compose( R.map(omitVersion), R.prop('recordset') )
+
+sqlService.transformResult = function (data) {
+  const d1 = R.prop('recordset', data) // returns [o1, o2,  ...]
+  return R.map(R.pipe(
+    R.omit(['version']),
+    R.map(convertDateToMoment)
+  ), d1)
+}
 
 /**
  * Query data from SQL Server via mssql

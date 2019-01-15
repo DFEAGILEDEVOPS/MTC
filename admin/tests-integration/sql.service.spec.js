@@ -196,6 +196,20 @@ describe('sql.service:integration', () => {
       const res = await sql.create('[integrationTest]', data)
       expect(res.insertId).toBeDefined()
     })
+
+    it('returns datetimeoffset columns as Moment objects', async () => {
+      const date = moment()
+
+      // test-setup save a date
+      const data = { tDateTimeOffset: date.toDate() }
+      const res = await sql.create('integrationTest', data)
+      expect(res.insertId).toBeDefined()
+
+      // fetch the record
+      const res2 = await sql.findOneById('integrationTest', res.insertId)
+      expect(res2.tDateTimeOffset).toBeDefined()
+      expect(moment.isMoment(res2.tDateTimeOffset)).toBeTruthy()
+    })
   })
 
   describe('Inserts', () => {
