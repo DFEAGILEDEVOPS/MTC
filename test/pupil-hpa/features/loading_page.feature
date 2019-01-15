@@ -17,11 +17,18 @@ Feature: Loading Page
   Scenario: Idle modal appears after delay
     Given I logged in with user with access arrangement 'Next between questions'
     Given I have read the instructions and seen the settings page
-    When I choose to start the warm up questions
+    Given I choose to start the warm up questions
+    Given I complete the warm up questions using the numpad
+    Given I start the questions
+    Then I should see the next button
     Then I should not see the modal dialog
     Then I should see the modal dialog after the idle timeout expires
   
   Scenario: Redirect occurs when check timer expires 
     Given I logged in with user with access arrangement 'Next between questions'
     Given I have read the instructions and seen the settings page
+    Given I choose to start the warm up questions
+    Given I complete the warm up questions using the numpad
+    Given I start the questions
+    Then I should see the next button
     Then I should be redirected when the check time limit expires

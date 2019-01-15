@@ -23,7 +23,7 @@ end
 
 Then(/^I should see the modal dialog after the idle timeout expires$/) do
   # We dont have a method of reducing the 30 second idle modal timeout, so we call showWarningModal() manually
-  page.evaluate_script("ng.probe(document.getElementsByTagName('app-warmup-loading')[0]).componentInstance.showWarningModal()")
+  page.evaluate_script("ng.probe(document.getElementsByTagName('app-loading')[0]).componentInstance.showWarningModal()")
   expect(loading_page).to have_idle_modal
 end
 
@@ -35,9 +35,14 @@ Then(/^I should see the next button$/) do
   expect(loading_page).to have_next_button
 end
 
+Given(/^I start the questions$/) do 
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+end
+
 Then(/^I should be redirected when the check time limit expires$/) do
   config = JSON.parse(page.evaluate_script("window.localStorage.getItem('config');"))
-  config['checkTime'] = 0
+  config['checkTime'] = 1
   page.evaluate_script("window.localStorage.setItem('config', '#{JSON.generate(config)}');")
   visit '/check'
   step 'I have been idle for 2 seconds'
