@@ -28,7 +28,8 @@ describe('pupil.data.service', () => {
     it('calls the model', () => {
       const loadingTimeLimit = 10
       const questionTimeLimit = 20
-      service.sqlUpdate(loadingTimeLimit, questionTimeLimit)
+      const checkTimeLimit = 30
+      service.sqlUpdate(loadingTimeLimit, questionTimeLimit, checkTimeLimit)
       expect(mock.verify()).toBe(true)
     })
   })
