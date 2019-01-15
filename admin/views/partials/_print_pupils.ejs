@@ -1,7 +1,7 @@
 <div class="grid-row only-print">
     <div class="column-two-thirds">
         <img class="sta-horizontal-logo" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
-        <div class="heading-large">Multiplication Table Check</div>
+        <div class="heading-large">Multiplication Table Check <%= pinEnv !== 'live' ? '- Try it out' : '' %></div>
 
         <div class="no-print">
           <%- partial('partials/_session_expiry') %>
@@ -20,7 +20,7 @@
                 <% for (let i = 0; i < pupils.length; i++) { %>
                 <tr class="page pupil-<%= pupils[i].id %>">
                     <td class="line-empty"></td>
-                    <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'Live' : 'Familiarisation') %></span></td>
+                    <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'MTC' : 'Try it out') %></span></td>
                     <td class="line-content">
                         <div class="pupil-content">
                             <span class="fullname"><%=
