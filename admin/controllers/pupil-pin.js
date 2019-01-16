@@ -105,7 +105,7 @@ const getGeneratePinsList = async (req, res, next) => {
   })
 }
 
-const postGeneratePins = async (req, res, next) => {
+const postGeneratePins = async function postGeneratePins (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
     const error = new Error('Pin environment not provided')
     return next(error)
