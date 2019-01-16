@@ -6,6 +6,7 @@ const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-form-v2')
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
 const checkFormV2Service = require('../../../services/check-form-v2.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
 describe('check form v2 controller:', () => {
   let next
@@ -162,6 +163,76 @@ describe('check form v2 controller:', () => {
       spyOn(res, 'render')
       await controller.getViewFormPage(req, res, next)
       expect(checkFormV2Service.getCheckForm).toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
+  describe('getAssignFormsPage route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/assign-forms-to-check-windows'
+    }
+    it('render assign forms to check windows page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(checkWindowV2Service, 'getPresentAndFutureCheckWindows')
+      spyOn(checkFormPresenter, 'getPresentationCheckWindowListData')
+      spyOn(res, 'render')
+      await controller.getAssignFormsPage(req, res, next)
+      expect(checkWindowV2Service.getPresentAndFutureCheckWindows).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationCheckWindowListData).toHaveBeenCalled()
+      expect(res.locals.pageTitle).toBe('Assign forms to check window')
+      expect(res.render).toHaveBeenCalled()
+    })
+    it('returns next if service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getPresentAndFutureCheckWindows').and.returnValue(Promise.reject(error))
+      spyOn(checkFormPresenter, 'getPresentationCheckWindowListData')
+      spyOn(res, 'render')
+      await controller.getAssignFormsPage(req, res, next)
+      expect(checkWindowV2Service.getPresentAndFutureCheckWindows).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationCheckWindowListData).not.toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
+  describe('getSelectFormPage route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/select-form/live/checkWindowUrlSlug',
+      params: {
+        checkWindowUrlSlug: 'checkWindowUrlSlug',
+        checkFormType: 'live'
+      }
+    }
+    it('renders select check forms page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(checkWindowV2Service, 'getCheckWindow')
+      spyOn(checkFormPresenter, 'getPresentationCheckWindowData').and.returnValue({ name: 'checkWindowName' })
+      spyOn(checkFormV2Service, 'getCheckFormsByType')
+      spyOn(res, 'render')
+      await controller.getSelectFormPage(req, res, next)
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationCheckWindowData).toHaveBeenCalled()
+      expect(checkFormV2Service.getCheckFormsByType).toHaveBeenCalled()
+      expect(res.locals.pageTitle).toBe('checkWindowName - MTC')
+      expect(res.render).toHaveBeenCalled()
+    })
+    it('returns next if service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue(Promise.reject(error))
+      spyOn(checkFormPresenter, 'getPresentationCheckWindowData')
+      spyOn(checkFormV2Service, 'getCheckFormsByType')
+      spyOn(res, 'render')
+      await controller.getSelectFormPage(req, res, next)
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+      expect(checkFormPresenter.getPresentationCheckWindowData).not.toHaveBeenCalled()
+      expect(checkFormV2Service.getCheckFormsByType).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
     })

@@ -114,4 +114,18 @@ describe('check-form-v2.service', () => {
       expect(checkFormPresenter.getPresentationCheckFormData).toHaveBeenCalled()
     })
   })
+  describe('getCheckFormsByType', () => {
+    it('calls check forms for live check form type', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindActiveCheckFormsByType')
+      await checkFormV2Service.getCheckFormsByType('live')
+      const isLiveCheckForm = true
+      expect(checkFormV2DataService.sqlFindActiveCheckFormsByType).toHaveBeenCalledWith(isLiveCheckForm)
+    })
+    it('calls check forms for familiarisation check form type', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindActiveCheckFormsByType')
+      await checkFormV2Service.getCheckFormsByType('familiarisation')
+      const isLiveCheckForm = false
+      expect(checkFormV2DataService.sqlFindActiveCheckFormsByType).toHaveBeenCalledWith(isLiveCheckForm)
+    })
+  })
 })
