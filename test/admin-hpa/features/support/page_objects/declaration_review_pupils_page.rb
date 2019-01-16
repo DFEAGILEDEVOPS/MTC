@@ -6,6 +6,6 @@ class DeclarationReviewPupilsPage < SitePrism::Page
     element :continue_button, "input[value='Continue']"
 
     def edit_user
-        pupils_table.first('.highlight-wrapper > a').click
+        pupils_table.first("tbody > tr > td > a").click
     end
 end

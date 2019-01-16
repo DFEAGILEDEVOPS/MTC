@@ -36,7 +36,8 @@
                 <thead>
                     <tr>
                         <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-                        <th scope="col"><a class="sortingLink">Outcome<span class="sort-icon"></span></a></th>
+                        <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,11 +45,7 @@
                 <tr>
                     <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
-                        <% if (pupil.reason) { %>
-                            <a href="/attendance/edit-reason/<%= pupil.id %>"><strong><%= pupil.lastName %>, <%= pupil.foreName %></strong></a>
-                        <% } else { %>
                             <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
-                        <% } %>
                         </div>
                     </td>
                     <td>
@@ -59,7 +56,9 @@
                         <% } %>
                     </td>
                     <td>
-                     
+                        <% if (pupil.reason) { %>
+                            <a href="/attendance/edit-reason/<%= pupil.id %>">Edit</a>
+                        <% } %>
                     </td>
                 </tr>
                 <% }) %>
