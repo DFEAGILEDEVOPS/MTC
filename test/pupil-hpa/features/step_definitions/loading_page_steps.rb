@@ -1,4 +1,5 @@
 Given(/^I have read the instructions$/) do
+  step 'I have logged in'
   confirmation_page.read_instructions.click
 end
 
@@ -35,7 +36,7 @@ Then(/^I should see the next button$/) do
   expect(loading_page).to have_next_button
 end
 
-Given(/^I start the questions$/) do 
+Given(/^I start the questions$/) do
   warm_up_complete_page.start_check.click
   mtc_check_start_page.start_now.click
 end

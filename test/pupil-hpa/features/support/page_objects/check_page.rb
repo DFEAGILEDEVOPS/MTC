@@ -26,7 +26,7 @@ class CheckPage < SitePrism::Page
   def wait_for_question(time=300)
     i = 0
     while i < 360
-      if(has_question_container?)
+      if (has_question_container?)
         break
       else
         sleep 0.5
@@ -36,7 +36,7 @@ class CheckPage < SitePrism::Page
     # Timeout.timeout(time){sleep 0.5 until question.visible?}
     j = 0
     while j < 120
-      if(has_question?)
+      if (has_question?)
         break
       else
         sleep 0.5
@@ -46,7 +46,7 @@ class CheckPage < SitePrism::Page
   end
 
   def wait_for_answer(time=15)
-    Timeout.timeout(time){sleep 1 until answer.visible?}
+    Timeout.timeout(time) {sleep 1 until answer.visible?}
   end
 
   def answer_question_via(input_type, answer)
@@ -73,13 +73,13 @@ class CheckPage < SitePrism::Page
     end
   end
 
-  def complete_check_with_correct_answers(number_of_questions, input_type)
+  def complete_check_with_correct_answers(number_of_questions, input_type, next_arrangement=nil)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
-      if(next_button.visible?)
+      if (next_button.visible?)
         next_button.click
-      end
+      end unless next_arrangement == nil
       wait_for_question(15)
       wait_until {check_page.question.visible?}
       @question = check_page.question.text
@@ -93,13 +93,13 @@ class CheckPage < SitePrism::Page
     @array_of_answers
   end
 
-  def complete_check_with_wrong_answers(number_of_questions)
+  def complete_check_with_wrong_answers(number_of_questions, next_arrangement=nil)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
-      if(next_button.visible?)
+      if (next_button.visible?)
         next_button.click
-      end
+      end unless next_arrangement == nil
       wait_for_question(2)
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
@@ -148,29 +148,29 @@ class CheckPage < SitePrism::Page
     array_of_answers
   end
 
-  def array_of_inputs_from_numpad(array_of_answers,questions)
+  def array_of_inputs_from_numpad(array_of_answers, questions)
     @inputs_array = []
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>questions[index], "sequenceNumber"=>index+1}
-        @ans << {"input" => char.to_s, "eventType" => "click", "question"=>questions[index], "sequenceNumber"=>index+1}
+        @ans << {"input" => "left click", "eventType" => "mousedown", "question" => questions[index], "sequenceNumber" => index+1}
+        @ans << {"input" => char.to_s, "eventType" => "click", "question" => questions[index], "sequenceNumber" => index+1}
       end
-      @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>questions[index], "sequenceNumber"=>index+1}
-      @ans << {"input" => "Enter", "eventType" => "click", "question"=>questions[index], "sequenceNumber"=>index+1}
+      @ans << {"input" => "left click", "eventType" => "mousedown", "question" => questions[index], "sequenceNumber" => index+1}
+      @ans << {"input" => "Enter", "eventType" => "click", "question" => questions[index], "sequenceNumber" => index+1}
       @inputs_array << @ans
     end
     @inputs_array
   end
 
-  def array_of_inputs_from_keyboard(array_of_answers,questions)
+  def array_of_inputs_from_keyboard(array_of_answers, questions)
     @inputs_array = []
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => char.to_s, "eventType" => "keydown", "question"=>questions[index], "sequenceNumber"=>index+1}
+        @ans << {"input" => char.to_s, "eventType" => "keydown", "question" => questions[index], "sequenceNumber" => index+1}
       end
-      @ans << {"input" => "Enter", "eventType" => "keydown", "question"=>questions[index], "sequenceNumber"=>index+1}
+      @ans << {"input" => "Enter", "eventType" => "keydown", "question" => questions[index], "sequenceNumber" => index+1}
       @inputs_array << @ans
     end
     @inputs_array
