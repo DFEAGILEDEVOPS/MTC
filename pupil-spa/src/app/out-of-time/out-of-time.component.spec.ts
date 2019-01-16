@@ -8,13 +8,19 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { OutOfTimeComponent } from './out-of-time.component';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { UserService } from '../services/user/user.service';
+import { UserServiceMock } from '../services/user/user.service.mock';
 
 describe('OutOfTimeComponent', () => {
   let component: OutOfTimeComponent;
   let fixture: ComponentFixture<OutOfTimeComponent>;
+  let mockQuestionService;
+  let mockWarmupQuestionService;
+  let mockUserService;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [ OutOfTimeComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
@@ -22,9 +28,17 @@ describe('OutOfTimeComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        { provide: UserService, useClass: UserServiceMock},
       ]
-    })
-    .compileComponents();
+    });
+    mockQuestionService = injector.get(QuestionService);
+    mockWarmupQuestionService = injector.get(WarmupQuestionService);
+    mockUserService = injector.get(UserService);
+
+    spyOn(mockQuestionService, 'reset');
+    spyOn(mockWarmupQuestionService, 'reset');
+    spyOn(mockUserService, 'logout');
   }));
 
   beforeEach(() => {
@@ -35,5 +49,11 @@ describe('OutOfTimeComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should logout the user', () => {
+    expect(mockUserService.logout).toHaveBeenCalledTimes(1);
+    expect(mockQuestionService.reset).toHaveBeenCalledTimes(1);
+    expect(mockWarmupQuestionService.reset).toHaveBeenCalledTimes(1);
   });
 });

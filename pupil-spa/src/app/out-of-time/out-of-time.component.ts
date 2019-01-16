@@ -5,6 +5,8 @@ import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 import { TimeoutStorageKey } from '../services/timer/timer.service';
+import { UserService } from '../services/user/user.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 @Component({
   selector: 'app-out-of-time',
@@ -20,7 +22,9 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(protected windowRefService: WindowRefService,
               private storageService: StorageService,
+              private userService: UserService,
               private questionService: QuestionService,
+              private warmupQuestionService: WarmupQuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
@@ -29,6 +33,9 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.numQuestions = timeoutData.numQuestions;
         this.numCompleted = timeoutData.numCompleted;
     }
+    this.userService.logout();
+    this.questionService.reset();
+    this.warmupQuestionService.reset();
   }
 
   ngOnInit() {
