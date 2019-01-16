@@ -10,9 +10,9 @@ export const StartTimeStorageKey = 'check_start_time';
 @Injectable()
 export class TimerService {
 
-    public timeRemaining: number;
-    public emitter: EventEmitter<string> = new EventEmitter();
+    public readonly emitter: EventEmitter<string> = new EventEmitter();
 
+    private _timeRemaining: number;
     private checkStartTime: number;
     private interval: any;
     private config: Config;
@@ -21,9 +21,18 @@ export class TimerService {
         this.config = this.questionService.getConfig();
     }
 
-    private calculateCheckTimeRemaining(): number {
-        const checkTime = ((this.config.checkTime || 30) * 1000) * 60;
-        return checkTime - (new Date().getTime() - this.checkStartTime);
+    public get timeRemaining(): number {
+        return this._timeRemaining;
+    }
+
+    private calculateCheckTimeRemaining(): void {
+        const checkTimeLimit = ((this.config.checkTime || 30) * 1000) * 60;
+        this._timeRemaining = checkTimeLimit - (new Date().getTime() - this.checkStartTime);
+        if (this._timeRemaining <= 0) {
+            clearInterval(this.interval);
+            this._timeRemaining = 0;
+            this.emitter.emit(CHECK_TIMEOUT_EVENT);
+        }
     }
 
     public startCheckTimer() {
@@ -37,15 +46,9 @@ export class TimerService {
         } else {
             this.checkStartTime = parseInt(storedStartTime, 10);
         }
-
-        this.timeRemaining = this.calculateCheckTimeRemaining();
+        this.calculateCheckTimeRemaining();
         this.interval = setInterval(() => {
-            this.timeRemaining = this.calculateCheckTimeRemaining();
-            if (this.timeRemaining <= 0) {
-                clearInterval(this.interval);
-                this.timeRemaining = 0;
-                this.emitter.emit(CHECK_TIMEOUT_EVENT);
-            }
+            this.calculateCheckTimeRemaining();
         }, 1000);
     }
 

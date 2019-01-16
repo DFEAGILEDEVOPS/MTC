@@ -113,7 +113,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
       }, true);
     }
 
-    if (this.shouldShowWarningModal) {
+    if (this.config.nextBetweenQuestions && this.shouldShowWarningModal) {
       setTimeout(async () => {
         this.showWarningModal();
       }, this.nextQuestionIdleTimeout * 1000);
