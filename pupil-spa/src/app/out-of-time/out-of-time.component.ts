@@ -49,7 +49,8 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
     (window as any).GOVUK.details.addDetailsPolyfill();
-    if (this.questionService.getConfig().questionReader) {
+    const config = this.questionService.getConfig();
+    if (config && config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#sign-out'));
       });
@@ -62,8 +63,9 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    const config = this.questionService.getConfig();
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
+    if (config && config.questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
