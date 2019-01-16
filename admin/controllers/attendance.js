@@ -134,7 +134,7 @@ const getReviewPupilDetails = async (req, res, next) => {
 const getEditReason = async (req, res, next) => {
   res.locals.pageTitle = 'Edit reason for not taking the check'
   req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
-  req.breadcrumbs('Review pupil details', '/attendance/submit-attendance')
+  req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs('Edit reason')
   if (!req.params.pupilId) {
     return res.redirect('/attendance/review-pupil-details')

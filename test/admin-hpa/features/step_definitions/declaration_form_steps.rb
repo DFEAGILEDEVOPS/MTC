@@ -8,6 +8,12 @@ Given(/^all pupils have completed the check$/) do
   SqlDbHelper.set_all_pupils_check_completed(school_id)
 end
 
+Given(/^all pupils have an attendance reason (.*)$/) do |value|
+  teacher = SqlDbHelper.find_teacher('teacher3')
+  SqlDbHelper.set_all_pupils_check_started(teacher['school_id'])
+  SqlDbHelper.set_all_pupils_attendance_reason(teacher['school_id'], teacher['id'], value)
+end
+
 Then(/^I can see hdf form page as per the design$/) do
   expect(@page).to have_first_name
   expect(@page).to have_last_name

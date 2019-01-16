@@ -191,6 +191,26 @@ class SqlDbHelper
     result.insert
   end
 
+  def self.set_all_pupils_check_started(school_id)
+    sql = "UPDATE [mtc_admin].[pupil] 
+    SET pupilStatus_id = 4
+    WHERE school_id = #{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
+  def self.set_all_pupils_attendance_reason(school_id, user_id, value)
+    sql = "DELETE FROM [mtc_admin].pupilAttendance
+    WHERE pupil_id IN (SELECT id from [mtc_admin].pupil WHERE school_id = #{school_id});
+    DECLARE @attendanceCode_id int
+    SET @attendanceCode_id = (SELECT TOP (1) id FROM [mtc_admin].attendanceCode WHERE reason = '#{value}')
+    INSERT INTO [mtc_admin].pupilAttendance (recordedBy_user_id, attendanceCode_id, pupil_id, isDeleted)
+    SELECT #{user_id}, @attendanceCode_id, id, 0 FROM [mtc_admin].pupil
+    WHERE school_id = #{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
