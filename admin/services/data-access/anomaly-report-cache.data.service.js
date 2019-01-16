@@ -1,5 +1,5 @@
 'use strict'
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const logger = require('../log.service').getLogger()
 
