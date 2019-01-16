@@ -186,18 +186,20 @@ sqlService.adminSchema = '[mtc_admin]'
 
 sqlService.initPool = async () => {
   if (pool) {
-    throw new Error('The connection pool has already been initialised')
+    logger.warn('The connection pool has already been initialised')
+    return
   }
   pool = new mssql.ConnectionPool(poolConfig)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
-  await pool.connect()
+  return pool.connect()
 }
 
 sqlService.drainPool = async () => {
   if (!pool) {
-    throw new Error('pool is not configured')
+    logger.warn('The connection pool is not initialised')
+    return
   }
   return pool.close()
 }
