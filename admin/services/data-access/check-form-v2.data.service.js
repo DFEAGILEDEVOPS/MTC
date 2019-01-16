@@ -177,6 +177,26 @@ const checkFormV2DataService = {
     ]
     const result = await sqlService.query(sql, params)
     return R.head(result)
+  },
+
+  /**
+   * Finds check forms by check form type
+   * @param {Boolean} isLiveCheckForm
+   * @returns {Promise<*>}
+   */
+  sqlFindActiveCheckFormsByType: async (isLiveCheckForm) => {
+    const sql = `SELECT *
+    FROM ${sqlService.adminSchema}.${table}
+    WHERE isDeleted = 0
+    AND isLiveCheckForm = @isLiveCheckForm`
+    const params = [
+      {
+        name: 'isLiveCheckForm',
+        value: isLiveCheckForm,
+        type: TYPES.Bit
+      }
+    ]
+    return sqlService.query(sql, params)
   }
 }
 
