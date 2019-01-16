@@ -241,6 +241,7 @@ end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
   pupil_register_page.load
+  sleep(60)
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
 end
@@ -249,6 +250,7 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
+  generate_pins_overview_page.wait_for_group_filter(5)
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click

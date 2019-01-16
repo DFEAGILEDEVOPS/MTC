@@ -30,7 +30,6 @@ include Helpers
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
-ENV['PUPIL_API_ORIGIN_URL'] ||='https://devpupil-as-mtc.azurewebsites.net'
 ENV['WAIT_TIME'] ||= '300'
 
 Capybara.configure do |config|
