@@ -111,5 +111,5 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
 
-sleep 10
+sleep 60
 Capybara.visit Capybara.app_host
