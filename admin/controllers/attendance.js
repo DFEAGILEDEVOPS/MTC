@@ -11,6 +11,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
 const attendanceCodeService = require('../services/attendance.service')
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
@@ -125,6 +126,10 @@ const getReviewPupilDetails = async (req, res, next) => {
   if (!pupils) {
     throw new Error('No pupils found')
   }
+  pupils.sort((a, b) => {
+    return (a.lastName === b.lastName ? 0 : a.lastName.localeCompare(b.lastName)) || (a.foreName === b.foreName ? 0 : a.foreName.localeCompare(b.foreName))
+  })
+  pupilIdentificationFlag.addIdentificationFlags(pupils)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupils

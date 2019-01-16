@@ -46,6 +46,11 @@
                     <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
                             <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
+                            <% if (pupil.showDoB) { %>
+                                <div class="font-greyed-out font-xsmall">
+                                    Date of birth: <%= pupil.dateOfBirth %>
+                                </div>
+                            <% } %>
                         </div>
                     </td>
                     <td>
