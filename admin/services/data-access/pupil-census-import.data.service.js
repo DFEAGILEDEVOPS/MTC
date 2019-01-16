@@ -22,7 +22,7 @@ pupilCensusImportDataService.sqlBulkImport = async (pupilData, schools, jobId) =
   try {
     result.output = await bulkLoadData(con, pupilData, schools, jobId)
   } catch (error) {
-    result.errorOutput = error
+    result.errorOutput = error && error.message
   }
   con.release()
   return result
