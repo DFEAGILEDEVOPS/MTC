@@ -1,6 +1,6 @@
 Given(/^I have generated a pin via the admin app$/) do
   visit ENV['ADMIN_BASE_URL']
-  page.click_link('Sign out') if page.has_link?('Sign out')
+  # page.click_link('Sign out') if page.has_link?('Sign out')
   find('#username').set 'teacher1'
   find('#password').set 'password'
   find('input[value="Sign in"]').click
