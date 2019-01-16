@@ -78,7 +78,7 @@ pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
   const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
   const output = submissionResult.output
-  const errorOutput = submissionResult.errorOutput && submissionResult.errorOutput.message
+  const errorOutput = submissionResult.errorOutput
   await jobDataService.sqlUpdate(jobId, jobStatus.id, output, errorOutput)
 }
 
