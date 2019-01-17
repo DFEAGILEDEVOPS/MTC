@@ -2,7 +2,7 @@ class GroupPupilsPage < SitePrism::Page
   set_url '/group/pupils-list'
 
   element :heading, '.heading-xlarge', text: 'Group pupils'
-  element :intro, '#lead-paragraph', text: 'Organise pupils into groups if you are planning to administer the check to smaller cohorts.'
+  element :intro, '#lead-paragraph', text: 'Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.'
   element :create_group, "a[href='/group/pupils-list/add']"
   element :related_heading, ".heading-medium", text: 'Related'
   element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'

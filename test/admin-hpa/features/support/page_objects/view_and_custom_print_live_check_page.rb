@@ -3,7 +3,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
   set_url "pupil-pin/view-and-custom-print-live-pins?"
 
   element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.lede', text: 'Personal identification number (PIN) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
+  element :generate_pin_message, '.lede', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs.These expire at 4pm daily.'
 
   element :closed_filter, '.filter-label.hidden', text: 'Filter by groups'
   element :opened_filter, '.filter-label', text: 'Filter by groups'
