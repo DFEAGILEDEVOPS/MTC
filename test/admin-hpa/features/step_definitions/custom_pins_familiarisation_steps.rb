@@ -15,15 +15,6 @@ And(/^I have generated familiarisation pins for pupils without a group$/) do
   generate_pins_familiarisation_overview_page.load
   step 'I click Generate PINs button'
   @pupil_names_arr = generate_pins_familiarisation_overview_page.generate_pin_for_multiple_pupils(2)
-
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil_names_arr.each do |pupil|
-    pupil_lastname = pupil.split(',')[0]
-    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
-  end
-  SqlDbHelper.set_school_pin_expiry('1001', new_time)
 end
 
 When(/^I navigate to the familiarisation custom print page$/) do
