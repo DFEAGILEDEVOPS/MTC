@@ -164,8 +164,10 @@ const getErrorCSVFile = async (req, res) => {
  */
 const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
+  let pupilExampleYear
   try {
     const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
+    pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
@@ -176,7 +178,8 @@ const getEditPupilById = async (req, res, next) => {
     res.render('pupil-register/edit-pupil', {
       formData: pupilData,
       error: new ValidationError(),
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      pupilExampleYear
     })
   } catch (error) {
     next(error)
