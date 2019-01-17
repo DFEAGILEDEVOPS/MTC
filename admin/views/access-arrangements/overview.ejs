@@ -23,7 +23,7 @@
         </header>
         <%- partial('partials/_session_expiry') %>
         <p class="lede">
-            Modify multiplication tables check for pupils with specific needs. Modifications should be previewed in the pupil’s familiarisation check.
+          Modify the check for pupils with specific needs. The arrangements that are applied can be previewed and configured by the pupils in the ‘Try it out’ area.
         </p>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
@@ -39,12 +39,12 @@
                     </li>
                     <li>
                         <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                        <a href="/pupil-pin/generate-familiarisation-pins-overview">PINs for familiarisation check</a>
+                        <a href="/pupil-pin/generate-familiarisation-pins-overview">PINs for ‘Try it out’</a>
                         <% } %>
                     </li>
                     <li>
                         <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                        <a href="/pupil-pin/generate-live-pins-overview">Generate live pupil PINs</a>
+                        <a href="/pupil-pin/generate-live-pins-overview">Generate multiplication tables check PINs</a>
                         <% } %>
                     </li>
                 </ul>
