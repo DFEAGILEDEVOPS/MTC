@@ -38,7 +38,7 @@
         <%- partial('partials/_session_expiry') %>
 
         <p class="lede">
-            Personal Identification Numbers (PIN) have been generated for selected pupils. These expire at 4pm daily.<br/>
+            Personal identification numbers (PINs) have been generated for selected pupils. These expire at 4pm daily.<br/>
             <% if (pupils && pupils.length > 0) { %>
             You can <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
             <% } %>
@@ -107,7 +107,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
                     </li>
                     <li>
                         <a href="/group/pupils-list">Group pupils</a>
