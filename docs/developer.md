@@ -57,7 +57,7 @@ illustrate a data-dependent bug.
     * E.g. `docker cp aae:/var/opt/mssql/data/mtc-2019117-9-30-19.bak .`
 9. Compress the file before sending
 
-### Restore the ms-sql server to your local docker container
+### Restore the backup to your local docker container
 
 1. Unzip the backup file to restore
 2. Copy into docker container /tmp dir
