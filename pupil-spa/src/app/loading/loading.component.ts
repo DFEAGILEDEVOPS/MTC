@@ -27,9 +27,9 @@ import { IdleModalComponent } from '../modal/idle.modal.component';
 
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
 
-  protected config: Config;
   protected speechListenerEvent: any;
-  protected nextButtonDelayFinished = false;
+  public config: Config;
+  public nextButtonDelayFinished = false;
 
   @Input()
   public shouldShowWarningModal = true;

@@ -16,8 +16,8 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
-  protected numQuestions: number;
-  protected numCompleted: number;
+  public numQuestions: number;
+  public numCompleted: number;
   private speechListenerEvent: any;
 
   constructor(protected windowRefService: WindowRefService,

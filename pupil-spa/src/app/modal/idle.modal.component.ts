@@ -16,9 +16,9 @@ export class IdleModalComponent implements AfterViewInit, OnDestroy {
 
     constructor(
       private questionService: QuestionService,
-      private timerService: TimerService,
       private elRef: ElementRef,
-      protected speechService: SpeechService
+      protected speechService: SpeechService,
+      public timerService: TimerService
       ) {
     }
 
