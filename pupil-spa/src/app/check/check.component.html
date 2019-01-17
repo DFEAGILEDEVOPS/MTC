@@ -9,6 +9,7 @@
             [loadingTimeout]="config.loadingTime"
             (timeoutEvent)="loadingTimeoutHandler($event)"
             [total]="totalNumberOfQuestions"
+            [shouldShowWarningModal]="false"
             [familiarisationCheck]="familiarisationCheck">
         </app-warmup-loading>
         <app-warmup-complete *ngSwitchCase="'warmup-complete'"

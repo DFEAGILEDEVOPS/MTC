@@ -12,6 +12,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { Router } from '@angular/router';
 import { CheckComponent } from '../check/check.component';
+import { StartTimeStorageKey, TimeoutStorageKey } from '../services/timer/timer.service';
 
 describe('CheckCompleteComponent', () => {
   let component: CheckCompleteComponent;
@@ -57,6 +58,8 @@ describe('CheckCompleteComponent', () => {
       spyOn(mockEvent, 'preventDefault');
       component.onStartAgainClick(mockEvent);
       expect(storageService.removeItem).toHaveBeenCalledWith(CheckComponent.checkStateKey);
+      expect(storageService.removeItem).toHaveBeenCalledWith(TimeoutStorageKey);
+      expect(storageService.removeItem).toHaveBeenCalledWith(StartTimeStorageKey);
       expect(storageService.getItem(CheckComponent.checkStateKey)).not.toBeDefined();
       expect(storageService.setItem).toHaveBeenCalledWith('completed_submission', false);
       expect(storageService.getItem('completed_submission')).toBeFalsy();
