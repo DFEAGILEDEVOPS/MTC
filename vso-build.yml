@@ -300,7 +300,7 @@ phases:
   - task: ms-appinsights.appinsightsreleaseannotations.release-task.ms-appinsights.ReleaseAnnotation@1
     displayName: 'Annotate Release'
     inputs:
-      applicationId: '$(APP_INSIGHTS_INSTRUMENTATION_KEY)'
+      applicationId: '$(APP_INSIGHTS_APPLICATION_ID)'
 
       apiKey: '$(APP_INSIGHTS_API_KEY)'
 
