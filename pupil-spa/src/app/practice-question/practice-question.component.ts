@@ -352,7 +352,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
 
     if (this.answer.length > 0) {
-      if (this.questionService.getConfig().questionReader) {
+      if (this.config.questionReader) {
         this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
       }
       this.answer = this.answer.substr(0, this.answer.length - 1);
@@ -368,7 +368,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.hasStartedAnswering()) {
       return;
     }
-    if (!this.questionService.getConfig().questionReader) {
+    if (!this.config.questionReader) {
       return;
     }
 

@@ -3,6 +3,7 @@ class WarmUpPage < SitePrism::Page
 
   element :heading, '.aa-title-size', text: "Practice questions"
   element :preload, '.preload'
+  element :next_button, '.button-start'
   element :timer,'.remaining-time-warmup'
   element :question, 'span.question'
   element :start_warm_up_questions, '#start-now-button'
@@ -67,10 +68,13 @@ class WarmUpPage < SitePrism::Page
     end
   end
 
-  def complete_check_with_correct_answers(number_of_questions, input_type)
+  def complete_check_with_correct_answers(number_of_questions, input_type,next_arrangement=nil)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
+      if(next_button.visible?)
+        next_button.click
+      end unless (next_arrangement == nil)
       wait_for_question(2)
       wait_until {check_page.question.visible?}
       @question = check_page.question.text
@@ -84,10 +88,13 @@ class WarmUpPage < SitePrism::Page
     @array_of_answers
   end
 
-  def complete_check_with_wrong_answers(number_of_questions)
+  def complete_check_with_wrong_answers(number_of_questions, next_arrangement=nil)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
+      if(next_button.visible?)
+        next_button.click
+      end unless next_arrangement == nil
       wait_for_question(2)
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}

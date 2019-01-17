@@ -7,6 +7,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
 import { RouteService } from '../services/route/route.service';
 import { CheckComponent } from '../check/check.component';
+import { TimeoutStorageKey, StartTimeStorageKey } from '../services/timer/timer.service';
 
 @Component({
   selector: 'app-aa-settings',
@@ -35,12 +36,14 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
     // Reset the check state when visitng the settings page
     this.storageService.removeItem(CheckComponent.checkStateKey);
+    this.storageService.removeItem(TimeoutStorageKey);
+    this.storageService.removeItem(StartTimeStorageKey);
     this.storageService.setItem('completed_submission', false);
   }
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.questionService.getConfig().questionReader) {
+    if (this.config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#next'));
       });
@@ -54,7 +57,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
+    if (this.config.questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
