@@ -4,50 +4,53 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
-import { Router } from '@angular/router';
-import { CheckComponent } from '../check/check.component';
+import { TimeoutStorageKey } from '../services/timer/timer.service';
+import { UserService } from '../services/user/user.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { Config } from '../config.model';
-import { TimeoutStorageKey, StartTimeStorageKey } from '../services/timer/timer.service';
 
 @Component({
-  selector: 'app-check-complete',
-  templateUrl: './check-complete.component.html',
-  styleUrls: ['./check-complete.component.css']
+  selector: 'app-out-of-time',
+  templateUrl: './out-of-time.component.html',
+  styleUrls: ['./out-of-time.component.scss']
 })
-export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
+  public numQuestions: number;
+  public numCompleted: number;
   private speechListenerEvent: any;
-  public familiarisationCheck: boolean;
-  public hasAccessSettings: boolean;
 
   constructor(protected windowRefService: WindowRefService,
-              private questionService: QuestionService,
-              private speechService: SpeechService,
-              private elRef: ElementRef,
               private storageService: StorageService,
+              private userService: UserService,
+              private questionService: QuestionService,
               private warmupQuestionService: WarmupQuestionService,
-              private router: Router) {
+              private speechService: SpeechService,
+              private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
-    const config = questionService.getConfig();
-    this.hasAccessSettings = config && (config.fontSize || config.colourContrast);
+    const timeoutData = this.storageService.getItem(TimeoutStorageKey);
+    if (timeoutData) {
+        this.numQuestions = timeoutData.numQuestions;
+        this.numCompleted = timeoutData.numCompleted;
+    }
+    this.userService.logout();
+    this.questionService.reset();
+    this.warmupQuestionService.reset();
   }
 
   ngOnInit() {
-    const config: Config = this.warmupQuestionService.getConfig();
-    this.familiarisationCheck = config && config.practice;
-
     this.window.ga('send', {
       hitType: 'pageview',
-      page: '/check-complete'
+      page: '/out-of-time'
     });
-    AppInsights.trackPageView('Check complete', '/check-complete');
+    AppInsights.trackPageView('Check complete', '/out-of-time');
   }
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.questionService.getConfig().questionReader) {
+    (window as any).GOVUK.details.addDetailsPolyfill();
+    const config = this.questionService.getConfig();
+    if (config && config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#sign-out'));
       });
@@ -60,20 +63,12 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
+    const config = this.questionService.getConfig();
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().questionReader) {
+    if (config && config.questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
-  }
-
-  onStartAgainClick(event): void {
-    event.preventDefault();
-    this.storageService.removeItem(CheckComponent.checkStateKey);
-    this.storageService.removeItem(TimeoutStorageKey);
-    this.storageService.removeItem(StartTimeStorageKey);
-    this.storageService.setItem('completed_submission', false);
-    this.router.navigate(['/check-start']);
   }
 }

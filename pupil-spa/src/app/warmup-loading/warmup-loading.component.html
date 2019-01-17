@@ -8,5 +8,12 @@
     <p id="js-loading" class="text-center aa-lead-size">
       Practice question {{question.sequenceNumber}}&hellip;
     </p>
+    <button *ngIf="config.nextBetweenQuestions && this.nextButtonDelayFinished"
+      type="button"
+      class="item-center button button-start aa-button-size aa-contrast-button aa-button-center"
+      id="goButton"
+      (click)="this.sendTimeoutEvent()">
+      Next
+    </button>
   </div>
 </div>

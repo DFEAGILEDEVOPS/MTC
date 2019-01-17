@@ -12,6 +12,8 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
+import { TimerService, TimeoutStorageKey } from '../services/timer/timer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-check',
@@ -45,10 +47,12 @@ export class CheckComponent implements OnInit {
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
               private submissionService: SubmissionService,
+              private timerService: TimerService,
               private warmupQuestionService: WarmupQuestionService,
               private auditService: AuditService,
               private storageService: StorageService,
-              protected windowRefService: WindowRefService) {
+              protected windowRefService: WindowRefService,
+              private router: Router) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -87,6 +91,13 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
+    this.timerService.emitter.subscribe(e => {
+      this.storageService.setItem(TimeoutStorageKey, {
+        numQuestions: this.questionService.getNumberOfQuestions(),
+        numCompleted: this.questionService.getCurrentQuestionNumber()
+      });
+      this.router.navigate(['/out-of-time']);
+  });
 
     this.familiarisationCheck = this.config && this.config.practice;
 
@@ -223,6 +234,7 @@ export class CheckComponent implements OnInit {
         break;
       }
       case CheckComponent.loadingRe.test(stateDesc): {
+        this.timerService.startCheckTimer();
         // Show the loading screen
         this.isWarmUp = false;
         const matches = CheckComponent.loadingRe.exec(stateDesc);
@@ -263,6 +275,8 @@ export class CheckComponent implements OnInit {
         break;
       }
       case CheckComponent.submissionPendingRe.test(stateDesc): {
+        // Stop the check timer
+        this.timerService.stopCheckTimer();
         // Display pending screen
         this.auditService.addEntry(new CheckSubmissionPending());
         this.storageService.setItem('pending_submission', true);
