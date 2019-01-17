@@ -1,0 +1,308 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "maxLength": 10,
+      "allowedValues": [
+        "dev",
+        "test",
+        "preprod",
+        "live",
+        "demo",
+        "proto"
+      ],
+      "type": "string"
+    },
+    "sqlUsername": {
+      "type": "securestring"
+    },
+    "sqlPassword": {
+      "type": "securestring"
+    },
+    "containerRegistry": {
+      "type": "string"
+    },
+    "adminImageName": {
+      "type": "string",
+      "defaultValue": "admin"
+    },
+    "pupilImageName": {
+      "type": "string",
+      "defaultValue": "pupil"
+    },
+    "authImageName": {
+      "type": "string",
+      "defaultValue": "auth"
+    },
+    "CORS_WHITELIST": {
+      "type": "string"
+    },
+    "ENVIRONMENT_NAME": {
+      "type": "string"
+    },
+    "ASSET_PATH": {
+      "type": "string",
+      "defaultValue": "/"
+    },
+    "SQL_SERVER": {
+      "type": "string"
+    },
+    "APPINSIGHTS_INSTRUMENTATIONKEY": {
+      "type": "string"
+    },
+    "ALLOWED_WORDS": {
+      "type": "string"
+    },
+    "SQL_APP_USER": {
+      "type": "securestring"
+    },
+    "SQL_APP_USER_PASSWORD": {
+      "type": "securestring"
+    },
+    "NODE_ENV": {
+      "type": "string",
+      "defaultValue": "development"
+    },
+
+  },
+  "variables": {
+    "storageAccountName": "[concat('sa', parameters('environmentName'), 'mtc', uniqueString(resourceGroup().id))]",
+    "appServicePlanName": "[concat('asp', parameters('environmentName'), uniqueString(resourceGroup().id))]",
+    "adminAppName": "[concat(parameters('environmentName'), 'admin', '-as-', 'mtc')]",
+    "adminInsightsName": "[concat(parameters('environmentName'), 'admin', '-ai-', 'mtc')]",
+    "pupilAppName": "[concat(parameters('environmentName'), 'pupil', '-as-', 'mtc')]",
+    "pupilInsightsName": "[concat(parameters('environmentName'), 'pupil', '-ai-', 'mtc')]",
+    "authAppName": "[concat(parameters('environmentName'), 'auth', '-as-', 'mtc')]",
+    "authInsightsName": "[concat(parameters('environmentName'), 'auth', '-ai-', 'mtc')]",
+    "SESSION_SECRET": "[uniqueString(resourceGroup().id)]",
+    "SQL_DATABASE": "[concat('mtc-', parameters('environmentName'))]"
+  },
+  "resources": [{
+      "comments": "V2 Storage Account",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2018-02-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "product": "MTC"
+      },
+      "scale": null,
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Cool"
+      }
+    },
+    {
+      "comments": "Admin Web App",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('adminAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "siteConfig": {
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('adminImageName'), ':latest')]",
+          "alwaysOn": true,
+          "appSettings":[
+              {"DOCKER_ENABLE_CI": "true"},
+              {"CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"},
+              {"OVERRIDE_PIN_EXPIRY": "true"},
+              {"APPINSIGHTS_WINSTON_LOGGER": "true"},
+              {"ENVIRONMENT_NAME": "[parameters('ENVIRONMENT_NAME')]"},
+              {"ASSET_PATH": "[parameters('ASSET_PATH')]"},
+              {"PORT": "3001"},
+              {"SQL_DATABASE": "[variables('SQL_DATABASE')]"},
+              {"SQL_SERVER": "[parameters('SQL_SERVER')]"},
+              {"APPINSIGHTS_INSTRUMENTATIONKEY": "[parameters('APPINSIGHTS_INSTRUMENTATIONKEY')]"},
+              {"ALLOWED_WORDS": "[parameters('ALLOWED_WORDS')]"},
+              {"SQL_APP_USER": "[parameters('SQL_APP_USER')]"},
+              {"SQL_APP_USER_PASSWORD": "[parameters('SQL_APP_USER_PASSWORD')]"},
+              {"NODE_ENV": "[parameters('NODE_ENV')]"},
+              {"PUPIL_APP_URL": "[variables('PUPIL_APP_URL')]"},
+              {"AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"},
+              {"SESSION_SECRET": "[variables('SESSION_SECRET')]"},
+              {"EXPRESS_LOGGING_WINSTON": "true"}
+          ]
+        },
+        "hostNameSslStates": [{
+            "name": "[concat(variables('adminAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('adminAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "App Insights - Admin",
+      "type": "microsoft.insights/components",
+      "kind": "Node.JS",
+      "name": "[variables('adminInsightsName')]",
+      "apiVersion": "2015-05-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "Application_Type": "Node.JS",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "HockeyAppId": null,
+        "SamplingPercentage": null
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Pupil Web App",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('pupilAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "siteConfig": {
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('pupilImageName'), ':latest')]"
+        },
+        "enabled": true,
+        "hostNameSslStates": [{
+            "name": "[concat(variables('pupilAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('pupilAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "App Insights - Pupil",
+      "type": "microsoft.insights/components",
+      "kind": "Node.JS",
+      "name": "[variables('pupilInsightsName')]",
+      "apiVersion": "2015-05-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "Application_Type": "Node.JS",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "HockeyAppId": null,
+        "SamplingPercentage": null
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Auth Web App",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('authAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "siteConfig": {
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('authImageName'), ':latest')]"
+        },
+        "enabled": true,
+        "hostNameSslStates": [{
+            "name": "[concat(variables('authAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('authAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "App Insights - Auth",
+      "type": "microsoft.insights/components",
+      "kind": "Node.JS",
+      "name": "[variables('authInsightsName')]",
+      "apiVersion": "2015-05-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "Application_Type": "Node.JS",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "HockeyAppId": null,
+        "SamplingPercentage": null
+      },
+      "dependsOn": []
+    }
+  ]
+}
