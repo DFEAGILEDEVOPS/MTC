@@ -43,7 +43,6 @@ Feature:
     When I choose to sort to z-a
     Then the check name should be sorted z-a by default
 
-  @wip
   Scenario: Manage check window hub page matches design
     Given I am on the updated manage check windows page
     Then the manage check window hub page should match design

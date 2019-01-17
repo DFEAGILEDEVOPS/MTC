@@ -1,4 +1,4 @@
-@view_and_custom_print_live_pin
+@view_and_custom_print_live_pin @deactivate_all_test_check_window
 Feature: View and Custom Print Live Check Pin
 
 
