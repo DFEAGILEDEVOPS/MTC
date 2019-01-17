@@ -52,6 +52,7 @@ describe('attendance controller:', () => {
     it('redirects to the submit attendance page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       spyOn(hdfValidator, 'validate').and.returnValue(new ValidationError())
@@ -65,6 +66,7 @@ describe('attendance controller:', () => {
       const req = getReq(reqParams)
       const validationError = new ValidationError()
       validationError.addError('firstName', true)
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(hdfValidator, 'validate').and.returnValue(validationError)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
