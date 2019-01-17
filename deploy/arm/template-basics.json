@@ -14,12 +14,6 @@
       ],
       "type": "string"
     },
-    "sqlUsername": {
-      "type": "securestring"
-    },
-    "sqlPassword": {
-      "type": "securestring"
-    },
     "containerRegistry": {
       "type": "string"
     },
@@ -38,17 +32,11 @@
     "CORS_WHITELIST": {
       "type": "string"
     },
-    "ENVIRONMENT_NAME": {
-      "type": "string"
-    },
     "ASSET_PATH": {
       "type": "string",
       "defaultValue": "/"
     },
     "SQL_SERVER": {
-      "type": "string"
-    },
-    "APPINSIGHTS_INSTRUMENTATIONKEY": {
       "type": "string"
     },
     "ALLOWED_WORDS": {
@@ -62,9 +50,23 @@
     },
     "NODE_ENV": {
       "type": "string",
-      "defaultValue": "development"
+      "allowedValues": [
+        "development",
+        "production"
+      ]
     },
-
+    "AZURE_STORAGE_CONNECTION_STRING": {
+      "type": "securestring"
+    },
+    "DOCKER_REGISTRY_SERVER_URL": {
+      "type": "securestring"
+    },
+    "DOCKER_REGISTRY_SERVER_USERNAME": {
+      "type": "securestring"
+    },
+    "DOCKER_REGISTRY_SERVER_PASSWORD": {
+      "type": "securestring"
+    }
   },
   "variables": {
     "storageAccountName": "[concat('sa', parameters('environmentName'), 'mtc', uniqueString(resourceGroup().id))]",
@@ -76,7 +78,10 @@
     "authAppName": "[concat(parameters('environmentName'), 'auth', '-as-', 'mtc')]",
     "authInsightsName": "[concat(parameters('environmentName'), 'auth', '-ai-', 'mtc')]",
     "SESSION_SECRET": "[uniqueString(resourceGroup().id)]",
-    "SQL_DATABASE": "[concat('mtc-', parameters('environmentName'))]"
+    "SQL_DATABASE": "[concat('mtc-', parameters('environmentName'))]",
+    "pupilAppUrl": "[concat(variables('pupilAppName'),'.azurewebsites.net')]",
+    "ENVIRONMENT_NAME": "[concat('eazure-', parameters('environmentName'))]",
+    "authAppUrl": "[concat(variables('authAppName'),'.azurewebsites.net')]"
   },
   "resources": [{
       "comments": "V2 Storage Account",
@@ -129,25 +134,69 @@
         "siteConfig": {
           "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('adminImageName'), ':latest')]",
           "alwaysOn": true,
-          "appSettings":[
-              {"DOCKER_ENABLE_CI": "true"},
-              {"CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"},
-              {"OVERRIDE_PIN_EXPIRY": "true"},
-              {"APPINSIGHTS_WINSTON_LOGGER": "true"},
-              {"ENVIRONMENT_NAME": "[parameters('ENVIRONMENT_NAME')]"},
-              {"ASSET_PATH": "[parameters('ASSET_PATH')]"},
-              {"PORT": "3001"},
-              {"SQL_DATABASE": "[variables('SQL_DATABASE')]"},
-              {"SQL_SERVER": "[parameters('SQL_SERVER')]"},
-              {"APPINSIGHTS_INSTRUMENTATIONKEY": "[parameters('APPINSIGHTS_INSTRUMENTATIONKEY')]"},
-              {"ALLOWED_WORDS": "[parameters('ALLOWED_WORDS')]"},
-              {"SQL_APP_USER": "[parameters('SQL_APP_USER')]"},
-              {"SQL_APP_USER_PASSWORD": "[parameters('SQL_APP_USER_PASSWORD')]"},
-              {"NODE_ENV": "[parameters('NODE_ENV')]"},
-              {"PUPIL_APP_URL": "[variables('PUPIL_APP_URL')]"},
-              {"AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"},
-              {"SESSION_SECRET": "[variables('SESSION_SECRET')]"},
-              {"EXPRESS_LOGGING_WINSTON": "true"}
+          "appSettings": [{
+              "DOCKER_ENABLE_CI": "true"
+            },
+            {
+              "CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"
+            },
+            {
+              "OVERRIDE_PIN_EXPIRY": "true"
+            },
+            {
+              "APPINSIGHTS_WINSTON_LOGGER": "true"
+            },
+            {
+              "ENVIRONMENT_NAME": "[variables('ENVIRONMENT_NAME')]"
+            },
+            {
+              "ASSET_PATH": "[parameters('ASSET_PATH')]"
+            },
+            {
+              "PORT": "3001"
+            },
+            {
+              "SQL_DATABASE": "[variables('SQL_DATABASE')]"
+            },
+            {
+              "SQL_SERVER": "[parameters('SQL_SERVER')]"
+            },
+            {
+              "ALLOWED_WORDS": "[parameters('ALLOWED_WORDS')]"
+            },
+            {
+              "SQL_APP_USER": "[parameters('SQL_APP_USER')]"
+            },
+            {
+              "SQL_APP_USER_PASSWORD": "[parameters('SQL_APP_USER_PASSWORD')]"
+            },
+            {
+              "NODE_ENV": "[parameters('NODE_ENV')]"
+            },
+            {
+              "PUPIL_APP_URL": "[concat('https://', variables('pupilAppUrl'))]"
+            },
+            {
+              "AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"
+            },
+            {
+              "SESSION_SECRET": "[variables('SESSION_SECRET')]"
+            },
+            {
+              "EXPRESS_LOGGING_WINSTON": "true"
+            },
+            {
+              "DOCKER_ENABLE_CI": "true"
+            },
+            {
+              "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
+            },
+            {
+              "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
+            },
+            {
+              "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
+            }
           ]
         },
         "hostNameSslStates": [{
@@ -206,8 +255,30 @@
           "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('pupilImageName'), ':latest')]"
         },
         "enabled": true,
+        "appSettings": [{
+            "AUTH_URL": "[concat('https://', variables('authAppUrl'), '/auth')]"
+          },
+          {
+            "FEATURE_USE_HPA": "true"
+          },
+          {
+            "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "false"
+          },
+          {
+            "DOCKER_ENABLE_CI": "true"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
+          }
+        ],
         "hostNameSslStates": [{
-            "name": "[concat(variables('pupilAppName'),'.azurewebsites.net')]",
+            "name": "[variables('pupilAppUrl')]",
             "sslState": "Disabled",
             "virtualIP": null,
             "thumbprint": null,
@@ -262,8 +333,30 @@
           "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('authImageName'), ':latest')]"
         },
         "enabled": true,
+        "appSettings": [{
+            "CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"
+          },
+          {
+            "AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"
+          },
+          {
+            "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "false"
+          },
+          {
+            "DOCKER_ENABLE_CI": "true"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
+          },
+          {
+            "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
+          }
+        ],
         "hostNameSslStates": [{
-            "name": "[concat(variables('authAppName'),'.azurewebsites.net')]",
+            "name": "[variables('authAppUrl')]",
             "sslState": "Disabled",
             "virtualIP": null,
             "thumbprint": null,
