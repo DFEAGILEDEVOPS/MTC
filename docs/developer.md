@@ -59,10 +59,10 @@ illustrate a data-dependent bug.
 
 ### Restore the ms-sql server to your local docker container
 
-4. Unzip the backup file to restore
-5. Copy into docker container /tmp dir
+1. Unzip the backup file to restore
+2. Copy into docker container /tmp dir
    *  docker cp ~/Downloads/mtc-2019116-18-28-9.bak aae:/tmp/
-6. In Azure Data Studio - go through the restore process:
+3. In Azure Data Studio - go through the restore process:
     * select the backup file to restore: the file picker is using the docker file system 
     * in the General tab:
         * choose Restore from Backup file
@@ -72,8 +72,8 @@ illustrate a data-dependent bug.
         * tick 'overwrite existing database' checkbox
         * tick 'close existing connections to the server' checkbox
     * initiate the restore by clicking on the 'Restore' button
-7. Wait for restore to complete
-8. At this point the login user is not linked to the database user. You need to re-create 
+4. Wait for restore to complete
+5. At this point the login user is not linked to the database user. You need to re-create 
    the login permission on the app user see the SQL below:
    * ```SQL
       USE mtc; 
