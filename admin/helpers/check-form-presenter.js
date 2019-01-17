@@ -1,4 +1,7 @@
 'use strict'
+
+const dateService = require('../services/date.service')
+
 const checkFormPresenter = {}
 
 /**
@@ -52,6 +55,46 @@ checkFormPresenter.getFlashMessageData = (uploadData) => {
     highlightData.checkForms.push({ checkFormName: uploadData.filename.replace(/\.[^/.]+$/, '') })
   }
   return highlightData
+}
+
+/**
+ * Format check window list data for the assign forms to check windows view
+ * @param {Array} checkWindows
+ * @returns {Array}
+ */
+checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
+  const checkWindowData = []
+  checkWindows.forEach(cw => {
+    checkWindowData.push({
+      name: cw.name,
+      urlSlug: cw.urlSlug,
+      familiarisationCheckStartDate: dateService.formatFullGdsDate(cw.familiarisationCheckStartDate),
+      familiarisationCheckEndDate: dateService.formatFullGdsDate(cw.familiarisationCheckEndDate),
+      checkStartDate: dateService.formatFullGdsDate(cw.checkStartDate),
+      checkEndDate: dateService.formatFullGdsDate(cw.checkEndDate),
+      familiarisationCheckFormCount: cw['FamiliarisationCheckFormCount'],
+      liveCheckFormCount: cw['LiveCheckFormCount']
+    })
+  })
+  return checkWindowData
+}
+
+/**
+ * Format check window data for the select check forms view
+ * @param {Object} checkWindow
+ * @param {String} checkFormType
+ * @returns {Object}
+ */
+checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType) => {
+  return {
+    name: checkWindow.name,
+    urlSlug: checkWindow.urlSlug,
+    familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
+    familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
+    checkStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
+    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
+    checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out'
+  }
 }
 
 module.exports = checkFormPresenter
