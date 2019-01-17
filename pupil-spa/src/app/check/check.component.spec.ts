@@ -16,12 +16,16 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { TimerService } from '../services/timer/timer.service';
+import { TimerServiceMock } from '../services/timer/timer.service.mock';
+import { Router } from '@angular/router';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
   let fixture: ComponentFixture<CheckComponent>;
   let storageService;
   let checkStateMock = null;
+  let mockRouter;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -37,6 +41,10 @@ describe('CheckComponent', () => {
 
   beforeEach(async(() => {
 
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+
     TestBed.configureTestingModule({
       imports: [ HttpModule ],
       declarations: [ CheckComponent ],
@@ -48,6 +56,8 @@ describe('CheckComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        { provide: TimerService, useClass: TimerServiceMock },
+        { provide: Router, useValue: mockRouter },
         WindowRefService
       ]
     })
