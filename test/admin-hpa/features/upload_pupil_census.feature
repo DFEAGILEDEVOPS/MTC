@@ -12,21 +12,25 @@ Feature:
     Then I should see the file uploaded
     And I should see the completed status
 
+  @wip @bug
   Scenario: Error is displayed when uploading a pupil census data with duplicate UPN
     Given I am on the upload pupil census page
     When I have chosen a file with 'duplicate upn' to submit
     Then I should see the error status for the duplicate upn
 
+  @wip @bug
   Scenario: Error is displayed when uploading a pupil census data with empty last name
     Given I am on the upload pupil census page
     When I have chosen a file with 'empty last name' to submit
     Then I should see the error status for the empty last name
 
+  @wip @bug
   Scenario: Error is displayed when uploading a pupil census data with empty first name
     Given I am on the upload pupil census page
     When I have chosen a file with 'empty first name' to submit
     Then I should see the error status for the empty first name
 
+  @wip @bug
   Scenario: Error is displayed when uploading a pupil census data with empty Gender
     Given I am on the upload pupil census page
     When I have chosen a file with 'empty gender' to submit
