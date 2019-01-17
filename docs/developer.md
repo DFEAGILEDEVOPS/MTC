@@ -73,8 +73,8 @@ illustrate a data-dependent bug.
         * tick 'close existing connections to the server' checkbox
     * initiate the restore by clicking on the 'Restore' button
 4. Wait for restore to complete
-5. At this point the login user is not linked to the database user. You need to re-create 
-   the login permission on the app user see the SQL below:
+5. At this point the login user is not linked to the database user. You need to re-link 
+   them:
    * ```SQL
       USE mtc; 
       GO
