@@ -18,18 +18,23 @@ require 'httparty'
 require 'json'
 require 'base64'
 require 'nokogiri'
+require 'numbers_in_words'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require 'azure/storage/table'
+require 'azure/storage/blob'
+require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
-ENV['WAIT_TIME'] ||= '180'
+ENV['WAIT_TIME'] ||= '300'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
-  config.app_host = ENV["BASE_URL"] ||= 'http://localhost:3001'
+  config.app_host = ENV["ADMIN_BASE_URL"]
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
@@ -86,7 +91,25 @@ SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
 SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
+if File.exist?('../../admin/.env')
+  credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
+  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+else
+  credentials = ENV['AZURE_STORAGE_CONNECTION_STRING'].split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
+  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+end
 
+ENV["AZURE_ACCOUNT_NAME"] ||= @account_name
+ENV["AZURE_ACCOUNT_KEY"] ||= @account_key
 
-sleep 10
+fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCOUNT_NAME"].nil?
+fail 'Please set the env var AZURE_STORAGE_CONNECTION_STRING' if ENV["AZURE_ACCOUNT_KEY"].nil?
+
+AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
+
+sleep 60
 Capybara.visit Capybara.app_host
