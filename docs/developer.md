@@ -54,14 +54,14 @@ illustrate a data-dependent bug.
 6. Make a note of the docker file path where the backup will be placed
 7. Select "Backup" and wait for it to complete
 8. Copy the backup out of the docker container
-    * E.g. `docker cp aae:/var/opt/mssql/data/mtc-2019117-9-30-19.bak .`
+    * E.g. `docker cp mtc_mssql:/var/opt/mssql/data/<file>.bak .`
 9. Compress the file before sending
 
 ### Restore the backup to your local docker container
 
 1. Unzip the backup file to restore
 2. Copy into docker container /tmp dir
-   *  docker cp ~/Downloads/mtc-2019116-18-28-9.bak aae:/tmp/
+   *  docker cp ~/Downloads/<file>.bak mtc_mssql:/tmp/
 3. In Azure Data Studio - go through the restore process:
     * select the backup file to restore: the file picker is using the docker file system 
     * in the General tab:
