@@ -1,4 +1,4 @@
-@generate_pupil_pins @reset_all_pins @reset_checks
+@generate_pupil_pins @reset_all_pins @reset_checks @deactivate_all_test_check_window
 Feature: Generate Pupil PINs
 
   @reset_all_pins

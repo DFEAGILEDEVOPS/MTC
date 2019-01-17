@@ -1,4 +1,4 @@
-@generate_pupil_pins_familiarisation @reset_all_pins
+@generate_pupil_pins_familiarisation @reset_all_pins @deactivate_all_test_check_window
 Feature: Generate Pupil PINs Familiarisation
 
   @reset_all_pins
