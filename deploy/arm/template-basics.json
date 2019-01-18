@@ -14,39 +14,26 @@
       ],
       "type": "string"
     },
-    "containerRegistry": {
+    "ALLOWED_WORDS": {
       "type": "string"
     },
     "adminImageName": {
       "type": "string",
       "defaultValue": "admin"
     },
-    "pupilImageName": {
-      "type": "string",
-      "defaultValue": "pupil"
-    },
     "authImageName": {
       "type": "string",
       "defaultValue": "auth"
     },
-    "CORS_WHITELIST": {
+    "AZURE_STORAGE_CONNECTION_STRING": {
+      "type": "securestring"
+    },
+    "containerRegistry": {
       "type": "string"
     },
     "ASSET_PATH": {
       "type": "string",
       "defaultValue": "/"
-    },
-    "SQL_SERVER": {
-      "type": "string"
-    },
-    "ALLOWED_WORDS": {
-      "type": "string"
-    },
-    "SQL_APP_USER": {
-      "type": "securestring"
-    },
-    "SQL_APP_USER_PASSWORD": {
-      "type": "securestring"
     },
     "NODE_ENV": {
       "type": "string",
@@ -55,21 +42,21 @@
         "production"
       ]
     },
-    "AZURE_STORAGE_CONNECTION_STRING": {
+    "pupilImageName": {
+      "type": "string",
+      "defaultValue": "pupil"
+    },
+    "SQL_APP_USER": {
       "type": "securestring"
     },
-    "DOCKER_REGISTRY_SERVER_URL": {
+    "SQL_APP_USER_PASSWORD": {
       "type": "securestring"
     },
-    "DOCKER_REGISTRY_SERVER_USERNAME": {
-      "type": "securestring"
-    },
-    "DOCKER_REGISTRY_SERVER_PASSWORD": {
-      "type": "securestring"
+    "SQL_SERVER": {
+      "type": "string"
     }
   },
   "variables": {
-    "storageAccountName": "[concat('sa', parameters('environmentName'), 'mtc', uniqueString(resourceGroup().id))]",
     "appServicePlanName": "[concat('asp', parameters('environmentName'), uniqueString(resourceGroup().id))]",
     "adminAppName": "[concat(parameters('environmentName'), 'admin', '-as-', 'mtc')]",
     "adminInsightsName": "[concat(parameters('environmentName'), 'admin', '-ai-', 'mtc')]",
@@ -84,43 +71,6 @@
     "authAppUrl": "[concat(variables('authAppName'),'.azurewebsites.net')]"
   },
   "resources": [{
-      "comments": "V2 Storage Account",
-      "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "Standard_LRS",
-        "tier": "Standard"
-      },
-      "kind": "StorageV2",
-      "name": "[variables('storageAccountName')]",
-      "apiVersion": "2018-02-01",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "product": "MTC"
-      },
-      "scale": null,
-      "properties": {
-        "networkAcls": {
-          "bypass": "AzureServices",
-          "virtualNetworkRules": [],
-          "ipRules": [],
-          "defaultAction": "Allow"
-        },
-        "supportsHttpsTrafficOnly": true,
-        "encryption": {
-          "services": {
-            "file": {
-              "enabled": true
-            },
-            "blob": {
-              "enabled": true
-            }
-          },
-          "keySource": "Microsoft.Storage"
-        },
-        "accessTier": "Cool"
-      }
-    },
-    {
       "comments": "Admin Web App",
       "type": "Microsoft.Web/sites",
       "kind": "app,linux,container",
@@ -181,18 +131,6 @@
             },
             {
               "EXPRESS_LOGGING_WINSTON": "true"
-            },
-            {
-              "DOCKER_ENABLE_CI": "true"
-            },
-            {
-              "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
-            },
-            {
-              "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
-            },
-            {
-              "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
             }
           ]
         },
@@ -263,15 +201,6 @@
           },
           {
             "DOCKER_ENABLE_CI": "true"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
           }
         ],
         "hostNameSslStates": [{
@@ -331,7 +260,7 @@
         },
         "enabled": true,
         "appSettings": [{
-            "CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"
+            "CORS_WHITELIST": "[concat('https://', variables('pupilAppUrl'))]"
           },
           {
             "AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"
@@ -341,15 +270,6 @@
           },
           {
             "DOCKER_ENABLE_CI": "true"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_URL": "[parameters('DOCKER_REGISTRY_SERVER_URL')]"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('DOCKER_REGISTRY_SERVER_USERNAME')]"
-          },
-          {
-            "DOCKER_REGISTRY_SERVER_PASSWORD": "[parameters('DOCKER_REGISTRY_SERVER_PASSWORD')]"
           }
         ],
         "hostNameSslStates": [{
