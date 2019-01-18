@@ -21,7 +21,7 @@ class SchoolLandingPage < SitePrism::Page
   element :hdf, 'a', text: "Headteacher's declaration form"
   element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
   element :hdf_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
-  element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form after you have submitted your pupil register"
+  element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
   element :results, '.disabled-link', text: 'Results'
   element :results_text, 'p', text: "View pupil results"
 
