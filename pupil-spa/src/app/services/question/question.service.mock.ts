@@ -22,6 +22,7 @@ export class QuestionServiceMock {
     const config = new Config();
     config.loadingTime = 2;
     config.questionTime = 5;
+    config.checkTime = 30;
     config.questionReader = false;
     config.audibleSounds = false;
     config.inputAssistance = false;

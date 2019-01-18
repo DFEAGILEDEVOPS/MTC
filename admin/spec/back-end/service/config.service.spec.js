@@ -133,6 +133,18 @@ describe('config service', () => {
       expect(config.questionReader).toBe(true)
     })
 
+    it('it sets next between questions to true if NBQ is flagged for the pupil', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS
+      ])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1 }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.nextBetweenQuestions).toBe(true)
+    })
+
     it('it sets all access arrangements to false if not flagged for the pupil', async () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['---'])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([

@@ -51,7 +51,7 @@ If you want to run a particular test, then tag the scenario with a tag like @tes
 
 If you want to run the tests on a different url:
 
-`cucumber BASE_URL='http://localhost:4200'`
+`cucumber PUPIL_BASE_URL='http://localhost:4200'`
 
 #####Rerun failing scenarios
 
@@ -84,7 +84,7 @@ group that will be executed on one of the nodes
 
 You can also pass in any other options by using the following:
 
-`rake parallel OPTS='BASE_URL=http://localhost:3002 -t @tag' NODES=4 GROUP_SIZE=6`
+`rake parallel OPTS='PUPIL_BASE_URL=http://localhost:3002 -t @tag' NODES=4 GROUP_SIZE=6`
 
 
 ##Using Ruby with Azure Storage

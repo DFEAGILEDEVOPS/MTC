@@ -49,7 +49,8 @@ const configService = {
       numpadRemoval: false,
       fontSize: false,
       colourContrast: false,
-      questionReader: false
+      questionReader: false,
+      nextBetweenQuestions: false
     }
 
     let pupilAccessArrangements
@@ -83,6 +84,7 @@ const configService = {
         checkOptions.colourContrastCode = colourContrastAccessArrangement && colourContrastAccessArrangement.pupilColourContrastCode
       }
       if (code === accessArrangementsDataService.CODES.QUESTION_READER) checkOptions.questionReader = true
+      if (code === accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS) checkOptions.nextBetweenQuestions = true
     })
 
     return R.merge(config, checkOptions)

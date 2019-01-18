@@ -1,4 +1,4 @@
-@restarts @reset_pin_restart_check
+@restarts @reset_pin_restart_check @deactivate_all_test_check_window
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section
@@ -14,6 +14,7 @@ Feature: Restarts
     Given I have multiple pupils for restart
     Then I should have a option to select all pupils for restarts
 
+  @wip @bug
   Scenario: Sticky banner displays total pupil count for restarts when all pupil is selected
     Given I have multiple pupils for restart
     When I select all pupils for Restarts
@@ -26,6 +27,7 @@ Feature: Restarts
     When I choose to cancel
     Then I should be taken to the restarts page
 
+  @wip @bug
   Scenario: Confirmation Message is displayed when Pupil is submitted successfully for Restarts
     Given I submitted pupils for Restart
     Then I should see a flash message to state the pupil has been submitted for restart
@@ -40,6 +42,7 @@ Feature: Restarts
     When I submit the pupil for restart with a reason 'Classroom disruption' for restarts
     Then I should see the error message for further information for 'Classroom disruption' reason
 
+  @wip @bug
   Scenario: Pupil added to the restart list after Pupil is submitted using reason Classroom disruption
     Given I submitted pupils for Restart using reason Classroom disruption
     Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
@@ -49,27 +52,31 @@ Feature: Restarts
     And Pupil has taken a 2nd check
     Then I should see the Restart Status 'Restart taken' for the pupil
 
+  @wip @bug
   Scenario: Pupil Restarts status changes to Remove Restart when pupil take 2nd Restart
     Given I submitted pupils for Restart
     When Pupil has taken a 2nd restart
     Then I should see the Restart Status 'Remove restart' for the pupil
 
+  @wip @bug
   Scenario: Pupil Restarts status changes to Maximum Restart Taken when pupil take 3rd check
     Given I submitted pupils for Restart
     When Pupil has taken a 3rd check
     Then I should see the Restart Status 'Maximum number of restarts taken' for the pupil
 
+  @wip @bug
   Scenario: Flash message is displayed when a pupil is removed from restart
     Given I submitted pupils for Restart
     When I remove restart for that pupil
     Then I should see a flash message to state the pupil has been removed from restart
 
+  @wip @bug
   Scenario: Pupil doesnt appear in Generate Pin list if Restart is removed for that Pupil
     Given I submitted pupils for Restart
     When I remove restart for that pupil
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @wip @refactor
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group

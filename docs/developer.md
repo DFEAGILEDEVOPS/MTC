@@ -40,3 +40,50 @@ e.g. if you are using macports `git` in `/opt/local/bin/git` then symlink `/usr/
 1. Scan for credentials:``git secrets --scan``
 2. Scan for credentials including historical commits: ``git secrets --scan-history``
 3. Attempts to commit any new code that matches the patterns will result in the commit failing.  
+
+
+
+## Database Backup / restore
+
+Occasionally it is useful for developers to be able to exchange database backups, perhaps to 
+illustrate a data-dependent bug.
+
+### Backup ms-sql server
+
+1. Open Azure Data Studio
+2. (Allow preview features)
+2. Connect to the local dev database without specifying a connection
+3. Right-click on the server and choose 'Manage'
+4. Right-click on the db to back up from the databases chooser, and choose 'manage'
+5. Select "Backup" from the "Tasks" section
+6. Make a note of the docker file path where the backup will be placed
+7. Select "Backup" and wait for it to complete
+8. Copy the backup out of the docker container
+    * E.g. `docker cp mtc_mssql:/var/opt/mssql/data/<file>.bak .`
+9. Compress the file before sending
+
+### Restore the backup to your local docker container
+
+1. Unzip the backup file to restore
+2. Copy into docker container /tmp dir
+   *  docker cp ~/Downloads/<file>.bak mtc_mssql:/tmp/
+3. In Azure Data Studio - go through the restore process:
+    * select the backup file to restore: the file picker is using the docker file system 
+    * in the General tab:
+        * choose Restore from Backup file
+        * choose the backup file path (e.g. find the file in the `/tmp/` directory)
+        * you should check the target database is correct          
+    * in the 'Options' tab 
+        * tick 'overwrite existing database' checkbox
+        * tick 'close existing connections to the server' checkbox
+    * initiate the restore by clicking on the 'Restore' button
+4. Wait for restore to complete
+5. At this point the login user is not linked to the database user. You need to re-link 
+   them:
+   * ```SQL
+      USE mtc; 
+      GO
+      EXEC sp_change_users_login 'Auto_Fix', 'mtcAdminUser';
+      GO
+      ```
+   
