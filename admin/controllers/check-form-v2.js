@@ -159,23 +159,50 @@ controller.getSelectFormPage = async (req, res, next) => {
   let checkWindow
   let checkWindowData
   let checkFormData
+  let availableCheckForms
+  let assignedCheckForms
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    checkWindowData = await checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
-    checkFormData = await checkFormV2Service.getCheckFormsByType(checkFormType)
+    availableCheckForms = await checkFormV2Service.getCheckFormsByType(checkFormType)
+    assignedCheckForms = await checkFormV2Service.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
+    checkWindowData = checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
+    checkFormData = checkFormPresenter.getPresentationAvailableFormsData(availableCheckForms, assignedCheckForms)
   } catch (error) {
     return next(error)
   }
-  const checkPeriod = checkFormType === 'live' ? 'MTC' : 'Try it out'
-  res.locals.pageTitle = `${checkWindowData.name} - ${checkPeriod}`
+  const hasAssignedForms = Array.isArray(assignedCheckForms) && assignedCheckForms.length > 0
+  res.locals.pageTitle = `${checkWindowData.name} - ${checkWindowData.checkPeriod}`
   req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/view-select-forms', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     checkFormData,
-    checkFormType
+    checkFormType,
+    hasAssignedForms
   })
+}
+
+/**
+ * Assign forms to check window
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.postAssignForms = async (req, res, next) => {
+  const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
+  const checkFormType = req.params && req.params.checkFormType
+  const requestData = req.body
+  const { checkForms, hasAssignedForms } = requestData
+  try {
+    await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkForms, hasAssignedForms)
+  } catch (error) {
+    return next(error)
+  }
+  const flashMessage = { message: `` }
+  req.flash('info', flashMessage)
+  return res.redirect(`/check-form/assign-forms-to-check-windows`)
 }
 
 module.exports = controller

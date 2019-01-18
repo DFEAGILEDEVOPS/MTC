@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<form method="post" action="/check-form/assign-form">
+<form method="post" action="/check-form/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
   <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
   <div class="grid-row">
     <div class="column-two-thirds">
@@ -43,7 +43,7 @@
         </tr>
         </thead>
         <tbody>
-        <% checkFormData.forEach(checkForm => { %>
+        <% checkFormData.forEach((checkForm, i) => { %>
         <tr>
           <td>
             <label for="checkForm<%= checkForm.urlSlug %>">
@@ -52,22 +52,22 @@
           </td>
           <td class="align-right">
             <div class="multiple-choice-mtc">
-              <input id="checkForm<%= checkForm.urlSlug %>"
-                     name="checkForm[<%= checkForm.urlSlug %>]"
+              <input id="checkForm-<%= i %>"
+                     name="checkForms[]"
                      type="checkbox"
                      value="<%= checkForm.urlSlug %>"
                      aria-label="Tick form <%= checkForm.name %>"
                      aria-checked="false"
+                     <% if (checkForm.checked) { %>checked="true"<% } %>
                      role="checkbox">
               <div></div>
             </div>
           </td>
         </tr>
         <% }) %>
+        <input type="hidden" name="hasAssignedForms" value="<%= hasAssignedForms %>" />
         </tbody>
       </table>
-      <input type="hidden" name="checkWindowName" value="<%= checkWindowData.name %>">
-      <input type="hidden" name="checkWindowUrlSlug" value="<%= checkWindowData.urlSlug %>">
       <% } %>
 
       <div class="back-to-top-container">
