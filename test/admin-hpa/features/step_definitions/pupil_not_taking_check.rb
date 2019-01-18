@@ -255,7 +255,7 @@ When(/^I select multiple pupils with the (.+) reason$/) do |reason|
 end
 
 Then(/^the sticky banner should display the pupil count$/) do
-  expect(@page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
+  expect(@page.sticky_banner.count.text).to eql "Pupils selected: " + @pupil_names.size.to_s
 end
 
 Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
