@@ -54,10 +54,12 @@
     },
     "SQL_SERVER": {
       "type": "string"
+    },
+    "appServicePlanName": {
+      "type": "string"
     }
   },
   "variables": {
-    "appServicePlanName": "[concat('asp', parameters('environmentName'), uniqueString(resourceGroup().id))]",
     "adminAppName": "[concat(parameters('environmentName'), 'admin', '-as-', 'mtc')]",
     "adminInsightsName": "[concat(parameters('environmentName'), 'admin', '-ai-', 'mtc')]",
     "pupilAppName": "[concat(parameters('environmentName'), 'pupil', '-as-', 'mtc')]",
