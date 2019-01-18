@@ -2,7 +2,6 @@
 /* global describe it expect beforeEach spyOn */
 
 const settingDataService = require('../../../services/data-access/setting.data.service')
-const groupDataService = require('../../../services/data-access/group.data.service')
 const configService = require('../../../services/config.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
@@ -18,7 +17,6 @@ describe('config service', () => {
       })
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({})
-      spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
     })
 
     it('returns timings from the config table when group values are missing', async () => {
@@ -34,33 +32,13 @@ describe('config service', () => {
     })
   })
 
-  describe('database group table values exist', () => {
+  describe('access arrangements', () => {
     beforeEach(() => {
       spyOn(settingDataService, 'sqlFindOne').and.returnValue({
         loadingTimeLimit: 20,
         questionTimeLimit: 50,
-        checkTimeLimit: 80
+        checkTimeLimit: 90
       })
-      spyOn(groupDataService, 'sqlFindOneGroupByPupilId').and.returnValue({
-        loadingTimeLimit: 40,
-        questionTimeLimit: 60
-      })
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([])
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({})
-    })
-
-    it('returns timings from the group table and overrides settings table values', async () => {
-      const config = await configService.getConfig(pupilMock)
-      expect(config.loadingTime).toBe(40)
-      expect(config.questionTime).toBe(60)
-      expect(config.checkTime).toBe(80)
-    })
-  })
-
-  describe('access arrangements', () => {
-    beforeEach(() => {
-      spyOn(settingDataService, 'sqlFindOne')
-      spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
     })
     it('it sets audible sounds to true if ATA is flagged for the pupil', async () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
@@ -191,7 +169,6 @@ describe('config service', () => {
   describe('database values do not exist', () => {
     it('returns timings from the config file', async () => {
       spyOn(settingDataService, 'sqlFindOne')
-      spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({})
       const config = await configService.getConfig(pupilMock)

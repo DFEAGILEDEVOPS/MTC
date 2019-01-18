@@ -6,7 +6,6 @@ const logger = require('./log.service').getLogger()
 const accessArrangementsDataService = require('./data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
-const groupDataService = require('./data-access/group.data.service')
 const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS, LENGTH_OF_CHECK_MINUTES } = require('../config')
 
 /** @namespace */
@@ -23,16 +22,13 @@ const configService = {
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
     const timeSettings = await settingDataService.sqlFindOne()
-    const group = await groupDataService.sqlFindOneGroupByPupilId(pupil.id)
-    const hasGroupTimeLimits = group && group.loadingTimeLimit && group.questionTimeLimit
-    if (hasGroupTimeLimits) {
-      loadingTime = group.loadingTimeLimit
-      questionTime = group.questionTimeLimit
-    } else if (timeSettings) {
+
+    if (timeSettings) {
       loadingTime = timeSettings.loadingTimeLimit
       questionTime = timeSettings.questionTimeLimit
     }
 
+    // There is no property on the db: mtc_admin.settings.checkTimeLimit
     const checkTime = timeSettings ? timeSettings.checkTimeLimit : LENGTH_OF_CHECK_MINUTES
 
     const config = {
@@ -87,7 +83,7 @@ const configService = {
       if (code === accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS) checkOptions.nextBetweenQuestions = true
     })
 
-    return R.merge(config, checkOptions)
+    return R.mergeRight(config, checkOptions)
   }
 }
 
