@@ -17,7 +17,7 @@ class SchoolLandingPage < SitePrism::Page
   element :generate_pupil_pin_familiarisation, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
   element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC'
   element :restarts, 'a[href="/restart/overview"]'
-  element :restarts_text, 'p', text: 'Select a pupil to restart because of an interrupted check'
+  element :restarts_text, 'p', text: 'Select pupils to restart because of an interrupted check'
   element :hdf, 'a', text: "Headteacher's declaration form"
   element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
   element :hdf_text, 'p', text: "Complete headteacher's declaration form once pupil register has been submitted"

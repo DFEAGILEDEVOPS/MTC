@@ -42,6 +42,7 @@ export class WarmupQuestionService extends QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
+    config.checkTime = configData[ 'checkTime' ];
     config.questionReader = configData['questionReader'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
     config.numpadRemoval = configData[ 'numpadRemoval' ];

@@ -24,13 +24,14 @@ require_relative 'helpers'
 include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '20'
 
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
-  config.app_host = ENV["BASE_URL"] ||= 'http://localhost:4200'
+  config.app_host = ENV["PUPIL_BASE_URL"]
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
@@ -65,15 +66,23 @@ server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
 admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+azure_test = ENV['AZURE'] || 'false'
+
+if azure_test == 'true'
+  azure_var = true
+else
+  azure_var = false
+end
 
 begin
   SQL_CLIENT = TinyTds::Client.new(username: admin_user,
                                    password: admin_password,
                                    host: server,
                                    port: port,
-                                   database: database)
+                                   database: database,
+                                   azure: azure_var
+  )
 rescue TinyTds::Error => e
-
   abort 'Test run failed due to - ' + e.to_s
 end
 
@@ -107,4 +116,3 @@ AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_
 AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
-Capybara.visit Capybara.app_host

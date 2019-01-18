@@ -5,9 +5,9 @@ class GroupPupilsPage < SitePrism::Page
   element :intro, '#lead-paragraph', text: 'Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.'
   element :create_group, "a[href='/group/pupils-list/add']"
   element :related_heading, ".heading-medium", text: 'Related'
-  element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
+  element :guidance, "a", text: 'Guidance'
   element :pupil_register, "a[href='/pupil-register/pupils-list']", text: 'Pupil register'
-  element :generate_pins, "a[href='/pupil-pin/generate-pins-overview']", text: 'Generate pupil PINs'
+  element :generate_pins, "a[href='/pupil-pin/generate-live-pins-overview']", text: 'Start the MTC - password and PINs'
   element :info_message, '.info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 
