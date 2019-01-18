@@ -9,6 +9,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilService = require('../services/pupil.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
+const pupilPresenter = require('../helpers/pupil-presenter')
 const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const ValidationError = require('../lib/validation-error')
@@ -25,12 +26,14 @@ const logger = require('../services/log.service').getLogger()
 const getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
+    const pupilExampleYear = pupilPresenter.getPupilExampleYear()
     req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/add-pupil', {
       formData: req.body,
       error: error || new ValidationError(),
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      pupilExampleYear
     })
   } catch (error) {
     next(error)
@@ -161,8 +164,10 @@ const getErrorCSVFile = async (req, res) => {
  */
 const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
+  let pupilExampleYear
   try {
     const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
+    pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
@@ -173,7 +178,8 @@ const getEditPupilById = async (req, res, next) => {
     res.render('pupil-register/edit-pupil', {
       formData: pupilData,
       error: new ValidationError(),
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      pupilExampleYear
     })
   } catch (error) {
     next(error)
@@ -211,12 +217,14 @@ const postEditPupil = async (req, res, next) => {
   }
 
   if (validationError.hasError()) {
+    const pupilExampleYear = pupilPresenter.getPupilExampleYear()
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('pupil-register/edit-pupil', {
       school,
       formData: req.body,
       error: validationError,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      pupilExampleYear
     })
   }
 

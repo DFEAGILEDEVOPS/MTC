@@ -27,15 +27,15 @@ class PupilReasonPage < SitePrism::Page
   section :explanation_section, 'details' do
     element :toggle, 'summary[role="button"]'
     element :absent, 'strong', text: 'Absent'
-    element :absent_explanation, 'div', text: 'Pupil has not taken the check due to absence'
+    element :absent_explanation, 'div', text: 'Pupil did not take the check due to absence.'
     element :left_school, 'strong', text: 'Left school'
-    element :left_school_explanation, 'div', text: 'Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.'
+    element :left_school_explanation, 'div', text: 'Pupil has left the school.'
     element :unable_to_access, 'strong', text: 'Unable to access'
-    element :unable_to_access_explanation, 'div', text: 'Pupil is unable to access the check.'
+    element :unable_to_access_explanation, 'div', text: 'Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.'
     element :below_standard, 'strong', text: 'Working below expectation'
-    element :below_standard_explanation, 'div', text: 'Pupil is considered unable to answer the easiest questions or is working below year 2 in multiplication tables.'
+    element :below_standard_explanation, 'div', text: "Headteachers should use their knowledge of each pupil when considering whether it's appropriate to administer the check. The headteacher should consider entering any pupils who know, apply and understand the matters, skills and processes specified in the key stage 1 programme of study in relation to multiplication tables."
     element :just_arrived, 'strong', text: 'Just arrived with EAL'
-    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities."
+    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has arrived during the check window and there isn't enough time to establish their abilities"
   end
 
 
