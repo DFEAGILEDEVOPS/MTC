@@ -62,7 +62,7 @@
                         <div class="multiple-choice">
                             <% if (!pupil.hasAttended) { %>
                             <input id="attendee-<%= pupil.id %>"
-                                   name="attendee[<%= index %>]"
+                                   name="attendee[]"
                                    type="checkbox"
                                    value="<%= pupil.id %>"
                                    aria-label="Tick pupil <%= pupil.fullName %>"

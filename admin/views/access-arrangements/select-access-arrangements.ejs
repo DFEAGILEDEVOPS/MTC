@@ -1,26 +1,25 @@
 <div class="grid-row">
-  <div class="column-two-thirds">
-    <%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
-  </div>
-  <div class="column-one-third">
-    <%- partial('partials/_name_and_sign_out') %>
-  </div>
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
 </div>
 
 <% if (error.hasError()) { %>
 <div class="grid-row">
-  <div class="column-two-thirds">
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this
-        page before continuing.</h2>
-      <p>See highlighted errors below.</p>
-      <ul class="error-summary-list">
-        <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
-        <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-        <% }); %>
-      </ul>
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>
 <% } %>
 
