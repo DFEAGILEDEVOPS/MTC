@@ -15,7 +15,8 @@ const aaConfig = {
   numpadRemoval: false,
   fontSize: false,
   colourContrast: false,
-  questionReader: false
+  questionReader: false,
+  nextBetweenQuestions: false
 }
 
 const checkConfig = {
