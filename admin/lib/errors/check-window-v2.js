@@ -69,7 +69,7 @@ module.exports = {
   adminStartDateAfterAdminEndDate: 'Enter a school administration start date which is before the administration end date',
   adminEndDateBeforeAdminStartDate: 'Enter a school administration end date which is after the administration start date',
   adminEndDateBeforeLiveCheckEndDate: 'Enter a school administration end date which is after the multiplication tables check end date',
-  adminEndDateBeforeFamiliarisationCheckEndDate: 'Enter a school administration end date which is after the try it out end date ',
+  adminEndDateBeforeFamiliarisationCheckEndDate: 'Enter a school administration end date which is after the try it out end date',
   familiarisationCheckStartDateBeforeAdminStartDate: 'Enter a try it out start date which is the same date or after the administration start date',
   familiarisationCheckStartDateAfterLiveCheckStartDate: 'Enter a try it out start date which is before the multiplication tables check start date',
   familiarisationCheckStartDateAfterFamiliarisationCheckEndDate: 'Enter a try it out start date which is before the try it out end date',
