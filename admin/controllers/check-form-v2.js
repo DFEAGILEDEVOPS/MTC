@@ -140,9 +140,16 @@ controller.getAssignFormsPage = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+  let { hl } = req.query
+  if (hl) {
+    hl = JSON.parse(hl)
+    hl = typeof hl === 'string' ? JSON.parse(hl) : hl
+  }
   res.render('check-form/view-assign-forms-to-check-windows', {
     breadcrumbs: req.breadcrumbs(),
-    checkWindowData
+    checkWindowData,
+    highlight: hl && new Set(hl),
+    messages: res.locals.messages
   })
 }
 
@@ -194,15 +201,17 @@ controller.postAssignForms = async (req, res, next) => {
   const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
   const checkFormType = req.params && req.params.checkFormType
   const requestData = req.body
-  const { checkForms, hasAssignedForms } = requestData
+  const { checkForms, hasAssignedForms, checkWindowName } = requestData
+  let highlightMessage
   try {
     await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkForms, hasAssignedForms)
+    highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
   } catch (error) {
     return next(error)
   }
-  const flashMessage = { message: `` }
-  req.flash('info', flashMessage)
-  return res.redirect(`/check-form/assign-forms-to-check-windows`)
+  req.flash('info', highlightMessage)
+  const highlight = JSON.stringify([`${checkWindowUrlSlug.toString()}-${checkFormType}`])
+  return res.redirect(`/check-form/assign-forms-to-check-windows?hl=${highlight}`)
 }
 
 module.exports = controller

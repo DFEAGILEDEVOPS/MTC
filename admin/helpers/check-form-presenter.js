@@ -116,4 +116,18 @@ checkFormPresenter.getPresentationAvailableFormsData = (availableCheckForms, ass
   return checkFormData
 }
 
+/**
+ * Construct flash message to display assigned check forms after successful assignment
+ * @param {Array} checkForms
+ * @param {String} checkWindowName
+ * @param {String} checkFormType
+ * @returns {String} - message
+ */
+checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, checkFormType) => {
+  const totalFormAssigned = checkForms.length
+  const partial = totalFormAssigned > 1 ? `forms have` : `form has`
+  return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
+    : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
+}
+
 module.exports = checkFormPresenter
