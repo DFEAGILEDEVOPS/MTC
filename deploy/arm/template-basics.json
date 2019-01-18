@@ -138,9 +138,6 @@
               "DOCKER_ENABLE_CI": "true"
             },
             {
-              "CORS_WHITELIST": "[parameters('CORS_WHITELIST')]"
-            },
-            {
               "OVERRIDE_PIN_EXPIRY": "true"
             },
             {
