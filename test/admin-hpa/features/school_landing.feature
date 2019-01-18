@@ -15,7 +15,7 @@ Feature:
       | teacher2 |
       | teacher3 |
       | teacher4 |
-    
+
   Scenario: School landing page matches design
     Given I am on the school landing page
     Then I should see the school landing page matches design
@@ -48,4 +48,3 @@ Feature:
       | service-manager:9991002 | 9991002   |
       | service-manager:9991003 | 9991003   |
       | service-manager:9991004 | 9991004   |
-    
