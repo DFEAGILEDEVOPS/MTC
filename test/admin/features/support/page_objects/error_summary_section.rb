@@ -6,8 +6,10 @@ class ErrorSummary < SitePrism::Section
   element :year, 'a[href="#dob-year"]'
   element :gender, 'a[href="#gender"]'
   element :first_name, 'a[href="#foreName"]'
+  element :hdf_first_name, 'a[href="#firstName"]'
   element :middle_name, 'a[href="#middleNames"]'
   element :last_name, 'a[href="#lastName"]'
   element :upn, 'a[href="#upn"]'
+  element :job_title, 'a[href="#jobTitle"]'
 
 end
