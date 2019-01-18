@@ -12,10 +12,11 @@ Feature: Warm up questions
     Given I am on the warm up complete page
     Then I should see the warm up complete page meets design
 
+  @generate_live_pin
   Scenario: Users can see the answer box with numpad removal enabled
     Given I logged in with user with access arrangement 'Remove on-screen number pad'
-    Given I am on the warm up check page
-    Then I should be able to see the input answer box
+    And I start the check with no numpad
+    Then I should be able to see the input answer box and no number pad
 
   Scenario: Users can complete the warm up questions using the on screen keyboard
     Given I am on the warm up check page

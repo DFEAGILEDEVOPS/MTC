@@ -1,4 +1,4 @@
-@pupil_status
+@pupil_status @deactivate_all_test_check_window
 Feature: Pupil Status Outcome
 
   Scenario: Pupil status is Not Started when a new pupil is added
@@ -26,7 +26,7 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is 'In Progress'
 
   Scenario: Pupil status is Check Started when a pupil started the actual check
-    Given pupil has started a check
+    Given a pupil has started a check
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Check started'
 
@@ -41,6 +41,7 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Not taking the Check' for pupil not taking the check
 
+  @wip @bug
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
     When I am on the Pupil Register page

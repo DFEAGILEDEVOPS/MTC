@@ -40,7 +40,8 @@ But(/^decide I against creating it$/) do
 end
 
 Then(/^I should not see the window in the list$/) do
-  expect(manage_check_window_page).to have_no_windows_table
+
+  expect(manage_check_window_page.windows_table.rows.find {|chk| chk.text.include? @check_window_hash[:check_name]}).to be_nil
 end
 
 When(/^I try to submit a check name that is less than (\d+) character long$/) do |arg|
@@ -82,12 +83,12 @@ end
 
 When(/^I enter dates that are in the past$/) do
   today_date = Date.today
-  @admin_start_date = today_date - 30
-  @admin_end_date = today_date - 10
-  @familiarisation_start_date = today_date - 25
-  @familiarisation_end_date = today_date - 10
-  @live_start_date = today_date - 25
-  @live_end_date = today_date - 10
+  @admin_start_date = today_date - 3
+  @admin_end_date = today_date - 1
+  @familiarisation_start_date = today_date - 2
+  @familiarisation_end_date = today_date - 1
+  @live_start_date = today_date - 2
+  @live_end_date = today_date - 1
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
