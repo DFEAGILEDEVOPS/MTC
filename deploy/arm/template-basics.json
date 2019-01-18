@@ -156,9 +156,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      ]
+      "dependsOn": []
     },
     {
       "comments": "App Insights - Admin",
@@ -225,9 +223,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      ]
+      "dependsOn": []
     },
     {
       "comments": "App Insights - Pupil",
@@ -294,9 +290,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      ]
+      "dependsOn": []
     },
     {
       "comments": "App Insights - Auth",
