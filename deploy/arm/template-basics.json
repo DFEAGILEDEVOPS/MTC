@@ -153,11 +153,11 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ]
     },
     {
@@ -222,11 +222,11 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ]
     },
     {
@@ -291,11 +291,11 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('appServicePlanName'))]",
         "httpsOnly": true
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ]
     },
     {
