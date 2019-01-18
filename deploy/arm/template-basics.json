@@ -84,7 +84,7 @@
       "properties": {
         "enabled": true,
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('adminImageName'), ':latest')]",
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), '/', parameters('adminImageName'), ':latest')]",
           "alwaysOn": true,
           "appSettings": [{
               "DOCKER_ENABLE_CI": "true"
@@ -187,7 +187,7 @@
       "scale": null,
       "properties": {
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('pupilImageName'), ':latest')]"
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), '/', parameters('pupilImageName'), ':latest')]"
         },
         "enabled": true,
         "appSettings": [{
@@ -254,7 +254,7 @@
       "scale": null,
       "properties": {
         "siteConfig": {
-          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), parameters('authImageName'), ':latest')]"
+          "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), '/', parameters('authImageName'), ':latest')]"
         },
         "enabled": true,
         "appSettings": [{
