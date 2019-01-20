@@ -22,7 +22,7 @@
           </div>
           <% } else if (checkFormData && checkFormData.length === 0) { %>
           No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.
-          <% }%>
+          <% } %>
       </div>
 
       <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
@@ -30,6 +30,7 @@
         <thead>
         <tr>
           <th scope="col">Form name</th>
+          <% if (!checkWindowData.isWithinCheckType) { %>
           <th scope="col">
             <div class="tick-all-checkboxes-wrapper">
               <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
@@ -40,6 +41,7 @@
               </div>
             </div>
           </th>
+          <% } %>
         </tr>
         </thead>
         <tbody>
@@ -50,6 +52,7 @@
               <%= checkForm.name %>
             </label>
           </td>
+          <% if (!checkWindowData.isWithinCheckType) { %>
           <td class="align-right">
             <div class="multiple-choice-mtc">
               <input id="checkForm-<%= i %>"
@@ -64,6 +67,7 @@
             </div>
           </td>
         </tr>
+        <% } %>
         <% }) %>
         <input type="hidden" name="hasAssignedForms" value="<%= hasAssignedForms %>" />
         <input type="hidden" name="checkWindowName" value="<%= checkWindowData.name %>" />

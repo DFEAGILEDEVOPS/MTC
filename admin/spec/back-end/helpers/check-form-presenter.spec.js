@@ -109,7 +109,8 @@ describe('checkFormPresenter', () => {
         checkStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
         checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
         checkFormTypeTitle: 'Multiplication tables check',
-        checkPeriod: 'MTC'
+        checkPeriod: 'MTC',
+        isWithinCheckType: true
       })
     })
   })
