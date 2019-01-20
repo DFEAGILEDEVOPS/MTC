@@ -92,3 +92,100 @@ When(/^I try to update without a check start date for the window$/) do
   add_edit_check_window_page.check_start_year.set ''
   add_edit_check_window_page.save_changes.click
 end
+
+Given(/^I navigate to the manage check windows page$/) do
+  step 'I am logged in with a service manager'
+  step 'I am on the manage check windows page'
+end
+
+Given(/^I want to edit a check window that is in the past$/) do
+  step 'I navigate to the manage check windows page'
+  past_window = manage_check_window_page.windows_table.rows.find {|row| row.status.text == 'Past'}
+  past_window.check_name.click
+end
+
+Then(/^I should not be able to make any changes$/) do
+  expect(add_edit_check_window_v2_page.disabled_fields.count).to eql 7
+end
+
+Given(/^I want to view a check window that is currently active$/) do
+  step 'I navigate to the manage check windows page'
+  active_window = manage_check_window_page.windows_table.rows.find {|row| row.status.text == 'Active'}
+  active_window.check_name.click
+end
+
+Then(/^I should only be able to edit dates that are in the future$/) do
+  expect(add_edit_check_window_v2_page.disabled_fields.count).to eql 3
+  expect(add_edit_check_window_v2_page).to have_check_name
+  expect(add_edit_check_window_v2_page).to have_admin_end_day
+  expect(add_edit_check_window_v2_page).to have_admin_end_month
+  expect(add_edit_check_window_v2_page).to have_admin_end_year
+  expect(add_edit_check_window_v2_page).to have_familiarisation_check_end_day
+  expect(add_edit_check_window_v2_page).to have_familiarisation_check_end_month
+  expect(add_edit_check_window_v2_page).to have_familiarisation_check_end_year
+  expect(add_edit_check_window_v2_page).to have_live_check_end_day
+  expect(add_edit_check_window_v2_page).to have_live_check_end_month
+  expect(add_edit_check_window_v2_page).to have_live_check_end_year
+end
+
+And(/^I decide to edit it$/) do
+  @check_window.check_name.click
+end
+
+When(/^I try submit the form with no dates$/) do
+  @check_window_hash = {check_name: '',
+                        admin_start_day: '',
+                        admin_start_month: '',
+                        admin_start_year: '',
+                        admin_end_day: '',
+                        admin_end_month: '',
+                        admin_end_year: '',
+                        familiarisation_start_day: '',
+                        familiarisation_start_month: '',
+                        familiarisation_start_year: '',
+                        familiarisation_end_day: '',
+                        familiarisation_end_month: '',
+                        familiarisation_end_year: '',
+                        live_start_day: '',
+                        live_start_month: '',
+                        live_start_year: '',
+                        live_end_day: '',
+                        live_end_month: '',
+                        live_end_year: ''
+  }
+  add_edit_check_window_v2_page.enter_details(@check_window_hash)
+  add_edit_check_window_v2_page.save_changes.click
+end
+
+When(/^I submit a valid change$/) do
+  @check_window_hash[:check_name] = 'Updated' + @check_window_hash[:check_name]
+  @check_window_hash[:admin_end_day] = @admin_end_date.day
+  @check_window_hash[:admin_end_month] = @admin_end_date.month
+  @check_window_hash[:admin_end_year] = @admin_end_date.year
+  add_edit_check_window_v2_page.enter_details(@check_window_hash)
+  add_edit_check_window_v2_page.save_changes.click
+end
+
+Then(/^I should see it updated in the list of check windows$/) do
+  @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
+  expect(@check_window.status.text).to eql 'Inactive'
+  expect(@check_window).to have_remove
+  expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been edited'
+end
+
+When(/^I decide to cancel any changes$/) do
+  @old_check_window_name = @check_window_hash[:check_name]
+  @check_window_hash[:check_name] = 'Updated' + @check_window_hash[:check_name]
+  add_edit_check_window_v2_page.cancel.click
+end
+
+Then(/^I should see no changes made in the list of windows$/) do
+  @check_window = manage_check_window_page.find_check_row(@old_check_window_name)
+  expect(@check_window.status.text).to eql 'Inactive'
+  expect(@check_window).to have_remove
+end
+
+And(/^stored as it was in the db$/) do
+  window_in_db = SqlDbHelper.check_window_details(@old_check_window_name)
+  expect(window_in_db).to_not be_empty
+end

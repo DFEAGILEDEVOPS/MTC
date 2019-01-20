@@ -1,6 +1,6 @@
 @feature-toggle
 Feature:
-  Check window validation
+  Create check window
 
   Scenario: Users can cancel the creation of a check window
     Given I navigate to the create check window page

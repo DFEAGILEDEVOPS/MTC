@@ -46,6 +46,7 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
+  sleep(180)
   pupil_row = pupil_register_page.find_pupil_row(@details_hash[:first_name])
   expect(pupil_row.result.text).to eql(status)
 end

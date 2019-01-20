@@ -1,0 +1,56 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge"><%= pageTitle %></h1>
+    <p class="lede" id="lead-paragraph">
+      Select forms to assign to each window. Each form can be used for multiple windows.
+    </p>
+    <% if (Array.isArray(checkWindowData) && checkWindowData.length > 0) { %>
+    <span class="bold-small">
+            <p>Check Window</p>
+    </span>
+    <div class="assigned-check-windows">
+      <% checkWindowData.forEach(cw => { %>
+      <dl>
+        <dd>
+          <p class="font-small"><%= cw.name %></p>
+          <div><span class="bold-small"><a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period</a></span>
+            (<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</div>
+          <p id="<%= cw.urlSlug %>-familiarisation-period"><%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %></p>
+          <div><span class="bold-small"><a href="/check-form/select-form/live/<%= cw.urlSlug %>">Multiplication tables check period</a></span>
+            (<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)</div>
+          <p id="<%= cw.urlSlug %>-live-period"><%= cw.checkStartDate %> to <%= cw.checkEndDate %></p>
+        </dd>
+      </dl>
+      <% }) %>
+    <% } else { %>
+      <div class="panel panel-border-wide">
+        <p>
+          There are currently no available check windows .<br />
+          Contact the service manager to get new check windows created.
+        </p>
+      </div>
+    <% } %>
+    </div>
+  </div>
+  <div class="column-one-third add-title-margin">
+    <aside role="complementary" class="support-column">
+      <h3 class="heading-medium">Related</h3>
+      <nav role="navigation">
+        <ul class="list">
+          <li>
+            <a href="/check-form/view-forms">Upload and view forms</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>

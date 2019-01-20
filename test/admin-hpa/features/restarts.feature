@@ -1,4 +1,4 @@
-@restarts @reset_pin_restart_check
+@restarts @reset_pin_restart_check @deactivate_all_test_check_window
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section
@@ -69,7 +69,7 @@ Feature: Restarts
     When I remove restart for that pupil
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @bug @wip
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group

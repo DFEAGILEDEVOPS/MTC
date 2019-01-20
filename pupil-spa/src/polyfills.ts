@@ -41,6 +41,7 @@ import 'core-js/es6/set';
 import 'core-js/es6/reflect';
 import 'core-js/es7/reflect';
 
+import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
 
 /**
  * Required to support Web Animations `@angular/animation`.

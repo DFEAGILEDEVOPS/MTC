@@ -68,7 +68,8 @@ v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangemen
     numpadRemoval: false,
     fontSize: false,
     colourContrast: false,
-    questionReader: false
+    questionReader: false,
+    nextBetweenQuestions: false
   }
   if (!pupilAccessArrangements || pupilAccessArrangements.length === 0) {
     return R.merge(newCheckConfig, aaConfig)
@@ -100,6 +101,7 @@ v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangemen
       aaConfig.colourContrastCode = colourContrastAccessArrangement.pupilColourContrastCode
     }
     if (code === accessArrangementsSqlUtil.AACODES.QUESTION_READER) aaConfig.questionReader = true
+    if (code === accessArrangementsSqlUtil.AACODES.NEXT_BETWEEN_QUESTIONS) aaConfig.nextBetweenQuestions = true
   })
   return R.merge(newCheckConfig, aaConfig)
 }
