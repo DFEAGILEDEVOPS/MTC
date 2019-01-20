@@ -3,6 +3,8 @@ class AddEditCheckWindowV2Page < SitePrism::Page
 
   element :check_name, '#checkWindowName'
 
+  elements :disabled_fields, '.disabled-check-window-field'
+
   element :admin_start_day, '#adminStartDay'
   element :admin_start_month, '#adminStartMonth'
   element :admin_start_year, '#adminStartYear'

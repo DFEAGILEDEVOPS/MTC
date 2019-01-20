@@ -5,11 +5,11 @@ end
 Then(/^I should see assign check window page as per design$/) do
   expect(assign_form_to_window_page).to have_heading
   expect(assign_form_to_window_page).to have_information
-  expect(assign_form_to_window_page.check_windows.rows.first).to have_name_of_window
+  expect(assign_form_to_window_page.check_windows.rows.first).to have_name_of_window unless assign_form_to_window_page.has_no_check_windows?
 end
 
 Then(/^I should not see '(.*)' check windows$/) do |check_window_name|
-  expect(assign_form_to_window_page.check_windows.rows.find {|row| row.name_of_window.text.include? check_window_name}).to be_nil
+  expect(assign_form_to_window_page.check_windows.rows.find {|row| row.name_of_window.text.include? check_window_name}).to be_nil unless assign_form_to_window_page.has_no_check_windows?
 end
 
 And(/^the check window has started$/) do

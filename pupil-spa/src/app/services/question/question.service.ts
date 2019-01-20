@@ -75,6 +75,7 @@ export class QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
+    config.checkTime = configData[ 'checkTime' ];
     config.questionReader = configData['questionReader'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
     config.inputAssistance = configData[ 'inputAssistance' ];
@@ -82,6 +83,7 @@ export class QuestionService {
     config.fontSize = configData[ 'fontSize' ];
     config.colourContrast = configData[ 'colourContrast' ];
     config.practice = configData[ 'practice' ];
+    config.nextBetweenQuestions = configData[ 'nextBetweenQuestions' ];
     this.config = config;
   }
 }

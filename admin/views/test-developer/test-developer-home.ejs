@@ -14,14 +14,15 @@
         <%- partial('partials/_session_expiry') %>
 
         <ol class="list">
-            <% const hrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/view-forms' : '/test-developer/upload-and-view-forms' %>
+            <% const uploadAndViewFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/view-forms' : '/test-developer/upload-and-view-forms' %>
             <li>
-                <h2 class="heading-small"><a  href="<%= hrefValue %>">Upload and view forms</a></h2>
+                <h2 class="heading-small"><a  href="<%= uploadAndViewFormsHrefValue %>">Upload and view forms</a></h2>
                 <p>Add, view, remove and edit check forms</p>
             </li>
 
             <li>
-                <h2 class="heading-small"><a href="/test-developer/assign-form-to-window">Assign forms to check windows</a></h2>
+              <% const assignFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/assign-forms-to-check-windows' : '/test-developer/assign-form-to-window' %>
+              <h2 class="heading-small"><a href="<%= assignFormsHrefValue %>">Assign forms to check windows</a></h2>
                 <p>Select uploaded forms and assign them to check windows</p>
             </li>
 
@@ -38,7 +39,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
                     </li>
                 </ul>
             </nav>

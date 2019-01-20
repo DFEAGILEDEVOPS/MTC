@@ -97,22 +97,22 @@
                             </li>
                             <li>
                                 <div><strong>IT Issues</strong></div>
-                                <div>There was an issue with the device the pupil was using. For example faulty equipment or power loss.</div>
+                                <div>There was an issue with the device the pupil was using. For example, faulty equipment or power loss.</div>
                             </li>
                             <li>
                                 <div><strong>Classroom disruption</strong></div>
-                                <div>Pupil(s) were unable to continue the check due to disruptions. For example, fire alarm, illness during the check or high level behavioural disruption.</div>
+                                <div>Pupils were unable to continue the check due to disruptions. For example, fire alarm, illness during the check or high level behavioural disruption.</div>
                             </li>
                             <li>
                                 <div><strong>Did not complete</strong></div>
-                                <div>Pupil did not complete the check. For example pupil accidentally closed the check window.</div>
+                                <div>Pupil did not complete the check. For example, pupil accidentally closed the check window.</div>
                             </li>
                         </ul>
                     </div>
                 </details>
             </div>
 
-            <h2 class="top-padding-30">2. Select pupil(s)</h2>
+            <h2 class="top-padding-30">2. Select Pupils</h2>
 
             <%- partial('partials/_groups_filter', { groups: groups }) %>
 
@@ -151,7 +151,7 @@
                         <td>
                             <div class="multiple-choice-mtc">
                                 <input id="pupil-<%= pupil.id %>"
-                                       name="pupil[<%= index %>]"
+                                       name="pupil[]"
                                        type="checkbox"
                                        value="<%= pupil.id %>"
                                        aria-label="Tick pupil <%= pupil.fullName %>."
