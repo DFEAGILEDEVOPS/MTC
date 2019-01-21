@@ -35,7 +35,7 @@
                 <div class="multiple-choice">
                     <input id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
                     <label for="confirmYes">
-                        I confirm that my school administered the multiplication tables check according to the arrangements set out in the guidance.
+                        I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.
                         <br /><br />
                         In particular:
                     </label>
@@ -58,12 +58,14 @@
                 <% } %>
             </div>
 
-            <div class="multiple-choice">
-                <input id="confirmNo" type="radio" role="radio" name="confirm" value="N">
-                <label for="confirmNo">I am unable to confirm the statements above and have reported this to the Standards and Testing Agency (STA)</label>
-
-                <div class="panel panel-border-wide">
-                    <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
+            <div class="form-group">
+                <div class="multiple-choice">
+                    <input id="confirmNo" type="radio" role="radio" name="confirm" value="N">
+                    <label for="confirmNo">I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</label>
+    
+                    <div class="panel panel-border-wide">
+                        <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
+                    </div>
                 </div>
             </div>
 
