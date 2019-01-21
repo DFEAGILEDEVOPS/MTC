@@ -111,7 +111,7 @@
     }
   },
   {
-    "name": "[concat(variables('authAppName'), '/config']",
+    "name": "[concat(variables('authAppName'), '/config')]",
     "type": "Microsoft.Web/sites/config",
     "apiVersion": "2016-08-01",
     "dependsOn": [
