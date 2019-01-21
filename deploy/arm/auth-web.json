@@ -76,6 +76,7 @@
     "comments": "Auth Web App",
     "name": "[variables('authAppName')]",
     "type": "Microsoft.Web/sites",
+    "apiVersion": "2016-08-01",
     "kind": "app,linux,container",
     "location": "[resourceGroup().location]",
     "properties": {
