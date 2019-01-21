@@ -45,7 +45,7 @@ describe('HDF confirm validator', function () {
 
     describe('when not confirmed', () => {
       beforeEach(() => {
-        requestData.conrim = 'N'
+        requestData.confirm = 'N'
         requestData.pupilDetails = ''
         requestData.uniquePins = ''
         requestData.staffConfirm = ''
@@ -53,8 +53,7 @@ describe('HDF confirm validator', function () {
 
       it('returns validationError object with no errors if the validation is successful', () => {
         const validationError = hdfConfirmValidator.validate(requestData)
-        expect(validationError.hasError()).toBeTruthy()
-        expect(validationError.isError('confirmBoxes')).toBe(true)
+        expect(validationError.hasError()).toBeFalsy()
       })
     })
   })
