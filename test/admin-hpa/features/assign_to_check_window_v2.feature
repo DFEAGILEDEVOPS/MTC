@@ -1,4 +1,4 @@
-@assign_to_check_window
+@assign_to_check_window @create_new_window
 Feature:
   As a test developer
   I want to assign a window for a check form
