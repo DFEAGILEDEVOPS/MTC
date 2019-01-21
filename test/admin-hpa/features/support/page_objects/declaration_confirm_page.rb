@@ -7,13 +7,13 @@ class DeclarationConfirmPage < SitePrism::Page
   elements :error_messages, '.error-message'
   section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
 
-  def submit_invalid_details()
+  def submit_invalid_confirmed()
     form.first('#confirmYes').click
     form.first('#pupilDetails').click
     submit_button.click
   end
 
-  def submit_valid_details()
+  def submit_valid_confirmed()
     form.first('#confirmYes').click
     form.first('#pupilDetails').click
     form.first('#uniquePins').click
