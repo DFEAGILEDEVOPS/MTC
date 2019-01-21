@@ -104,23 +104,27 @@
       "siteConfig": {
         "linuxFxVersion": "[concat('DOCKER|', parameters('containerRegistry'), '/', parameters('authImageName'), ':latest')]"
       },
-      "appSettings": [{
-          "CORS_WHITELIST": "[concat('https://', variables('pupilAppUrl'))]"
-        },
-        {
-          "AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]"
-        },
-        {
-          "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "false"
-        },
-        {
-          "DOCKER_ENABLE_CI": "true"
-        }
-      ],
       "kind": "app,linux,container",
       "hostingEnvironmentId": null,
       "tags": {},
       "httpsOnly": true
     }
-  }]
+  },
+  {
+    "name": "[concat(variables('authAppName'), '/config']",
+    "type": "Microsoft.Web/sites/config",
+    "apiVersion": "2016-08-01",
+    "dependsOn": [
+        "[concat('Microsoft.Web/sites/', variables('authAppName'))]"
+    ],
+    "tags": {
+        "displayName": "WebAppSettings"
+    },
+    "properties": {
+      "CORS_WHITELIST": "[concat('https://', variables('pupilAppUrl'))]",
+      "AZURE_STORAGE_CONNECTION_STRING": "[parameters('AZURE_STORAGE_CONNECTION_STRING')]",
+      "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "false",
+      "DOCKER_ENABLE_CI": "true"
+    }
+}]
 }
