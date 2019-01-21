@@ -198,6 +198,30 @@ const postConfirmSubmit = async (req, res, next) => {
     return getConfirmSubmit(req, res, next)
   }
 
+  // Re-validate the hdf form data
+  let hdfFormData = req.session.hdfFormData
+  validationError = await hdfValidator.validate(hdfFormData)
+  if (validationError.hasError()) {
+    return next(new Error('Invalid HDF form data'))
+  }
+
+  // Re-check hdf eligibility
+  let hdfEligibility
+  try {
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+  if (!hdfEligibility) {
+    return next(new Error('Not eligible to submit HDF'))
+  }
+
+  try {
+    await headteacherDeclarationService.submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+
   return res.redirect('/attendance/submitted')
 }
 
@@ -242,6 +266,8 @@ const postDeclarationForm = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
+
+  req.session.hdfFormData = form
 
   return res.redirect('/attendance/review-pupil-details')
 }

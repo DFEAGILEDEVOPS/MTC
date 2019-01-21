@@ -3,6 +3,7 @@
 const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
@@ -61,28 +62,32 @@ headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
  * @param {number} dfeNumber
+ * @param {number} userId
  * @return {Promise<void>}
  */
-headteacherDeclarationService.declare = async (form, dfeNumber, userId) => {
+headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
 
   if (!school) {
     throw new Error(`school ${dfeNumber} not found`)
   }
 
-  const data = R.clone(form)
+  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+  if (!checkWindow || !checkWindow.id) {
+    throw new Error(`Active check window not found`)
+  }
+  const data = {
+    signedDate: new Date(),
+    checkWindow_id: checkWindow.id,
+    school_id: school.id,
+    user_id: userId,
+    confirmed: form.confirm === 'Y',
+    headTeacher: form.isHeadteacher === 'Y',
+    jobTitle: form.jobTitle,
+    fullName: [form.firstName, form.lastName].join(' ')
+  }
 
-  data.signedDate = new Date()
-  data.school_id = school.id
-  data.user_id = userId
-
-  // Add the check window they are signing for
-  // TODO: data-refactor: update this once the checkwindow refactoring is done.
-  data.checkWindow_id = 1
-
-  await headteacherDeclarationDataService.sqlCreate(data)
-
-  // TODO: hdf: close the check for the school?
+  return headteacherDeclarationDataService.sqlCreate(data)
 }
 
 /**
