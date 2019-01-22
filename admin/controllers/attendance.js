@@ -278,6 +278,9 @@ const getHDFSubmitted = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
+    if (!hdf) {
+      return res.redirect('/attendance/declaration-form')
+    }
     return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
       hdf: hdf,

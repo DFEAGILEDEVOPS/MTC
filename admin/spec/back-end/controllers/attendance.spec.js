@@ -21,6 +21,7 @@ describe('attendance controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001 }
+    req.session = params.session || {}
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
     return req
@@ -163,6 +164,7 @@ describe('attendance controller:', () => {
     let reqParams = {
       method: 'POST',
       url: '/attendance/confirm-and-submit',
+      session: { hdfFormData: { isHeadTeacher: 'Y', firstName: 'Bob', lastName: 'Jones' } },
       body: {
         confirm: 'Y',
         pupilDetails: 'checked',
@@ -177,7 +179,13 @@ describe('attendance controller:', () => {
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       spyOn(hdfConfirmValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(hdfValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue({})
+      spyOn(headteacherDeclarationService, 'submitDeclaration').and.returnValue({})
       await controller.postConfirmSubmit(req, res)
+      expect(hdfValidator.validate).toHaveBeenCalled()
+      expect(headteacherDeclarationService.getEligibilityForSchool).toHaveBeenCalled()
+      expect(headteacherDeclarationService.submitDeclaration).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
