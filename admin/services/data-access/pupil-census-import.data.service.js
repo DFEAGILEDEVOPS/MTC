@@ -87,15 +87,15 @@ const handleError = (error) => {
     return 'Error received is undefined'
   }
   if (typeof error !== 'object') {
-    return 'Error received is not an object'
+    return `Error type is ${typeof error} with value ${error.toString()}`
   }
   if (error || Object.keys(error).length === 0) {
-    return 'Error received does not have any properties'
+    return `Error with no properties: ${error.toString()}`
   }
   if (error || !error.message) {
-    return 'Error received does not have a message property'
+    return `Error with no message property: ${error.toString()} `
   }
-  return error && error.message
+  return error && error.message.toString()
 }
 
 module.exports = pupilCensusImportDataService
