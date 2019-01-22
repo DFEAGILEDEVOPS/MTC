@@ -97,7 +97,7 @@ checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType)
     checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
     checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out',
     checkPeriod: checkFormType === 'live' ? 'MTC' : 'Try it out',
-    isWithinCheckType: dateService.utcNowAsMoment().isAfter(checkTypeStartDate) && dateService.utcNowAsMoment().isBefore(checkTypeEndDate)
+    isWithinCheckType: dateService.utcNowAsMoment().isBetween(checkTypeStartDate, checkTypeEndDate)
   }
 }
 
