@@ -80,7 +80,7 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
 /**
  * Bulk upload Error handler
  * @param {Object} error
- * @return {String} - Error message
+ * @return {String} - Error Object
  */
 const handleError = (error) => {
   if (!error) {
