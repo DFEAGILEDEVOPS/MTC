@@ -147,105 +147,72 @@ describe('check-form-v2.service', () => {
   })
   describe('assignCheckWindowForms', () => {
     it('fetches check window, check form records and assigns forms to check window', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ id: 1 })
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
+      const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
-      await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
+      await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).toHaveBeenCalled()
     })
     it('returns an error if no check window is found', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({})
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
+      const checkWindow = {}
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
+        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
-        expect(error.message).toBe('Check window not found with url slug checkWindowUrlSlug')
+        expect(error.message).toBe('Check window not found')
       }
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).not.toHaveBeenCalled()
-      expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
-    })
-    it('returns an error if no fetching check window call fails', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs')
-      spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
-      const checkFormType = 'live'
-      const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
-      try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('error')
-      }
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no check forms are found', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ id: 1 })
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([])
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
+      const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
+        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('Check forms not found with url slugs urlSlug1,urlSlug2')
       }
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no fetching check forms call fails', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ id: 1 })
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue(Promise.reject(new Error('error')))
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
+      const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
+        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('error')
       }
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no assigning check forms call fails', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ id: 1 })
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow').and.returnValue(Promise.reject(new Error('error')))
-      const checkWindowUrlSlug = 'checkWindowUrlSlug'
+      const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      const hasAssignedForms = true
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms)
+        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('error')
       }
-      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).toHaveBeenCalled()
     })

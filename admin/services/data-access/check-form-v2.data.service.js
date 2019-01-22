@@ -251,31 +251,29 @@ const checkFormV2DataService = {
    * @param {Number} checkWindowId
    * @param {Boolean} isLiveCheckForm
    * @param {Array} checkForms
-   * @param {Boolean} hasAssignedForms
    * @returns {Promise<*>}
    */
-  sqlAssignFormsToCheckWindow: (checkWindowId, isLiveCheckForm, checkForms, hasAssignedForms) => {
+  sqlAssignFormsToCheckWindow: (checkWindowId, isLiveCheckForm, checkForms) => {
     const params = []
     const queries = []
 
-    if (hasAssignedForms) {
-      params.push({
-        name: `isLiveCheckForm`,
-        value: isLiveCheckForm ? 1 : 0,
-        type: TYPES.Bit
-      })
-      params.push({
-        name: `checkWindowId`,
-        value: checkWindowId,
-        type: TYPES.Int
-      })
-      queries.push(`DELETE fw 
-      FROM ${sqlService.adminSchema}.[checkFormWindow] fw
-      INNER JOIN ${sqlService.adminSchema}.[checkForm] cf
-        ON cf.id = fw.checkForm_id
-      WHERE cf.isLiveCheckForm = @isLiveCheckForm
-      AND fw.checkWindow_id = @checkWindowId`)
-    }
+    params.push({
+      name: `isLiveCheckForm`,
+      value: isLiveCheckForm ? 1 : 0,
+      type: TYPES.Bit
+    })
+    params.push({
+      name: `checkWindowId`,
+      value: checkWindowId,
+      type: TYPES.Int
+    })
+    queries.push(`DELETE fw 
+    FROM ${sqlService.adminSchema}.[checkFormWindow] fw
+    INNER JOIN ${sqlService.adminSchema}.[checkForm] cf
+      ON cf.id = fw.checkForm_id
+    WHERE cf.isLiveCheckForm = @isLiveCheckForm
+    AND fw.checkWindow_id = @checkWindowId`)
+
     const inserts = []
     checkForms.forEach((cf, idx) => {
       inserts.push(`(@checkForm_id${idx}, @checkWindow_id${idx})`)
