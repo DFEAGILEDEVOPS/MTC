@@ -18,7 +18,7 @@
           <div>Assign forms to <b><%= pageTitle %></b></div>
           <div><%= checkWindowData.checkFormTypeTitle %> period: <%= checkFormType !== 'live' ?
             `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
-            `${checkWindowData.checkStartDate} to ${checkWindowData.checkEndDate}` %>
+            `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
           </div>
           <% } else if (checkFormData && checkFormData.length === 0) { %>
           No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.

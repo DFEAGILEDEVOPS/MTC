@@ -86,18 +86,18 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
  * @returns {Object}
  */
 checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType) => {
-  const checkTypeStartDate = checkFormType === 'live' ? checkWindow.checkStartDate : checkWindow.familiarisationCheckStartDate
-  const checkTypeEndDate = checkFormType === 'live' ? checkWindow.checkEndDate : checkWindow.familiarisationCheckEndDate
+  const checkStartDate = checkFormType === 'live' ? checkWindow.checkStartDate : checkWindow.familiarisationCheckStartDate
+  const checkEndDate = checkFormType === 'live' ? checkWindow.checkEndDate : checkWindow.familiarisationCheckEndDate
   return {
     name: checkWindow.name,
     urlSlug: checkWindow.urlSlug,
     familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
     familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
-    checkStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
-    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
+    liveCheckStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
+    liveCheckEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
     checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out',
     checkPeriod: checkFormType === 'live' ? 'MTC' : 'Try it out',
-    isWithinCheckType: dateService.utcNowAsMoment().isBetween(checkTypeStartDate, checkTypeEndDate)
+    isWithinCheckType: dateService.utcNowAsMoment().isBetween(checkStartDate, checkEndDate)
   }
 }
 
