@@ -15,6 +15,17 @@ router.get(
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => attendance.downloadResults(req, res, next)
 )
+
+router.get(
+  '/declaration-form',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.getDeclarationForm(req, res, next)
+)
+router.post(
+  '/submit-declaration-form',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.postDeclarationForm(req, res, next)
+)
 router.get(
   '/review-pupil-details',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
@@ -41,17 +52,7 @@ router.post(
   (req, res, next) => attendance.postConfirmSubmit(req, res, next)
 )
 router.get(
-  '/declaration-form',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => attendance.getDeclarationForm(req, res, next)
-)
-router.post(
-  '/submit-declaration-form',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => attendance.postDeclarationForm(req, res, next)
-)
-router.get(
-  '/declaration-form-submitted',
+  '/submitted',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => attendance.getHDFSubmitted(req, res, next)
 )

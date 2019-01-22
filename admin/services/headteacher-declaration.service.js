@@ -93,11 +93,10 @@ headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId
 /**
  * Return the last HDF submitted for a school, using DfeNumber
  * @param {number} dfeNumber
- * @return {Promise<void>}
+ * @return {Promise<any>}
  */
 headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
   // TODO: hdf: role checks? Date checks?
-
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) {
     return null

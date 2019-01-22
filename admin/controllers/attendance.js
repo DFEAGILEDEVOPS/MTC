@@ -273,12 +273,14 @@ const postDeclarationForm = async (req, res, next) => {
 }
 
 const getHDFSubmitted = async (req, res, next) => {
-  res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
+  res.locals.pageTitle = 'View submission'
+  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
-    return res.render('school/declaration-form-submitted', {
+    return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
+      hdf: hdf,
       signedDate: dateService.formatFullGdsDate(hdf.signedDate)
     })
   } catch (error) {
