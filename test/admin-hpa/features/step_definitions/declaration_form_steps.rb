@@ -1,5 +1,4 @@
 Given(/^I am on the HDF form page$/) do
-  step 'I have signed in with teacher3'
   hdf_form_page.load
   @page = hdf_form_page
 end
