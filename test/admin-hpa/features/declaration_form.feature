@@ -1,8 +1,11 @@
-@manual @declaration_form
+@declaration_form @hdf
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form
   so I can confirm the check has been administered accordingly
+
+  Background:
+    Given I have signed in with teacher4
 
   Scenario: HDF Form displays as per the design
     Given I am on the HDF form page
