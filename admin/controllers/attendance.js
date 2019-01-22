@@ -229,6 +229,15 @@ const getDeclarationForm = async (req, res, next) => {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
 
+  try {
+    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    if (submitted) {
+      return res.redirect('/attendance/submitted')
+    }
+  } catch (error) {
+    return next(error)
+  }
+
   let hdfEligibility
   try {
     hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)

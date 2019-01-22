@@ -38,9 +38,22 @@ describe('attendance controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
       spyOn(res, 'render').and.returnValue(null)
       await controller.getDeclarationForm(req, res)
       expect(res.render).toHaveBeenCalled()
+    })
+
+    it('redirects when the hdf has been submitted', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      await controller.getDeclarationForm(req, res)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
     })
   })
 

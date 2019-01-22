@@ -48,7 +48,7 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   const sql = `
   SELECT TOP 1 
     *
-  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = school.id 
+  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id 
   WHERE h.checkWindow_id = @checkWindowId 
   AND s.dfeNumber = @dfeNumber`
   const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])
