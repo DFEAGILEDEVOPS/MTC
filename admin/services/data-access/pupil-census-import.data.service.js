@@ -95,7 +95,7 @@ const handleError = (error) => {
   if (error || !error.message) {
     return `Error with no message property: ${error.toString()} `
   }
-  return error && error.message.toString()
+  return error.toString()
 }
 
 module.exports = pupilCensusImportDataService
