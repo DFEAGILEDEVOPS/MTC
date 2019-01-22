@@ -18,7 +18,7 @@
             </li>
 
             <li>
-                <h2 class="heading-small"><a href="/group/pupils-list">Group pupil</a></h2>
+                <h2 class="heading-small"><a href="/group/pupils-list">Group pupils</a></h2>
                 <p>Create groups</p>
             </li>
 
@@ -39,11 +39,11 @@
 
             <li>
                 <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                <h2 class="heading-small"><a href="/pupil-pin/generate-familiarisation-pins-overview">Generate pupil PINs - familiarisation check</a></h2>
-                <p>Generate personal identification numbers (PINs) for pupils and view school password for the familiarisation check</p>
+                <h2 class="heading-small"><a href="/pupil-pin/generate-familiarisation-pins-overview">Try it out - password and PINs</a></h2>
+                <p>Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC</p>
                 <% } else { %>
-                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Generate pupil PINs - familiarisation check</a></h2>
-                <span>Generate personal identification numbers (PINs) for pupils and view school password for the familiarisation check</span>
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Try it out - password and PINs</a></h2>
+                <span>Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC</span>
                 <p>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
                     <% if (pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours) { %>
@@ -58,11 +58,11 @@
 
             <li>
                 <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                <h2 class="heading-small"><a href="/pupil-pin/generate-live-pins-overview">Generate pupil PINs - live check</a></h2>
-                <p>Generate personal identification numbers (PINs) for pupils and view school password for the live check</p>
+                <h2 class="heading-small"><a href="/pupil-pin/generate-live-pins-overview">Start the multiplication tables check - password and PINs</a></h2>
+                <p>Generate school password and personal identification numbers (PINs) so pupils can take the MTC</p>
                 <% } else { %>
-                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Generate pupil PINs - live check</a></h2>
-                <span>Generate personal identification numbers (PINs) for pupils and view school password for the live check</span>
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Start the multiplication tables check - password and PINs</a></h2>
+                <span>Generate school password and personal identification numbers (PINs) so pupils can take the MTC</span>
                 <p>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
                     <% if (pinGenerationEligibilityData.isWithinLiveUnavailableHours) { %>
@@ -77,7 +77,7 @@
 
             <li>
                 <h2 class="heading-small"><a href="/restart/overview">Restarts</a></h2>
-                <p>Select a pupil to restart because of an interrupted check</p>
+                <p>Select pupils to restart because of an interrupted check</p>
             </li>
 
             <li>
@@ -98,7 +98,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
                     </li>
                 </ul>
             </nav>

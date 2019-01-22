@@ -6,5 +6,12 @@
     <p id="js-loading" class="font-large text-center aa-lead-size">
       Question {{question.sequenceNumber}}&hellip;
     </p>
+    <button *ngIf="config.nextBetweenQuestions && nextButtonDelayFinished"
+      type="button"
+      class="item-center button button-start aa-button-size aa-contrast-button aa-button-center"
+      id="goButton"
+      (click)="this.sendTimeoutEvent()">
+      Next
+    </button>
   </div>
 </div>

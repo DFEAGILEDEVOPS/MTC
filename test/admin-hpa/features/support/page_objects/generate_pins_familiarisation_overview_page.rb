@@ -2,7 +2,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-familiarisation-pins-overview'
 
   element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password in order to start the familiarisation check. These expire at 4pm daily.'
+  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password to start the ‘Try it out’ area. These expire at 4pm daily.'
   element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
@@ -43,7 +43,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     name = pupil.name.text
     pupil.checkbox.click
     sticky_banner.confirm.click
-    sleep(30)
+    sleep(60)
     name
   end
 
@@ -54,7 +54,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}
     sticky_banner.confirm.click
-    sleep(30)
+    sleep(60)
     pupil_names
   end
 

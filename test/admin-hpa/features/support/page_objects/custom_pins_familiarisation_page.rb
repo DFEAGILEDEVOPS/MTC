@@ -2,7 +2,7 @@ class CustomPinsFamiliarisationPage < SitePrism::Page
   set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
   element :heading, '.heading-xlarge'
-  element :pin_message, '.lede', text: 'Personal identification number (PIN) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
+  element :pin_message, '.lede', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
   element :filter_by_name, '#search-name'
   section :group_filter, GroupFilter, '#filterByGroup'
 

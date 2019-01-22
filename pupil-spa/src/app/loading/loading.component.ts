@@ -1,9 +1,23 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener, ElementRef, OnDestroy } from '@angular/core';
+import { Component,
+  AfterViewInit,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  ElementRef,
+  OnDestroy,
+  AfterViewChecked,
+  ComponentFactoryResolver,
+  ComponentRef,
+  ViewContainerRef
+} from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { Question } from '../services/question/question.model';
+import { Config } from '../config.model';
+import { IdleModalComponent } from '../modal/idle.modal.component';
 
 @Component({
   selector: 'app-loading',
@@ -11,7 +25,20 @@ import { Question } from '../services/question/question.model';
   styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent implements AfterViewInit, OnDestroy {
+export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
+
+  protected speechListenerEvent: any;
+  public config: Config;
+  public nextButtonDelayFinished = false;
+
+  @Input()
+  public shouldShowWarningModal = true;
+
+  @Input()
+  public nextQuestionButtonDelay = 2;
+
+  @Input()
+  public nextQuestionIdleTimeout = 30;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
@@ -30,7 +57,10 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   constructor(protected auditService: AuditService,
               protected questionService: QuestionService,
               protected speechService: SpeechService,
-              protected elRef: ElementRef) {
+              protected elRef: ElementRef,
+              protected componentFactoryResolver: ComponentFactoryResolver,
+              protected viewContainerRef: ViewContainerRef) {
+    this.config = this.questionService.getConfig();
   }
 
   /**
@@ -44,28 +74,63 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
     event.preventDefault();
+
+    const key = event.key;
+
+    switch (key) {
+      case 'Enter':
+        this.sendTimeoutEvent();
+        break;
+    }
+
     return false;
   }
 
-  ngAfterViewInit() {
-    // console.log('loading.component: after view init called');
+  addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       sequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`
     }));
+  }
+
+  showWarningModal() {
+    const factory = this.componentFactoryResolver.resolveComponentFactory(IdleModalComponent);
+    const ref: ComponentRef<IdleModalComponent> = this.viewContainerRef.createComponent(factory);
+    ref.instance.closeCallback = () => {
+      ref.destroy();
+    };
+  }
+
+  ngAfterViewInit() {
+    this.addAuditServiceEntry();
+
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', async (event) => {
+        await this.speechService.waitForEndOfSpeech();
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
+    }
 
-      setTimeout(() => {
-        this.speechService.waitForEndOfSpeech().then(() => {
-          this.sendTimeoutEvent();
-        });
+    if (this.config.nextBetweenQuestions && this.shouldShowWarningModal) {
+      setTimeout(async () => {
+        this.showWarningModal();
+      }, this.nextQuestionIdleTimeout * 1000);
+    }
+
+    if (!this.config.nextBetweenQuestions) {
+      setTimeout(async () => {
+        if (this.config.questionReader) {
+          await this.speechService.waitForEndOfSpeech();
+        }
+
+        this.sendTimeoutEvent();
       }, this.loadingTimeout * 1000);
     } else {
       setTimeout(() => {
-        this.sendTimeoutEvent();
-      }, this.loadingTimeout * 1000);
+        this.nextButtonDelayFinished = true;
+      }, this.nextQuestionButtonDelay * 1000);
     }
   }
 
@@ -77,6 +142,14 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
+    }
+  }
+
+  ngAfterViewChecked() {
+    if (this.config.nextBetweenQuestions && this.nextButtonDelayFinished) {
+      this.elRef.nativeElement.querySelector('#goButton').focus();
     }
   }
 }

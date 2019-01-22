@@ -49,7 +49,7 @@ If you want to run a particular test, then tag the scenario with a tag like @tes
 
 If you want to run the tests on a different url:
 
-`cucumber BASE_URL='https://check-development.herokuapp.com'`
+`cucumber ADMIN_BASE_URL='https://check-development.herokuapp.com'`
 
 #####Parallel
 
@@ -62,7 +62,7 @@ If you want to run the tests in parallel to save time:
  
 If you want to change the url while executing parallel tests ( use the -o option in parallel gem to give cucumber command line options):
  
- `parallel_cucumber features/ -n 4 -o "-p parallel BASE_URL=‘https://check-development.herokuapp.com’"`
+ `parallel_cucumber features/ -n 4 -o "-p parallel ADMIN_BASE_URL=‘https://check-development.herokuapp.com’"`
  
 If you want to run a set of tests in parallel tagged with a tag for example @smoke:
  
