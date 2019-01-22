@@ -240,7 +240,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  sleep(60)
+  sleep(180)
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -257,7 +257,7 @@ When(/^I choose to filter via group on the generate pins page$/) do
 end
 
 When(/^I choose to filter via group on the generate pins familiarisation page$/) do
-  sleep 4
+  sleep 60
   generate_pins_familiarisation_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_familiarisation_overview_page
@@ -301,6 +301,7 @@ end
 
 Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
+  sleep(180)
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
   step 'I should be able to generate pins for all pupils in this group'
