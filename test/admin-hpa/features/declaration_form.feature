@@ -1,42 +1,92 @@
-@manual @declaration_form
+@declaration_form @hdf
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form
   so I can confirm the check has been administered accordingly
 
-  Scenario: Once I confirm the attendance register , I should be on HDF
-    Given there are pupils who attended the check
-    And I have confirmed the pupils on attendance register
-    Then I should see the Head teacher's declaration form
+  Background:
+    Given I have signed in with teacher4
 
-  Scenario: Confirm on the HDF form
+  Scenario: HDF Form displays as per the design
     Given I am on the HDF form page
-    When I confirm the HDF form
-    Then I should taken to confirmation page
+    Then I can see hdf form page as per the design
 
-  Scenario: The signature should be self populated
+  Scenario: Names can only be a max of 128 characters long
     Given I am on the HDF form page
-    Then I should see the main signatory is self populated
+    When I attempt to enter hdf names that are more than 128 characters long
+    Then I should see a validation error for names
 
-  Scenario: Confirmation of HDF forms takes to confirmation page
+  Scenario: Names should contain at least 1 character long
     Given I am on the HDF form page
-    When I confirm the HDF form
-    Then I should be taken to HDF confirmation page
-    And I should be able to view results
+    When I submit the form with names that are less than 1 character long
+    Then I should see a validation error for names
 
-  Scenario: Declination of HDF forms takes to confirmation page
+  Scenario: Names can include a hyphen
     Given I am on the HDF form page
-    When I decline the HDF form
-    Then I should be taken to HDF confirmation page
-    And I should be able to view results
+    When I submit the form with the hdf name fields set as Mary-Jane
+    Then I should be taken to the attendance page
 
-  Scenario: Inline error message for job title
+  Scenario: Names can include a space
     Given I am on the HDF form page
-    When I dont select any option and click submit
-    Then I get an inline error message
+    When I submit the form with the hdf name fields set as Mary Jane
+    Then I should be taken to the attendance page
 
-  Scenario: Inline error message for entering more than 35 characters in job title
+  Scenario: Names can include numbers
     Given I am on the HDF form page
-    When I try to give more than 35 characters in job title
-    Then I get an inline error message saying maximum chaeayer is
+    When I submit the form with the hdf name fields set as M4ry
+    Then I should be taken to the attendance page
 
+  Scenario: Names can include apostrophes
+    Given I am on the HDF form page
+    When I submit the form with the hdf name fields set as Mary'Jane
+    Then I should be taken to the attendance page
+
+  Scenario: Names can include apostrophes
+    Given I am on the HDF form page
+    When I submit the form with the hdf name fields set as Maryçáéíóúñü
+    Then I should be taken to the attendance page
+
+  @declaration_formm
+  Scenario: Names can not contain special characters
+    Given I am on the HDF form page
+    Then I should see validation errors when I submit with the following hdf names
+      | F!rst  |
+      | @ndrew |
+      | £dward |
+      | $imon  |
+      | %ual   |
+      | ^orman |
+      | &bby   |
+      | *lly   |
+      | (iara  |
+      | )iana  |
+      | J_hn   |
+      | A+aron |
+      | Sh=ila |
+      | [Shila |
+      | ]sad   |
+      | \an    |
+      | ?who   |
+      | >who   |
+      | <who   |
+      | who,   |
+
+  Scenario Outline: Names can include some special characters
+    Given I am on the HDF form page
+    When I submit the form with the hdf name fields set as <value>
+    Then I should be taken to the attendance page
+
+    Examples:
+      | value              |
+      | áàâãäåāæéèêēëíìîïī |
+      | ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ |
+      | ÓÒÔÕÖØŌŒÚÙÛÜŪŴÝŸŶ  |
+      | óòôõöøōœúùûüūŵýÿŷ  |
+      | ÞÐÇÑẞ              |
+      | þçðñß              |
+
+  Scenario: Job title is required when not a headteacher
+    Given I am on the HDF form page
+    When I click on the not a headteacher radio box
+    And I submit the form with the hdf name fields set as Test
+    Then I should see a validation error for job title
