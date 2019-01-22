@@ -12,6 +12,18 @@ const R = require('ramda')
 const pupilStatusService = {}
 
 /**
+ * Constants
+ */
+pupilStatusService.STATUS_CODES = Object.freeze({
+  UNALLOC: 'UNALLOC',
+  ALLOC: 'ALLOC',
+  LOGGED_IN: 'LOGGED_IN',
+  STARTED: 'STARTED',
+  COMPLETED: 'COMPLETED',
+  NOT_TAKING: 'NOT_TAKING',
+})
+
+/**
  * Fetch pupil's status description
  * @param pupil
  * @returns {String}
