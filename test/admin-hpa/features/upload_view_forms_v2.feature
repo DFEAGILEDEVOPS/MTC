@@ -1,4 +1,4 @@
-@upload_view_forms
+@upload_view_forms @wip
 Feature: Upload and View Forms
 
   Background:

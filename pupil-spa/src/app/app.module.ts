@@ -66,6 +66,10 @@ import { SvgWarningComponent } from './svg/svg.warning.component';
 import { SvgLoadingComponent } from './svg/svg.loading.component';
 import { SvgArrowComponent } from './svg/svg.arrow.component';
 import { SvgGirlComponent } from './svg/svg.girl.component';
+import { IdleModalComponent } from './modal/idle.modal.component';
+import { TimerService } from './services/timer/timer.service';
+import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
+import { SvgClockComponent } from './svg/svg.clock.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -82,7 +86,8 @@ const appRoutes: Routes = [
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'font-choice', component: AAFontsComponent },
   {path: 'colour-choice', component: AAColoursComponent },
-  {path: 'access-settings', component: AASettingsComponent }
+  {path: 'access-settings', component: AASettingsComponent },
+  {path: 'out-of-time', component: OutOfTimeComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -113,12 +118,15 @@ const appRoutes: Routes = [
     AAFontsComponent,
     AAColoursComponent,
     AASettingsComponent,
+    OutOfTimeComponent,
     PageModificationsComponent,
     SvgCrownComponent,
     SvgWarningComponent,
     SvgLoadingComponent,
     SvgArrowComponent,
-    SvgGirlComponent
+    SvgGirlComponent,
+    SvgClockComponent,
+    IdleModalComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -163,10 +171,14 @@ const appRoutes: Routes = [
     TokenService,
     AzureQueueService,
     RouteService,
+    TimerService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue
     }
+  ],
+  entryComponents: [
+    IdleModalComponent
   ],
   bootstrap: [AppComponent]
 })

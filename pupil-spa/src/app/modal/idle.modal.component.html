@@ -1,0 +1,11 @@
+<div class='modal-overlay'>
+    <div class='modal-box aa-contrast-background'>
+        <app-svg-clock class='modal-icon'></app-svg-clock><h1 tabindex="0" class='aa-contrast-invert'>Time left</h1>
+        <div class='modal-content' tabindex="0">
+            <p>You have {{timerService.timeRemaining | date: "m"}} minutes and {{timerService.timeRemaining | date: "s"}} seconds left to complete the questions</p>
+        </div>
+        <div class='modal-buttons'>
+            <button tabindex="0" type="button" id="continue" class='button button-secondary aa-contrast-button' (click)="onClick()">Continue</button>
+        </div>
+    </div>
+</div>

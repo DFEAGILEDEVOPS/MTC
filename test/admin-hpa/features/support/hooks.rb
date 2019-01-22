@@ -8,7 +8,7 @@ Before("@add_a_pupil") do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
-  visit ENV['BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 Before("@timer_reset") do
@@ -17,6 +17,7 @@ Before("@timer_reset") do
   step 'I am on the check settings page'
   check_settings_page.update_question_time_limit(6)
   check_settings_page.update_loading_time_limit(3)
+  check_settings_page.update_check_time_limit(30)
 end
 
 Before("@add_5_pupils") do
@@ -80,6 +81,9 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
+Before("@reset_all_pins") do
+  SqlDbHelper.reset_all_pin_expiry_times
+end
 
 After("@delete_census") do
   step "I am logged in with a service manager"
@@ -92,13 +96,17 @@ Before("@remove_all_groups") do
   SqlDbHelper.delete_all_from_group
 end
 
-Before("@no_active_check_window ") do
+Before("@no_active_check_window") do
   today_date = Date.today
   check_end_date = today_date - 35
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
-After("@no_active_check_window ") do
+Before("@deactivate_all_test_check_window") do
+  SqlDbHelper.deactivate_all_test_check_window()
+end
+
+After("@no_active_check_window") do
   today_date = Date.today
   check_end_date = today_date + 35
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
@@ -122,8 +130,12 @@ After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
     embed("data:image/png;base64,#{Capybara.current_session.driver.browser.screenshot_as(:base64)}", 'image/png', 'Failure')
-    page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png")
-    p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
+    name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
+    page.save_screenshot("screenshots/#{name}")
+    p "Screenshot raised - " + "screenshots/#{name}"
+    content = File.open("screenshots/#{name}", 'rb') { |file| file.read }
+    AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
+    p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
-  visit ENV['BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end

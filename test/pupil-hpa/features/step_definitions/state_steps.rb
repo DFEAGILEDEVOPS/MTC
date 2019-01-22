@@ -43,6 +43,7 @@ end
 
 Given(/^I am on question (.*) of the check$/) do |number|
   @number = number.to_i
+  step 'I have generated a live pin'
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click

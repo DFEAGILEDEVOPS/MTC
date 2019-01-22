@@ -21,10 +21,8 @@
 
         <br />
         <span class="font-medium">
-            If a pupil's progress was significantly interrupted while taking the check,
-            use this page to notify STA that they will restart the check.
-            The pupil will take a different check form from their previous attempt
-            and the last completed attempt will be reported.
+          If a pupil was significantly interrupted during the check, use this page to tell us that they will restart the check.
+          The pupil will get a different set of questions from their previous attempt. Only the last completed attempt will be reported.
         </span>
     </div>
     <div class="column-one-third sidebar"  aria-label="sidebar">
@@ -33,11 +31,11 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
                     </li>
                     <li>
                         <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                        <a href="/pupil-pin/generate-live-pins-overview">Generate live pupil PINs</a>
+                        <a href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
                         <% } %>
                     </li>
                     <li>

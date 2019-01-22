@@ -21,7 +21,7 @@ Feature:
   Scenario: Verify breadcrumb on Generate Pin page
     Given I have signed in with teacher1
     And I navigate to generate pupil pins page
-    Then I should see the breadcrumb as "Home > PINs for live check"
+    Then I should see the breadcrumb as "Home > Start the MTC - password and PINs"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
