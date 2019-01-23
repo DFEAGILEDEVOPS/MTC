@@ -1,7 +1,11 @@
 Given(/^I am on the HDF form page$/) do
-  step 'I have signed in with teacher3'
   hdf_form_page.load
   @page = hdf_form_page
+end
+
+Given(/^all pupils have completed the check$/) do
+  school_id = SqlDbHelper.find_teacher('teacher3')['school_id']
+  SqlDbHelper.set_all_pupils_check_completed(school_id)
 end
 
 Then(/^I can see hdf form page as per the design$/) do
@@ -60,5 +64,5 @@ Then(/^I should see a validation error for job title$/) do
 end
 
 Then(/^I should be taken to the attendance page$/) do
-  expect(current_url).to eql "#{ENV["BASE_URL"]}/attendance/attendance-wip"
+  expect(current_url).to eql "#{ENV["BASE_URL"]}/attendance/review-pupil-details"
 end
