@@ -9,6 +9,11 @@
 
 <div class="grid-row">
   <div class="column-two-thirds">
+    <% if (messages && messages.info) { %>
+    <div class="info-message clickable">
+      <a href="#<%= highlight.values().next().value %>"><%= messages.info[0] %></a>
+    </div>
+    <% } %>
     <h1 class="heading-xlarge"><%= pageTitle %></h1>
     <p class="lede" id="lead-paragraph">
       Select forms to assign to each window. Each form can be used for multiple windows.
@@ -22,12 +27,29 @@
       <dl>
         <dd>
           <p class="font-small"><%= cw.name %></p>
-          <div><span class="bold-small"><a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period</a></span>
-            (<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</div>
-          <p id="<%= cw.urlSlug %>-familiarisation-period"><%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %></p>
-          <div><span class="bold-small"><a href="/check-form/select-form/live/<%= cw.urlSlug %>">Multiplication tables check period</a></span>
-            (<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)</div>
-          <p id="<%= cw.urlSlug %>-live-period"><%= cw.checkStartDate %> to <%= cw.checkEndDate %></p>
+          <div id="<%= `${cw.urlSlug.toString()}-familiarisation` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-familiarisation`)) { %> class="assigned-forms-highlight highlight-item"<% } %>>
+            <span class="bold-small">
+              <a href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period
+              </a>
+            </span>
+            (<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)
+            <div class="check-window-period" id="<%= cw.urlSlug %>-familiarisation-period">
+              <%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div id="<%= `${cw.urlSlug.toString()}-live` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-live`)) { %> class="assigned-forms-highlight highlight-item"<% } %>>
+            <span class="bold-small">
+              <a href="/check-form/select-form/live/<%= cw.urlSlug %>">
+                Multiplication tables check period
+              </a>
+            </span>
+            (<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)
+            <div  class="check-window-period" id="<%= cw.urlSlug %>-live-period">
+              <%= cw.checkStartDate %> to <%= cw.checkEndDate %>
+            </div>
+          </div>
+          <div class="divider"></div>
         </dd>
       </dl>
       <% }) %>
