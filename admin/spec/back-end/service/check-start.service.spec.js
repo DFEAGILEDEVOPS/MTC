@@ -3,7 +3,6 @@
 /* global describe it expect beforeEach spyOn fail */
 
 const moment = require('moment')
-const logger = require('../../../services/log.service.js').getLogger()
 
 const azureQueueService = require('../../../services/azure-queue.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
@@ -15,11 +14,13 @@ const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowMock = require('../mocks/check-window-2')
 const configService = require('../../../services/config.service')
+const logger = require('../../../services/log.service.js').getLogger()
 const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
+
 const checkFormMock = {
   id: 100,
   name: 'MTC0100',
@@ -209,6 +210,12 @@ describe('check-start.service', () => {
       spyOn(azureQueueService, 'addMessageAsync')
       spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
+      spyOn(configService, 'getBatchConfig').and.returnValue(
+        {
+            1: configService.getBaseConfig(),
+            2: configService.getBaseConfig(),
+            3: configService.getBaseConfig()
+          })
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -376,7 +383,7 @@ describe('check-start.service', () => {
       questionTimeLimit: 6
     }
     beforeEach(() => {
-      spyOn(configService, 'getConfig').and.returnValue(Promise.resolve(mockConfig))
+      spyOn(configService, 'getBatchConfig').and.returnValue({1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
         return {
           'token': '<someToken',
