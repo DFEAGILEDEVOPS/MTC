@@ -7,11 +7,11 @@ const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilPresenter = require('../helpers/pupil-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
 const attendanceCodeService = require('../services/attendance.service')
-const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
@@ -126,13 +126,10 @@ const getReviewPupilDetails = async (req, res, next) => {
   if (!pupils) {
     throw new Error('No pupils found')
   }
-  pupils.sort((a, b) => {
-    return (a.lastName === b.lastName ? 0 : a.lastName.localeCompare(b.lastName)) || (a.foreName === b.foreName ? 0 : a.foreName.localeCompare(b.foreName))
-  })
-  pupilIdentificationFlag.addIdentificationFlags(pupils)
+  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
-    pupils: pupils
+    pupils: pupilsSortedWithFlags
   })
 }
 
