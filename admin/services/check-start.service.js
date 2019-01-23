@@ -226,9 +226,16 @@ checkStartService.prepareCheck2 = async function (
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates) */
 
   // Prepare a bunch of messages ready to be inserted into the queue
-  const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
-    newCheckIds
-  )
+  let prepareCheckQueueMessages
+  try {
+    prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
+      newCheckIds,
+      schoolId
+    )
+  } catch (error) {
+    logger.error('Unable to prepare check messages', error)
+    throw error
+  }
 
   // Get the queue name
   const prepareCheckQueueName = queueNameService.getName(
@@ -330,9 +337,10 @@ checkStartService.pupilLogin = async function (pupilId) {
  * Query the DB and put the info into messages suitable for placing on the prepare-check queue
  * The message needs to contain everything the pupil needs to login and take the check
  * @param checkIds
+ * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkIds) {
+checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId) {
   if (!checkIds) {
     throw new Error('checkIds is not defined')
   }
@@ -369,9 +377,17 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
     sasExpiryDate
   )
 
-  for (let o of checks) {
-    const config = await configService.getConfig({ id: o.pupil_id }) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+  // Get check config for all pupils
+  const pupilIds = checks.map( check => check.pupil_id )
+  let pupilConfigs
+  try {
+    pupilConfigs = await configService.getBatchConfig( pupilIds, schoolId )
+  } catch (error) {
+    logger.error('Error generating pupil configs', error)
+    throw error
+  }
 
+  for (let o of checks) {
     // Pass the isLiveCheck config in to the SPA
     config.practice = !o.check_isLiveCheck
     const message = {
@@ -411,7 +427,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
       questions: checkFormService.prepareQuestionData(
         JSON.parse(o.checkForm_formData)
       ),
-      config: config
+      config: pupilConfigs[ o.pupil_id ]
     }
     if (o.check_isLiveCheck) {
       message.tokens.checkComplete = {

@@ -409,12 +409,12 @@ describe('check-start.service', () => {
       })
 
       it('makes a call to fetch the check form allocations from the db', async () => {
-        await checkStartService.prepareCheckQueueMessages([1])
+        await checkStartService.prepareCheckQueueMessages([1], 1)
         expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
       })
 
       it('prepares the question data', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1])
+        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
@@ -426,7 +426,7 @@ describe('check-start.service', () => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
       })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1])
+        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
         expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
       })
