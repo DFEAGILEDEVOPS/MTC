@@ -186,6 +186,7 @@ const configService = {
 
     try {
       const configData = await configDataService.getBatchConfig(pupilIds, schoolId)
+      this.validateConfigData(configData)
       configsByPupil = this.generateAllConfigs(configData)
     } catch (error) {
       logger.error('Failed to get batch pupil configs', error)
@@ -193,6 +194,28 @@ const configService = {
     }
 
     return configsByPupil
+  },
+
+  validateConfigData: function validateConfigData (data) {
+    console.log('DATA ', data)
+    if (!data || !Array.isArray(data)) {
+      throw new Error('Pupil config data is not valid')
+    }
+    if (data.length === 0) {
+      throw new Error('Missing settings: questionTime, loadingTime, checkTime.  Please populate the `settings` table.')
+    }
+
+    const row = R.head(data)
+    // Check that we have defaults for the question settings
+    if (!row.questionTime) {
+      throw new Error('questionTime is required to be set in the database')
+    }
+    if (!row.loadingTime) {
+      throw new Error('loadingTime is required to be set in the database')
+    }
+    if (!row.checkTime) {
+      throw new Error('checkTime is required to be set in the database')
+    }
   }
 }
 
