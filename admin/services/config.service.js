@@ -91,7 +91,7 @@ const configService = {
   },
 
   getBaseConfig: function getBaseConfig () {
-    return  {
+    return {
       audibleSounds: false,
       checkTime: undefined,
       colourContrast: false,
@@ -193,7 +193,7 @@ const configService = {
     }
 
     return configsByPupil
-  },
+  }
 }
 
 module.exports = configService

@@ -11,8 +11,8 @@ const configDataService = {
     if (!schoolId) {
       throw new Error('schoolId is a required parameter')
     }
-    const pupilParamNames = pupilIds.map( (pupil, idx) => `@pupil${idx}` )
-    const pupilParams = pupilIds.map( (pupil, idx) => { return { name: `pupil${idx}`, value: pupil, type: TYPES.Int } } )
+    const pupilParamNames = pupilIds.map((pupil, idx) => `@pupil${idx}`)
+    const pupilParams = pupilIds.map((pupil, idx) => { return { name: `pupil${idx}`, value: pupil, type: TYPES.Int } })
     const sql = `
       SELECT
           p.id as pupilId,
@@ -43,10 +43,10 @@ const configDataService = {
         GROUP BY p.id, s.id, p.speechSynthesis, st.loadingTimeLimit, st.questionTimeLimit, st.checkTimeLimit`
 
     const params = [
-      { name: 'schoolId', value: schoolId, type: TYPES.Int },
+      { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ].concat(pupilParams)
 
-    return await sqlService.query(sql, params)
+    return sqlService.query(sql, params)
   }
 }
 

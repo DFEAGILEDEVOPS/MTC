@@ -378,10 +378,10 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
   )
 
   // Get check config for all pupils
-  const pupilIds = checks.map( check => check.pupil_id )
+  const pupilIds = checks.map(check => check.pupil_id)
   let pupilConfigs
   try {
-    pupilConfigs = await configService.getBatchConfig( pupilIds, schoolId )
+    pupilConfigs = await configService.getBatchConfig(pupilIds, schoolId)
   } catch (error) {
     logger.error('Error generating pupil configs', error)
     throw error
