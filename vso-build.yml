@@ -277,6 +277,13 @@ phases:
 
       args: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
 
+  - task: ShellScript@2
+    displayName: 'Apply seed data'
+    inputs:
+      scriptPath: 'deploy/sql-migrations/seed-db.sh'
+
+      args: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
+
 
   - task: AzureCLI@1
     displayName: 'Create storage queues and tables and set CORS'
@@ -286,7 +293,6 @@ phases:
       scriptPath: 'deploy/storage/create-items.sh'
 
       arguments: '$(STORAGE_ACCOUNT_NAME) $(STORAGE_ACCOUNT_KEY) $(PUPIL_APP_URL)'
-
 
 
 - phase: Phase_7

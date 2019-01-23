@@ -2,7 +2,7 @@
 Feature:
   Pupil auth
 
-  @generate_live_pin @bug_26376
+  @generate_live_pin
   Scenario: Pupil metadata is stored on successful login
     Given I have logged in
     Then I should see meta data stored in the DB
@@ -18,5 +18,5 @@ Feature:
     Then I should see a failed login message
 
   Scenario: No pupil meta data is stored when a pupil fails a login attempt
-    Given I have failed to login
+    Given I have attempted to enter a school I do not attend upon login
     Then I should see no pupil metadata stored

@@ -9,7 +9,7 @@ class SqlDbHelper
   end
 
   def self.pupil_details_using_names(firstname, lastname)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{firstname}' AND lastName=N'#{lastname}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -17,7 +17,7 @@ class SqlDbHelper
   end
 
   def self.find_pupil_from_school(first_name, school_id)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{first_name}' AND school_id='#{school_id}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -30,6 +30,18 @@ class SqlDbHelper
     teacher_res = result.first
     result.cancel
     teacher_res
+  end
+
+  def self.reset_all_pin_expiry_times
+    sql = "UPDATE [mtc_admin].[checkPin] set pinExpiresAt='2018-12-12 23:00:59.999 +00:00'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
   end
 
   def self.find_school(school_id)
@@ -188,6 +200,12 @@ class SqlDbHelper
     pupil_att_code_res
   end
 
+  def self.set_attendance_code_for_a_pupil(pupil_id)
+    sql = "INSERT INTO [mtc_admin].[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id) VALUES (1, 1, #{pupil_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
   def self.check_attendance_code(id)
     sql = "SELECT * FROM [mtc_admin].[attendanceCode] WHERE id = '#{id}'"
     result = SQL_CLIENT.execute(sql)
@@ -241,6 +259,12 @@ class SqlDbHelper
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.deactivate_all_test_check_window()
+    sql = "UPDATE [mtc_admin].[checkWindow] set isDeleted = 1 WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

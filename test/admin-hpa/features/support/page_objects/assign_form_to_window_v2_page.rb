@@ -2,7 +2,7 @@ class AssignFormToWindowV2Page < SitePrism::Page
   set_url '/check-form/assign-forms-to-check-windows'
 
   element :heading, '.heading-xlarge', text: 'Assign forms to check window'
-  element :information, '#lead-paragraph', text: 'Select forms to assign to each window. Each form can be used for multiple windows.'
+  element :information, '#lead-paragraph', text: 'Select forms to assign to each window. One form can be applied to different windows.'
 
   section :check_windows, '.assigned-check-windows' do
     sections :rows, 'dd' do
