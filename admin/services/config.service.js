@@ -23,7 +23,6 @@ const configService = {
       questionTime = timeSettings.questionTimeLimit
     }
 
-    // There is no property on the db: mtc_admin.settings.checkTimeLimit
     const checkTime = timeSettings ? timeSettings.checkTimeLimit : LENGTH_OF_CHECK_MINUTES
 
     const config = {
