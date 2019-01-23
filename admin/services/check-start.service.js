@@ -207,7 +207,7 @@ checkStartService.prepareCheck2 = async function (
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
     // Send a batch of messages for all the pupils requesting a status change
-    await azureQueueService.addMessage(pupilStatusQueueName, { version: 2, messages: pupilMessages })
+    await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
 
   /*   // Create and save JWT Tokens for all pupils
