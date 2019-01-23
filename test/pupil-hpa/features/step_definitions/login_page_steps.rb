@@ -69,6 +69,7 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
   pupil_name = generate_pins_overview_page.generate_pin_for_multiple_pupils(1).first
   school_2_password = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == pupil_name}.school_password.text
+  @checks_count = SqlDbHelper.number_of_checks
   sign_in_page.load
   sign_in_page.login(school_2_password, @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
@@ -76,11 +77,11 @@ end
 
 
 Then(/^I should see all the correct pupil details$/) do
-  school = SqlDbHelper.find_school(1)['name']
-  expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
-  expect(confirmation_page.last_name.text).to eql "Last name: #{@pupil_information['lastName']}"
+  school = SqlDbHelper.find_school(SqlDbHelper.pupil_details(@details_hash[:upn])['school_id'])['name']
+  expect(confirmation_page.first_name.text).to eql "First name: #{@details_hash[:first_name]}"
+  expect(confirmation_page.last_name.text).to eql "Last name: #{@details_hash[:last_name]}"
   expect(confirmation_page.school_name.text).to eql "School: #{school}"
-  expect(confirmation_page.dob.text).to eql "Date of birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
+  expect(confirmation_page.dob.text).to eql "Date of birth: " + Date.parse(@details_hash[:year] + '-'+ @details_hash[:month] + '-'+@details_hash[:day]).strftime("%-d %B %Y")
 end
 
 
@@ -172,7 +173,7 @@ When(/^I add a pupil$/) do
   step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
   step "I submit the form with the name fields set as #{@name}"
-  # step "the pupil details should be stored"
+  step "the pupil details should be stored"
 end
 
 When(/^I login to the admin app with (.+)$/) do |user|
