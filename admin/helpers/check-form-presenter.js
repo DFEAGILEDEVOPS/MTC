@@ -12,7 +12,7 @@ const checkFormPresenter = {}
 checkFormPresenter.getPresentationListData = (checkFormData) => {
   return checkFormData.map(cf => ({
     checkFormName: cf.name,
-    checkFormType: cf.isLiveCheckForm ? 'Live' : 'Familiarisation',
+    checkFormType: cf.isLiveCheckForm ? 'MTC' : 'Try it out',
     createdAt: cf.createdAt.format('YYYY-MM-DD'),
     canRemoveCheckForm: !cf['checkWindow_id'],
     urlSlug: cf.urlSlug
