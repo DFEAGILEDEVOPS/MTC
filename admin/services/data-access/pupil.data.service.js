@@ -57,11 +57,16 @@ pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (d
   const sql = `
       SELECT p.*, ps.code, pg.group_id, ac.reason, ac.code as reasonCode
       FROM ${sqlService.adminSchema}.${table} p
-      INNER JOIN school s ON s.id = p.school_id
-      LEFT JOIN pupilStatus ps ON (p.pupilStatus_id = ps.id)
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
+      INNER JOIN school s
+        ON s.id = p.school_id
+      LEFT JOIN pupilStatus ps
+        ON p.pupilStatus_id = ps.id
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
+        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac 
+        ON pa.attendanceCode_id = ac.id 
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+        ON pg.pupil_id = p.id 
       WHERE s.dfeNumber = @dfeNumber
     `
   return sqlService.query(sql, [paramDfeNumber])
@@ -171,10 +176,14 @@ pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool = async (id, schoo
       SELECT TOP 1 
       p.*, ps.code, pg.group_id, ac.reason, ac.code as reasonCode
       FROM ${sqlService.adminSchema}.${table} p
-      LEFT JOIN pupilStatus ps ON (p.pupilStatus_id = ps.id)
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
+      LEFT JOIN pupilStatus ps
+        ON p.pupilStatus_id = ps.id
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa
+        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
+        ON pa.attendanceCode_id = ac.id 
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+        ON pg.pupil_id = p.id 
       WHERE p.id = @id and school_id = @schoolId 
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
@@ -399,10 +408,14 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   const sql = `
   SELECT p.*, pg.group_id, ac.reason
   FROM ${sqlService.adminSchema}.${table} p 
-    INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
+    INNER JOIN ${sqlService.adminSchema}.[school] s
+      ON p.school_id = s.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
+      ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
+      ON pa.attendanceCode_id = ac.id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+      ON pg.pupil_id = p.id 
   WHERE s.dfeNumber = @dfeNumber
   ORDER BY ${sqlSort}
   `
