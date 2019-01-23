@@ -1,0 +1,127 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (error.hasError()) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% error.getUniqueFields(['firstName', 'lastName', 'jobTitle',]).map(f => { %>
+                <% if (typeof error.get(f) !== 'boolean') { %>
+                    <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                <% } %>
+                <% }); %>
+            </ul>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
+
+        <%- partial('partials/_session_expiry') %>
+
+        <% if (!hdfEligibility) { %>
+        <h1 class="lede">Currently unavailable</h1>
+
+        <p>
+            All pupils should have completed a check or have a reason for not taking the check.
+            Access to this section will then become available.
+        </p>
+        <% } else { %>
+        <p class="lede">
+          Confirm all pupils taking the check completed it according to <a href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
+          In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
+        </p>
+
+        <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
+            <div class="form-group <%= error.isError('firstName') ? 'form-group-error' : '' %>">
+                <label class="form-label-bold" for="firstName">First name
+                  <% if (error.isError('firstName')) { %>
+                      <span class="error-message"><%= error.get('firstName') %></span>
+                  <% } %>
+                </label>
+                <input type="text"
+                    id="firstName"
+                    class="form-control <%= error.isError('firstName') ? 'form-control-error' : '' %>"
+                    name="firstName"
+                    value="<%= formData['firstName'] %>"
+                />
+            </div>
+
+            <div class="form-group <%= error.isError('lastName') ? 'form-group-error' : '' %>">
+              <label class="form-label-bold" for="lastName">Last name
+                <% if (error.isError('lastName')) { %>
+                  <span class="error-message"><%= error.get('lastName') %></span>
+                <% } %>
+              </label>
+              <input type="text"
+                id="lastName"
+                class="form-control <%= error.isError('lastName') ? 'form-control-error' : '' %>"
+                name="lastName"
+                value="<%= formData['lastName'] %>"
+              />
+            </div>
+
+            <div class="form-group" id="headteacher">
+                <fieldset role="radiogroup">
+                    <legend class="form-label-bold">Are you the headteacher?</legend>
+                    <div class="multiple-choice">
+                        <input id="isheadteacher-yes"
+                              type="radio"
+                              role="radio"
+                              name="isHeadteacher"
+                              value="Y"
+                              <% if (!formData['isHeadteacher'] || formData['isHeadteacher'].toUpperCase() === 'Y') { %>
+                              checked="checked"
+                              <% } %>
+                        />
+                        <label for="isheadteacher-yes">Yes</label>
+                    </div>
+
+                    <div class="multiple-choice">
+                        <input id="isheadteacher-no"
+                              type="radio"
+                              role="radio"
+                              name="isHeadteacher"
+                              value="N"
+                              <% if (formData['isHeadteacher'] && formData['isHeadteacher'].toUpperCase() === 'N') { %>
+                              checked="checked"
+                              <% } %>
+                        />
+                        <label for="isheadteacher-no">No</label>
+
+                        <div class="hide">
+                            <div class="panel panel-border-wide">
+                                <div class="form-group <%= error.isError('jobTitle') ? 'form-group-error' : '' %>">
+                                    <div class="form-label" for="jobTitle">Job title</div>
+                                    <span class="form-hint">For example, Deputy headteacher</span>
+                                    <% if (error.isError('jobTitle')) { %>
+                                    <span class="error-message"> <%= error.get('jobTitle') %></span>
+                                    <% } %>
+                                    <textarea
+                                        class="form-control form-control-3-4 restart-reason-info <%= error.isError('jobTitle') ? 'form-control-error' : '' %>"
+                                        name="jobTitle"
+                                        id="jobTitle"
+                                        rows="1"
+                                        maxlength="128"><%= formData['jobTitle'] %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <input class="button" type="submit" value="Continue">
+        </form>
+        <% } %>
+    </div>
+</div>
