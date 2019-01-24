@@ -3,6 +3,7 @@ const R = require('ramda')
 
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2DataService = require('./data-access/check-form-v2.data.service')
+const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkFormsValidator = require('../lib/validator/check-form/check-forms-validator')
 const checkFormV2Service = {}
 
@@ -114,6 +115,37 @@ checkFormV2Service.getCheckForm = async (urlSlug) => {
 checkFormV2Service.getCheckFormsByType = async (checkFormType) => {
   const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
   return checkFormV2DataService.sqlFindActiveCheckFormsByType(isLiveCheckForm)
+}
+
+/**
+ * Fetch check forms based on check window urlSlug
+ * @param {Object} checkWindow
+ * @param {String} checkFormType
+ * @returns {Promise<Array>}
+ */
+checkFormV2Service.getCheckFormsByCheckWindowIdAndType = async (checkWindow, checkFormType) => {
+  const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
+  const checkWindowId = checkWindow && checkWindow.id
+  return checkFormV2DataService.sqlFindCheckFormsByCheckWindowIdAndType(checkWindowId, isLiveCheckForm)
+}
+
+/**
+ * Fetches check window, check form records and assigns forms to check window
+ * @param {Object} checkWindow
+ * @param {String} checkFormType
+ * @param {Array} checkFormUrlSlugs
+ * @returns {Promise<Array>}
+ */
+checkFormV2Service.assignCheckWindowForms = async (checkWindow, checkFormType, checkFormUrlSlugs) => {
+  const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
+  if (!checkWindow || !checkWindow.id) {
+    throw new Error(`Check window not found`)
+  }
+  const checkForms = await checkFormV2DataService.sqlFindCheckFormsByUrlSlugs(checkFormUrlSlugs)
+  if (!checkForms || !Array.isArray(checkForms) || checkForms.length === 0) {
+    throw new Error(`Check forms not found with url slugs ${checkFormUrlSlugs.join(',')}`)
+  }
+  return checkFormV2DataService.sqlAssignFormsToCheckWindow(checkWindow.id, isLiveCheckForm, checkForms)
 }
 
 module.exports = checkFormV2Service

@@ -82,9 +82,21 @@ const checkFormService = {
 
   /**
    * Return all forms allocated to a checkWindow, that can be assigned to a pupil
+   * @deprecated this is part of the old prepareCheck method
    */
   getAllFormsForCheckWindow: async function (checkWindowId) {
     return checkFormDataService.sqlFetchSortedActiveFormsByName(checkWindowId)
+  },
+
+  /**
+   * Return all forms allocated to a checkWindow by check type, that can be assigned to a pupil
+   * @param {Number} checkWindowId
+   * @param {Boolean} isLiveCheck
+   * @return {Promise<Array>}
+   */
+  getAllFormsForCheckWindowByType: async function (checkWindowId, isLiveCheck) {
+    const sortDescending = undefined
+    return checkFormDataService.sqlFetchSortedActiveFormsByName(checkWindowId, sortDescending, isLiveCheck)
   },
 
   /**
