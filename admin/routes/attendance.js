@@ -16,14 +16,19 @@ router.get(
   (req, res, next) => attendance.downloadResults(req, res, next)
 )
 router.get(
-  '/submit-attendance',
+  '/review-pupil-details',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => attendance.getSubmitAttendance(req, res, next)
+  (req, res, next) => attendance.getReviewPupilDetails(req, res, next)
+)
+router.get(
+  '/edit-reason/:pupilId',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.getEditReason(req, res, next)
 )
 router.post(
-  '/submit-attendance-form',
+  '/submit-edit-reason-form',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => attendance.postSubmitAttendance(req, res, next)
+  (req, res, next) => attendance.postSubmitEditReason(req, res, next)
 )
 router.get(
   '/declaration-form',
