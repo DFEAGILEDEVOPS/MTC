@@ -221,7 +221,7 @@ end
 
 Then(/^the sticky banner should display the total pupil count on Generate Pin Page$/) do
   total_pupil_count = generate_pins_overview_page.pupil_list.rows.count
-  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+  expect(@page.sticky_banner.selected_count.text).to eql total_pupil_count.to_s
 end
 
 When(/^I decide the pupil should not be taking the check$/) do
