@@ -207,7 +207,7 @@ describe('check-start.service', () => {
       )
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
-      spyOn(azureQueueService, 'addMessageAsync').and.returnValue(Promise.resolve())
+      spyOn(azureQueueService, 'addMessageAsync')
       spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
       spyOn(configService, 'getBatchConfig').and.returnValue(
