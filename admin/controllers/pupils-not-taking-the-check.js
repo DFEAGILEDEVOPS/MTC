@@ -31,7 +31,8 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
     if (hdfSubmitted) {
-      return res.render('pupils-not-taking-the-check/unavailable', {
+      return res.render('hdf/unavailable', {
+        title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
     }

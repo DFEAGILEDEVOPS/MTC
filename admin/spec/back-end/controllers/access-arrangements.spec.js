@@ -12,6 +12,7 @@ const pupilAccessArrangementsService = require('../../../services/pupil-access-a
 const pupilAccessArrangementsEditService = require('../../../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const pupilService = require('../../../services/pupil.service')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -41,6 +42,10 @@ describe('access arrangements controller:', () => {
       method: 'GET',
       url: '/access-arrangements/overview'
     }
+
+    beforeEach(() => {
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
+    })
 
     it('displays the access arrangements overview page', async () => {
       const res = getRes()
