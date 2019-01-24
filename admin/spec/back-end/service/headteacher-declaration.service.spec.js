@@ -5,6 +5,9 @@ const R = require('ramda')
 
 const headteacherDeclarationDataService = require('../../../services/data-access/headteacher-declaration.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
+const pupilAttendanceDataService = require('../../../services/data-access/pupil-attendance.data.service')
 const sqlResponseMock = require('../mocks/sql-modify-response')
 const schoolMock = require('../mocks/school')
 const hdfMock = require('../mocks/sql-hdf')
@@ -119,6 +122,124 @@ describe('headteacherDeclarationService', () => {
       spyOn(headteacherDeclarationDataService, 'findCurrentHdfForSchool').and.returnValue(Promise.resolve(invalidHdf))
       const res = await service.isHdfSubmittedForCurrentCheck(dfeNumber)
       expect(res).toBeFalsy()
+    })
+  })
+
+  describe('findPupilsForSchool', () => {
+    const dfeNumber = 9991999
+    const service = require('../../../services/headteacher-declaration.service')
+
+    it('throws an error when no dfeNumber is provided', async () => {
+      try {
+        await service.findPupilsForSchool(null)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('dfeNumber is required')
+      }
+    })
+
+    it('finds the pupils using the dfeNumber', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
+      const result = await service.findPupilsForSchool(dfeNumber)
+      expect(pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
+      expect(result).toEqual('Mock pupils result')
+    })
+  })
+
+  describe('findPupilByIdAndDfeNumber', () => {
+    const pupilId = 1
+    const dfeNumber = 9991999
+    const service = require('../../../services/headteacher-declaration.service')
+
+    it('throws an error when no dfeNumber is provided', async () => {
+      try {
+        await service.findPupilByIdAndDfeNumber(null, dfeNumber)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilId and dfeNumber are required')
+      }
+    })
+
+    it('throws an error when no pupilId is provided', async () => {
+      try {
+        await service.findPupilByIdAndDfeNumber(pupilId, null)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilId and dfeNumber are required')
+      }
+    })
+
+    it('throws an error when a school is not found for the dfeNumber', async () => {
+      try {
+        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.throwError('School not found')
+        await service.findPupilByIdAndDfeNumber(pupilId, dfeNumber)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe(`School not found`)
+      }
+    })
+
+    it('finds the pupil using the pupilId and dfeNumber', async () => {
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
+      spyOn(pupilDataService, 'sqlFindOneWithAttendanceReasonsByIdAndSchool').and.returnValue('Mock pupil result')
+      const result = await service.findPupilByIdAndDfeNumber(pupilId, dfeNumber)
+      expect(pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool).toHaveBeenCalledWith(pupilId, schoolMock.id)
+      expect(result).toEqual('Mock pupil result')
+    })
+  })
+
+  describe('updatePupilsAttendanceCode', () => {
+    const pupilIds = [1]
+    const userId = 1
+    const attendanceCode = 'XXX'
+    const service = require('../../../services/headteacher-declaration.service')
+
+    it('throws an error when no pupilIds are provided', async () => {
+      try {
+        await service.updatePupilsAttendanceCode(null, attendanceCode, userId)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilIds, code and userId are required')
+      }
+    })
+
+    it('throws an error when no code is provided', async () => {
+      try {
+        await service.updatePupilsAttendanceCode(pupilIds, null, userId)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilIds, code and userId are required')
+      }
+    })
+
+    it('throws an error when no userId is provided', async () => {
+      try {
+        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilIds, code and userId are required')
+      }
+    })
+
+    it('throws an error when an invalid attendance code is provided', async () => {
+      try {
+        spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.throwError('Attendance code not found')
+        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId)
+        fail('expected to throw')
+      } catch (error) {
+        expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
+        expect(error.message).toBe(`Attendance code not found`)
+      }
+    })
+
+    it('calls pupilAttendanceDataService.sqlUpdateBatch', async () => {
+      const attendanceCodeMock = { id: 99 }
+      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(attendanceCodeMock)
+      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch').and.returnValue('Mock result')
+      const result = await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId)
+      expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
+      expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith(pupilIds, attendanceCodeMock.id, userId)
+      expect(result).toEqual('Mock result')
     })
   })
 })

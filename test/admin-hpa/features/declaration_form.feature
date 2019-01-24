@@ -1,11 +1,12 @@
-@declaration_form @hdf
+@declaration_form
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form
   so I can confirm the check has been administered accordingly
 
   Background:
-    Given I have signed in with teacher4
+    Given I have signed in with teacher3
+    Given all pupils have completed the check
 
   Scenario: HDF Form displays as per the design
     Given I am on the HDF form page
@@ -46,7 +47,6 @@ Feature: Declaration form
     When I submit the form with the hdf name fields set as Maryçáéíóúñü
     Then I should be taken to the attendance page
 
-  @declaration_formm
   Scenario: Names can not contain special characters
     Given I am on the HDF form page
     Then I should see validation errors when I submit with the following hdf names
