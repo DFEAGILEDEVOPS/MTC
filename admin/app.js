@@ -80,9 +80,11 @@ const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
 
-if (process.env.NODE_ENV === 'development') piping({
-  ignore: [/test/, '/coverage/']
-})
+if (process.env.NODE_ENV === 'development') {
+  piping({
+    ignore: [/test/, '/coverage/']
+  })
+}
 
 setupBrowserSecurity(app)
 
@@ -206,9 +208,9 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy({
-      passReqToCallback: true
-    },
-    require('./authentication/local-strategy')
+    passReqToCallback: true
+  },
+  require('./authentication/local-strategy')
   )
 )
 
