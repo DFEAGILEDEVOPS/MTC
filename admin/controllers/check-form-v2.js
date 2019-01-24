@@ -201,11 +201,13 @@ controller.postAssignForms = async (req, res, next) => {
   const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
   const checkFormType = req.params && req.params.checkFormType
   const requestData = req.body
-  const { checkForms, hasAssignedForms, checkWindowName } = requestData
+  const { checkForms } = requestData
   let highlightMessage
+  let checkWindow
   try {
-    await checkFormV2Service.assignCheckWindowForms(checkWindowUrlSlug, checkFormType, checkForms, hasAssignedForms)
-    highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
+    checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkForms)
+    highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
   } catch (error) {
     return next(error)
   }

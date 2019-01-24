@@ -29,6 +29,24 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
 }
 
 /**
+ * Fetch all pupils for a school by dfeNumber with their status codes
+ * @param dfeNumber
+ * @returns {Promise<*>}
+ */
+pupilDataService.sqlFindPupilsWithStatusByDfeNumber = async function (dfeNumber) {
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+
+  const sql = `
+      SELECT p.*, ps.code
+      FROM ${sqlService.adminSchema}.${table} p
+      INNER JOIN school s ON s.id = p.school_id
+      LEFT JOIN pupilStatus ps ON (p.pupilStatus_id = ps.id)
+      WHERE s.dfeNumber = @dfeNumber
+    `
+  return sqlService.query(sql, [paramDfeNumber])
+}
+
+/**
  * Find a pupil by their urlSlug
  * @param urlSlug - GUID
  * @param schoolId - look for the pupil only in a particular school

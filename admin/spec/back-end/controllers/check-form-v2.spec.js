@@ -295,29 +295,47 @@ describe('check form v2 controller:', () => {
         checkFormType: 'live'
       },
       body: {
-        checkForms: ['urlslug1', 'urlSlug2'],
-        hasAssignedForms: true
+        checkForms: ['urlslug1', 'urlSlug2']
       }
     }
     it('submits uploaded check form data processing', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1, name: 'name' })
       spyOn(checkFormV2Service, 'assignCheckWindowForms')
       spyOn(checkFormPresenter, 'getAssignFormsFlashMessage')
       await controller.postAssignForms(req, res, next)
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
       expect(checkFormV2Service.assignCheckWindowForms).toHaveBeenCalled()
       expect(checkFormPresenter.getAssignFormsFlashMessage).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
-    it('submits uploaded check form data processing', async () => {
+    it('returns next if getCheckWindow service method throws an error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
       const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue(Promise.reject(error))
+      spyOn(checkFormV2Service, 'assignCheckWindowForms')
+      spyOn(checkFormPresenter, 'getAssignFormsFlashMessage')
+      await controller.postAssignForms(req, res, next)
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+      expect(checkFormV2Service.assignCheckWindowForms).not.toHaveBeenCalled()
+      expect(checkFormPresenter.getAssignFormsFlashMessage).not.toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+    it('returns next if assignCheckWindowForms service method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1, name: 'name' })
       spyOn(checkFormV2Service, 'assignCheckWindowForms').and.returnValue(Promise.reject(error))
       spyOn(checkFormPresenter, 'getAssignFormsFlashMessage')
       await controller.postAssignForms(req, res, next)
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
       expect(checkFormV2Service.assignCheckWindowForms).toHaveBeenCalled()
       expect(checkFormPresenter.getAssignFormsFlashMessage).not.toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()

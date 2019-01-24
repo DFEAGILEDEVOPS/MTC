@@ -131,23 +131,21 @@ checkFormV2Service.getCheckFormsByCheckWindowIdAndType = async (checkWindow, che
 
 /**
  * Fetches check window, check form records and assigns forms to check window
- * @param {String} checkWindowUrlSlug
+ * @param {Object} checkWindow
  * @param {String} checkFormType
  * @param {Array} checkFormUrlSlugs
- * @param {Boolean} hasAssignedForms
  * @returns {Promise<Array>}
  */
-checkFormV2Service.assignCheckWindowForms = async (checkWindowUrlSlug, checkFormType, checkFormUrlSlugs, hasAssignedForms) => {
+checkFormV2Service.assignCheckWindowForms = async (checkWindow, checkFormType, checkFormUrlSlugs) => {
   const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
-  const checkWindow = await checkWindowDataService.sqlFindOneByUrlSlug(checkWindowUrlSlug)
   if (!checkWindow || !checkWindow.id) {
-    throw new Error(`Check window not found with url slug ${checkWindowUrlSlug}`)
+    throw new Error(`Check window not found`)
   }
   const checkForms = await checkFormV2DataService.sqlFindCheckFormsByUrlSlugs(checkFormUrlSlugs)
   if (!checkForms || !Array.isArray(checkForms) || checkForms.length === 0) {
     throw new Error(`Check forms not found with url slugs ${checkFormUrlSlugs.join(',')}`)
   }
-  return checkFormV2DataService.sqlAssignFormsToCheckWindow(checkWindow.id, isLiveCheckForm, checkForms, hasAssignedForms)
+  return checkFormV2DataService.sqlAssignFormsToCheckWindow(checkWindow.id, isLiveCheckForm, checkForms)
 }
 
 module.exports = checkFormV2Service
