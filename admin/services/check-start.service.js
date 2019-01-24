@@ -159,8 +159,9 @@ checkStartService.prepareCheck2 = async function (
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindow(
-    checkWindow.id
+  const allForms = await checkFormService.getAllFormsForCheckWindowByType(
+    checkWindow.id,
+    isLiveCheck
   )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
