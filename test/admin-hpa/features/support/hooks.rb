@@ -52,12 +52,37 @@ Before("@create_new_window") do
   visit Capybara.app_host + '/sign-out'
 end
 
+Before("@create_new_window_v2") do
+  step "I navigate to the create check window page"
+  step "I submit details of a valid check window"
+  step "I should see it added to the list of check windows"
+  step "stored correctly in the db"
+  visit Capybara.app_host + '/sign-out'
+
+end
+
 Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
 Before("@reset_all_pins") do
   SqlDbHelper.reset_all_pin_expiry_times
+  end
+
+Before("@upload_new_live_form") do
+  step 'I have signed in with test-developer'
+  step 'I am on the Upload and View forms page v2'
+  step 'I have uploaded a valid live form'
+  step 'it should be tagged as a live form'
+  visit Capybara.app_host + '/sign-out'
+end
+
+Before("@upload_new_fam_form") do
+  step 'I have signed in with test-developer'
+  step 'I am on the Upload and View forms page v2'
+  step 'I have uploaded a valid familiarisation form'
+  step 'it should be tagged as a familiarisation form'
+  visit Capybara.app_host + '/sign-out'
 end
 
 After("@delete_census") do
@@ -97,7 +122,8 @@ After("@remove_access_arrangements") do
   access_arrangements_page.remove_all_pupils
 end
 
-After("@remove_uploaded_forms") do
+After("@remove_uploaded_forms,@upload_new_live_form,@upload_new_fam_form") do
+  SqlDbHelper.delete_assigned_forms
   SqlDbHelper.delete_forms
 end
 
