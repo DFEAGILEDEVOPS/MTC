@@ -66,10 +66,9 @@ const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const serviceManager = require('./routes/service-manager')
 const school = require('./routes/school')
-const questions = require('./routes/questions')
-const pupilFeedback = require('./routes/pupil-feedback')
-const checkStarted = require('./routes/check-started')
-const completedCheck = require('./routes/completed-check')
+// const pupilFeedback = require('./routes/pupil-feedback')
+// const checkStarted = require('./routes/check-started')
+// const completedCheck = require('./routes/completed-check')
 const pupilPin = require('./routes/pupil-pin')
 const restart = require('./routes/restart')
 const pupilsNotTakingTheCheck = require('./routes/pupils-not-taking-the-check')
@@ -80,9 +79,11 @@ const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
 
-if (process.env.NODE_ENV === 'development') piping({
-  ignore: [/test/, '/coverage/']
-})
+if (process.env.NODE_ENV === 'development') {
+  piping({
+    ignore: [/test/, '/coverage/']
+  })
+}
 
 setupBrowserSecurity(app)
 
@@ -206,9 +207,9 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy({
-      passReqToCallback: true
-    },
-    require('./authentication/local-strategy')
+    passReqToCallback: true
+  },
+  require('./authentication/local-strategy')
   )
 )
 
@@ -236,10 +237,9 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use('/api/questions', questions)
-app.use('/api/pupil-feedback', pupilFeedback)
-app.use('/api/completed-check', completedCheck)
-app.use('/api/check-started', checkStarted)
+// app.use('/api/pupil-feedback', pupilFeedback)
+// app.use('/api/completed-check', completedCheck)
+// app.use('/api/check-started', checkStarted)
 
 // CSRF setup - needs to be set up after session() and after API calls
 // that shouldn't use CSRF; also exclude if url in the csrfExcludedPaths
