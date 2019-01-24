@@ -200,6 +200,12 @@ class SqlDbHelper
     pupil_att_code_res
   end
 
+  def self.set_attendance_code_for_a_pupil(pupil_id)
+    sql = "INSERT INTO [mtc_admin].[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id) VALUES (1, 1, #{pupil_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
   def self.check_attendance_code(id)
     sql = "SELECT * FROM [mtc_admin].[attendanceCode] WHERE id = '#{id}'"
     result = SQL_CLIENT.execute(sql)
