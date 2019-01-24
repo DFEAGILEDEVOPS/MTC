@@ -53,8 +53,8 @@ class App {
     const oneYearInSeconds = 31536000
     this.express.use(helmet.hsts({
       maxAge: oneYearInSeconds,
-      includeSubDomains: false,
-      preload: false
+      includeSubDomains: true,
+      preload: true
     }))
 
     // azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
