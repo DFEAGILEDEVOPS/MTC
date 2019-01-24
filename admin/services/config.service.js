@@ -197,7 +197,6 @@ const configService = {
   },
 
   validateConfigData: function validateConfigData (data) {
-    console.log('DATA ', data)
     if (!data || !Array.isArray(data)) {
       throw new Error('Pupil config data is not valid')
     }
