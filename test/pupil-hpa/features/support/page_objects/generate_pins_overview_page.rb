@@ -35,7 +35,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
 
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'
-    element :error_info, 'p', text: 'Multiplication tables check helpline'
+    element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
   element :view_all_pins_btn, 'input[value="View all pins"]'
