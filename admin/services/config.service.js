@@ -16,6 +16,7 @@ const configService = {
       colourContrast: false,
       colourContrastCode: undefined,
       fontSize: false,
+      fontSizeCode: undefined,
       inputAssistance: false,
       loadingTime: undefined,
       nextBetweenQuestions: false,
