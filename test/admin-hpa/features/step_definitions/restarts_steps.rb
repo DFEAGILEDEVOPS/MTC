@@ -166,7 +166,7 @@ end
 
 Then(/^the sticky banner should display the total pupil count$/) do
   total_pupil_count = restarts_page.pupil_list.rows.count
-  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+  expect(@page.sticky_banner.selected_count.text).to eql total_pupil_count.to_s
 end
 
 When(/^I remove restart for that pupil$/) do

@@ -49,11 +49,12 @@ const checkFormDataService = {
   /**
    * Fetch active forms (not deleted)
    * sorted by name
-   * @param windowId only forms assigned to the specified window (optional)
-   * @param sortDescending if true, sorts descending
+   * @param {Number} windowId only forms assigned to the specified window (optional)
+   * @param {Boolean} sortDescending if true, sorts descending
+   * @param {Boolean} isLiveCheck
    * @returns {Promise<*>}
    */
-  sqlFetchSortedActiveFormsByName: (windowId, sortDescending) => {
+  sqlFetchSortedActiveFormsByName: (windowId, sortDescending, isLiveCheck = true) => {
     let sortOrder = 'ASC'
     if (sortDescending) {
       sortOrder = 'DESC'
@@ -72,12 +73,18 @@ const checkFormDataService = {
       LEFT JOIN ${sqlService.adminSchema}.[checkWindow] cw ON (cfw.checkWindow_id = cw.id)
       WHERE cf.isDeleted = 0
       AND cw.id = @windowId   
+      AND isLiveCheckForm = @isLiveCheckForm
       ORDER BY cf.name ASC`
 
       params.push({
         name: 'windowId',
         value: windowId,
         type: TYPES.Int
+      },
+      {
+        name: 'isLiveCheckForm',
+        value: isLiveCheck ? 1 : 0,
+        type: TYPES.Bit
       })
     } else {
       sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] 

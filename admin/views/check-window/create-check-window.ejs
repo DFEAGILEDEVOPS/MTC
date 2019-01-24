@@ -223,7 +223,7 @@
             error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
             error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
-                    Pupil familiarisation check period
+                    Try it out period
                     <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
                     <% } %>
@@ -373,7 +373,7 @@
             error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') ||error.isError('liveCheckEndDateBeforeLiveCheckStartDate') || error.isError('liveCheckEndDateBeforeAdminStartDate') ||
             error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
-                    Pupil live check period
+                    Multiplication tables check period
                     <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
                     <% } %>
