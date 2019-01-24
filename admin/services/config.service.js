@@ -88,8 +88,8 @@ const configService = {
 
   /**
    * Generate a config object for a batch of pupils
-   * @param configDataByPupil
-   * @param questionTimings
+   * @param configData
+   * @return {object} - properties are the pupil IDs
    *
    */
   generateAllConfigs: function generateConfig (configData) {
@@ -100,6 +100,12 @@ const configService = {
     return configsByPupil
   },
 
+  /**
+   * Generate pupil configs for multiple pupils
+   * @param {number[]} pupilIds
+   * @param {number} schoolId
+   * @return {Promise<*>}
+   */
   getBatchConfig: async function getBatchConfig (pupilIds, schoolId) {
     let configsByPupil
 
@@ -115,6 +121,11 @@ const configService = {
     return configsByPupil
   },
 
+  /**
+   * Validate the config data (already retrieved from the DB)
+   * @param data
+   * @throws
+   */
   validateConfigData: function validateConfigData (data) {
     if (!data || !Array.isArray(data)) {
       throw new Error('Pupil config data is not valid')
