@@ -18,7 +18,7 @@ describe('checkFormPresenter', () => {
       expect(result).toEqual(
         [{
           checkFormName: 'name',
-          checkFormType: 'Live',
+          checkFormType: 'MTC',
           createdAt: moment.utc().subtract(1, 'days').format('YYYY-MM-DD'),
           canRemoveCheckForm: true,
           urlSlug: 'urlSlug'
