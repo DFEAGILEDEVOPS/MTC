@@ -103,10 +103,6 @@ module.exports = {
     tablePrefix: process.env.AZURE_TABLE_PREFIX || ''
   },
   Monitoring: {
-    NewRelic: {
-      LicenceKey: process.env.NEW_RELIC_LICENSE_KEY,
-      ApplicationName: process.env.NEW_RELIC_APP_NAME
-    },
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
       CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS || true,

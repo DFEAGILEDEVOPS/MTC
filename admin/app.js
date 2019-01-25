@@ -3,15 +3,9 @@
 // these modules must be loaded first
 require('dotenv').config()
 // telemetry
-if (process.env.NEW_RELIC_LICENSE_KEY) {
-  // use newrelic over app insights
-  console.log('initialising newrelic for telemetry')
-  require('newrelic')
-} else {
-  // fallback to app insights, if configured
-  const appInsights = require('./helpers/app-insights')
-  appInsights.startInsightsIfConfigured()
-}
+// fallback to app insights, if configured
+const appInsights = require('./helpers/app-insights')
+appInsights.startInsightsIfConfigured()
 
 // non priority modules...
 const breadcrumbs = require('express-breadcrumbs')
