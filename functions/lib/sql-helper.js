@@ -51,3 +51,103 @@ module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
   ]
   return sqlService.query(sql, params)
 }
+
+/**
+ * Update Check table with marking
+ * @param {String} checkCode
+ * @param {Number} mark
+ * @param {Number} maxMark
+ * @param {Object} markedAt
+ * @return {Promise<object>}
+ */
+module.exports.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] 
+  SET mark=@mark, 
+  maxMark=@maxMark, 
+  markedAt=@markedAt 
+  WHERE checkCode=@checkCode`
+
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    },
+    {
+      name: 'mark',
+      value: mark,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'maxMark',
+      value: maxMark,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'markedAt',
+      value: markedAt,
+      type: TYPES.DateTimeOffset
+    }
+  ]
+  return sqlService.modify(sql, params)
+}
+
+/**
+ * Update Answers table with results from check
+ * @param {Number} checkId
+ * @param {Array} answers
+ * @return {Promise<object>}
+ */
+module.exports.sqlUpdateAnswersWithResults = async (checkId, answers) => {
+  const table = '[answer]'
+  if (!answers || !Array.isArray(answers)) {
+    throw new Error('answers not provided')
+  }
+  const insertSql = `INSERT INTO ${sqlService.adminSchema}.${table} (
+      check_id, 
+      questionNumber, 
+      factor1,
+      factor2,
+      answer,
+      isCorrect
+      ) VALUES`
+
+  const inserts = []
+  const params = []
+
+  answers.forEach((answer, idx) => {
+    inserts.push(`(@checkId${idx}, @questionNumber${idx}, @factor1${idx}, @factor2${idx}, @answer${idx}, @isCorrect${idx})`)
+    params.push({
+      name: `checkId${idx}`,
+      value: checkId,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `questionNumber${idx}`,
+      value: answer.questionNumber,
+      type: TYPES.SmallInt
+    })
+    params.push({
+      name: `factor1${idx}`,
+      value: answer.factor1,
+      type: TYPES.SmallInt
+    })
+    params.push({
+      name: `factor2${idx}`,
+      value: answer.factor2,
+      type: TYPES.SmallInt
+    })
+    params.push({
+      name: `answer${idx}`,
+      value: answer.answer,
+      type: TYPES.NVarChar
+    })
+    params.push({
+      name: `isCorrect${idx}`,
+      value: answer.isCorrect,
+      type: TYPES.Bit
+    })
+  })
+  const sql = [insertSql, inserts.join(', \n')].join(' ')
+  return sqlService.modify(sql, params)
+}
