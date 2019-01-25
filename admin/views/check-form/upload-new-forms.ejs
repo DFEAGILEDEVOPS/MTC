@@ -89,7 +89,7 @@
                                    <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'L') { %>checked="checked"
                                     <% } %>
                             />
-                            <label for="live-check-form">Live</label>
+                            <label for="live-check-form">MTC form</label>
                         </div>
                         <div class="multiple-choice">
                             <input id="checkFormType"
@@ -101,7 +101,7 @@
                                    <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'F') { %>checked="checked"
                                     <% } %>
                             />
-                            <label for="familiarisation-check-form">Familiarisation</label>
+                            <label for="familiarisation-check-form">'Try it out' form</label>
                         </div>
                     </div>
                 </fieldset>
@@ -117,7 +117,7 @@
 
 <%- partial('partials/_modal_box', {
   modalTitle: 'Overwrite form',
-  modalText: 'There can only be one familiarisation form. Are you sure you want to overwrite the current form?',
+  modalText: 'There can only be one \'Try it out\' form. Are you sure you want to overwrite the current form?',
   modalConfirmationLabel: 'Yes',
   modalConfirmationUrl: '#',
   modalCancelLabel: 'No',
