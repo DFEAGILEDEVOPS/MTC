@@ -38,7 +38,7 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+  def self.set_pupil_pin_expiry(forename, lastname, school_id, new_time)
     sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
@@ -71,7 +71,7 @@ class SqlDbHelper
     # sql = "SELECT * FROM [mtc_admin].[pupil] where pin IS NOT NULL"
     sql = "SELECT * FROM [mtc_admin].[Pin] where id in (SELECT pin_id FROM [mtc_admin].[checkPin])"
     result = SQL_CLIENT.execute(sql)
-    @array_of_pins = result.each{|row| row.map}
+    @array_of_pins = result.each {|row| row.map}
     result.cancel
     @array_of_pins.map {|row| row['val']}
   end
@@ -162,7 +162,7 @@ class SqlDbHelper
   def self.familiarisation_check_form
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE isLiveCheckForm=0 AND isDeleted=0"
     result = SQL_CLIENT.execute(sql)
-    array = result.each{|row| row.map}
+    array = result.each {|row| row.map}
     result.cancel
     array
   end
@@ -215,7 +215,7 @@ class SqlDbHelper
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
     result = SQL_CLIENT.execute(sql)
-    @array_of_attCode = result.each{|row| row.map}
+    @array_of_attCode = result.each {|row| row.map}
     result.cancel
     @array_of_attCode
   end
@@ -274,7 +274,7 @@ class SqlDbHelper
       @array_of_pupils << result.first
       result.cancel
     end
-    @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}" }
+    @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}"}
   end
 
   def self.check_form_details_using_id(check_form_id)
@@ -325,6 +325,12 @@ class SqlDbHelper
 
   def self.delete_forms
     sql = "DELETE FROM [mtc_admin].[checkForm] where name like 'test-check-form%'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_assigned_forms
+    sql = "DELETE FROM [mtc_admin].[checkFormWindow] where id <> 1"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

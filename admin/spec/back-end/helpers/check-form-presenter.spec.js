@@ -106,10 +106,32 @@ describe('checkFormPresenter', () => {
         urlSlug: 'urlSlug',
         familiarisationCheckStartDate: dateService.formatFullGdsDate(moment.utc().subtract(5, 'days')),
         familiarisationCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
-        checkStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
-        checkEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
-        checkFormTypeTitle: 'Multiplication tables check'
+        liveCheckStartDate: dateService.formatFullGdsDate(moment.utc().subtract(3, 'days')),
+        liveCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
+        checkFormTypeTitle: 'Multiplication tables check',
+        checkPeriod: 'MTC',
+        isWithinCheckType: true
       })
+    })
+  })
+  describe('getPresentationAvailableFormsData', () => {
+    it('returns check window data formatted', () => {
+      const availableCheckForms = [{
+        name: 'name',
+        isLiveCheckForm: true,
+        urlSlug: 'urlSlug'
+      }]
+      const assignedCheckForms = [{
+        name: 'name',
+        isLiveCheckForm: true,
+        urlSlug: 'urlSlug'
+      }]
+      const result = checkFormPresenter.getPresentationAvailableFormsData(availableCheckForms, assignedCheckForms)
+      expect(result).toEqual([{
+        name: 'name',
+        urlSlug: 'urlSlug',
+        checked: true
+      }])
     })
   })
 })

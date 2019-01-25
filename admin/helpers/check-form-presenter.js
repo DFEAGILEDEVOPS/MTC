@@ -86,15 +86,51 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
  * @returns {Object}
  */
 checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType) => {
+  const checkStartDate = checkFormType === 'live' ? checkWindow.checkStartDate : checkWindow.familiarisationCheckStartDate
+  const checkEndDate = checkFormType === 'live' ? checkWindow.checkEndDate : checkWindow.familiarisationCheckEndDate
   return {
     name: checkWindow.name,
     urlSlug: checkWindow.urlSlug,
     familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
     familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
-    checkStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
-    checkEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
-    checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out'
+    liveCheckStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
+    liveCheckEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
+    checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out',
+    checkPeriod: checkFormType === 'live' ? 'MTC' : 'Try it out',
+    isWithinCheckType: dateService.utcNowAsMoment().isBetween(checkStartDate, checkEndDate)
   }
+}
+
+/**
+ * Format available and assigned check forms
+ * @param {Array} availableCheckForms
+ * @param {Array} assignedCheckForms
+ * @returns {Array} - checkFormData
+ */
+checkFormPresenter.getPresentationAvailableFormsData = (availableCheckForms, assignedCheckForms) => {
+  const checkFormData = []
+  availableCheckForms.forEach(cw => {
+    checkFormData.push({
+      name: cw.name,
+      urlSlug: cw.urlSlug,
+      checked: assignedCheckForms.some(acf => acf.urlSlug === cw.urlSlug)
+    })
+  })
+  return checkFormData
+}
+
+/**
+ * Construct flash message to display assigned check forms after successful assignment
+ * @param {Array} checkForms
+ * @param {String} checkWindowName
+ * @param {String} checkFormType
+ * @returns {String} - message
+ */
+checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, checkFormType) => {
+  const totalFormAssigned = checkForms.length
+  const partial = totalFormAssigned > 1 ? `forms have` : `form has`
+  return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
+    : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
 }
 
 module.exports = checkFormPresenter
