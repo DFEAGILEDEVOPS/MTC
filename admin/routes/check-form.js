@@ -16,6 +16,7 @@ if (featureToggles.isFeatureEnabled('newCheckForm')) {
   router.get('/view/:urlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getViewFormPage(req, res, next))
   router.get('/assign-forms-to-check-windows', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getAssignFormsPage(req, res, next))
   router.get('/select-form/:checkFormType/:checkWindowUrlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.getSelectFormPage(req, res, next))
+  router.post('/assign-forms/:checkFormType/:checkWindowUrlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormV2Controller.postAssignForms(req, res, next))
 }
 
 module.exports = router
