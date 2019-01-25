@@ -15,6 +15,7 @@ const service = {
       SchoolNom: 'TEACHER',
       SchoolNomAA: 'TEACHER',
       Admin: 'HELPDESK',
+      AdminAA: 'HELPDESK',
       DataAdmin: 'TEST-DEVELOPER'
     }
 
