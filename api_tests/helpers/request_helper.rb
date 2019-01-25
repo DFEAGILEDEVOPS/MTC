@@ -12,6 +12,7 @@ class RequestHelper
 
   def admin_home
     fail 'Please check your URL it looks like it might be wrong for ADMIN' if BASE_URL.include? 'pupil'
+    p BASE_URL
     self.class.get(BASE_URL)
   end
 
