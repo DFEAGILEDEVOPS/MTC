@@ -49,10 +49,10 @@ And(/^I should see a unauthorised response$/) do
 end
 
 And(/^I should see the correct response headers$/) do
-  expect(@response.headers['access-control-allow-origin']).to eql 'http://localhost:4200'
+  expect(@response.headers['access-control-allow-origin']).to eql ENV['PUPIL_BASE_URL']
   expect(@response.headers['x-dns-prefetch-control']).to eql 'off'
   expect(@response.headers['x-frame-options']).to eql 'SAMEORIGIN'
-  expect(@response.headers['strict-transport-security']).to eql 'max-age=31536000'
+  expect(@response.headers['strict-transport-security']).to eql 'max-age=31536000; includeSubDomains; preload'
   expect(@response.headers['x-download-options']).to eql 'noopen'
   expect(@response.headers['x-content-type-options']).to eql 'nosniff'
   expect(@response.headers['x-xss-protection']).to eql '1; mode=block'

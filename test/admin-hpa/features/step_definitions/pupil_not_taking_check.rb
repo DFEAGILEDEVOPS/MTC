@@ -260,7 +260,7 @@ end
 
 Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
   total_pupil_count = pupils_not_taking_check_page.pupil_list.rows.count
-  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+  expect(@page.sticky_banner.selected_count.text).to eql total_pupil_count.to_s
 end
 
 Then(/^I should not see the pupil in the list$/) do

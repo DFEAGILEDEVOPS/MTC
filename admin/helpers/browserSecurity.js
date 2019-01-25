@@ -36,8 +36,8 @@ const init = (app) => {
   const oneYearInSeconds = 31536000
   app.use(helmet.hsts({
     maxAge: oneYearInSeconds,
-    includeSubdomains: false,
-    preload: false
+    includeSubdomains: true,
+    preload: true
   }))
 }
 
