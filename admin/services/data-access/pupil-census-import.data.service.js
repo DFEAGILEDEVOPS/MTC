@@ -1,7 +1,6 @@
 'use strict'
 
 const TediousTypes = require('tedious').TYPES
-console.log('TediousTypes', TediousTypes)
 const moment = require('moment')
 
 const config = require('../../config')
