@@ -29,8 +29,10 @@ const setupLogging = require('./helpers/logger')
 const uuidV4 = require('uuid/v4')
 
 const logger = require('./services/log.service').getLogger()
+const sqlService = require('./services/data-access/sql.service')
 const app = express()
 setupLogging(app)
+sqlService.initPool()
 
 /**
  * Load feature toggles
@@ -74,9 +76,11 @@ const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
 
-if (process.env.NODE_ENV === 'development') piping({
-  ignore: [/test/, '/coverage/']
-})
+if (process.env.NODE_ENV === 'development') {
+  piping({
+    ignore: [/test/, '/coverage/']
+  })
+}
 
 setupBrowserSecurity(app)
 
@@ -200,9 +204,9 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy({
-      passReqToCallback: true
-    },
-    require('./authentication/local-strategy')
+    passReqToCallback: true
+  },
+  require('./authentication/local-strategy')
   )
 )
 
