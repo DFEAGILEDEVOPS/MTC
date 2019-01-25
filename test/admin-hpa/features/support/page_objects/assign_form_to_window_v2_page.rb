@@ -11,10 +11,10 @@ class AssignFormToWindowV2Page < SitePrism::Page
       element :name_of_window, '.font-small'
       element :try_it_out_check_link, 'div .bold-small a', text: "'Try it out' period"
       element :try_it_out_check_link_text, "div[id$='-familiarisation']"
-      element :try_it_out_check_date, "p[id*='familiarisation-period']"
+      element :try_it_out_check_date, "div[id*='familiarisation-period']"
       element :mtc_check_link, 'div .bold-small a', text: "Multiplication tables check period"
       element :mtc_check_link_text, "div[id$='-live']"
-      element :mtc_check_date, "p[id*='live-period']"
+      element :mtc_check_date, "div[id*='live-period']"
     end
   end
 
