@@ -9,7 +9,7 @@ const sqlService = require('./sql.service')
 const sqlPoolService = require('./sql.pool.service')
 
 /**
- * Execute pupil data bulk import
+ * Calls bulk load data execution
  * @param {Array} pupilData
  * @param {Array} schools
  * @param {Number} jobId
@@ -22,12 +22,20 @@ pupilCensusImportDataService.sqlBulkImport = async (pupilData, schools, jobId) =
   try {
     result.output = await bulkLoadData(con, pupilData, schools, jobId)
   } catch (error) {
-    result.errorOutput = error
+    result.errorOutput = handleError(error)
   }
   con.release()
   return result
 }
 
+/**
+ * Executes pupil data bulk import
+ * @param {Object} connection
+ * @param {Array} pupilData
+ * @param {Array} schools
+ * @param {Number} jobId
+ * @return {Promise<*>}
+ */
 const bulkLoadData = (connection, pupilData, schools, jobId) => {
   return new Promise((resolve, reject) => {
     const bulkLoad = connection.newBulkLoad(`[${config.Sql.Database}].${sqlService.adminSchema}.[pupil]`, function (error, rowCount) {
@@ -67,6 +75,27 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
     }
     connection.execBulkLoad(bulkLoad)
   })
+}
+
+/**
+ * Bulk upload Error handler
+ * @param {Object} error
+ * @return {String} - Error Object
+ */
+const handleError = (error) => {
+  if (!error) {
+    return 'Error received is undefined'
+  }
+  if (typeof error !== 'object') {
+    return `Error type is ${typeof error} with value ${error.toString()}`
+  }
+  if (error || Object.keys(error).length === 0) {
+    return `Error with no properties: ${error.toString()}`
+  }
+  if (error || !error.message) {
+    return `Error with no message property: ${error.toString()} `
+  }
+  return error.toString()
 }
 
 module.exports = pupilCensusImportDataService
