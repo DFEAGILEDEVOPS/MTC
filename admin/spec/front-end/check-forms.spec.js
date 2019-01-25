@@ -43,7 +43,7 @@ function initUploadCheckFormElements () {
 
             <div class="form-buttons">
                 <input type="submit" class="button" id="upload-check-forms" value="Upload" />
-                <a href="/check-form/upload-and-view-forms" class="button button-secondary">Cancel</a>
+                <a href="/check-form/view-forms" class="button button-secondary">Cancel</a>
             </div>
         </form>
   `
