@@ -1,12 +1,11 @@
-@declaration_form
+@declaration_form @hdf
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form
   so I can confirm the check has been administered accordingly
 
   Background:
-    Given I have signed in with teacher3
-    Given all pupils have completed the check
+    Given I have signed in with teacher4
 
   Scenario: HDF Form displays as per the design
     Given I am on the HDF form page
@@ -90,3 +89,12 @@ Feature: Declaration form
     When I click on the not a headteacher radio box
     And I submit the form with the hdf name fields set as Test
     Then I should see a validation error for job title
+
+  Scenario: Edit Reason for HDF pupil is displayed as per design
+    Given I am on the review pupil detail page
+    When headteacher select the pupil for updating its reason
+    Then edit reason page is displayed as per design
+
+  Scenario: Headteacher update the reason for a pupil
+    Given headteacher has updated reason 'Left school' for a pupil
+    Then reason is updated for the pupil on HDF review pupil detail page
