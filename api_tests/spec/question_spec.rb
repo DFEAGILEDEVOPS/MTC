@@ -8,12 +8,12 @@ describe 'Questions API spec' do
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['access_token']).to_not be_nil
       expect(parsed_response['questions'].size).to eql 10
-      expect(parsed_response['pupil']['firstName']).to eql 'Automated'
-      expect(parsed_response['pupil']['lastName']).to eql 'Account'
-      expect(parsed_response['school']['id']).to eql 9991999
-      expect(parsed_response['school']['name']).to eql 'Test school'
-      expect(parsed_response['config']['questionTime']).to eql 5
-      expect(parsed_response['config']['loadingTime']).to eql 2
+      expect(parsed_response['pupil']['firstName']).to eql 'Standard'
+      expect(parsed_response['pupil']['lastName']).to eql 'Pupil'
+      expect(parsed_response['school']['id']).to eql 18600
+      expect(parsed_response['school']['name']).to eql 'Test School'
+      expect(parsed_response['config']['questionTime']).to eql 6
+      expect(parsed_response['config']['loadingTime']).to eql 3
     end
   end
 
