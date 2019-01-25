@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const sqlService = require('./sql.service')
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 
 const table = '[checkWindow]'
