@@ -2,8 +2,8 @@
 /* global describe, it, expect, spyOn, fail */
 
 const sqlHelper = require('../lib/sql-helper')
-const completedCheckMock = require('./completed-check-with-results')
-const checkFormMock = require('./check-form')
+const completedCheckMock = require('./mocks/completed-check-with-results')
+const checkFormMock = require('./mocks/check-form')
 
 describe('markingService', () => {
   let service = require('./marking.service')
@@ -18,27 +18,9 @@ describe('markingService', () => {
       }
     })
 
-    it('throws an error if the arg completedCheckMessage data property is empty', async () => {
+    it('throws an error if the arg completedCheckMessage answers property is empty', async () => {
       try {
-        await service.mark({ data: '' })
-        fail('expected to be thrown')
-      } catch (err) {
-        expect(err.message).toBe('missing or invalid argument: completed check message')
-      }
-    })
-
-    it('throws an error if the answers are missing', async () => {
-      try {
-        await service.mark({ data: { answers: null } }, undefined)
-        fail('expected to be thrown')
-      } catch (err) {
-        expect(err.message).toBe('missing or invalid argument: completed check message')
-      }
-    })
-
-    it('throws an error if the formData are missing', async () => {
-      try {
-        await service.mark({ ...completedCheckMock, formData: undefined }, undefined)
+        await service.mark({ answers: null }, undefined)
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument: completed check message')
@@ -47,9 +29,7 @@ describe('markingService', () => {
 
     it('throws an error if the check data are missing', async () => {
       try {
-        const checkForm = Object.assign({}, checkFormMock)
-        checkForm.formData = JSON.parse(checkForm.formData)
-        await service.mark({ ...completedCheckMock, formData: checkForm.formData }, undefined)
+        await service.mark({ ...completedCheckMock }, undefined)
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument: check data')
@@ -58,9 +38,16 @@ describe('markingService', () => {
 
     it('throws an error if the check id is missing', async () => {
       try {
-        const checkForm = Object.assign({}, checkFormMock)
-        checkForm.formData = JSON.parse(checkForm.formData)
-        await service.mark({ ...completedCheckMock, formData: checkForm.formData }, {})
+        await service.mark({ ...completedCheckMock }, { id: undefined, formData: checkFormMock.formData })
+        fail('expected to be thrown')
+      } catch (err) {
+        expect(err.message).toBe('missing or invalid argument: check data')
+      }
+    })
+
+    it('throws an error if the check formData are missing', async () => {
+      try {
+        await service.mark({ ...completedCheckMock }, { id: 1, formData: undefined })
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument: check data')
@@ -75,9 +62,7 @@ describe('markingService', () => {
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
       })
-      const checkForm = Object.assign({}, checkFormMock)
-      checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark({ ...completedCheckMock, formData: checkForm.formData }, { id: 1 })
+      await service.mark({ ...completedCheckMock }, { id: 1, formData: checkFormMock.formData })
       expect(sqlHelper.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
@@ -86,7 +71,7 @@ describe('markingService', () => {
       spyOn(sqlHelper, 'sqlUpdateCheckWithResults')
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark({ ...completedCheckMock, formData: checkForm.formData }, { id: 1 })
+      await service.mark({ ...completedCheckMock }, { id: 1, formData: checkFormMock.formData })
       expect(sqlHelper.sqlUpdateAnswersWithResults).toHaveBeenCalled()
     })
   })

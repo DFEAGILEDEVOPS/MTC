@@ -6,34 +6,34 @@ const sqlHelper = require('../lib/sql-helper')
 const markingService = {}
 
 /**
- * Apply marking and populate asnwers table for the completedCheck
+ * Apply marking and populate answers table for the completedCheck
  * Used in processing the psychometric report
  * @param {Object} completedCheckMessage
  * @param {Object} check
  * @return {Promise<*>}
  */
 markingService.mark = async function (completedCheckMessage, check) {
-  if (!completedCheckMessage || !completedCheckMessage.data || !completedCheckMessage.data.answers || !completedCheckMessage.formData) {
+  if (!completedCheckMessage || !completedCheckMessage.answers) {
     throw new Error('missing or invalid argument: completed check message')
   }
 
-  if (!check || !check.id) {
+  if (!check || !check.id || !check.formData) {
     throw new Error('missing or invalid argument: check data')
   }
 
   const results = {
     marks: 0,
-    maxMarks: completedCheckMessage.data.answers.length,
+    maxMarks: completedCheckMessage.answers.length,
     processedAt: moment.utc()
   }
 
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
-
-  for (let question of completedCheckMessage.formData) {
+  const formData = JSON.parse(check.formData)
+  for (let question of formData) {
     const currentIndex = questionNumber - 1
-    const answerRecord = completedCheckMessage.data.answers[currentIndex]
+    const answerRecord = completedCheckMessage.answers[currentIndex]
     const answer = (answerRecord && answerRecord.answer) || ''
     const data = {
       questionNumber,
@@ -59,7 +59,6 @@ markingService.mark = async function (completedCheckMessage, check) {
     results.maxMarks,
     results.processedAt
   )
-
   // Update the answers table
   await sqlHelper.sqlUpdateAnswersWithResults(check.id, answers)
 }

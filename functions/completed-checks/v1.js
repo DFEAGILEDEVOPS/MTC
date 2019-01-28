@@ -3,10 +3,8 @@
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
-const winston = require('winston')
 const { TYPES } = require('tedious')
 
-winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
 const azureStorageHelper = require('../lib/azure-storage-helper')
@@ -20,8 +18,8 @@ const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 
 const v1 = {
-  process: async function process (logger) {
-    await handleCompletedCheck(logger)
+  process: async function (context, completedCheckMessage) {
+    await handleCompletedCheck(context, completedCheckMessage)
   }
 }
 
@@ -33,15 +31,16 @@ async function handleCompletedCheck (context, completedCheckMessage) {
 
   let checkData
   try {
-    checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
+    checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
   } catch (error) {
     context.log.error(`completed-check: ERROR: failed to retrieve checkData for checkCode: ${completedCheckMessage.checkCode}`)
     throw error
   }
 
   if (!canCompleteCheck(checkData.code)) {
-    context.log.error(`completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.code}`)
-    return // consume the message
+    const errorMessage = `completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.code}`
+    context.log.error(errorMessage)
+    throw new Error(errorMessage)
   }
 
   try {
@@ -83,7 +82,11 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   }
 
   // Populate check with marks and update answers table
-  await markingService.mark(completedCheckMessage, checkData)
+  try {
+    await markingService.mark(completedCheckMessage, checkData)
+  } catch (error) {
+    context.log.error(`completed-check: Error marking the check or updating the answers table for checkCode ${completedCheckMessage.checkCode}}`)
+  }
 
   // Default output is bound to the pupilEvents table (saved in table storage)
   context.bindings.pupilEventsTable = []

@@ -31,6 +31,28 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
 }
 
 /**
+ * Retrieve the checkFormAllocation data with relevant check form data from the db
+ * @param checkCode
+ * @return {Promise<object>}
+ */
+module.exports.sqlFindCheckWithFormDataByCheckCode = async function (checkCode) {
+  const sql = `SELECT TOP 1 chk.* , cs.code, f.formData
+               FROM ${schema}.${checkTable} chk 
+               INNER JOIN ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+               INNER JOIN ${schema}.[checkForm] f ON chk.checkForm_id = f.id 
+               WHERE checkCode = @checkCode`
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  const res = await sqlService.query(sql, params)
+  return R.head(res)
+}
+
+/**
  * Find all checks for a particular pupil based on one of the pupil's checkCodes
  * @param checkCode
  * @return {Promise<Array>}

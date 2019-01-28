@@ -4,10 +4,10 @@ const { performance } = require('perf_hooks')
 
 const v1 = require('./v1')
 
-module.exports = async function (context) {
+module.exports = async function (context, completedCheckMessage) {
   const start = performance.now()
   try {
-    await v1.process(context.log)
+    await v1.process(context, completedCheckMessage)
   } catch (error) {
     context.log.error(`completed-checks: ERROR: ${error.message}`)
     throw error
