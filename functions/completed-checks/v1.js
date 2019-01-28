@@ -33,12 +33,12 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
   } catch (error) {
-    context.log.error(`completed-check: ERROR: failed to retrieve checkData for checkCode: ${completedCheckMessage.checkCode}`)
+    context.log.error(error)
     throw error
   }
 
-  if (!canCompleteCheck(checkData.code)) {
-    const errorMessage = `completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.code}`
+  if (!canCompleteCheck(checkData.checkStatusCode)) {
+    const errorMessage = `completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.checkStatusCode}`
     context.log.error(errorMessage)
     throw new Error(errorMessage)
   }
@@ -46,14 +46,14 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
-    context.log.error(`completed-check: ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
+    context.log.error(error)
     throw error
   }
 
   try {
     await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
   } catch (error) {
-    context.log.error(`completed-check: ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
+    context.log.error(error)
     throw error
   }
 
@@ -64,7 +64,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
-      context.log.error(`completed-check: ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
+      context.log.error(error)
       throw error
     }
   }
@@ -77,7 +77,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
       await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
     }
   } catch (error) {
-    context.log.error(`completed-check: Error requesting a pupil-status change for checkCode ${completedCheckMessage.checkCode}}`)
+    context.log.error(error)
     throw error
   }
 
@@ -85,7 +85,8 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await markingService.mark(completedCheckMessage, checkData)
   } catch (error) {
-    context.log.error(`completed-check: Error marking the check or updating the answers table for checkCode ${completedCheckMessage.checkCode}}`)
+    context.log.error(error)
+    throw error
   }
 
   // Default output is bound to the pupilEvents table (saved in table storage)
@@ -238,12 +239,12 @@ async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
 
 /**
  * Function that determines if the check should be accepted or rejected
- * @param code - the current check status `code` from the master DB
+ * @param checkStatusCode - the current check status `code` from the master DB
  * @return {boolean}
  */
-function canCompleteCheck (code) {
+function canCompleteCheck (checkStatusCode) {
   let result = false
-  switch (code) {
+  switch (checkStatusCode) {
     case 'COL': // Collected (started msg may have git lost)
     case 'STD': // Started
     case 'NTR': // Not received

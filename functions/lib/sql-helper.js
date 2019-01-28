@@ -36,7 +36,7 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
  * @return {Promise<object>}
  */
 module.exports.sqlFindCheckWithFormDataByCheckCode = async function (checkCode) {
-  const sql = `SELECT TOP 1 chk.* , cs.code, f.formData
+  const sql = `SELECT TOP 1 chk.* , cs.code AS checkStatusCode, f.formData
                FROM ${schema}.${checkTable} chk 
                INNER JOIN ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
                INNER JOIN ${schema}.[checkForm] f ON chk.checkForm_id = f.id 
