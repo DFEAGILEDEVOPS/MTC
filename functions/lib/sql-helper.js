@@ -79,7 +79,7 @@ module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
  * @param {String} checkCode
  * @param {Number} mark
  * @param {Number} maxMark
- * @param {Object} markedAt
+ * @param {Moment} markedAt
  * @return {Promise<object>}
  */
 module.exports.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
