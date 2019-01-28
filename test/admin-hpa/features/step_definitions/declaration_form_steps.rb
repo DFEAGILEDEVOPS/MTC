@@ -66,7 +66,7 @@ end
 
 Then(/^I should see a validation error for job title$/) do
   expect(@page.error_summary.job_title.text).to eql 'Enter a job title'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a job title'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a job title in no more than 128 characters'
 end
 
 Then(/^I should be taken to the attendance page$/) do
