@@ -33,7 +33,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
   } catch (error) {
-    context.log.error(error)
+    context.log.error(error.message)
     throw error
   }
 
@@ -46,14 +46,14 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
-    context.log.error(error)
+    context.log.error(error.message)
     throw error
   }
 
   try {
     await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
   } catch (error) {
-    context.log.error(error)
+    context.log.error(error.message)
     throw error
   }
 
@@ -64,7 +64,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
-      context.log.error(error)
+      context.log.error(error.message)
       throw error
     }
   }
@@ -77,7 +77,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
       await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
     }
   } catch (error) {
-    context.log.error(error)
+    context.log.error(error.message)
     throw error
   }
 
@@ -85,7 +85,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await markingService.mark(completedCheckMessage, checkData)
   } catch (error) {
-    context.log.error(error)
+    context.log.error(error.message)
     throw error
   }
 
