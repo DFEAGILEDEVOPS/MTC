@@ -29,7 +29,6 @@ module.exports = {
   CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: 25,
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  MIGRATE_FULL_SCHOOL_DATASET: process.env.hasOwnProperty('MIGRATE_FULL_SCHOOL_DATASET') ? toBool(process.env.MIGRATE_FULL_SCHOOL_DATASET) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
