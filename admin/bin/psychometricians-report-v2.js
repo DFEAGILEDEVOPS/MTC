@@ -7,18 +7,15 @@ const winston = require('winston')
 
 const poolService = require('../services/data-access/sql.pool.service')
 const commandLineArgs = require('command-line-args')
-const markingService = require('../services/marking.service')
 const checkProcessingService = require('../services/check-processing.service')
 const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
 const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 
-let requiresMarking = false
 let requiresProcessing = false
 
 const optionDefinitions = [
   { name: 'forceReprocess', alias: 'f', type: Boolean },
-  { name: 'marking', alias: 'm', type: Boolean },
   { name: 'process', alias: 'p', type: Boolean }
 ]
 
@@ -32,18 +29,11 @@ async function main (options) {
       await psychometricianReportCacheDataService.sqlDeleteAll()
       await anomalyReportCacheDataService.sqlDeleteAll()
     }
-    if (options.marking) {
-      requiresMarking = true
-    }
     if (options.process) {
       requiresProcessing = true
     }
 
     winston.info('main: Processing the completed checks')
-    // Make sure all completed checks are marked and ps-report + anomaly data cached
-    if (requiresMarking) {
-      await markingService.process()
-    }
     if (requiresProcessing) {
       await checkProcessingService.process()
     }
