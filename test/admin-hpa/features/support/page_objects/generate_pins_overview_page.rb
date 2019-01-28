@@ -2,7 +2,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-live-pins-overview'
 
   element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password in order to start the live check. These expire at 4pm daily.'
+  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password to start the MTC. These expire at 4pm daily.'
   element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
@@ -12,7 +12,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :related_heading, ".heading-medium", text: 'Related'
-  element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
+  element :guidance, "a", text: 'Guidance'
   element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
   element :restarts, "a[href='/restart/overview']", text: 'Restarts'
   element :csrf, 'input[name="_csrf"]', visible: false
@@ -35,7 +35,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
 
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'
-    element :error_info, 'p', text: 'Multiplication tables check helpline'
+    element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
   element :view_all_pins_btn, 'input[value="View all pins"]'
@@ -53,7 +53,6 @@ class GeneratePinsOverviewPage < SitePrism::Page
     name = pupil.name.text
     pupil.checkbox.click
     sticky_banner.confirm.click
-    sleep(60)
     name
   end
 
@@ -64,7 +63,6 @@ class GeneratePinsOverviewPage < SitePrism::Page
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}
     sticky_banner.confirm.click
-    sleep(60)
     pupil_names
   end
 

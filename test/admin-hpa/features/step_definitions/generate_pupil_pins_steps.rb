@@ -31,21 +31,11 @@ And(/^I click Generate PINs button$/) do
   generated_pins_page.generate_more_pin_btn.click if generated_pins_page.has_generate_more_pin_btn?
 end
 
-# Given(/^I have a pupil with active pin$/) do
-#   # name = (0...8).map {(65 + rand(26)).chr}.join
-#   # step "I am on the add pupil page"
-#   # step "I submit the form with the name fields set as #{name}"
-#   # step "the pupil details should be stored"
-#   # @pupil_forename = @details_hash[:first_name]
-#   # SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
-#
-#   step 'I have generated a live pin for a pupil'
-# end
-
 Given(/^I have a pupil not taking the check$/) do
   step 'I am on the pupil reason page'
   step 'I add Absent as a reason for a particular pupil'
   step 'the Absent reason should be stored against the pupils'
+  sleep 3
 end
 
 Given(/I have a pupil not taking the check with reason '(.*)'/) do |reason|
@@ -231,7 +221,7 @@ end
 
 Then(/^the sticky banner should display the total pupil count on Generate Pin Page$/) do
   total_pupil_count = generate_pins_overview_page.pupil_list.rows.count
-  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+  expect(@page.sticky_banner.selected_count.text).to eql total_pupil_count.to_s
 end
 
 When(/^I decide the pupil should not be taking the check$/) do
@@ -250,6 +240,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
+  sleep(180)
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -259,12 +250,14 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
+  generate_pins_overview_page.wait_for_group_filter(5)
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
 When(/^I choose to filter via group on the generate pins familiarisation page$/) do
+  sleep 60
   generate_pins_familiarisation_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_familiarisation_overview_page
@@ -308,6 +301,7 @@ end
 
 Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
+  sleep(180)
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
   step 'I should be able to generate pins for all pupils in this group'

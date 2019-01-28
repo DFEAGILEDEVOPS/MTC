@@ -9,7 +9,7 @@ class SqlDbHelper
   end
 
   def self.pupil_details_using_names(firstname, lastname)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{firstname}' AND lastName=N'#{lastname}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -17,7 +17,7 @@ class SqlDbHelper
   end
 
   def self.find_pupil_from_school(first_name, school_id)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{first_name}' AND school_id='#{school_id}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -30,6 +30,18 @@ class SqlDbHelper
     teacher_res = result.first
     result.cancel
     teacher_res
+  end
+
+  def self.reset_all_pin_expiry_times
+    sql = "UPDATE [mtc_admin].[checkPin] set pinExpiresAt='2018-12-12 23:00:59.999 +00:00'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_pupil_pin_expiry(forename, lastname, school_id, new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
   end
 
   def self.find_school(school_id)
@@ -59,7 +71,7 @@ class SqlDbHelper
     # sql = "SELECT * FROM [mtc_admin].[pupil] where pin IS NOT NULL"
     sql = "SELECT * FROM [mtc_admin].[Pin] where id in (SELECT pin_id FROM [mtc_admin].[checkPin])"
     result = SQL_CLIENT.execute(sql)
-    @array_of_pins = result.each{|row| row.map}
+    @array_of_pins = result.each {|row| row.map}
     result.cancel
     @array_of_pins.map {|row| row['val']}
   end
@@ -150,7 +162,7 @@ class SqlDbHelper
   def self.familiarisation_check_form
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE isLiveCheckForm=0 AND isDeleted=0"
     result = SQL_CLIENT.execute(sql)
-    array = result.each{|row| row.map}
+    array = result.each {|row| row.map}
     result.cancel
     array
   end
@@ -175,7 +187,7 @@ class SqlDbHelper
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
     result = SQL_CLIENT.execute(sql)
-    @array_of_attCode = result.each{|row| row.map}
+    @array_of_attCode = result.each {|row| row.map}
     result.cancel
     @array_of_attCode
   end
@@ -186,6 +198,12 @@ class SqlDbHelper
     pupil_att_code_res = result.first
     result.cancel
     pupil_att_code_res
+  end
+
+  def self.set_attendance_code_for_a_pupil(pupil_id)
+    sql = "INSERT INTO [mtc_admin].[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id) VALUES (1, 1, #{pupil_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
   end
 
   def self.check_attendance_code(id)
@@ -228,7 +246,7 @@ class SqlDbHelper
       @array_of_pupils << result.first
       result.cancel
     end
-    @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}" }
+    @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}"}
   end
 
   def self.check_form_details_using_id(check_form_id)
@@ -241,6 +259,12 @@ class SqlDbHelper
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.deactivate_all_test_check_window()
+    sql = "UPDATE [mtc_admin].[checkWindow] set isDeleted = 1 WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -273,6 +297,12 @@ class SqlDbHelper
 
   def self.delete_forms
     sql = "DELETE FROM [mtc_admin].[checkForm] where name like 'test-check-form%'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_assigned_forms
+    sql = "DELETE FROM [mtc_admin].[checkFormWindow] where id <> 1"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

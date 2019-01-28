@@ -1,0 +1,93 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<form method="post" action="/check-form/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
+  <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge"><%= pageTitle %></h1>
+      <%- partial('partials/_session_expiry') %>
+      <div class="panel panel-border-wide">
+          <% if (checkFormData && checkFormData.length) { %>
+          <div>Assign forms to <b><%= pageTitle %></b></div>
+          <div><%= checkWindowData.checkFormTypeTitle %> period: <%= checkFormType !== 'live' ?
+            `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
+            `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
+          </div>
+          <% } else if (checkFormData && checkFormData.length === 0) { %>
+          No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.
+          <% } %>
+      </div>
+
+      <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
+      <table class="spacious" id="assignFormToWindowList" role="group">
+        <thead>
+        <tr>
+          <th scope="col">Form name</th>
+          <% if (!checkWindowData.isWithinCheckType) { %>
+          <th scope="col">
+            <div class="tick-all-checkboxes-wrapper">
+              <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+              <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+              <div class="multiple-choice-mtc">
+                <input id="tickAllCheckboxes" name="allForms" type="checkbox" aria-label="Select all Forms.">
+                <div></div>
+              </div>
+            </div>
+          </th>
+          <% } %>
+        </tr>
+        </thead>
+        <tbody>
+        <% checkFormData.forEach((checkForm, i) => { %>
+        <tr>
+          <td>
+            <label for="checkForm<%= checkForm.urlSlug %>">
+              <%= checkForm.name %>
+            </label>
+          </td>
+          <% if (!checkWindowData.isWithinCheckType) { %>
+          <td class="align-right">
+            <div class="multiple-choice-mtc">
+              <input id="checkForm-<%= i %>"
+                     name="checkForms[]"
+                     type="checkbox"
+                     value="<%= checkForm.urlSlug %>"
+                     aria-label="Tick form <%= checkForm.name %>"
+                     aria-checked="false"
+                     <% if (checkForm.checked) { %>checked="true"<% } %>
+                     role="checkbox">
+              <div></div>
+            </div>
+          </td>
+        </tr>
+        <% } %>
+        <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+
+      <div class="back-to-top-container">
+        <a href="#top">Back to top</a>
+      </div>
+
+    </div>
+
+    <div class="column-one-third sidebar" aria-label="sidebar">
+    </div>
+  </div>
+  <%- partial('partials/_sticky_confirmation_banner',
+    {
+      countingLabel: 'Forms',
+      cancelLabel: 'Cancel',
+      cancelLink: '/check-form/assign-forms-to-check-windows',
+      submitLabel: 'Confirm',
+      isSubmitDisabled: true
+    }) %>
+</form>

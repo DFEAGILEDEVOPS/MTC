@@ -13,20 +13,20 @@
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
                 <%= error %>
             </h2>
-            <p>Multiplication tables check helpline<br>
+            <p>National curriculum assessments helpline<br>
                 <%= helplineNumber %>
             </p>
         </div>
         <% } %>
         <header class="page-header">
-            <h1 class="heading-xlarge">Generate pupil PINs - <%= pinEnv %> check</h1>
+            <h1 class="heading-xlarge"><%= pinEnv === 'live' ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs' %></h1>
         </header>
 
         <%- partial('partials/_session_expiry') %>
 
         <p class="lede">
-        Pupils will need a personal identification number (PIN) and school password in order to start the <%= pinEnv %>
-        check. These expire at 4pm daily.
+          Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>. These expire at 4pm daily.
+
         </p>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
@@ -35,7 +35,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
                     </li>
                     <li>
                         <a href="/group/pupils-list" >Group pupils</a>

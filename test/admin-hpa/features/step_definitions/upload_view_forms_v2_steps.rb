@@ -31,7 +31,7 @@ end
 
 
 Then(/^I should see an error stating I need to select a form and a type$/) do
-  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select a file to upload", "Select live form or familiarisation form"]
+  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select a file to upload", "Select try it out form or MTC form"]
 end
 
 
@@ -123,7 +123,7 @@ end
 
 
 Then(/^I should be shown a validation error$/) do
-  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select one familiarisation form for upload"]
+  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select one try it out form for upload"]
 end
 
 
@@ -505,7 +505,9 @@ Then(/^it should be displayed as a (.*) form on the view forms page$/) do |type|
   new_form_row = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == @file_name.split('.')[0]}
   expect(new_form_row).to have_highlighted
   expect(upload_and_view_forms_v2_page).to have_flash_message
-  expect(new_form_row.type.text).to eql type.capitalize
+  type = 'MTC' if type=='live'
+  type = 'Try it out' if type=='familiarisation'
+  expect(new_form_row.type.text).to eql type
   expect(new_form_row.uploaded_on.text).to eql Time.now.strftime("%Y-%m-%d")
   expect(new_form_row).to have_remove
 end

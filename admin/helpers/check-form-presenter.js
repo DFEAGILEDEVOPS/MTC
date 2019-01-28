@@ -1,4 +1,7 @@
 'use strict'
+
+const dateService = require('../services/date.service')
+
 const checkFormPresenter = {}
 
 /**
@@ -9,7 +12,7 @@ const checkFormPresenter = {}
 checkFormPresenter.getPresentationListData = (checkFormData) => {
   return checkFormData.map(cf => ({
     checkFormName: cf.name,
-    checkFormType: cf.isLiveCheckForm ? 'Live' : 'Familiarisation',
+    checkFormType: cf.isLiveCheckForm ? 'MTC' : 'Try it out',
     createdAt: cf.createdAt.format('YYYY-MM-DD'),
     canRemoveCheckForm: !cf['checkWindow_id'],
     urlSlug: cf.urlSlug
@@ -52,6 +55,82 @@ checkFormPresenter.getFlashMessageData = (uploadData) => {
     highlightData.checkForms.push({ checkFormName: uploadData.filename.replace(/\.[^/.]+$/, '') })
   }
   return highlightData
+}
+
+/**
+ * Format check window list data for the assign forms to check windows view
+ * @param {Array} checkWindows
+ * @returns {Array}
+ */
+checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
+  const checkWindowData = []
+  checkWindows.forEach(cw => {
+    checkWindowData.push({
+      name: cw.name,
+      urlSlug: cw.urlSlug,
+      familiarisationCheckStartDate: dateService.formatFullGdsDate(cw.familiarisationCheckStartDate),
+      familiarisationCheckEndDate: dateService.formatFullGdsDate(cw.familiarisationCheckEndDate),
+      checkStartDate: dateService.formatFullGdsDate(cw.checkStartDate),
+      checkEndDate: dateService.formatFullGdsDate(cw.checkEndDate),
+      familiarisationCheckFormCount: cw['FamiliarisationCheckFormCount'],
+      liveCheckFormCount: cw['LiveCheckFormCount']
+    })
+  })
+  return checkWindowData
+}
+
+/**
+ * Format check window data for the select check forms view
+ * @param {Object} checkWindow
+ * @param {String} checkFormType
+ * @returns {Object}
+ */
+checkFormPresenter.getPresentationCheckWindowData = (checkWindow, checkFormType) => {
+  const checkStartDate = checkFormType === 'live' ? checkWindow.checkStartDate : checkWindow.familiarisationCheckStartDate
+  const checkEndDate = checkFormType === 'live' ? checkWindow.checkEndDate : checkWindow.familiarisationCheckEndDate
+  return {
+    name: checkWindow.name,
+    urlSlug: checkWindow.urlSlug,
+    familiarisationCheckStartDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckStartDate),
+    familiarisationCheckEndDate: dateService.formatFullGdsDate(checkWindow.familiarisationCheckEndDate),
+    liveCheckStartDate: dateService.formatFullGdsDate(checkWindow.checkStartDate),
+    liveCheckEndDate: dateService.formatFullGdsDate(checkWindow.checkEndDate),
+    checkFormTypeTitle: checkFormType === 'live' ? 'Multiplication tables check' : 'Try it out',
+    checkPeriod: checkFormType === 'live' ? 'MTC' : 'Try it out',
+    isWithinCheckType: dateService.utcNowAsMoment().isBetween(checkStartDate, checkEndDate)
+  }
+}
+
+/**
+ * Format available and assigned check forms
+ * @param {Array} availableCheckForms
+ * @param {Array} assignedCheckForms
+ * @returns {Array} - checkFormData
+ */
+checkFormPresenter.getPresentationAvailableFormsData = (availableCheckForms, assignedCheckForms) => {
+  const checkFormData = []
+  availableCheckForms.forEach(cw => {
+    checkFormData.push({
+      name: cw.name,
+      urlSlug: cw.urlSlug,
+      checked: assignedCheckForms.some(acf => acf.urlSlug === cw.urlSlug)
+    })
+  })
+  return checkFormData
+}
+
+/**
+ * Construct flash message to display assigned check forms after successful assignment
+ * @param {Array} checkForms
+ * @param {String} checkWindowName
+ * @param {String} checkFormType
+ * @returns {String} - message
+ */
+checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, checkFormType) => {
+  const totalFormAssigned = checkForms.length
+  const partial = totalFormAssigned > 1 ? `forms have` : `form has`
+  return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
+    : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
 }
 
 module.exports = checkFormPresenter

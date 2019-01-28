@@ -1,5 +1,6 @@
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2Service = require('../services/check-form-v2.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -119,6 +120,100 @@ controller.getViewFormPage = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     checkFormData
   })
+}
+
+/**
+ * Assign forms view page
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getAssignFormsPage = async (req, res, next) => {
+  res.locals.pageTitle = 'Assign forms to check window'
+  req.breadcrumbs(res.locals.pageTitle)
+  let checkWindows
+  let checkWindowData
+  try {
+    checkWindows = await checkWindowV2Service.getPresentAndFutureCheckWindows()
+    checkWindowData = checkFormPresenter.getPresentationCheckWindowListData(checkWindows)
+  } catch (error) {
+    return next(error)
+  }
+  let { hl } = req.query
+  if (hl) {
+    hl = JSON.parse(hl)
+    hl = typeof hl === 'string' ? JSON.parse(hl) : hl
+  }
+  res.render('check-form/view-assign-forms-to-check-windows', {
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowData,
+    highlight: hl && new Set(hl),
+    messages: res.locals.messages
+  })
+}
+
+/**
+ * Select forms to be assigned to check window page
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getSelectFormPage = async (req, res, next) => {
+  const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
+  const checkFormType = req.params && req.params.checkFormType
+  let checkWindow
+  let checkWindowData
+  let checkFormData
+  let availableCheckForms
+  let assignedCheckForms
+  try {
+    checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    availableCheckForms = await checkFormV2Service.getCheckFormsByType(checkFormType)
+    assignedCheckForms = await checkFormV2Service.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
+    checkWindowData = checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
+    checkFormData = checkFormPresenter.getPresentationAvailableFormsData(availableCheckForms, assignedCheckForms)
+  } catch (error) {
+    return next(error)
+  }
+  const hasAssignedForms = Array.isArray(assignedCheckForms) && assignedCheckForms.length > 0
+  res.locals.pageTitle = `${checkWindowData.name} - ${checkWindowData.checkPeriod}`
+  req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('check-form/view-select-forms', {
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowData,
+    checkFormData,
+    checkFormType,
+    hasAssignedForms
+  })
+}
+
+/**
+ * Assign forms to check window
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.postAssignForms = async (req, res, next) => {
+  const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
+  const checkFormType = req.params && req.params.checkFormType
+  const requestData = req.body
+  const { checkForms } = requestData
+  let highlightMessage
+  let checkWindow
+  try {
+    checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+    await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkForms)
+    highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('info', highlightMessage)
+  const highlight = JSON.stringify([`${checkWindowUrlSlug.toString()}-${checkFormType}`])
+  return res.redirect(`/check-form/assign-forms-to-check-windows?hl=${highlight}`)
 }
 
 module.exports = controller
