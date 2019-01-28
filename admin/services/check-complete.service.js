@@ -5,12 +5,9 @@ const logger = require('./log.service').getLogger()
 
 const checkDataService = require('./data-access/check.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
-const config = require('../config')
 const jwtService = require('../services/jwt.service')
-const markingService = require('./marking.service')
 const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const checkFormDataService = require('../services/data-access/check-form.data.service')
 
 const checkStateService = require('../services/check-state.service')
 
@@ -47,13 +44,6 @@ checkCompleteService.completeCheck = async function (completedCheck) {
 
   // Update the check status to complete
   await checkStateService.changeState(completedCheck.data.pupil.checkCode, checkStateService.States.Complete)
-
-  if (config.autoMark) {
-    // HACK temporary way to mark checks until we move to a dedicated scheduled process
-    const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
-    const checkForm = await checkFormDataService.sqlFindOneParsedById(check.checkForm_id)
-    await markingService.mark({ ...check, formData: checkForm.formData })
-  }
 }
 
 module.exports = checkCompleteService
