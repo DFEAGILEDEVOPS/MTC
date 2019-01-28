@@ -21,16 +21,17 @@ markingService.mark = async function (completedCheckMessage, check) {
     throw new Error('missing or invalid argument: check data')
   }
 
+  const formData = JSON.parse(check.formData)
+
   const results = {
     marks: 0,
-    maxMarks: completedCheckMessage.answers.length,
+    maxMarks: formData.length,
     processedAt: moment.utc()
   }
 
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
-  const formData = JSON.parse(check.formData)
   for (let question of formData) {
     const currentIndex = questionNumber - 1
     const answerRecord = completedCheckMessage.answers[currentIndex]
