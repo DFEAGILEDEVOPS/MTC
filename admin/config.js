@@ -29,8 +29,6 @@ module.exports = {
   CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: 25,
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  // autoMark true | false - Automatically mark the check data when we receive it: boolean
-  autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
