@@ -18,7 +18,7 @@ const attendanceCodeDataService = {
   /**
    * Find attendance code by code.
    * @param code
-   * @returns {Promise<void>}
+   * @returns {Promise<object>}
    */
   sqlFindOneAttendanceCodeByCode: async (code) => {
     const sql = `

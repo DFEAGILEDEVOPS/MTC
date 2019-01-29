@@ -47,6 +47,32 @@ pupilDataService.sqlFindPupilsWithStatusByDfeNumber = async function (dfeNumber)
 }
 
 /**
+ * Fetch all pupils for a school by dfeNumber with their status codes and attendance reasons
+ * @param dfeNumber
+ * @returns {Promise<*>}
+ */
+pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (dfeNumber) {
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+
+  const sql = `
+      SELECT p.*, ps.code, pg.group_id, ac.reason, ac.code as reasonCode
+      FROM ${sqlService.adminSchema}.${table} p
+      INNER JOIN school s
+        ON s.id = p.school_id
+      LEFT JOIN pupilStatus ps
+        ON p.pupilStatus_id = ps.id
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
+        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac 
+        ON pa.attendanceCode_id = ac.id 
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+        ON pg.pupil_id = p.id 
+      WHERE s.dfeNumber = @dfeNumber
+    `
+  return sqlService.query(sql, [paramDfeNumber])
+}
+
+/**
  * Find a pupil by their urlSlug
  * @param urlSlug - GUID
  * @param schoolId - look for the pupil only in a particular school
@@ -132,6 +158,33 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
         *    
       FROM ${sqlService.adminSchema}.${table}
       WHERE id = @id and school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, [paramPupil, paramSchool])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by Id and schoolId with associated attendance reasons
+ * @param {number} id
+ * @param {number} schoolId
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool = async (id, schoolId) => {
+  const paramPupil = { name: 'id', type: TYPES.Int, value: id }
+  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const sql = `
+      SELECT TOP 1 
+      p.*, ps.code, pg.group_id, ac.reason, ac.code as reasonCode
+      FROM ${sqlService.adminSchema}.${table} p
+      LEFT JOIN pupilStatus ps
+        ON p.pupilStatus_id = ps.id
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa
+        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
+        ON pa.attendanceCode_id = ac.id 
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+        ON pg.pupil_id = p.id 
+      WHERE p.id = @id and school_id = @schoolId 
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
   return R.head(results)
@@ -355,10 +408,14 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   const sql = `
   SELECT p.*, pg.group_id, ac.reason
   FROM ${sqlService.adminSchema}.${table} p 
-    INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
+    INNER JOIN ${sqlService.adminSchema}.[school] s
+      ON p.school_id = s.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
+      ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
+      ON pa.attendanceCode_id = ac.id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+      ON pg.pupil_id = p.id 
   WHERE s.dfeNumber = @dfeNumber
   ORDER BY ${sqlSort}
   `
