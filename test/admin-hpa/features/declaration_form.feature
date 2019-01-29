@@ -46,7 +46,6 @@ Feature: Declaration form
     When I submit the form with the hdf name fields set as Maryçáéíóúñü
     Then I should be taken to the attendance page
 
-  @declaration_formm
   Scenario: Names can not contain special characters
     Given I am on the HDF form page
     Then I should see validation errors when I submit with the following hdf names
@@ -90,3 +89,12 @@ Feature: Declaration form
     When I click on the not a headteacher radio box
     And I submit the form with the hdf name fields set as Test
     Then I should see a validation error for job title
+
+  Scenario: Edit Reason for HDF pupil is displayed as per design
+    Given I am on the review pupil detail page
+    When headteacher select the pupil for updating its reason
+    Then edit reason page is displayed as per design
+
+  Scenario: Headteacher update the reason for a pupil
+    Given headteacher has updated reason 'Left school' for a pupil
+    Then reason is updated for the pupil on HDF review pupil detail page
