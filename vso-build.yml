@@ -1,4 +1,4 @@
-name: $(Build.DefinitionName)-$(date:yyyyMMdd)$(rev:.r)
+name: $(date:yyyyMMdd)$(rev:.r)
 resources:
 - repo: self
   clean: true

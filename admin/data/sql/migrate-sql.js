@@ -70,7 +70,6 @@ const runMigrations = async (version) => {
 
   // subscribe to useful events
   postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
-  postgrator.on('error', error => logger.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
   logger.info('Migrating to version: ' + version)
@@ -79,10 +78,11 @@ const runMigrations = async (version) => {
     await postgrator.migrate(version)
     logger.info('SQL Migrations complete')
   } catch (error) {
-    logger.error('Migration error:', error.message)
-    logger.error(`${error.appliedMigrations.length} migrations were applied...`)
+    logger.error('Error executing migration...')
+    logger.error(error)
+    logger.error(`${error.appliedMigrations.length} migrations were applied.`)
     error.appliedMigrations.forEach(migration => {
-      logger.error(migration.name)
+      logger.error(`- ${migration.name}`)
     })
     throw error
   }
