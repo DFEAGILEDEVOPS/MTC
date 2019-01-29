@@ -4,7 +4,7 @@ BEGIN
    SET @CheckWindowCursor = CURSOR FOR
     -- FETCH ALL CURRENT OR FUTURE CHECK WINDOWS
     SELECT cw.id from [mtc_admin].checkWindow cw
-    WHERE GETUTCDATE() < checkEndDate
+    WHERE GETUTCDATE() <= checkEndDate
     EXCEPT
     -- EXCEPT THE ONES WHICH ALREADY HAVE MTC0103 FORM ASSIGNED
     SELECT cw.id from [mtc_admin].checkWindow cw
