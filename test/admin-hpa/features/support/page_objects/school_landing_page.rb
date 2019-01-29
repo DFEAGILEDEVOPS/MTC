@@ -20,7 +20,7 @@ class SchoolLandingPage < SitePrism::Page
   element :restarts_text, 'p', text: 'Select pupils to restart because of an interrupted check'
   element :hdf, 'a', text: "Headteacher's declaration form"
   element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
-  element :hdf_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
+  element :hdf_text, 'p', text: "Complete headteacher's declaration form once all pupils have completed or a reason for not taking the check"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
   element :results, '.disabled-link', text: 'Results'
   element :results_text, 'p', text: "View pupil results"
