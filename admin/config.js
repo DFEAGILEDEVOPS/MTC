@@ -19,11 +19,8 @@ module.exports = {
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: (process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS || 10) * 60, // Expire after 10 minutes inactivity by default
   ADMIN_SESSION_DISPLAY_NOTICE_AFTER: (process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER || 5) * 60, // Display notice after 5 minutes by default
-  QUESTION_TIME_LIMIT: 6,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  TIME_BETWEEN_QUESTIONS: 3,
-  LENGTH_OF_CHECK_MINUTES: 30,
   CHECK_FORM_NAME_MAX_CHARACTERS: 128,
   CHECK_FORM_MIN_INTEGER: 1,
   CHECK_FORM_MAX_INTEGER: 12,
@@ -64,7 +61,7 @@ module.exports = {
     }
   },
   Logging: {
-    LogLevel: process.env.LOG_LEVEL || 'error',
+    LogLevel: process.env.LOG_LEVEL || 'info',
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
