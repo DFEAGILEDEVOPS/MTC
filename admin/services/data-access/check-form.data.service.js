@@ -1,6 +1,6 @@
 'use strict'
 
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 
