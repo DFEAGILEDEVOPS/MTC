@@ -7,9 +7,11 @@ const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilPresenter = require('../helpers/pupil-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
+const attendanceCodeService = require('../services/attendance.service')
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
@@ -116,55 +118,63 @@ const downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-const getSubmitAttendance = async (req, res, next) => {
-  res.locals.pageTitle = 'Attendance register'
+const getReviewPupilDetails = async (req, res, next) => {
+  res.locals.pageTitle = 'Review pupil details'
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.School)
   if (!pupils) {
     throw new Error('No pupils found')
   }
-
-  // Redirect to confirmation of submission if hdf has been signed
-  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)) {
-    return res.redirect('/school/declaration-form-submitted')
-  }
-
-  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const fullName = `${p.foreName} ${p.lastName}`
-    const { id, hasAttended } = p
-    const score = await scoreService.getScorePercentage(p.id)
-    const hasScore = (score !== undefined)
-
-    return {
-      id,
-      fullName,
-      hasAttended,
-      hasScore,
-      score
-    }
-  })).catch((error) => next(error))
-  pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
-  // Redirect to declaration form if at least one has been submitted for attendance
-  if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
-    return res.redirect('/school/declaration-form')
-  }
-  return res.render('school/submit-attendance-register', {
+  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
+  return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
-    pupils: pupilsFormatted
+    pupils: pupilsSortedWithFlags
   })
 }
 
-/**
- * @deprecated potentially superfluous - attached to HDF
- */
-const postSubmitAttendance = async (req, res, next) => {
-  const attendees = req.body[ 'attendee' ]
-  if (!attendees) {
-    return res.redirect('/school/submit-attendance')
+const getEditReason = async (req, res, next) => {
+  res.locals.pageTitle = 'Edit reason for not taking the check'
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
+  req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
+  req.breadcrumbs('Edit reason')
+  if (!req.params.pupilId) {
+    return res.redirect('/attendance/review-pupil-details')
   }
-  // const data = Object.values(req.body[ 'attendee' ] || [])
-  // TODO consider removal as part of HDF refresh
-  return res.redirect('/school/declaration-form')
+
+  let pupil, attendanceCodes
+  try {
+    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(req.params.pupilId, req.user.School)
+    attendanceCodes = await attendanceCodeService.getAttendanceCodes()
+  } catch (error) {
+    return next(error)
+  }
+
+  if (!pupil) {
+    return next(new Error('Pupil not found in school'))
+  }
+
+  return res.render('hdf/attendance-edit-reason', {
+    breadcrumbs: req.breadcrumbs(),
+    pupil: pupil,
+    attendanceCodes: attendanceCodes
+  })
+}
+
+const postSubmitEditReason = async (req, res, next) => {
+  const { pupilId, attendanceCode } = req.body
+
+  let pupil
+  try {
+    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(pupilId, req.user.School)
+    await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+
+  req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
+  req.flash('pupilId', pupil.id)
+  return res.redirect('/attendance/review-pupil-details')
 }
 
 const getDeclarationForm = async (req, res, next) => {
@@ -209,7 +219,7 @@ const postDeclarationForm = async (req, res, next) => {
     })
   }
 
-  return res.redirect('/attendance/attendance-wip')
+  return res.redirect('/attendance/review-pupil-details')
 }
 
 const getHDFSubmitted = async (req, res, next) => {
@@ -229,8 +239,9 @@ const getHDFSubmitted = async (req, res, next) => {
 module.exports = {
   getResults,
   downloadResults,
-  getSubmitAttendance,
-  postSubmitAttendance,
+  getReviewPupilDetails,
+  getEditReason,
+  postSubmitEditReason,
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted

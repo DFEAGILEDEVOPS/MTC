@@ -1,0 +1,91 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <a href="#anchor-<%= messages.pupilId %>"><%= messages.info %></a>
+        </div>
+        <% } %>
+            
+        <h1 class="heading-xlarge">Review pupil details</h1>
+
+        <%- partial('partials/_session_expiry') %>
+
+        <p class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">
+            Please review your pupil list. All pupils should have an status of 'Complete' or a reason for not taking the check.
+            Click on pupil's name to edit outcome if a reason below is incorrect.
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
+            <table class="spacious" id="attendanceList" role="listbox">
+                <thead>
+                    <tr>
+                        <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
+                        <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% pupils.forEach( (pupil, index) => { %>
+                <tr>
+                    <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
+                        <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
+                            <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
+                            <% if (pupil.showDoB) { %>
+                                <div class="font-greyed-out font-xsmall">
+                                    Date of birth: <%= pupil.dateOfBirth %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </td>
+                    <td>
+                        <% if (pupil.code === 'COMPLETED') { %>
+                        Completed
+                        <% } else { %>
+                        <%= pupil.reason %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (pupil.reason) { %>
+                            <a href="/attendance/edit-reason/<%= pupil.id %>">Edit</a>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+
+            <div class="form-group form-horizontal">
+                <input class="button" type="submit" value="Continue">
+            </div>
+        </form>
+
+        <div class="back-to-top-container">
+          <a href="#top">Back to top</a>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'attendanceList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
