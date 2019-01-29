@@ -30,8 +30,7 @@ async function main() {
       leaCode,
       [name]
     from [mtc_admin].[school] WHERE id=${schoolId} AND leaCode IS NOT NULL AND estabCode IS NOT NULL`)
-    console.log(`Generating ${pupilCountPerSchool} pupils for ${school.name}`)
-    await insertPupils(school, pupilCountPerSchool)
+    await insertPupils(school[0], pupilCountPerSchool)
   } catch (error) {
     console.error(error.message)
     throw error
@@ -57,6 +56,7 @@ async function insertPupils(school, count) {
     upn
   ) VALUES`
   const pupilData = []
+  console.log(`Generating ${pupilCountPerSchool} pupils for ${school.name}`)
   for (let i = 0; i < count; i++) {
     pupilData.push([
       `( '${randomDob()}'`,
