@@ -475,8 +475,8 @@ pupilDataService.sqlInsertMany = async (pupils) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
-  return sqlService.modify(sql, params)
-  // E.g. { insertId: [1, 2], rowsModified: 4 }
+  const res = await sqlService.query(sql, params)
+  return { insertId: res.map(x => x.id) }
 }
 
 module.exports = pupilDataService
