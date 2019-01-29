@@ -26,7 +26,6 @@ module.exports = {
   CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: 25,
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  MIGRATE_FULL_SCHOOL_DATASET: process.env.hasOwnProperty('MIGRATE_FULL_SCHOOL_DATASET') ? toBool(process.env.MIGRATE_FULL_SCHOOL_DATASET) : true,
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
