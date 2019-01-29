@@ -11,9 +11,9 @@ module.exports.generateSql = () => {
         EXCEPT
         -- EXCEPT THE ONES WHICH ALREADY HAVE MTC0103 FORM ASSIGNED
         SELECT cw.id from [mtc_admin].checkWindow cw
-        LEFT JOIN [mtc_admin].checkFormWindow cfw
+        JOIN [mtc_admin].checkFormWindow cfw
           ON cw.id = cfw.checkWindow_id
-        lEFT JOIN [mtc_admin].checkForm cf
+        JOIN [mtc_admin].checkForm cf
           ON cf.id = cfw.checkForm_id
         WHERE cf.name = 'MTC0103'
     
