@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
 const serviceToExport = {
@@ -114,13 +114,18 @@ const serviceToExport = {
       params.push({ name: `checkFormId${index}`, value: check.checkForm_id, type: TYPES.Int })
       params.push({ name: `checkWindowId${index}`, value: check.checkWindow_id, type: TYPES.Int })
       params.push({ name: `isLiveCheck${index}`, value: check.isLiveCheck, type: TYPES.Bit })
-      params.push({ name: `pinExpiresAt${index}`, value: check.pinExpiresAt, type: TYPES.DateTimeOffset })
+      params.push({ name: `pinExpiresAt${index}`, value: check.pinExpiresAt.toDate(), type: TYPES.DateTimeOffset })
       params.push({ name: `schoolId${index}`, value: check.school_id, type: TYPES.Int })
     })
     const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
     const insertSql = insertHeader + inserts.join(',\n')
     const sql = [declareTable, insertSql, exec].join(';\n')
-    return sqlService.modify(sql, params)
+    const res = await sqlService.query(sql, params)
+    const insertedIds = []
+    res.forEach(row => {
+      insertedIds.push(row.id)
+    })
+    return { insertId: insertedIds }
   },
 
   sqlFindActivePinRecordsByUrlSlug: async (urlSlug) => {

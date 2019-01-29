@@ -30,7 +30,12 @@ Configuration steps:
   - ``git secrets --add 'AccountName=[a-z0-9]{3,24}'``
   - ``git secrets --add 'AccountKey=[a-zA-Z0-9/=]{60,100}'``
   
-Usage:
+#### Sourcetree client
+
+To configure Sourcetree to have access to `git-secrets` you need to use an external git binary and symlink to it:
+e.g. if you are using macports `git` in `/opt/local/bin/git` then symlink `/usr/local/bin/git-secrets` to `/opt/local/bin`.
+  
+#### Usage
 
 1. Scan for credentials:``git secrets --scan``
 2. Scan for credentials including historical commits: ``git secrets --scan-history``
