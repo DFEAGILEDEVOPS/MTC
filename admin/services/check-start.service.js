@@ -390,7 +390,9 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
 
   for (let o of checks) {
     // Pass the isLiveCheck config in to the SPA
-    config.practice = !o.check_isLiveCheck
+    const pupilConfig = pupilConfigs[ o.pupil_id ]
+    pupilConfig.practice = !o.check_isLiveCheck
+
     const message = {
       checkCode: o.check_checkCode,
       schoolPin: o.school_pin,
@@ -428,7 +430,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
       questions: checkFormService.prepareQuestionData(
         JSON.parse(o.checkForm_formData)
       ),
-      config: pupilConfigs[ o.pupil_id ]
+      config: pupilConfig
     }
     if (o.check_isLiveCheck) {
       message.tokens.checkComplete = {
