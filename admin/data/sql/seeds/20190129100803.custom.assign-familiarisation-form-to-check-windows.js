@@ -15,7 +15,7 @@ module.exports.generateSql = () => {
           ON cw.id = cfw.checkWindow_id
         lEFT JOIN [mtc_admin].checkForm cf
           ON cf.id = cfw.checkForm_id
-        WHERE (cf.name = 'MTC0103')
+        WHERE cf.name = 'MTC0103'
     
        OPEN @CheckWindowCursor
        FETCH NEXT FROM @CheckWindowCursor
