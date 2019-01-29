@@ -3,7 +3,6 @@ const R = require('ramda')
 
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2DataService = require('./data-access/check-form-v2.data.service')
-const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkFormsValidator = require('../lib/validator/check-form/check-forms-validator')
 const checkFormV2Service = {}
 
