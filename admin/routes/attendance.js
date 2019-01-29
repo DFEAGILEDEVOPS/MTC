@@ -26,9 +26,19 @@ router.get(
   (req, res, next) => attendance.getEditReason(req, res, next)
 )
 router.post(
-  '/submit-edit-reason-form',
+  '/submit-edit-reason',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => attendance.postSubmitEditReason(req, res, next)
+)
+router.get(
+  '/confirm-and-submit',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.getConfirmSubmit(req, res, next)
+)
+router.post(
+  '/confirm-and-submit',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.postConfirmSubmit(req, res, next)
 )
 router.get(
   '/declaration-form',
