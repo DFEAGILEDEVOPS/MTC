@@ -188,8 +188,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
       type: TYPES.NVarChar
     }
   ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
+  return await sqlService.query(sql, params)
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {

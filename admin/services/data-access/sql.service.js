@@ -209,11 +209,15 @@ sqlService.drainPool = async () => {
  * @type {Function}
  */
 sqlService.transformResult = function (data) {
-  const d1 = R.prop('recordset', data) // returns [o1, o2,  ...]
+  const recordSet = R.prop('recordset', data) // returns [o1, o2,  ...]
+  if (!recordSet) {
+    return []
+  }
+
   return R.map(R.pipe(
     R.omit(['version']),
     R.map(convertDateToMoment)
-  ), d1)
+  ), recordSet)
 }
 
 /**
