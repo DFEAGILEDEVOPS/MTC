@@ -76,5 +76,6 @@ Then(/^I should see the assign check form has a hidden csrf field$/) do
 end
 
 And(/^I want to assign a form$/) do
-  assign_form_to_window_page.check_windows.rows.first.assign_form.click
+  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == 'Development Phase'}
+  window.mtc_check_link.click
 end
