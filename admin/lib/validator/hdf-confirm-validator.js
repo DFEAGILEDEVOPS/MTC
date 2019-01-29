@@ -17,10 +17,8 @@ module.exports.validate = function (hdfConfirmData) {
     staffConfirm
   } = hdfConfirmData
 
-  if (confirm === 'Y') {
-    if (pupilDetails !== 'checked' || uniquePins !== 'checked' || staffConfirm !== 'checked') {
-      validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
-    }
+  if (confirm === 'Y' && (pupilDetails !== 'checked' || uniquePins !== 'checked' || staffConfirm !== 'checked')) {
+    validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
   }
 
   return validationError

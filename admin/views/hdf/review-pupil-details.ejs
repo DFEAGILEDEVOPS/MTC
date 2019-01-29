@@ -12,7 +12,7 @@
 
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <a href="#anchor-<%= messages.pupilId %>"><%= messages.info %></a>
+            <a href="#anchor-<%= messages.urlSlug %>"><%= messages.info %></a>
         </div>
         <% } %>
             
@@ -43,8 +43,8 @@
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
-                    <td<% if (messages.pupilId && messages.pupilId == pupil.id) { %> class="highlight-item"<% } %>>
-                        <div class="highlight-wrapper" id="anchor-<%= pupil.id %>">
+                    <td<% if (messages.urlSlug && messages.urlSlug == pupil.urlSlug) { %> class="highlight-item"<% } %>>
+                        <div class="highlight-wrapper" id="anchor-<%= pupil.urlSlug %>">
                             <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
                             <% if (pupil.showDoB) { %>
                                 <div class="font-greyed-out font-xsmall">
@@ -62,7 +62,7 @@
                     </td>
                     <td>
                         <% if (pupil.reason) { %>
-                            <a href="/attendance/edit-reason/<%= pupil.id %>">Edit</a>
+                            <a href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
                         <% } %>
                     </td>
                 </tr>

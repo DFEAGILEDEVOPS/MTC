@@ -21,7 +21,7 @@ router.get(
   (req, res, next) => attendance.getReviewPupilDetails(req, res, next)
 )
 router.get(
-  '/edit-reason/:pupilId',
+  '/edit-reason/:urlSlug',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => attendance.getEditReason(req, res, next)
 )

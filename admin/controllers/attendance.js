@@ -139,13 +139,13 @@ const getEditReason = async (req, res, next) => {
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs('Edit reason')
-  if (!req.params.pupilId) {
+  if (!req.params.urlSlug) {
     return res.redirect('/attendance/review-pupil-details')
   }
 
   let pupil, attendanceCodes
   try {
-    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(req.params.pupilId, req.user.School)
+    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(req.params.urlSlug, req.user.School)
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
   } catch (error) {
     return next(error)
@@ -163,18 +163,18 @@ const getEditReason = async (req, res, next) => {
 }
 
 const postSubmitEditReason = async (req, res, next) => {
-  const { pupilId, attendanceCode } = req.body
+  const { urlSlug, attendanceCode } = req.body
 
   let pupil
   try {
-    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(pupilId, req.user.School)
+    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(urlSlug, req.user.School)
     await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
   } catch (error) {
     return next(error)
   }
 
   req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
-  req.flash('pupilId', pupil.id)
+  req.flash('urlSlug', pupil.urlSlug)
   return res.redirect('/attendance/review-pupil-details')
 }
 

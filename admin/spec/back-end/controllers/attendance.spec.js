@@ -101,18 +101,18 @@ describe('attendance controller:', () => {
       method: 'GET',
       url: '/attendance/edit-reason/1',
       params: {
-        pupilId: 1
+        urlSlug: 'xxx-xxx-xxx-xxx'
       }
     }
 
     it('renders the edit attendance reason page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(headteacherDeclarationService, 'findPupilByIdAndDfeNumber').and.returnValue({})
+      spyOn(headteacherDeclarationService, 'findPupilBySlugAndDfeNumber').and.returnValue({})
       spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getEditReason(req, res)
-      expect(headteacherDeclarationService.findPupilByIdAndDfeNumber).toHaveBeenCalled()
+      expect(headteacherDeclarationService.findPupilBySlugAndDfeNumber).toHaveBeenCalled()
       expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
@@ -122,20 +122,20 @@ describe('attendance controller:', () => {
     let reqParams = {
       method: 'POST',
       url: '/attendance/submit-edit-reason',
-      body: { pupilId: 99, attendanceCode: 'XXX' },
+      body: { urlSlug: 'xxx-xxx-xxx-xxx', attendanceCode: 'XXX' },
       user: { id: 1, School: 1 }
     }
 
     it('redirects to the review pupils page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(headteacherDeclarationService, 'findPupilByIdAndDfeNumber').and.returnValue({ id: reqParams.body.pupilId })
+      spyOn(headteacherDeclarationService, 'findPupilBySlugAndDfeNumber').and.returnValue({ id: 1 })
       spyOn(headteacherDeclarationService, 'updatePupilsAttendanceCode').and.returnValue(null)
       spyOn(res, 'redirect')
       await controller.postSubmitEditReason(req, res)
-      expect(headteacherDeclarationService.findPupilByIdAndDfeNumber).toHaveBeenCalled()
+      expect(headteacherDeclarationService.findPupilBySlugAndDfeNumber).toHaveBeenCalled()
       expect(headteacherDeclarationService.updatePupilsAttendanceCode).toHaveBeenCalledWith(
-        [reqParams.body.pupilId],
+        [1],
         reqParams.body.attendanceCode,
         reqParams.user.id
       )
