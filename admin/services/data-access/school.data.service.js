@@ -36,7 +36,7 @@ const schoolDataService = {
   /**
    * Find a School by DfeNumber
    * @param dfeNumber
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   sqlFindOneByDfeNumber: async (dfeNumber) => {
     const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }

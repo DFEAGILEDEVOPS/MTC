@@ -1,5 +1,6 @@
 'use strict'
 const moment = require('moment')
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 
 const pupilPresenter = {}
 
@@ -10,6 +11,13 @@ const pupilPresenter = {}
 pupilPresenter.getPupilExampleYear = () => {
   const deductionYears = 8
   return moment.utc().format('YYYY') - deductionYears
+}
+
+pupilPresenter.getPupilsSortedWithIdentificationFlags = (pupils) => {
+  pupils.sort((a, b) => {
+    return (a.lastName === b.lastName ? 0 : a.lastName.localeCompare(b.lastName)) || (a.foreName === b.foreName ? 0 : a.foreName.localeCompare(b.foreName))
+  })
+  return pupilIdentificationFlag.addIdentificationFlags(pupils)
 }
 
 module.exports = pupilPresenter
