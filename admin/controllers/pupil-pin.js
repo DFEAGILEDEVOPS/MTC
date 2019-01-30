@@ -29,11 +29,9 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   let checkWindowData
-  let areRestartsAvailable
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
-    areRestartsAvailable = businessAvailabilityService.areRestartsAllowed(checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -52,8 +50,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils,
-    areRestartsAvailable
+    pupils
   })
 }
 
