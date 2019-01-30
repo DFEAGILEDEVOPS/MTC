@@ -36,8 +36,9 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = async (checkWindowDa
   // Groups
   featureEligibilityData.isGroupsPageAccessible = isWithinLivePeriod
   // Results page data
-  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.add(3, 'days').add(8, 'hours')
-  featureEligibilityData.isResultsPageAccessible = moment.utc().isSameOrAfter(resultsPageEligibilityDateTime)
+  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.add(3, 'days').set({ hour: 8, minutes: 0, seconds: 0 })
+
+  featureEligibilityData.isResultsPageAccessible = currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
   featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTime)
 
   return featureEligibilityData
