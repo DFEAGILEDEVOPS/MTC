@@ -21,6 +21,7 @@ const configService = {
       loadingTime: undefined,
       nextBetweenQuestions: false,
       numpadRemoval: false,
+      practice: true,
       questionReader: false,
       questionTime: undefined,
       speechSynthesis: false
