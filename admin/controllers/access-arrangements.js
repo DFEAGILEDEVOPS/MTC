@@ -5,7 +5,7 @@ const pupilAccessArrangementsService = require('../services/pupil-access-arrange
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}

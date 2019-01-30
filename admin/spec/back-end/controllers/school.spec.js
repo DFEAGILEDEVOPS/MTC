@@ -8,7 +8,7 @@ const httpMocks = require('node-mocks-http')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const schoolController = require('../../../controllers/school')
 const schoolService = require('../../../services/school.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const schoolMock = require('../mocks/school')
 
 describe('school controller:', () => {

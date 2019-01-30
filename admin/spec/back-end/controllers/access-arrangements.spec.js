@@ -11,7 +11,7 @@ const accessArrangementsService = require('../../../services/access-arrangements
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../../../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const pupilService = require('../../../services/pupil.service')
 const ValidationError = require('../../../lib/validation-error')
 
