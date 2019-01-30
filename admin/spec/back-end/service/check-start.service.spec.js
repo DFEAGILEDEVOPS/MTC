@@ -212,10 +212,10 @@ describe('check-start.service', () => {
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
       spyOn(configService, 'getBatchConfig').and.returnValue(
         {
-            1: configService.getBaseConfig(),
-            2: configService.getBaseConfig(),
-            3: configService.getBaseConfig()
-          })
+          1: configService.getBaseConfig(),
+          2: configService.getBaseConfig(),
+          3: configService.getBaseConfig()
+        })
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -377,13 +377,8 @@ describe('check-start.service', () => {
   describe('#prepareCheckQueueMessages', () => {
     const mockCheckFormAllocationLive = require('../mocks/check-form-allocation')
     const mockCheckFormAllocationFamiliarisation = require('../mocks/check-form-allocation-familiarisation')
-    const mockConfig = {
-      speechSynthesis: false,
-      loadingTimeLimit: 3,
-      questionTimeLimit: 6
-    }
     beforeEach(() => {
-      spyOn(configService, 'getBatchConfig').and.returnValue({1: configService.getBaseConfig() })
+      spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
         return {
           'token': '<someToken',

@@ -4,7 +4,6 @@ const fs = require('fs-extra')
 
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')
-const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkFormV2Service = require('../../../services/check-form-v2.service')
 const checkFormsValidator = require('../../../lib/validator/check-form/check-forms-validator')
 const ValidationError = require('../../../lib/validation-error')
