@@ -22,7 +22,7 @@ if (isNaN(schoolId)) {
   process.exit()
 }
 
-async function main() {
+async function main () {
   try {
     const school = await sqlService.query(`SELECT
       id,
@@ -46,7 +46,7 @@ main()
     poolService.drain()
   })
 
-async function insertPupils(school, count) {
+async function insertPupils (school, count) {
   const insert = `INSERT INTO [mtc_admin].[pupil] (
     dateOfBirth,
     foreName,
@@ -71,14 +71,14 @@ async function insertPupils(school, count) {
   return sqlService.modify(sql)
 }
 
-function randomDob() {
+function randomDob () {
   const rnd = Math.floor(Math.random() * (365 * 2) + 1)
   const dob = moment().utc().subtract(9, 'years').subtract(rnd, 'days')
   dob.hours(0).minute(0).second(0)
   return dob.toISOString()
 }
 
-function genUPN(leaCode, estabCode, serial) {
+function genUPN (leaCode, estabCode, serial) {
   try {
     const upn = '' + leaCode.toString() + estabCode + (new Date().getFullYear().toString().substr(-2)) +
       serial.toString().padStart(3, '0')
