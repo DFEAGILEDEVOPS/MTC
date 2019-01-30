@@ -31,7 +31,7 @@ end
 
 
 Then(/^I should see an error stating I need to select a form and a type$/) do
-  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select a file to upload", "Select live form or familiarisation form"]
+  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select a file to upload", "Select try it out form or MTC form"]
 end
 
 
@@ -47,7 +47,7 @@ When(/^I have uploaded a valid (.*) form$/) do |type|
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -118,12 +118,12 @@ When(/^I attempt to upload 2 (.+) forms$/) do |type|
   upload_new_forms_page.create_unique_check_csv(@file2_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', [File.expand_path("#{@file1_path}"), File.expand_path("#{@file2_path}")])
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
 end
 
 
 Then(/^I should be shown a validation error$/) do
-  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select one familiarisation form for upload"]
+  expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["Select one try it out form for upload"]
 end
 
 
@@ -147,7 +147,7 @@ When(/^I attempt to upload a file that is not csv file$/) do
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.live_check_form.click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -174,7 +174,7 @@ When(/^I attempt to upload a (.*) file that is not exactly 25 rows of data$/) do
   page.attach_file('csvFiles', live_files) if type == 'live'
   page.attach_file('csvFiles', familiarisation_files) if type == 'familiarisation'
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file1_path)
   upload_new_forms_page.delete_csv_file(@file2_path)
 end
@@ -201,7 +201,7 @@ But(/^when I choose a valid (.+) file$/) do |type|
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -232,7 +232,7 @@ When(/^I attempt to upload a (.*) file that is not exactly 50 integers$/) do |ty
   page.attach_file('csvFiles', live_files) if type == 'live'
   page.attach_file('csvFiles', familiarisation_files) if type == 'familiarisation'
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file1_path)
   upload_new_forms_page.delete_csv_file(@file2_path)
 end
@@ -270,7 +270,7 @@ When(/^I attempt to upload a (.*) file that is not exactly 2 columns$/) do |type
   page.attach_file('csvFiles', live_files) if type == 'live'
   page.attach_file('csvFiles', familiarisation_files) if type == 'familiarisation'
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file1_path)
   upload_new_forms_page.delete_csv_file(@file2_path)
 end
@@ -304,7 +304,7 @@ When(/^I attempt to upload a (.*) file that doesnt only contain integers, commas
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/invalid-characters.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -323,7 +323,7 @@ But(/^when I correct the (.*) file to have only integers, commas and quotation m
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/quotes-around-values.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -340,7 +340,7 @@ When(/^I attempt to upload a (.+) file that doesnt only contain integers between
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/greater-than-12_times_table.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -361,7 +361,7 @@ But(/^when I correct the (.*) file to have only integers between 1 and 12$/) do 
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -378,7 +378,7 @@ When(/^I attempt to upload a (.+) file with a file name greater than 128 charact
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -399,7 +399,7 @@ But(/^when I correct the (.*) file name to be between 1 and 128 characters long$
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -421,7 +421,7 @@ When(/^I attempt to upload more than 10 live files at one time$/) do
   files = @array_of_files.map {|file| File.expand_path(file)}
   page.attach_file('csvFiles', files)
   upload_new_forms_page.live_check_form.click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   @array_of_files.each do |file|
     upload_new_forms_page.delete_csv_file(file)
   end
@@ -449,7 +449,7 @@ But(/^when I choose (\d+) live files$/) do |arg|
   files = @array_of_files.map {|file| File.expand_path(file)}
   page.attach_file('csvFiles', files)
   upload_new_forms_page.live_check_form.click
-  upload_new_forms_page.upload.click
+  upload_new_forms_page.submit_upload
   @array_of_files.each do |file|
     upload_new_forms_page.delete_csv_file(file)
   end
@@ -460,7 +460,6 @@ Then(/^the live files should be uploaded$/) do
     expect(SqlDbHelper.check_form_details(File.basename(file).split('.')[0])['isLiveCheckForm']).to be true
   end
 end
-
 
 When(/^I attempt to upload a (.+) file with the same file name as one previously uploaded$/) do |type|
   step "I have uploaded a valid #{type} form"
@@ -473,16 +472,13 @@ When(/^I attempt to upload a (.+) file with the same file name as one previously
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
-  upload_new_forms_page.confirm_overwrite.click if type == 'familiarisation'
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
-
 
 Then(/^I should see an error stating the (.*) file name is a duplicate$/) do |type|
   expect(upload_new_forms_page.error_messages.map {|error| error.text}).to eql ["#{@file_name.split('.')[0]} already exists. Rename and upload again"]
 end
-
 
 But(/^when I correct the (.*) file to not be a duplicate file name$/) do |type|
   driver = page.driver.browser
@@ -495,17 +491,17 @@ But(/^when I correct the (.*) file to not be a duplicate file name$/) do |type|
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
-  upload_new_forms_page.confirm_overwrite.click if type == 'familiarisation'
+  upload_new_forms_page.submit_upload
   upload_new_forms_page.delete_csv_file(@file_path)
 end
-
 
 Then(/^it should be displayed as a (.*) form on the view forms page$/) do |type|
   new_form_row = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == @file_name.split('.')[0]}
   expect(new_form_row).to have_highlighted
   expect(upload_and_view_forms_v2_page).to have_flash_message
-  expect(new_form_row.type.text).to eql type.capitalize
+  type = 'MTC' if type=='live'
+  type = 'Try it out' if type=='familiarisation'
+  expect(new_form_row.type.text).to eql type
   expect(new_form_row.uploaded_on.text).to eql Time.now.strftime("%Y-%m-%d")
   expect(new_form_row).to have_remove
 end
@@ -533,8 +529,8 @@ When(/^I try to reupload the same (.*) form$/) do |type|
   upload_new_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFiles', File.expand_path("#{@file_path}"))
   upload_new_forms_page.send("#{type}_check_form").click
-  upload_new_forms_page.upload.click
-  upload_new_forms_page.confirm_overwrite.click unless  SqlDbHelper.familiarisation_check_form
+  upload_new_forms_page.submit_upload
+  upload_new_forms_page.confirm_overwrite.click unless SqlDbHelper.familiarisation_check_form
   upload_new_forms_page.delete_csv_file(@file_path)
 end
 
@@ -546,4 +542,10 @@ end
 Then(/^there should be no way to remove a assigned form$/) do
   assigned_form = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == 'MTC0100'}
   expect(assigned_form).to_not have_remove
+end
+
+
+Given(/^I have uploaded a live check form$/) do
+  step 'I am on the Upload and View forms page v2'
+  step 'I have uploaded a valid live form'
 end

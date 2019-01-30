@@ -1,4 +1,4 @@
-@upload_view_forms @wip
+@upload_view_forms @remove_assigned_form
 Feature: Upload and View Forms
 
   Background:

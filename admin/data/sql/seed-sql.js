@@ -68,14 +68,18 @@ const processSeed = async (seed) => {
   } catch (error) {
     /*
       We can ignore certain error codes and
-      assume the migration is being re run
+      assume the seed is being re run
     */
     const ignoreErrorCodes = [
       2601, // Cannot insert duplicate key
-      2627 // Violation of UNIQUE KEY constraint
+      2627, // Violation of UNIQUE KEY constraint
+      547 // The INSERT statement conflicted with the FOREIGN KEY constraint
     ]
     if (!~ignoreErrorCodes.indexOf(error.number)) {
       throw error
+    } else {
+      logger.warn(`ignoring error: ${error.message}`)
+      logger.warn('This seed is likely to have been previously applied to this database.')
     }
   }
 }
