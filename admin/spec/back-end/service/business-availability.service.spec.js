@@ -1,7 +1,7 @@
 'use strict'
 /* global describe it spyOn expect fail beforeEach */
 
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 

@@ -1,7 +1,7 @@
 'use strict'
 
 const checkWindowV2Service = require('./check-window-v2.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 
 const businessAvailabilityService = {}
 

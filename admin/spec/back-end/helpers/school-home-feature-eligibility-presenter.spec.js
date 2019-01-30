@@ -2,10 +2,10 @@
 
 const moment = require('moment')
 
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const config = require('../../../config')
 
-describe('schoolHomePinGenerationEligibilityPresenter', () => {
+describe('schoolHomeFeatureEligibilityPresenter', () => {
   describe('getPresentationData', () => {
     describe('when override is disabled', () => {
       beforeEach(() => {
@@ -23,7 +23,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeFalsy()
@@ -43,7 +43,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeFalsy()
@@ -63,7 +63,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeFalsy()
@@ -83,7 +83,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeFalsy()
@@ -103,7 +103,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
         spyOn(moment, 'utc').and.returnValue(disallowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeTruthy()
@@ -123,7 +123,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
         spyOn(moment, 'utc').and.returnValue(disallowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeTruthy()
@@ -148,7 +148,7 @@ describe('schoolHomePinGenerationEligibilityPresenter', () => {
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+        const pinGenerationEligibilityData = await schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours).toBeFalsy()

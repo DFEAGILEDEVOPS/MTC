@@ -18,8 +18,16 @@
             </li>
 
             <li>
+              <% if (featureEligibilityData.isGroupsPageAccessible) { %>
                 <h2 class="heading-small"><a href="/group/pupils-list">Group pupils</a></h2>
                 <p>Create groups</p>
+              <% } else { %>
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Group pupils</a></h2>
+                <span class="font-xsmall font-greyed-out">Create groups</span>
+                <p>
+                  <strong class="disabled-banner">UNAVAILABLE</strong>
+                </p>
+              <% } %>
             </li>
 
             <li>
@@ -38,7 +46,7 @@
             </li>
 
             <li>
-                <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
+                <% if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
                 <h2 class="heading-small"><a href="/pupil-pin/generate-familiarisation-pins-overview">Try it out - password and PINs</a></h2>
                 <p>Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC</p>
                 <% } else { %>
@@ -46,18 +54,18 @@
                 <span>Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC</span>
                 <p>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <% if (pinGenerationEligibilityData.isWithinFamiliarisationUnavailableHours) { %>
+                    <% if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { %>
                     <span class="font-xsmall font-greyed-out">Open 8am - 4pm</span>
                     <% } %>
-                    <% if (pinGenerationEligibilityData.isFamiliarisationInTheFuture) { %>
-                    <span class="font-xsmall font-greyed-out">Open 8am - 4pm on <%= pinGenerationEligibilityData.familiarisationCheckStartDate.format('D MMMM YYYY')%> - <%= pinGenerationEligibilityData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
+                    <% if (featureEligibilityData.isFamiliarisationInTheFuture) { %>
+                    <span class="font-xsmall font-greyed-out">Open 8am - 4pm on <%= featureEligibilityData.familiarisationCheckStartDate %> - <%= featureEligibilityData.familiarisationCheckEndDate %></span>
                     <% } %>
                 </p>
                 <% } %>
             </li>
 
             <li>
-                <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
+                <% if (featureEligibilityData.isLivePinGenerationAllowed) { %>
                 <h2 class="heading-small"><a href="/pupil-pin/generate-live-pins-overview">Start the multiplication tables check - password and PINs</a></h2>
                 <p>Generate school password and personal identification numbers (PINs) so pupils can take the MTC</p>
                 <% } else { %>
@@ -65,30 +73,45 @@
                 <span>Generate school password and personal identification numbers (PINs) so pupils can take the MTC</span>
                 <p>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <% if (pinGenerationEligibilityData.isWithinLiveUnavailableHours) { %>
+                    <% if (featureEligibilityData.isWithinLiveUnavailableHours) { %>
                     <span class="font-xsmall font-greyed-out">Open 8am - 4pm</span>
                     <% } %>
-                    <% if (pinGenerationEligibilityData.isLiveInTheFuture) { %>
-                    <span class="font-xsmall font-greyed-out">Open 8am - 4pm on <%= pinGenerationEligibilityData.liveCheckStartDate.format('D MMMM YYYY')%> - <%= pinGenerationEligibilityData.liveCheckEndDate.format('D MMMM YYYY') %></span>
+                    <% if (featureEligibilityData.isLiveInTheFuture) { %>
+                    <span class="font-xsmall font-greyed-out">Open 8am - 4pm on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
                     <% } %>
                 </p>
                 <% } %>
             </li>
-
             <li>
+              <% if (featureEligibilityData.isRestartsPageAccessible) { %>
                 <h2 class="heading-small"><a href="/restart/overview">Restarts</a></h2>
                 <p>Select pupils to restart because of an interrupted check</p>
+              <% } else { %>
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Restarts</a></h2>
+                <span class="font-xsmall font-greyed-out">Select pupils to restart because of an interrupted check</span>
+                <p>
+                  <strong class="disabled-banner">UNAVAILABLE</strong>
+                  <span class="font-xsmall font-greyed-out">Open on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
+                </p>
+              <% } %>
             </li>
-
             <li>
                 <h2 class="heading-small"><a href="/attendance/declaration-form">Headteacher's declaration form</a></h2>
                 <p>Complete headteacher's declaration form once all pupils have completed or a reason for not taking the check</p>
             </li>
-
             <li>
-                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="/attendance/results">Results</a></h2>
+                <% if (featureEligibilityData.isResultsPageAccessible) { %>
+                <h2 class="heading-small"><a href="">Results</a></h2>
                 <p>View pupil results</p>
-            </li>
+                <% } else { %>
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="">Results</a></h2>
+                <span>View pupil results</span>
+                <p>
+                  <strong class="disabled-banner">UNAVAILABLE</strong>
+                  <span class="font-xsmall font-greyed-out">Published on <%= featureEligibilityData.resultsPublishedDate %></span>
+                </p>
+                <% } %>
+              </li>
         </ol>
     </div>
 
