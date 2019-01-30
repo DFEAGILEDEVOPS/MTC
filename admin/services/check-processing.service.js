@@ -24,7 +24,7 @@ checkProcessingService.process = async function () {
       hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     }
   } catch (error) {
-    logger.error('checkProcessingService.process: Bailed out: ' + error.message)
+    logger.error(`checkProcessingService.process: Bailing out: ${error.message}`, error)
   }
 }
 
@@ -43,10 +43,12 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   }
   // Produce and cache the Psychometrician data
   await psychometricianReportService.batchProduceCacheData(batchIds)
-  // Produce and cache the Anomaly report data
-  await anomalyReportService.batchProduceCacheData(batchIds)
 
-  logger.info('checkProcessingService.cachePsychometricanReportData: Processed %d checks', batchIds.length)
+  // Produce and cache the Anomaly report data
+  // To be fixed in a new PR
+  // await anomalyReportService.batchProduceCacheData(batchIds)
+
+  logger.info(`checkProcessingService.cachePsychometricanReportData: Processed ${batchIds.length} checks`)
   return true
 }
 

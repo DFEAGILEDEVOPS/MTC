@@ -3,9 +3,8 @@
 
 require('dotenv').config()
 const fs = require('fs')
-const winston = require('winston')
-
-const poolService = require('../services/data-access/sql.pool.service')
+const logger = require('../services/log.service').getLogger()
+const sqlService = require('../services/data-access/sql.service')
 const commandLineArgs = require('command-line-args')
 const markingService = require('../services/marking.service')
 const checkProcessingService = require('../services/check-processing.service')
@@ -26,9 +25,14 @@ const options = commandLineArgs(optionDefinitions)
 
 async function main (options) {
   try {
+    logger.info('force detected: re-processing all checks')
     if (options.forceReprocess) {
+      if (options.marking) {
+        // force a re-mark
+        await sqlService.modify('UPDATE [mtc_admin].[check] SET markedAt=null, mark=null, maxMark=null')
+        await sqlService.modify('DELETE FROM [mtc_admin].[answer]')
+      }
       // force the report to re-calculate the cached ps-report
-      winston.info('force detected: re-processing all checks')
       await psychometricianReportCacheDataService.sqlDeleteAll()
       await anomalyReportCacheDataService.sqlDeleteAll()
     }
@@ -39,7 +43,7 @@ async function main (options) {
       requiresProcessing = true
     }
 
-    winston.info('main: Processing the completed checks')
+    logger.info('main: Processing the completed checks')
     // Make sure all completed checks are marked and ps-report + anomaly data cached
     if (requiresMarking) {
       await markingService.process()
@@ -51,7 +55,7 @@ async function main (options) {
     const report = await psychometricianReportService.generateReport()
     const filename = 'mtc-check.csv'
     fs.writeFileSync(filename, report)
-    winston.info('Generated psychometric report: ' + filename)
+    logger.info('Generated psychometric report: ' + filename)
 
     // Also generate a filtered version of the report, suitable for our customers
     //   const scoreReport = await psychometricianReportService.generateScoreReport()
@@ -59,15 +63,12 @@ async function main (options) {
     //   fs.writeFileSync(filename2, scoreReport)
     //   winston.info('Generated score report: ' + filename2)
   } catch (error) {
-    winston.error(error)
+    logger.error(error)
   }
 }
 
-main(options)
-  .then(() => {
-    poolService.drain()
-  })
-  .catch(e => {
-    console.warn(e)
-    poolService.drain()
-  })
+;(async function () {
+    await main(options)
+    process.exit(0)
+})()
+
