@@ -1,4 +1,4 @@
-@declaration_edit_reason
+@declaration_edit_reason @wip
 Feature: Declaration edit attendance reason
 
   Background:
@@ -8,4 +8,3 @@ Feature: Declaration edit attendance reason
   Scenario: Edit reason page displays as per the design
     Given I am on the edit reason page
     Then I can see the edit reason page as per the design
-  
