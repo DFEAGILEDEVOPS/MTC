@@ -11,7 +11,7 @@ const accessArrangementsService = require('../../../services/access-arrangements
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../../../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const pupilService = require('../../../services/pupil.service')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -48,12 +48,12 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
     })
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
       const res = getRes()
@@ -61,7 +61,7 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
       try {
         await controller.getOverview(req, res, next)
       } catch (error) {
@@ -69,7 +69,7 @@ describe('access arrangements controller:', () => {
       }
       expect(res.render).not.toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
-      expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
     })
   })
   describe('getSelectAccessArrangements route', () => {

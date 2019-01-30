@@ -12,7 +12,7 @@ const schoolHomeFeatureEligibilityPresenter = {}
  * @param checkWindowData
  * @returns {Object} Eligibility data including flags and relevant datetimes
  */
-schoolHomeFeatureEligibilityPresenter.getPresentationData = async (checkWindowData) => {
+schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) => {
   const overridePinGenerationEligibility = config.OverridePinExpiry
   const currentDate = moment.utc()
   const featureEligibilityData = {}
@@ -34,10 +34,9 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = async (checkWindowDa
   // Restarts
   featureEligibilityData.isRestartsPageAccessible = isWithinLivePeriod
   // Groups
-  featureEligibilityData.isGroupsPageAccessible = isWithinLivePeriod
+  featureEligibilityData.isGroupsPageAccessible = currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
   // Results page data
   const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.add(3, 'days').set({ hour: 8, minutes: 0, seconds: 0 })
-
   featureEligibilityData.isResultsPageAccessible = currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
   featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTime)
 

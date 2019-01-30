@@ -12,6 +12,7 @@ const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
@@ -27,8 +28,12 @@ const getGeneratePinsOverview = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let checkWindowData
+  let areRestartsAvailable
   try {
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
+    areRestartsAvailable = businessAvailabilityService.areRestartsAllowed(checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -47,7 +52,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils
+    pupils,
+    areRestartsAvailable
   })
 }
 

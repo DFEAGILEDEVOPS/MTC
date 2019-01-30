@@ -13,7 +13,7 @@ const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 
 describe('group controller', () => {
   function getRes () {
@@ -60,7 +60,7 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
+          spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
           await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -69,7 +69,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+          expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
           done()
         })
       })
@@ -85,7 +85,7 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
+          spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -94,7 +94,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
-          expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
+          expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
           done()
         })
       })

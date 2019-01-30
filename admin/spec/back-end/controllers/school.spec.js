@@ -8,7 +8,7 @@ const httpMocks = require('node-mocks-http')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const schoolController = require('../../../controllers/school')
 const schoolService = require('../../../services/school.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const schoolMock = require('../mocks/school')
 
 describe('school controller:', () => {
@@ -46,29 +46,33 @@ describe('school controller:', () => {
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData')
+        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         const res = getRes()
         const req = getReq(goodReqParams)
         await schoolController.getSchoolLandingPage(req, res, next)
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+        expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         expect(schoolService.findSchoolByDfeNumber).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('School Homepage')
         expect(next).not.toHaveBeenCalled()
         done()
       })
-      it('should throw an error if getPresentationData method throws an error', async () => {
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData').and.returnValue(Promise.reject(new Error('error')))
+      it('should throw an error if getActiveCheckWindow method throws an error', async () => {
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue((Promise.reject(new Error('error'))))
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
+        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         const res = getRes()
         const req = getReq(goodReqParams)
-        await schoolController.getSchoolLandingPage(req, res, next)
+        try {
+          await schoolController.getSchoolLandingPage(req, res, next)
+        } catch (error) {
+
+        }
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(schoolHomePinGenerationEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         expect(schoolService.findSchoolByDfeNumber).not.toHaveBeenCalled()
+        expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })
     })

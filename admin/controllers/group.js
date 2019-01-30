@@ -4,7 +4,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 
 /**
  * Render the initial 'groups' page.
@@ -24,7 +24,7 @@ const groupPupilsPage = async (req, res, next) => {
   try {
     groups = await groupService.getGroups(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     next(error)
   }

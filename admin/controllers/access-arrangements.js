@@ -5,7 +5,7 @@ const pupilAccessArrangementsService = require('../services/pupil-access-arrange
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -26,7 +26,7 @@ controller.getOverview = async (req, res, next) => {
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }
