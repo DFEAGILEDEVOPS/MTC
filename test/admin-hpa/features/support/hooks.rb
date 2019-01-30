@@ -92,7 +92,7 @@ end
 
 Before("@reset_all_pins") do
   SqlDbHelper.reset_all_pin_expiry_times
-  end
+end
 
 Before("@upload_new_live_form") do
   step 'I have signed in with test-developer'
@@ -103,6 +103,7 @@ Before("@upload_new_live_form") do
 end
 
 Before("@upload_new_fam_form") do
+  SqlDbHelper.delete_assigned_forms
   step 'I have signed in with test-developer'
   step 'I am on the Upload and View forms page v2'
   step 'I have uploaded a valid familiarisation form'
@@ -131,6 +132,10 @@ Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
 end
 
+Before("@remove_assigned_form") do
+  SqlDbHelper.delete_assigned_forms
+end
+
 After("@no_active_check_window") do
   today_date = Date.today
   check_end_date = today_date + 35
@@ -150,7 +155,9 @@ end
 After("@remove_uploaded_forms,@upload_new_live_form,@upload_new_fam_form") do
   SqlDbHelper.delete_assigned_forms
   SqlDbHelper.delete_forms
+  SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
 end
+
 
 After do |scenario|
   if scenario.failed?
@@ -159,9 +166,10 @@ After do |scenario|
     name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
     page.save_screenshot("screenshots/#{name}")
     p "Screenshot raised - " + "screenshots/#{name}"
-    content = File.open("screenshots/#{name}", 'rb') { |file| file.read }
+    content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
     AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
+  SqlDbHelper.add_fam_form
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
