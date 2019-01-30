@@ -1,8 +1,7 @@
 'use strict'
 /* global describe it spyOn expect fail beforeEach */
 
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
-const checkWindowV2Service = require('../../../services/check-window-v2.service')
+const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 
 describe('businessAvailabilityService', () => {
@@ -10,20 +9,39 @@ describe('businessAvailabilityService', () => {
   })
   describe('#isPinGenerationAllowed', () => {
     beforeEach(() => {
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomePinGenerationEligibilityPresenter, 'getPresentationData').and.returnValue({
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
         isLivePinGenerationAllowed: true,
         isFamiliarisationPinGenerationAllowed: false
       })
     })
     it('should return true if live pin generation is allowed', async () => {
       const isLiveCheck = true
-      const result = await businessAvailabilityService.isPinGenerationAllowed(isLiveCheck)
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindow)
       expect(result).toBeTruthy()
     })
     it('should return false if familiarisation pin generation is disallowed', async () => {
       const isLiveCheck = false
-      const result = await businessAvailabilityService.isPinGenerationAllowed(isLiveCheck)
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindow)
+      expect(result).toBeFalsy()
+    })
+  })
+  describe('#areRestartsAllowed', () => {
+    it('should return true if restarts are allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isRestartsPageAccessible: true
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areRestartsAllowed(checkWindow)
+      expect(result).toBeTruthy()
+    })
+    it('should return false if restarts are not allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isRestartsPageAccessible: false
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areRestartsAllowed(checkWindow)
       expect(result).toBeFalsy()
     })
   })
