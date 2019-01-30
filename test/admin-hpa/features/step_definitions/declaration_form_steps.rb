@@ -65,12 +65,12 @@ Then(/^I should see a validation error for names$/) do
 end
 
 Then(/^I should see a validation error for job title$/) do
-  expect(@page.error_summary.job_title.text).to eql 'Enter a job title'
+  expect(@page.error_summary.job_title.text).to eql 'Enter a job title in no more than 128 characters'
   expect(@page.error_messages.map {|message| message.text}).to include 'Enter a job title in no more than 128 characters'
 end
 
 Then(/^I should be taken to the attendance page$/) do
-  expect(current_url).to eql "#{ENV["BASE_URL"]}/attendance/review-pupil-details"
+  expect(current_url).to eql "#{ENV["ADMIN_BASE_URL"]}/attendance/review-pupil-details"
 end
 
 Given(/^I am on the review pupil detail page$/) do

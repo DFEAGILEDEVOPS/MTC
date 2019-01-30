@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach spyOn */
+/* global describe it expect spyOn */
 const R = require('ramda')
 
 const configService = require('../../../services/config.service')
@@ -273,28 +273,28 @@ describe('config service', () => {
       fontSizeCode: null,
       colourContrastCode: null } ]
     it('throws if passed null', () => {
-      expect(function() { configService.validateConfigData(null) } ).toThrowError('Pupil config data is not valid')
+      expect(function () { configService.validateConfigData(null) }).toThrowError('Pupil config data is not valid')
     })
     it('throws if passed undefined', () => {
-      expect(function() { configService.validateConfigData(undefined) } ).toThrowError('Pupil config data is not valid')
+      expect(function () { configService.validateConfigData(undefined) }).toThrowError('Pupil config data is not valid')
     })
     it('throws if passed {}', () => {
-      expect(function() { configService.validateConfigData({}) } ).toThrowError('Pupil config data is not valid')
+      expect(function () { configService.validateConfigData({}) }).toThrowError('Pupil config data is not valid')
     })
     it('throws if passed an empty array', () => {
-      expect(function() { configService.validateConfigData([]) } ).toThrowError(/^Missing settings:/)
+      expect(function () { configService.validateConfigData([]) }).toThrowError(/^Missing settings:/)
     })
     it('throws if passed a 0 second questionTime', () => {
       const testData = R.map(R.assoc('questionTime', 0), mockData)
-      expect(function() { configService.validateConfigData(testData) } ).toThrowError('questionTime is required to be set in the database')
+      expect(function () { configService.validateConfigData(testData) }).toThrowError('questionTime is required to be set in the database')
     })
     it('throws if passed a 0 second loadingTime', () => {
       const testData = R.map(R.assoc('loadingTime', 0), mockData)
-      expect(function() { configService.validateConfigData(testData) } ).toThrowError('loadingTime is required to be set in the database')
+      expect(function () { configService.validateConfigData(testData) }).toThrowError('loadingTime is required to be set in the database')
     })
     it('throws if passed a 0 second checkTime', () => {
       const testData = R.map(R.assoc('checkTime', 0), mockData)
-      expect(function() { configService.validateConfigData(testData) } ).toThrowError('checkTime is required to be set in the database')
+      expect(function () { configService.validateConfigData(testData) }).toThrowError('checkTime is required to be set in the database')
     })
   })
 })
