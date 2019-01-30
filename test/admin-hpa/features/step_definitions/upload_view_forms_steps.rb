@@ -43,7 +43,7 @@ When(/^I upload a csv file$/) do
     str = args.first.to_s
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
-  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_name = "test-check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFile', File.expand_path("#{@file_path}"))
@@ -59,10 +59,10 @@ When(/^I upload multiple csv files$/) do
     str = args.first.to_s
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
-  @file1_name = "check-form-#{rand(234243234234234)}.csv"
+  @file1_name = "test-check-form-#{rand(234243234234234)}.csv"
   @file1_path = "data/fixtures/#{@file1_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file1_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
-  @file2_name = "check-form-#{rand(234243234234234)}.csv"
+  @file2_name = "test-check-form-#{rand(234243234234234)}.csv"
   @file2_path = "data/fixtures/#{@file2_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file2_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFile', [File.expand_path("#{@file1_path}"), File.expand_path("#{@file2_path}")])
@@ -129,7 +129,7 @@ end
 Given(/^I attempt to upload a csv containing quotes around the column values$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
-  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_name = "test-check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/quotes-around-values.csv')))
   page.attach_file('csvFile', File.expand_path(@file_path))
@@ -140,7 +140,7 @@ end
 Given(/^I attempt to upload a csv containing spaces around the column values$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
-  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_name = "test-check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/spaces.csv')))
   page.attach_file('csvFile', File.expand_path(@file_path))
@@ -196,7 +196,7 @@ end
 
 Then(/^I should see error messages stating why the csv has failed to upload when I upload a valid csv with one of the following csv files$/) do |table|
   step "I am on the Upload new forms page"
-  @valid_file_name = "check-form-#{rand(234243234234234)}.csv"
+  @valid_file_name = "test-check-form-#{rand(234243234234234)}.csv"
   @valid_file_path = "data/fixtures/#{@valid_file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@valid_file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   table.raw.flatten.each do |file_path|
