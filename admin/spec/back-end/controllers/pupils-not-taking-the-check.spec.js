@@ -16,7 +16,7 @@ const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const groupsMock = require('../mocks/groups')
-const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 
 describe('pupils-not-taking-the-check controller:', () => {
   function getRes () {

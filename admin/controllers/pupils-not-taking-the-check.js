@@ -7,7 +7,7 @@ const groupService = require('../services/group.service')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 
 /**
  * Pupils not taking the check: initial page.
