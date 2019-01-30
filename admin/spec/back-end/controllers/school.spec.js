@@ -65,11 +65,7 @@ describe('school controller:', () => {
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         const res = getRes()
         const req = getReq(goodReqParams)
-        try {
-          await schoolController.getSchoolLandingPage(req, res, next)
-        } catch (error) {
-
-        }
+        await schoolController.getSchoolLandingPage(req, res, next)
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolService.findSchoolByDfeNumber).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
