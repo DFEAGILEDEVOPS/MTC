@@ -109,7 +109,7 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see an option to manage access arrangements"
   step "I should see an option to generate pins"
   step "I should see an option to manage restarts"
-  step "I should see a disabled option for the hdf"
+  step "I should see an option to complete the hdf"
   step "I should see an option to view the results"
   step "I should see the related section"
   step "I should see option to view guidance in the before you start section"

@@ -57,7 +57,7 @@ Then(/^I should be given the option to go back to the manage check form page$/) 
 end
 
 Given(/^I am viewing a check form that is unassigned to a check window$/) do
-  step "I have uploaded a check form"
+  step "I have uploaded a live check form"
   step "I choose to preview the check form questions"
 end
 
