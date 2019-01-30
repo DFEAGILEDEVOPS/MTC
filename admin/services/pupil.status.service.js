@@ -20,7 +20,7 @@ pupilStatusService.STATUS_CODES = Object.freeze({
   LOGGED_IN: 'LOGGED_IN',
   STARTED: 'STARTED',
   COMPLETED: 'COMPLETED',
-  NOT_TAKING: 'NOT_TAKING',
+  NOT_TAKING: 'NOT_TAKING'
 })
 
 /**
