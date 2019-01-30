@@ -72,7 +72,8 @@ const processSeed = async (seed) => {
     */
     const ignoreErrorCodes = [
       2601, // Cannot insert duplicate key
-      2627 // Violation of UNIQUE KEY constraint
+      2627, // Violation of UNIQUE KEY constraint
+      547 // The INSERT statement conflicted with the FOREIGN KEY constraint
     ]
     if (!~ignoreErrorCodes.indexOf(error.number)) {
       throw error
