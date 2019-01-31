@@ -7,7 +7,7 @@ const groupService = require('../services/group.service')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 
 /**
  * Pupils not taking the check: initial page.
@@ -26,7 +26,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     // Get pupils for active school
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList: pupils,
@@ -164,7 +164,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   try {
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
