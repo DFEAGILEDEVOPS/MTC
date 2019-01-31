@@ -169,8 +169,8 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
  * @param {number} schoolId
  * @return {Promise<void>}
  */
-pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool = async (id, schoolId) => {
-  const paramPupil = { name: 'id', type: TYPES.Int, value: id }
+pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug, schoolId) => {
+  const paramPupil = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
       SELECT TOP 1 
@@ -184,7 +184,7 @@ pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool = async (id, schoo
         ON pa.attendanceCode_id = ac.id 
       LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
         ON pg.pupil_id = p.id 
-      WHERE p.id = @id and school_id = @schoolId 
+      WHERE p.urlSlug = @urlSlug and school_id = @schoolId 
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
   return R.head(results)

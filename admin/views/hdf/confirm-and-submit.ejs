@@ -1,0 +1,83 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<form method="post" action="/attendance/confirm-and-submit">
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+            <% if (error.hasError()) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+                <p>See highlighted errors below.</p>
+                <ul class="error-summary-list">
+                    <% error.getFields().map(f => { %>
+                    <% if (typeof error.get(f) !== 'boolean') { %>
+                        <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                    <% } %>
+                    <% }); %>
+                </ul>
+            </div>
+            <% } %>
+                
+            <h1 class="heading-xlarge">Confirm and submit</h1>
+
+            <%- partial('partials/_session_expiry') %>
+
+            <div class="form-group <%= error.isError('confirmBoxes') ? 'form-group-error' : '' %>" id="confirm">
+                <div class="multiple-choice">
+                    <input id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
+                    <label for="confirmYes">
+                        <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
+                        <p>In particular:</p>
+                        <a id="confirmBoxes"></a>
+                    </label>
+                </div>
+                <div class="multiple-choice inset">
+                    <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
+                    <label for="pupilDetails">pupil details are correct</label>
+                </div>
+                <div class="multiple-choice inset">
+                    <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
+                    <label for="uniquePins">each pupil who took the check used the unique PIN generated for them</label>
+                </div>
+                <div class="multiple-choice inset">
+                    <input type="checkbox" id="staffConfirm" name="staffConfirm" value="checked" <% if (formData['staffConfirm']) {%> checked<% } %>>
+                    <label for="staffConfirm">all staff involved in the administration of the check have confirmed to me that the check was administered in line with the statutory arrangements</label>
+                </div>
+                <% if (error.isError('confirmBoxes')) { %>
+                    <span class="error-message"><%= error.get('confirmBoxes') %></span>
+                <% } %>
+            </div>
+
+            <div class="form-group">
+                <div class="multiple-choice">
+                    <input id="confirmNo" type="radio" role="radio" name="confirm" value="N">
+                    <label for="confirmNo">
+                        <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
+                    </label>
+    
+                    <div class="panel panel-border-wide">
+                        <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Submit" />
+                <a class="button button-secondary" href="/school/school-home">Cancel</a>
+            </div>
+            
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
+        </div>
+    </div>
+</form>
