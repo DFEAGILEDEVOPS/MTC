@@ -26,4 +26,9 @@ class UploadNewFormsPage < SitePrism::Page
     File.delete(file_name)
   end
 
+  def submit_upload
+    upload.click
+    confirm_overwrite.click if confirm_overwrite.visible?
+  end
+
 end

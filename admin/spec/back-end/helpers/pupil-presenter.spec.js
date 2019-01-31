@@ -1,4 +1,4 @@
-/* global describe, expect, it */
+/* global describe, expect, it, spyOn */
 const moment = require('moment')
 
 const pupilPresenter = require('../../../helpers/pupil-presenter')
