@@ -46,8 +46,8 @@ describe('psychometricians-report.service', () => {
     checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
-        { id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': { 'access_token': 'access_token' } } },
-        { id: 10, pupil_id: 2, checkForm_id: 3 },
+        { id: 9, pupil_id: 1, checkForm_id: 2, description: 'Completed', payload: { 'data': { 'access_token': 'access_token' } } },
+        { id: 10, pupil_id: 2, checkForm_id: 3, description: 'Started'},
         { id: 11, pupil_id: 3, checkForm_id: 4 }
       ])
       spyOn(psychometicianDataService, 'sqlFindPupilsByIds').and.returnValue([
@@ -126,7 +126,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[4].id).toBe(6) // school
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
-        expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
+        expect(secondArgsSet[0].checkStatus).toBe('Started')
       } catch (error) {
         fail(error)
       }
