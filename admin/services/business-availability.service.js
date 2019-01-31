@@ -1,19 +1,18 @@
 'use strict'
 
-const checkWindowV2Service = require('./check-window-v2.service')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 
 const businessAvailabilityService = {}
 
 /**
  * Return pin generation availability
  * @param {Boolean} isLiveCheck
+ * @param {Object} checkWindowData
  * @returns {Boolean} live pin generation allowance
  * @throws Will throw an error if the argument passed is not boolean type
  */
-businessAvailabilityService.isPinGenerationAllowed = async (isLiveCheck) => {
-  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-  const pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
   if (isLiveCheck) {
     return pinGenerationEligibilityData.isLivePinGenerationAllowed
   } else {
@@ -22,12 +21,24 @@ businessAvailabilityService.isPinGenerationAllowed = async (isLiveCheck) => {
 }
 
 /**
+ * Return restarts availability
+ * @param {Object} checkWindowData
+ * @returns {Boolean} live pin generation allowance
+ * @throws Will throw an error if the argument passed is not boolean type
+ */
+businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  return pinGenerationEligibilityData.isRestartsPageAccessible
+}
+
+/**
  * Determine if pin generation is allowed
  * @param {Boolean} isLiveCheck
+ * @param {Object} checkWindowData
  * @throws Will throw an error if isPinGenerationAllowed method returns false
  */
-businessAvailabilityService.determinePinGenerationEligibility = async (isLiveCheck) => {
-  const isPinGenerationAllowed = await businessAvailabilityService.isPinGenerationAllowed(isLiveCheck)
+businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, checkWindowData) => {
+  const isPinGenerationAllowed = businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindowData)
   const pinEnv = isLiveCheck ? 'Live' : 'Familiarisation'
   if (!isPinGenerationAllowed) {
     throw new Error(`${pinEnv} pin generation is not allowed`)
