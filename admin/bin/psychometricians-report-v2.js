@@ -24,7 +24,7 @@ async function main (options) {
     logger.info('force detected: re-processing all checks')
     if (options.forceReprocess) {
       // force the report to re-calculate the cached ps-report
-      winston.info('force detected: re-processing all checks')
+      logger.info('force detected: re-processing all checks')
       await psychometricianReportCacheDataService.sqlDeleteAll()
       await anomalyReportCacheDataService.sqlDeleteAll()
     }
@@ -32,7 +32,7 @@ async function main (options) {
       requiresProcessing = true
     }
 
-    winston.info('main: Processing the completed checks')
+    logger.info('main: Processing the completed checks')
     if (requiresProcessing) {
       await checkProcessingService.process()
     }
