@@ -75,6 +75,10 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     // IMPORTANT: return false here
     event.preventDefault();
 
+    if (!this.nextButtonDelayFinished) {
+      return false;
+    }
+
     const key = event.key;
 
     switch (key) {
