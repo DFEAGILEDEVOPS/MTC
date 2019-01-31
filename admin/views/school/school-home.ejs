@@ -90,8 +90,13 @@
                 <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Restarts</a></h2>
                 <span>Select pupils to restart because of an interrupted check</span>
                 <p>
-                  <strong class="disabled-banner">UNAVAILABLE</strong>
-                  <span class="font-xsmall font-greyed-out">Open on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
+                    <strong class="disabled-banner">UNAVAILABLE</strong>
+                    <% if (featureEligibilityData.isWithinLiveUnavailableHours) { %>
+                    <span class="font-xsmall font-greyed-out">Open 8am - 4pm</span>
+                    <% } %>
+                    <% if (featureEligibilityData.isLiveInTheFuture) { %>
+                    <span class="font-xsmall font-greyed-out">Open on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
+                    <% } %>
                 </p>
               <% } %>
             </li>
