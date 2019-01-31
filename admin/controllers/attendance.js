@@ -289,13 +289,14 @@ const getHDFSubmitted = async (req, res, next) => {
     if (!hdf) {
       return res.redirect('/attendance/declaration-form')
     }
-    const resultsDate = hdf.signedDate.add(1, 'weeks').isoWeekday(1)
+    const resultsDate = hdf.checkEndDate.add(1, 'weeks').isoWeekday('Monday') // next monday after the check ends
+    const canViewResults = moment().isAfter(resultsDate)
     return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
-      hdf: hdf,
-      dayAndDate: dateService.formatDayAndDate(hdf.signedDate),
+      signedDayAndDate: dateService.formatDayAndDate(hdf.signedDate),
       resultsDate: dateService.formatDayAndDate(resultsDate),
-      canViewResults: moment().isAfter(resultsDate)
+      hdf,
+      canViewResults
     })
   } catch (error) {
     return next(error)
