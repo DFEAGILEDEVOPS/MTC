@@ -12,3 +12,4 @@ Feature: Declaration edit attendance reason
   Scenario: Headteacher update the reason for a pupil
     Given headteacher has updated reason 'Left school' for a pupil
     Then reason is updated for the pupil on HDF review pupil detail page
+

@@ -37,10 +37,10 @@
                     <label for="confirmYes">
                         <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
                         <p>In particular:</p>
+                        <a id="confirmBoxes"></a>
                     </label>
                 </div>
-                
-                <div class="multiple-choice inset" name="confirmBoxes">
+                <div class="multiple-choice inset">
                     <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
                     <label for="pupilDetails">pupil details are correct</label>
                 </div>
@@ -70,8 +70,8 @@
                 </div>
             </div>
 
-            <div class="button-wrapper">
-                <button class="button" type="submit">Submit</button>
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Submit" />
                 <a class="button button-secondary" href="/school/school-home">Cancel</a>
             </div>
             
