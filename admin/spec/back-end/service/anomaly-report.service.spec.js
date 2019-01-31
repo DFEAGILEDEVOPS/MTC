@@ -404,7 +404,7 @@ describe('anomaly-report.service', () => {
       it('does not report an anomaly when all answers correspond to questions', () => {
         const checkMockWithForm = {
           ...checkMock,
-          formData: checkFormMockOrig.formData
+          formData: JSON.parse(checkFormMockOrig.formData)
         }
         service.detectAnswersCorrespondToQuestions(checkMockWithForm)
         expect(service.produceReportData).toHaveBeenCalledTimes(0)
