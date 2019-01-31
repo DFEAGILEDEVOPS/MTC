@@ -13,6 +13,6 @@ CREATE TABLE [mtc_admin].nationalScore
     id INT IDENTITY(1,1) NOT NULL,
     checkWindow_id int NOT NULL,
     complete BIT NOT NULL DEFAULT 0,
-    CONSTRAINT [PK_nationalScore] PRIMARY KEY CLUSTERED ([id] ASC),
+    CONSTRAINT [PK_nationalScore] PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
     CONSTRAINT [FK_nationalScore_checkWindow_id_checkWindow_id] FOREIGN KEY (checkWindow_id) REFERENCES [mtc_admin].[checkWindow](id),
 )
