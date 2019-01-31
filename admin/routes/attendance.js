@@ -56,5 +56,10 @@ router.get(
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => attendance.getHDFSubmitted(req, res, next)
 )
+router.get(
+  '/submitted-form',
+  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  (req, res, next) => attendance.getHDFSubmittedForm(req, res, next)
+)
 
 module.exports = router

@@ -282,6 +282,27 @@ const postDeclarationForm = async (req, res, next) => {
 }
 
 const getHDFSubmitted = async (req, res, next) => {
+  res.locals.pageTitle = "Headteacher's declaration form"
+  req.breadcrumbs(res.locals.pageTitle)
+  try {
+    const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
+    if (!hdf) {
+      return res.redirect('/attendance/declaration-form')
+    }
+    const resultsDate = hdf.signedDate.add(1, 'weeks').isoWeekday(1)
+    return res.render('hdf/submitted', {
+      breadcrumbs: req.breadcrumbs(),
+      hdf: hdf,
+      dayAndDate: dateService.formatDayAndDate(hdf.signedDate),
+      resultsDate: dateService.formatDayAndDate(resultsDate),
+      canViewResults: moment().isAfter(resultsDate)
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+const getHDFSubmittedForm = async (req, res, next) => {
   res.locals.pageTitle = 'View submission'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
@@ -290,7 +311,7 @@ const getHDFSubmitted = async (req, res, next) => {
     if (!hdf) {
       return res.redirect('/attendance/declaration-form')
     }
-    return res.render('hdf/submitted', {
+    return res.render('hdf/submitted-form', {
       breadcrumbs: req.breadcrumbs(),
       hdf: hdf,
       signedDate: dateService.formatFullGdsDate(hdf.signedDate)
@@ -310,5 +331,6 @@ module.exports = {
   postConfirmSubmit,
   getDeclarationForm,
   postDeclarationForm,
-  getHDFSubmitted
+  getHDFSubmitted,
+  getHDFSubmittedForm
 }

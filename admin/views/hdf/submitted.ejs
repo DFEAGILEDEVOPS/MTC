@@ -9,30 +9,25 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">View submission</h1>
-
         <%- partial('partials/_session_expiry') %>
-
-        <p><strong>Name:</strong> <%= hdf.fullName %></p>
-        <% if (hdf.headTeacher) { %>
-        <p><strong>Role:</strong> Headteacher</p>
-        <% } else {%>
-        <p><strong>Role:</strong> <%= hdf.jobTitle %></p>
-        <% } %>
-        <p><strong>Date of submission:</strong> <%= signedDate %></p>
-        <p><strong>Declaration:</strong></p>
+        <div class="govuk-box-highlight">
+          <h1 class="heading-xlarge">
+            Headteacher's declaration form submitted
+          </h1>
+          <p class="font-large">
+            on <strong class="bold"><%= dayAndDate %></strong>
+          </p>
+        </div>
+        <p>
+          <a href="/attendance/submitted-form"><strong>View the submitted form</strong></a>
+        </p>
         <% if (hdf.confirmed) { %>
-            <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance, and in particular:</p>
-            <ul class="list list-bullet">
-                <li><a href="/pupil-register/pupils-list">pupil details</a> are correct</li>
-                <li>each pupil who took the check used the unique PIN generated for them</li>
-                <li>all staff involved in the administration of the check have confirmed to me that the check was administered according to the statutory arrangements</li>
-            </ul>
-        <% } else {%>
-            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
-            <div class="panel panel-border-wide">
-                <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
-            </div>
+        <p>Results will be available on <%= resultsDate %>.</p>
+        <% } %>
+        <% if (canViewResults) { %>
+          <div class="button-wrapper">
+            <a class="button button-primary" href="/attendance/view-results">View results</a>
+          </div>
         <% } %>
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
