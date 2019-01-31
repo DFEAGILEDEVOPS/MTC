@@ -21,7 +21,6 @@ const options = commandLineArgs(optionDefinitions)
 
 async function main (options) {
   try {
-    logger.info('force detected: re-processing all checks')
     if (options.forceReprocess) {
       // force the report to re-calculate the cached ps-report
       logger.info('force detected: re-processing all checks')
