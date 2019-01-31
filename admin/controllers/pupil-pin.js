@@ -79,9 +79,10 @@ const getGeneratePinsList = async (req, res, next) => {
   let pupils
   let groups = []
   let groupIds = req.params.groupIds || ''
-
+  let checkWindowData
   try {
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -135,8 +136,10 @@ const postGeneratePins = async (req, res, next) => {
     return res.redirect(`/pupil-pin/generate-${pinEnv}-pins-list`)
   }
   let school
+  let checkWindowData
   try {
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
     // OLD code - writes to check table
     if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
@@ -184,8 +187,10 @@ const getViewAndPrintPins = async (req, res, next) => {
   let error
   let qrDataURL
   const date = dateService.formatDayAndDate()
+  let checkWindowData
   try {
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -233,8 +238,10 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let error
   let qrDataURL
   const date = dateService.formatDayAndDate()
+  let checkWindowData
   try {
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {

@@ -167,10 +167,12 @@ describe('pupilPin controller:', () => {
           spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Select pupils')
           expect(res.render).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
           expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         })
         it('calls next if pin generation environment is not set', async () => {
@@ -197,10 +199,12 @@ describe('pupilPin controller:', () => {
           spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Select pupils')
           expect(res.render).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
           expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         })
       })
@@ -208,6 +212,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is not found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
           spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
         })
@@ -217,6 +222,7 @@ describe('pupilPin controller:', () => {
           const req = getReq(goodReqParamsFam)
           await controller(req, res, next)
           expect(next).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
           expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         })
       })
@@ -271,6 +277,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -283,6 +290,7 @@ describe('pupilPin controller:', () => {
 
         await controller(req, res, next)
         expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/view-and-print-live-pins')
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
 
@@ -301,6 +309,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'live' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -310,6 +319,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'redirect').and.returnValue(null)
         await controller(req, res, next)
         expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generate-live-pins-list')
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).not.toHaveBeenCalled()
       })
 
@@ -318,6 +328,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -326,6 +337,7 @@ describe('pupilPin controller:', () => {
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
     })
@@ -336,6 +348,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -348,6 +361,7 @@ describe('pupilPin controller:', () => {
 
         await controller(req, res, next)
         expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/view-and-print-familiarisation-pins')
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
 
@@ -356,6 +370,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'familiarisation' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -365,6 +380,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'redirect').and.returnValue(null)
         await controller(req, res, next)
         expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generate-familiarisation-pins-list')
+        expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).not.toHaveBeenCalled()
       })
 
@@ -373,6 +389,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
@@ -381,6 +398,7 @@ describe('pupilPin controller:', () => {
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
     })
@@ -430,6 +448,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
@@ -438,6 +457,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
@@ -445,10 +465,12 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         done()
       })
@@ -469,6 +491,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
@@ -477,6 +500,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
@@ -484,10 +508,12 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         done()
       })
@@ -533,6 +559,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
@@ -544,6 +571,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
@@ -551,10 +579,12 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         done()
       })
@@ -576,6 +606,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
@@ -587,6 +618,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
@@ -594,10 +626,12 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
+        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         done()
       })
