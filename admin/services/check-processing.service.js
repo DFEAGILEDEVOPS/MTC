@@ -45,8 +45,7 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   await psychometricianReportService.batchProduceCacheData(batchIds)
 
   // Produce and cache the Anomaly report data
-  // To be fixed in a new PR
-  // await anomalyReportService.batchProduceCacheData(batchIds)
+  await anomalyReportService.batchProduceCacheData(batchIds)
 
   logger.info(`checkProcessingService.cachePsychometricanReportData: Processed ${batchIds.length} checks`)
   return true
