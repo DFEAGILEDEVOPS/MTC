@@ -14,7 +14,7 @@ const getLinesPerCheck = () => {
   const defaultValue = 25
   const val = process.env.LINES_PER_CHECK_FORM
   const parsed = parseInt(val, 10)
-  if (parsed === 'NaN') return defaultValue
+  if (isNaN(parsed)) return defaultValue
   if (parsed < 1) return defaultValue
   return parsed
 }
@@ -33,7 +33,7 @@ module.exports = {
   CHECK_FORM_NAME_MAX_CHARACTERS: 128,
   CHECK_FORM_MIN_INTEGER: 1,
   CHECK_FORM_MAX_INTEGER: 12,
-  LINES_PER_CHECK_FORM: parseInt(getLinesPerCheck()),
+  LINES_PER_CHECK_FORM: getLinesPerCheck(),
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',

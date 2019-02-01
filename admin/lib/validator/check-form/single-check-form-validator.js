@@ -41,10 +41,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   const fileLines = fileContent && fileContent.split('\n').length
   // Invalid total file lines
   const linesPerCheckForm = config.LINES_PER_CHECK_FORM
-  // If NaN it should throw since the config variable LINES_PER_CHECK_FORM is not set correctly
-  if (!linesPerCheckForm) {
-    throw new Error('Incorrect config variable value for LINES_PER_CHECK_FORM')
-  }
+
   if (fileLines !== linesPerCheckForm) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfItems}`)
   }
