@@ -48,7 +48,7 @@ describe('check form service.populateFromFile', () => {
     try {
       const checkFormPop = await service.populateFromFile(checkForm, file)
       const questions = JSON.parse(checkFormPop.formData)
-      expect(questions.length).toBe(config.LINES_PER_CHECK_FORM)
+      expect(questions.length).toBe(parseInt(config.LINES_PER_CHECK_FORM))
       // check last question is 12 x 12
       expect(questions[9].f1).toBe(12)
       expect(questions[9].f2).toBe(12)
