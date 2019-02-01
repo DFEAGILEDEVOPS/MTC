@@ -28,15 +28,15 @@ headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
  * @param dfeNumber
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilByIdAndDfeNumber = async (pupilId, dfeNumber) => {
-  if (!dfeNumber || !pupilId) {
-    throw new Error('pupilId and dfeNumber are required')
+headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeNumber) => {
+  if (!dfeNumber || !urlSlug) {
+    throw new Error('urlSlug and dfeNumber are required')
   }
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) {
     throw new Error(`School [${dfeNumber}] not found`)
   }
-  return pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool(pupilId, school.id)
+  return pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool(urlSlug, school.id)
 }
 
 /**
