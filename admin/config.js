@@ -10,6 +10,10 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
+const getLinesPerCheck = () => {
+  return process.env.LINES_PER_CHECK_FORM || 25
+}
+
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
@@ -24,7 +28,7 @@ module.exports = {
   CHECK_FORM_NAME_MAX_CHARACTERS: 128,
   CHECK_FORM_MIN_INTEGER: 1,
   CHECK_FORM_MAX_INTEGER: 12,
-  LINES_PER_CHECK_FORM: parseInt(process.env.LINES_PER_CHECK_FORM) || 25,
+  LINES_PER_CHECK_FORM: parseInt(getLinesPerCheck()),
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
