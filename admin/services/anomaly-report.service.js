@@ -331,8 +331,7 @@ anomalyReportService.detectInputThatDoesNotCorrespondToAnswers = (check) => {
 
 anomalyReportService.detectAnswersCorrespondToQuestions = (check) => {
   const answerFactors = check.data.answers.map(answer => ({ f1: answer.factor1, f2: answer.factor2 }))
-  const formData = JSON.parse(check.formData)
-  const difference = R.difference(answerFactors, formData)
+  const difference = R.difference(answerFactors, check.formData)
   if (difference.length > 0) {
     anomalyReportService.produceReportData(check, 'Answers factors do not correspond to the questions factors', difference.length, 0)
   }

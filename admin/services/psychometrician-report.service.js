@@ -193,7 +193,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     const pupilChecks = checks.filter(c => c.pupil_id === pupil.id)
     // Find check index from pupil's checks
     check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
-    check.checkStatus = check.data && Object.keys(check.data).length > 0 ? 'Completed' : 'Started, not completed'
+    check.checkStatus = check.description
     // Generate one line of the report
     const data = psychometricianReportService.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
