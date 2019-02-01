@@ -8,7 +8,7 @@ const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
-const schoolHomePinGenerationEligibilityPresenter = require('../helpers/school-home-pin-generation-eligibility-presenter')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 
@@ -28,7 +28,7 @@ controller.getRestartOverview = async (req, res, next) => {
       restarts = await restartService.getSubmittedRestarts(req.user.School)
     }
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = await schoolHomePinGenerationEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
   } catch (error) {
     return next(error)
   }
