@@ -1,0 +1,21 @@
+// Smaller inset checkboxes
+.multiple-choice.inset {
+  margin-left: 50px !important;
+
+  input[type=checkbox] + label {
+    padding-top: 0;
+
+    &:before {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:after {
+      width: 12px;
+      height: 7px;
+      top: 4px;
+      left: 4px;
+      border-width: 0 0 3px 3px;
+    }
+  }
+}
