@@ -184,7 +184,7 @@ class SqlDbHelper
   end
 
   def self.set_all_pupils_check_completed(school_id)
-    sql = "UPDATE [mtc_admin].[pupil] 
+    sql = "UPDATE [mtc_admin].[pupil]
     SET pupilStatus_id = 5
     WHERE school_id = #{school_id}"
     result = SQL_CLIENT.execute(sql)
@@ -192,7 +192,7 @@ class SqlDbHelper
   end
 
   def self.set_all_pupils_check_started(school_id)
-    sql = "UPDATE [mtc_admin].[pupil] 
+    sql = "UPDATE [mtc_admin].[pupil]
     SET pupilStatus_id = 4
     WHERE school_id = #{school_id}"
     result = SQL_CLIENT.execute(sql)
@@ -335,5 +335,23 @@ class SqlDbHelper
     result.do
   end
 
+  def self.get_default_assigned_fam_form
+    sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
 
+  def self.assign_fam_form_to_window
+    sql = "INSERT INTO [mtc_admin].[checkFormWindow] (checkForm_id, checkWindow_id, createdAt) VALUES (4, 1, '2019-01-29 14:32:56.61 +00:00')"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
+  def self.add_fam_form
+    sql = "UPDATE [mtc_admin].[checkForm] set isDeleted = 0 WHERE name='MTC0103'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
 end

@@ -63,8 +63,6 @@ Both will launch the app in development mode on http://localhost:3001/
 dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,
 if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
-* AUTO_MARK - boolean - defaults to `true` to automatically mark the checks when they are submitted, to override
-  this:`AUTO_MARK=false yarn start`
 * AZURE_STORAGE_CONNECTION_STRING - Storage account for upload file storage and queues.  Upload is only enabled for
     production environments, but the queues are used by all environments.
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there

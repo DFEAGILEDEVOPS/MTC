@@ -5,6 +5,7 @@ const moment = require('moment')
 
 const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
+const hdfConfirmValidator = require('../lib/validator/hdf-confirm-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -120,7 +121,7 @@ const downloadResults = async (req, res, next) => {
 
 const getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
-  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
+  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.School)
   if (!pupils) {
@@ -135,16 +136,16 @@ const getReviewPupilDetails = async (req, res, next) => {
 
 const getEditReason = async (req, res, next) => {
   res.locals.pageTitle = 'Edit reason for not taking the check'
-  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
+  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs('Edit reason')
-  if (!req.params.pupilId) {
+  if (!req.params.urlSlug) {
     return res.redirect('/attendance/review-pupil-details')
   }
 
   let pupil, attendanceCodes
   try {
-    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(req.params.pupilId, req.user.School)
+    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(req.params.urlSlug, req.user.School)
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
   } catch (error) {
     return next(error)
@@ -162,19 +163,42 @@ const getEditReason = async (req, res, next) => {
 }
 
 const postSubmitEditReason = async (req, res, next) => {
-  const { pupilId, attendanceCode } = req.body
+  const { urlSlug, attendanceCode } = req.body
 
   let pupil
   try {
-    pupil = await headteacherDeclarationService.findPupilByIdAndDfeNumber(pupilId, req.user.School)
+    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(urlSlug, req.user.School)
     await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
   } catch (error) {
     return next(error)
   }
 
   req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
-  req.flash('pupilId', pupil.id)
+  req.flash('urlSlug', pupil.urlSlug)
   return res.redirect('/attendance/review-pupil-details')
+}
+
+const getConfirmSubmit = async (req, res, next) => {
+  res.locals.pageTitle = 'Confirm and submit'
+  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
+  req.breadcrumbs(res.locals.pageTitle)
+
+  return res.render('hdf/confirm-and-submit', {
+    formData: req.body,
+    error: res.error || new ValidationError(),
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
+const postConfirmSubmit = async (req, res, next) => {
+  let validationError = await hdfConfirmValidator.validate(req.body)
+  if (validationError.hasError()) {
+    res.error = validationError
+    return getConfirmSubmit(req, res, next)
+  }
+
+  return res.redirect('/attendance/submitted')
 }
 
 const getDeclarationForm = async (req, res, next) => {
@@ -242,6 +266,8 @@ module.exports = {
   getReviewPupilDetails,
   getEditReason,
   postSubmitEditReason,
+  getConfirmSubmit,
+  postConfirmSubmit,
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted

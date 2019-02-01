@@ -3,8 +3,8 @@
 module.exports = class ValidationError {
   /**
    *
-   * @param {String} field - the html field that is invalid
-   * @param {String} message - the message to display in the GDS format just above the field
+   * @param {String} [field] - the html field that is invalid
+   * @param {String} [message] - the message to display in the GDS format just above the field
    */
   constructor (field, message) {
     this.errors = {}
