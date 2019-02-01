@@ -3,6 +3,7 @@
 /* global describe it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
+const moment = require('moment')
 
 const controller = require('../../../controllers/attendance')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
@@ -21,6 +22,7 @@ describe('attendance controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001 }
+    req.session = params.session || {}
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
     return req
@@ -37,9 +39,22 @@ describe('attendance controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
       spyOn(res, 'render').and.returnValue(null)
       await controller.getDeclarationForm(req, res)
       expect(res.render).toHaveBeenCalled()
+    })
+
+    it('redirects when the hdf has been submitted', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      await controller.getDeclarationForm(req, res)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
     })
   })
 
@@ -163,6 +178,7 @@ describe('attendance controller:', () => {
     let reqParams = {
       method: 'POST',
       url: '/attendance/confirm-and-submit',
+      session: { hdfFormData: { isHeadTeacher: 'Y', firstName: 'Bob', lastName: 'Jones' } },
       body: {
         confirm: 'Y',
         pupilDetails: 'checked',
@@ -177,7 +193,13 @@ describe('attendance controller:', () => {
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       spyOn(hdfConfirmValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(hdfValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue({})
+      spyOn(headteacherDeclarationService, 'submitDeclaration').and.returnValue({})
       await controller.postConfirmSubmit(req, res)
+      expect(hdfValidator.validate).toHaveBeenCalled()
+      expect(headteacherDeclarationService.getEligibilityForSchool).toHaveBeenCalled()
+      expect(headteacherDeclarationService.submitDeclaration).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
@@ -194,6 +216,65 @@ describe('attendance controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
       expect(res.error).toEqual(validationError)
+    })
+  })
+
+  describe('getHDFSubmitted', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/attendance/submitted'
+    }
+
+    it('redirects to the submit page if there is no HDF', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue(false)
+      await controller.getHDFSubmitted(req, res)
+      expect(res.redirect).toHaveBeenCalledWith('/attendance/declaration-form')
+      expect(res.render).not.toHaveBeenCalled()
+    })
+
+    it('renders the submitted page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue({
+        signedDate: moment(),
+        checkEndDate: moment()
+      })
+      await controller.getHDFSubmitted(req, res)
+      expect(res.render).toHaveBeenCalled()
+    })
+  })
+
+  describe('getHDFSubmittedForm', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/attendance/submitted-form'
+    }
+
+    it('redirects to the submit page if there is no HDF', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue(false)
+      await controller.getHDFSubmittedForm(req, res)
+      expect(res.redirect).toHaveBeenCalledWith('/attendance/declaration-form')
+      expect(res.render).not.toHaveBeenCalled()
+    })
+
+    it('renders the submitted form page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue({
+        signedDate: moment()
+      })
+      await controller.getHDFSubmittedForm(req, res)
+      expect(res.render).toHaveBeenCalled()
     })
   })
 })

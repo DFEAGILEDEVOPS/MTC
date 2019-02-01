@@ -347,6 +347,11 @@ class SqlDbHelper
     sql = "INSERT INTO [mtc_admin].[checkFormWindow] (checkForm_id, checkWindow_id, createdAt) VALUES (4, 1, '2019-01-29 14:32:56.61 +00:00')"
     result = SQL_CLIENT.execute(sql)
     result.insert
+
+  def self.set_hdf_form_confirmed_status(school_id, confirmed)
+    sql = "UPDATE [mtc_admin].[hdf] SET confirmed='#{confirmed}' WHERE school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
   end
 
   def self.add_fam_form
