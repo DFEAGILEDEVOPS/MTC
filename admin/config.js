@@ -11,7 +11,12 @@ const getEnvironment = () => {
 }
 
 const getLinesPerCheck = () => {
-  return process.env.LINES_PER_CHECK_FORM || 25
+  const defaultValue = 25
+  const val = process.env.LINES_PER_CHECK_FORM
+  const parsed = parseInt(val, 10)
+  if (parsed === 'NaN') return defaultValue
+  if (parsed < 1) return defaultValue
+  return parsed
 }
 
 module.exports = {
