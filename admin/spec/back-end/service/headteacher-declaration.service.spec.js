@@ -146,44 +146,44 @@ describe('headteacherDeclarationService', () => {
     })
   })
 
-  describe('findPupilByIdAndDfeNumber', () => {
-    const pupilId = 1
+  describe('findPupilBySlugAndDfeNumber', () => {
+    const urlSlug = 'xxx-xxx-xxx-xxx'
     const dfeNumber = 9991999
     const service = require('../../../services/headteacher-declaration.service')
 
     it('throws an error when no dfeNumber is provided', async () => {
       try {
-        await service.findPupilByIdAndDfeNumber(null, dfeNumber)
+        await service.findPupilBySlugAndDfeNumber(null, dfeNumber)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('pupilId and dfeNumber are required')
+        expect(error.message).toBe('urlSlug and dfeNumber are required')
       }
     })
 
-    it('throws an error when no pupilId is provided', async () => {
+    it('throws an error when no urlSlug is provided', async () => {
       try {
-        await service.findPupilByIdAndDfeNumber(pupilId, null)
+        await service.findPupilBySlugAndDfeNumber(urlSlug, null)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('pupilId and dfeNumber are required')
+        expect(error.message).toBe('urlSlug and dfeNumber are required')
       }
     })
 
     it('throws an error when a school is not found for the dfeNumber', async () => {
       try {
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.throwError('School not found')
-        await service.findPupilByIdAndDfeNumber(pupilId, dfeNumber)
+        await service.findPupilBySlugAndDfeNumber(urlSlug, dfeNumber)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe(`School not found`)
       }
     })
 
-    it('finds the pupil using the pupilId and dfeNumber', async () => {
+    it('finds the pupil using the urlSlug and dfeNumber', async () => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindOneWithAttendanceReasonsByIdAndSchool').and.returnValue('Mock pupil result')
-      const result = await service.findPupilByIdAndDfeNumber(pupilId, dfeNumber)
-      expect(pupilDataService.sqlFindOneWithAttendanceReasonsByIdAndSchool).toHaveBeenCalledWith(pupilId, schoolMock.id)
+      spyOn(pupilDataService, 'sqlFindOneWithAttendanceReasonsBySlugAndSchool').and.returnValue('Mock pupil result')
+      const result = await service.findPupilBySlugAndDfeNumber(urlSlug, dfeNumber)
+      expect(pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool).toHaveBeenCalledWith(urlSlug, schoolMock.id)
       expect(result).toEqual('Mock pupil result')
     })
   })
