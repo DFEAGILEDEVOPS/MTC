@@ -297,7 +297,7 @@ const checkFormService = {
     result = csvData.toString().split('\n').map(function (line) {
       return line.trim()
     }).filter(Boolean)
-    return result.length === parseInt(config.LINES_PER_CHECK_FORM)
+    return result.length === config.LINES_PER_CHECK_FORM
   },
 
   /**
