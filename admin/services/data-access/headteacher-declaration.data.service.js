@@ -12,15 +12,17 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
 }
 
 /**
- * Return the last HDF submitted for a school
+ * Return the last HDF submitted for a school and the check end date
+ * for the check window the HDF was submitted in
  * @param {number} schoolId
  * @return {Promise<object>}
  */
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `
-  SELECT TOP 1 
-    * 
-  FROM ${sqlService.adminSchema}.${table} 
+  SELECT TOP 1
+    h.*, c.checkEndDate
+  FROM ${sqlService.adminSchema}.${table} h
+  INNER JOIN checkWindow c ON h.checkWindow_id = c.id
   WHERE school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
@@ -48,7 +50,7 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   const sql = `
   SELECT TOP 1 
     *
-  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = school.id 
+  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id 
   WHERE h.checkWindow_id = @checkWindowId 
   AND s.dfeNumber = @dfeNumber`
   const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])

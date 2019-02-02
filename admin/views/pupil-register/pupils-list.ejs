@@ -14,6 +14,13 @@
             </div>
         <% } %>
         <div>
+
+            <% if (hdfSubmitted) { %>
+                <div class="info-message">
+                    Currently unavailable. This section is now read only.
+                </div>
+            <% } %>
+
             <h1 class="heading-xlarge">Pupil register</h1>
 
             <%- partial('partials/_session_expiry') %>
@@ -22,13 +29,13 @@
               This list is taken from your school's census. Review your list and add pupils, if required. If a pupil is not going to participate, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
             </p>
             <div class="button-wrapper">
-                <% if (isFeatureEnabled('pupilAdd')) { %>
+                <% if (isFeatureEnabled('pupilAdd') && !hdfSubmitted) { %>
                 <a class="button button-secondary" href="/pupil-register/pupil/add"> Add pupil </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
                 <% } %>
 
-                <% if (isFeatureEnabled('pupilUpload')) { %>
+                <% if (isFeatureEnabled('pupilUpload') && !hdfSubmitted) { %>
                 <a class="button button-secondary" href="/pupil-register/pupil/add-batch-pupils"> Add multiple pupils </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
