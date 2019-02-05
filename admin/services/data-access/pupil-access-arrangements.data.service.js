@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 
 const sqlService = require('./sql.service')
@@ -188,8 +188,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
       type: TYPES.NVarChar
     }
   ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
+  return await sqlService.query(sql, params)
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {
