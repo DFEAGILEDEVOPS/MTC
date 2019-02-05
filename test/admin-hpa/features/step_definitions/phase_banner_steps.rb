@@ -7,8 +7,8 @@ Then(/^I should see a new tab open when i want to provide feedback link from the
   expect(send("#{current_page}_page").phase_banner.feedback).to have_link
   first_tab = page.windows.first
   send("#{current_page}_page").phase_banner.feedback.link.click
-  feedback_page_title = 'Multiplication Tables Check (MTC) Trial 3 School Survey'
-  page.switch_to_window {title == feedback_page_title}
+  feedback_page_title = 'MTC School admin survey'
+  page.driver.browser.switch_to.window(page.windows.last.handle)
   expect(page.title).to eql feedback_page_title
   expect(page.windows.size).to eql 2
   page.current_window.close

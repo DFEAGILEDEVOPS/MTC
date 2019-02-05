@@ -349,7 +349,6 @@ Then(/^I should see related content on the generate pins page$/) do
   expect(generate_pins_overview_page).to have_related_heading
   expect(generate_pins_overview_page).to have_guidance
   expect(generate_pins_overview_page).to have_group_pupil
-  expect(generate_pins_overview_page).to have_restarts
 end
 
 Then(/^I should see generated pin page as per design$/) do

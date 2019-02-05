@@ -44,7 +44,8 @@ Feature:
 
   Scenario: Development phase and the feedback link are displayed at the top of the view form page
     Given I have signed in with test-developer
-    When I have uploaded a check form
+    When I am on the Upload and View forms page v2
+    And I have uploaded a valid live form
     And I choose to preview the check form questions
     Then I should see that we are in the beta development phase on the view_form page
     And I should see a new tab open when i want to provide feedback link from the view_form page
