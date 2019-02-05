@@ -12,7 +12,7 @@ const pupilCountPerSchool = 40
 
 async function main () {
   try {
-    sqlService.initPool()
+    await sqlService.initPool()
     const schools = await sqlService.query(`SELECT
       id,
       dfeNumber,

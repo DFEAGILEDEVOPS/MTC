@@ -1,11 +1,11 @@
 const winston = require('winston')
 const bcrypt = require('bcryptjs')
-const { TYPES } = require('tedious')
 const sqlService = require('../../admin/services/data-access/sql.service')
+const TYPES = sqlService.TYPES
 
 async function main () {
   try {
-    sqlService.initPool()
+    await sqlService.initPool()
     const password = process.argv[2] || 'password'
     const passwordHash = bcrypt.hashSync(password)
     const schools = await sqlService.query('SELECT id FROM school')
@@ -56,11 +56,11 @@ async function main () {
     }
 
     winston.info('Done')
-    sqlService.drainPool()
+    await sqlService.drainPool()
   } catch (error) {
     winston.info(error)
     process.exitCode = 1
-    sqlService.drainPool()
+    await sqlService.drainPool()
   }
 }
 
