@@ -1,7 +1,11 @@
-ALTER TABLE [mtc_admin].[checkWindow] ADD score DECIMAL(4,2) NULL
-ALTER TABLE [mtc_admin].[checkWindow] ADD complete BIT NOT NULL DEFAULT 0
+ALTER TABLE [mtc_admin].[checkWindow]
+    ADD score DECIMAL(4,2)
 
-CREATE TABLE [mtc_admin].schoolScore
+ALTER TABLE [mtc_admin].[checkWindow]
+    ADD complete BIT
+    CONSTRAINT completeDefault DEFAULT 0 NOT NULL
+
+CREATE TABLE [mtc_admin].[schoolScore]
 (
     id INT IDENTITY(1,1) NOT NULL,
     school_id INT NOT NULL,
