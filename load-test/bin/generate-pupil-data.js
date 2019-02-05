@@ -7,18 +7,17 @@ const winston = require('winston')
 const upnService = require('../../admin/services/upn.service')
 winston.level = 'info'
 const moment = require('moment')
-
-const poolService = require('../../admin/services/data-access/sql.pool.service')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const pupilCountPerSchool = 40
 
 async function main () {
   try {
-    const schools = await sqlService.query(`SELECT 
-      id, 
+    sqlService.initPool()
+    const schools = await sqlService.query(`SELECT
+      id,
       dfeNumber,
       estabCode,
-      leaCode          
+      leaCode
     from [mtc_admin].[school]`)
 
     console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
@@ -38,11 +37,11 @@ async function main () {
 
 main()
   .then(() => {
-    poolService.drain()
+    sqlService.drainPool()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
+    sqlService.drainPool()
   })
 
 async function insertPupils (school, count) {
