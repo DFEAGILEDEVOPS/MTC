@@ -61,7 +61,7 @@
                 <tr>
                     <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper">
-                            <% if (isFeatureEnabled('pupilEdit')) { %>
+                            <% if (isFeatureEnabled('pupilEdit') && !hdfSubmitted) { %>
                                 <a class="bold-small truncate" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.fullName}` %>
                                 </a>

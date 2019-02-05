@@ -72,6 +72,11 @@ headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId
     throw new Error(`school ${dfeNumber} not found`)
   }
 
+  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(dfeNumber)
+  if (!hdfEligibility) {
+    throw new Error('Not eligible to submit declaration')
+  }
+
   let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
   if (!checkWindow || !checkWindow.id) {
     throw new Error(`Active check window not found`)

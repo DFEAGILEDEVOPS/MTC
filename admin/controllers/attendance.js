@@ -9,6 +9,7 @@ const hdfConfirmValidator = require('../lib/validator/hdf-confirm-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
+const hdfPresenter = require('../helpers/hdf-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
@@ -205,17 +206,6 @@ const postConfirmSubmit = async (req, res, next) => {
     return next(new Error('Invalid HDF form data'))
   }
 
-  // Re-check hdf eligibility
-  let hdfEligibility
-  try {
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-  if (!hdfEligibility) {
-    return next(new Error('Not eligible to submit HDF'))
-  }
-
   try {
     await headteacherDeclarationService.submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id)
   } catch (error) {
@@ -229,17 +219,12 @@ const getDeclarationForm = async (req, res, next) => {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
 
+  let hdfEligibility
   try {
     const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
     if (submitted) {
       return res.redirect('/attendance/submitted')
     }
-  } catch (error) {
-    return next(error)
-  }
-
-  let hdfEligibility
-  try {
     hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
   } catch (error) {
     return next(error)
@@ -289,14 +274,13 @@ const getHDFSubmitted = async (req, res, next) => {
     if (!hdf) {
       return res.redirect('/attendance/declaration-form')
     }
-    const resultsDate = hdf.checkEndDate.add(1, 'weeks').isoWeekday('Monday') // next monday after the check ends
-    const canViewResults = moment().isAfter(resultsDate)
+    const resultsDate = hdfPresenter.getResultsDate(hdf)
     return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
       signedDayAndDate: dateService.formatDayAndDate(hdf.signedDate),
       resultsDate: dateService.formatDayAndDate(resultsDate),
       hdf,
-      canViewResults
+      canViewResults: hdfPresenter.getCanViewResults(resultsDate)
     })
   } catch (error) {
     return next(error)

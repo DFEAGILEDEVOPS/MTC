@@ -33,6 +33,12 @@ describe('headteacherDeclarationService', () => {
         spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
+        spyOn(service, 'getEligibilityForSchool').and.returnValue(true)
+      })
+
+      it('calls getEligibilityForSchool', async () => {
+        await service.submitDeclaration(form, dfeNumber, userId)
+        expect(service.getEligibilityForSchool).toHaveBeenCalled()
       })
 
       it('calls the headteacher data service', async () => {
@@ -68,6 +74,20 @@ describe('headteacherDeclarationService', () => {
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe(`school ${dfeNumber} not found`)
+        }
+      })
+    })
+
+    describe('when not eligible', () => {
+      it('throws an error', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
+        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+        spyOn(service, 'getEligibilityForSchool').and.returnValue(false)
+        try {
+          await service.submitDeclaration(form, dfeNumber, userId)
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe(`Not eligible to submit declaration`)
         }
       })
     })
