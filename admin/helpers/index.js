@@ -58,5 +58,5 @@ module.exports = async function (app) {
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
-  app.locals.guidancePdf = `${config.AssetPath}pdfs/mtc-administration-guidance-2018-03-3.pdf`
+  app.locals.guidancePdf = `${config.AssetPath}pdfs/mtc-administration-guidance-2019-02-01.pdf`
 }

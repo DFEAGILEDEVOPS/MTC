@@ -9,5 +9,5 @@
   "accessArrangements": false,
   "prepareCheckMessaging": true,
   "newCheckWindow": true,
-  "newCheckForm": false
+  "newCheckForm": true
 }

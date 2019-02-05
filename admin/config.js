@@ -10,6 +10,15 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
+const getLinesPerCheck = () => {
+  const defaultValue = 25
+  const val = process.env.LINES_PER_CHECK_FORM
+  const parsed = parseInt(val, 10)
+  if (isNaN(parsed)) return defaultValue
+  if (parsed < 1) return defaultValue
+  return parsed
+}
+
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
@@ -24,10 +33,8 @@ module.exports = {
   CHECK_FORM_NAME_MAX_CHARACTERS: 128,
   CHECK_FORM_MIN_INTEGER: 1,
   CHECK_FORM_MAX_INTEGER: 12,
-  LINES_PER_CHECK_FORM: 25,
+  LINES_PER_CHECK_FORM: getLinesPerCheck(),
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  // autoMark true | false - Automatically mark the check data when we receive it: boolean
-  autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,

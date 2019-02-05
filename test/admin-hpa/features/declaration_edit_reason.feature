@@ -1,11 +1,15 @@
-@declaration_edit_reason
+@declaration_edit_reason @hdf
 Feature: Declaration edit attendance reason
 
   Background:
-    Given I have signed in with teacher3
-    Given all pupils have an attendance reason Absent
+    Given I have signed in with teacher4
 
-  Scenario: Edit reason page displays as per the design
-    Given I am on the edit reason page
-    Then I can see the edit reason page as per the design
-  
+  Scenario: Edit Reason for HDF pupil is displayed as per design
+    Given I am on the review pupil detail page
+    When headteacher select the pupil for updating its reason
+    Then edit reason page is displayed as per design
+
+  Scenario: Headteacher update the reason for a pupil
+    Given headteacher has updated reason 'Left school' for a pupil
+    Then reason is updated for the pupil on HDF review pupil detail page
+

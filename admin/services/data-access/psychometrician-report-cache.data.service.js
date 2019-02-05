@@ -75,15 +75,18 @@ const psychometricianReportCacheDataService = {
   },
 
   /**
-   * Find all the started checks that have not been processed
+   * Find all the completed checks that have not been processed
    * @returns {Boolean}
    */
   sqlHasUnprocessedStartedChecks: async function () {
     const sql = `SELECT TOP 1 *
     FROM ${sqlService.adminSchema}.[check] chk
-    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
-      ON chk.id = prc.check_id
-      WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL`
+    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
+    JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+    WHERE 
+      prc.check_id IS NULL 
+    AND cs.code = 'CMP'
+    AND chk.markedAt IS NOT NULL`
 
     const result = await sqlService.query(sql, [])
     return result.length > 0
@@ -101,11 +104,14 @@ const psychometricianReportCacheDataService = {
     const safeBatchSize = parseInt(batchSize, 10)
 
     const sql = `SELECT TOP ${safeBatchSize} chk.id 
-    FROM ${sqlService.adminSchema}.[check] chk
-      LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
-        ON chk.id = prc.check_id
-        WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL
-        ORDER BY chk.startedAt`
+      FROM ${sqlService.adminSchema}.[check] chk
+      LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
+      JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+      WHERE 
+        prc.check_id IS NULL 
+      AND cs.code = 'CMP'
+      AND chk.markedAt IS NOT NULL
+      ORDER BY chk.startedAt`
 
     const results = await sqlService.query(sql)
     return results.map(r => r.id)

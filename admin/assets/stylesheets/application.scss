@@ -71,6 +71,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_accessible-autocomplete';
 @import 'elements/_custom_banners.scss';
 @import 'elements/_assign-forms.scss';
+@import 'elements/_hdf';
 
 // Global
 
@@ -325,8 +326,8 @@ input {
 .form-buttons {
   @extend .form-group;
 
-  input, a {
-    margin-right: 15px; // 'pem' returns the wrong conversion to px.
+  input, button, a {
+    margin: 0 15px 0 0; // 'pem' returns the wrong conversion to px.
   }
 }
 
@@ -532,6 +533,6 @@ table.spacious.reduced-top-margin {
 a.disabled-link {
   pointer-events: none;
   cursor: default;
-  color: #6f777b;
+  color: $black;
   text-decoration: none;
 }

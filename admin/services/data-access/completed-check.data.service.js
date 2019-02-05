@@ -62,17 +62,24 @@ completedCheckDataService.sqlFindOne = async (checkCode) => {
  * @return {Promise<Array>}
  */
 completedCheckDataService.sqlFindByIds = async (batchIds) => {
-  let select = `SELECT * FROM [mtc_admin].[check]`
+  let select = `SELECT 
+       chk.*,
+       cr.payload,
+       cs.code,
+       cs.description
+      FROM [mtc_admin].[check] chk LEFT JOIN
+           [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id) JOIN
+           [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)`
   const where = sqlService.buildParameterList(batchIds, TYPES.Int)
-  const sql = [select, 'WHERE id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
+  const sql = [select, 'WHERE chk.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
   // Populate the JSON data structure which is stored as a string in the SQL DB
   const results = await sqlService.query(sql, where.params)
   const parsed = results.map(x => {
-    if (!x.data) {
+    if (!x.payload) {
       return R.clone(x)
     }
-    const d = JSON.parse(x.data)
-    return R.assoc('data', d.data, x)
+    const parsedPayload = JSON.parse(x.payload)
+    return R.assoc('data', parsedPayload, R.omit(['payload'], x))
   })
   return parsed
 }
@@ -84,20 +91,28 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
  */
 completedCheckDataService.sqlFindByIdsWithForms = async (batchIds) => {
   let select = `
-  SELECT c.*, f.formData
-  FROM ${sqlService.adminSchema}.[check] c INNER JOIN
-  ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
+  SELECT 
+         chk.*, 
+         f.formData,
+         cr.payload
+  FROM ${sqlService.adminSchema}.[check] chk JOIN
+    ${sqlService.adminSchema}.[checkResult] cr on (chk.id = cr.check_id) JOIN 
+    ${sqlService.adminSchema}.[checkForm] f ON chk.checkForm_id = f.id
   `
   const where = sqlService.buildParameterList(batchIds, TYPES.Int)
-  const sql = [select, 'WHERE c.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
+  const sql = [select, 'WHERE chk.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
   // Populate the JSON data structure which is stored as a string in the SQL DB
   const results = await sqlService.query(sql, where.params)
   const parsed = results.map(x => {
-    if (!x.data) {
+    if (!x.payload) {
       return R.clone(x)
     }
-    const d = JSON.parse(x.data)
-    return R.assoc('data', d.data, x)
+    const transformations = {
+      formData: JSON.parse,
+      payload: JSON.parse
+    }
+    const d1 = R.evolve(transformations, x)
+    return R.assoc('data', d1.payload, R.omit(['payload'], d1))
   })
   return parsed
 }
@@ -107,8 +122,12 @@ completedCheckDataService.sqlFindByIdsWithForms = async (batchIds) => {
  */
 completedCheckDataService.sqlHasUnmarked = async () => {
   const sql = `SELECT COUNT(*) as [unmarkedCount]
-  FROM ${sqlService.adminSchema}.[check] chk
-  WHERE chk.markedAt IS NULL AND chk.data IS NOT NULL`
+  FROM [mtc_admin].[check] chk JOIN
+     [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN
+     [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
+  WHERE cs.code = 'CMP'
+  AND chk.markedAt IS NULL
+  AND cr.[payload] IS NOT NULL`
   const result = await sqlService.query(sql)
   return result[0].unmarkedCount > 0
 }
@@ -124,9 +143,13 @@ completedCheckDataService.sqlFindUnmarked = async function (batchSize) {
   }
   const safeBatchSize = parseInt(batchSize, 10)
 
-  const sql = `SELECT TOP ${safeBatchSize} id FROM [mtc_admin].[check] 
-  WHERE markedAt IS NULL
-  AND [data] IS NOT NULL`
+  const sql = `SELECT TOP ${safeBatchSize} chk.id 
+    FROM [mtc_admin].[check] chk JOIN
+     [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN
+     [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
+  WHERE cs.code = 'CMP'
+    AND chk.markedAt IS NULL
+    AND cr.[payload] IS NOT NULL`
   const results = await sqlService.query(sql)
   return results.map(r => r.id)
 }
