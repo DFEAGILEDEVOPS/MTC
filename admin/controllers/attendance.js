@@ -277,8 +277,7 @@ const getHDFSubmitted = async (req, res, next) => {
     const resultsDate = hdfPresenter.getResultsDate(hdf)
     return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
-      signedDayAndDate: dateService.formatDayAndDate(hdf.signedDate),
-      resultsDate: dateService.formatDayAndDate(resultsDate),
+      signedDayAndDate: dateService.formatShortGdsDate(hdf.signedDate),
       hdf,
       canViewResults: hdfPresenter.getCanViewResults(resultsDate)
     })
