@@ -9,6 +9,7 @@ winston.level = 'info'
 const moment = require('moment')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const pupilCountPerSchool = 40
+const uuid = require('uuid/v4')
 
 async function main () {
   try {
@@ -61,7 +62,7 @@ async function insertPupils (school, count) {
       `'M'`,
       `'${count.toString()}'`,
       school.id,
-      `'${genUPN(school.leaCode, school.estabCode, i)}')`
+      `'${genFakeUpn()}')`
     ].join(' , '))
   }
   const sql = `${insert} ${pupilData.join(', \n')}`
@@ -73,6 +74,11 @@ function randomDob () {
   const dob = moment().utc().subtract(9, 'years').subtract(rnd, 'days')
   dob.hours(0).minute(0).second(0)
   return dob.toISOString()
+}
+
+function genFakeUpn () {
+  var id = uuid()
+  return id.replace('-', '').substr(0, 13)
 }
 
 function genUPN (leaCode, estabCode, serial) {
