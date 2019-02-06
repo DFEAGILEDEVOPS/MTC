@@ -360,3 +360,8 @@ And(/^the displayed school password is generated as per the requirement$/) do
   step "the school password should not contain charachter 'q'"
   step 'school password should be generated from the specified pool of characters'
 end
+
+
+Then(/^I should see that I should not be able to generate a pin$/) do
+  expect(school_landing_page).to have_generate_pupil_pin_disabled
+end

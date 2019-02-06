@@ -13,6 +13,7 @@ class SchoolLandingPage < SitePrism::Page
   element :access_arrangements, 'a', text: 'Access arrangements'
   element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-live-pins-overview"]'
+  element :generate_pupil_pin_disabled, '.disabled-link', text: 'Start the multiplication tables check - password and PINs'
   element :generate_pupil_pin_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can take the MTC'
   element :generate_pupil_pin_familiarisation, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
   element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC'
