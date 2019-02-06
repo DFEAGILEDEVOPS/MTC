@@ -181,5 +181,6 @@ After do |scenario|
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
   SqlDbHelper.add_fam_form
+  SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end

@@ -1,4 +1,4 @@
-@access_arrangement_setting @generate_live_pin
+@access_arrangement_setting @generate_live_pin @remove_access_arrangements
 Feature: Access Arrangements
 
   Scenario: Setting page is displayed as per design
