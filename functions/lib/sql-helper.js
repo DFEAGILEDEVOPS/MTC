@@ -4,6 +4,7 @@ const R = require('ramda')
 const sqlService = require('less-tedious')
 
 const checkTable = '[check]'
+const checkWindowTable = '[checkWindow]'
 const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
 const config = require('../config')
@@ -172,4 +173,33 @@ module.exports.sqlUpdateAnswersWithResults = async (checkId, answers) => {
   })
   const sql = [insertSql, inserts.join(', \n')].join(' ')
   return sqlService.modify(sql, params)
+}
+
+/**
+ * Find a check window within the score calculation period
+ * @return {Promise<object>}
+ */
+module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
+  const sql = `
+  SELECT * from ${schema}.${checkWindowTable}
+  WHERE GETUTCDATE() >= checkStartDate AND GETUTCDATE() <= adminEndDate 
+  )`
+  const res = await sqlService.query(sql)
+  return R.head(res)
+}
+
+/**
+ * Execute score calculation store procedure
+ * @return {Promise<object>}
+ */
+module.exports.sqlExecuteScoreCalculationStoreProcedure = async (checkWindowId) => {
+  const sql = `EXEC [mtc_admin].[spCalculateScore] @checkwindowId = @checkWindowId`
+  const params = [
+    {
+      name: 'checkWindowId',
+      value: checkWindowId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
 }
