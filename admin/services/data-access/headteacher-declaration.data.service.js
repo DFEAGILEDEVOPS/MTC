@@ -36,11 +36,7 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
  * @return {Promise<object|undefined>}
  */
 headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) => {
-  // TODO: hdf: calling checkWindowDataService.sqlFindOneCurrent(). This method should be reviewed during the HDF
-  // work to ensure it is correct. This is a best-attempt added during the data-refactor to SQL, but needs business
-  // input.   E.g. Is the HDF signed during or after the current check window. How many check-windows
-  // could be active at one time?  Just one, or multiple concurrent windows?
-  const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
+  const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
   if (!checkWindow) {
     // we are not in a live check window
     return undefined
