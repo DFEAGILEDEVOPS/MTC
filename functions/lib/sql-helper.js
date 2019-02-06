@@ -177,7 +177,7 @@ module.exports.sqlUpdateAnswersWithResults = async (checkId, answers) => {
 
 /**
  * Find a check window within the score calculation period
- * @return {Promise<object>}
+ * @return {Object}
  */
 module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
   const sql = `
