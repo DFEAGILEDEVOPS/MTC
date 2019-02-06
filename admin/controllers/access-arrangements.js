@@ -6,6 +6,7 @@ const pupilAccessArrangementsEditService = require('../services/pupil-access-arr
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -23,12 +24,20 @@ controller.getOverview = async (req, res, next) => {
   let pupils
   let pinGenerationEligibilityData
   let checkWindowData
+  let hdfSubmitted
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
     return next(error)
+  }
+  if (hdfSubmitted) {
+    return res.render('hdf/unavailable', {
+      title: res.locals.pageTitle,
+      breadcrumbs: req.breadcrumbs()
+    })
   }
   const { hl } = req.query
   return res.render('access-arrangements/overview', {
