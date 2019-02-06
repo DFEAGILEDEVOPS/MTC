@@ -7,18 +7,18 @@ const winston = require('winston')
 const upnService = require('../../admin/services/upn.service')
 winston.level = 'info'
 const moment = require('moment')
-
-const poolService = require('../../admin/services/data-access/sql.pool.service')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const pupilCountPerSchool = 40
+const uuid = require('uuid/v4')
 
 async function main () {
   try {
-    const schools = await sqlService.query(`SELECT 
-      id, 
+    await sqlService.initPool()
+    const schools = await sqlService.query(`SELECT
+      id,
       dfeNumber,
       estabCode,
-      leaCode          
+      leaCode
     from [mtc_admin].[school]`)
 
     console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
@@ -38,11 +38,11 @@ async function main () {
 
 main()
   .then(() => {
-    poolService.drain()
+    sqlService.drainPool()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
+    sqlService.drainPool()
   })
 
 async function insertPupils (school, count) {
@@ -62,7 +62,7 @@ async function insertPupils (school, count) {
       `'M'`,
       `'${count.toString()}'`,
       school.id,
-      `'${genUPN(school.leaCode, school.estabCode, i)}')`
+      `'${genFakeUpn()}')`
     ].join(' , '))
   }
   const sql = `${insert} ${pupilData.join(', \n')}`
@@ -74,6 +74,11 @@ function randomDob () {
   const dob = moment().utc().subtract(9, 'years').subtract(rnd, 'days')
   dob.hours(0).minute(0).second(0)
   return dob.toISOString()
+}
+
+function genFakeUpn () {
+  var id = uuid()
+  return id.replace('-', '').substr(0, 13)
 }
 
 function genUPN (leaCode, estabCode, serial) {
