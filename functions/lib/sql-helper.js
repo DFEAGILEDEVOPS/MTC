@@ -190,10 +190,11 @@ module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
 
 /**
  * Execute score calculation store procedure
+ * @param checkWindowId
  * @return {Promise<object>}
  */
 module.exports.sqlExecuteScoreCalculationStoreProcedure = async (checkWindowId) => {
-  const sql = `EXEC [mtc_admin].[spCalculateScore] @checkwindowId = @checkWindowId`
+  const sql = `EXEC ${schema}.[spCalculateScore] @checkwindowId = @checkWindowId`
   const params = [
     {
       name: 'checkWindowId',
