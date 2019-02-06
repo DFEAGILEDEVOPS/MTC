@@ -13,6 +13,7 @@ class SchoolLandingPage < SitePrism::Page
   element :access_arrangements, 'a', text: 'Access arrangements'
   element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-live-pins-overview"]'
+  element :generate_pupil_pin_disabled, '.disabled-link', text: 'Start the multiplication tables check - password and PINs'
   element :generate_pupil_pin_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can take the MTC'
   element :generate_pupil_pin_familiarisation, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
   element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC'
@@ -23,7 +24,7 @@ class SchoolLandingPage < SitePrism::Page
   element :hdf_text, 'p', text: "Complete headteacher's declaration form once all pupils have completed or a reason for not taking the check"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
   element :results, '.disabled-link', text: 'Results'
-  element :results_text, 'p', text: "View pupil results"
+  element :results_text, 'span', text: "View pupil results"
 
   element :teacher_name, '.signed-in-as'
   section :phase_banner, PhaseBanner, '.phase-banner'

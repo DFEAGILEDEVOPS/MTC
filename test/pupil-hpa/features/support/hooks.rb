@@ -1,5 +1,5 @@
 Before do
-  page.current_window.resize_to(1270,768)
+  page.current_window.resize_to(1270, 768)
 end
 
 # Before do
@@ -33,8 +33,14 @@ Before('@non_browserstack_compliant') do
 end
 
 After('@window_date_time_reset') do
-SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
-SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
+  SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
+  SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
+end
+
+After("@remove_access_arrangements") do
+  step 'I login to the admin app with teacher1'
+  visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
+  access_arrangements_page.remove_all_pupils
 end
 
 After do |scenario|
@@ -44,7 +50,7 @@ After do |scenario|
     name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
     page.save_screenshot("screenshots/#{name}")
     p "Screenshot raised - " + "screenshots/#{name}"
-    content = File.open("screenshots/#{name}", 'rb') { |file| file.read }
+    content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
     AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
