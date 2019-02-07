@@ -2,6 +2,29 @@ name: $(date:yyyyMMdd)$(rev:.r)
 resources:
 - repo: self
   clean: true
+
+variables:
+  AZURE_SUBSCRIPTION: # the name of the target azure subscription for the deployment
+  RESOURCE_GROUP: # the name of the target resource group for the deployment
+  CONTAINER_REGISTRY_URL: # the URL of the docker registry that houses the MTC images
+  DOCKER_IMAGE_ADMIN: # the name of the docker image for the admin app
+  DOCKER_IMAGE_PUPIL: # the name of the docker image for the pupil app
+  DOCKER_IMAGE_API: # the name of the docker image for the auth api
+  DOCKER_IMAGE_ASSETS: # the name of the docker image for the assets app
+  FUNCTION_RESOURCE_GROUP: # the name of the resource group where the azure functions app is located
+  FUNCTION_APP_NAME: # the name of the azure functions app
+  SQL_DATABASE: # the name of the database
+  SQL_ADMIN_USER: # secret - the username of the account used to perform administrative database tasks during deployment
+  SQL_ADMIN_USER_PASSWORD: # secret - the password of the account used to perform administrative database tasks during deployment
+  SQL_APP_USER: 'mtcAdminUser' # the default is 'mtcAdminUser', and is sourced from config.js...
+  # NOTE - Does not need to be changed unless environment uses custom username value.  Most in Azure currently use custom values
+  SQL_APP_USER_PASSWORD: # secret - the password for the application database user
+  STORAGE_ACCOUNT_NAME: # the name of the storage account
+  STORAGE_ACCOUNT_KEY: # secret - the storage account key.  NOT the connection string
+  PUPIL_APP_URL: # the URL of the pupil application - displayed on the printed pins sheet
+  APP_INSIGHTS_INSTRUMENTATION_KEY: # this can be obtained from the API access tab in Application insights
+  APP_INSIGHTS_API_KEY: # Secret - an API key must be generated from the API access tab in Application insights
+
 phases:
 - phase: Phase_1
   displayName: Admin Image
