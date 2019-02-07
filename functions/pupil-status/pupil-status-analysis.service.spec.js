@@ -170,8 +170,9 @@ describe('pupil-status-analysis.service', () => {
       check_id: 2,
       checkStatusCode: 'EXP',
       pupilAttendance_id: null,
-      pupilRestart_id: 1,
-      pupilRestart_check_id: 1 // a check has created for this restart, but has been removed (gets set to EXP)
+      pupilRestart_id: null,
+      pupilRestart_check_id: null,
+      isRestartWithPinGenerated: true // a check has been created for this restart, but has been removed (gets set to EXP)
     }
     const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
     expect(targetStatus).toBe('COMPLETED')
