@@ -1,37 +1,42 @@
-name: nightly-$(date:yyyyMMdd)$(rev:.r)
 resources:
 - repo: self
   clean: true
-  fetchDepth: 1
 
 jobs:
-- job: Phase_1
-  displayName: 'Prepare Database'
+
+- job: Job_1
+  displayName: prep sql
+  condition: succeeded()
+  pool:
+    name: MTC LIVE
+#Your build pipeline references an undefined variable named ‘RESOURCE_GROUP’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘SQL_SERVER_SHORTNAME’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+  variables:
+    SQL_DATABASE: 'mtc-dev'
+
   steps:
   - task: AzureCLI@1
-    displayName: 'Delete Existing Database'
+    displayName: 'Azure CLI '
     inputs:
-      azureSubscription: $(AZURE_SUBSCRIPTION)
+      azureSubscription: 'MTC EE Dev'
       scriptLocation: inlineScript
       inlineScript: 'az sql db delete --name $(SQL_DATABASE) --resource-group $(RESOURCE_GROUP) --server $(SQL_SERVER_SHORTNAME) --yes'
 
   - task: Bash@3
-    displayName: 'create database'
+    displayName: 'create db'
     inputs:
       targetType: ./
       filePath: 'deploy/sql-migrations/migrate-db.sh'
       arguments: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
 
-  - task: Bash@3
-    displayName: 'seed database'
-    inputs:
-      targetType: ./
-      filePath: 'deploy/sql-migrations/seed-db.sh'
-      arguments: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
 
-- job: Phase_2
+- job: Phase_1
   displayName: Run Pupil Tests
+  dependsOn: Job_1
   condition: succeeded()
+  pool:
+    name: MTC LIVE
   steps:
   - bash: |
        source ~/.profile
@@ -62,9 +67,14 @@ jobs:
     condition: succeededOrFailed()
 
 
-- job: Phase_3
+- job: Phase_2
   displayName: Run Admin Tests
+  dependsOn:
+  - Job_1
+  - Phase_1
   condition: succeeded()
+  pool:
+    name: MTC LIVE
   steps:
   - bash: |
        source ~/.profile
@@ -94,27 +104,31 @@ jobs:
       ArtifactName: 'mtc-nightly-build-ADMIN'
     condition: succeededOrFailed()
 
-- job: Phase_4
-  displayName: 'Reset Database'
-  condition: succeededOrFailed()
+
+- job: Job_2
+  displayName: reset db
+  condition: succeeded()
+  pool:
+    name: MTC LIVE
+#Your build pipeline references an undefined variable named ‘RESOURCE_GROUP’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘SQL_SERVER_SHORTNAME’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+  variables:
+    SQL_DATABASE: 'mtc-dev'
+
   steps:
   - task: AzureCLI@1
-    displayName: 'Delete Existing Database'
+    displayName: 'delete db'
     inputs:
-      azureSubscription: $(AZURE_SUBSCRIPTION)
+      azureSubscription: 'MTC EE Dev'
       scriptLocation: inlineScript
       inlineScript: 'az sql db delete --name $(SQL_DATABASE) --resource-group $(RESOURCE_GROUP) --server $(SQL_SERVER_SHORTNAME) --yes'
 
   - task: Bash@3
-    displayName: 'create database'
+    displayName: 'create db'
     inputs:
       targetType: ./
       filePath: 'deploy/sql-migrations/migrate-db.sh'
       arguments: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
 
-  - task: Bash@3
-    displayName: 'seed database'
-    inputs:
-      targetType: ./
-      filePath: 'deploy/sql-migrations/seed-db.sh'
-      arguments: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
+
