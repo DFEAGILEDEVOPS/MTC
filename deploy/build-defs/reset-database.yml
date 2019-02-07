@@ -1,3 +1,4 @@
+name: resetdb-$(date:yyyyMMdd)$(rev:.r)
 resources:
 - repo: self
   clean: true
