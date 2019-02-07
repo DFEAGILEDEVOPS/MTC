@@ -55,6 +55,9 @@ module.exports = {
       case 'CMP':
         return 'COMPLETED'
       case 'EXP':
+        if (lastCheckTaken.pupilRestart_check_id) {
+          return 'COMPLETED'
+        }
         return 'UNALLOC'
       case 'NTR':
         return 'STARTED'
