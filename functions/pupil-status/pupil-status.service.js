@@ -26,7 +26,8 @@ async function getCurrentPupilData (pupilId) {
     chkStatus.code            as checkStatusCode,
     lastPupilRestart.id       as pupilRestart_id,
     lastPupilRestart.check_id as pupilRestart_check_id,
-    pa.id                     as pupilAttendance_id
+    pa.id                     as pupilAttendance_id,
+    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated 
   FROM 
         ${sqlService.adminSchema}.[pupil] p
         INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
@@ -45,6 +46,7 @@ async function getCurrentPupilData (pupilId) {
          FROM [mtc_admin].[pupilRestart]
          WHERE isDeleted = 0
        ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
+       LEFT OUTER JOIN [mtc_admin].[pupilRestart] pupilRestart ON (pupilRestart.check_id = lastCheck.id)
   WHERE  
         p.id = @pupilId
   AND   (lastCheck.rank = 1 or lastCheck.rank IS NULL)
