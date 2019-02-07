@@ -9,6 +9,7 @@ const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 
@@ -21,6 +22,7 @@ controller.getRestartOverview = async (req, res, next) => {
   let checkWindowData
   let restarts
   let pinGenerationEligibilityData
+  let hdfSubmitted
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
@@ -29,8 +31,15 @@ controller.getRestartOverview = async (req, res, next) => {
     }
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
     return next(error)
+  }
+  if (hdfSubmitted) {
+    return res.render('hdf/unavailable', {
+      title: res.locals.pageTitle,
+      breadcrumbs: req.breadcrumbs()
+    })
   }
   let { hl } = req.query
 
