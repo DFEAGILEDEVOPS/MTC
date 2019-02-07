@@ -14,9 +14,9 @@ steps:
    echo "var with default is $VAR_WITH_DEFAULT"
    echo "empty var is $EMPTY_VAR"
    echo "non string var is $NON_STRING_VAR"
-   echo "secret var is $SECRET_VAR"
+   echo "secret var is $I_AM_SECRET"
 
    # Use the environment variables input below to pass secret variables to this script
   displayName: 'my script'
   env:
-    I_AM_SECRET: 'wtf'
+    I_AM_SECRET: $SECRET_VAR
