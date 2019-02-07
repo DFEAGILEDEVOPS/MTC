@@ -6,7 +6,7 @@ AS
     DECLARE @checkWindowSchoolId INTEGER
     DECLARE @checkWindowSchoolIds CURSOR
 
-    -- FETCH ALL SCHOOL IDS RELEVANT TO THE CHECK WINDOW
+    -- FETCH ALL SCHOOL IDS WITH LIVE CHECKS RELEVANT TO THE CHECK WINDOW
     SET @checkWindowSchoolIds = CURSOR FOR
       SELECT DISTINCT s.id
       FROM mtc_admin.[check] chk
@@ -15,6 +15,7 @@ AS
         JOIN mtc_admin.school s
           ON p.school_id = s.id
       WHERE chk.checkWindow_id = @checkWindowId
+      AND chk.isLiveCheck = 1
 
       OPEN @checkWindowSchoolIds
       FETCH NEXT FROM @checkWindowSchoolIds
