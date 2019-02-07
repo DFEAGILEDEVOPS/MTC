@@ -19,4 +19,4 @@ steps:
    # Use the environment variables input below to pass secret variables to this script
   displayName: 'my script'
   env:
-    I_AM_SECRET: $SECRET_VAR
+    I_AM_SECRET: 'wtf'
