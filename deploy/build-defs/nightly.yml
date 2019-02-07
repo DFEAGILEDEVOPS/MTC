@@ -1,0 +1,75 @@
+resources:
+- repo: self
+  clean: true
+  fetchDepth: 1
+
+pool:
+  name: MTC LIVE
+
+jobs:
+
+- job: Phase_1
+  displayName: Run Pupil Tests
+  condition: succeeded()
+  steps:
+  - bash: |
+       source ~/.profile
+       gem install bundler
+       bundle install
+       rake features
+    workingDirectory: 'test/pupil-hpa'
+    displayName: 'PUPIL: Run End to End Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Copy screenshots to staging folder'
+    inputs:
+      SourceFolder: 'test/pupil-hpa'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/pupil-tests'
+    condition: succeededOrFailed()
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive $(Build.ArtifactStagingDirectory)/pupil-tests'
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/pupil-tests'
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: mtc-nightly-build-PUPIL'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      ArtifactName: 'mtc-nightly-build-PUPIL'
+    condition: succeededOrFailed()
+
+
+- job: Phase_2
+  displayName: Run Admin Tests
+  condition: succeeded()
+  steps:
+  - bash: |
+       source ~/.profile
+       gem install bundler
+       bundle install
+       rake features
+    workingDirectory: 'test/admin-hpa'
+    displayName: 'ADMIN: Run End to End Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Copy screenshots to staging folder'
+    inputs:
+      SourceFolder: 'test/admin-hpa'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/admin-tests'
+    condition: succeededOrFailed()
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive $(Build.ArtifactStagingDirectory)/admin-tests'
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/admin-tests'
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: mtc-nightly-build'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      ArtifactName: 'mtc-nightly-build-ADMIN'
+    condition: succeededOrFailed()
+
