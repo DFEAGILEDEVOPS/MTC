@@ -4,7 +4,22 @@ resources:
   clean: true
   fetchDepth: 1
 
+pool:
+  name: MTC LIVE
+
+variables:
+  AZURE_SUBSCRIPTION:
+  RESOURCE_GROUP:
+  SQL_DATABASE:
+  SQL_SERVER:
+  SQL_ADMIN_USER:
+  SQL_ADMIN_USER_PASSWORD:
+  SQL_APP_USER: 'mtcAdminUser' # default, sourced from config.js.  Does not need to be changed unless environment uses custom value
+  SQL_APP_USER_PASSWORD:
+  SQL_SERVER_SHORTNAME: # hostname without FQDN, required for CLI call to delete old database
+
 jobs:
+
 - job: Phase_1
   displayName: 'Prepare Database'
   steps:
