@@ -1,6 +1,6 @@
 'use strict'
 
-const sqlUtil = require('../lib/sql-helper')
+const scoreCalculationDataService = require('./score-calculation.data.service')
 
 const v1 = {
   process: async function (context) {
@@ -9,7 +9,7 @@ const v1 = {
 }
 
 async function handleCalculateScore (context) {
-  const liveCheckWindow = await sqlUtil.sqlFindCalculationPeriodCheckWindow()
+  const liveCheckWindow = await scoreCalculationDataService.sqlFindCalculationPeriodCheckWindow()
 
   // Terminate execution if a check window is not within the calculation period
   if (!liveCheckWindow || !liveCheckWindow.id) {
@@ -24,7 +24,7 @@ async function handleCalculateScore (context) {
   }
 
   // Excute score calculation store procedure
-  await sqlUtil.sqlExecuteScoreCalculationStoreProcedure(liveCheckWindow.id)
+  await scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure(liveCheckWindow.id)
 }
 
 module.exports = v1
