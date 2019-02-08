@@ -76,6 +76,7 @@ else
 end
 
 print 'the admin user is ' + admin_user
+print 'the admin password is ' + admin_password
 
 begin
   SQL_CLIENT = TinyTds::Client.new(username: admin_user,
