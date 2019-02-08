@@ -8,6 +8,7 @@ const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 /**
  * Pupils not taking the check: initial page.
@@ -22,21 +23,24 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   let checkWindowData
   let pupils
   let pinGenerationEligibilityData
+  let hdfSubmitted
   try {
     // Get pupils for active school
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    return res.render('pupils-not-taking-the-check/select-pupils', {
-      breadcrumbs: req.breadcrumbs(),
-      pupilsList: pupils,
-      highlight: [],
-      messages: req.flash('info'),
-      pinGenerationEligibilityData
-    })
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
     return next(error)
   }
+  return res.render('pupils-not-taking-the-check/select-pupils', {
+    breadcrumbs: req.breadcrumbs(),
+    pupilsList: pupils,
+    highlight: [],
+    messages: req.flash('info'),
+    pinGenerationEligibilityData,
+    hdfSubmitted
+  })
 }
 
 /**
