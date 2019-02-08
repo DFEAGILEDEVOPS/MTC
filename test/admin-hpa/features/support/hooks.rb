@@ -9,6 +9,7 @@ Before("@add_a_pupil") do
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
 end
 
 Before("@timer_reset") do
@@ -55,8 +56,7 @@ Before("@hdf") do
   step "I select a reason"
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
-
-  visit Capybara.app_host + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 After("@hdf") do
@@ -74,7 +74,7 @@ end
 
 Before("@create_new_window") do
   step "I have created a check window"
-  visit Capybara.app_host + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 Before("@create_new_window_v2") do
@@ -82,8 +82,8 @@ Before("@create_new_window_v2") do
   step "I submit details of a valid check window"
   step "I should see it added to the list of check windows"
   step "stored correctly in the db"
-  visit Capybara.app_host + '/sign-out'
-
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
 end
 
 Before(" not @poltergeist") do
@@ -99,7 +99,7 @@ Before("@upload_new_live_form") do
   step 'I am on the Upload and View forms page v2'
   step 'I have uploaded a valid live form'
   step 'it should be tagged as a live form'
-  visit Capybara.app_host + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 Before("@upload_new_fam_form") do
@@ -108,7 +108,7 @@ Before("@upload_new_fam_form") do
   step 'I am on the Upload and View forms page v2'
   step 'I have uploaded a valid familiarisation form'
   step 'it should be tagged as a familiarisation form'
-  visit Capybara.app_host + '/sign-out'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 After("@delete_census") do
@@ -173,4 +173,5 @@ After do |scenario|
   SqlDbHelper.add_fam_form
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
 end
