@@ -341,6 +341,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#viewPupilsNotTakingTheCheck', () => {
       it('should make a call to get the pupils', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
@@ -361,6 +362,7 @@ describe('pupils-not-taking-the-check controller:', () => {
       })
       it('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(Promise.reject(new Error())))
+        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
