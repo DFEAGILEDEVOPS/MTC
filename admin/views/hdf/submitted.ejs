@@ -1,0 +1,28 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_session_expiry') %>
+        <div class="govuk-box-highlight">
+          <h1 class="heading-xlarge">
+            Headteacher's declaration form submitted
+          </h1>
+          <p class="font-large">
+            on <strong class="bold"><%= signedDayAndDate %></strong>
+          </p>
+        </div>
+        <p>
+          <a href="/attendance/submitted-form"><strong>View the submitted form</strong></a>
+        </p>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+</div>

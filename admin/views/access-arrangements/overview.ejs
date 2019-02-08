@@ -18,6 +18,9 @@
             <%= messages.deleteInfo[0] %>
         </div>
         <% } %>
+
+        <%- partial('partials/_readonly', {hdfSubmitted}) %>
+
         <header class="page-header">
             <h1 class="heading-xlarge">Access arrangements</h1>
         </header>
@@ -58,7 +61,11 @@
         <form action="/access-arrangements/select-access-arrangements" name="select-pupils-and-arrangements">
             <div class="form-group">
                 <div class="form-buttons">
+                    <% if (hdfSubmitted) { %>
+                    <input type="submit" class="button-secondary" value="Select pupil and arrangement" disabled/>
+                    <% } else { %>
                     <input type="submit" class="button" value="Select pupil and arrangement"/>
+                    <% } %>
                 </div>
             </div>
         </form>
@@ -82,7 +89,11 @@
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
+                            <% if (hdfSubmitted) { %>
+                            <%= pupil.fullName %>
+                            <% } else { %>
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
+                            <% } %>
                             <% if (pupil.showDoB) { %>
                             <div class="font-greyed-out font-xsmall">
                                 Date of birth: <%= pupil.dateOfBirth %>
@@ -97,7 +108,9 @@
                     <% }) %>
                 </td>
                 <td>
+                    <% if (!hdfSubmitted) { %>
                     <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
+                    <% } %>
                 </td>
             </tr>
             <% }) %>
