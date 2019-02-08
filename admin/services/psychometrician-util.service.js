@@ -486,4 +486,41 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
+psUtilService.getAccessArrangements = function (config) {
+  const props = {
+    audibleSounds: 1,
+    questionReader: 2,
+    colourContrast: 3,
+    inputAssistance: 4,
+    fontSize: 5
+  }
+  const values = []
+  for (const k in props) {
+    if (config.hasOwnProperty(k) && config[k]) {
+      values.push(props[k])
+    }
+  }
+  return values.map(n => `[${n}]`).join('')
+}
+
+psUtilService.getReaderStartTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionReadingStarted', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
+psUtilService.getReaderEndTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionReadingEnded', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
 module.exports = psUtilService
