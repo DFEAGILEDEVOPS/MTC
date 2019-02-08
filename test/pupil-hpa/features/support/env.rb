@@ -64,14 +64,15 @@ sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
-admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 azure_test = ENV['AZURE'] || 'false'
 
 if azure_test == 'true'
   azure_var = true
+  admin_user = ENV['SQL_ADMIN_USER'] + '@' + ENV['SQL_SERVER_SHORTNAME']
 else
   azure_var = false
+  admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 end
 
 begin
