@@ -30,22 +30,17 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
-    if (hdfSubmitted) {
-      return res.render('hdf/unavailable', {
-        title: res.locals.pageTitle,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
-    return res.render('pupils-not-taking-the-check/select-pupils', {
-      breadcrumbs: req.breadcrumbs(),
-      pupilsList: pupils,
-      highlight: [],
-      messages: req.flash('info'),
-      pinGenerationEligibilityData
-    })
   } catch (error) {
     return next(error)
   }
+  return res.render('pupils-not-taking-the-check/select-pupils', {
+    breadcrumbs: req.breadcrumbs(),
+    pupilsList: pupils,
+    highlight: [],
+    messages: req.flash('info'),
+    pinGenerationEligibilityData,
+    hdfSubmitted
+  })
 }
 
 /**

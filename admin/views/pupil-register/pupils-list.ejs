@@ -15,11 +15,7 @@
         <% } %>
         <div>
 
-            <% if (hdfSubmitted) { %>
-                <div class="info-message">
-                    Currently unavailable. This section is now read only.
-                </div>
-            <% } %>
+            <%- partial('partials/_readonly', {hdfSubmitted}) %>
 
             <h1 class="heading-xlarge">Pupil register</h1>
 

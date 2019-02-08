@@ -33,19 +33,14 @@ controller.getOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  if (hdfSubmitted) {
-    return res.render('hdf/unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
   const { hl } = req.query
   return res.render('access-arrangements/overview', {
     highlight: hl,
     messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
-    pupils
+    pupils,
+    hdfSubmitted
   })
 }
 
