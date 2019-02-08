@@ -9,6 +9,7 @@ const hdfConfirmValidator = require('../lib/validator/hdf-confirm-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
+const hdfPresenter = require('../helpers/hdf-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
@@ -198,6 +199,19 @@ const postConfirmSubmit = async (req, res, next) => {
     return getConfirmSubmit(req, res, next)
   }
 
+  // Re-validate the hdf form data
+  let hdfFormData = req.session.hdfFormData
+  validationError = await hdfValidator.validate(hdfFormData)
+  if (validationError.hasError()) {
+    return next(new Error('Invalid HDF form data'))
+  }
+
+  try {
+    await headteacherDeclarationService.submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+
   return res.redirect('/attendance/submitted')
 }
 
@@ -207,6 +221,10 @@ const getDeclarationForm = async (req, res, next) => {
 
   let hdfEligibility
   try {
+    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    if (submitted) {
+      return res.redirect('/attendance/submitted')
+    }
     hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
   } catch (error) {
     return next(error)
@@ -243,16 +261,43 @@ const postDeclarationForm = async (req, res, next) => {
     })
   }
 
+  req.session.hdfFormData = form
+
   return res.redirect('/attendance/review-pupil-details')
 }
 
 const getHDFSubmitted = async (req, res, next) => {
-  res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
+  res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
-    return res.render('school/declaration-form-submitted', {
+    if (!hdf) {
+      return res.redirect('/attendance/declaration-form')
+    }
+    const resultsDate = hdfPresenter.getResultsDate(hdf)
+    return res.render('hdf/submitted', {
       breadcrumbs: req.breadcrumbs(),
+      signedDayAndDate: dateService.formatShortGdsDate(hdf.signedDate),
+      hdf,
+      canViewResults: hdfPresenter.getCanViewResults(resultsDate)
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+const getHDFSubmittedForm = async (req, res, next) => {
+  res.locals.pageTitle = 'View submission'
+  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs(res.locals.pageTitle)
+  try {
+    const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
+    if (!hdf) {
+      return res.redirect('/attendance/declaration-form')
+    }
+    return res.render('hdf/submitted-form', {
+      breadcrumbs: req.breadcrumbs(),
+      hdf: hdf,
       signedDate: dateService.formatFullGdsDate(hdf.signedDate)
     })
   } catch (error) {
@@ -270,5 +315,6 @@ module.exports = {
   postConfirmSubmit,
   getDeclarationForm,
   postDeclarationForm,
-  getHDFSubmitted
+  getHDFSubmitted,
+  getHDFSubmittedForm
 }

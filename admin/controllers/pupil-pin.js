@@ -14,6 +14,7 @@ const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -29,6 +30,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   let checkWindowData
+  let hdfSubmitted
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
@@ -37,8 +39,15 @@ const getGeneratePinsOverview = async (req, res, next) => {
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (err) {
     return next(err)
+  }
+  if (hdfSubmitted) {
+    return res.render('hdf/unavailable', {
+      title: res.locals.pageTitle,
+      breadcrumbs: req.breadcrumbs()
+    })
   }
   let error
   try {

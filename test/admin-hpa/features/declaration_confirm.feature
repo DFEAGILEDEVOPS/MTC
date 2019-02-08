@@ -1,4 +1,4 @@
-@declaration_confirm @hdf
+@declaration_confirm @hdf @local
 Feature: Declaration confirm and submit
 
   Background:
@@ -18,6 +18,7 @@ Feature: Declaration confirm and submit
     When I submit the form with confirmation
     Then I am redirected to the submitted page
 
+  @reset_hdf_submission
   Scenario: Submitted page loads when not confirmed
     Given I am on the confirm and submit page
     When I submit the form without confirmation
