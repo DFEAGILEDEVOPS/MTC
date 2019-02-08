@@ -75,6 +75,8 @@ else
   admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 end
 
+print 'the admin user is ' + admin_user
+
 begin
   SQL_CLIENT = TinyTds::Client.new(username: admin_user,
                                    password: admin_password,
