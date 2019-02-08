@@ -83,7 +83,7 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-pupil">
+                <td class="<% if (!hdfSubmitted) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
                                 <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
