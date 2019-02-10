@@ -1,0 +1,45 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <header class="page-header">
+            <h1 class="heading-xlarge"><%= title %></h1>
+        </header>
+        <%- partial('partials/_session_expiry') %>
+
+        <p class="lede">
+            Currently unavailable
+        </p>
+
+        <p>This section is now closed.</p>
+
+        <br class="clearfix"/>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+        
+    </div>
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="/pupil-register/pupils-list">Pupil register</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+    
