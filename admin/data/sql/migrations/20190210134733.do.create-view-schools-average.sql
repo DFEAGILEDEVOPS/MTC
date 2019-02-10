@@ -2,14 +2,6 @@ CREATE VIEW [mtc_admin].[vewSchoolsAverage] AS
 
 SELECT
   p.school_id,
-  SUM(
-      CASE
-      WHEN (pa.id IS NOT NULL) THEN 0
-      WHEN (latestPupilCheck.mark IS NOT NULL) THEN latestPupilCheck.mark
-      ELSE 0
-      END
-  ) AS [schoolMarkSum],
-  COUNT(p.id) as [totalPupilsCount],
   CAST(SUM(
       CASE
       WHEN (pa.id IS NOT NULL) THEN 0
