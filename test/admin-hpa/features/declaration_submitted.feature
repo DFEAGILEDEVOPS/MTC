@@ -1,4 +1,4 @@
-@reset_hdf_submission @declaration_submitted @hdf @local
+@reset_hdf_submission @declaration_submitted @hdf
 Feature: Declaration form submitted
 
   Background:

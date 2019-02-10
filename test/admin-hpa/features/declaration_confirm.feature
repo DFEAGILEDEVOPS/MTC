@@ -1,4 +1,4 @@
-@declaration_confirm @hdf @local
+@declaration_confirm @hdf
 Feature: Declaration confirm and submit
 
   Background:
