@@ -23,8 +23,21 @@ async function handleCalculateScore (context) {
     return
   }
 
-  // Excute score calculation store procedure
-  await scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure(liveCheckWindow.id)
+  // Fetch schools with scores for the relevant check window
+  const schoolsWithScores = await scoreCalculationDataService.sqlFindCheckWindowSchoolAverageScores()
+
+  if (!schoolsWithScores || !Array.isArray(schoolsWithScores)) {
+    context.log.error(`no schools with scores found or not in valid format for check window id: ${liveCheckWindow.id}`)
+    return
+  }
+
+  if (schoolsWithScores.length === 0) {
+    context.log.error(`calculate-score: no schools were found for ${liveCheckWindow.id}`)
+    return
+  }
+
+  // store school scores
+  return scoreCalculationDataService.sqlInsertSchoolScores(liveCheckWindow.id, schoolsWithScores)
 }
 
 module.exports = v1
