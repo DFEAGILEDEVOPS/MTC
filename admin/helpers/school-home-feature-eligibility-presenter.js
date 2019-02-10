@@ -15,7 +15,7 @@ const schoolHomeFeatureEligibilityPresenter = {}
 schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) => {
   const currentDate = moment.utc()
   const featureEligibilityData = {}
-  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone().add(3, 'days').set({ hour: 8, minutes: 0, seconds: 0 })
+  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone().add(1, 'weeks').isoWeekday('Monday').set({ hour: 8, minutes: 0, seconds: 0 })
 
   // Pin generation
   featureEligibilityData.familiarisationCheckStartDate = dateService.formatFullGdsDate(checkWindowData.familiarisationCheckStartDate)
