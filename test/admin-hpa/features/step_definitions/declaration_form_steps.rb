@@ -3,16 +3,16 @@ Given(/^I am on the HDF form page$/) do
   @page = hdf_form_page
 end
 
-Given(/^all pupils have completed the check$/) do
-  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
-  SqlDbHelper.set_all_pupils_check_completed(school_id)
-end
-
-Given(/^all pupils have an attendance reason (.*)$/) do |value|
-  teacher = SqlDbHelper.find_teacher('teacher4')
-  SqlDbHelper.set_all_pupils_check_started(teacher['school_id'])
-  SqlDbHelper.set_all_pupils_attendance_reason(teacher['school_id'], teacher['id'], value)
-end
+# Given(/^all pupils have completed the check$/) do
+#   school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+#   SqlDbHelper.set_all_pupils_check_completed(school_id)
+# end
+#
+# Given(/^all pupils have an attendance reason (.*)$/) do |value|
+#   teacher = SqlDbHelper.find_teacher('teacher4')
+#   SqlDbHelper.set_all_pupils_check_started(teacher['school_id'])
+#   SqlDbHelper.set_all_pupils_attendance_reason(teacher['school_id'], teacher['id'], value)
+# end
 
 Then(/^I can see hdf form page as per the design$/) do
   expect(@page).to have_first_name
