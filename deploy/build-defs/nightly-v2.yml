@@ -4,20 +4,49 @@ resources:
 
 jobs:
 
+- job: Job_3
+  displayName: Delete Database
+  condition: succeeded()
+  pool:
+    vmImage: Hosted VS2017
+  variables:
+    SQL_SERVER: $(SQL_SERVER)
+    SQL_ADMIN_USER: $(SQL_ADMIN_USER)
+    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
+
+  steps:
+  - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
+    displayName: 'Delete existing database'
+    inputs:
+      databaseserverinput: '$(SQL_SERVER)'
+      databasenamestring: master
+      adminusertring: '$(SQL_ADMIN_USER)'
+      adminpasswordstring: '$(SQL_ADMIN_USER_PASSWORD)'
+      sqlquerystring: 'DROP DATABASE IF EXISTS [mtc-dev]'
+
+  - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
+    displayName: 'Create database'
+    inputs:
+      databaseserverinput: '$(SQL_SERVER)'
+      databasenamestring: master
+      adminusertring: '$(SQL_ADMIN_USER)'
+      adminpasswordstring: '$(SQL_ADMIN_USER_PASSWORD)'
+      sqlquerystring: 'CREATE DATABASE [mtc-dev]'
+
+
 - job: Job_1
   displayName: Prepare Database
+  dependsOn: Job_3
   condition: succeeded()
   pool:
     name: MTC LIVE
+#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+  variables:
+    SQL_ADMIN_USER: $(SQL_ADMIN_USER)
+    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
 
   steps:
-  - task: AzureCLI@1
-    displayName: 'Delete Database'
-    inputs:
-      azureSubscription: 'MTC EE Dev'
-      scriptLocation: inlineScript
-      inlineScript: 'az sql db delete --name $(SQL_DATABASE) --resource-group $(RESOURCE_GROUP) --server $(SQL_SERVER_SHORTNAME) --yes'
-
   - task: Bash@3
     displayName: 'Create Database'
     inputs:
@@ -114,14 +143,31 @@ jobs:
   condition: succeededOrFailed()
   pool:
     name: MTC LIVE
+#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+  variables:
+    SQL_SERVER: $(SQL_SERVER)
+    SQL_ADMIN_USER: $(SQL_DATABASE)
+    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
 
   steps:
-  - task: AzureCLI@1
-    displayName: 'Delete Database'
+  - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
+    displayName: 'Delete existing database'
     inputs:
-      azureSubscription: 'MTC EE Dev'
-      scriptLocation: inlineScript
-      inlineScript: 'az sql db delete --name $(SQL_DATABASE) --resource-group $(RESOURCE_GROUP) --server $(SQL_SERVER_SHORTNAME) --yes'
+      databaseserverinput: '$(SQL_SERVER)'
+      databasenamestring: master
+      adminusertring: '$(SQL_ADMIN_USER)'
+      adminpasswordstring: '$(SQL_ADMIN_USER_PASSWORD)'
+      sqlquerystring: 'DROP DATABASE IF EXISTS [mtc-dev]'
+
+  - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
+    displayName: 'Create database'
+    inputs:
+      databaseserverinput: '$(SQL_SERVER)'
+      databasenamestring: master
+      adminusertring: '$(SQL_ADMIN_USER)'
+      adminpasswordstring: '$(SQL_ADMIN_USER_PASSWORD)'
+      sqlquerystring: 'CREATE DATABASE [mtc-dev]'
 
   - task: Bash@3
     displayName: 'Create Database'
@@ -136,4 +182,3 @@ jobs:
       targetType: ./
       filePath: 'deploy/sql-migrations/seed-db.sh'
       arguments: '$(SQL_ADMIN_USER) $(SQL_ADMIN_USER_PASSWORD) $(SQL_APP_USER_PASSWORD)'
-
