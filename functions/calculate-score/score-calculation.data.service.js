@@ -4,6 +4,7 @@ const R = require('ramda')
 
 const schema = '[mtc_admin]'
 const checkWindowTable = '[checkWindow]'
+const schoolScoreTable = '[schoolScore]'
 
 /**
  * Find a check window within the score calculation period
@@ -12,8 +13,7 @@ const checkWindowTable = '[checkWindow]'
 module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
   const sql = `
   SELECT * from ${schema}.${checkWindowTable}
-  WHERE GETUTCDATE() >= checkStartDate AND GETUTCDATE() <= adminEndDate 
-  )`
+  WHERE GETUTCDATE() BETWEEN checkStartDate AND adminEndDate`
   const res = await sqlService.query(sql)
   return R.head(res)
 }
@@ -30,49 +30,39 @@ module.exports.sqlFindCheckWindowSchoolAverageScores = async () => {
 /**
  * Save school scores for check window id
  * @param {Number} checkWindowId
- * @param {Array} schoolsWithScores
  * @return {Promise<Array>}
  */
-module.exports.sqlInsertSchoolScores = async (checkWindowId, schoolsWithScores) => {
+module.exports.sqlInsertSchoolScores = async (checkWindowId) => {
   const params = []
-  const queries = []
-
   params.push({
-    name: `checkWindowId`,
+    name: `checkWindow_id`,
     value: checkWindowId,
     type: TYPES.Int
   })
-  queries.push(`DELETE ss 
-    FROM ${schema}.[schoolScore] ss
-    WHERE ss.checkWindow_id = @checkWindowId
-  `)
-
-  const inserts = []
-  schoolsWithScores.forEach((ss, idx) => {
-    inserts.push(`(@checkWindow_id${idx}, @school_id${idx}, score${idx})`)
-    params.push({
-      name: `checkWindow_id${idx}`,
-      value: checkWindowId,
-      type: TYPES.Int
-    })
-    params.push({
-      name: `school_id${idx}`,
-      value: ss['school_id'],
-      type: TYPES.Int
-    })
-    params.push({
-      name: `score${idx}`,
-      value: ss['score'],
-      type: TYPES.Decimal
-    })
-  })
-  const insertSql = `INSERT INTO ${sqlService.adminSchema}.[schoolScore] (
-    checkWindow_id,
-    school_id,
-    score
-    ) VALUES`
-
-  queries.push([insertSql, inserts.join(', \n')].join(' '))
-  const sql = queries.join('\n')
+  const sql = `
+  DELETE FROM [mtc_admin].[schoolScore]
+  WHERE checkWindow_id = @checkWindow_id
+  
+  DECLARE @schoolScoreDataCursor CURSOR;
+  DECLARE @checkWindowId INT = @checkWindow_id
+  DECLARE @schoolId INT
+  DECLARE @schoolScore DECIMAL(5,2)
+  BEGIN
+     SET @schoolScoreDataCursor = CURSOR FOR
+      SELECT * from [mtc_admin].vewSchoolsAverage  
+     OPEN @schoolScoreDataCursor
+     FETCH NEXT FROM @schoolScoreDataCursor
+     INTO @schoolId, @schoolScore
+     WHILE @@FETCH_STATUS = 0
+     BEGIN
+       INSERT INTO [mtc_admin].[schoolScore] (checkWindow_id, school_id, score)
+       VALUES (@checkWindowId, @schoolId, @schoolScore)
+       FETCH NEXT FROM @schoolScoreDataCursor
+       INTO @schoolId, @schoolScore
+     END;
+     CLOSE @schoolScoreDataCursor;
+     DEALLOCATE @schoolScoreDataCursor;
+  END;
+  `
   return sqlService.modifyWithTransaction(sql, params)
 }

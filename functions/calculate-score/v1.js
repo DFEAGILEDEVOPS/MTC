@@ -37,7 +37,7 @@ async function handleCalculateScore (context) {
   }
 
   // store school scores
-  return scoreCalculationDataService.sqlInsertSchoolScores(liveCheckWindow.id, schoolsWithScores)
+  return scoreCalculationDataService.sqlInsertSchoolScores(liveCheckWindow.id)
 }
 
 module.exports = v1
