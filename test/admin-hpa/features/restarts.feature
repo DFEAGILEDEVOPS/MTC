@@ -69,6 +69,14 @@ Feature: Restarts
     When I remove restart for that pupil
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
 
+  Scenario: Pupils pin is removed if restart is removed
+    Given I submitted pupils for Restart
+    And I generate a pin for that pupil
+    And I navigate to the restarts page
+    When I remove restart for that pupil
+    Then I should not see this pupil removed from restart in Generate Pin Pupil list
+    And the pin should also be removed
+
   @no_pin @remove_all_groups @bug @wip
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
