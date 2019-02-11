@@ -8,7 +8,7 @@ jobs:
   displayName: Delete Database
   condition: succeeded()
   pool:
-    vmImage: Hosted VS2017
+    vmImage: 'Hosted VS2017'
   variables:
     SQL_SERVER: $(SQL_SERVER)
     SQL_ADMIN_USER: $(SQL_ADMIN_USER)
