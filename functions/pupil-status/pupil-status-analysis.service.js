@@ -14,7 +14,8 @@ module.exports = {
    checkStatusCode: 'NEW',
    pupilAttendance_id: null,
    pupilRestart_id: 1,
-   pupilRestart_check_id: null }
+   pupilRestart_check_id: null,
+   isRestartWithPinGenerated: false }
 
    */
   analysePupilData: function analysePupilData (data) {
@@ -55,6 +56,9 @@ module.exports = {
       case 'CMP':
         return 'COMPLETED'
       case 'EXP':
+        if (lastCheckTaken.isRestartWithPinGenerated) {
+          return 'COMPLETED'
+        }
         return 'UNALLOC'
       case 'NTR':
         return 'STARTED'
