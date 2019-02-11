@@ -49,6 +49,19 @@ Given(/^I am on the pupil reason page$/) do
   @page = pupil_reason_page
 end
 
+Given(/^I am on the pupil reason page for new pupil$/) do
+  step 'I have signed in with teacher3'
+  @name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{@name}"
+  step "the pupil details should be stored"
+
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  @page = pupil_reason_page
+end
+
+
 Then(/^I should be able to select them via a checkbox$/) do
   pupil_reason_page.pupil_list.rows.each {|pupil| expect(pupil).to have_checkbox}
 end
@@ -114,11 +127,10 @@ end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
   pupil_reason_page.select_reason(reason)
-  pupils = pupil_reason_page.pupil_list.rows.reject{|row| row.name.text.include? 'áàâãäåāæéèêēëíìîïī' or row.name.text.include? 'ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ'}
-  @pupil_row = pupils.reject.find {|row| row.has_no_selected? && row.reason.text == '-'}
-  @pupil_forename = @pupil_row.name.text.split(',')[1].strip
-  @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
-  @pupil_row.checkbox.click
+  @pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(@name)}
+  @pupil_forename = @pupil_row.first.name.text.split(',')[1].strip
+  @pupil_lastname = @pupil_row.first.name.text.split(',')[0].strip
+  @pupil_row.first.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
 
 end
@@ -190,7 +202,7 @@ And(/^I should see the updated pupils on the hub page$/) do
 end
 
 Given(/^I have previously added a reason for a pupil$/) do
-  step 'I am on the pupil reason page'
+  step 'I am on the pupil reason page for new pupil'
   step 'I add Absent as a reason for a particular pupil'
   step 'the Absent reason should be stored against the pupils'
   step 'I should see the updated pupil on the hub page'
