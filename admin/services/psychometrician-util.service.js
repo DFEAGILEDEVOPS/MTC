@@ -523,4 +523,19 @@ psUtilService.getReaderEndTime = function (questionNumber, audits) {
   return R.propOr('', 'clientTimestamp', entry || {})
 }
 
+psUtilService.getRestartReasonNumber = function (restartCode) {
+  switch (restartCode) {
+    case 'LOI':
+      return 1
+    case 'ITI':
+      return 2
+    case 'CLD':
+      return 3
+    case 'DNC':
+      return 4
+    default:
+      return ''
+  }
+}
+
 module.exports = psUtilService

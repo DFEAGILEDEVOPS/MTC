@@ -231,6 +231,8 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'QDisplayTime': R.pathOr('', ['questionTime'], config),
     'PauseLength': R.pathOr('', ['loadingTime'], config),
     'AccessArr': psUtilService.getAccessArrangements(config),
+    'RestartReason': psUtilService.getRestartReasonNumber(check.restartCode),
+    'RestartNumber': check.restartCount,
 
     'DeviceType': type,
     'DeviceTypeModel': model,
@@ -271,7 +273,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       const ans = check.data.answers.find(x => x.sequenceNumber === (idx + 1) && question.f1 === x.factor1 && question.f2 === x.factor2)
       psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
       psData[p(idx) + 'Response'] = ans ? ans.answer : ''
-      psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
+      psData[p(idx) + 'InputMethods'] = psUtilService.getInputMethod(inputs)
       psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
       psData[p(idx) + 'Sco'] = markedAnswer ? psUtilService.getScore(markedAnswer) : ''
       psData[p(idx) + 'ResponseTime'] = ans ? psUtilService.getResponseTime(inputs, ans.answer) : ''
