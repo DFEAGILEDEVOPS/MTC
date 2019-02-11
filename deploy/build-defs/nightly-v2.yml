@@ -9,10 +9,6 @@ jobs:
   condition: succeeded()
   pool:
     vmImage: 'Hosted VS2017'
-  variables:
-    SQL_SERVER: $(SQL_SERVER)
-    SQL_ADMIN_USER: $(SQL_ADMIN_USER)
-    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
 
   steps:
   - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
@@ -40,11 +36,6 @@ jobs:
   condition: succeeded()
   pool:
     name: MTC LIVE
-#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
-  variables:
-    SQL_ADMIN_USER: $(SQL_ADMIN_USER)
-    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
 
   steps:
   - task: Bash@3
@@ -142,13 +133,7 @@ jobs:
   - Phase_2
   condition: succeededOrFailed()
   pool:
-    name: MTC LIVE
-#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
-  variables:
-    SQL_SERVER: $(SQL_SERVER)
-    SQL_ADMIN_USER: $(SQL_DATABASE)
-    SQL_ADMIN_USER_PASSWORD: $(SQL_ADMIN_USER_PASSWORD)
+    name: 'Hosted VS2017'
 
   steps:
   - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
