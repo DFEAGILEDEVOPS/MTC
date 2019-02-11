@@ -2,6 +2,7 @@
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const featureToggles = require('feature-toggles')
 
 const listPupils = async (req, res, next) => {
@@ -30,9 +31,17 @@ const listPupils = async (req, res, next) => {
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
 
+  let hdfSubmitted
+  try {
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
   res.render('pupil-register/pupils-list', {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
+    hdfSubmitted: hdfSubmitted,
     breadcrumbs: req.breadcrumbs()
   })
 }

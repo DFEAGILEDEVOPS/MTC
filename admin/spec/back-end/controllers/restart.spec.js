@@ -12,6 +12,7 @@ const groupService = require('../../../services/group.service')
 const pupilStatusService = require('../../../services/pupil.status.service')
 const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const ValidationError = require('../../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
@@ -44,6 +45,7 @@ describe('restart controller:', () => {
     }
     beforeEach(() => {
       next = jasmine.createSpy('next')
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
     })
 
     it('displays the restart overview page', async (done) => {

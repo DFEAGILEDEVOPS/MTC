@@ -10,6 +10,7 @@ const pinService = require('../../../services/pin.service')
 const checkWindowSanityCheckService = require('../../../services/check-window-sanity-check.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
+const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const qrService = require('../../../services/qr.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
@@ -35,6 +36,7 @@ describe('pupilPin controller:', () => {
 
   beforeEach(() => {
     next = jasmine.createSpy('next')
+    spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
   })
 
   describe('getGeneratePinsOverview route', () => {
