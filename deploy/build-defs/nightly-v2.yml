@@ -8,7 +8,7 @@ jobs:
   displayName: Delete Database
   condition: succeeded()
   pool:
-    vmImage: 'Hosted VS2017'
+    name: 'Hosted VS2017'
 
   steps:
   - task: Damutu.DamutuDatabaseTools.damutu-AzureExecuteSQL-task.Execute SQL@1
