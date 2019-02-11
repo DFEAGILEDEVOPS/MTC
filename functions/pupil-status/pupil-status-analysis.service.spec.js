@@ -163,6 +163,21 @@ describe('pupil-status-analysis.service', () => {
     expect(targetStatus).toBe('COMPLETED')
   })
 
+  it('Removing a restart changes the pupil status to completed', () => {
+    const data = {
+      pupil_id: 12,
+      pupilStatusCode: 'ALLOC', // set up for a restart, which is being removed
+      check_id: 2,
+      checkStatusCode: 'EXP',
+      pupilAttendance_id: null,
+      pupilRestart_id: null,
+      pupilRestart_check_id: null,
+      isRestartWithPinGenerated: true // a check has been created for this restart, but has been removed (gets set to EXP)
+    }
+    const targetStatus = pupilStatusAnalysisService.analysePupilData(data)
+    expect(targetStatus).toBe('COMPLETED')
+  })
+
   it('keeps the status as STARTED when the check has been started but then changes to NOT RECEIVED', async () => {
     const data = {
       pupil_id: 12,

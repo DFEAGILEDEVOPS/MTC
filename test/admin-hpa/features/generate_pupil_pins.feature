@@ -153,7 +153,8 @@ Feature: Generate Pupil PINs
   @no_active_check_window
   Scenario: Generate Pin Overview page display error if there is no active check window
     Given I have signed in with teacher2
-    Then I should see that I should not be able to generate a pin
+    When I navigate to generate pupil pins page
+    Then I should see an error message to contact helpdesk
 
   Scenario: Generate pins page has related content
     Given I have signed in with teacher2
