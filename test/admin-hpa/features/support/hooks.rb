@@ -48,6 +48,16 @@ After("@pupil_not_taking_check") do
   visit current_url
 end
 
+Before('@reset_hdf_submission') do
+  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  SqlDbHelper.delete_from_hdf(school_id)
+end
+
+After('@reset_hdf_submission') do
+  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  SqlDbHelper.delete_from_hdf(school_id)
+end
+
 Before("@hdf") do
   step 'I have signed in with teacher4'
   pupils_not_taking_check_page.load
