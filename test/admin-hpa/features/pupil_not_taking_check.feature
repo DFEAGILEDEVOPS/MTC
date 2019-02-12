@@ -95,7 +95,7 @@ Feature:
 
   @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
-    Given I am on the pupil reason page
+    Given I am on the pupil reason page for multiple new pupil
     When I add Absent as a reason for multiple pupils
     Then the reason should be stored against the pupils
     And I should see the updated pupils on the hub page

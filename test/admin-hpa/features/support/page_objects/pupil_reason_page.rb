@@ -54,9 +54,13 @@ class PupilReasonPage < SitePrism::Page
     attendance_codes.find {|code| code['id'] == mapping.first}.click
   end
 
-  def add_reason_for_pupil(name, reason)
+  def select_pupil(name)
     row = pupil_list.rows.find {|row| row.name.text.include? name}
     row.checkbox.click
+  end
+
+  def add_reason_for_pupil(name, reason)
+    select_pupil(name)
     select_reason(reason)
     sticky_banner.confirm.click
   end

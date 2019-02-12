@@ -40,7 +40,8 @@ end
 Then(/^I should see a list of pupils sorted by surname$/) do
   school_id = SqlDbHelper.find_teacher(@teacher)['school_id']
   pupils_from_db = SqlDbHelper.list_of_pupils_from_school(school_id)
-  expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  pupil_list_from_db = pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}
+  expect(pupil_list_from_db.sort_by{|name| name.downcase}).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
 Given(/^I am on the pupil reason page$/) do
@@ -56,6 +57,22 @@ Given(/^I am on the pupil reason page for new pupil$/) do
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
 
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  @page = pupil_reason_page
+end
+
+Given(/^I am on the pupil reason page for multiple new pupil$/) do
+  step 'I have signed in with teacher3'
+  @pupil_names = []
+  for i in 0..3
+    name = (0...8).map {(65 + rand(26)).chr}.join
+    step "I am on the add pupil page"
+    step "I submit the form with the name fields set as #{name}"
+    step "the pupil details should be stored"
+    @pupil_forename = name
+    @pupil_names << @pupil_forename
+  end
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
   @page = pupil_reason_page
@@ -176,9 +193,7 @@ end
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
   pupil_reason_page.select_reason(@reason)
-  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == '-'}
-  @pupils[0..3].each {|pupil| pupil.checkbox.click}
-  @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
+  @pupil_names.each{|pupil| pupil_reason_page.select_pupil(pupil)}
   pupil_reason_page.sticky_banner.confirm.click
 end
 
@@ -186,7 +201,7 @@ Then(/^the reason should be stored against the pupils$/) do
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
   @pupil_names.each do |name|
-    pupil = SqlDbHelper.find_pupil_from_school(name.split(',')[1].strip, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
+    pupil = SqlDbHelper.find_pupil_from_school(name, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
     pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(pupil['id'])
     attendance_code = SqlDbHelper.check_attendance_code(pupil_attendance_code['attendanceCode_id'])
     expect(attendance_code['reason']).to eql @reason
@@ -195,10 +210,10 @@ end
 
 And(/^I should see the updated pupils on the hub page$/) do
   expect(pupils_not_taking_check_page).to have_flash_message
-  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} reasons updated"
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupil_names.count} reasons updated"
   hightlighted_rows = pupils_not_taking_check_page.pupil_list.rows.select {|row| row.has_highlight?}
-  updated_names = hightlighted_rows.map {|row| row.text.split[0] + ' ' + row.text.split[1]}
-  expect(updated_names).to eql @pupil_names
+  updated_names = hightlighted_rows.map {|row| row.text.split[1]}
+  expect(updated_names).to eql @pupil_names.sort
 end
 
 Given(/^I have previously added a reason for a pupil$/) do
