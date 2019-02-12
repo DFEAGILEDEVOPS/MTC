@@ -40,7 +40,7 @@ module.exports.sqlInsertSchoolScores = async (checkWindowId) => {
     type: TYPES.Int
   })
   const sql = `
-  DELETE FROM [mtc_admin].[schoolScore]
+  DELETE FROM ${schema}.${schoolScoreTable}
   WHERE checkWindow_id = @checkWindow_id
   
   DECLARE @schoolScoreDataCursor CURSOR;
@@ -49,13 +49,13 @@ module.exports.sqlInsertSchoolScores = async (checkWindowId) => {
   DECLARE @schoolScore DECIMAL(5,2)
   BEGIN
      SET @schoolScoreDataCursor = CURSOR FOR
-      SELECT * from [mtc_admin].vewSchoolsAverage  
+      SELECT * from ${schema}.vewSchoolsAverage  
      OPEN @schoolScoreDataCursor
      FETCH NEXT FROM @schoolScoreDataCursor
      INTO @schoolId, @schoolScore
      WHILE @@FETCH_STATUS = 0
      BEGIN
-       INSERT INTO [mtc_admin].[schoolScore] (checkWindow_id, school_id, score)
+       INSERT INTO ${schema}.${schoolScoreTable} (checkWindow_id, school_id, score)
        VALUES (@checkWindowId, @schoolId, @schoolScore)
        FETCH NEXT FROM @schoolScoreDataCursor
        INTO @schoolId, @schoolScore
