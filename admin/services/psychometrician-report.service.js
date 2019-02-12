@@ -234,6 +234,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'RestartReason': psUtilService.getRestartReasonNumber(check.restartCode),
     'RestartNumber': check.restartCount,
     'ReasonNotTakingCheck': psUtilService.getAttendanceReasonNumber(check.attendanceCode),
+    'PupilStatus': check.attendanceCode ? 'Not taking the check' : 'Completed',
 
     'DeviceType': type,
     'DeviceTypeModel': model,
