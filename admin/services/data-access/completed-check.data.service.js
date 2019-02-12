@@ -69,11 +69,14 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
   cs.code,
   cs.description,
   prr.code restartCode,
-  (SELECT COUNT(id) FROM [mtc_admin].[pupilRestart] pr WHERE pr.check_id = chk.id) restartCount
+  (SELECT COUNT(id) FROM [mtc_admin].[pupilRestart] pr WHERE pr.check_id = chk.id) restartCount,
+  ac.code attendanceCode
   FROM [mtc_admin].[check] chk
-      LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND isDeleted = 0)
       LEFT JOIN [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
+      LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND isDeleted = 0)
       LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
+      LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = chk.pupil_id AND pa.isDeleted = 0)
+      LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id)
       JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
   `
   const where = sqlService.buildParameterList(batchIds, TYPES.Int)

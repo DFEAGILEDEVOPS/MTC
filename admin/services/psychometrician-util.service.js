@@ -538,4 +538,23 @@ psUtilService.getRestartReasonNumber = function (restartCode) {
   }
 }
 
+psUtilService.getAttendanceReasonNumber = function (attendanceCode) {
+  switch (attendanceCode) {
+    case 'INCRG':
+      return 1
+    case 'ABSNT':
+      return 2
+    case 'LEFTT':
+      return 3
+    case 'NOACC':
+      return 4
+    case 'BLSTD':
+      return 5
+    case 'JSTAR':
+      return 6
+    default:
+      return ''
+  }
+}
+
 module.exports = psUtilService
