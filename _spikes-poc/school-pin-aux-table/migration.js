@@ -49,7 +49,6 @@ function generateAllSchoolPasswords(words, numbers) {
           output.push(`${firstWord}${firstNumber}${secondNumber}${secondWord}`)
         }
       }
-
     }
   }
   return output
