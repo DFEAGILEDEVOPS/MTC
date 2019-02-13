@@ -10,6 +10,7 @@ describe('resultPresenter', () => {
       const pupils = [{
         foreName: 'foreName',
         lastName: 'lastName',
+        middleNames: 'middleNames',
         dateOfBirth: dateOfBirth,
         mark: 5,
         reason: null
@@ -18,6 +19,7 @@ describe('resultPresenter', () => {
       expect(pupilData).toEqual([{
         foreName: 'foreName',
         lastName: 'lastName',
+        middleNames: 'middleNames',
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: 5,
@@ -29,6 +31,7 @@ describe('resultPresenter', () => {
       const pupils = [{
         foreName: 'foreName',
         lastName: 'lastName',
+        middleNames: 'middleNames',
         dateOfBirth: dateOfBirth,
         mark: 5,
         reason: 'Absent'
@@ -37,6 +40,7 @@ describe('resultPresenter', () => {
       expect(pupilData).toEqual([{
         foreName: 'foreName',
         lastName: 'lastName',
+        middleNames: 'middleNames',
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: '-',

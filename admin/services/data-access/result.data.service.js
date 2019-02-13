@@ -16,6 +16,7 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
     SELECT
     p.foreName,
     p.lastName,
+    p.middleNames,
     p.dateOfBirth,
     latestPupilCheck.mark,
     ac.reason

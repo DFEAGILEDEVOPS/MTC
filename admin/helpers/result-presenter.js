@@ -13,6 +13,7 @@ resultPresenter.getResultsViewData = (pupils) => {
     pupilData.push({
       foreName: p.foreName,
       lastName: p.lastName,
+      middleNames: p.middleNames,
       dateOfBirth: p.dateOfBirth,
       score: p.reason ? '-' : p.mark,
       reason: p.reason
