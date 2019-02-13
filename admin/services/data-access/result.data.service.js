@@ -10,7 +10,7 @@ const TYPES = require('tedious').TYPES
  * @param {Number} checkWindowId
  * @returns {Promise<*>}
  */
-resultDataService.sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId = async (schoolId, checkWindowId) => {
+resultDataService.sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId = async (schoolId, checkWindowId) => {
   const sql = `
     SELECT
     p.foreName,

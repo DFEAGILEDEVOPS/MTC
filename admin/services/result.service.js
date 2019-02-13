@@ -16,7 +16,7 @@ resultService.getPupilsWithResults = async (schoolId, checkWindowId) => {
   if (!checkWindowId) {
     throw new Error('check window id not found')
   }
-  return resultDataService.sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId(schoolId, checkWindowId)
+  return resultDataService.sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId(schoolId, checkWindowId)
 }
 
 /**

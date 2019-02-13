@@ -7,8 +7,8 @@ const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
   describe('getPupilsWithResults', () => {
-    it('calls sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId when school id and check window id are provided', async () => {
-      spyOn(resultDataService, 'sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId')
+    it('calls sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId when school id and check window id are provided', async () => {
+      spyOn(resultDataService, 'sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId')
       const checkWindowId = 1
       const schoolId = 2
       try {
@@ -16,10 +16,10 @@ describe('result.service', () => {
       } catch (error) {
         fail()
       }
-      expect(resultDataService.sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(resultDataService.sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId).toHaveBeenCalled()
     })
     it('throws an error if check window id is not provided', async () => {
-      spyOn(resultDataService, 'sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId')
+      spyOn(resultDataService, 'sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId')
       const checkWindowId = undefined
       const schoolId = 2
       try {
@@ -28,10 +28,10 @@ describe('result.service', () => {
       } catch (error) {
         expect(error.message).toBe('check window id not found')
       }
-      expect(resultDataService.sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
+      expect(resultDataService.sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
     })
     it('throws an error if school id is not provided', async () => {
-      spyOn(resultDataService, 'sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId')
+      spyOn(resultDataService, 'sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId')
       const checkWindowId = 1
       const schoolId = undefined
       try {
@@ -40,7 +40,7 @@ describe('result.service', () => {
       } catch (error) {
         expect(error.message).toBe('school id not found')
       }
-      expect(resultDataService.sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
+      expect(resultDataService.sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
     })
   })
   describe('getSchoolScore', () => {
@@ -81,7 +81,7 @@ describe('result.service', () => {
       }
       expect(schoolScoreDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
     })
-    it('throws an error if sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId returns an error', async () => {
+    it('throws an error if sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId returns an error', async () => {
       spyOn(schoolScoreDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue(Promise.reject(new Error('error')))
       const checkWindowId = 1
       const schoolId = 2
@@ -93,7 +93,7 @@ describe('result.service', () => {
       }
       expect(schoolScoreDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
     })
-    it('throws an error if sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId returns an empty object', async () => {
+    it('throws an error if sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId returns an empty object', async () => {
       spyOn(schoolScoreDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
       const checkWindowId = 1
       const schoolId = 2
@@ -105,7 +105,7 @@ describe('result.service', () => {
       }
       expect(schoolScoreDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
     })
-    it('throws an error if sqlFindPupilsWithScoresBySchoolIdAndCheckWindowId returns no score property', async () => {
+    it('throws an error if sqlFindPupilsWithScoresAndAttendanceBySchoolIdAndCheckWindowId returns no score property', async () => {
       spyOn(schoolScoreDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1 })
       const checkWindowId = 1
       const schoolId = 2
