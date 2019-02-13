@@ -72,6 +72,7 @@ const attendance = require('./routes/attendance')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 const checkForm = require('./routes/check-form')
+const results = require('./routes/results')
 
 if (process.env.NODE_ENV === 'development') {
   piping({
@@ -264,6 +265,7 @@ app.use('/attendance', attendance)
 app.use('/access-arrangements', accessArrangements)
 app.use('/check-window', checkWindow)
 app.use('/check-form', checkForm)
+app.use('/results', results)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
