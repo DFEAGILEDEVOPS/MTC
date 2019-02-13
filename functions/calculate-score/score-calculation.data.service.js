@@ -1,22 +1,9 @@
 const { TYPES } = require('tedious')
 const sqlService = require('less-tedious')
-const R = require('ramda')
 
 const schema = '[mtc_admin]'
-const checkWindowTable = '[checkWindow]'
 const schoolScoreTable = '[schoolScore]'
-
-/**
- * Find a check window within the score calculation period
- * @return {Object}
- */
-module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
-  const sql = `
-  SELECT * from ${schema}.${checkWindowTable}
-  WHERE GETUTCDATE() BETWEEN checkStartDate AND adminEndDate`
-  const res = await sqlService.query(sql)
-  return R.head(res)
-}
+const checkWindowTable = '[checkWindow]'
 
 /**
  * Fetch school average scores for active check window
@@ -35,7 +22,7 @@ module.exports.sqlFindCheckWindowSchoolAverageScores = async () => {
 module.exports.sqlInsertSchoolScores = async (checkWindowId) => {
   const params = []
   params.push({
-    name: `checkWindow_id`,
+    name: 'checkWindow_id',
     value: checkWindowId,
     type: TYPES.Int
   })
@@ -63,6 +50,30 @@ module.exports.sqlInsertSchoolScores = async (checkWindowId) => {
      CLOSE @schoolScoreDataCursor;
      DEALLOCATE @schoolScoreDataCursor;
   END;
+  `
+  return sqlService.modifyWithTransaction(sql, params)
+}
+
+/**
+ * Store national average in check window score
+ * @param {Number} checkWindowId
+ * @return {Promise<Array>}
+ */
+module.exports.sqlInsertCheckWindowScore = async (checkWindowId) => {
+  const params = []
+  params.push({
+    name: 'checkWindowId',
+    value: checkWindowId,
+    type: TYPES.Int
+  })
+  const sql = `
+  UPDATE ${schema}.${checkWindowTable}
+  SET score = (
+    SELECT AVG(score) 
+    FROM ${schema}.${schoolScoreTable}
+    WHERE checkWindow_id = @checkWindowId
+  )
+  WHERE id = @checkWindowId
   `
   return sqlService.modifyWithTransaction(sql, params)
 }
