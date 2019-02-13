@@ -11,6 +11,7 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -21,6 +22,7 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -32,6 +34,7 @@ describe('Access arrangements validator', function () {
         pupilUrlSlug: 'pupilUrlSlug',
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -44,11 +47,25 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['ITA'],
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('inputAssistanceInformation')).toBeTruthy()
+    })
+    it('requires next button information when relevant access arrangement is selected', () => {
+      const requestData = {
+        pupilUrlSlug: 'pupilUrlSlug',
+        accessArrangements: ['NBQ'],
+        questionReaderReason: 'VIM',
+        inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
+        questionReaderOtherInformation: ''
+      }
+      const validationError = accessArrangementsValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('nextButtonInformation')).toBeTruthy()
     })
     it('requires question reader reason when relevant access arrangement is selected', () => {
       const requestData = {
@@ -56,6 +73,7 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['QNR'],
         questionReaderReason: '',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -68,6 +86,7 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['QNR'],
         questionReaderReason: 'OTH',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -80,6 +99,7 @@ describe('Access arrangements validator', function () {
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
@@ -91,6 +111,7 @@ describe('Access arrangements validator', function () {
         isEditView: 'true',
         questionReaderReason: 'VIM',
         inputAssistanceInformation: '',
+        nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
       const validationError = accessArrangementsValidator.validate(requestData)
