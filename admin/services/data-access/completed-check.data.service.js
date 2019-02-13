@@ -62,14 +62,23 @@ completedCheckDataService.sqlFindOne = async (checkCode) => {
  * @return {Promise<Array>}
  */
 completedCheckDataService.sqlFindByIds = async (batchIds) => {
-  let select = `SELECT 
-       chk.*,
-       cr.payload,
-       cs.code,
-       cs.description
-      FROM [mtc_admin].[check] chk LEFT JOIN
-           [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id) JOIN
-           [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)`
+  let select = `
+  SELECT 
+  chk.*,
+  cr.payload,
+  cs.code,
+  cs.description,
+  prr.code restartCode,
+  (SELECT COUNT(id) FROM [mtc_admin].[pupilRestart] pr WHERE pr.check_id = chk.id AND pr.isDeleted = 0) restartCount,
+  ac.code attendanceCode
+  FROM [mtc_admin].[check] chk
+      LEFT JOIN [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
+      LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND pr.isDeleted = 0)
+      LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
+      LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = chk.pupil_id AND pa.isDeleted = 0)
+      LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id)
+      JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+  `
   const where = sqlService.buildParameterList(batchIds, TYPES.Int)
   const sql = [select, 'WHERE chk.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
   // Populate the JSON data structure which is stored as a string in the SQL DB
