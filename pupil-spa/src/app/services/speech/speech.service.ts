@@ -115,7 +115,7 @@ export class SpeechService implements OnDestroy {
    * Add an question utterance to the underlying webspeech api
    * @param utterance
    */
-  async speakQuestion(utterance: string): Promise<void> {
+  async speakQuestion(utterance: string, sequenceNumber: number): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
@@ -124,11 +124,11 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
-      this.audit.addEntry(new QuestionReadingStarted({ utterance }));
+      this.audit.addEntry(new QuestionReadingStarted({ utterance, sequenceNumber }));
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new QuestionReadingEnded({ utterance }));
+      this.audit.addEntry(new QuestionReadingEnded({ utterance, sequenceNumber }));
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
