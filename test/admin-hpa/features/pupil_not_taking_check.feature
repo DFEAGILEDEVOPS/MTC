@@ -79,7 +79,7 @@ Feature:
 
   @pupil_not_taking_check
   Scenario Outline: Teachers can add a reason for pupils not taking a check
-    Given I am on the pupil reason page
+    Given I am on the pupil reason page for new pupil
     When I add <reason> as a reason for a particular pupil
     Then the <reason> reason should be stored against the pupils
     And I should see the updated pupil on the hub page
@@ -95,7 +95,7 @@ Feature:
 
   @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
-    Given I am on the pupil reason page
+    Given I am on the pupil reason page for multiple new pupil
     When I add Absent as a reason for multiple pupils
     Then the reason should be stored against the pupils
     And I should see the updated pupils on the hub page
