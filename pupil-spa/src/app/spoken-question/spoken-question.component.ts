@@ -57,7 +57,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
-    this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`);
+    this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
   ngOnDestroy() {
