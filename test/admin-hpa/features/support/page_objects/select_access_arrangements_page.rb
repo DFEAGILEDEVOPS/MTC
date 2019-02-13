@@ -25,6 +25,7 @@ class SelectAccessArrangementsPage < SitePrism::Page
 
   element :input_assistance_info, '.show-checkbox-content .form-label'
   element :input_assistance_reason, '#inputAssistanceInformation'
+  element :next_button_reason, '#nextButtonInformation'
   element :input_assistance_notice, '.notice'
 
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
