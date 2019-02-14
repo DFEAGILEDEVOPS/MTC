@@ -39,6 +39,7 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
     WHERE (ac.code IS NULL OR ac.code NOT IN ('LEFTT', 'INCRG'))
     AND (latestPupilCheck.rank = 1 OR latestPupilCheck.rank IS NULL)
     AND p.school_id = @schoolId
+    ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
   `
   const params = [
     {
