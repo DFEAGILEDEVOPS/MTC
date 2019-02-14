@@ -492,7 +492,9 @@ psUtilService.getAccessArrangements = function (config) {
     questionReader: 2,
     colourContrast: 3,
     inputAssistance: 4,
-    fontSize: 5
+    fontSize: 5,
+    nextBetweenQuestions: 6,
+    numpadRemoval: 7
   }
   const values = []
   for (const k in props) {
