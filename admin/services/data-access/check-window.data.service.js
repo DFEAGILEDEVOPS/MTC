@@ -347,7 +347,8 @@ const checkWindowDataService = {
   sqlFindActiveCheckWindow: async () => {
     const sql = `SELECT TOP 1 *
     FROM ${sqlService.adminSchema}.${table}
-    WHERE GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
+    WHERE isDeleted = 0
+    AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
     const result = await sqlService.query(sql)
     return R.head(result)
   }

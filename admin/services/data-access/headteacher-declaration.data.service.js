@@ -12,15 +12,17 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
 }
 
 /**
- * Return the last HDF submitted for a school
+ * Return the last HDF submitted for a school and the check end date
+ * for the check window the HDF was submitted in
  * @param {number} schoolId
  * @return {Promise<object>}
  */
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `
-  SELECT TOP 1 
-    * 
-  FROM ${sqlService.adminSchema}.${table} 
+  SELECT TOP 1
+    h.*, c.checkEndDate
+  FROM ${sqlService.adminSchema}.${table} h
+  INNER JOIN checkWindow c ON h.checkWindow_id = c.id
   WHERE school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
@@ -34,11 +36,7 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
  * @return {Promise<object|undefined>}
  */
 headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) => {
-  // TODO: hdf: calling checkWindowDataService.sqlFindOneCurrent(). This method should be reviewed during the HDF
-  // work to ensure it is correct. This is a best-attempt added during the data-refactor to SQL, but needs business
-  // input.   E.g. Is the HDF signed during or after the current check window. How many check-windows
-  // could be active at one time?  Just one, or multiple concurrent windows?
-  const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
+  const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
   if (!checkWindow) {
     // we are not in a live check window
     return undefined
@@ -48,7 +46,7 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   const sql = `
   SELECT TOP 1 
     *
-  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = school.id 
+  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id 
   WHERE h.checkWindow_id = @checkWindowId 
   AND s.dfeNumber = @dfeNumber`
   const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])

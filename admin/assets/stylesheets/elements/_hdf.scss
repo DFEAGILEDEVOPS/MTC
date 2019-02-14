@@ -1,7 +1,8 @@
-// Smaller inset checkboxes
-.multiple-choice.inset {
+.form-group.inset {
   margin-left: 50px !important;
+}
 
+.multiple-choice.smaller {
   input[type=checkbox] + label {
     padding-top: 0;
 
