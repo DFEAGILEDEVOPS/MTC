@@ -29,26 +29,13 @@ async function handleCalculateScore (context) {
   const currentUTCDate = moment.utc()
   if (currentUTCDate.isAfter(liveCheckWindow.adminEndDate)) {
     await checkWindowDataService.sqlMarkCheckWindowAsComplete(liveCheckWindow.id)
-  }
-
-  // Fetch schools with scores for the relevant check window
-  const schoolsWithScores = await scoreCalculationDataService.sqlFindCheckWindowSchoolAverageScores()
-
-  if (!schoolsWithScores || !Array.isArray(schoolsWithScores)) {
-    context.log.error(`No schools with scores found or not in valid format for check window id: ${liveCheckWindow.id}`)
     return
   }
 
-  if (schoolsWithScores.length === 0) {
-    context.log.error(`calculate-score: No schools were found for ${liveCheckWindow.id}`)
-    return
-  }
-
-  // Store school scores
-  await scoreCalculationDataService.sqlInsertSchoolScores(liveCheckWindow.id)
-
-  // Store national average in check window score
-  return scoreCalculationDataService.sqlInsertCheckWindowScore(liveCheckWindow.id)
+  // Call refresh score data store procedure
+  // The SP stores school score data from vewSchoolsAverage into school score table
+  // Finally it will calculate and store the national average into the check window score column
+  await scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure(liveCheckWindow.id)
 }
 
 module.exports = v1
