@@ -69,7 +69,13 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
   cs.code,
   cs.description,
   prr.code restartCode,
-  (SELECT COUNT(id) FROM [mtc_admin].[pupilRestart] pr WHERE pr.check_id = chk.id AND pr.isDeleted = 0) restartCount,
+  (
+    SELECT COUNT(id)
+    FROM [mtc_admin].[pupilRestart] pr
+    WHERE pr.pupil_id = chk.pupil_id
+    AND pr.createdAt < chk.createdAt
+    AND pr.isDeleted = 0
+  ) restartCount,
   ac.code attendanceCode
   FROM [mtc_admin].[check] chk
       LEFT JOIN [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
