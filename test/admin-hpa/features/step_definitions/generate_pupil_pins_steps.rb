@@ -32,14 +32,14 @@ And(/^I click Generate PINs button$/) do
 end
 
 Given(/^I have a pupil not taking the check$/) do
-  step 'I am on the pupil reason page'
+  step 'I am on the pupil reason page for new pupil'
   step 'I add Absent as a reason for a particular pupil'
   step 'the Absent reason should be stored against the pupils'
   sleep 3
 end
 
 Given(/I have a pupil not taking the check with reason '(.*)'/) do |reason|
-  step 'I am on the pupil reason page'
+  step 'I am on the pupil reason page for new pupil'
   step "I add #{reason} as a reason for a particular pupil"
 end
 
@@ -122,6 +122,7 @@ When(/^I have generated a live pin for a pupil$/) do
   step "the pupil details should be stored"
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
+  @pupil_forename = name
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
 end
