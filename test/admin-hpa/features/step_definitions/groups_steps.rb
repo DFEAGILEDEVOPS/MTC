@@ -280,18 +280,21 @@ Then(/^I should the group stored in the DB$/) do
 end
 
 Given(/^I have a group of pupils$/) do
-  step 'I am on the create group page'
-  step 'I enter a valid group name'
+  step 'I have signed in with teacher5'
   @pupil_group_array = []
-  add_edit_groups_page.pupil_list.rows[14].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[14].name.text
-  page.execute_script "window.scrollBy(0,500)"
-  add_edit_groups_page.pupil_list.rows[15].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[15].name.text
-  add_edit_groups_page.pupil_list.rows[16].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[16].name.text
-  add_edit_groups_page.pupil_list.rows[17].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[17].name.text
+  for i in 0..3
+    name = (0...8).map {(65 + rand(26)).chr}.join
+    step "I am on the add pupil page"
+    step "I submit the form with the name fields set as #{name}"
+    step "the pupil details should be stored"
+    @pupil_forename = name
+    @pupil_lastname = name
+    @pupil_group_array << @pupil_forename
+  end
+  group_pupils_page.load
+  group_pupils_page.create_group.click
+  step 'I enter a valid group name'
+  @pupil_group_array.each {|pupil| add_edit_groups_page.select_pupil_for_a_group(pupil)}
   add_edit_groups_page.sticky_banner.confirm.click
 end
 
