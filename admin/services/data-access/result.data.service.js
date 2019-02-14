@@ -18,21 +18,24 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
     p.lastName,
     p.middleNames,
     p.dateOfBirth,
+    pg.group_id,
     latestPupilCheck.mark,
     ac.reason
-    FROM mtc_admin.pupil p
+    FROM ${sqlService.adminSchema}.pupil p
     LEFT OUTER JOIN
     (SELECT chk.pupil_id, chk.mark, ROW_NUMBER() OVER ( PARTITION BY chk.pupil_id ORDER BY chk.markedAt DESC ) as rank
-      FROM mtc_admin.[check] chk
-      INNER JOIN mtc_admin.checkStatus cs ON cs.id = chk.checkStatus_id
+      FROM ${sqlService.adminSchema}.[check] chk
+      INNER JOIN ${sqlService.adminSchema}.checkStatus cs ON cs.id = chk.checkStatus_id
       WHERE cs.code = 'CMP'
       AND chk.checkWindow_id = @checkWindowId
     ) latestPupilCheck
       ON p.id = latestPupilCheck.pupil_id
-    LEFT JOIN mtc_admin.pupilAttendance pa
+    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
       ON (p.id = pa.pupil_id AND pa.isDeleted = 0)
-    LEFT JOIN mtc_admin.attendanceCode ac
+    LEFT JOIN ${sqlService.adminSchema}.attendanceCode ac
       ON pa.attendanceCode_id = ac.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
+      ON pg.pupil_id = p.id 
     WHERE (ac.code IS NULL OR ac.code NOT IN ('LEFTT', 'INCRG'))
     AND (latestPupilCheck.rank = 1 OR latestPupilCheck.rank IS NULL)
     AND p.school_id = @schoolId
@@ -61,7 +64,7 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
 resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId = async (schoolId, checkWindowId) => {
   const sql = `
   SELECT score
-  FROM mtc_admin.schoolScore
+  FROM ${sqlService.adminSchema}.schoolScore
   WHERE school_id = @schoolId
   AND checkWindow_id = @checkWindowId
   `

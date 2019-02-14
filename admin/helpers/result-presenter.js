@@ -16,7 +16,8 @@ resultPresenter.getResultsViewData = (pupils) => {
       middleNames: p.middleNames,
       dateOfBirth: p.dateOfBirth,
       score: p.reason ? '-' : p.mark,
-      reason: p.reason
+      reason: p.reason,
+      group_id: p.group_id
     })
   })
   return pupilIdentificationFlag.addIdentificationFlags(pupilData)

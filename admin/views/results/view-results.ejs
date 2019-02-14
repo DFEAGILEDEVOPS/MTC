@@ -63,7 +63,7 @@
     </thead>
     <tbody>
       <% pupilData.forEach((p, i) => { %>
-      <tr>
+      <tr<% if (p.group_id) { %> class="group-id-<%= p.group_id %>"<% } %>>
         <td>
           <span id="pupil-<%= i %>">
             <%= p.fullName %>

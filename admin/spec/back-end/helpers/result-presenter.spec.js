@@ -13,7 +13,8 @@ describe('resultPresenter', () => {
         middleNames: 'middleNames',
         dateOfBirth: dateOfBirth,
         mark: 5,
-        reason: null
+        reason: null,
+        group_id: 1
       }]
       const pupilData = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
@@ -23,7 +24,8 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: 5,
-        reason: null
+        reason: null,
+        group_id: 1
       }])
     })
     it('returns a dash as score when attendance reason is detected', () => {
@@ -34,7 +36,8 @@ describe('resultPresenter', () => {
         middleNames: 'middleNames',
         dateOfBirth: dateOfBirth,
         mark: 5,
-        reason: 'Absent'
+        reason: 'Absent',
+        group_id: 1
       }]
       const pupilData = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
@@ -44,7 +47,8 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: '-',
-        reason: 'Absent'
+        reason: 'Absent',
+        group_id: 1
       }])
     })
   })
