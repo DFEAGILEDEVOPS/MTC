@@ -62,6 +62,9 @@ accessArrangementsService.prepareData = async (requestData, pupil, dfeNumber, us
   if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
     omittedFields.push('inputAssistanceInformation')
   }
+  if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS)) {
+    omittedFields.push('nextButtonInformation')
+  }
   if (pupilAccessArrangements.questionReaderReason !== questionReaderReasonsDataService.CODES.OTHER) {
     omittedFields.push('questionReaderOtherInformation')
   }

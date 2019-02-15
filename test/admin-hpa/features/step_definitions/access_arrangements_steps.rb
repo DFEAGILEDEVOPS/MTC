@@ -85,6 +85,13 @@ When(/^I save access arrangements without providing explanation for input assist
   select_access_arrangements_page.save.click
 end
 
+When(/^I save access arrangements without providing explanation for next between questions$/) do
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement("'Next' button between questions")
+  select_access_arrangements_page.save.click
+end
+
 When(/^I save access arrangements without selecting any question reader reason$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
@@ -155,6 +162,7 @@ Given(/^I have a pupil who needs all possible access arrangements$/) do
     select_access_arrangements_page.select_access_arrangement(aa)
   end
   select_access_arrangements_page.input_assistance_reason.set 'This is a reason for input assistance'
+  select_access_arrangements_page.next_button_reason.set 'This is a reason for next between questions'
   question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
   question_reader_row.question_reader_reason[2].question_reader_reason_radio.click
   select_access_arrangements_page.save.click
