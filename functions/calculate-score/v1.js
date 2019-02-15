@@ -33,8 +33,7 @@ async function handleCalculateScore (context) {
   }
 
   // Call refresh score data store procedure
-  // The SP stores school score data from vewSchoolsAverage into school score table
-  // Finally it will calculate and store the national average into the check window score column
+  // The SP stores score data into school score table and stores the national average into the check window score column
   await scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure(liveCheckWindow.id)
 }
 
