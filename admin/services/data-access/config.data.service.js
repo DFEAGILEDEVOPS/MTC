@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlService = require('./sql.service')
-const { TYPES } = require('tedious')
+const TYPES = sqlService.TYPES
 
 const configDataService = {
   getBatchConfig: async function getBatchConfig (pupilIds, schoolId) {
