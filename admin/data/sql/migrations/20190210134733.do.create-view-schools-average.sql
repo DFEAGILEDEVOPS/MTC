@@ -1,4 +1,4 @@
-CREATE VIEW [mtc_admin].[vewSchoolsAverage] AS
+CREATE VIEW [mtc_admin].[vewSchoolsAverageScore] AS
 
 SELECT
 p.school_id,

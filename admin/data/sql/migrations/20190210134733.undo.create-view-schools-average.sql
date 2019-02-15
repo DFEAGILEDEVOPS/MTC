@@ -1,1 +1,1 @@
-DROP VIEW [mtc_admin].[vewSchoolsAverage];
+DROP VIEW [mtc_admin].[vewSchoolsAverageScore];

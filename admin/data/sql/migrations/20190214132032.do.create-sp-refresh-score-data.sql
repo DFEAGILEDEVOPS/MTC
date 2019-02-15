@@ -7,7 +7,7 @@ AS
 
       -- ADD ALL VIEW DATA IN SCHOOL SCORE TABLE
       INSERT INTO mtc_admin.schoolScore (checkWindow_id, school_id, score)
-        (SELECT @checkWindowId, school_id, schoolScore as score FROM mtc_admin.vewSchoolsAverage)
+        (SELECT @checkWindowId, school_id, schoolScore as score FROM mtc_admin.vewSchoolsAverageScore)
 
       -- UPDATE (NATIONAL) SCORE FIELD ON CHECK WINDOW TABLE
         UPDATE [mtc_admin].checkWindow
