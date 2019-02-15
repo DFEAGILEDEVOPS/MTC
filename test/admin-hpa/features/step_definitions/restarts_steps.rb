@@ -266,7 +266,25 @@ Given(/^pupil logs in and completed the check$/) do
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
+  p 'sleeping'
   sleep(60)
   response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+  p 'sleeping'
   sleep(60)
+end
+
+And(/^I generate a pin for that pupil$/) do
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
+  @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
+end
+
+And(/^I navigate to the restarts page$/) do
+  restarts_page.load
+end
+
+And(/^the pin should also be removed$/) do
+  view_and_custom_print_live_check_page.load
+  array_of_names = view_and_custom_print_live_check_page.pupil_list.rows.map {|row| row.name.text}
+  expect(array_of_names).to_not include @details_hash[:first_name]
 end

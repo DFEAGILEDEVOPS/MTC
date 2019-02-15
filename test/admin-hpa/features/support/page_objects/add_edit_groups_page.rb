@@ -21,4 +21,16 @@ class AddEditGroupsPage < SitePrism::Page
     end
   end
 
+  def select_pupil_for_a_group(name)
+    pupil = find_pupil_row(name)
+    name = pupil.name.text
+    pupil.checkbox.click
+    name
+  end
+
+  def find_pupil_row(name)
+    wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}
+    pupil_list.rows.find {|pupil| pupil.text.include? name}
+  end
+
 end
