@@ -1,4 +1,4 @@
-CREATE PROCEDURE mtc_admin.spRefreshScoreData @checkWindowId INTEGER
+CREATE PROCEDURE mtc_admin.spRefreshScoreData @checkWindowId INTEGER = NULL
 AS
     BEGIN
 
@@ -20,6 +20,12 @@ AS
           WHERE GETUTCDATE() > adminEndDate
           ORDER BY createdAt DESC
         )
+      END
+      IF (@checkWindowId IS NULL)
+      BEGIN
+        -- RAISE AN ERROR AND EXIT WHEN NO CW ID IS DETECTED
+        RAISERROR ('NO CHECK WINDOW ID FOUND', 16, 1)
+        RETURN 1
       END
 
       -- CLEAR THE SCHOOL SCORE TABLE
