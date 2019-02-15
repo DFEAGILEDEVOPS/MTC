@@ -3,3 +3,31 @@
 #results {
   table-layout: fixed;
 }
+
+.score-presenter {
+  margin-bottom: pem(35px);
+  > dd {
+    display: inline-block;
+    width: 47%;
+    > h3:first-child {
+      border-bottom: 1px solid $grey-2;
+      padding-bottom: pem(10px);
+      margin-right: pem(20px);
+    }
+    > div {
+      margin-top: pem(10px);
+    }
+  }
+}
+
+th:nth-child(1) {
+  width: 50%;
+}
+
+th:nth-child(2) {
+  width: 20%;
+}
+
+th:nth-child(3) {
+  width: 30%;
+}

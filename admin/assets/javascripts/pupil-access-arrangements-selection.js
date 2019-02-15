@@ -19,17 +19,21 @@ $(function () {
       $($('input[value=QNR]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
       $($('input[value=QNR]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
     }
+    if ($('input[value=NBQ]').is(':checked')) {
+      $($('input[value=NBQ]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
+      $($('input[value=NBQ]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
+    }
     if ($('input[value=OTH]').is(':checked')) {
       $($('input[value=OTH]').parent().siblings('.panel')).removeClass('js-hidden')
     }
     // Reveal hidden content when appropriate checkbox is checked
     $(accessArrangementsList).find('input:checkbox').click(function (i) {
       var el = i.currentTarget
-      if (el.checked && (el.value === 'ITA' || el.value === 'QNR')) {
+      if (el.checked && (el.value === 'ITA' || el.value === 'QNR' || el.value === 'NBQ')) {
         $(el).closest('li').find('.hide-checkbox-content').addClass('show-checkbox-content')
         $(el).closest('li').find('.hide-checkbox-content').removeClass('hide-checkbox-content')
       }
-      if (!el.checked && el.value === 'ITA') {
+      if (!el.checked && (el.value === 'ITA' || el.value === 'NBQ')) {
         $(el).closest('li').find('.show-checkbox-content').addClass('hide-checkbox-content')
         $(el).closest('li').find('.show-checkbox-content').removeClass('show-checkbox-content')
         $('#inputAssistanceInformation').val('')
