@@ -1,0 +1,92 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+  <h1 class="heading-xlarge"><%= pageTitle %></h1>
+  <p class="lede" id="lead-paragraph">
+    Until verified, results are subject to review. All results are out of 25.
+  </p>
+  <div>
+    <dl class="score-presenter">
+      <dd>
+        <h3>School Average</h3>
+        <div class="font-xlarge"><%= schoolScore %></div>
+      </dd>
+      <dd>
+        <h3>National Average</h3>
+        <div class="font-xlarge"><%= nationalScore ? nationalScore: 'N/A' %></div>
+      </dd>
+    </dl>
+  </div>
+  <div class="master-detail text">
+      <details>
+        <summary><span class="summary">How are these averages calculated?</span></summary>
+          <div class="panel-no-border">
+            <ul class="panel-list">
+              <li>
+                <div><strong>School average</strong></div>
+                <div>
+                  <p>Is calculated by taking the mean average of pupils in your school who have taken the MTC.</p>
+                </div>
+              </li>
+              <li>
+                <div><strong>National average</strong></div>
+                <div>
+                  <p>Is calculated by taking the mean average of all pupils in England who have taken the MTC.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+      </details>
+    </div>
+
+  <%- partial('partials/_groups_filter', { groups: groups }) %>
+
+  <table class="spacious" id="resultsList" role="listbox" aria-label="Results list.">
+    <thead>
+      <tr>
+        <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
+        <th scope="col">Score</th>
+        <th scope="col">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pupilData.forEach((p, i) => { %>
+      <tr<% if (p.group_id) { %> class="group-id-<%= p.group_id %>"<% } %>>
+        <td>
+          <span id="pupil-<%= i %>">
+            <%= p.fullName %>
+          </span>
+          <% if (p.showDoB) { %>
+          <div class="font-greyed-out font-xsmall">
+            Date of birth: <%= p.dateOfBirth %>
+          </div>
+          <% } %>
+        </td>
+        <td><%= p.score %></td>
+        <td><%= p.reason %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  </div>
+</div>
+<div class="back-to-top-container">
+  <a href="#top">Back to top</a>
+</div>
+
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'resultsList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
