@@ -249,8 +249,6 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'AttemptId': check.checkCode,
     'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
-    'CheckStatus': check.checkStatus,
-    'CheckCount': check.checkCount,
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
