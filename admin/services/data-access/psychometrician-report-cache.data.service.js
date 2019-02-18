@@ -15,7 +15,7 @@ const psychometricianReportCacheDataService = {
   sqlInsertMany: async function (dataObjects) {
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO ${sqlService.adminSchema}.${table} 
+    INSERT INTO ${sqlService.adminSchema}.${table}
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES
@@ -67,9 +67,9 @@ const psychometricianReportCacheDataService = {
    * @return {Promise<*>}
    */
   sqlFindUnprocessedChecks: async function () {
-    const sql = `SELECT TOP 250 c.* 
-      FROM ${sqlService.adminSchema}.${table} p 
-      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
+    const sql = `SELECT TOP 250 c.*
+      FROM ${sqlService.adminSchema}.${table} p
+      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id
       WHERE p.check_id IS NULL`
     return sqlService.query(sql)
   },
@@ -83,10 +83,9 @@ const psychometricianReportCacheDataService = {
     FROM ${sqlService.adminSchema}.[check] chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
     JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-    WHERE 
-      prc.check_id IS NULL 
-    AND cs.code = 'CMP'
-    AND chk.markedAt IS NOT NULL`
+    WHERE
+      prc.check_id IS NULL
+    AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')`
 
     const result = await sqlService.query(sql, [])
     return result.length > 0
@@ -107,10 +106,9 @@ const psychometricianReportCacheDataService = {
       FROM ${sqlService.adminSchema}.[check] chk
       LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
       JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-      WHERE 
-        prc.check_id IS NULL 
-      AND cs.code = 'CMP'
-      AND chk.markedAt IS NOT NULL
+      WHERE
+        prc.check_id IS NULL
+      AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')
       ORDER BY chk.startedAt`
 
     const results = await sqlService.query(sql)
