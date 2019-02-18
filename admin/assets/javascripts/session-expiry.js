@@ -35,7 +35,7 @@ $(function () {
       window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, remainingMinutes)
       window.setInterval(function () {
         window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, --remainingMinutes)
-        if (remainingMinutes === 0) window.GOVUK.sessionExpiry.redirectToLogout()
+        if (remainingMinutes <= 0) window.GOVUK.sessionExpiry.redirectToLogout()
       }, tickMs)
     },
     /**
