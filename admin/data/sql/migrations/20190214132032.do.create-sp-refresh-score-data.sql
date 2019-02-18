@@ -37,13 +37,14 @@ AS
           SELECT
           ISNULL(latestPupilCheck.checkWindow_id, @checkWindowId) as checkWindowId,
           p.school_id,
-          CAST(SUM(ISNULL(latestPupilCheck.mark, 0)) AS DECIMAL(5,2)) / COUNT(p.id) as schoolScore
+          ISNULL((CAST(SUM(ISNULL(latestPupilCheck.mark, 0)) AS DECIMAL(5, 2)) / NULLIF(COUNT(latestPupilCheck.id), 0)), 0) as schoolScore
           FROM
             mtc_admin.pupil p INNER JOIN
             mtc_admin.pupilStatus ps ON (ps.id = p.pupilStatus_id)
             -- FETCH COMPLETED PUPIL CHECK WITHIN THE CHECK WINDOW PERIOD
             LEFT OUTER JOIN
               (SELECT
+                  chk.id,
                   chk.pupil_id,
                   chk.mark,
                   chk.checkWindow_id,
