@@ -1,0 +1,32 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge"><%= pageTitle %></h1>
+    <p><span class="lede font-medium" id="lead-paragraph">Currently unavailable</span></p>
+    <p>This section will be available when all pupils have either completed the MTC or have a reason for not taking the check.</p>
+    Provisional results will then be available when the check window has closed, and will become official at a later date.
+  </div>
+  <div class="column-one-third sidebar" aria-label="sidebar">
+    <aside role="complementary" class="support-column">
+      <h3 class="heading-medium">Related</h3>
+      <nav role="navigation">
+        <ul class="list">
+          <li>
+            <a href="/attendance/declaration-form">Headteacher's declaration form</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+<div class="back-to-top-container">
+  <a href="#top">Back to top</a>
+</div>
