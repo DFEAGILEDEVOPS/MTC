@@ -371,8 +371,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (!this.config.questionReader) {
       return;
     }
-
-    this.speechService.speakQuestion(this.factor1 + ' times ' + this.factor2);
+    this.speechService.speakQuestion(this.factor1 + ' times ' + this.factor2, this.sequenceNumber);
   }
   /**
    * Handle key presses
