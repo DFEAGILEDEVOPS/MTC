@@ -26,12 +26,12 @@ describe('tableSort', function () {
       const result = window.GOVUK.tableSort.comparer(0, true, {})('alpha', 'beta')
       expect(result).toBe(-1)
     })
-    it('should return -1 if second elements needs to be sorted first on ascending order', function () {
+    it('should return -1 if second elements needs to be sorted first on descending order', function () {
       spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('beta', 'alpha')
       const result = window.GOVUK.tableSort.comparer(0, false, {})('alpha', 'beta')
       expect(result).toBe(-1)
     })
-    it('should return 1 if first elements needs to be sorted first on ascending order', function () {
+    it('should return 1 if first elements needs to be sorted first on descending order', function () {
       spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('alpha', 'beta')
       const result = window.GOVUK.tableSort.comparer(0, false, {})('alpha', 'beta')
       expect(result).toBe(1)
@@ -40,6 +40,32 @@ describe('tableSort', function () {
       spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('alpha', 'alpha')
       const result = window.GOVUK.tableSort.comparer(0, false, {})('alpha', 'alpha')
       expect(result).toBe(0)
+    })
+    it('should return 1 if the second stringified number element needs to be sorted first on ascending order', function () {
+      spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('2', '1')
+      const result = window.GOVUK.tableSort.comparer(0, true, {})('1', '2')
+      expect(result).toBe(1)
+    })
+    it('should call return 0 if the elements are equal stringified numbers', function () {
+      spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('1', '1')
+      const result = window.GOVUK.tableSort.comparer(0, true, {})('1', '1')
+      expect(result).toBe(0)
+    })
+    it('should call getNumberComparisonResult if the values are stringified numbers', function () {
+      spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('1', '1')
+      spyOn(window.GOVUK.tableSort, 'getNumberComparisonResult').and.returnValue(0)
+      spyOn(window.GOVUK.tableSort, 'getStringComparisonResult')
+      window.GOVUK.tableSort.comparer(0, true, {})('1', '1')
+      expect(window.GOVUK.tableSort.getStringComparisonResult).not.toHaveBeenCalled()
+      expect(window.GOVUK.tableSort.getNumberComparisonResult).toHaveBeenCalled()
+    })
+    it('should call getStringComparisonResult if the values include combinations of letters and numbers', function () {
+      spyOn(window.GOVUK.tableSort, 'getCellValue').and.returnValues('1a', '1')
+      spyOn(window.GOVUK.tableSort, 'getNumberComparisonResult').and.returnValue(0)
+      spyOn(window.GOVUK.tableSort, 'getStringComparisonResult')
+      window.GOVUK.tableSort.comparer(0, true, {})('1', '1')
+      expect(window.GOVUK.tableSort.getStringComparisonResult).toHaveBeenCalled()
+      expect(window.GOVUK.tableSort.getNumberComparisonResult).not.toHaveBeenCalled()
     })
   })
   describe('isNullString', function () {
@@ -116,6 +142,46 @@ describe('tableSort', function () {
       spyOn(tableHeaders[0], 'addEventListener')
       window.GOVUK.tableSort.applySorting(window.document, 'tableId', {})
       expect(tableHeaders[0].addEventListener).toHaveBeenCalled()
+    })
+  })
+  describe('isNumericValue', function () {
+    it('returns true if the value is a stringified number', function () {
+      const result = window.GOVUK.tableSort.isNumericValue('1')
+      expect(result).toBeTruthy()
+    })
+    it('returns true if the value is a number', function () {
+      const result = window.GOVUK.tableSort.isNumericValue(1)
+      expect(result).toBeTruthy()
+    })
+    it('returns false if the value is a stringified combination of letters and numbers', function () {
+      const result = window.GOVUK.tableSort.isNumericValue('1a')
+      expect(result).toBeFalsy()
+    })
+    it('returns false if the value is an empty string', function () {
+      const result = window.GOVUK.tableSort.isNumericValue('')
+      expect(result).toBeFalsy()
+    })
+  })
+  describe('getNumberComparisonResult', function () {
+    it('returns negative number when the second value is greaer than the first in ascending order', function () {
+      const result = window.GOVUK.tableSort.getNumberComparisonResult(1, 2, true)
+      expect(result).toBe(-1)
+    })
+    it('returns positive number when the second value is greaer than the first in descending order', function () {
+      const result = window.GOVUK.tableSort.getNumberComparisonResult(1, 2, false)
+      expect(result).toBe(1)
+    })
+    it('returns negative number when the first value is greater than the second in ascending order', function () {
+      const result = window.GOVUK.tableSort.getNumberComparisonResult(2, 1, true)
+      expect(result).toBe(1)
+    })
+    it('returns positive number when the first value is greater than the second in descending order', function () {
+      const result = window.GOVUK.tableSort.getNumberComparisonResult(2, 1, false)
+      expect(result).toBe(-1)
+    })
+    it('returns 0 if they values are equal regardless of sorting type', function () {
+      const result = window.GOVUK.tableSort.getNumberComparisonResult(1, 1, true)
+      expect(result).toBe(0)
     })
   })
 })
