@@ -88,6 +88,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
     const submittedData = R.pick([
       'accessArrangements',
       'inputAssistanceInformation',
+      'nextButtonInformation',
       'questionReaderReason',
       'questionReaderOtherInformation',
       'isEditView',
@@ -127,6 +128,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     const submittedData = R.pick([
       'accessArrangements',
       'inputAssistanceInformation',
+      'nextButtonInformation',
       'questionReaderReason',
       'questionReaderOtherInformation',
       'isEditView',

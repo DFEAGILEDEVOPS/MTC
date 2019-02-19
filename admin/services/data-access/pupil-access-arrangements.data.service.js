@@ -40,6 +40,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     accessArrangementsIdsWithCodes,
     questionReaderReasonCode,
     inputAssistanceInformation,
+    nextButtonInformation,
     questionReaderOtherInformation
   } = data
 
@@ -57,7 +58,17 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   }
 
   accessArrangementsIdsWithCodes.forEach((aa, idx) => {
-    inserts.push(`(@pupil_id${idx}, @recordedBy_user_id${idx}, @accessArrangements_id${idx}, @questionReaderReasons_id${idx}, @inputAssistanceInformation${idx}, @questionReaderOtherInformation${idx}, @pupilFontSizes_id${idx}, @pupilColourContrasts_id${idx})`)
+    inserts.push(`(
+      @pupil_id${idx},
+      @recordedBy_user_id${idx},
+      @accessArrangements_id${idx},
+      @questionReaderReasons_id${idx},
+      @inputAssistanceInformation${idx},
+      @nextButtonInformation${idx},
+      @questionReaderOtherInformation${idx},
+      @pupilFontSizes_id${idx},
+      @pupilColourContrasts_id${idx}
+    )`)
     params.push({
       name: `pupil_id${idx}`,
       value: pupilId,
@@ -84,6 +95,11 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.NVarChar
     })
     params.push({
+      name: `nextButtonInformation${idx}`,
+      value: aa.code === 'NBQ' ? nextButtonInformation : '',
+      type: TYPES.NVarChar
+    })
+    params.push({
       name: `questionReaderOtherInformation${idx}`,
       value: aa.code === 'QNR' && questionReaderReasonCode === 'OTH' ? questionReaderOtherInformation : '',
       type: TYPES.NVarChar
@@ -106,6 +122,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       accessArrangements_id,
       questionReaderReasons_id,
       inputAssistanceInformation,
+      nextButtonInformation,
       questionReaderOtherInformation,
       pupilFontSizes_id,
       pupilColourContrasts_id
@@ -157,6 +174,7 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     p.foreName,
     p.lastName,
     paa.inputAssistanceInformation,
+    paa.nextButtonInformation,
     paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
     qrr.code as questionReaderReasonCode 
