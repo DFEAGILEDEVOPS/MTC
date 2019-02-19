@@ -48,6 +48,7 @@ $(function () {
       continueSessionButton.click(function (e) {
         e.preventDefault()
         window.GOVUK.sessionExpiry.reloadPage()
+        window.GOVUK.sessionExpiry.reloadPage(true)
       })
 
       window.GOVUK.sessionExpiry.startTimer(minutesCountdown, 60 * 1000)
