@@ -128,8 +128,8 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) 
  * @param dfeNumber
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCheck = async (dfeNumber, checkWindowid) => {
-  const hdf = await headteacherDeclarationDataService.findHdfForCheck(dfeNumber, checkWindowid)
+headteacherDeclarationService.isHdfSubmittedForCheck = async (dfeNumber, checkWindowId) => {
+  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(dfeNumber, checkWindowId)
   if (!hdf) {
     return false
   }
