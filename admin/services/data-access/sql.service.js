@@ -167,18 +167,18 @@ async function generateParams (tableName, data) {
 const sqlService = {
   // SQL type-mapping adapter.  Add new types as required.
   TYPES: {
-    Int: mssql.Int,
-    NVarChar: mssql.NVarChar,
-    Decimal: mssql.Decimal,
-    UniqueIdentifier: mssql.UniqueIdentifier,
-    SmallInt: mssql.SmallInt,
+    BigInt: mssql.BigInt
     Bit: mssql.Bit,
     Char: mssql.Char,
     DateTimeOffset: mssql.DateTimeOffset,
-    Numeric: mssql.Numeric,
+    Decimal: mssql.Decimal,
     Float: mssql.Float,
+    Int: mssql.Int,
+    Numeric: mssql.Numeric,
+    NVarChar: mssql.NVarChar,
     Real: mssql.Real,
-    BigInt: mssql.BigInt
+    SmallInt: mssql.SmallInt,
+    UniqueIdentifier: mssql.UniqueIdentifier,
   }
 }
 
