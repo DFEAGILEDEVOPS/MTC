@@ -2,7 +2,7 @@
 
 const resultDataService = {}
 const sqlService = require('./sql.service')
-const TYPES = require('tedious').TYPES
+const TYPES = sqlService.TYPES
 const R = require('ramda')
 
 /**
