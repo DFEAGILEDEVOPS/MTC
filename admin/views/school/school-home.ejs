@@ -98,12 +98,22 @@
               <% } %>
             </li>
             <li>
-                <h2 class="heading-small"><a href="/attendance/declaration-form">Headteacher's declaration form</a></h2>
-                <p>Complete headteacher's declaration form once all pupils have completed or a reason for not taking the check</p>
+              <% if (featureEligibilityData.isLivePinGenerationAllowed) { %>
+              <h2 class="heading-small"><a href="/attendance/declaration-form">Headteacher's declaration form</a></h2>
+              <p>Complete headteacher's declaration form once all pupils have a status of 'Completed' or a reason for not taking the check</p>
+              <% } else { %>
+              <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="#">Headteacher's declaration form</a></h2>
+              <span>Complete headteacher's declaration form once all pupils have a status of 'Completed' or a reason for not taking the check</span>
+              <p>
+                <strong class="disabled-banner">UNAVAILABLE</strong>
+                <br />
+                <span class="font-xsmall font-greyed-out"> All pupils must have a status 'Completed' or a reason for not taking the check.</span>
+              </p>
+              <% } %>
             </li>
             <li>
                 <% if (featureEligibilityData.isResultsPageAccessible) { %>
-                <h2 class="heading-small"><a href="">Results</a></h2>
+                <h2 class="heading-small"><a href="/results/view-results">Results</a></h2>
                 <p>View pupil results</p>
                 <% } else { %>
                 <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="">Results</a></h2>
