@@ -14,8 +14,8 @@ This is a node / express server and Javascript on the client.
 
 Simple developer steps:
 * `yarn install`
-* `docker-compose up`
-* `yarn startd`
+* `../restart.sh`
+* `yarn start`
 
 The app will now be available on `http://localhost:3001`
 
