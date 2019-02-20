@@ -1,12 +1,12 @@
 'use strict'
 /* global describe, it, expect, spyOn, beforeEach */
-const psychometricianReportDataService = require('../../../services/data-access/psychometrician-report-cache.data.service')
-const psychometricianReportService = require('../../../services/psychometrician-report.service')
-const anomalyReportService = require('../../../services/anomaly-report.service')
-const logger = require('../../../services/log.service.js').getLogger()
+const psychometricianReportDataService = require('../service/data-service/psychometrician-report-cache.data.service')
+const psychometricianReportService = require('../service/psychometrician-report.service')
+const anomalyReportService = require('../service/anomaly-report.service')
+const logger = require('../../../admin/services/log.service.js').getLogger()
 
 describe('checkProcessingService', () => {
-  const service = require('../../../services/check-processing.service')
+  const service = require('../service/check-processing.service')
   describe('#markAsProcessed', () => {
     beforeEach(() => {
       spyOn(logger, 'info')

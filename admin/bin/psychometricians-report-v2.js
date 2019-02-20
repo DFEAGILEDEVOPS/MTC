@@ -5,10 +5,10 @@ require('dotenv').config()
 const fs = require('fs')
 const logger = require('../services/log.service').getLogger()
 const commandLineArgs = require('command-line-args')
-const checkProcessingService = require('../services/check-processing.service')
+const checkProcessingService = require('../../functions/report-psychometrician/service/check-processing.service')
 const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
-const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
-const psychometricianReportService = require('../services/psychometrician-report.service')
+const psychometricianReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/psychometrician-report-cache.data.service')
+const psychometricianReportService = require('../../functions/report-psychometrician/service/psychometrician-report.service')
 
 let requiresProcessing = false
 

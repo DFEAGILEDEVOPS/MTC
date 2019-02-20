@@ -2,7 +2,7 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 
-const sqlService = require('./sql.service')
+const sqlService = require('../../../../admin/services/data-access/sql.service')
 
 const table = '[psychometricianReportCache]'
 

@@ -4,12 +4,12 @@
 const moment = require('moment')
 const R = require('ramda')
 
-const psUtilService = require('../../../services/psychometrician-util.service')
-const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-const checkFormMockOrig = require('../mocks/check-form')
+const psUtilService = require('../service/psychometrician-util.service')
+const completedCheckMockOrig = require('../../../admin/spec/back-end/mocks/completed-check-with-results')
+const checkFormMockOrig = require('../../../admin/spec/back-end/mocks/check-form')
 
 describe('anomaly-report.service', () => {
-  const service = require('../../../services/anomaly-report.service')
+  const service = require('../service/anomaly-report.service')
 
   describe('#produceReportData', () => {
     it('pushes a reported anomaly', async () => {

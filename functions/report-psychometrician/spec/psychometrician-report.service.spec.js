@@ -2,22 +2,22 @@
 /* global describe, expect, it, beforeEach, afterEach, fail, spyOn, jasmine */
 
 const moment = require('moment')
-const logger = require('../../../services/log.service.js').getLogger()
+const logger = require('../../../admin/services/log.service.js').getLogger()
 
-const answerDataService = require('../../../services/data-access/answer.data.service')
-const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
-const checkFormService = require('../../../services/check-form.service')
-const completedCheckDataService = require('../../../services/data-access/completed-check.data.service')
-const jobDataService = require('../../../services/data-access/job.data.service')
-const jobStatusDataService = require('../../../services/data-access/job-status.data.service')
-const jobTypeDataService = require('../../../services/data-access/job-type.data.service')
-const psychometricianReportCacheDataService = require('../../../services/data-access/psychometrician-report-cache.data.service')
-const psychometicianDataService = require('../../../services/data-access/psychometrician.data.service')
-const schoolDataService = require('../../../services/data-access/school.data.service')
+const answerDataService = require('../../../admin/services/data-access/answer.data.service')
+const azureFileDataService = require('../../../admin/services/data-access/azure-file.data.service')
+const checkFormService = require('../../../admin/services/check-form.service')
+const completedCheckDataService = require('../../../admin/services/data-access/completed-check.data.service')
+const jobDataService = require('../../../admin/services/data-access/job.data.service')
+const jobStatusDataService = require('../../../admin/services/data-access/job-status.data.service')
+const jobTypeDataService = require('../../../admin/services/data-access/job-type.data.service')
+const psychometricianReportCacheDataService = require('../service/data-service/psychometrician-report-cache.data.service')
+const psychometicianDataService = require('../service/data-service/psychometrician.data.service')
+const schoolDataService = require('../../../admin/services/data-access/school.data.service')
 
 // A mock completed Check that has been marked
-const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-const checkFormMock = require('../mocks/check-form')
+const completedCheckMockOrig = require('../../../admin/spec/back-end/mocks/completed-check-with-results')
+const checkFormMock = require('../../../admin/spec/back-end/mocks/check-form')
 
 const psychometricianReportMock = {
   id: 1,
@@ -39,7 +39,7 @@ const jobTypeMock = {
 }
 
 describe('psychometricians-report.service', () => {
-  const service = require('../../../services/psychometrician-report.service')
+  const service = require('../service/psychometrician-report.service')
 
   describe('#batchProduceCacheData', () => {
     const checkMock = Object.assign({}, checkFormMock)

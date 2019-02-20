@@ -2,7 +2,7 @@
 
 const { TYPES } = require('tedious')
 
-const sqlService = require('./sql.service')
+const sqlService = require('../../../../admin/services/data-access/sql.service')
 
 /**
  * Psychometrician data service - test developer role can access all pupils

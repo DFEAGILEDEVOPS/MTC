@@ -1,23 +1,23 @@
 'use strict'
 /* global describe it expect beforeEach spyOn fail */
-const logger = require('../../../services/log.service.js').getLogger()
-const service = require('../../../services/psychometrician-util.service')
+const logger = require('../../../admin/services/log.service.js').getLogger()
+const service = require('../service/psychometrician-util.service')
 
 // Get a marked check mock
-const checkMockOrig = require('../mocks/check-with-results')
+const checkMockOrig = require('../../../admin/spec/back-end/mocks/check-with-results')
 
 // and a completedCheck that has been marked
-const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-const pupilMockOrig = require('../mocks/pupil')
-const schoolMockOrig = require('../mocks/school')
+const completedCheckMockOrig = require('../../../admin/spec/back-end/mocks/completed-check-with-results')
+const pupilMockOrig = require('../../../admin/spec/back-end/mocks/pupil')
+const schoolMockOrig = require('../../../admin/spec/back-end/mocks/school')
 
-const keyboardInput = require('../mocks/keyboard-input')
-const touchInput = require('../mocks/touch-input')
-const mouseInput = require('../mocks/mouse-input')
-const keyboardInput2 = require('../mocks/keyboard-input-2')
-const keyboardInput3 = require('../mocks/keyboard-input-3')
-const keyboardInput4 = require('../mocks/keyboard-input-4')
-const keyboardInput5 = require('../mocks/keyboard-input-5')
+const keyboardInput = require('../../../admin/spec/back-end/mocks/keyboard-input')
+const touchInput = require('../../../admin/spec/back-end/mocks/touch-input')
+const mouseInput = require('../../../admin/spec/back-end/mocks/mouse-input')
+const keyboardInput2 = require('../../../admin/spec/back-end/mocks/keyboard-input-2')
+const keyboardInput3 = require('../../../admin/spec/back-end/mocks/keyboard-input-3')
+const keyboardInput4 = require('../../../admin/spec/back-end/mocks/keyboard-input-4')
+const keyboardInput5 = require('../../../admin/spec/back-end/mocks/keyboard-input-5')
 
 describe('psychometrician-util.service', () => {
   let completedCheckMock

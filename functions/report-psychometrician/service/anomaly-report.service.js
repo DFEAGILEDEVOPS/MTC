@@ -3,11 +3,11 @@ const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
 const useragent = require('useragent')
-const logger = require('./log.service').getLogger()
+const logger = require('../../../admin/services/log.service').getLogger()
 
-const completedCheckDataService = require('./data-access/completed-check.data.service')
-const anomalyReportCacheDataService = require('./data-access/anomaly-report-cache.data.service')
-const dateService = require('./date.service')
+const completedCheckDataService = require('../../../admin/services/data-access/completed-check.data.service')
+const anomalyReportCacheDataService = require('../../../admin/services/data-access/anomaly-report-cache.data.service')
+const dateService = require('../../../admin/services/date.service')
 const psUtilService = require('./psychometrician-util.service')
 
 const anomalyReportService = {}
