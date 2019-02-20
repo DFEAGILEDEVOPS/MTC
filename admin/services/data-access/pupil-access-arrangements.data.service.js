@@ -147,7 +147,22 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     }
   ]
   const sql =
-    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description
+  `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+    CAST((
+    -- completed check
+    SELECT COUNT(chk.id)
+    FROM ${sqlService.adminSchema}.[check] chk
+    WHERE chk.markedAt IS NOT NULL
+    AND chk.pupil_id = p.id
+  ) as BIT)
+  & ~CAST((
+    -- unused restart
+    SELECT COUNT(pr.id)
+    FROM ${sqlService.adminSchema}.pupilRestart pr
+    WHERE pr.pupil_id = p.id
+    AND pr.isDeleted = 0
+    AND pr.check_id IS NULL
+  ) as BIT) hasCompletedCheck
   FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
     INNER JOIN ${sqlService.adminSchema}.pupil p
       ON paa.pupil_id = p.id
@@ -156,6 +171,47 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
       ON aa.id = paa.accessArrangements_id
   WHERE s.dfeNumber = @dfeNumber
+  ORDER BY p.lastName`
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find pupils eligible for access arrangements based on DfE Number.
+ * @param {Number} dfeNumber
+ * @return {Promise<Array>}
+ */
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfeNumber) => {
+  const params = [
+    {
+      name: 'dfeNumber',
+      value: dfeNumber,
+      type: TYPES.Int
+    }
+  ]
+  const sql =
+  `SELECT * FROM (
+    SELECT p.*,
+      CAST((
+      -- completed check
+      SELECT COUNT(chk.id)
+      FROM ${sqlService.adminSchema}.[check] chk
+      WHERE chk.markedAt IS NOT NULL
+      AND chk.pupil_id = p.id
+    ) as BIT)
+    & ~CAST((
+      -- unused restart
+      SELECT COUNT(pr.id)
+      FROM ${sqlService.adminSchema}.pupilRestart pr
+      WHERE pr.pupil_id = p.id
+      AND pr.isDeleted = 0
+      AND pr.check_id IS NULL
+    ) as BIT) hasCompletedCheck
+    FROM ${sqlService.adminSchema}.pupil p
+    INNER JOIN ${sqlService.adminSchema}.school s
+      ON p.school_id = s.id
+    WHERE s.dfeNumber = @dfeNumber
+  ) p
+  WHERE hasCompletedCheck = 0
   ORDER BY p.lastName`
   return sqlService.query(sql, params)
 }

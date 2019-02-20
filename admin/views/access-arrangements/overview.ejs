@@ -89,7 +89,7 @@
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
-                            <% if (hdfSubmitted) { %>
+                            <% if (hdfSubmitted || pupil.hasCompletedCheck) { %>
                             <%= pupil.fullName %>
                             <% } else { %>
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -109,7 +109,11 @@
                 </td>
                 <td>
                     <% if (!hdfSubmitted) { %>
-                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
+                        <% if(pupil.hasCompletedCheck) { %>
+                        Completed Check
+                        <% } else { %>
+                        <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
+                        <% } %>
                     <% } %>
                 </td>
             </tr>
