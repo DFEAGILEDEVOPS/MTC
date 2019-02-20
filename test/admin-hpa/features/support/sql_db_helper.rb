@@ -1,5 +1,19 @@
 class SqlDbHelper
 
+  def self.connect(admin_user,admin_password,server,port,database,azure_var)
+    begin
+      TinyTds::Client.new(username: admin_user,
+                                       password: admin_password,
+                                       host: server,
+                                       port: port,
+                                       database: database,
+                                       azure: azure_var
+      )
+    rescue TinyTds::Error => e
+      abort 'Test run failed due to - ' + e.to_s
+    end
+  end
+
   def self.pupil_details(upn)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
     result = SQL_CLIENT.execute(sql)
@@ -334,6 +348,18 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.delete_pupils_not_taking_check
+    sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_pupil_status(reset_from, reset_to)
+      sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
+      result = SQL_CLIENT.execute(sql)
+      result.do
+    end
 
   def self.get_default_assigned_fam_form
     sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
