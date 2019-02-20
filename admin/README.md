@@ -13,9 +13,12 @@ Administer the Multiplication Table Check
 This is a node / express server and Javascript on the client.
 
 Simple developer steps:
-* `yarn install`
-* `../restart.sh`
-* `yarn start`
+* start the docker container for mssql
+    - `./start.sh` or `./restart.sh`
+* install the npm packages and run the `admin`
+    - `cd admin`
+    - `yarn install`
+    - `yarn start`
 
 The app will now be available on `http://localhost:3001`
 
