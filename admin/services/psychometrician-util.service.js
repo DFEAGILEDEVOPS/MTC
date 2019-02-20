@@ -486,4 +486,77 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
+psUtilService.getAccessArrangements = function (config) {
+  const props = {
+    audibleSounds: 1,
+    questionReader: 2,
+    colourContrast: 3,
+    inputAssistance: 4,
+    fontSize: 5,
+    nextBetweenQuestions: 6,
+    numpadRemoval: 7
+  }
+  const values = []
+  for (const k in props) {
+    if (config.hasOwnProperty(k) && config[k]) {
+      values.push(props[k])
+    }
+  }
+  return values.map(n => `[${n}]`).join('')
+}
+
+psUtilService.getReaderStartTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionReadingStarted', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
+psUtilService.getReaderEndTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionReadingEnded', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
+psUtilService.getRestartReasonNumber = function (restartCode) {
+  switch (restartCode) {
+    case 'LOI':
+      return 1
+    case 'ITI':
+      return 2
+    case 'CLD':
+      return 3
+    case 'DNC':
+      return 4
+    default:
+      return ''
+  }
+}
+
+psUtilService.getAttendanceReasonNumber = function (attendanceCode) {
+  switch (attendanceCode) {
+    case 'INCRG':
+      return 1
+    case 'ABSNT':
+      return 2
+    case 'LEFTT':
+      return 3
+    case 'NOACC':
+      return 4
+    case 'BLSTD':
+      return 5
+    case 'JSTAR':
+      return 6
+    default:
+      return ''
+  }
+}
+
 module.exports = psUtilService
