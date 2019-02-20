@@ -204,9 +204,14 @@ controller.postAssignForms = async (req, res, next) => {
   const { checkForms } = requestData
   let highlightMessage
   let checkWindow
+  let hasAssignedFamiliarisationForm
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkForms)
+    hasAssignedFamiliarisationForm = await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+    if (!hasAssignedFamiliarisationForm && !checkForms && checkFormType === 'familiarisation') {
+      return res.redirect(`/check-form/select-form/${checkFormType}/${checkWindowUrlSlug}`)
+    }
+    await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
     highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
   } catch (error) {
     return next(error)
