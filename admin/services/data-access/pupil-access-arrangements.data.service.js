@@ -148,6 +148,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
   ]
   const sql =
     `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+    CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
     (
       SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
         SELECT ( 
@@ -176,6 +177,8 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
       ON p.school_id = s.id
     INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
       ON aa.id = paa.accessArrangements_id
+    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+      ON pa.pupil_id = p.id AND pa.isDeleted = 0
   WHERE s.dfeNumber = @dfeNumber
   ORDER BY p.lastName`
   return sqlService.query(sql, params)
@@ -196,7 +199,7 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
   ]
   const sql =
     `SELECT * FROM (
-    SELECT p.*,
+    SELECT p.*, CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
     (
       SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
         SELECT (
@@ -221,9 +224,12 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
     FROM ${sqlService.adminSchema}.pupil p
     INNER JOIN ${sqlService.adminSchema}.school s
       ON p.school_id = s.id
+    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+      ON pa.pupil_id = p.id AND pa.isDeleted = 0
     WHERE s.dfeNumber = @dfeNumber
   ) p
   WHERE hasCompletedCheck = 0
+  AND notTakingCheck = 0
   ORDER BY p.lastName`
   return sqlService.query(sql, params)
 }
