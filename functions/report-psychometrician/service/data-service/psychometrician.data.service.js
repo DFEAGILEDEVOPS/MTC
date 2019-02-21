@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 
 const sqlService = require('../../../../admin/services/data-access/sql.service')
 
