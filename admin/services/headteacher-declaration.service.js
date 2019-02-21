@@ -129,6 +129,9 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) 
  * @return {Promise<boolean>}
  */
 headteacherDeclarationService.isHdfSubmittedForCheck = async (dfeNumber, checkWindowId) => {
+  if (!dfeNumber || !checkWindowId) {
+    throw new Error('dfeNumber and checkWindowId are required')
+  }
   const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(dfeNumber, checkWindowId)
   if (!hdf) {
     return false
