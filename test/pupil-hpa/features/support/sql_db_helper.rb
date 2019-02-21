@@ -1,5 +1,19 @@
 class SqlDbHelper
 
+  def self.connect(admin_user,admin_password,server,port,database,azure_var)
+    begin
+      TinyTds::Client.new(username: admin_user,
+                          password: admin_password,
+                          host: server,
+                          port: port,
+                          database: database,
+                          azure: azure_var
+      )
+    rescue TinyTds::Error => e
+      abort 'Test run failed due to - ' + e.to_s
+    end
+  end
+
   def self.find_school(school_id)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
