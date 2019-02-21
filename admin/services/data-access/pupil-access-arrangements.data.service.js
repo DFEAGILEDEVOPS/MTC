@@ -147,7 +147,29 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     }
   ]
   const sql =
-    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description
+    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+    CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+    (
+      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
+        SELECT ( 
+          SELECT TOP 1 chk.createdAt
+          FROM ${sqlService.adminSchema}.[check] chk
+          WHERE chk.pupil_id = p.id
+          AND chk.checkStatus_id = 3
+          AND chk.isLiveCheck = 1
+          ORDER BY chk.createdAt DESC 
+        ) latestCompletedCheckDate,
+        (
+          SELECT TOP 1 pr.createdAt
+          FROM ${sqlService.adminSchema}.pupilRestart pr
+          WHERE pr.pupil_id = p.id
+          AND pr.isDeleted = 0
+          ORDER BY pr.createdAt DESC
+        ) latestRestartDate
+      ) checksRestarts
+      WHERE checksRestarts.latestRestartDate IS NULL
+      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
+  ) hasCompletedCheck
   FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
     INNER JOIN ${sqlService.adminSchema}.pupil p
       ON paa.pupil_id = p.id
@@ -155,7 +177,59 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
       ON p.school_id = s.id
     INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
       ON aa.id = paa.accessArrangements_id
+    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+      ON pa.pupil_id = p.id AND pa.isDeleted = 0
   WHERE s.dfeNumber = @dfeNumber
+  ORDER BY p.lastName`
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find pupils eligible for access arrangements based on DfE Number.
+ * @param {Number} dfeNumber
+ * @return {Promise<Array>}
+ */
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfeNumber) => {
+  const params = [
+    {
+      name: 'dfeNumber',
+      value: dfeNumber,
+      type: TYPES.Int
+    }
+  ]
+  const sql =
+    `SELECT * FROM (
+    SELECT p.*, CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+    (
+      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
+        SELECT (
+          SELECT TOP 1 chk.createdAt
+          FROM ${sqlService.adminSchema}.[check] chk
+          WHERE chk.pupil_id = p.id
+          AND chk.checkStatus_id = 3
+          AND chk.isLiveCheck = 1
+          ORDER BY chk.createdAt DESC 
+        ) latestCompletedCheckDate,
+        (
+          SELECT TOP 1 pr.createdAt
+          FROM ${sqlService.adminSchema}.pupilRestart pr
+          WHERE pr.pupil_id = p.id
+          AND pr.isDeleted = 0
+          ORDER BY pr.createdAt DESC
+        ) latestRestartDate
+      ) checksRestarts
+      WHERE checksRestarts.latestRestartDate IS NULL
+      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
+    ) hasCompletedCheck
+    FROM ${sqlService.adminSchema}.pupil p
+    INNER JOIN ${sqlService.adminSchema}.school s
+      ON p.school_id = s.id
+    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+      ON pa.pupil_id = p.id AND pa.isDeleted = 0
+    WHERE s.dfeNumber = @dfeNumber
+  ) p
+  WHERE hasCompletedCheck = 0
+  AND notTakingCheck = 0
   ORDER BY p.lastName`
   return sqlService.query(sql, params)
 }
