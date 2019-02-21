@@ -488,9 +488,9 @@ psUtilService.getInputMethod = function (inputs) {
 
 psUtilService.getPupilStatus = function (check) {
   if (check.attendanceCode) {
-    return 'Incomplete'
-  } else if (check.code === 'NTR') {
     return 'Not taking the check'
+  } else if (check.code === 'NTR') {
+    return 'Incomplete'
   }
   return 'Completed'
 }
@@ -518,6 +518,12 @@ psUtilService.getAccessArrangements = function (config) {
 }
 
 psUtilService.getReaderStartTime = function (questionNumber, audits) {
+  if (!audits) {
+    return ''
+  }
+  if (!Array.isArray(audits)) {
+    return ''
+  }
   const entry = audits.find(e => {
     if (R.propEq('type', 'QuestionReadingStarted', e) &&
       R.path(['data', 'sequenceNumber'], e) === questionNumber) {
@@ -528,6 +534,12 @@ psUtilService.getReaderStartTime = function (questionNumber, audits) {
 }
 
 psUtilService.getReaderEndTime = function (questionNumber, audits) {
+  if (!audits) {
+    return ''
+  }
+  if (!Array.isArray(audits)) {
+    return ''
+  }
   const entry = audits.find(e => {
     if (R.propEq('type', 'QuestionReadingEnded', e) &&
       R.path(['data', 'sequenceNumber'], e) === questionNumber) {
