@@ -1,5 +1,12 @@
-<% if (hdfSubmitted) { %>
+<%
+const availabilityData = availabilityData || {};
+%>
+<% if (availabilityData.hdfSubmitted) { %>
     <div class="info-message">
         Currently unavailable. This section is now read only.
+    </div>
+<% } else if(availabilityData.checkWindowClosed) { %>
+    <div class="info-message">
+        Currently unavailable as the Multiplication tables check window <% if(availabilityData.checkWindowYear){ %>for <%= availabilityData.checkWindowYear %><% } %> has closed.
     </div>
 <% } %>

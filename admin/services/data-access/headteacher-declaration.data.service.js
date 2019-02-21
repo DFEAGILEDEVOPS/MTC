@@ -5,7 +5,6 @@ const R = require('ramda')
 const sqlService = require('./sql.service')
 const table = '[hdf]'
 const headteacherDeclarationDataService = {}
-const checkWindowDataService = require('./check-window.data.service')
 
 headteacherDeclarationDataService.sqlCreate = async function (data) {
   return sqlService.create(table, data)
@@ -31,23 +30,19 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
 }
 
 /**
- * Find the HDF for current check window
+ * Find the HDF for a given check
  * @param dfeNumber
+ * @param checkWindowId
  * @return {Promise<object|undefined>}
  */
-headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) => {
-  const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
-  if (!checkWindow) {
-    // we are not in a live check window
-    return undefined
-  }
+headteacherDeclarationDataService.sqlFindHdfForCheck = async (dfeNumber, checkWindowId) => {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
-  const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindow.id }
+  const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindowId }
   const sql = `
-  SELECT TOP 1 
+  SELECT TOP 1
     *
-  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id 
-  WHERE h.checkWindow_id = @checkWindowId 
+  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id
+  WHERE h.checkWindow_id = @checkWindowId
   AND s.dfeNumber = @dfeNumber`
   const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])
   // This will only return a single result as an object
