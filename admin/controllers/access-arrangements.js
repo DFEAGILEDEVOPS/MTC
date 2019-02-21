@@ -62,7 +62,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   try {
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    pupils = await pupilService.getPupilsWithFullNames(req.user.School)
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
   } catch (error) {
     return next(error)
   }
