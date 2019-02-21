@@ -5,16 +5,13 @@
 const sqlService = require('../../../../services/data-access/sql.service')
 const sqlMockResponse = require('../../mocks/sql-modify-response')
 const hdfMock = require('../../mocks/sql-hdf.js')
-const checkWindowDataService = require('../../../../services/data-access/check-window.data.service')
-const checkWindowMock = { id: 1 }
-
-const controller = require('../../../../services/data-access/headteacher-declaration.data.service')
+const service = require('../../../../services/data-access/headteacher-declaration.data.service')
 
 describe('headteacher-declaration.data.service', () => {
   describe('#sqlCreate', () => {
     it('calls sqlService', async () => {
       spyOn(sqlService, 'create').and.returnValue(Promise.resolve(sqlMockResponse))
-      controller.sqlCreate({ prop: 'value' })
+      service.sqlCreate({ prop: 'value' })
       expect(sqlService.create).toHaveBeenCalled()
     })
   })
@@ -22,39 +19,24 @@ describe('headteacher-declaration.data.service', () => {
   describe('#sqlFindLatestHdfBySchoolId', () => {
     it('calls the sqlService', async () => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([hdfMock]))
-      const result = await controller.sqlFindLatestHdfBySchoolId(999)
+      const result = await service.sqlFindLatestHdfBySchoolId(999)
       expect(sqlService.query).toHaveBeenCalled()
       expect(typeof result).toBe('object')
     })
   })
 
-  describe('#findCurrentHdfForSchool', () => {
+  describe('#findHdfForCheck', () => {
     const dfeNumber = 9991999
 
-    it('finds the current check window', async () => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([hdfMock]))
-      await controller.findCurrentHdfForSchool(dfeNumber)
-      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalled()
-    })
-
-    it('returns undefined if the current check window is not found', async () => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(undefined))
-      const res = await controller.findCurrentHdfForSchool(dfeNumber)
-      expect(res).toBeUndefined()
-    })
-
     it('calls sqlService.query to find the hdf', async () => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([hdfMock]))
-      await controller.findCurrentHdfForSchool(dfeNumber)
+      await service.sqlFindHdfForCheck(dfeNumber, 1)
       expect(sqlService.query).toHaveBeenCalled()
     })
 
     it('returns the hdf as an object', async () => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([hdfMock]))
-      const res = await controller.findCurrentHdfForSchool(dfeNumber)
+      const res = await service.sqlFindHdfForCheck(dfeNumber, 1)
       expect(typeof res).toBe('object')
     })
   })
