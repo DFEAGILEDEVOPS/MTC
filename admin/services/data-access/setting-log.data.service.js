@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlService = require('../data-access/sql.service')
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('./sql.service')
 
 const settingLogDataService = {}
 
