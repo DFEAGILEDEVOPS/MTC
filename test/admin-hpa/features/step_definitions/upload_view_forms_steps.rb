@@ -179,12 +179,6 @@ And(/^I attempt to upload the same csv again$/) do
   upload_and_view_forms_page.delete_csv_file(@file_path)
 end
 
-Then(/^I should see an error stating it has already been uploaded$/) do
-  sleep 2
-  find('p', text: "'#{@file_name.split('.').first}' already exists. Rename and upload again.")
-end
-
-
 Then(/^I should see error messages stating why the csv has failed to upload when I upload one of the following csv files$/) do |table|
   step "I am on the Upload new forms page"
   table.raw.flatten.each do |file_path|
