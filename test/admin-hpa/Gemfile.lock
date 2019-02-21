@@ -106,6 +106,7 @@ GEM
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
     rake (12.3.0)
+    rb-readline (0.5.5)
     require_all (1.5.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
@@ -158,6 +159,7 @@ DEPENDENCIES
   poltergeist
   pry
   rake
+  rb-readline
   require_all
   rspec
   selenium-webdriver

@@ -10,7 +10,10 @@
 <div class="grid-row">
   <div class="column-two-thirds">
   <h1 class="heading-xlarge"><%= pageTitle %></h1>
-  <p class="lede" id="lead-paragraph">
+
+    <%- partial('partials/_session_expiry') %>
+
+    <p class="lede" id="lead-paragraph">
     Until verified, results are subject to review. All results are out of 25.
   </p>
   <div>
