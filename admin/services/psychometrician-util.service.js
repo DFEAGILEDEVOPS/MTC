@@ -486,7 +486,19 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
+psUtilService.getPupilStatus = function (check) {
+  if (check.attendanceCode) {
+    return 'Incomplete'
+  } else if (check.code === 'NTR') {
+    return 'Not taking the check'
+  }
+  return 'Completed'
+}
+
 psUtilService.getAccessArrangements = function (config) {
+  if (!config) {
+    return ''
+  }
   const props = {
     audibleSounds: 1,
     questionReader: 2,
