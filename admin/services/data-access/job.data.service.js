@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('./sql.service')
 
 const sqlService = require('./sql.service')
 const jobDataService = {}
