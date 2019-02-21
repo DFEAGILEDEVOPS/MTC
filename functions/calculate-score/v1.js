@@ -21,7 +21,7 @@ async function handleCalculateScore (context) {
 
   // Terminate execution if relevant check window is finalised
   if (liveCheckWindow.complete) {
-    context.log(`calculate-score: National score has been calculated for check window id ${liveCheckWindow.id}`)
+    context.log('calculate-score: Check window calculation already complete. Bypassing calculation run')
     return
   }
 
