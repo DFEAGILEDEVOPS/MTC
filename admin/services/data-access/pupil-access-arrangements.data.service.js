@@ -147,22 +147,28 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     }
   ]
   const sql =
-  `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
-    CAST((
-    -- completed check
-    SELECT COUNT(chk.id)
-    FROM ${sqlService.adminSchema}.[check] chk
-    WHERE chk.markedAt IS NOT NULL
-    AND chk.pupil_id = p.id
-  ) as BIT)
-  & ~CAST((
-    -- unused restart
-    SELECT COUNT(pr.id)
-    FROM ${sqlService.adminSchema}.pupilRestart pr
-    WHERE pr.pupil_id = p.id
-    AND pr.isDeleted = 0
-    AND pr.check_id IS NULL
-  ) as BIT) hasCompletedCheck
+    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+    (
+      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
+        SELECT ( 
+          SELECT TOP 1 chk.createdAt
+          FROM ${sqlService.adminSchema}.[check] chk
+          WHERE chk.pupil_id = p.id
+          AND chk.checkStatus_id = 3
+          AND chk.isLiveCheck = 1
+          ORDER BY chk.createdAt DESC 
+        ) latestCompletedCheckDate,
+        (
+          SELECT TOP 1 pr.createdAt
+          FROM ${sqlService.adminSchema}.pupilRestart pr
+          WHERE pr.pupil_id = p.id
+          AND pr.isDeleted = 0
+          ORDER BY pr.createdAt DESC
+        ) latestRestartDate
+      ) checksRestarts
+      WHERE checksRestarts.latestRestartDate IS NULL
+      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
+  ) hasCompletedCheck
   FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
     INNER JOIN ${sqlService.adminSchema}.pupil p
       ON paa.pupil_id = p.id
@@ -189,23 +195,29 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
     }
   ]
   const sql =
-  `SELECT * FROM (
+    `SELECT * FROM (
     SELECT p.*,
-      CAST((
-      -- completed check
-      SELECT COUNT(chk.id)
-      FROM ${sqlService.adminSchema}.[check] chk
-      WHERE chk.markedAt IS NOT NULL
-      AND chk.pupil_id = p.id
-    ) as BIT)
-    & ~CAST((
-      -- unused restart
-      SELECT COUNT(pr.id)
-      FROM ${sqlService.adminSchema}.pupilRestart pr
-      WHERE pr.pupil_id = p.id
-      AND pr.isDeleted = 0
-      AND pr.check_id IS NULL
-    ) as BIT) hasCompletedCheck
+    (
+      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
+        SELECT (
+          SELECT TOP 1 chk.createdAt
+          FROM ${sqlService.adminSchema}.[check] chk
+          WHERE chk.pupil_id = p.id
+          AND chk.checkStatus_id = 3
+          AND chk.isLiveCheck = 1
+          ORDER BY chk.createdAt DESC 
+        ) latestCompletedCheckDate,
+        (
+          SELECT TOP 1 pr.createdAt
+          FROM ${sqlService.adminSchema}.pupilRestart pr
+          WHERE pr.pupil_id = p.id
+          AND pr.isDeleted = 0
+          ORDER BY pr.createdAt DESC
+        ) latestRestartDate
+      ) checksRestarts
+      WHERE checksRestarts.latestRestartDate IS NULL
+      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
+    ) hasCompletedCheck
     FROM ${sqlService.adminSchema}.pupil p
     INNER JOIN ${sqlService.adminSchema}.school s
       ON p.school_id = s.id
