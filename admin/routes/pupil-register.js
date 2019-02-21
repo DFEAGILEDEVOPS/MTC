@@ -48,10 +48,5 @@ router.post(
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => pupilController.postEditPupil(req, res, next)
 )
-router.get(
-  '/print-pupils',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => pupilController.getPrintPupils(req, res, next)
-)
 
 module.exports = router
