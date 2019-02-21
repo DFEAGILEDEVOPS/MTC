@@ -27,7 +27,8 @@ const pupilAddService = {
       gender: reqBody.gender,
       'dob-month': reqBody['dob-month'],
       'dob-day': reqBody['dob-day'],
-      'dob-year': reqBody['dob-year']
+      'dob-year': reqBody['dob-year'],
+      ageReason: reqBody.ageReason
     }
 
     const validationError = await pupilValidator.validate(pupilData)

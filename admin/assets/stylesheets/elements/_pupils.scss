@@ -53,6 +53,21 @@
   white-space: nowrap;
 }
 
+// pupil form
+.hide-age-content {
+  display: none;
+}
+
+.show-age-content {
+  margin-top: pem(70px);
+  width: pem(420px);
+}
+
+#ageReason {
+  margin-top: pem(10px);
+  width: pem(370px);
+}
+
 .panel, .warning-panel, .panel-no-border {
   margin-bottom: 0;
 }
