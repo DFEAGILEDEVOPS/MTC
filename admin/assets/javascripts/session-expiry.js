@@ -35,7 +35,7 @@ $(function () {
       window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, remainingMinutes)
       window.setInterval(function () {
         window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, --remainingMinutes)
-        if (remainingMinutes === 0) window.GOVUK.sessionExpiry.redirectToLogout()
+        if (remainingMinutes <= 0) window.GOVUK.sessionExpiry.redirectToLogout()
       }, tickMs)
     },
     /**
@@ -47,7 +47,7 @@ $(function () {
 
       continueSessionButton.click(function (e) {
         e.preventDefault()
-        window.GOVUK.sessionExpiry.reloadPage()
+        window.GOVUK.sessionExpiry.reloadPage(true)
       })
 
       window.GOVUK.sessionExpiry.startTimer(minutesCountdown, 60 * 1000)
