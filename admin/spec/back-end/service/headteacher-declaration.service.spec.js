@@ -140,28 +140,46 @@ describe('headteacherDeclarationService', () => {
     const dfeNumber = 9991999
     const service = require('../../../services/headteacher-declaration.service')
 
+    it('throws an error when no dfeNumber is provided', async () => {
+      try {
+        await service.isHdfSubmittedForCheck(null, 1)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('dfeNumber and checkWindowId are required')
+      }
+    })
+
+    it('throws an error when no checkWindowId is provided', async () => {
+      try {
+        await service.isHdfSubmittedForCheck(dfeNumber, null)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('dfeNumber and checkWindowId are required')
+      }
+    })
+
     it('calls findHdfForCheck', async () => {
       spyOn(headteacherDeclarationDataService, 'sqlFindHdfForCheck').and.returnValue(Promise.resolve(hdfMock))
-      await service.isHdfSubmittedForCurrentCheck(dfeNumber, 1)
+      await service.isHdfSubmittedForCheck(dfeNumber, 1)
       expect(headteacherDeclarationDataService.sqlFindHdfForCheck).toHaveBeenCalledWith(dfeNumber, 1)
     })
 
     it('returns false if there isnt a current HDF for the school', async () => {
       spyOn(headteacherDeclarationDataService, 'sqlFindHdfForCheck').and.returnValue(Promise.resolve(undefined))
-      const res = await service.isHdfSubmittedForCheck(dfeNumber)
+      const res = await service.isHdfSubmittedForCheck(dfeNumber, 1)
       expect(res).toBeFalsy()
     })
 
     it('returns true if there is a valid HDF for the school', async () => {
       spyOn(headteacherDeclarationDataService, 'sqlFindHdfForCheck').and.returnValue(Promise.resolve(hdfMock))
-      const res = await service.isHdfSubmittedForCheck(dfeNumber)
+      const res = await service.isHdfSubmittedForCheck(dfeNumber, 1)
       expect(res).toBeTruthy()
     })
 
     it('returns false if the HDF is invalid', async () => {
       const invalidHdf = R.assoc('signedDate', null, hdfMock)
       spyOn(headteacherDeclarationDataService, 'sqlFindHdfForCheck').and.returnValue(Promise.resolve(invalidHdf))
-      const res = await service.isHdfSubmittedForCurrentCheck(dfeNumber)
+      const res = await service.isHdfSubmittedForCheck(dfeNumber, 1)
       expect(res).toBeFalsy()
     })
   })

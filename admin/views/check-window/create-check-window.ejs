@@ -44,6 +44,9 @@
         <% } %>
 
         <h1 class="heading-xlarge"><%= pageTitle %></h1>
+
+        <%- partial('partials/_session_expiry') %>
+
         <form action="/check-window/submit-check-window" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
 
