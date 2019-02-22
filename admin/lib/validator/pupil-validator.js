@@ -66,26 +66,24 @@ module.exports.validate = async (pupilData) => {
   // instead.
   const dobData = pupilData['dob-day'].padStart(2, '0') + '/' + pupilData['dob-month'].padStart(2, '0') + '/' + pupilData['dob-year']
   const dob = moment.utc(dobData, 'DD/MM/YYYY', true)
-  if (dob.isValid()) {
-    if (dob > moment().toDate()) {
-      validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
-      validationError.addError('dob-month', addPupilErrorMessages.dobNoFuture)
-      validationError.addError('dob-year', addPupilErrorMessages.dobNoFuture)
-    }
-  } else {
-    // Invalid
-    // We need to specify a different error messages if fields have the wrong number of digits
-    if (/^\d{3,}$/.test(pupilData['dob-day'])) {
-      validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
-    }
-    if (/^\d{3,}$/.test(pupilData['dob-month'])) {
-      validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
-    }
-    if (!(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
-      validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
-      validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
-      validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
-    }
+  const currentUTCDate = moment.utc()
+  // Invalid case
+  // We need to specify a different error messages if fields have the wrong number of digits
+  if (!dob.isValid() && /^\d{3,}$/.test(pupilData['dob-day'])) {
+    validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
+  }
+  if (!dob.isValid() && /^\d{3,}$/.test(pupilData['dob-month'])) {
+    validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
+  }
+  if (!dob.isValid() && !(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
+    validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
+    validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
+    validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
+  }
+  if (dob.isValid() && dob.isAfter(currentUTCDate)) {
+    validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
+    validationError.addError('dob-month', addPupilErrorMessages.dobNoFuture)
+    validationError.addError('dob-year', addPupilErrorMessages.dobNoFuture)
   }
   // Gender Validation
   if (!(/^(m|f)$/i).test(pupilData['gender'])) {
