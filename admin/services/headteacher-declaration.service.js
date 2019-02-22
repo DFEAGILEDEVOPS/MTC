@@ -115,7 +115,24 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * @return {Promise<boolean>}
  */
 headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) => {
-  const hdf = await headteacherDeclarationDataService.findCurrentHdfForSchool(dfeNumber)
+  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+  if (!checkWindow) {
+    return false
+  }
+  return headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindow.id)
+}
+
+/**
+ * Returns true if the hdf has already been submitted for the given check
+ * False if the hdf has not been submitted
+ * @param dfeNumber
+ * @return {Promise<boolean>}
+ */
+headteacherDeclarationService.isHdfSubmittedForCheck = async (dfeNumber, checkWindowId) => {
+  if (!dfeNumber || !checkWindowId) {
+    throw new Error('dfeNumber and checkWindowId are required')
+  }
+  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(dfeNumber, checkWindowId)
   if (!hdf) {
     return false
   }
