@@ -19,7 +19,6 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   }
 
   const batchIds = await psychometricianReportDataService.sqlFindUnprocessedStartedChecks(batchSize)
-  console.log(`Got batchIds, `, batchIds)
 
   if (!batchIds) {
     throw new Error('checkProcessingService.cachePsychometricanReportData: failed to retrieve any IDs')
@@ -38,7 +37,6 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   } else {
     context.log('psychometrician-report: no work to do')
   }
-  console.log('bathcIds', batchIds.length)
 
   return {
     processCount: batchIds.length
