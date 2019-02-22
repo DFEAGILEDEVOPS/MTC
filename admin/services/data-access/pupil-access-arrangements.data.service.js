@@ -151,13 +151,15 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
     (
       SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
-        SELECT ( 
+        SELECT (
           SELECT TOP 1 chk.createdAt
           FROM ${sqlService.adminSchema}.[check] chk
+          LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs
+            ON cs.id = chk.checkStatus_id
           WHERE chk.pupil_id = p.id
-          AND chk.checkStatus_id = 3
+          AND cs.code = 'CMP'
           AND chk.isLiveCheck = 1
-          ORDER BY chk.createdAt DESC 
+          ORDER BY chk.createdAt DESC
         ) latestCompletedCheckDate,
         (
           SELECT TOP 1 pr.createdAt
@@ -205,10 +207,12 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
         SELECT (
           SELECT TOP 1 chk.createdAt
           FROM ${sqlService.adminSchema}.[check] chk
+          LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs
+            ON cs.id = chk.checkStatus_id
           WHERE chk.pupil_id = p.id
-          AND chk.checkStatus_id = 3
+          AND cs.code = 'CMP'
           AND chk.isLiveCheck = 1
-          ORDER BY chk.createdAt DESC 
+          ORDER BY chk.createdAt DESC
         ) latestCompletedCheckDate,
         (
           SELECT TOP 1 pr.createdAt
