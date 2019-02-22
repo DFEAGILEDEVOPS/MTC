@@ -1,6 +1,7 @@
 'use strict'
 const R = require('ramda')
 const moment = require('moment')
+const useragent = require('useragent')
 
 const anomalyReportCacheDataService = require('./data-service/anomaly-report-cache.data.service')
 const dateService = require('./date.service')
@@ -9,31 +10,6 @@ const psychometricianDataService = require('./data-service/psychometrician.data.
 
 const anomalyReportService = {}
 anomalyReportService.reportedAnomalies = []
-
-// /**
-//  * Return the CSV file as a string
-//  * @return {Promise<void>}
-//  */
-// anomalyReportService.generateReport = async () => {
-//   const results = await anomalyReportCacheDataService.sqlFindAll()
-//   const output = []
-//   for (const obj of results) {
-//     output.push(obj.jsonData)
-//   } // JMS: this might need 5-10GB of memory!
-//
-//   const headers = anomalyReportService.produceReportDataHeaders()
-//
-//   return new Promise((resolve, reject) => {
-//     csv.writeToString(
-//       output,
-//       { headers: headers },
-//       function (err, data) {
-//         if (err) { reject(err) }
-//         resolve(data)
-//       }
-//     )
-//   })
-// }
 
 /**
  * Generate batched cached anomalies
@@ -57,55 +33,33 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
   }
 }
 
-// /**
-//  * Push report data to the reported anomalies, from the populated check object
-//  * @param {Object} check
-//  * @param {String} message
-//  * @param {String} testedValue
-//  * @param {String} expectedValue
-//  * @param {String} questionNumber
-//  */
-// anomalyReportService.produceReportData = (check, message, testedValue = null, expectedValue = null, questionNumber = null) => {
-//   const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
-//   const checkDate = anomalyReportService.getCheckDate(check)
-//
-//   const reportData = [
-//     check.checkCode,
-//     checkDate,
-//     check.data.config.speechSynthesis,
-//     `${check.mark} out of ${check.maxMark}`,
-//     agent.device.toString().replace('0.0.0', ''),
-//     agent.toString(),
-//     message,
-//     testedValue,
-//     expectedValue,
-//     questionNumber
-//   ]
-//
-//   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
-// }
+/**
+ * Push report data to the reported anomalies, from the populated check object
+ * @param {Object} check
+ * @param {String} message
+ * @param {String} testedValue
+ * @param {String} expectedValue
+ * @param {String} questionNumber
+ */
+anomalyReportService.produceReportData = (check, message, testedValue = null, expectedValue = null, questionNumber = null) => {
+  const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
+  const checkDate = anomalyReportService.getCheckDate(check)
 
-// /**
-//  * Returns the CSV headers
-//  * @param {Array} results
-//  * @returns {Array}
-//  */
-// anomalyReportService.produceReportDataHeaders = () => {
-//   const reportHeaders = [
-//     'Check Code',
-//     'Date',
-//     'Speech Synthesis',
-//     'Mark',
-//     'Device',
-//     'Agent',
-//     'Message',
-//     'Tested value',
-//     'Expected value',
-//     'Question number'
-//   ]
-//
-//   return reportHeaders
-// }
+  const reportData = [
+    check.checkCode,
+    checkDate,
+    check.data.config.speechSynthesis,
+    `${check.mark} out of ${check.maxMark}`,
+    agent.device.toString().replace('0.0.0', ''),
+    agent.toString(),
+    message,
+    testedValue,
+    expectedValue,
+    questionNumber
+  ]
+
+  anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
+}
 
 anomalyReportService.detectAnomalies = (check) => {
   anomalyReportService.detectWrongNumberOfAnswers(check)
@@ -331,7 +285,6 @@ anomalyReportService.reconstructAnswerFromInputs = (events) => {
   }
   events.forEach(event => {
     if (event === null || event === undefined) {
-      logger.info('anomalyReportService.reconstructAnswerFromInputs: event is empty')
       return
     }
     if (event.eventType !== 'click' && event.eventType !== 'keydown') {

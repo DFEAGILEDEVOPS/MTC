@@ -25,7 +25,7 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   }
 
   if (!Array.isArray(batchIds)) {
-    throw new Error ('batchIds is not an Array')
+    throw new Error('batchIds is not an Array')
   }
 
   if (batchIds.length > 0) {

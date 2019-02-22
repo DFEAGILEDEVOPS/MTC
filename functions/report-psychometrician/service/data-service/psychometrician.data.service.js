@@ -88,7 +88,7 @@ const psychometricianDataService = {
     const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
-    const result =  await sqlService.query(sql, params)
+    const result = await sqlService.query(sql, params)
     const checkForms = result.map(cf => {
       cf.formData = JSON.parse(cf.formData)
       return cf

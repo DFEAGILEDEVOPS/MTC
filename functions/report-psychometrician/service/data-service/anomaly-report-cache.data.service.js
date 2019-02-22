@@ -4,6 +4,7 @@ const { TYPES } = require('tedious')
 
 const config = require('../../../config')
 sqlService.initialise(config)
+const R = require('ramda')
 
 const table = '[anomalyReportCache]'
 
