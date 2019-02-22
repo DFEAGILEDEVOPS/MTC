@@ -50,8 +50,9 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
 
 /**
  * Retuns data for the avalibilty partial
+ * @param {Number} dfeNumber
  * @param {Object} checkWindowData
- * @returns {Promise<any>}
+ * @returns {Object}
  */
 businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
   const currentDate = moment.utc()
