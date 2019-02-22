@@ -146,43 +146,34 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
       type: TYPES.Int
     }
   ]
-  const sql =
-    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
-    CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
-    (
-      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
-        SELECT (
-          SELECT TOP 1 chk.createdAt
-          FROM ${sqlService.adminSchema}.[check] chk
-          LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs
-            ON cs.id = chk.checkStatus_id
-          WHERE chk.pupil_id = p.id
-          AND cs.code = 'CMP'
-          AND chk.isLiveCheck = 1
-          ORDER BY chk.createdAt DESC
-        ) latestCompletedCheckDate,
-        (
-          SELECT TOP 1 pr.createdAt
-          FROM ${sqlService.adminSchema}.pupilRestart pr
-          WHERE pr.pupil_id = p.id
-          AND pr.isDeleted = 0
-          ORDER BY pr.createdAt DESC
-        ) latestRestartDate
-      ) checksRestarts
-      WHERE checksRestarts.latestRestartDate IS NULL
-      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
-  ) hasCompletedCheck
-  FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
-    INNER JOIN ${sqlService.adminSchema}.pupil p
-      ON paa.pupil_id = p.id
-    INNER JOIN ${sqlService.adminSchema}.school s
-      ON p.school_id = s.id
-    INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
-      ON aa.id = paa.accessArrangements_id
-    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-      ON pa.pupil_id = p.id AND pa.isDeleted = 0
-  WHERE s.dfeNumber = @dfeNumber
-  ORDER BY p.lastName`
+  const sql = `
+    SELECT *, completedCheck & ~unusedRestart hasCompletedCheck
+    FROM (
+      SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
+      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
+      FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
+        INNER JOIN ${sqlService.adminSchema}.pupil p
+          ON paa.pupil_id = p.id
+        INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
+         ON ps.id = p.pupilStatus_id
+        INNER JOIN ${sqlService.adminSchema}.school s
+          ON p.school_id = s.id
+        INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
+          ON aa.id = paa.accessArrangements_id
+        LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+          ON pa.pupil_id = p.id AND pa.isDeleted = 0
+        LEFT JOIN (
+          SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
+             FROM ${sqlService.adminSchema}.[pupilRestart] pr
+             WHERE isDeleted = 0
+             AND check_id is NULL
+           ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
+      WHERE s.dfeNumber = @dfeNumber
+    ) p
+    ORDER BY p.lastName
+  `
   return sqlService.query(sql, params)
 }
 
@@ -199,42 +190,32 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
       type: TYPES.Int
     }
   ]
-  const sql =
-    `SELECT * FROM (
-    SELECT p.*, CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
-    (
-      SELECT CASE WHEN latestCompletedCheckDate IS NULL THEN 0 ELSE 1 END FROM (
-        SELECT (
-          SELECT TOP 1 chk.createdAt
-          FROM ${sqlService.adminSchema}.[check] chk
-          LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs
-            ON cs.id = chk.checkStatus_id
-          WHERE chk.pupil_id = p.id
-          AND cs.code = 'CMP'
-          AND chk.isLiveCheck = 1
-          ORDER BY chk.createdAt DESC
-        ) latestCompletedCheckDate,
-        (
-          SELECT TOP 1 pr.createdAt
-          FROM ${sqlService.adminSchema}.pupilRestart pr
-          WHERE pr.pupil_id = p.id
-          AND pr.isDeleted = 0
-          ORDER BY pr.createdAt DESC
-        ) latestRestartDate
-      ) checksRestarts
-      WHERE checksRestarts.latestRestartDate IS NULL
-      OR checksRestarts.latestCompletedCheckDate > checksRestarts.latestRestartDate
-    ) hasCompletedCheck
-    FROM ${sqlService.adminSchema}.pupil p
-    INNER JOIN ${sqlService.adminSchema}.school s
-      ON p.school_id = s.id
-    LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-      ON pa.pupil_id = p.id AND pa.isDeleted = 0
-    WHERE s.dfeNumber = @dfeNumber
-  ) p
-  WHERE hasCompletedCheck = 0
-  AND notTakingCheck = 0
-  ORDER BY p.lastName`
+  const sql = `
+    SELECT *
+    FROM (
+      SELECT p.*,
+      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
+      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
+      FROM ${sqlService.adminSchema}.pupil p
+      INNER JOIN ${sqlService.adminSchema}.school s
+        ON p.school_id = s.id
+      INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
+         ON ps.id = p.pupilStatus_id
+      LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+        ON pa.pupil_id = p.id AND pa.isDeleted = 0
+      LEFT JOIN (
+        SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
+           FROM ${sqlService.adminSchema}.[pupilRestart] pr
+           WHERE isDeleted = 0
+           AND check_id is NULL
+         ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
+      WHERE s.dfeNumber = @dfeNumber
+    ) p
+    WHERE notTakingCheck = 0
+    AND completedCheck = 0 OR unusedRestart = 1
+    ORDER BY lastName
+  `
   return sqlService.query(sql, params)
 }
 
