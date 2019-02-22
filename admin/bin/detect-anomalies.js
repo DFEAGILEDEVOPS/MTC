@@ -6,7 +6,7 @@ const winston = require('winston')
 const fs = require('fs')
 winston.level = 'info'
 
-const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
+const anomalyReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/anomaly-report-cache.data.service')
 const anomalyReportService = require('../../functions/report-psychometrician/service/anomaly-report.service')
 const checkProcessingService = require('../../functions/report-psychometrician/service/check-processing.service')
 const commandLineArgs = require('command-line-args')

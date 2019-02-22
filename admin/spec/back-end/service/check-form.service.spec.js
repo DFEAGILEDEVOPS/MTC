@@ -286,7 +286,7 @@ describe('check-form.service', () => {
       }
     })
     it('returns parsed check forms', async () => {
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
+      spyOn(checkFormDataService, 'sqlFindSchoolsByIds').and.returnValue([checkFormMock])
       const result = await service.getCheckFormsByIds([1])
       expect(typeof result[0].formData).toBe('object')
     })

@@ -1,42 +1,39 @@
 'use strict'
-const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
-const useragent = require('useragent')
-const logger = require('../../../admin/services/log.service').getLogger()
 
-const completedCheckDataService = require('../../../admin/services/data-access/completed-check.data.service')
-const anomalyReportCacheDataService = require('../../../admin/services/data-access/anomaly-report-cache.data.service')
-const dateService = require('../../../admin/services/date.service')
+const anomalyReportCacheDataService = require('./data-service/anomaly-report-cache.data.service')
+const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
+const psychometricianDataService = require('./data-service/psychometrician.data.service')
 
 const anomalyReportService = {}
 anomalyReportService.reportedAnomalies = []
 
-/**
- * Return the CSV file as a string
- * @return {Promise<void>}
- */
-anomalyReportService.generateReport = async () => {
-  const results = await anomalyReportCacheDataService.sqlFindAll()
-  const output = []
-  for (const obj of results) {
-    output.push(obj.jsonData)
-  }
-
-  const headers = anomalyReportService.produceReportDataHeaders()
-
-  return new Promise((resolve, reject) => {
-    csv.writeToString(
-      output,
-      { headers: headers },
-      function (err, data) {
-        if (err) { reject(err) }
-        resolve(data)
-      }
-    )
-  })
-}
+// /**
+//  * Return the CSV file as a string
+//  * @return {Promise<void>}
+//  */
+// anomalyReportService.generateReport = async () => {
+//   const results = await anomalyReportCacheDataService.sqlFindAll()
+//   const output = []
+//   for (const obj of results) {
+//     output.push(obj.jsonData)
+//   } // JMS: this might need 5-10GB of memory!
+//
+//   const headers = anomalyReportService.produceReportDataHeaders()
+//
+//   return new Promise((resolve, reject) => {
+//     csv.writeToString(
+//       output,
+//       { headers: headers },
+//       function (err, data) {
+//         if (err) { reject(err) }
+//         resolve(data)
+//       }
+//     )
+//   })
+// }
 
 /**
  * Generate batched cached anomalies
@@ -45,15 +42,7 @@ anomalyReportService.generateReport = async () => {
 anomalyReportService.batchProduceCacheData = async (batchIds) => {
   anomalyReportService.reportedAnomalies = []
 
-  if (!batchIds) {
-    throw new Error('Missing argument: batchIds')
-  }
-
-  if (!(Array.isArray(batchIds) && batchIds.length)) {
-    throw new Error('Invalid arg: batchIds')
-  }
-
-  const checksWithForms = await completedCheckDataService.sqlFindByIdsWithForms(batchIds)
+  const checksWithForms = await psychometricianDataService.sqlFindChecksByIdsWithForms(batchIds)
 
   if (!checksWithForms || !Array.isArray(checksWithForms) || !checksWithForms.length) {
     throw new Error('Failed to find any checks')
@@ -65,60 +54,58 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
 
   if (anomalyReportService.reportedAnomalies.length > 0) {
     await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
-  } else {
-    logger.info('anomalyReportService.batchProduceCacheData: No anomalies detected')
   }
 }
 
-/**
- * Push report data to the reported anomalies, from the populated check object
- * @param {Object} check
- * @param {String} message
- * @param {String} testedValue
- * @param {String} expectedValue
- * @param {String} questionNumber
- */
-anomalyReportService.produceReportData = (check, message, testedValue = null, expectedValue = null, questionNumber = null) => {
-  const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
-  const checkDate = anomalyReportService.getCheckDate(check)
+// /**
+//  * Push report data to the reported anomalies, from the populated check object
+//  * @param {Object} check
+//  * @param {String} message
+//  * @param {String} testedValue
+//  * @param {String} expectedValue
+//  * @param {String} questionNumber
+//  */
+// anomalyReportService.produceReportData = (check, message, testedValue = null, expectedValue = null, questionNumber = null) => {
+//   const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
+//   const checkDate = anomalyReportService.getCheckDate(check)
+//
+//   const reportData = [
+//     check.checkCode,
+//     checkDate,
+//     check.data.config.speechSynthesis,
+//     `${check.mark} out of ${check.maxMark}`,
+//     agent.device.toString().replace('0.0.0', ''),
+//     agent.toString(),
+//     message,
+//     testedValue,
+//     expectedValue,
+//     questionNumber
+//   ]
+//
+//   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
+// }
 
-  const reportData = [
-    check.checkCode,
-    checkDate,
-    check.data.config.speechSynthesis,
-    `${check.mark} out of ${check.maxMark}`,
-    agent.device.toString().replace('0.0.0', ''),
-    agent.toString(),
-    message,
-    testedValue,
-    expectedValue,
-    questionNumber
-  ]
-
-  anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
-}
-
-/**
- * Returns the CSV headers
- * @param {Array} results
- * @returns {Array}
- */
-anomalyReportService.produceReportDataHeaders = () => {
-  const reportHeaders = [
-    'Check Code',
-    'Date',
-    'Speech Synthesis',
-    'Mark',
-    'Device',
-    'Agent',
-    'Message',
-    'Tested value',
-    'Expected value',
-    'Question number'
-  ]
-
-  return reportHeaders
-}
+// /**
+//  * Returns the CSV headers
+//  * @param {Array} results
+//  * @returns {Array}
+//  */
+// anomalyReportService.produceReportDataHeaders = () => {
+//   const reportHeaders = [
+//     'Check Code',
+//     'Date',
+//     'Speech Synthesis',
+//     'Mark',
+//     'Device',
+//     'Agent',
+//     'Message',
+//     'Tested value',
+//     'Expected value',
+//     'Question number'
+//   ]
+//
+//   return reportHeaders
+// }
 
 anomalyReportService.detectAnomalies = (check) => {
   anomalyReportService.detectWrongNumberOfAnswers(check)

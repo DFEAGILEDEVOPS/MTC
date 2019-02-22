@@ -10,7 +10,7 @@ module.exports = async function (context, message) {
 
   let meta
   try {
-    meta = await v1.process(context.log)
+    meta = await v1.process(context)
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`)
     throw error

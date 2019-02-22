@@ -45,7 +45,7 @@ describe('psychometricians-report.service', () => {
     const checkMock = Object.assign({}, checkFormMock)
     checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
-      spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(completedCheckDataService, 'sqlFindSchoolsByIds').and.returnValue([
         { id: 9, pupil_id: 1, checkForm_id: 2, description: 'Completed', payload: { 'data': { 'access_token': 'access_token' } } },
         { id: 10, pupil_id: 2, checkForm_id: 3, description: 'Started'},
         { id: 11, pupil_id: 3, checkForm_id: 4 }
@@ -60,7 +60,7 @@ describe('psychometricians-report.service', () => {
         { id: 3, formData: checkMock.formData },
         { id: 4, formData: checkMock.formData }
       ])
-      spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(schoolDataService, 'sqlFindSchoolsByIds').and.returnValue([
         { id: 5 },
         { id: 6 },
         { id: 7 }

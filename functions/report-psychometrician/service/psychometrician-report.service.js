@@ -1,187 +1,166 @@
 'use strict'
-const archiver = require('archiver')
-const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
-const uuidv4 = require('uuid/v4')
 
-const answerDataService = require('../../../admin/services/data-access/answer.data.service')
-const azureFileDataService = require('../../../admin/services/data-access/azure-file.data.service')
-const checkFormService = require('../../../admin/services/check-form.service')
-const completedCheckDataService = require('../../../admin/services/data-access/completed-check.data.service')
-const config = require('../../../admin/config')
-const dateService = require('../../../admin/services/date.service')
-const jobDataService = require('../../../admin/services/data-access/job.data.service')
-const jobStatusDataService = require('../../../admin/services/data-access/job-status.data.service')
-const jobTypeDataService = require('../../../admin/services/data-access/job-type.data.service')
+const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 const psychometricianDataService = require('./data-service/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-service/psychometrician-report-cache.data.service')
-const schoolDataService = require('../../../admin/services/data-access/school.data.service')
 
 const psychometricianReportService = {}
-const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
 
-/**
- * Creates a new psychometricianReport record
- * @param {Object} blobResult
- * @param {Object} dateGenerated
- * @return {Object}
- */
-psychometricianReportService.create = async (blobResult, dateGenerated) => {
-  let dataInput = []
-  const fileName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.zip`
-  const blobFileName = blobResult && blobResult.name
-  dataInput.push(fileName, blobFileName, dateGenerated)
-  dataInput = JSON.stringify(dataInput.join(','))
-  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
-  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
-  const psychometricianReportRecord = {
-    jobInput: dataInput,
-    jobType_id: jobType.id,
-    jobStatus_id: jobStatus.id
-  }
-  await jobDataService.sqlCreate(psychometricianReportRecord)
-  return fileName
-}
+// /**
+//  * Creates a new psychometricianReport record
+//  * @param {Object} blobResult
+//  * @param {Object} dateGenerated
+//  * @return {Object}
+//  */
+// psychometricianReportService.create = async (blobResult, dateGenerated) => {
+//   let dataInput = []
+//   const fileName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.zip`
+//   const blobFileName = blobResult && blobResult.name
+//   dataInput.push(fileName, blobFileName, dateGenerated)
+//   dataInput = JSON.stringify(dataInput.join(','))
+//   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
+//   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
+//   const psychometricianReportRecord = {
+//     jobInput: dataInput,
+//     jobType_id: jobType.id,
+//     jobStatus_id: jobStatus.id
+//   }
+//   await jobDataService.sqlCreate(psychometricianReportRecord)
+//   return fileName
+// }
 
-/**
- * Creates a zip with the psychometricianReport and anomalyReport
- * @param {Object} psychometricianReport
- * @param {Object} anomalyReport
- * @param {Date} dateGenerated
- * @return {Object}
- */
-psychometricianReportService.generateZip = async (psychometricianReport, anomalyReport, dateGenerated) => {
-  const archive = archiver('zip')
+// /**
+//  * Creates a zip with the psychometricianReport and anomalyReport
+//  * @param {Object} psychometricianReport
+//  * @param {Object} anomalyReport
+//  * @param {Date} dateGenerated
+//  * @return {Object}
+//  */
+// psychometricianReportService.generateZip = async (psychometricianReport, anomalyReport, dateGenerated) => {
+//   const archive = archiver('zip')
+//
+//   // collect data from the zip stream since uploadBlobToStorage receives the entire blob
+//   const zipStreamChunks = []
+//   archive.on('data', (chunk) => {
+//     zipStreamChunks.push(chunk)
+//   })
+//
+//   archive.append(psychometricianReport, { name: `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
+//   archive.append(anomalyReport, { name: `Anomaly Report ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
+//
+//   await archive.finalize()
+//
+//   return Buffer.concat(zipStreamChunks)
+// }
 
-  // collect data from the zip stream since uploadBlobToStorage receives the entire blob
-  const zipStreamChunks = []
-  archive.on('data', (chunk) => {
-    zipStreamChunks.push(chunk)
-  })
+// /**
+//  * Upload stream to Blob Storage
+//  * @param uploadStream
+//  * @return {Promise<void>}
+//  */
+// psychometricianReportService.uploadToBlobStorage = async (uploadStream) => {
+//   const streamLength = psychometricianReportMaxSizeFileUploadMb
+//   const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
+//   return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, uploadStream, streamLength)
+// }
 
-  archive.append(psychometricianReport, { name: `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
-  archive.append(anomalyReport, { name: `Anomaly Report ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
+// /**
+//  * Get existing psychometrician report file
+//  * @return {Object}
+//  */
+// psychometricianReportService.getUploadedFile = async () => {
+//   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
+//   const psychometricianReport = await jobDataService.sqlFindLatestByTypeId(jobType.id)
+//   if (!psychometricianReport) return
+//   const jobStatusId = psychometricianReport.jobStatus_id
+//   if (!jobStatusId) {
+//     throw new Error('Psychometrician report record does not have a job status reference')
+//   }
+//   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
+//   const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput).split(',')
+//   psychometricianReport.jobStatus = jobStatus && jobStatus.description
+//   psychometricianReport.fileName = dataInput[0]
+//   psychometricianReport.remoteFilename = dataInput[1]
+//   psychometricianReport.dateGenerated = dataInput[2]
+//   return psychometricianReport
+// }
 
-  await archive.finalize()
+// /**
+//  * Get existing psychometrician report file
+//  * @return {Object}
+//  */
+// psychometricianReportService.downloadUploadedFile = async (remoteFilename, stream) => {
+//   return azureFileDataService.azureDownloadFileStream('psychometricianreportupload', remoteFilename, stream)
+// }
 
-  return Buffer.concat(zipStreamChunks)
-}
+// /**
+//  * Return the CSV file as a string
+//  * @return {Promise<void>}
+//  */
+// psychometricianReportService.generateReport = async function () {
+//   // Read data from the cache
+//   const results = await psychometricianReportCacheDataService.sqlFindAll()
+//   const output = []
+//   for (const obj of results) {
+//     output.push(obj.jsonData)
+//   }
+//
+//   const headers = psychometricianReportService.produceReportDataHeaders(results)
+//
+//   return new Promise((resolve, reject) => {
+//     csv.writeToString(
+//       output,
+//       { headers: headers },
+//       function (err, data) {
+//         if (err) { reject(err) }
+//         resolve(data)
+//       }
+//     )
+//   })
+// }
 
-/**
- * Upload stream to Blob Storage
- * @param uploadStream
- * @return {Promise<void>}
- */
-psychometricianReportService.uploadToBlobStorage = async (uploadStream) => {
-  const streamLength = psychometricianReportMaxSizeFileUploadMb
-  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
-  return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, uploadStream, streamLength)
-}
-
-/**
- * Get existing psychometrician report file
- * @return {Object}
- */
-psychometricianReportService.getUploadedFile = async () => {
-  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
-  const psychometricianReport = await jobDataService.sqlFindLatestByTypeId(jobType.id)
-  if (!psychometricianReport) return
-  const jobStatusId = psychometricianReport.jobStatus_id
-  if (!jobStatusId) {
-    throw new Error('Psychometrician report record does not have a job status reference')
-  }
-  const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput).split(',')
-  psychometricianReport.jobStatus = jobStatus && jobStatus.description
-  psychometricianReport.fileName = dataInput[0]
-  psychometricianReport.remoteFilename = dataInput[1]
-  psychometricianReport.dateGenerated = dataInput[2]
-  return psychometricianReport
-}
-
-/**
- * Get existing psychometrician report file
- * @return {Object}
- */
-psychometricianReportService.downloadUploadedFile = async (remoteFilename, stream) => {
-  return azureFileDataService.azureDownloadFileStream('psychometricianreportupload', remoteFilename, stream)
-}
-
-/**
- * Return the CSV file as a string
- * @return {Promise<void>}
- */
-psychometricianReportService.generateReport = async function () {
-  // Read data from the cache
-  const results = await psychometricianReportCacheDataService.sqlFindAll()
-  const output = []
-  for (const obj of results) {
-    output.push(obj.jsonData)
-  }
-
-  const headers = psychometricianReportService.produceReportDataHeaders(results)
-
-  return new Promise((resolve, reject) => {
-    csv.writeToString(
-      output,
-      { headers: headers },
-      function (err, data) {
-        if (err) { reject(err) }
-        resolve(data)
-      }
-    )
-  })
-}
-
-/**
- * Return a minimal report as a string
- * @return {Promise<void>}
- */
-psychometricianReportService.generateScoreReport = async function () {
-  // Read data from the cache
-  const results = await psychometricianReportCacheDataService.sqlFindAll()
-  const output = []
-  for (const obj of results) {
-    output.push(scoreFilter(obj.jsonData))
-  }
-
-  return new Promise((resolve, reject) => {
-    csv.writeToString(
-      output,
-      { headers: true },
-      function (err, data) {
-        if (err) { reject(err) }
-        resolve(data)
-      }
-    )
-  })
-}
+// /**
+//  * Return a minimal report as a string
+//  * @return {Promise<void>}
+//  */
+// psychometricianReportService.generateScoreReport = async function () {
+//   // Read data from the cache
+//   const results = await psychometricianReportCacheDataService.sqlFindAll()
+//   const output = []
+//   for (const obj of results) {
+//     output.push(scoreFilter(obj.jsonData))
+//   }
+//
+//   return new Promise((resolve, reject) => {
+//     csv.writeToString(
+//       output,
+//       { headers: true },
+//       function (err, data) {
+//         if (err) { reject(err) }
+//         resolve(data)
+//       }
+//     )
+//   })
+// }
 
 psychometricianReportService.batchProduceCacheData = async function (batchIds) {
-  if (!batchIds) {
-    throw new Error('Missing argument: batchIds')
-  }
-
-  if (!(Array.isArray(batchIds) && batchIds.length)) {
-    throw new Error('Invalid arg: batchIds')
-  }
-
-  const checks = await completedCheckDataService.sqlFindByIds(batchIds)
+  const checks = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
 
   if (!checks || !Array.isArray(checks) || !checks.length) {
-    throw new Error('Failed to find any checks')
+    throw new Error('batchProduceCacheData(): Failed to find any checks')
   }
 
   // Fetch all pupils, checkForms, checkWindows or the checks
   const pupilIds = checks.map(x => x.pupil_id)
   const pupils = await psychometricianDataService.sqlFindPupilsByIds(pupilIds) // test-developer all-pupil access
-  const checkForms = await checkFormService.getCheckFormsByIds(checks.map(x => x.checkForm_id))
-  const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
+  const checkForms = await psychometricianDataService.getCheckFormsByIds(checks.map(x => x.checkForm_id))
+  const schools = await psychometricianDataService.sqlFindSchoolsByIds(pupils.map(x => x.school_id))
 
   // answers is an object with check.ids as keys and arrays of answers for that check as values
-  const answers = await answerDataService.sqlFindByCheckIds(checks.map(x => x.id))
+  const answers = await psychometricianDataService.sqlFindAnswersByCheckIds(checks.map(x => x.id))
 
   const psReportData = []
 
@@ -295,32 +274,32 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   return psData
 }
 
-/**
- * Returns the CSV headers
- * @param {Array} results
- * @returns {Array}
- */
-psychometricianReportService.produceReportDataHeaders = function (results) {
-  // If there are no checks, there will be an empty file
-  if (results.length === 0) return []
-  // Fetch the first completed check to store the keys as headers
-  const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
-  if (completedCheck) {
-    return Object.keys(completedCheck.jsonData)
-  }
-  // Alternatively return the first check keys
-  return Object.keys(results[0].jsonData)
-}
+// /**
+//  * Returns the CSV headers
+//  * @param {Array} results
+//  * @returns {Array}
+//  */
+// psychometricianReportService.produceReportDataHeaders = function (results) {
+//   // If there are no checks, there will be an empty file
+//   if (results.length === 0) return []
+//   // Fetch the first completed check to store the keys as headers
+//   const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
+//   if (completedCheck) {
+//     return Object.keys(completedCheck.jsonData)
+//   }
+//   // Alternatively return the first check keys
+//   return Object.keys(results[0].jsonData)
+// }
 
-/**
- * Filter a psreportcache object to a minimal set of properties. Returns a new object.
- * @return {Object}
- */
-function scoreFilter (obj) {
-  const props = ['PupilId', 'FormMark', 'TestDate']
-  const matchesScoreProp = (key) => /(ID|Response|Sco)+$/.test(key)
-  const scoreProps = R.filter(matchesScoreProp, R.keys(obj))
-  return R.pick(R.concat(props, scoreProps), obj)
-}
+// /**
+//  * Filter a psreportcache object to a minimal set of properties. Returns a new object.
+//  * @return {Object}
+//  */
+// function scoreFilter (obj) {
+//   const props = ['PupilId', 'FormMark', 'TestDate']
+//   const matchesScoreProp = (key) => /(ID|Response|Sco)+$/.test(key)
+//   const scoreProps = R.filter(matchesScoreProp, R.keys(obj))
+//   return R.pick(R.concat(props, scoreProps), obj)
+// }
 
 module.exports = psychometricianReportService

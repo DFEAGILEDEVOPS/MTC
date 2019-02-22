@@ -2,13 +2,10 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "30 15 * * * *",
+      "schedule": "15 */1 * * * *",
       "name": "psychometricianReport",
       "type": "timerTrigger",
       "direction": "in"
     }
-  ],
-  "tracing": {
-    "consoleLevel": "verbose"
-  }
+  ]
 }

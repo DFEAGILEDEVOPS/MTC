@@ -5,52 +5,44 @@ const psychometricianReportService = require('./psychometrician-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 
 const checkProcessingService = {}
-const batchSize = 100
-
-/**
- * A process that runs until all checks have been processed
- * Processing consists of 1) add processed flag and 2) creating psychometrician report data
- * @return {Promise.<void>}
- */
-checkProcessingService.process = async function (logger) {
-  try {
-    let hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
-    if (!hasWorkToDo) {
-      logger.info('checkProcessingService.process: nothing to do')
-    }
-    while (hasWorkToDo) {
-      await checkProcessingService.cachePsychometricanReportData(batchSize)
-      hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
-    }
-  } catch (error) {
-    logger.error(`checkProcessingService.process: Bailing out: ${error.message}`, error)
-    throw error
-  }
-}
 
 /**
  * Get checks ids that will be used to cache psychometrician report data
  * @param {Number} batchSize
- * @param {function} logger
+ * @param {context} Function execution context
  * @returns {Boolean}
  */
 
-checkProcessingService.cachePsychometricanReportData = async function (batchSize, logger) {
-  const batchIds = await psychometricianReportDataService.sqlFindUnprocessedStartedChecks(batchSize)
-
-  if (batchIds.length === 0) {
-    logger.info('checkProcessingService.cachePsychometricanReportData: No IDs found')
-    return false
+checkProcessingService.cachePsychometricanReportData = async function (batchSize, context) {
+  if (!batchSize) {
+    throw new Error('Missing batchSize parameter')
   }
 
-  // Produce and cache the Psychometrician data
-  await psychometricianReportService.batchProduceCacheData(batchIds)
+  const batchIds = await psychometricianReportDataService.sqlFindUnprocessedStartedChecks(batchSize)
+  console.log(`Got batchIds, `, batchIds)
 
-  // Produce and cache the Anomaly report data
-  await anomalyReportService.batchProduceCacheData(batchIds)
+  if (!batchIds) {
+    throw new Error('checkProcessingService.cachePsychometricanReportData: failed to retrieve any IDs')
+  }
 
-  logger.info(`checkProcessingService.cachePsychometricanReportData: Processed ${batchIds.length} checks`)
-  return true
+  if (!Array.isArray(batchIds)) {
+    throw new Error ('batchIds is not an Array')
+  }
+
+  if (batchIds.length > 0) {
+    // Produce and cache the Psychometrician data
+    await psychometricianReportService.batchProduceCacheData(batchIds)
+
+    // Produce and cache the Anomaly report data
+    await anomalyReportService.batchProduceCacheData(batchIds)
+  } else {
+    context.log('psychometrician-report: no work to do')
+  }
+  console.log('bathcIds', batchIds.length)
+
+  return {
+    processCount: batchIds.length
+  }
 }
 
 module.exports = checkProcessingService

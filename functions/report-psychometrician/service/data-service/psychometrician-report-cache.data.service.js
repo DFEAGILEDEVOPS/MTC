@@ -1,8 +1,9 @@
 'use strict'
-const { TYPES } = require('./sql.service')
-const R = require('ramda')
+const sqlService = require('less-tedious')
+const { TYPES } = require('tedious')
 
-const sqlService = require('../../../../admin/services/data-access/sql.service')
+const config = require('../../../config')
+sqlService.initialise(config)
 
 const table = '[psychometricianReportCache]'
 
@@ -116,7 +117,6 @@ const psychometricianReportCacheDataService = {
     const results = await sqlService.query(sql)
     return results.map(r => r.id)
   }
-
 }
 
 module.exports = psychometricianReportCacheDataService

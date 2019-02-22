@@ -3,7 +3,6 @@
 const R = require('ramda')
 const moment = require('moment')
 const momentDurationFormatSetup = require('moment-duration-format')
-const logger = require('../../../admin/services/log.service').getLogger()
 const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')

@@ -6,7 +6,7 @@ const fs = require('fs')
 const logger = require('../services/log.service').getLogger()
 const commandLineArgs = require('command-line-args')
 const checkProcessingService = require('../../functions/report-psychometrician/service/check-processing.service')
-const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
+const anomalyReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/anomaly-report-cache.data.service')
 const psychometricianReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../../functions/report-psychometrician/service/psychometrician-report.service')
 
