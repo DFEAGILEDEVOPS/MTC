@@ -17,10 +17,16 @@ $(function () {
     comparer: function (idx, asc, config) {
       return function (a, b) {
         return (function (v1, v2) {
-          return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)
-            ? v1 - v2 : window.GOVUK.tableSort.getStringComparisonResult(v1, v2, asc, config)
+          return window.GOVUK.tableSort.isNumericValue(v1) && window.GOVUK.tableSort.isNumericValue(v2)
+            ? window.GOVUK.tableSort.getNumberComparisonResult(v1, v2, asc) : window.GOVUK.tableSort.getStringComparisonResult(v1, v2, asc, config)
         })(window.GOVUK.tableSort.getCellValue(a, idx), window.GOVUK.tableSort.getCellValue(b, idx))
       }
+    },
+
+    isNumericValue: function (v) {
+      var numericOnlyPattern = /^\d+$/
+      var numericOnlyRegExp = new RegExp(numericOnlyPattern)
+      return ((typeof v === 'string' && numericOnlyRegExp.test(v)) || typeof v === 'number')
     },
 
     getStringComparisonResult: function (a, b, isAscending, config) {
@@ -37,6 +43,10 @@ $(function () {
       }
     },
 
+    getNumberComparisonResult: function (a, b, isAscending) {
+      return isAscending ? a - b : b - a
+    },
+
     isNullString: function (v, config) {
       if (!config.sortNullsLast) {
         return false
@@ -44,10 +54,9 @@ $(function () {
       if ((v === undefined || v === null || v === '')) {
         return true
       }
-      var hasIgnoredString = config.ignoredStrings.some(function (ignoredString) {
+      return config.ignoredStrings.some(function (ignoredString) {
         return ignoredString === v
       })
-      return hasIgnoredString
     },
 
     applySortClass: function (headerEl) {
