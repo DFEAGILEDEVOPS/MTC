@@ -10,7 +10,7 @@ const checkProcessingService = {}
  * Get checks ids that will be used to cache psychometrician report data
  * @param {Number} batchSize
  * @param {context} Function execution context
- * @returns {Boolean}
+ * @returns {{processCount}}
  */
 
 checkProcessingService.cachePsychometricanReportData = async function (batchSize, context) {
