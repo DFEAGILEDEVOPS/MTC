@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect, spyOn */
+/* global beforeEach, afterEach, describe, it, expect, spyOn jasmine */
 const sinon = require('sinon')
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
@@ -23,7 +23,8 @@ describe('pupil validator', function () {
       'dob-day': '01',
       'dob-month': '02',
       'dob-year': '2010',
-      gender: 'M'
+      gender: 'M',
+      ageReason: ''
     }
   }
 
@@ -411,6 +412,113 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil['dob-year'])
+        done()
+      })
+    })
+
+    describe('date of birth:', () => {
+      beforeEach(function () {
+        jasmine.clock().install()
+      })
+      afterEach(function () {
+        jasmine.clock().uninstall()
+      })
+      it('should be out of accepted range if the input date is before 2nd September of 11 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '01'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBeTruthy()
+        expect(validationError.isError('dob-month')).toBeTruthy()
+        expect(validationError.isError('dob-year')).toBeTruthy()
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        done()
+      })
+      it('should be out of accepted range if the input date is after 1nd September of 7 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBeTruthy()
+        expect(validationError.isError('dob-month')).toBeTruthy()
+        expect(validationError.isError('dob-year')).toBeTruthy()
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        done()
+      })
+      it('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.isError('dob-day')).toBeFalsy()
+        expect(validationError.isError('dob-month')).toBeFalsy()
+        expect(validationError.isError('dob-year')).toBeFalsy()
+        done()
+      })
+      it('should require age reason if the input date is at 2nd September of 11 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.isError('ageReason')).toBeTruthy()
+        done()
+      })
+      it('should require age reason if the input date is at 31st August of 7 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '31'
+        req.body['dob-month'] = '08'
+        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.isError('ageReason')).toBeTruthy()
+        done()
+      })
+      it('should not require age reason if the input date is before 2nd September of 11 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '01'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.isError('ageReason')).toBeFalsy()
+        done()
+      })
+      it('should not require age reason if the input date is after 1nd September of 7 years before the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '09'
+        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
+        let validationError = await pupilValidator.validate(req.body)
+        expect(validationError.isError('ageReason')).toBeFalsy()
         done()
       })
     })
