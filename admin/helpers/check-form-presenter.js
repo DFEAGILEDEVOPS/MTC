@@ -127,7 +127,10 @@ checkFormPresenter.getPresentationAvailableFormsData = (availableCheckForms, ass
  * @returns {String} - message
  */
 checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, checkFormType) => {
-  const totalFormAssigned = checkForms.length
+  const totalFormAssigned = checkForms && checkForms.length
+  if (!totalFormAssigned && checkFormType === 'familiarisation') {
+    return `Check form has been unassigned from ${checkWindowName}, Try it out`
+  }
   const partial = totalFormAssigned > 1 ? `forms have` : `form has`
   return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
     : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
