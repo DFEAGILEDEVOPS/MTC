@@ -10,7 +10,7 @@ module.exports.addPupil = {
   'middleNameInvalidCharacters': 'Enter a middle name without special characters',
 
   'lastNameRequired': 'Enter a last name in no more than 128 characters',
-  'lastNameInvalidCharacters': 'Last name can\'t contain special characters',
+  'lastNameInvalidCharacters': 'Enter a last name without special characters',
 
   'dobRequired': 'Enter a date of birth',
   'dobInvalidChars': 'Enter a date of birth in numerical format',
