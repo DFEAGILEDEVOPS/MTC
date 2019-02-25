@@ -6,6 +6,7 @@ const sinon = require('sinon')
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
 const pupilMock = require('../../mocks/pupil')
+const pupilErrors = require('../../../../lib/errors/pupil')
 
 let sandbox
 
@@ -68,7 +69,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
+        expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
         done()
       })
 
@@ -94,7 +95,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
+        expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
         done()
       })
 
@@ -105,7 +106,7 @@ describe('pupil validator', function () {
           let validationError = await pupilValidator.validate(req.body)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('foreName')).toBe(true)
-          expect(validationError.get('foreName')).toBe('First name can\'t contain special character')
+          expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameInvalidCharacters)
         }
         done()
       })
@@ -146,7 +147,7 @@ describe('pupil validator', function () {
           let validationError = await pupilValidator.validate(req.body)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('middleNames')).toBe(true)
-          expect(validationError.get('middleNames')).toBe('Check the middle name does not contain special characters')
+          expect(validationError.get('middleNames')).toBe(pupilErrors.addPupil.middleNameInvalidCharacters)
         }
         done()
       })
@@ -168,7 +169,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
-        expect(validationError.get('lastName')).toBe('Last name can\'t be blank and can\'t contain more than 128 characters')
+        expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
         done()
       })
 
@@ -203,7 +204,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
-        expect(validationError.get('lastName')).toBe('Last name can\'t be blank and can\'t contain more than 128 characters')
+        expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
         done()
       })
 
@@ -214,7 +215,7 @@ describe('pupil validator', function () {
           let validationError = await pupilValidator.validate(req.body)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('lastName')).toBe(true)
-          expect(validationError.get('lastName')).toBe('Last name can\'t contain special characters')
+          expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameInvalidCharacters)
         }
         done()
       })
@@ -261,9 +262,9 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-day')).toBe('Date of birth can\'t be in the future')
-        expect(validationError.get('dob-month')).toBe('Date of birth can\'t be in the future')
-        expect(validationError.get('dob-year')).toBe('Date of birth can\'t be in the future')
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
         done()
       })
 
@@ -277,7 +278,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-day')).toBe('Date of birth can\'t be blank')
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobRequired)
         done()
       })
 
@@ -291,7 +292,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-month')).toBe('Date of birth can\'t be blank')
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobRequired)
         done()
       })
 
@@ -305,7 +306,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Date of birth can\'t be blank')
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobRequired)
         done()
       })
     })
@@ -321,9 +322,9 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-day')).toBe('Date of birth can\'t be in the future')
-        expect(validationError.get('dob-month')).toBe('Date of birth can\'t be in the future')
-        expect(validationError.get('dob-year')).toBe('Date of birth can\'t be in the future')
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
         done()
       })
 
@@ -337,7 +338,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-month')).toBe('Entry must be a number')
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobInvalidChars)
         done()
       })
 
@@ -351,7 +352,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Entry must be a number')
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobInvalidChars)
         done()
       })
 
@@ -365,9 +366,9 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Enter a valid year for date of birth')
-        expect(validationError.get('dob-month')).toBe('Enter a valid month for date of birth')
-        expect(validationError.get('dob-day')).toBe('Enter a valid day for date of birth')
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil['dob-year'])
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil['dob-month'])
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil['dob-day'])
         done()
       })
 
@@ -381,7 +382,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-day')).toBe('Enter a valid day for date of birth')
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil['dob-day'])
         done()
       })
 
@@ -395,7 +396,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-month')).toBe('Enter a valid month for date of birth')
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil['dob-month'])
         done()
       })
 
@@ -409,7 +410,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Enter a valid year for date of birth')
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil['dob-year'])
         done()
       })
     })
@@ -421,7 +422,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('gender')).toBe(true)
-        expect(validationError.get('gender')).toBe('Gender must be M or F')
+        expect(validationError.get('gender')).toBe(pupilErrors.addPupil.genderRequired)
         done()
       })
       it('can be accepted in lowercase', async (done) => {
@@ -442,7 +443,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
         done()
       })
 
@@ -454,7 +455,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -466,7 +467,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -478,7 +479,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -490,7 +491,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -502,7 +503,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -514,7 +515,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -526,7 +527,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -538,7 +539,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
         done()
       })
 
@@ -561,7 +562,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCheckDigit)
         done()
       })
 
@@ -573,7 +574,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 2-4 not a recognised LA code)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidLaCode)
         done()
       })
 
@@ -601,7 +602,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
         done()
       })
 
@@ -611,7 +612,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
         done()
       })
 
@@ -621,7 +622,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
         done()
       })
 
@@ -650,7 +651,7 @@ describe('pupil validator', function () {
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
-      expect(validationError.get('upn')).toBe('UPN is a duplicate of a pupil already in your register')
+      expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnDuplicate)
       done()
     })
 
