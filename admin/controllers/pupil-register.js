@@ -11,7 +11,7 @@ const listPupils = async (req, res, next) => {
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
 
   let pupilsFormatted = []
-
+  let hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
@@ -31,18 +31,11 @@ const listPupils = async (req, res, next) => {
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
 
-  let hdfSubmitted
-  try {
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-
   res.render('pupil-register/pupils-list', {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
-    hdfSubmitted: hdfSubmitted,
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    hdfSubmitted
   })
 }
 
