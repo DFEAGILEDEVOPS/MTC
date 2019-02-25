@@ -24,8 +24,8 @@ describe('calculate-score: v1', () => {
       expect(checkWindowDataService.sqlMarkCheckWindowAsComplete).not.toHaveBeenCalled()
       expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).toHaveBeenCalled()
     })
-    it('calls sqlMarkCheckWindowAsComplete if check window admin end date has passed and check window is not flagged as complete', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, adminEndDate: moment.utc().subtract(1, 'days') })
+    it('calls sqlMarkCheckWindowAsComplete if check window admin end date is the current date and check window is not flagged as complete', async () => {
+      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, adminEndDate: moment.utc() })
       spyOn(checkWindowDataService, 'sqlMarkCheckWindowAsComplete')
       spyOn(scoreCalculationDataService, 'sqlExecuteScoreCalculationStoreProcedure')
 
@@ -36,7 +36,7 @@ describe('calculate-score: v1', () => {
       }
       expect(checkWindowDataService.sqlFindCalculationPeriodCheckWindow).toHaveBeenCalled()
       expect(checkWindowDataService.sqlMarkCheckWindowAsComplete).toHaveBeenCalled()
-      expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).not.toHaveBeenCalled()
+      expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).toHaveBeenCalled()
     })
     it('returns before proceeding further if no check window is found for the calculation period', async () => {
       spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({})
