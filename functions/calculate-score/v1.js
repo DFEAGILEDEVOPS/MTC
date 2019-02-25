@@ -27,7 +27,7 @@ async function handleCalculateScore (context) {
 
   // Flag check window as complete when admin end date is the day of function execution
   const currentUTCDate = moment.utc()
-  if (currentUTCDate.isSame(liveCheckWindow.adminEndDate)) {
+  if (currentUTCDate.diff(liveCheckWindow.checkEndDate, 'days') === 1) {
     await checkWindowDataService.sqlMarkCheckWindowAsComplete(liveCheckWindow.id)
   }
 

@@ -11,8 +11,8 @@ const context = require('../mock-context')
 
 describe('calculate-score: v1', () => {
   describe('process', () => {
-    it('fetches the relevant non-complete check window for the calcuation period and executes score calculation store procedure', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, adminEndDate: moment.utc().add(5, 'days') })
+    it('fetches the relevant non-complete check window for the calculation period and executes score calculation store procedure', async () => {
+      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, checkEndDate: moment.utc().add(5, 'days') })
       spyOn(checkWindowDataService, 'sqlMarkCheckWindowAsComplete')
       spyOn(scoreCalculationDataService, 'sqlExecuteScoreCalculationStoreProcedure')
       try {
@@ -24,8 +24,8 @@ describe('calculate-score: v1', () => {
       expect(checkWindowDataService.sqlMarkCheckWindowAsComplete).not.toHaveBeenCalled()
       expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).toHaveBeenCalled()
     })
-    it('calls sqlMarkCheckWindowAsComplete if check window admin end date is the current date and check window is not flagged as complete', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, adminEndDate: moment.utc() })
+    it('calls sqlMarkCheckWindowAsComplete if the current date is a day after check window live check end date and check window is not flagged as complete', async () => {
+      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, checkEndDate: moment.utc().subtract(1, 'days') })
       spyOn(checkWindowDataService, 'sqlMarkCheckWindowAsComplete')
       spyOn(scoreCalculationDataService, 'sqlExecuteScoreCalculationStoreProcedure')
 
@@ -52,7 +52,7 @@ describe('calculate-score: v1', () => {
       expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).not.toHaveBeenCalled()
     })
     it('returns before it executes score calculation store procedure if the check window has complete flag set as true', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: true, adminEndDate: moment.utc().subtract(5, 'days') })
+      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: true, checkEndDate: moment.utc().subtract(5, 'days') })
       spyOn(checkWindowDataService, 'sqlMarkCheckWindowAsComplete')
       spyOn(scoreCalculationDataService, 'sqlExecuteScoreCalculationStoreProcedure')
       try {
@@ -65,7 +65,7 @@ describe('calculate-score: v1', () => {
       expect(scoreCalculationDataService.sqlExecuteScoreCalculationStoreProcedure).not.toHaveBeenCalled()
     })
     it('throws an error if score calculation store procedure throws', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, adminEndDate: moment.utc().add(5, 'days') })
+      spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, checkEndDate: moment.utc().add(5, 'days') })
       spyOn(checkWindowDataService, 'sqlMarkCheckWindowAsComplete')
       spyOn(scoreCalculationDataService, 'sqlExecuteScoreCalculationStoreProcedure').and.returnValue(Promise.reject(new Error('error')))
       try {
