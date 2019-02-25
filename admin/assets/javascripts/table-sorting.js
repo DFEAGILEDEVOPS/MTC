@@ -54,10 +54,9 @@ $(function () {
       if ((v === undefined || v === null || v === '')) {
         return true
       }
-      var hasIgnoredString = config.ignoredStrings.some(function (ignoredString) {
+      return config.ignoredStrings.some(function (ignoredString) {
         return ignoredString === v
       })
-      return hasIgnoredString
     },
 
     applySortClass: function (headerEl) {
