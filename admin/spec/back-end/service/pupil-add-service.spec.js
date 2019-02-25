@@ -20,7 +20,8 @@ const pupilData = {
   'dob-day': '30',
   'dob-year': '2009',
   pin: null,
-  pinExpired: false
+  pinExpired: false,
+  ageReason: null
 }
 
 describe('pupil-add-service', () => {
