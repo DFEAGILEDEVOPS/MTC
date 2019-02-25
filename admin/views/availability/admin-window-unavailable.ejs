@@ -1,0 +1,52 @@
+<div class="grid-row">
+    <div class="column-full">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row" aria-describedby="lead-paragraph">
+    <div class="column-two-thirds">
+
+        <%- partial('partials/_session_expiry') %>
+
+        <header class="page-header">
+            <h1 class="heading-xlarge">
+                <% if(checkWindow && currentDate.isBefore(checkWindow.adminStartDate)) { %>
+                The service is unavailable
+                <% } else { %>
+                Sorry, the service is unavailable
+                <% } %>
+            </h1>
+        </header>
+    </div>
+
+    <div class="column-one-third sidebar" role="group" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if(checkWindow && currentDate.isBefore(checkWindow.adminStartDate)) { %>
+            <p>You will be able to use the service from 9am on <%= startDateFormatted %></p>
+        <% } else { %>
+            <p>The service is currently unavailable. Please try again later.</p>
+            <p>If you have an urgent enquiry please contact the helpline.</p>
+            <div class="panel panel-border-wide">
+                <p>
+                    National Curriculum Assessments Helpline<br />
+                    0300 303 3013
+                </p>
+            </div>
+        <% } %>
+    </div>
+</div>
