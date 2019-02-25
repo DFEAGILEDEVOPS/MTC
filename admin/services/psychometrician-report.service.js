@@ -219,6 +219,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   const config = R.path(['data', 'config'], check)
   const deviceOptions = R.path(['data', 'device'], check)
   const { type, model } = psUtilService.getDeviceTypeAndModel(userAgent)
+  const startTime = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check) || check.startedAt
 
   const psData = {
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
@@ -234,7 +235,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'RestartReason': psUtilService.getRestartReasonNumber(check.restartCode),
     'RestartNumber': check.restartCount,
     'ReasonNotTakingCheck': psUtilService.getAttendanceReasonNumber(check.attendanceCode),
-    'PupilStatus': check.attendanceCode ? 'Not taking the check' : 'Completed',
+    'PupilStatus': psUtilService.getPupilStatus(check),
 
     'DeviceType': type,
     'DeviceTypeModel': model,
@@ -251,7 +252,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
 
     // TimeStart should be when the user clicked the Start button.
-    'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
+    'TimeStart': startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
     'TimeComplete': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))),
@@ -304,7 +305,7 @@ psychometricianReportService.produceReportDataHeaders = function (results) {
   // If there are no checks, there will be an empty file
   if (results.length === 0) return []
   // Fetch the first completed check to store the keys as headers
-  const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
+  const completedCheck = results.find(c => c.jsonData && c.jsonData.hasOwnProperty('Q1ID'))
   if (completedCheck) {
     return Object.keys(completedCheck.jsonData)
   }
