@@ -132,7 +132,7 @@ if (formData.urlSlug) {
                            value="<%= formData['dob-year'] %>">
                 </div>
             </div>
-            <div class="hide-age-content">
+            <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
               <div class="panel panel-border-wide">
                 <div class="<%= err.isError('ageReason') ? 'form-group-error' : '' %>">
                   <div class="form-label" for='ageReason'><div>The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.</div>

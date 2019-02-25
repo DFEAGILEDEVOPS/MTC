@@ -5,6 +5,7 @@
 const fs = require('fs-extra')
 const sinon = require('sinon')
 const fileValidator = require('../../../../lib/validator/file-validator')
+const fileCsvErrors = require('../../../../lib/errors/file-csv')
 
 describe('File validator', function () {
   let uploadedFile
@@ -45,7 +46,7 @@ describe('File validator', function () {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
-      expect(validationError.get('template-upload')).toBe('Please select a .csv file to save')
+      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noFile)
       done()
     })
     it('detects empty file', async function (done) {
@@ -53,7 +54,7 @@ describe('File validator', function () {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
-      expect(validationError.get('template-upload')).toBe('File rejected. File can\'t be read')
+      expect(validationError.get('template-upload')).toBe(fileCsvErrors.isNotReadable)
       done()
     })
   })

@@ -22,15 +22,10 @@ $(function () {
 
     function displayAgeTextArea () {
       var composedDate = $('#dob-month').val() + '/' + $('#dob-day').val() + '/' + $('#dob-year').val()
-      var currentYear = (new Date()).getFullYear()
+      var academicYear = window.GOVUK.determineAcademicYear()
       var inputDate = new Date(composedDate)
-      var agedSevenMinimumDate = new Date(currentYear - 7, 8, 1)
-      var agedSevenMaximumDate = new Date(currentYear - 7, 11, 31)
-      var agedTenMinimumDate = new Date(currentYear - 10, 8, 1)
-      var agedTenMaximumDate = new Date(currentYear - 10, 11, 31)
-      if ((inputDate >= agedSevenMinimumDate && inputDate <= agedSevenMaximumDate) ||
-        (inputDate >= agedTenMinimumDate && inputDate <= agedTenMaximumDate)
-      ) {
+      if ((window.GOVUK.isWithinAcademicYear(inputDate, academicYear, 11) ||
+        window.GOVUK.isWithinAcademicYear(inputDate, academicYear, 8)) && $('#dob-year').val().length === 4) {
         $('.hide-age-content').addClass('show-age-content')
         $('.show-age-content').removeClass('hide-age-content')
       } else if ($('.show-age-content').length > 0) {
@@ -39,5 +34,22 @@ $(function () {
         $('.hide-age-content').removeClass('show-age-content')
       }
     }
+  }
+
+  window.GOVUK.determineAcademicYear = function () {
+    var currentDate = new Date()
+    var currentYear = (currentDate).getFullYear()
+    var startOfJanuary = new Date(currentYear, 0, 1)
+    var endOfAugust = new Date(currentYear, 7, 31)
+    if (currentDate >= startOfJanuary && currentDate <= endOfAugust) {
+      return currentYear - 1
+    }
+    return currentYear
+  }
+
+  window.GOVUK.isWithinAcademicYear = function (inputDate, academicYear, targetYear) {
+    var targetAcademicYear = academicYear - targetYear
+    return inputDate >= new Date(targetAcademicYear, 8, 2) &&
+      inputDate <= new Date(targetAcademicYear + 1, 8, 1)
   }
 })
