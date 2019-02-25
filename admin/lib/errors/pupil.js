@@ -15,6 +15,7 @@ module.exports.addPupil = {
   'dobRequired': 'Enter a date of birth',
   'dobInvalidChars': 'Enter a date of birth in numerical format',
   'dobOutOfRange': 'Enter a valid date of birth',
+  'dobOutOfRangeMultiple': 'Date of birth is outside of expected age range. Please use the \'Add Single Pupil\' option',
   'dob-day': 'Enter a valid day',
   'dob-month': 'Enter a valid month',
   'dob-year': 'Enter a valid year for date of birth',

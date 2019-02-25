@@ -7,7 +7,7 @@ const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 
-module.exports.validate = async (pupilData) => {
+module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) => {
   // TODO: Move to reusable validation service
   let validationError = new ValidationError()
   // Forename validation
@@ -85,9 +85,10 @@ module.exports.validate = async (pupilData) => {
   }
 
   if (dob.isValid() && !dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 7}-09-01`))) {
-    validationError.addError('dob-day', addPupilErrorMessages.dobOutOfRange)
-    validationError.addError('dob-month', addPupilErrorMessages.dobOutOfRange)
-    validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
+    const dobOutOfRangeErrorMessage = isMultiplePupilsSubmission ? addPupilErrorMessages.dobOutOfRangeMultiple : addPupilErrorMessages.dobOutOfRange
+    validationError.addError('dob-day', dobOutOfRangeErrorMessage)
+    validationError.addError('dob-month', dobOutOfRangeErrorMessage)
+    validationError.addError('dob-year', dobOutOfRangeErrorMessage)
   }
   // Age Reason
   const requiredAgeReasonValidation = dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`)) ||
