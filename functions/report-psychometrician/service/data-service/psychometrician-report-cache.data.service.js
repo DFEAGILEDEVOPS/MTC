@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 
 const config = require('../../../config')
 sqlService.initialise(config)
-const R = require('ramda')
 
 const table = '[psychometricianReportCache]'
 
@@ -44,54 +43,6 @@ const psychometricianReportCacheDataService = {
     const res = await sqlService.modify(sql, params)
     // E.g. { insertId: [1, 2], rowsModified: 4 }
     return res
-  },
-
-  /**
-   * Find all report data
-   * @return {Promise<*>}
-   */
-  sqlFindAll: async function () {
-    const sql = `select * from ${sqlService.adminSchema}.${table}`
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
-    })
-    return parsed
-  },
-
-  sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
-  },
-
-  /**
-   * Find checks that do not have entries in the psychometrician report cache table
-   * @return {Promise<*>}
-   */
-  sqlFindUnprocessedChecks: async function () {
-    const sql = `SELECT TOP 250 c.* 
-      FROM ${sqlService.adminSchema}.${table} p 
-      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
-      WHERE p.check_id IS NULL`
-    return sqlService.query(sql)
-  },
-
-  /**
-   * Find all the completed checks that have not been processed
-   * @returns {Boolean}
-   */
-  sqlHasUnprocessedStartedChecks: async function () {
-    const sql = `SELECT TOP 1 *
-    FROM ${sqlService.adminSchema}.[check] chk
-    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
-    JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-    WHERE 
-      prc.check_id IS NULL 
-    AND cs.code = 'CMP'
-    AND chk.markedAt IS NOT NULL`
-
-    const result = await sqlService.query(sql, [])
-    return result.length > 0
   },
 
   /**

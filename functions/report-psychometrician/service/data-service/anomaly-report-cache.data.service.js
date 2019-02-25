@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 
 const config = require('../../../config')
 sqlService.initialise(config)
-const R = require('ramda')
 
 const table = '[anomalyReportCache]'
 
@@ -53,24 +52,6 @@ const anomalyReportCacheDataService = {
     const res = await sqlService.modify(sql, params)
     // E.g. { insertId: [1, 2], rowsModified: 4 }
     return res
-  },
-
-  /**
-   * Find all report data
-   * @return {Promise<*>}
-   */
-  sqlFindAll: async function () {
-    const sql = `select * from ${sqlService.adminSchema}.${table}`
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
-    })
-    return parsed
-  },
-
-  sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
   }
 }
 
