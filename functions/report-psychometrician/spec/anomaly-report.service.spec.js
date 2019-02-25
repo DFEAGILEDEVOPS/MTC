@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, expect, it, beforeEach, spyOn */
+/* global describe, expect, it, beforeEach, spyOn, beforeEach */
 
 const moment = require('moment')
 const R = require('ramda')
@@ -9,7 +9,11 @@ const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMockOrig = require('./mocks/check-form')
 
 describe('anomaly-report.service', () => {
-  const service = require('../service/anomaly-report.service')
+  let service
+
+  beforeEach(() => {
+    service = require('../service/anomaly-report.service')
+  })
 
   describe('#produceReportData', () => {
     it('pushes a reported anomaly', async () => {

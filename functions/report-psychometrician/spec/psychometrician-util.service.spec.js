@@ -1,32 +1,32 @@
 'use strict'
-/* global describe it expect beforeEach spyOn fail */
-const logger = require('../../../admin/services/log.service.js').getLogger()
+/* global describe, it, expect, beforeEach, spyOn, fail */
+const R = require('ramda')
 const service = require('../service/psychometrician-util.service')
 
 // Get a marked check mock
-const checkMockOrig = require('../../../admin/spec/back-end/mocks/check-with-results')
+const checkMockOrig = require('./mocks/check-with-results')
 
 // and a completedCheck that has been marked
-const completedCheckMockOrig = require('../../../admin/spec/back-end/mocks/completed-check-with-results')
-const pupilMockOrig = require('../../../admin/spec/back-end/mocks/pupil')
-const schoolMockOrig = require('../../../admin/spec/back-end/mocks/school')
+const completedCheckMockOrig = require('./mocks/completed-check-with-results')
+const pupilMockOrig = require('./mocks/pupil')
+const schoolMockOrig = require('./mocks/school')
 
-const keyboardInput = require('../../../admin/spec/back-end/mocks/keyboard-input')
-const touchInput = require('../../../admin/spec/back-end/mocks/touch-input')
-const mouseInput = require('../../../admin/spec/back-end/mocks/mouse-input')
-const keyboardInput2 = require('../../../admin/spec/back-end/mocks/keyboard-input-2')
-const keyboardInput3 = require('../../../admin/spec/back-end/mocks/keyboard-input-3')
-const keyboardInput4 = require('../../../admin/spec/back-end/mocks/keyboard-input-4')
-const keyboardInput5 = require('../../../admin/spec/back-end/mocks/keyboard-input-5')
+const keyboardInput = require('./mocks/keyboard-input')
+const touchInput = require('./mocks/touch-input')
+const mouseInput = require('./mocks/mouse-input')
+const keyboardInput2 = require('./mocks/keyboard-input-2')
+const keyboardInput3 = require('./mocks/keyboard-input-3')
+const keyboardInput4 = require('./mocks/keyboard-input-4')
+const keyboardInput5 = require('./mocks/keyboard-input-5')
 
 describe('psychometrician-util.service', () => {
   let completedCheckMock
 
   beforeEach(() => {
-    completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
-    const checkMock = Object.assign({}, checkMockOrig)
-    const pupilMock = Object.assign({}, pupilMockOrig)
-    const schoolMock = Object.assign({}, schoolMockOrig)
+    completedCheckMock = R.clone(completedCheckMockOrig)
+    const checkMock = R.clone(checkMockOrig)
+    const pupilMock = R.clone(pupilMockOrig)
+    const schoolMock = R.clone(schoolMockOrig)
     completedCheckMock.check = checkMock
     pupilMock.school = schoolMock
     completedCheckMock.check.pupilId = pupilMock
@@ -60,30 +60,26 @@ describe('psychometrician-util.service', () => {
 
   describe('#getClientTimestamp from AuditEvent', () => {
     it('returns the clientTimestamp from an audit event', () => {
-      const completedCheck = Object.assign({}, completedCheckMock)
-      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheck)
+      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheckMock)
       expect(ts).toBe('2018-02-11T15:43:26.772Z')
     })
 
     it('returns empty string if the check is not completed', () => {
-      const completedCheck = Object.assign({}, completedCheckMock)
-      completedCheck.data = undefined
-      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheck)
+      completedCheckMock.data = undefined
+      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheckMock)
       expect(ts).toBe('')
     })
 
     it('returns "error" if the clientTimestamp is missing', () => {
-      const completedCheck = Object.assign({}, completedCheckMock)
-      completedCheck.data.audit.push({
+      completedCheckMock.data.audit.push({
         'type': 'CheckCompleteMissingTS'
       })
-      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheck)
+      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheckMock)
       expect(ts).toBe('error')
     })
 
     it('returns "error" if there arent any logEntries', () => {
-      const completedCheck = Object.assign({}, completedCheckMock)
-      completedCheck.data.audit = []
+      completedCheckMock.data.audit = []
       const ts = service.getClientTimestampFromAuditEvent('AnyEvent', completedCheckMock)
       expect(ts).toBe('error')
     })
@@ -644,10 +640,6 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getUserInput', () => {
-    beforeEach(() => {
-      spyOn(logger, 'info')
-    })
-
     it('returns a string showing all the user input for key events', () => {
       const ks1 = service.getUserInput(keyboardInput)
       expect(ks1).toBe('k[1], k[0], k[Enter]')
@@ -677,7 +669,6 @@ describe('psychometrician-util.service', () => {
 
   describe('#getLastAnswerInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(logger, 'info')
       const res = service.getLastAnswerInputTime(null, '')
       expect(res).toBe('error')
     })
@@ -753,7 +744,6 @@ describe('psychometrician-util.service', () => {
 
   describe('#getFirstInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(logger, 'info')
       const res = service.getLastAnswerInputTime(null)
       expect(res).toBe('error')
     })
@@ -818,7 +808,6 @@ describe('psychometrician-util.service', () => {
 
   describe('#getResponseTime', () => {
     it('returns "error" if the arg is not an array', () => {
-      spyOn(logger, 'info')
       const res = service.getResponseTime(999)
       expect(res).toBe('error')
     })
@@ -835,7 +824,6 @@ describe('psychometrician-util.service', () => {
 
   describe('#getTimeOutFlag', () => {
     it('throws an error if not passed an Array', () => {
-      spyOn(logger, 'info')
       const res = service.getTimeoutFlag('', null)
       expect(res).toBe('error')
     })
