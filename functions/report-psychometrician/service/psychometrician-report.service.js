@@ -9,7 +9,13 @@ const psychometricianReportCacheDataService = require('./data-service/psychometr
 
 const psychometricianReportService = {}
 
-psychometricianReportService.batchProduceCacheData = async function (batchIds) {
+/**
+ *
+ * @param batchIds - array of check IDs
+ * @param context - function context
+ * @return {Promise<void>}
+ */
+psychometricianReportService.batchProduceCacheData = async function (batchIds, context) {
   const checks = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
 
   if (!checks || !Array.isArray(checks) || !checks.length) {
@@ -41,8 +47,13 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     psReportData.push({ check_id: check.id, jsonData: data })
   }
 
-  // save psReportData
-  await psychometricianReportCacheDataService.sqlInsertMany(psReportData)
+  // save the reports into the DB
+  try {
+    await psychometricianReportCacheDataService.sqlInsertMany(psReportData)
+  } catch (error) {
+    context.log.error(`ERROR: psychometricianReportCacheDataService: failed to insert into db: ${error.message}`)
+    throw error
+  }
 }
 
 /**

@@ -29,11 +29,17 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   }
 
   if (batchIds.length > 0) {
-    // Produce and cache the Psychometrician data
-    await psychometricianReportService.batchProduceCacheData(batchIds)
+    try {
+      // Produce and cache the Psychometrician data
+      await psychometricianReportService.batchProduceCacheData(batchIds, context)
 
-    // Produce and cache the Anomaly report data
-    await anomalyReportService.batchProduceCacheData(batchIds)
+      // Produce and cache the Anomaly report data
+      await anomalyReportService.batchProduceCacheData(batchIds, context)
+    } catch (error) {
+      context.log.error('ERROR: checkProcessingService.cachePsychometricanReportData: ' + error.message)
+      throw error
+    }
+
   } else {
     context.log('psychometrician-report: no work to do')
   }

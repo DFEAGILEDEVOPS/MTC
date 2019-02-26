@@ -5,8 +5,6 @@ const { TYPES } = require('tedious')
 const config = require('../../../config')
 sqlService.initialise(config)
 
-const table = '[psychometricianReportCache]'
-
 const psychometricianReportCacheDataService = {
   /**
    * Batch insert multiple objects
@@ -16,7 +14,7 @@ const psychometricianReportCacheDataService = {
   sqlInsertMany: async function (dataObjects) {
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO ${sqlService.adminSchema}.${table} 
+    INSERT INTO [mtc_admin].[psychometricianReportCache] 
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES

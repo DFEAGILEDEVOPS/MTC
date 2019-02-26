@@ -13,9 +13,11 @@ anomalyReportService.reportedAnomalies = []
 
 /**
  * Generate batched cached anomalies
+ * @param {Number[]} batchIds - array of check IDs
+ * @param context - function context
  * @return {Array}
  */
-anomalyReportService.batchProduceCacheData = async (batchIds) => {
+anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
   anomalyReportService.reportedAnomalies = []
 
   const checksWithForms = await psychometricianDataService.sqlFindChecksByIdsWithForms(batchIds)
@@ -29,7 +31,12 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
   })
 
   if (anomalyReportService.reportedAnomalies.length > 0) {
-    await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
+    try {
+      await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
+    } catch (error) {
+      context.log.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
+      throw error
+    }
   }
 }
 
