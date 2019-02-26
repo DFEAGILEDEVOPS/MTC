@@ -96,7 +96,7 @@ const psychometricianReportService = {
     const psychometricianReport = await this.generatePsychometricianReport()
     const anomalyReport = await this.generateAnomalyReport()
     const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
-    const blobResult = await this.uploadToBlobStorage(zipFile)
+    return this.uploadToBlobStorage(zipFile)
   },
 
   /**

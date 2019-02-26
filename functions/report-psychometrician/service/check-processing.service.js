@@ -39,7 +39,6 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
       context.log.error('ERROR: checkProcessingService.cachePsychometricanReportData: ' + error.message)
       throw error
     }
-
   } else {
     context.log('psychometrician-report: no work to do')
   }

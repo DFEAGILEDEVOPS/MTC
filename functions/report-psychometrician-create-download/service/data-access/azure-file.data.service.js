@@ -33,7 +33,7 @@ const azureUploadFile = async (container, remoteFilename, text, streamLength) =>
 }
 
 const service = config.AZURE_STORAGE_CONNECTION_STRING ? {
-  azureUploadFile,
+  azureUploadFile
 } : {
   azureUploadFile: () => {
     return { name: 'test_error.csv' }
