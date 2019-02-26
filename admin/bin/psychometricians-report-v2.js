@@ -52,7 +52,6 @@ async function main (options) {
 }
 
 ;(async function () {
-    await main(options)
-    process.exit(0)
+  await main(options)
+  process.exit(0)
 })()
-
