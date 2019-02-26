@@ -68,7 +68,7 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   const dob = moment.utc(dobData, 'DD/MM/YYYY', true)
   const currentUTCDate = moment.utc()
   const currentYear = currentUTCDate.year()
-  const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`))
+  const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
     ? currentYear - 1 : currentYear
   // Invalid case
   // We need to specify a different error messages if fields have the wrong number of digits
@@ -84,16 +84,20 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
 
-  if (dob.isValid() && !dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 7}-09-01`))) {
-    const dobOutOfRangeErrorMessage = isMultiplePupilsSubmission ? addPupilErrorMessages.dobOutOfRangeMultiple : addPupilErrorMessages.dobOutOfRange
-    validationError.addError('dob-day', dobOutOfRangeErrorMessage)
-    validationError.addError('dob-month', dobOutOfRangeErrorMessage)
-    validationError.addError('dob-year', dobOutOfRangeErrorMessage)
+  if (dob.isValid() && !dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]')) {
+    validationError.addError('dob-day', addPupilErrorMessages.dobOutOfRange)
+    validationError.addError('dob-month', addPupilErrorMessages.dobOutOfRange)
+    validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
   }
   // Age Reason
-  const requiredAgeReasonValidation = dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`)) ||
-    dob.isBetween(moment(`${academicYear - 8}-09-02`), moment(`${academicYear - 7}-09-01`))
-  if (requiredAgeReasonValidation && (pupilData.ageReason.length < 1 || pupilData.ageReason.length > 1000)) {
+  const requiredAgeReasonValidation = dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`), null, '[]') ||
+    dob.isBetween(moment(`${academicYear - 8}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]')
+  if (isMultiplePupilsSubmission && requiredAgeReasonValidation) {
+    validationError.addError('dob-day', addPupilErrorMessages.dobMultipleRequiresReason)
+    validationError.addError('dob-month', addPupilErrorMessages.dobMultipleRequiresReason)
+    validationError.addError('dob-year', addPupilErrorMessages.dobMultipleRequiresReason)
+  }
+  if (!isMultiplePupilsSubmission && requiredAgeReasonValidation && (pupilData.ageReason.length < 1 || pupilData.ageReason.length > 1000)) {
     validationError.addError('ageReason', addPupilErrorMessages.ageReasonLength)
   }
   // Gender Validation

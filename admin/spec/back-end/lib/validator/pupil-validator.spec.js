@@ -459,7 +459,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
         done()
       })
-      it('should display multiple pupils message when out of accepted range if the input date is after 1nd September of 7 years before the academic year', async (done) => {
+      it('should display for multiple pupils submission an error message when out of accepted range if the input date is after 1nd September of 7 years before the academic year', async (done) => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         jasmine.clock().mockDate(baseTime)
@@ -472,9 +472,27 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBeTruthy()
         expect(validationError.isError('dob-month')).toBeTruthy()
         expect(validationError.isError('dob-year')).toBeTruthy()
-        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRangeMultiple)
-        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRangeMultiple)
-        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRangeMultiple)
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
+        done()
+      })
+      it('should display for multiple pupils submission an error message when a pupil is year 7 years on the academic year', async (done) => {
+        const currentYear = (new Date()).getFullYear()
+        const baseTime = new Date(currentYear, 11, 31)
+        jasmine.clock().mockDate(baseTime)
+        req.body = getBody()
+        req.body['dob-day'] = '31'
+        req.body['dob-month'] = '08'
+        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
+        let validationError = await pupilValidator.validate(req.body, true)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBeTruthy()
+        expect(validationError.isError('dob-month')).toBeTruthy()
+        expect(validationError.isError('dob-year')).toBeTruthy()
+        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
+        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
+        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
         done()
       })
       it('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async (done) => {

@@ -4,6 +4,7 @@
 const singlePupilValidationCSVService = require('../../../services/single-pupil-validation.service')
 const PupilValidator = require('../../../lib/validator/pupil-validator')
 const ValidationError = require('../../../lib/validation-error')
+const addPupilErrorMessages = require('../../../lib/errors/pupil').addPupil
 const schoolMock = require('../mocks/school')
 
 describe('single-pupil-validation.service', () => {
@@ -35,7 +36,7 @@ describe('single-pupil-validation.service', () => {
       await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock, isMultiplePupilsSubmission)
       // 2 line - with the duplicate
       const { single } = await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock, isMultiplePupilsSubmission)
-      expect(single[6]).toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet')
+      expect(single[6]).toBe(addPupilErrorMessages.upnDuplicateInFile)
     })
   })
 
