@@ -229,7 +229,7 @@ const postEditPupil = async (req, res, next) => {
   }
 
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
-
+  // TODO: old core! Needs refactor this to a service and data service
   const update = {
     id: pupil.id,
     foreName: req.body.foreName,
@@ -237,7 +237,8 @@ const postEditPupil = async (req, res, next) => {
     lastName: req.body.lastName,
     upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
     gender: req.body.gender,
-    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
+    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year']),
+    ageReason: req.body.ageReason
   }
   try {
     await pupilDataService.sqlUpdate(update)
