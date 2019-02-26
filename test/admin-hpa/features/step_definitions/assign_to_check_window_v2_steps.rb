@@ -59,6 +59,21 @@ Then(/^I should not be allowed to do so$/) do
   select_form_to_assign_page.check_forms.rows.each {|row| expect(row).to have_no_select}
 end
 
+And(/^form assigned to '(.*)' check window display 'yes'$/) do |window_name|
+  case window_name
+    when 'Try it out'
+      form_name = 'MTC0103'
+    when 'Live check'
+      form_name = 'MTC0100'
+  end
+  select_form_to_assign_page.check_forms.rows.each do |row|
+    if row.name_of_form.text.eql?(form_name)
+      expect(row.assigned.text.eql?('Yes')).to be_truthy, "Expected: 'Yes' .. But got #{row.assigned.text}"
+    else
+      expect(row.assigned.text.eql?('Yes')).to be_falsy, "Expected: '' .. But got #{row.assigned.text}"
+    end
+  end
+end
 
 When(/^I attempt to assign a familiarisation form to a active check window$/) do
   window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == 'Development Phase'}
