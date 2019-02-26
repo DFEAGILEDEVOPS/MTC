@@ -64,7 +64,7 @@ const psychometricianReportCacheDataService = {
         prc.check_id IS NULL 
       AND cs.code = 'CMP'
       AND chk.markedAt IS NOT NULL
-      ORDER BY chk.startedAt`
+      ORDER BY NEWID()`
 
     const results = await sqlService.query(sql)
     return results.map(r => r.id)
