@@ -130,10 +130,10 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  wait_until(60, 30){SqlDbHelper.get_check(storage_pupil['checkCode'])}
-  check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  wait_until(60, 30){SqlDbHelper.get_check_result(check['id'])}
-  check_result = SqlDbHelper.get_check_result(check['id'])
+  wait_until(60,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
+  pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
+  wait_until(60,5){SqlDbHelper.get_check_result(pupil_check['id'])}
+  check_result = SqlDbHelper.get_check_result(pupil_check['id'])
   check = JSON.parse(check_result['payload'])
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}
@@ -167,4 +167,24 @@ end
 Then(/^I should see the question and timer$/) do
   step 'I should see a question'
   step 'I should see a timer'
+end
+
+
+Given(/^I have just completed the check with only (\d+) correct answers$/) do |correct_answers|
+  step 'I have started the check'
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  wrong_answers = questions.size - correct_answers
+  @answers = check_page.complete_check_with_wrong_answers(wrong_answers,'keyboard')
+  @answers = check_page.complete_check_with_correct_answers(correct_answers,'keyboard')
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_heading
+end
+
+
+Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expected_score|
+  ls_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  check_code = ls_pupil['checkCode']
+  wait_until(60, 5){SqlDbHelper.get_check(check_code)}
+  check = SqlDbHelper.get_check(check_code)
+  expect(check['mark']).to eql expected_score
 end

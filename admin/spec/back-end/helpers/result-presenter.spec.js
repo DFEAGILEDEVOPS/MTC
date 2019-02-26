@@ -52,4 +52,11 @@ describe('resultPresenter', () => {
       }])
     })
   })
+  describe('getNationalScore', () => {
+    it('returns national score with 1 decimal point', () => {
+      const scoreValue = 7.8976
+      const nationalScore = resultPresenter.getNationalScore(scoreValue)
+      expect(nationalScore.toString().split('.')[1].length).toBe(1)
+    })
+  })
 })
