@@ -15,7 +15,7 @@
       <%- partial('partials/_session_expiry') %>
       <div class="panel panel-border-wide">
           <% if (checkFormData && checkFormData.length) { %>
-          <div>Assign forms to <b><%= pageTitle %></b></div>
+          <div><%= checkWindowData.isWithinCheckType ? 'Assigned' : 'Assign' %> forms to <b><%= pageTitle %></b></div>
           <div><%= checkWindowData.checkFormTypeTitle %> period: <%= checkFormType !== 'live' ?
             `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
             `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
