@@ -101,7 +101,7 @@ const psychometricianReportService = {
     const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
     const uploadBlob = await this.uploadToBlobStorage(zipFile)
     const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
-    await psychometricianReportDataService.storeFileUploadMetaInDb(
+    await psychometricianReportDataService.sqlSaveFileUploadMeta(
       uploadBlob.container,
       uploadBlob.name,
       uploadBlob.etag,
