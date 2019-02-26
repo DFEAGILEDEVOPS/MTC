@@ -250,25 +250,6 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }
 
-/**
- * Print the pupil and school pins.
- * @param req
- * @param res
- * @param next
- * @returns {Promise<*>}
- */
-const getPrintPupils = async (req, res, next) => {
-  res.locals.pageTitle = 'Print pupils'
-  try {
-    const pupilData = await pupilService.getPrintPupils(req.user.School)
-    res.render('pupil-register/pupils-print', {
-      pupils: pupilData
-    })
-  } catch (error) {
-    return next(error)
-  }
-}
-
 module.exports = {
   getAddPupil,
   postAddPupil,
@@ -276,6 +257,5 @@ module.exports = {
   postAddMultiplePupils,
   getErrorCSVFile,
   getEditPupilById,
-  postEditPupil,
-  getPrintPupils
+  postEditPupil
 }

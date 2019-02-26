@@ -1,6 +1,9 @@
 'use strict'
 
+const moment = require('moment')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const dateService = require('../services/date.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 const businessAvailabilityService = {}
 
@@ -42,6 +45,26 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
   const pinEnv = isLiveCheck ? 'Live' : 'Familiarisation'
   if (!isPinGenerationAllowed) {
     throw new Error(`${pinEnv} pin generation is not allowed`)
+  }
+}
+
+/**
+ * Retuns data for the avalibilty partial
+ * @param {Number} dfeNumber
+ * @param {Object} checkWindowData
+ * @returns {Object}
+ */
+businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
+  const currentDate = moment.utc()
+  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
+  const checkWindowClosed = currentDate.isAfter(checkWindowData.checkEndDate)
+  const checkWindowYear = dateService.formatYear(checkWindowData.checkEndDate)
+  const available = !hdfSubmitted && !checkWindowClosed
+  return {
+    checkWindowClosed,
+    checkWindowYear,
+    hdfSubmitted,
+    available
   }
 }
 
