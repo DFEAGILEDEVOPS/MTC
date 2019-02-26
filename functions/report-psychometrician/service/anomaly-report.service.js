@@ -1,59 +1,26 @@
 'use strict'
-const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
 const useragent = require('useragent')
-const logger = require('./log.service').getLogger()
 
-const completedCheckDataService = require('./data-access/completed-check.data.service')
-const anomalyReportCacheDataService = require('./data-access/anomaly-report-cache.data.service')
+const anomalyReportCacheDataService = require('./data-service/anomaly-report-cache.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
+const psychometricianDataService = require('./data-service/psychometrician.data.service')
 
 const anomalyReportService = {}
 anomalyReportService.reportedAnomalies = []
 
 /**
- * Return the CSV file as a string
- * @return {Promise<void>}
- */
-anomalyReportService.generateReport = async () => {
-  const results = await anomalyReportCacheDataService.sqlFindAll()
-  const output = []
-  for (const obj of results) {
-    output.push(obj.jsonData)
-  }
-
-  const headers = anomalyReportService.produceReportDataHeaders()
-
-  return new Promise((resolve, reject) => {
-    csv.writeToString(
-      output,
-      { headers: headers },
-      function (err, data) {
-        if (err) { reject(err) }
-        resolve(data)
-      }
-    )
-  })
-}
-
-/**
  * Generate batched cached anomalies
+ * @param {Number[]} batchIds - array of check IDs
+ * @param context - function context
  * @return {Array}
  */
-anomalyReportService.batchProduceCacheData = async (batchIds) => {
+anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
   anomalyReportService.reportedAnomalies = []
 
-  if (!batchIds) {
-    throw new Error('Missing argument: batchIds')
-  }
-
-  if (!(Array.isArray(batchIds) && batchIds.length)) {
-    throw new Error('Invalid arg: batchIds')
-  }
-
-  const checksWithForms = await completedCheckDataService.sqlFindByIdsWithForms(batchIds)
+  const checksWithForms = await psychometricianDataService.sqlFindChecksByIdsWithForms(batchIds)
 
   if (!checksWithForms || !Array.isArray(checksWithForms) || !checksWithForms.length) {
     throw new Error('Failed to find any checks')
@@ -64,9 +31,12 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
   })
 
   if (anomalyReportService.reportedAnomalies.length > 0) {
-    await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
-  } else {
-    logger.info('anomalyReportService.batchProduceCacheData: No anomalies detected')
+    try {
+      await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
+    } catch (error) {
+      context.log.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
+      throw error
+    }
   }
 }
 
@@ -96,28 +66,6 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   ]
 
   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
-}
-
-/**
- * Returns the CSV headers
- * @param {Array} results
- * @returns {Array}
- */
-anomalyReportService.produceReportDataHeaders = () => {
-  const reportHeaders = [
-    'Check Code',
-    'Date',
-    'Speech Synthesis',
-    'Mark',
-    'Device',
-    'Agent',
-    'Message',
-    'Tested value',
-    'Expected value',
-    'Question number'
-  ]
-
-  return reportHeaders
 }
 
 anomalyReportService.detectAnomalies = (check) => {
@@ -344,7 +292,6 @@ anomalyReportService.reconstructAnswerFromInputs = (events) => {
   }
   events.forEach(event => {
     if (event === null || event === undefined) {
-      logger.info('anomalyReportService.reconstructAnswerFromInputs: event is empty')
       return
     }
     if (event.eventType !== 'click' && event.eventType !== 'keydown') {
