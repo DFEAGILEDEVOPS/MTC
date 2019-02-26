@@ -42,3 +42,13 @@ Feature: Check questions
   Scenario: MTC check start page shows number of questions
     Given I am on the MTC check start page
     Then I should see the number of questions
+
+  Scenario Outline: Pupil Score is calculated after the check is completed
+    Given I have just completed the check with only <correct_answers> correct answers
+    Then my score should be calculated as <correct_answers> and stored in the DB
+
+    Examples:
+      | correct_answers |
+      | 4               |
+      | 8               |
+      | 3               |
