@@ -25,9 +25,9 @@ resultPresenter.getResultsViewData = (pupils) => {
 
 /**
  * Returns national score with one decimal place
- * @param {Number} nationalScore
+ * @param {Number} score
  * @returns {Number}
  */
-resultPresenter.getNationalScore = (nationalScore) => (Math.round(nationalScore * 10) / 10)
+resultPresenter.getScoreWithOneDecimalPlace = (score) => (Math.round(score * 10) / 10)
 
 module.exports = resultPresenter
