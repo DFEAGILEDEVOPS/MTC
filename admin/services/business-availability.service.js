@@ -49,7 +49,7 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
 }
 
 /**
- * Retuns data for the avalibilty partial
+ * Returns data for the availability partial
  * @param {Number} dfeNumber
  * @param {Object} checkWindowData
  * @returns {Object}
@@ -57,14 +57,22 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
 businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
   const currentDate = moment.utc()
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
+  const checkWindowStarted = currentDate.isAfter(checkWindowData.checkStartDate)
   const checkWindowClosed = currentDate.isAfter(checkWindowData.checkEndDate)
   const checkWindowYear = dateService.formatYear(checkWindowData.checkEndDate)
-  const available = !hdfSubmitted && !checkWindowClosed
+  const adminWindowStarted = currentDate.isAfter(checkWindowData.adminStartDate)
+  const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
+  const canEditArrangements = !hdfSubmitted && !checkWindowClosed
+  const pinsRestartsAvailable = !hdfSubmitted && checkWindowStarted && !checkWindowClosed
   return {
+    checkWindowStarted,
     checkWindowClosed,
     checkWindowYear,
+    adminWindowStarted,
+    adminWindowClosed,
     hdfSubmitted,
-    available
+    canEditArrangements,
+    pinsRestartsAvailable
   }
 }
 
