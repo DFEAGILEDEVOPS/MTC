@@ -7,12 +7,12 @@ const path = require('path')
 const R = require('ramda')
 
 const checkFormService = require('../services/check-form.service')
-const checkProcessingService = require('../services/check-processing.service')
+const checkProcessingService = require('../../functions/report-psychometrician/service/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const dateService = require('../services/date.service')
-const psychometricianReportService = require('../services/psychometrician-report.service')
-const anomalyReportService = require('../services/anomaly-report.service')
+const psychometricianReportService = require('../../functions/report-psychometrician/service/psychometrician-report.service')
+const anomalyReportService = require('../../functions/report-psychometrician/service/anomaly-report.service')
 const logger = require('../services/log.service').getLogger()
 
 /**
@@ -457,6 +457,7 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
 
 /**
  * Download pupil check data view.
+ * @deprecated - JMS to be updated
  * @param req
  * @param res
  * @param next
@@ -492,26 +493,26 @@ const getDownloadPupilCheckData = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const getFileDownloadPupilCheckData = async (req, res, next) => {
-  let psychometricianReport
-  try {
-    psychometricianReport = await psychometricianReportService.getUploadedFile()
-    if (!psychometricianReport) {
-      return res.redirect('/test-developer/download-pupil-check-data')
-    }
-  } catch (error) {
-    req.flash('error', error.message)
-    return res.redirect('/test-developer/download-pupil-check-data')
-  }
-
-  try {
-    res.setHeader('Content-type', 'application/zip')
-    res.setHeader('Content-disposition', `attachment; filename="${psychometricianReport.fileName}"`)
-
-    await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
-  } catch (error) {
-    logger.error(error)
-    return next(error)
-  }
+  // let psychometricianReport
+  // try {
+  //   psychometricianReport = await psychometricianReportService.getUploadedFile()
+  //   if (!psychometricianReport) {
+  //     return res.redirect('/test-developer/download-pupil-check-data')
+  //   }
+  // } catch (error) {
+  //   req.flash('error', error.message)
+  //   return res.redirect('/test-developer/download-pupil-check-data')
+  // }
+  //
+  // try {
+  //   res.setHeader('Content-type', 'application/zip')
+  //   res.setHeader('Content-disposition', `attachment; filename="${psychometricianReport.fileName}"`)
+  //
+  //   await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
+  // } catch (error) {
+  //   logger.error(error)
+  //   return next(error)
+  // }
 }
 
 /**
@@ -521,34 +522,33 @@ const getFileDownloadPupilCheckData = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-const getGenerateLatestPupilCheckData = async (req, res, next) => {
-  req.setTimeout(5 * 1000 * 60) // 5 minutes
-
-  try {
-    await checkProcessingService.process()
-    const dateGenerated = moment()
-    const psychometricianReport = await psychometricianReportService.generateReport()
-    const anomalyReport = await anomalyReportService.generateReport()
-
-    const generatedZip = await psychometricianReportService.generateZip(psychometricianReport, anomalyReport, dateGenerated)
-    const blobResult = await psychometricianReportService.uploadToBlobStorage(generatedZip)
-
-    const fileName = await psychometricianReportService.create(blobResult, dateGenerated)
-
-    return res.status(200).json({
-      fileName: fileName.replace(/\.zip$/, ''),
-      dateGenerated: dateService.formatDateAndTime(dateGenerated)
-    })
-  } catch (error) {
-    logger.error(error)
-    return res.status(500).json({ error: error.message })
-  }
-}
+// const getGenerateLatestPupilCheckData = async (req, res, next) => {
+//   req.setTimeout(5 * 1000 * 60) // 5 minutes
+//
+//   try {
+//     await checkProcessingService.process()
+//     const dateGenerated = moment()
+//     const psychometricianReport = await psychometricianReportService.generateReport()
+//     const anomalyReport = await anomalyReportService.generateReport()
+//
+//     const generatedZip = await psychometricianReportService.generateZip(psychometricianReport, anomalyReport, dateGenerated)
+//     const blobResult = await psychometricianReportService.uploadToBlobStorage(generatedZip)
+//
+//     const fileName = await psychometricianReportService.create(blobResult, dateGenerated)
+//
+//     return res.status(200).json({
+//       fileName: fileName.replace(/\.zip$/, ''),
+//       dateGenerated: dateService.formatDateAndTime(dateGenerated)
+//     })
+//   } catch (error) {
+//     logger.error(error)
+//     return res.status(500).json({ error: error.message })
+//   }
+// }
 
 module.exports = {
   getDownloadPupilCheckData,
   getFileDownloadPupilCheckData,
-  getGenerateLatestPupilCheckData,
   getTestDeveloperHomePage,
   uploadAndViewFormsPage,
   removeCheckForm,

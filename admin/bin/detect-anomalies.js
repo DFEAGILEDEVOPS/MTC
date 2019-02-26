@@ -6,12 +6,12 @@ const winston = require('winston')
 const fs = require('fs')
 winston.level = 'info'
 
-const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
-const anomalyReportService = require('../services/anomaly-report.service')
-const checkProcessingService = require('../services/check-processing.service')
+const anomalyReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/anomaly-report-cache.data.service')
+const anomalyReportService = require('../../functions/report-psychometrician/service/anomaly-report.service')
+const checkProcessingService = require('../../functions/report-psychometrician/service/check-processing.service')
 const commandLineArgs = require('command-line-args')
 const poolService = require('../services/data-access/sql.pool.service')
-const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
+const psychometricianReportCacheDataService = require('../../functions/report-psychometrician/service/data-service/psychometrician-report-cache.data.service')
 
 let requiresProcessing = false
 
