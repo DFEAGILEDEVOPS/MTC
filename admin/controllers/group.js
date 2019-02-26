@@ -28,14 +28,14 @@ const groupPupilsPage = async (req, res, next) => {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (availabilityData.checkWindowClosed) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     next(error)
-  }
-  if (availabilityData.checkWindowClosed) {
-    return res.render('availability/section-unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
   }
 
   req.breadcrumbs(res.locals.pageTitle)

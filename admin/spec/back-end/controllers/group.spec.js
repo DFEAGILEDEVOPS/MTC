@@ -14,6 +14,7 @@ const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const businessAvailabilityService = require('../../../services/business-availability.service')
 
 describe('group controller', () => {
   function getRes () {
@@ -61,6 +62,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -69,6 +71,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
           done()
         })
@@ -86,6 +89,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -94,6 +98,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
           done()
         })

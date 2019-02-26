@@ -39,15 +39,16 @@ const getGeneratePinsOverview = async (req, res, next) => {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (!availabilityData.pinsRestartsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (err) {
     return next(err)
   }
-  if (!availabilityData.pinsRestartsAvailable) {
-    return res.render('availability/section-unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
+
   let error
   try {
     error = await checkWindowSanityCheckService.check()
