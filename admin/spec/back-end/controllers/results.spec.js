@@ -48,6 +48,7 @@ describe('results controller:', () => {
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible').and.returnValue(true)
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getNationalScore')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -57,6 +58,7 @@ describe('results controller:', () => {
       expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.getNationalScore).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
         groups: undefined,
@@ -77,6 +79,7 @@ describe('results controller:', () => {
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getNationalScore')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -86,6 +89,7 @@ describe('results controller:', () => {
       expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).not.toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).not.toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
+      expect(resultPresenter.getNationalScore).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(err)
     })

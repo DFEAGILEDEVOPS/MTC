@@ -23,4 +23,11 @@ resultPresenter.getResultsViewData = (pupils) => {
   return pupilIdentificationFlag.addIdentificationFlags(pupilData)
 }
 
+/**
+ * Returns national score with one decimal place
+ * @param {Number} nationalScore
+ * @returns {Number}
+ */
+resultPresenter.getNationalScore = (nationalScore) => (Math.round(nationalScore * 10) / 10)
+
 module.exports = resultPresenter
