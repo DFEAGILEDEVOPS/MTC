@@ -5,5 +5,8 @@
       "maxPollingInterval": "00:00:01",
       "visibilityTimeout": "00:00:02"
     }
+  },
+  "tracing": {
+    "consoleLevel": "verbose"
   }
 }

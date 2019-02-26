@@ -1,0 +1,11 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "schedule": "45 */30 10,12,14,16 * * *",
+      "name": "psychometricianReportCreateZip",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ]
+}
