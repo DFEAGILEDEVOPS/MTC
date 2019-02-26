@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect spyOn */
+/* global describe, it, expect, spyOn */
 
 const dateService = require('../service/date.service')
 const moment = require('moment')

@@ -56,10 +56,6 @@ completedCheckDataService.sqlFindOne = async (checkCode) => {
   return R.head(result)
 }
 
-
-
-
-
 /**
  * @description returns a boolean indicating whether there are unmarked checks in the database
  */
