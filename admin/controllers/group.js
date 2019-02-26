@@ -5,6 +5,7 @@ const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const businessAvailabilityService = require('../services/business-availability.service')
 
 /**
  * Render the initial 'groups' page.
@@ -20,13 +21,21 @@ const groupPupilsPage = async (req, res, next) => {
   let groups
   let pupilsPerGroup
   let pinGenerationEligibilityData
+  let availabilityData
 
   try {
     groups = await groupService.getGroups(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
   } catch (error) {
     next(error)
+  }
+  if (availabilityData.checkWindowClosed) {
+    return res.render('availability/section-unavailable', {
+      title: res.locals.pageTitle,
+      breadcrumbs: req.breadcrumbs()
+    })
   }
 
   req.breadcrumbs(res.locals.pageTitle)
