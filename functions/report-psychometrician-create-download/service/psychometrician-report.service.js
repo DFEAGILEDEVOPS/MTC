@@ -8,6 +8,9 @@ const uuidv4 = require('uuid/v4')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
 
+const psychometricianReportUploadContainer = 'psychometricianreportupload'
+const psychometricianReportCode = 'PSR'
+
 const psychometricianReportService = {
   /**
    * Creates a zip with the psychometricianReport and anomalyReport
@@ -36,7 +39,7 @@ const psychometricianReportService = {
    */
   uploadToBlobStorage: async function uploadToBlobStorage (data) {
     const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
-    return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, data, data.length)
+    return azureFileDataService.azureUploadFile(psychometricianReportUploadContainer, remoteFilename, data, data.length)
   },
 
   /**
@@ -96,7 +99,14 @@ const psychometricianReportService = {
     const psychometricianReport = await this.generatePsychometricianReport()
     const anomalyReport = await this.generateAnomalyReport()
     const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
-    return this.uploadToBlobStorage(zipFile)
+    const uploadBlob = await this.uploadToBlobStorage(zipFile)
+    const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
+    await psychometricianReportDataService.storeFileUploadMetaInDb(
+      uploadBlob.container,
+      uploadBlob.name,
+      uploadBlob.etag,
+      md5Buffer,
+      psychometricianReportCode)
   },
 
   /**
