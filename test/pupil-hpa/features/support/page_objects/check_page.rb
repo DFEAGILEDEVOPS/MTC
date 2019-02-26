@@ -93,19 +93,16 @@ class CheckPage < SitePrism::Page
     @array_of_answers
   end
 
-  def complete_check_with_wrong_answers(number_of_questions, next_arrangement=nil)
+  def complete_check_with_wrong_answers(number_of_questions, input_type)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
-      if (next_button.visible?)
-        next_button.click
-      end unless next_arrangement == nil
       wait_for_question(2)
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = (values.first.to_i * values.last.to_i + 5)
       @array_of_answers << answer
-      enter_answer_via_numpad(answer)
+      answer_question_via(input_type, answer)
       number_pad.enter.click
     end
     @array_of_answers
