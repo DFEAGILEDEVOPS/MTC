@@ -467,7 +467,6 @@ const getDownloadPupilCheckData = async (req, res, next) => {
   let psychometricianReport
   try {
     psychometricianReport = await testDeveloperReportService.getReportMeta()
-    console.log('Report: ', psychometricianReport)
   } catch (error) {
     return next(error)
   }
