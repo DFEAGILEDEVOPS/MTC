@@ -124,7 +124,7 @@ const psychometricianReportService = {
     // If there are no checks, there will be an empty file
     if (results.length === 0) return []
     // Fetch the first completed check to store the keys as headers
-    const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
+    const completedCheck = results.find(c => c.jsonData && c.jsonData.hasOwnProperty('Q1ID'))
     if (completedCheck) {
       return Object.keys(completedCheck.jsonData)
     }
