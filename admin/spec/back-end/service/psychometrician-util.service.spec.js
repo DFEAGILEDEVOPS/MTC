@@ -1150,4 +1150,156 @@ describe('psychometrician-util.service', () => {
       expect(inputMethod).toBe('x')
     })
   })
+
+  describe('#getPupilStatus', () => {
+    it('returns "Incomplete" when attendanceCode is set', () => {
+      const status = service.getPupilStatus({ attendanceCode: 1 })
+      expect(status).toBe('Not taking the check')
+    })
+    it('returns "Not taking the check" when code is NTR', () => {
+      const status = service.getPupilStatus({ code: 'NTR' })
+      expect(status).toBe('Incomplete')
+    })
+    it('returns "Completed" when no attendanceCode or NTR', () => {
+      const status = service.getPupilStatus({ code: 'CMP' })
+      expect(status).toBe('Completed')
+    })
+  })
+
+  describe('#getAccessArrangements', () => {
+    it('returns "" when config is emtpy', () => {
+      const aa = service.getAccessArrangements(null)
+      expect(aa).toBe('')
+    })
+    it('returns "[1]" for audbile sounds', () => {
+      const aa = service.getAccessArrangements({ audibleSounds: true })
+      expect(aa).toBe('[1]')
+    })
+    it('returns "[2]" for question reader', () => {
+      const aa = service.getAccessArrangements({ questionReader: true })
+      expect(aa).toBe('[2]')
+    })
+    it('returns "[3]" for colour contrast', () => {
+      const aa = service.getAccessArrangements({ colourContrast: true })
+      expect(aa).toBe('[3]')
+    })
+    it('returns "[4]" for input assistance', () => {
+      const aa = service.getAccessArrangements({ inputAssistance: true })
+      expect(aa).toBe('[4]')
+    })
+    it('returns "[5]" for next font size', () => {
+      const aa = service.getAccessArrangements({ fontSize: true })
+      expect(aa).toBe('[5]')
+    })
+    it('returns "[6]" for next between questions', () => {
+      const aa = service.getAccessArrangements({ nextBetweenQuestions: true })
+      expect(aa).toBe('[6]')
+    })
+    it('returns "[7]" for numpad removal', () => {
+      const aa = service.getAccessArrangements({ numpadRemoval: true })
+      expect(aa).toBe('[7]')
+    })
+    it('returns multiple access arrangement codes', () => {
+      const aa = service.getAccessArrangements({
+        questionReader: true,
+        inputAssistance: true,
+        numpadRemoval: true
+      })
+      expect(aa).toBe('[2][4][7]')
+    })
+  })
+
+  describe('#getReaderStartTime', () => {
+    it('returns "" if audit data not found', () => {
+      const time = service.getReaderStartTime(1, {})
+      expect(time).toBe('')
+    })
+    it('returns QuestionReadingStarted', () => {
+      const audits = [
+        {
+          'type': 'QuestionReadingStarted',
+          'clientTimestamp': '2019-02-14T08:59:52.905Z',
+          'data': { 'sequenceNumber': 3 }
+        }
+      ]
+      const time = service.getReaderStartTime(3, audits)
+      expect(time).toBe('2019-02-14T08:59:52.905Z')
+      const notime = service.getReaderStartTime(2, audits)
+      expect(notime).toBe('')
+    })
+  })
+
+  describe('#getReaderEndTime', () => {
+    it('returns "" if audit data not found', () => {
+      const time = service.getReaderEndTime(1, {})
+      expect(time).toBe('')
+    })
+    it('returns QuestionReadingEnded', () => {
+      const audits = [
+        {
+          'type': 'QuestionReadingEnded',
+          'clientTimestamp': '2019-02-14T08:59:54.110Z',
+          'data': { 'sequenceNumber': 3 }
+        }
+      ]
+      const time = service.getReaderEndTime(3, audits)
+      expect(time).toBe('2019-02-14T08:59:54.110Z')
+      const notime = service.getReaderEndTime(2, audits)
+      expect(notime).toBe('')
+    })
+  })
+
+  describe('#getRestartReasonNumber', () => {
+    it('returns 1 for LOI', () => {
+      const n = service.getRestartReasonNumber('LOI')
+      expect(n).toBe(1)
+    })
+    it('returns 2 for ITI', () => {
+      const n = service.getRestartReasonNumber('ITI')
+      expect(n).toBe(2)
+    })
+    it('returns 3 for CLD', () => {
+      const n = service.getRestartReasonNumber('CLD')
+      expect(n).toBe(3)
+    })
+    it('returns 4 for DNC', () => {
+      const n = service.getRestartReasonNumber('DNC')
+      expect(n).toBe(4)
+    })
+    it('returns "" for an unknown code', () => {
+      const n = service.getRestartReasonNumber('XX')
+      expect(n).toBe('')
+    })
+  })
+
+  describe('#getAttendanceReasonNumber', () => {
+    it('returns 1 for INCRG', () => {
+      const n = service.getAttendanceReasonNumber('INCRG')
+      expect(n).toBe(1)
+    })
+    it('returns 2 for ABSNT', () => {
+      const n = service.getAttendanceReasonNumber('ABSNT')
+      expect(n).toBe(2)
+    })
+    it('returns 3 for LEFTT', () => {
+      const n = service.getAttendanceReasonNumber('LEFTT')
+      expect(n).toBe(3)
+    })
+    it('returns 4 for NOACC', () => {
+      const n = service.getAttendanceReasonNumber('NOACC')
+      expect(n).toBe(4)
+    })
+    it('returns 5 for BLSTD', () => {
+      const n = service.getAttendanceReasonNumber('BLSTD')
+      expect(n).toBe(5)
+    })
+    it('returns 6 for JSTAR', () => {
+      const n = service.getAttendanceReasonNumber('JSTAR')
+      expect(n).toBe(6)
+    })
+    it('returns "" for an unknown code', () => {
+      const n = service.getAttendanceReasonNumber('XX')
+      expect(n).toBe('')
+    })
+  })
 })
