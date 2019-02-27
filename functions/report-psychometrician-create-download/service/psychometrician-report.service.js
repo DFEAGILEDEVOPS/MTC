@@ -94,6 +94,12 @@ const psychometricianReportService = {
     })
   },
 
+  /**
+   * Generate and upload the psychometrician and anomaly reports in Zip format to Azure Storage
+   * This is a lift and shift version: it needs to be updated
+   * TODO: handle volume data
+   * @return {Promise<void>}
+   */
   process: async function process () {
     const dateGenerated = moment()
     const psychometricianReport = await this.generatePsychometricianReport()
