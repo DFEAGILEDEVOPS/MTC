@@ -129,16 +129,32 @@ checkFormV2Service.getCheckFormsByCheckWindowIdAndType = async (checkWindow, che
 }
 
 /**
- * Fetches check window, check form records and assigns forms to check window
+ * Identifies whether check window has already a familiarisation form assigned
+ * @param {Object} checkWindow
+ * @returns {Boolean}
+ */
+checkFormV2Service.hasAssignedFamiliarisationForm = async (checkWindow) => {
+  if (!checkWindow || !checkWindow.id) {
+    throw new Error('Check window not found')
+  }
+  const assignedFamiliarisationForm = await checkFormV2DataService.sqlFindCheckWindowFamiliarisationCheckForm(checkWindow.id)
+  return !!assignedFamiliarisationForm && !!assignedFamiliarisationForm.id
+}
+
+/**
+ * Fetches check window, check form records and assigns/unassigns forms to check window
  * @param {Object} checkWindow
  * @param {String} checkFormType
  * @param {Array} checkFormUrlSlugs
  * @returns {Promise<Array>}
  */
-checkFormV2Service.assignCheckWindowForms = async (checkWindow, checkFormType, checkFormUrlSlugs) => {
+checkFormV2Service.updateCheckWindowForms = async (checkWindow, checkFormType, checkFormUrlSlugs) => {
   const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
   if (!checkWindow || !checkWindow.id) {
     throw new Error(`Check window not found`)
+  }
+  if (checkFormType === 'familiarisation' && !checkFormUrlSlugs) {
+    return checkFormV2DataService.sqlUnassignFamiliarisationForm(checkWindow.id)
   }
   const checkForms = await checkFormV2DataService.sqlFindCheckFormsByUrlSlugs(checkFormUrlSlugs)
   if (!checkForms || !Array.isArray(checkForms) || checkForms.length === 0) {
