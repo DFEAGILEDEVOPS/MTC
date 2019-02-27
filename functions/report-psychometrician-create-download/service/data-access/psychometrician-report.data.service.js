@@ -37,10 +37,10 @@ const psychometricianReportDataService = {
    * @return {Promise<void>}
    */
   sqlSaveFileUploadMeta: async function storeFileUploadMetaInDb (container,
-                                                                 fileName,
-                                                                 etag,
-                                                                 md5,
-                                                                 typeCode) {
+    fileName,
+    etag,
+    md5,
+    typeCode) {
     const sql = `INSERT INTO [mtc_admin].[azureBlobFile] (container, etag, fileName, md5, azureBlobFileType_id) 
                  VALUES
                  (@container, @etag, @fileName, @md5, (SELECT id from [mtc_admin].[azureBlobFileType] where code = @code))`
