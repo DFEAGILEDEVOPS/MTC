@@ -61,6 +61,13 @@ const manageGroupPage = async (req, res, next) => {
   let action = 'add'
   res.locals.pageTitle = 'Create group'
 
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
+
   if (req.params.groupId) {
     action = 'edit'
     res.locals.pageTitle = 'Edit group'
@@ -101,6 +108,13 @@ const addGroup = async (req, res, next) => {
   if (!req.body.name || !req.body.pupil) {
     req.flash('error', 'Missing fields.')
     return res.redirect('/group/pupils-list/add')
+  }
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
   }
 
   let validationError
@@ -169,6 +183,13 @@ const editGroup = async (req, res, next) => {
     return res.redirect('/group/pupils-list/edit')
   }
 
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
+
   let group
   let oldGroup
 
@@ -233,6 +254,8 @@ const removeGroup = async (req, res, next) => {
   }
 
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
     await groupDataService.sqlMarkGroupAsDeleted(req.params.groupId)
   } catch (error) {
     return next(error)

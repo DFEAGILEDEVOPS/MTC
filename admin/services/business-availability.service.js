@@ -36,6 +36,16 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
 }
 
 /**
+ * Return groups availability
+ * @param {Object} checkWindowData
+ * @returns {Boolean} groups allowance
+ */
+businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  return pinGenerationEligibilityData.isGroupsPageAccessible
+}
+
+/**
  * Determine if pin generation is allowed
  * @param {Boolean} isLiveCheck
  * @param {Object} checkWindowData
@@ -58,6 +68,18 @@ businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => 
   const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
   if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error(`Restarts are not allowed`)
+  }
+}
+
+/**
+ * Determine if groups are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areGroupsAllowed is false
+ */
+businessAvailabilityService.determineGroupsEligibility = (checkWindowData) => {
+  const areGroupsAllowed = businessAvailabilityService.areGroupsAllowed(checkWindowData)
+  if (!areGroupsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Groups are not allowed`)
   }
 }
 
