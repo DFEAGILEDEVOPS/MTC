@@ -116,14 +116,12 @@ Solutions like promises and async functions drastically decrease the complexity 
 [Async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) will further wrap generators and promises in a higher level syntax.
 
 ### ES6/ES7
-
 Javascript is constantly changing and is actually just an implementation of a standard called [ECMAScript.](http://www.ecma-international.org)The term ECMAScript 6 or 7 refers to the specific version of this standard.
 
 ## Client side
 Taking into account that[cross-browser compatibility](https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices)is necessary, HTML, CSS and Javascript must render web pages in the same way.
 
 ## Unit testing
-
 For the purpose of testing the following libraries are used:
 
 - [Karma](https://karma-runner.github.io)- a test runner that spawns a web server and executes source code against test code for each of the browsers connected
@@ -132,9 +130,7 @@ For the purpose of testing the following libraries are used:
 
 
 ## Code coverage
-
 Code coverage is achieved through[Istanbul](https://istanbul.js.org/)which is an instrumentation library that tracks statement, branch, function coverage and generates a full report.
 
 ## Database Migrations
-
 Migrations are incremental.  Never edit an existing one, always create a new one and perform any transformations of existing data as necessary.

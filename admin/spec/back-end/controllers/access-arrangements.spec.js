@@ -12,7 +12,7 @@ const pupilAccessArrangementsService = require('../../../services/pupil-access-a
 const pupilAccessArrangementsEditService = require('../../../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
-const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../../../services/business-availability.service')
 const ValidationError = require('../../../lib/validation-error')
 
 describe('access arrangements controller:', () => {
@@ -42,10 +42,6 @@ describe('access arrangements controller:', () => {
       url: '/access-arrangements/overview'
     }
 
-    beforeEach(() => {
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-    })
-
     it('displays the access arrangements overview page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
@@ -53,10 +49,12 @@ describe('access arrangements controller:', () => {
       spyOn(pupilAccessArrangementsService, 'getPupils')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
       await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
     })
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {

@@ -19,7 +19,7 @@
         </div>
         <% } %>
 
-        <%- partial('partials/_readonly', {hdfSubmitted}) %>
+        <%- partial('partials/_readonly', {availabilityData}) %>
 
         <header class="page-header">
             <h1 class="heading-xlarge">Access arrangements</h1>
@@ -61,7 +61,7 @@
         <form action="/access-arrangements/select-access-arrangements" name="select-pupils-and-arrangements">
             <div class="form-group">
                 <div class="form-buttons">
-                    <% if (hdfSubmitted) { %>
+                    <% if (!availabilityData.available) { %>
                     <input type="submit" class="button-secondary" value="Select pupil and arrangement" disabled/>
                     <% } else { %>
                     <input type="submit" class="button" value="Select pupil and arrangement"/>
@@ -83,13 +83,13 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="<% if (!hdfSubmitted) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
+                <td class="<% if (availabilityData.available) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
                                 <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
-                            <% if (hdfSubmitted || pupil.hasCompletedCheck || pupil.notTakingCheck) { %>
+                            <% if (!availabilityData.available || pupil.hasCompletedCheck || pupil.notTakingCheck) { %>
                             <%= pupil.fullName %>
                             <% } else { %>
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -108,14 +108,12 @@
                     <% }) %>
                 </td>
                 <td>
-                    <% if (!hdfSubmitted) { %>
-                        <% if(pupil.hasCompletedCheck) { %>
+                    <% if(pupil.hasCompletedCheck) { %>
                         Completed Check
-                        <% } else if(pupil.notTakingCheck) { %>
+                    <% } else if(pupil.notTakingCheck) { %>
                         Not taking check
-                        <% } else { %>
+                    <% } else if (availabilityData.available) { %>
                         <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
-                        <% } %>
                     <% } %>
                 </td>
             </tr>
