@@ -13,7 +13,7 @@
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
-    "test": "nyc -r html ./run-jasmine.js",
+    "test": "yarn lint && yarn run nyc -r html ./run-jasmine.js",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
     "purgestorage": "bin/init-dev-storage.js",
