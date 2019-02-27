@@ -3,7 +3,7 @@
 const { performance } = require('perf_hooks')
 
 const v1 = require('./v1')
-const name = 'report-psychometrician-create-archive'
+const name = 'report-psychometrician-create-download'
 
 module.exports = async function (context, message) {
   const start = performance.now()

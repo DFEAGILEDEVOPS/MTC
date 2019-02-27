@@ -17,7 +17,6 @@ const psychometricianDataService = {
    * @return {Promise<void>}
    */
   sqlFindPupilsByIds: async (ids) => {
-    // TODO: [RBAC] - only allow access from the test-developer role
     if (!(Array.isArray(ids) && ids.length > 0)) {
       throw new Error('No ids provided')
     }
