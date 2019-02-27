@@ -11,10 +11,8 @@ const testDeveloperReportService = {
   getReportMeta: async function getReportMeta (urlSlug = null) {
     let report
     if (urlSlug) {
-      console.log('getting by url slug')
       report = await psychometricianReportDataService.sqlGetByUrlSlug(urlSlug)
     } else {
-      console.log('getting latest')
       report = await psychometricianReportDataService.getLatest()
     }
     return report
