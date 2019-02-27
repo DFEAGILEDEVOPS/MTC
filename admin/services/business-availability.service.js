@@ -119,8 +119,9 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
   const checkWindowYear = dateService.formatYear(checkWindowData.checkEndDate)
   const adminWindowStarted = currentDate.isAfter(checkWindowData.adminStartDate)
   const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
-  const canEditArrangements = !hdfSubmitted && !checkWindowClosed
-  const pinsRestartsAvailable = !hdfSubmitted && checkWindowStarted && !checkWindowClosed && !config.OVERRIDE_AVAILABILITY_CHECKS
+  const canEditArrangements = (!hdfSubmitted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const pinsRestartsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const groupsAvailable = !checkWindowClosed || config.OVERRIDE_AVAILABILITY_CHECKS
   return {
     checkWindowStarted,
     checkWindowClosed,
@@ -129,7 +130,8 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
     adminWindowClosed,
     hdfSubmitted,
     canEditArrangements,
-    pinsRestartsAvailable
+    pinsRestartsAvailable,
+    groupsAvailable
   }
 }
 

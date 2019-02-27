@@ -33,7 +33,7 @@ controller.getOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  if (availabilityData.checkWindowClosed) {
+  if (!availabilityData.canEditArrangements) {
     return res.render('availability/section-unavailable', {
       title: res.locals.pageTitle,
       breadcrumbs: req.breadcrumbs()
