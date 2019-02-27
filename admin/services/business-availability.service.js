@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const config = require('../config')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const dateService = require('../services/date.service')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
@@ -43,8 +44,20 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
 businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, checkWindowData) => {
   const isPinGenerationAllowed = businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindowData)
   const pinEnv = isLiveCheck ? 'Live' : 'Familiarisation'
-  if (!isPinGenerationAllowed) {
+  if (!isPinGenerationAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error(`${pinEnv} pin generation is not allowed`)
+  }
+}
+
+/**
+ * Determine if restarts are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areRestartsAllowed is false
+ */
+businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => {
+  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
+  if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Restarts are not allowed`)
   }
 }
 
@@ -63,7 +76,7 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
   const adminWindowStarted = currentDate.isAfter(checkWindowData.adminStartDate)
   const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
   const canEditArrangements = !hdfSubmitted && !checkWindowClosed
-  const pinsRestartsAvailable = !hdfSubmitted && checkWindowStarted && !checkWindowClosed
+  const pinsRestartsAvailable = !hdfSubmitted && checkWindowStarted && !checkWindowClosed && !config.OVERRIDE_AVAILABILITY_CHECKS
   return {
     checkWindowStarted,
     checkWindowClosed,

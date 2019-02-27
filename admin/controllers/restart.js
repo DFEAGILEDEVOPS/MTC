@@ -65,6 +65,8 @@ controller.getSelectRestartList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
     } else {
@@ -94,6 +96,14 @@ controller.postSubmitRestartList = async (req, res, next) => {
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
+
   const info = classDisruptionInfo || didNotCompleteInfo
   const validationError = restartValidator.validateReason(restartReason, info)
   if (validationError.hasError()) {
@@ -131,6 +141,8 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let pupilsRestarted
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupilsRestarted = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
@@ -157,6 +169,8 @@ controller.postDeleteRestart = async (req, res, next) => {
   let pupil
   const pupilSlug = req.body && req.body.pupil
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {
     logger.error('Failed to mark restart as deleted', error)

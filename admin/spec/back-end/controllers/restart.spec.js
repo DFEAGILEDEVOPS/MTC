@@ -115,9 +115,13 @@ describe('restart controller:', () => {
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.determineRestartsEligibility).toHaveBeenCalled()
       done()
     })
 
@@ -128,6 +132,8 @@ describe('restart controller:', () => {
       spyOn(res, 'render').and.returnValue(null)
       spyOn(restartService, 'getPupils').and.throwError(new Error('mock error'))
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.throwError(new Error('mock error'))
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       try {
         await controller(req, res, next)
         expect(next).toHaveBeenCalledWith(new Error('mock error'))
@@ -180,6 +186,8 @@ describe('restart controller:', () => {
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Error: Select pupils for restart')
@@ -198,6 +206,8 @@ describe('restart controller:', () => {
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
@@ -217,6 +227,8 @@ describe('restart controller:', () => {
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }])
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
@@ -235,6 +247,8 @@ describe('restart controller:', () => {
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
@@ -251,6 +265,8 @@ describe('restart controller:', () => {
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       spyOn(logger, 'error')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       try {
@@ -288,15 +304,21 @@ describe('restart controller:', () => {
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.determineRestartsEligibility).toHaveBeenCalled()
     })
 
     it('calls next if error occurred while marking the pupil as deleted', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       spyOn(restartService, 'markDeleted').and.returnValue(Promise.reject(new Error('error')))
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
@@ -310,6 +332,8 @@ describe('restart controller:', () => {
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
@@ -322,6 +346,8 @@ describe('restart controller:', () => {
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
       spyOn(logger, 'error')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postDeleteRestart
 
       try {
