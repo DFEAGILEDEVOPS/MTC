@@ -3,7 +3,6 @@
 require('dotenv').config()
 const toBool = require('to-bool')
 
-const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
 module.exports = {
