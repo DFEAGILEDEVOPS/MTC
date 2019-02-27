@@ -10,8 +10,10 @@ class AzureTableHelper
       begin
         sleep 2
         a = get_row('preparedCheck', school_password, pin)
+        p a
         break if a['RowKey'] == pin
       rescue Azure::Core::Http::HTTPError => e
+        raise 'Check not prepared'
       end
     end
   end
