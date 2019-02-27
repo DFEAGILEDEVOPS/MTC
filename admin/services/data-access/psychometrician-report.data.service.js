@@ -1,7 +1,7 @@
 'use strict'
 const R = require('ramda')
 const sqlService = require('./sql.service')
-const TYPES  = sqlService.TYPES
+const TYPES = sqlService.TYPES
 
 const psychometricianReportDataService = {
   /**

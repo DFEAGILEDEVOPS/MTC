@@ -1,15 +1,11 @@
 'use strict'
 
 const moment = require('moment')
-const logger = require('./log.service').getLogger()
-
-const checkDataService = require('./data-access/check.data.service')
-const completedCheckDataService = require('./data-access/completed-check.data.service')
-const jwtService = require('../services/jwt.service')
-// const psUtilService = require('../../functions/report-psychometrician/service/psychometrician-util.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 
 const checkStateService = require('../services/check-state.service')
+const completedCheckDataService = require('./data-access/completed-check.data.service')
+const jwtService = require('../services/jwt.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 
 const checkCompleteService = {}
 
@@ -32,7 +28,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   // Timestamp the request
   const receivedByServerAt = moment.utc()
 
-  const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
+  // const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
   // if (!existingCheck.startedAt) {
   //   logger.debug('Check submission for a check that does not have a startedAt date')
   //   // determine the check started time from the audit log - CAUTION this is client data
