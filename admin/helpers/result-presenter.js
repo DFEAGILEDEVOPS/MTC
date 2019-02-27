@@ -24,7 +24,7 @@ resultPresenter.getResultsViewData = (pupils) => {
 }
 
 /**
- * Returns national score with one decimal place
+ * Returns score with one decimal place
  * @param {Number} score
  * @returns {Number}
  */
