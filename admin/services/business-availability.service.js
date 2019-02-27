@@ -46,6 +46,16 @@ businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
 }
 
 /**
+ * Return access arrangements availability
+ * @param {Object} checkWindowData
+ * @returns {Boolean} groups allowance
+ */
+businessAvailabilityService.areAccessArrangementsAllowed = (checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  return pinGenerationEligibilityData.isAccessArrangementsPageAccessible
+}
+
+/**
  * Determine if pin generation is allowed
  * @param {Boolean} isLiveCheck
  * @param {Object} checkWindowData
@@ -80,6 +90,18 @@ businessAvailabilityService.determineGroupsEligibility = (checkWindowData) => {
   const areGroupsAllowed = businessAvailabilityService.areGroupsAllowed(checkWindowData)
   if (!areGroupsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error(`Groups are not allowed`)
+  }
+}
+
+/**
+ * Determine if groups are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areGroupsAllowed is false
+ */
+businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindowData) => {
+  const areAccessArrangementsAllowed = businessAvailabilityService.areAccessArrangementsAllowed(checkWindowData)
+  if (!areAccessArrangementsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Access Arrangements are not allowed`)
   }
 }
 
