@@ -8,8 +8,16 @@ const testDeveloperReportService = {
    * Return the database record / meta information for the latest psychometrician report
    * @return {Promise<*|Promise<*>>}
    */
-  getUploadedFile: async function getUploadedFile () {
-    return psychometricianReportDataService.getLatest()
+  getReportMeta: async function getReportMeta (urlSlug = null) {
+    let report
+    if (urlSlug) {
+      console.log('getting by url slug')
+      report = await psychometricianReportDataService.sqlGetByUrlSlug(urlSlug)
+    } else {
+      console.log('getting latest')
+      report = await psychometricianReportDataService.getLatest()
+    }
+    return report
   },
 
   /**
