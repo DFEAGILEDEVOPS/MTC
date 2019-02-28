@@ -33,6 +33,8 @@
 
         <h1 class="heading-xlarge" id="heading-xlarge"><%= actionName %> check window</h1>
 
+        <%- partial('partials/_session_expiry') %>
+
         <form action="/service-manager/check-windows/submit" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">

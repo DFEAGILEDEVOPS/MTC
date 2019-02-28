@@ -5,6 +5,7 @@ const logger = require('./log.service').getLogger()
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
 const UKFormat = 'DD/MM/YYYY'
+const yearFormat = 'YYYY'
 const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
 const dayAndDateFormat = 'dddd, D MMMM'
@@ -12,6 +13,10 @@ const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
 const dateService = {
+  formatYear: function (date) {
+    return moment(date).format(yearFormat)
+  },
+
   formatFullGdsDate: function (date) {
     return dateService.checkAndFormat(date, gdsFullFormat)
   },

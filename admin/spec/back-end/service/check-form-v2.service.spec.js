@@ -144,76 +144,135 @@ describe('check-form-v2.service', () => {
       expect(checkFormV2DataService.sqlFindCheckFormsByCheckWindowIdAndType).toHaveBeenCalledWith(1, isLiveCheckForm)
     })
   })
-  describe('assignCheckWindowForms', () => {
+  describe('updateCheckWindowForms', () => {
     it('fetches check window, check form records and assigns forms to check window', async () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
-      await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+      await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).toHaveBeenCalled()
     })
     it('returns an error if no check window is found', async () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs')
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
       const checkWindow = {}
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+        await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('Check window not found')
       }
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).not.toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no check forms are found', async () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([])
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+        await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('Check forms not found with url slugs urlSlug1,urlSlug2')
       }
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no fetching check forms call fails', async () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+        await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('error')
       }
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
     })
     it('returns an error if no assigning check forms call fails', async () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow').and.returnValue(Promise.reject(new Error('error')))
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
       try {
-        await checkFormV2Service.assignCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+        await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
         fail()
       } catch (error) {
         expect(error.message).toBe('error')
       }
       expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).not.toHaveBeenCalled()
       expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).toHaveBeenCalled()
+    })
+    it('calls sqlUnassignFamiliarisationForm if no check forms are passed in familiarisation type', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs')
+      spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
+      spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
+      const checkWindow = { id: 1, urlSlug: 'urlSlug' }
+      const checkFormType = 'familiarisation'
+      const checkFormUrlSlugs = undefined
+      await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkFormUrlSlugs)
+      expect(checkFormV2DataService.sqlFindCheckFormsByUrlSlugs).not.toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlUnassignFamiliarisationForm).toHaveBeenCalled()
+      expect(checkFormV2DataService.sqlAssignFormsToCheckWindow).not.toHaveBeenCalled()
+    })
+  })
+  describe('hasAssignedFamiliarisationForm', () => {
+    it('returns true if a familiarisation form is assigned to the check window', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckWindowFamiliarisationCheckForm').and.returnValue({ id: 1 })
+      const checkWindow = { id: 1 }
+      let result
+      try {
+        result = await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+      } catch (error) {
+        fail()
+      }
+      expect(result).toBeTruthy()
+      expect(checkFormV2DataService.sqlFindCheckWindowFamiliarisationCheckForm).toHaveBeenCalled()
+    })
+    it('returns false if a familiarisation form is not assigned to the check window', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckWindowFamiliarisationCheckForm').and.returnValue({})
+      const checkWindow = { id: 1 }
+      let result
+      try {
+        result = await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+      } catch (error) {
+        fail()
+      }
+      expect(result).toBeFalsy()
+      expect(checkFormV2DataService.sqlFindCheckWindowFamiliarisationCheckForm).toHaveBeenCalled()
+    })
+    it('throws an error if check window is not found', async () => {
+      spyOn(checkFormV2DataService, 'sqlFindCheckWindowFamiliarisationCheckForm').and.returnValue({})
+      const checkWindow = {}
+      try {
+        await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+        fail()
+      } catch (error) {
+        expect(error.message).toEqual('Check window not found')
+      }
+      expect(checkFormV2DataService.sqlFindCheckWindowFamiliarisationCheckForm).not.toHaveBeenCalled()
     })
   })
 })

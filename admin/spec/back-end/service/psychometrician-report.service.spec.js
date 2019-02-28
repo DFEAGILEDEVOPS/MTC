@@ -169,8 +169,6 @@ describe('psychometricians-report.service', () => {
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
       const completedCheck = Object.assign({}, completedCheckMockOrig)
-      completedCheck.checkCount = 1
-      completedCheck.checkStatus = 'Complete'
       const data = service.produceReportData(completedCheck, markedAnswers, pupil, checkForm, school)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
@@ -180,8 +178,6 @@ describe('psychometricians-report.service', () => {
       expect(data.Q3Sco).toBe(0)
       expect(data.Q4Sco).toBe(1)
       expect(data.Q5Sco).toBe(1)
-      expect(data.CheckCount).toBe(1)
-      expect(data.CheckStatus).toBe('Complete')
     })
 
     it('does not throw an error if an event does not have an eventType', () => {

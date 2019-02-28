@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 
 const sqlService = require('./sql.service')
 
@@ -253,7 +253,7 @@ const checkFormV2DataService = {
    * @param {Array} checkForms
    * @returns {Promise<*>}
    */
-  sqlAssignFormsToCheckWindow: (checkWindowId, isLiveCheckForm, checkForms) => {
+  sqlAssignFormsToCheckWindow: async (checkWindowId, isLiveCheckForm, checkForms) => {
     const params = []
     const queries = []
 
@@ -296,6 +296,55 @@ const checkFormV2DataService = {
     queries.push([insertSql, inserts.join(', \n')].join(' '))
     const sql = queries.join('\n')
     return sqlService.modifyWithTransaction(sql, params)
+  },
+
+  /**
+   * Find existing familiarisation form for check window
+   * @param {Number} checkWindowId
+   * @returns {Promise<*>}
+   */
+  sqlFindCheckWindowFamiliarisationCheckForm: async (checkWindowId) => {
+    const sql = `SELECT TOP 1 cfw.* FROM ${sqlService.adminSchema}.checkFormWindow cfw
+      LEFT JOIN ${sqlService.adminSchema}.checkForm cf
+        ON cfw.checkForm_id = cf.id
+      LEFT JOIN ${sqlService.adminSchema}.checkWindow cw
+        ON cfw.checkWindow_id = cw.id
+      WHERE cw.id = @checkWindowId
+      AND cf.isLiveCheckForm = 0`
+
+    const params = [
+      {
+        name: 'checkWindowId',
+        value: checkWindowId,
+        type: TYPES.Int
+      }
+    ]
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
+  },
+
+  /**
+   * Delete existing familiarisation form from check window
+   * @param {Number} checkWindowId
+   * @returns {Promise<*>}
+   */
+  sqlUnassignFamiliarisationForm: async (checkWindowId) => {
+    const sql = `DELETE cfw FROM ${sqlService.adminSchema}.checkFormWindow cfw
+      LEFT JOIN ${sqlService.adminSchema}.checkForm cf
+        ON cfw.checkForm_id = cf.id
+      LEFT JOIN ${sqlService.adminSchema}.checkWindow cw
+        ON cfw.checkWindow_id = cw.id
+      WHERE cw.id = @checkWindowId
+      AND cf.isLiveCheckForm = 0`
+
+    const params = [
+      {
+        name: 'checkWindowId',
+        value: checkWindowId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.modify(sql, params)
   }
 }
 

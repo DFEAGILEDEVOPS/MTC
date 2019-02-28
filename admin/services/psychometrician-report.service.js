@@ -204,13 +204,6 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 }
 
 /**
- * Add the Check collection information to the completedChecks by modifying the object directly
- * TODO: refactor the db to make completedChecks.check a 'ref' and remove this code
- * @param completedChecks
- * @return {Promise.<void>}
- */
-
-/**
  * Generate the ps report from the populated check object
  * CompletedCheck: check + the Check object fully populated with pupil (+ school), checkWindow
  * and checkForm
@@ -219,13 +212,14 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  * @param {Object} pupil
  * @param {Object} checkForm
  * @param {Object} school
- * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
+ * @return {Object}
  */
 psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school) {
   const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
   const config = R.path(['data', 'config'], check)
   const deviceOptions = R.path(['data', 'device'], check)
   const { type, model } = psUtilService.getDeviceTypeAndModel(userAgent)
+  const startTime = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check) || check.startedAt
 
   const psData = {
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
@@ -235,9 +229,13 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'Surname': pupil.lastName,
 
     'FormMark': psUtilService.getMark(check),
-    'GroupTiming': R.pathOr('', ['questionTime'], config),
+    'QDisplayTime': R.pathOr('', ['questionTime'], config),
     'PauseLength': R.pathOr('', ['loadingTime'], config),
-    'SpeechSynthesis': R.pathOr('', ['speechSynthesis'], config),
+    'AccessArr': psUtilService.getAccessArrangements(config),
+    'RestartReason': psUtilService.getRestartReasonNumber(check.restartCode),
+    'RestartNumber': check.restartCount,
+    'ReasonNotTakingCheck': psUtilService.getAttendanceReasonNumber(check.attendanceCode),
+    'PupilStatus': psUtilService.getPupilStatus(check),
 
     'DeviceType': type,
     'DeviceTypeModel': model,
@@ -252,11 +250,9 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'AttemptId': check.checkCode,
     'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
-    'CheckStatus': check.checkStatus,
-    'CheckCount': check.checkCount,
 
     // TimeStart should be when the user clicked the Start button.
-    'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
+    'TimeStart': startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
     'TimeComplete': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))),
@@ -278,7 +274,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       const ans = check.data.answers.find(x => x.sequenceNumber === (idx + 1) && question.f1 === x.factor1 && question.f2 === x.factor2)
       psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
       psData[p(idx) + 'Response'] = ans ? ans.answer : ''
-      psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
+      psData[p(idx) + 'InputMethods'] = psUtilService.getInputMethod(inputs)
       psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
       psData[p(idx) + 'Sco'] = markedAnswer ? psUtilService.getScore(markedAnswer) : ''
       psData[p(idx) + 'ResponseTime'] = ans ? psUtilService.getResponseTime(inputs, ans.answer) : ''
@@ -293,6 +289,8 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       psData[p(idx) + 'tLastKey'] = tLastKey
       psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad) // seconds
       psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
+      psData[p(idx) + 'ReaderStart'] = psUtilService.getReaderStartTime(idx + 1, audits)
+      psData[p(idx) + 'ReaderEnd'] = psUtilService.getReaderEndTime(idx + 1, audits)
     })
   }
   return psData
@@ -307,7 +305,7 @@ psychometricianReportService.produceReportDataHeaders = function (results) {
   // If there are no checks, there will be an empty file
   if (results.length === 0) return []
   // Fetch the first completed check to store the keys as headers
-  const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
+  const completedCheck = results.find(c => c.jsonData && c.jsonData.hasOwnProperty('Q1ID'))
   if (completedCheck) {
     return Object.keys(completedCheck.jsonData)
   }
