@@ -24,7 +24,7 @@ describe('File validator', function () {
       const fsMock = sandbox.mock(fs)
       fsMock.expects('readFileSync').resolves('text')
       uploadedFile = {
-        filename: 'test.csv'
+        file: 'test.csv'
       }
       done()
     })
@@ -46,15 +46,23 @@ describe('File validator', function () {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
-      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noFile)
+      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noCSVFile)
       done()
     })
-    it('detects empty file', async function (done) {
-      uploadedFile = 'test'
+    it('detects empty file on unreadable file', async function (done) {
+      uploadedFile = { file: 'test.csv' }
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
       expect(validationError.get('template-upload')).toBe(fileCsvErrors.isNotReadable)
+      done()
+    })
+    it('detects not acceptable file', async function (done) {
+      uploadedFile = { file: 'file.txt' }
+      const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
+      expect(validationError.hasError()).toBe(true)
+      expect(validationError.isError('template-upload')).toBe(true)
+      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noCSVFile)
       done()
     })
   })
