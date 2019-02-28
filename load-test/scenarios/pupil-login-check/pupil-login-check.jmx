@@ -31,10 +31,20 @@
         <boolProp name="CookieManager.clearEachIteration">false</boolProp>
       </CookieManager>
       <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="PUPIL_LOGIN_FILE" elementType="Argument">
+            <stringProp name="Argument.name">PUPIL_LOGIN_FILE</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) + &quot;-preparedChecks.csv&quot; )}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Pupil Logins DataSet" enabled="true">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding"></stringProp>
-        <stringProp name="filename">preparedChecks.csv</stringProp>
+        <stringProp name="filename">${PUPIL_LOGIN_FILE}</stringProp>
         <boolProp name="ignoreFirstLine">true</boolProp>
         <boolProp name="quotedData">false</boolProp>
         <boolProp name="recycle">false</boolProp>
