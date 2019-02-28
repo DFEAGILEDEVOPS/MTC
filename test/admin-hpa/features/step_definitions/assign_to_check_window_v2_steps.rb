@@ -43,8 +43,7 @@ Then(/^I can assign familiarisation check forms to inactive window$/) do
   window.try_it_out_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(select_form_to_assign_page.sticky_banner.count.text).to eql 'Forms selected: 1'
-  select_form_to_assign_page.sticky_banner.confirm.click
+  assign_form_to_window_v2_page.save_button.click
   window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
   expect(window.try_it_out_check_link_text.text).to include '(1 form assigned)'
   expect(window.mtc_check_link_text.text).to include '(0 forms assigned)'
@@ -60,6 +59,21 @@ Then(/^I should not be allowed to do so$/) do
   select_form_to_assign_page.check_forms.rows.each {|row| expect(row).to have_no_select}
 end
 
+And(/^form assigned to '(.*)' check window display 'yes'$/) do |window_name|
+  case window_name
+    when 'Try it out'
+      form_name = 'MTC0103'
+    when 'Live check'
+      form_name = 'MTC0100'
+  end
+  select_form_to_assign_page.check_forms.rows.each do |row|
+    if row.name_of_form.text.eql?(form_name)
+      expect(row.assigned.text.eql?('Yes')).to be_truthy, "Expected: 'Yes' .. But got #{row.assigned.text}"
+    else
+      expect(row.assigned.text.eql?('Yes')).to be_falsy, "Expected: '' .. But got #{row.assigned.text}"
+    end
+  end
+end
 
 When(/^I attempt to assign a familiarisation form to a active check window$/) do
   window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == 'Development Phase'}
@@ -76,7 +90,7 @@ When(/^I attempt to assign a live form to a inactive check window$/) do
 end
 
 But(/^decide to cancel assigning$/) do
-  select_form_to_assign_page.sticky_banner.cancel.click
+  assign_form_to_window_v2_page.cancel_button.click
 end
 
 When(/^I attempt to assign a familiarisation form to a inactive check window$/) do
@@ -84,7 +98,6 @@ When(/^I attempt to assign a familiarisation form to a inactive check window$/) 
   window.try_it_out_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(select_form_to_assign_page.sticky_banner.count.text).to eql 'Forms selected: 1'
 end
 
 Then(/^I should be taken back to the assign check window v2 page$/) do

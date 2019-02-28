@@ -9,6 +9,7 @@ class SelectFormToAssignPage < SitePrism::Page
     sections :rows, 'tr' do
       element :name_of_form, 'td:first-of-type'
       element :select, '.multiple-choice-mtc'
+      element :assigned, 'td:nth-child(2)'
     end
   end
 
