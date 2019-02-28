@@ -23,7 +23,6 @@ uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blob) {
     return
   }
-  console.log(azureBlobDataService)
   const blobFile = await azureBlobDataService.getBlobPropertiesAsync('csvuploads', blob)
   if (!blobFile || !blobFile.contentLength) {
     throw new Error(`Blob file: ${blobFile} not found or invalid file`)
