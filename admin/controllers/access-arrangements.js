@@ -33,6 +33,12 @@ controller.getOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+  if (!availabilityData.canEditArrangements) {
+    return res.render('availability/section-unavailable', {
+      title: res.locals.pageTitle,
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
   const { hl } = req.query
   return res.render('access-arrangements/overview', {
     highlight: hl,
@@ -60,6 +66,8 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   let questionReaderReasons
   let pupils
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilService.getPupilsWithFullNames(req.user.School)
@@ -84,6 +92,12 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
  */
 controller.postSubmitAccessArrangements = async (req, res, next) => {
   let pupil
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
   try {
     const submittedData = R.pick([
       'accessArrangements',
@@ -119,6 +133,14 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
+
   let accessArrangements
   let questionReaderReasons
   let formData
@@ -160,6 +182,8 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   const dfeNumber = req.user.School
   let pupil
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
     pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)
   } catch (error) {

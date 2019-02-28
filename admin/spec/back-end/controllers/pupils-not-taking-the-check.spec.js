@@ -12,6 +12,7 @@ const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking
 const pupilStatusService = require('../../../services/pupil.status.service')
 const groupService = require('../../../services/group.service')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../../../services/business-availability.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
@@ -64,6 +65,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -75,6 +77,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).not.toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
 
@@ -83,6 +86,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -92,6 +96,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
         done()
       })
     })

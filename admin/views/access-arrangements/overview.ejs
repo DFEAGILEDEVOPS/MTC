@@ -61,7 +61,7 @@
         <form action="/access-arrangements/select-access-arrangements" name="select-pupils-and-arrangements">
             <div class="form-group">
                 <div class="form-buttons">
-                    <% if (!availabilityData.available) { %>
+                    <% if (!availabilityData.canEditArrangements) { %>
                     <input type="submit" class="button-secondary" value="Select pupil and arrangement" disabled/>
                     <% } else { %>
                     <input type="submit" class="button" value="Select pupil and arrangement"/>
@@ -83,13 +83,13 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="<% if (availabilityData.available) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
+                <td class="<% if (availabilityData.canEditArrangements) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
                                 <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
-                            <% if (!availabilityData.available) { %>
+                            <% if (!availabilityData.canEditArrangements) { %>
                             <%= pupil.fullName %>
                             <% } else { %>
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -108,7 +108,7 @@
                     <% }) %>
                 </td>
                 <td>
-                    <% if (availabilityData.available) { %>
+                    <% if (availabilityData.canEditArrangements) { %>
                     <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
                     <% } %>
                 </td>
