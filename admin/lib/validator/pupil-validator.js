@@ -90,8 +90,8 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
     validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
   }
   // Age Reason
-  const requiredAgeReasonValidation = dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`), null, '[]') ||
-    dob.isBetween(moment(`${academicYear - 8}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]')
+  const requiredAgeReasonValidation = dob.isValid() && (dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`), null, '[]') ||
+    dob.isBetween(moment(`${academicYear - 8}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]'))
   if (isMultiplePupilsSubmission && requiredAgeReasonValidation) {
     validationError.addError('dob-day', addPupilErrorMessages.dobMultipleRequiresReason)
     validationError.addError('dob-month', addPupilErrorMessages.dobMultipleRequiresReason)
