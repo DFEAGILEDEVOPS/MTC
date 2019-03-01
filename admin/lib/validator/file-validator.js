@@ -1,13 +1,14 @@
-const ValidationError = require('../validation-error')
-const fileErrorMessages = require('../errors/file-csv')
 const { isEmpty } = require('validator')
 const fs = require('fs-extra')
+
+const ValidationError = require('../validation-error')
+const fileErrorMessages = require('../errors/file-csv')
 
 module.exports.validate = async (uploadedFile, element) => {
   let validationError = new ValidationError()
   // No File
-  if (!uploadedFile) {
-    validationError.addError(element, fileErrorMessages.noFile)
+  if (!uploadedFile || !uploadedFile.file || uploadedFile.file.split('.').pop() !== 'csv') {
+    validationError.addError(element, fileErrorMessages.noCSVFile)
     return validationError
   }
   // File not readable
