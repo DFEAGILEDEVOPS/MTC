@@ -132,6 +132,23 @@ if (formData.urlSlug) {
                            value="<%= formData['dob-year'] %>">
                 </div>
             </div>
+            <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
+              <div class="panel panel-border-wide">
+                <div class="<%= err.isError('ageReason') ? 'form-group-error' : '' %>">
+                  <div class="form-label" for='ageReason'><div>The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.</div>
+                    <% if (err.isError('ageReason')) { %>
+                    <span class="error-message"> <%= err.get('ageReason') %></span>
+                    <% } %>
+                    <textarea
+                      id="ageReason"
+                      name="ageReason"
+                      class="form-control form-control-3-4 age-reason-textarea <%= err.isError('ageReason') ? 'form-control-error' : '' %>"
+                      rows="3"
+                      maxlength="1000"><%= formData['ageReason'] && formData['ageReason'].trim() %></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
         </fieldset>
     </div>
 
@@ -178,3 +195,9 @@ if (formData.urlSlug) {
 <div class="back-to-top-container">
     <a href="#top"> Back to top </a>
 </div>
+
+<script>
+  $(function () {
+    window.GOVUK.pupilForm()
+  })
+</script>

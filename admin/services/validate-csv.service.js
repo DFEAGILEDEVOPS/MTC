@@ -24,7 +24,8 @@ service.process = async (csvDataArray, school) => {
 
   singlePupilValidationService.init()
   const csvData = await Promise.all(cleanCsvData.map(async (p) => {
-    const { pupil, single } = await singlePupilValidationService.validate(p, school)
+    const isMultiplePupilsSubmission = true
+    const { pupil, single } = await singlePupilValidationService.validate(p, school, isMultiplePupilsSubmission)
     pupils.push(pupil)
     return single
   }))
