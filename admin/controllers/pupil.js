@@ -6,7 +6,7 @@ const fileValidator = require('../lib/validator/file-validator')
 
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
+const pupilAgeReasonService = require('../services/pupil-age-reason.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -229,6 +229,7 @@ const postEditPupil = async (req, res, next) => {
   }
 
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
+  await pupilAgeReasonService.refreshPupilAgeReason(pupil['id'], req.body.ageReason, pupil['ageReason'])
   // TODO: old core! Needs refactor this to a service and data service
   const update = {
     id: pupil.id,
@@ -237,8 +238,7 @@ const postEditPupil = async (req, res, next) => {
     lastName: req.body.lastName,
     upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
     gender: req.body.gender,
-    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year']),
-    ageReason: req.body.ageReason
+    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
   }
   try {
     await pupilDataService.sqlUpdate(update)
