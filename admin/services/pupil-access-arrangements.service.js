@@ -32,6 +32,22 @@ pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
 }
 
 /**
+ * Returns pupils with eligible for access arrangements
+ * @param {Number} dfeNumber
+ * @returns {Array}
+ */
+pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (dfeNumber) => {
+  if (!dfeNumber) {
+    throw new Error('dfeNumber is not provided')
+  }
+  const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber(dfeNumber)
+  return pupils.map(p => ({
+    fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
+    urlSlug: p.urlSlug
+  }))
+}
+
+/**
  * Returns pupils edit form data
  * @param {String} urlSlug
  * @returns {Object}

@@ -26,7 +26,7 @@
         </header>
         <%- partial('partials/_session_expiry') %>
         <p class="lede">
-          Modify the check for pupils with specific needs. The arrangements that are applied can be previewed and configured by the pupils in the ‘Try it out’ area.
+          Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the 'Try it out' area opens.
         </p>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
@@ -83,13 +83,13 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="<% if (availabilityData.available) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
+                <td class="<% if (availabilityData.available && !pupil.hasCompletedCheck && !pupil.notTakingCheck) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
                                 <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
                             class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
-                            <% if (!availabilityData.available) { %>
+                            <% if (!availabilityData.available || pupil.hasCompletedCheck || pupil.notTakingCheck) { %>
                             <%= pupil.fullName %>
                             <% } else { %>
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -108,8 +108,12 @@
                     <% }) %>
                 </td>
                 <td>
-                    <% if (availabilityData.available) { %>
-                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
+                    <% if(pupil.hasCompletedCheck) { %>
+                        Completed Check
+                    <% } else if(pupil.notTakingCheck) { %>
+                        Not taking check
+                    <% } else if (availabilityData.available) { %>
+                        <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
                     <% } %>
                 </td>
             </tr>
