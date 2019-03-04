@@ -206,7 +206,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
       type: TYPES.NVarChar
     }
   ]
-  return await sqlService.query(sql, params)
+  return sqlService.query(sql, params)
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {

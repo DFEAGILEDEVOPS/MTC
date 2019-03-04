@@ -3,7 +3,6 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
-const moment = require('moment')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const resultService = require('../../../services/result.service')
 const groupService = require('../../../services/group.service')

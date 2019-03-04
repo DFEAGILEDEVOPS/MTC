@@ -1,10 +1,9 @@
 'use strict'
-const { TYPES } = require('./sql.service')
-const R = require('ramda')
+const sqlService = require('less-tedious')
+const { TYPES } = require('tedious')
 
-const sqlService = require('./sql.service')
-
-const table = '[psychometricianReportCache]'
+const config = require('../../../config')
+sqlService.initialise(config)
 
 const psychometricianReportCacheDataService = {
   /**
@@ -15,7 +14,7 @@ const psychometricianReportCacheDataService = {
   sqlInsertMany: async function (dataObjects) {
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO ${sqlService.adminSchema}.${table}
+    INSERT INTO [mtc_admin].[psychometricianReportCache] 
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES
@@ -45,53 +44,6 @@ const psychometricianReportCacheDataService = {
   },
 
   /**
-   * Find all report data
-   * @return {Promise<*>}
-   */
-  sqlFindAll: async function () {
-    const sql = `select * from ${sqlService.adminSchema}.${table}`
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
-    })
-    return parsed
-  },
-
-  sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
-  },
-
-  /**
-   * Find checks that do not have entries in the psychometrician report cache table
-   * @return {Promise<*>}
-   */
-  sqlFindUnprocessedChecks: async function () {
-    const sql = `SELECT TOP 250 c.*
-      FROM ${sqlService.adminSchema}.${table} p
-      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id
-      WHERE p.check_id IS NULL`
-    return sqlService.query(sql)
-  },
-
-  /**
-   * Find all the completed checks that have not been processed
-   * @returns {Boolean}
-   */
-  sqlHasUnprocessedStartedChecks: async function () {
-    const sql = `SELECT TOP 1 *
-    FROM ${sqlService.adminSchema}.[check] chk
-    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
-    JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-    WHERE
-      prc.check_id IS NULL
-    AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')`
-
-    const result = await sqlService.query(sql, [])
-    return result.length > 0
-  },
-
-  /**
    * Returns an array of Ids: [1234, 5678, ...] of started checks.  Used by the batch processor.
    * @param batchSize the size of the batch to work with
    * @returns {Array}
@@ -106,15 +58,14 @@ const psychometricianReportCacheDataService = {
       FROM ${sqlService.adminSchema}.[check] chk
       LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
       JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-      WHERE
-        prc.check_id IS NULL
+      WHERE 
+        prc.check_id IS NULL 
       AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')
-      ORDER BY chk.startedAt`
+      ORDER BY NEWID()`
 
     const results = await sqlService.query(sql)
     return results.map(r => r.id)
   }
-
 }
 
 module.exports = psychometricianReportCacheDataService
