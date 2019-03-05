@@ -1,6 +1,6 @@
 CREATE TABLE [mtc_admin].[pupilAgeReason] (
   id int IDENTITY (1,1) NOT NULL,
-  pupil_id int NOT NULL UNIQUE,
+  pupil_id INT NOT NULL,
   reason NVARCHAR(MAX) NOT NULL,
   CONSTRAINT [PK_pupilAgeReason] PRIMARY KEY CLUSTERED ([id] ASC)
   WITH (
@@ -9,7 +9,8 @@ CREATE TABLE [mtc_admin].[pupilAgeReason] (
       IGNORE_DUP_KEY = OFF,
       ALLOW_ROW_LOCKS = ON,
       ALLOW_PAGE_LOCKS = ON
-    )
+    ),
+  CONSTRAINT [pupilAgeReason_pupil_id_uindex] UNIQUE([pupil_id])
 )
 
 ALTER TABLE [mtc_admin].[pupilAgeReason] WITH CHECK ADD CONSTRAINT [FK_pupilAgeReason_pupil_id] FOREIGN KEY([pupil_id])
