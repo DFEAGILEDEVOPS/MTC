@@ -1,9 +1,9 @@
 'use strict'
-const { TYPES } = require('./sql.service')
-const R = require('ramda')
-const logger = require('../log.service').getLogger()
+const sqlService = require('less-tedious')
+const { TYPES } = require('tedious')
 
-const sqlService = require('./sql.service')
+const config = require('../../../config')
+sqlService.initialise(config)
 
 const table = '[anomalyReportCache]'
 
@@ -15,15 +15,12 @@ const anomalyReportCacheDataService = {
    */
   sqlInsertMany: async function (dataObjects) {
     if (!dataObjects) {
-      logger.error('No anomalies to save')
       throw new Error('No anomalies to save')
     }
     if (!Array.isArray(dataObjects)) {
-      logger.error('dataObjects must be an array')
       throw new Error('dataObjects must be an array')
     }
     if (dataObjects.length === 0) {
-      logger.error('No dataObjects provided to save')
       throw new Error('No dataObjects provided to save')
     }
     const insertSql = `
@@ -55,24 +52,6 @@ const anomalyReportCacheDataService = {
     const res = await sqlService.modify(sql, params)
     // E.g. { insertId: [1, 2], rowsModified: 4 }
     return res
-  },
-
-  /**
-   * Find all report data
-   * @return {Promise<*>}
-   */
-  sqlFindAll: async function () {
-    const sql = `select * from ${sqlService.adminSchema}.${table}`
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
-    })
-    return parsed
-  },
-
-  sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
   }
 }
 
