@@ -9,7 +9,7 @@ We are targeting V2, which is currently in preview.
 
 - Install Azure Functions Core tools as per [the documentation](https://github.com/Azure/azure-functions-core-tools).
 
-  `npm i -g azure-functions-core-tools@core --unsafe-perm true`
+  `npm i -g azure-functions-core-tools@core`
 
 - For versions of `azure-functions-core-tools >= 2.0.1-beta.37` you also need to install the extensions
 

@@ -97,7 +97,7 @@ describe('pupilCensusService', () => {
       }
     })
   })
-  describe('getUploadedFile', () => {
+  describe('getReportMeta', () => {
     it('fetches a pupil census record and related status', async () => {
       spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(pupilCensusMock)
       spyOn(jobStatusDataService, 'sqlFindOneById').and.returnValue(jobStatusSubmittedMock)
