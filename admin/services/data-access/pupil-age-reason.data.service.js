@@ -1,7 +1,6 @@
 'use strict'
 
 const { TYPES } = require('./sql.service')
-const R = require('ramda')
 
 const sqlService = require('./sql.service')
 const pupilAgeReasonDataService = {}
@@ -13,21 +12,14 @@ const pupilAgeReasonDataService = {}
  * @returns {Promise<Array>}
  */
 pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, reason) {
-
   const sql = `
-    DECLARE @pupilAgeReasonId INT
-    DECLARE @pupilAgeReasonTable TABLE (id INT)
-
-    INSERT INTO ${sqlService.adminSchema}.pupilAgeReason
-    (pupil_id, reason)
-    OUTPUT inserted.id INTO @pupilAgeReasonTable
-    VALUES (@pupilId, @reason)
-
-    SET @pupilAgeReasonId = (SELECT id FROM @pupilAgeReasonTable)
-
-    UPDATE ${sqlService.adminSchema}.pupil
-    SET pupilAgeReason_id = @pupilAgeReasonId
-    WHERE id = @pupilId
+  INSERT INTO ${sqlService.adminSchema}.[pupilAgeReason]
+  (pupil_id, reason)
+  VALUES (@pupilId, @reason)
+  
+  UPDATE ${sqlService.adminSchema}.[pupil]
+  SET pupilAgeReason_id = SCOPE_IDENTITY()
+  WHERE id = @pupilId
   `
 
   const params = [

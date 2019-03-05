@@ -85,6 +85,28 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
   ]
   const sql = `
       SELECT TOP 1 
+      *  
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE urlSlug = @urlSlug
+      AND school_id = @schoolId  
+    `
+  const results = await sqlService.query(sql, params)
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by their urlSlug with age reason
+ * @param urlSlug - GUID
+ * @param schoolId - look for the pupil only in a particular school
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, schoolId) {
+  const params = [
+    { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug },
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
+  const sql = `
+      SELECT TOP 1 
       p.*,
       pag.reason AS ageReason
       FROM ${sqlService.adminSchema}.${table} p
