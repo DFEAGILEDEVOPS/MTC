@@ -35,7 +35,7 @@ pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, rea
     }
   ]
 
-  return sqlService.modify(sql, params)
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 /**
@@ -90,7 +90,7 @@ pupilAgeReasonDataService.sqlRemovePupilAgeReason = async function (pupilId) {
     }
   ]
 
-  return sqlService.modify(sql, params)
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 module.exports = pupilAgeReasonDataService
