@@ -14,7 +14,7 @@ const R = require('ramda')
 const dateService = require('../services/date.service')
 const poolService = require('../services/data-access/sql.pool.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
-const psUtilService = require('../services/psychometrician-util.service')
+const psUtilService = require('../../functions/report-psychometrician/service/psychometrician-util.service')
 
 const outputFilename = 'browser-stats.csv'
 
