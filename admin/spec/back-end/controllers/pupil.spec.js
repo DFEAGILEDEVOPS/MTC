@@ -9,6 +9,7 @@ const R = require('ramda')
 const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
+const pupilAgeReasonService = require('../../../services/pupil-age-reason.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
@@ -368,15 +369,15 @@ describe('pupil controller:', () => {
     it('retrieves the pupil data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(populatedPupilMock))
       await controller(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlug).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
     it('bails out if the pupil is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
@@ -384,7 +385,7 @@ describe('pupil controller:', () => {
     it('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.callFake(() => { throw new Error('dummy error') })
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.callFake(() => { throw new Error('dummy error') })
       controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
@@ -411,33 +412,40 @@ describe('pupil controller:', () => {
     it('makes a call to retrieve the pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(pupilMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlug).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(pupilAgeReasonService.refreshPupilAgeReason).not.toHaveBeenCalled()
     })
 
     it('bails out if the pupil if not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
+      spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
       await controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
+      expect(pupilAgeReasonService.refreshPupilAgeReason).not.toHaveBeenCalled()
     })
 
     it('makes a call to retrieve the school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(pupilMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
+      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
+      expect(pupilAgeReasonService.refreshPupilAgeReason).not.toHaveBeenCalled()
     })
 
     // TODO - this method requires further coverage
