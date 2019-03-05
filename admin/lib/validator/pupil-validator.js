@@ -7,7 +7,7 @@ const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 
-module.exports.validate = async (pupilData) => {
+module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) => {
   // TODO: Move to reusable validation service
   let validationError = new ValidationError()
   // Forename validation
@@ -52,7 +52,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
-  if (!isInt(pupilData['dob-year'], { min: (new Date().getFullYear() - 10), max: (new Date().getFullYear()) })) {
+  if (!isInt(pupilData['dob-year']) || pupilData['dob-year'].length !== 4) {
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
@@ -66,26 +66,39 @@ module.exports.validate = async (pupilData) => {
   // instead.
   const dobData = pupilData['dob-day'].padStart(2, '0') + '/' + pupilData['dob-month'].padStart(2, '0') + '/' + pupilData['dob-year']
   const dob = moment.utc(dobData, 'DD/MM/YYYY', true)
-  if (dob.isValid()) {
-    if (dob > moment().toDate()) {
-      validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
-      validationError.addError('dob-month', addPupilErrorMessages.dobNoFuture)
-      validationError.addError('dob-year', addPupilErrorMessages.dobNoFuture)
-    }
-  } else {
-    // Invalid
-    // We need to specify a different error messages if fields have the wrong number of digits
-    if (/^\d{3,}$/.test(pupilData['dob-day'])) {
-      validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
-    }
-    if (/^\d{3,}$/.test(pupilData['dob-month'])) {
-      validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
-    }
-    if (!(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
-      validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
-      validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
-      validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
-    }
+  const currentUTCDate = moment.utc()
+  const currentYear = currentUTCDate.year()
+  const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
+    ? currentYear - 1 : currentYear
+  // Invalid case
+  // We need to specify a different error messages if fields have the wrong number of digits
+  if (!dob.isValid() && /^\d{3,}$/.test(pupilData['dob-day'])) {
+    validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
+  }
+  if (!dob.isValid() && /^\d{3,}$/.test(pupilData['dob-month'])) {
+    validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
+  }
+  if (!dob.isValid() && !(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
+    validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
+    validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
+    validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
+  }
+
+  if (dob.isValid() && !dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]')) {
+    validationError.addError('dob-day', addPupilErrorMessages.dobOutOfRange)
+    validationError.addError('dob-month', addPupilErrorMessages.dobOutOfRange)
+    validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
+  }
+  // Age Reason
+  const requiredAgeReasonValidation = dob.isValid() && (dob.isBetween(moment(`${academicYear - 11}-09-02`), moment(`${academicYear - 10}-09-01`), null, '[]') ||
+    dob.isBetween(moment(`${academicYear - 8}-09-02`), moment(`${academicYear - 7}-09-01`), null, '[]'))
+  if (isMultiplePupilsSubmission && requiredAgeReasonValidation) {
+    validationError.addError('dob-day', addPupilErrorMessages.dobMultipleRequiresReason)
+    validationError.addError('dob-month', addPupilErrorMessages.dobMultipleRequiresReason)
+    validationError.addError('dob-year', addPupilErrorMessages.dobMultipleRequiresReason)
+  }
+  if (!isMultiplePupilsSubmission && requiredAgeReasonValidation && (pupilData.ageReason.length < 1 || pupilData.ageReason.length > 1000)) {
+    validationError.addError('ageReason', addPupilErrorMessages.ageReasonLength)
   }
   // Gender Validation
   if (!(/^(m|f)$/i).test(pupilData['gender'])) {

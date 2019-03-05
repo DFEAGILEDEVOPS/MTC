@@ -6,7 +6,7 @@ const fileValidator = require('../lib/validator/file-validator')
 
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
+const pupilAgeReasonService = require('../services/pupil-age-reason.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -166,7 +166,7 @@ const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   let pupilExampleYear
   try {
-    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
+    const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
     pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
@@ -201,7 +201,7 @@ const postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug, req.user.schoolId)
+    pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.body.urlSlug, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
@@ -229,7 +229,8 @@ const postEditPupil = async (req, res, next) => {
   }
 
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
-
+  await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, req.body.ageReason, pupil.ageReason)
+  // TODO: old core! Needs refactor this to a service and data service
   const update = {
     id: pupil.id,
     foreName: req.body.foreName,
