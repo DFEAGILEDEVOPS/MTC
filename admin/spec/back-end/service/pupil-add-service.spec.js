@@ -5,23 +5,12 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const pupilAgeReasonDataService = require('../../../services/data-access/pupil-age-reason.data.service')
 const ValidationError = require('../../../lib/validation-error')
 const sqlResponse = require('../mocks/sql-modify-response')
 const pupilMock = require('../mocks/pupil')
 
-const pupilData = {
-  school: 9991001,
-  upn: 'L860100210012',
-  foreName: 'test',
-  lastName: 'test',
-  middleNames: '',
-  gender: 'M',
-  'dob-month': '6',
-  'dob-day': '30',
-  'dob-year': '2009',
-  pin: null,
-  pinExpired: false
-}
+let pupilData
 
 describe('pupil-add-service', () => {
   let sandbox, service, pupilValidatorSpy, saveSpy
@@ -36,12 +25,27 @@ describe('pupil-add-service', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox()
+    pupilData = {
+      school: 9991001,
+      upn: 'L860100210012',
+      foreName: 'test',
+      lastName: 'test',
+      middleNames: '',
+      gender: 'M',
+      'dob-month': '6',
+      'dob-day': '30',
+      'dob-year': '2009',
+      pin: null,
+      pinExpired: false,
+      ageReason: null
+    }
   })
 
   function getService (validationFn) {
     pupilValidatorSpy = sandbox.stub(pupilValidator, 'validate').callsFake(validationFn)
     saveSpy = sandbox.stub(pupilDataService, 'sqlCreate').resolves(sqlResponse)
     spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
+    spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
     service = proxyquire('../../../services/pupil-add-service', {
       '../lib/validator/pupil-validator': pupilValidator
     })
@@ -84,6 +88,28 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
+      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
+    } catch (error) {
+      expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
+    }
+    done()
+  })
+
+  it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async (done) => {
+    service = getService(validationFunctionResolves)
+    try {
+      pupilData.ageReason = 'reason'
+      await service.addPupil(pupilData, 1234)
+      expect(saveSpy.calledOnce).toBeTruthy()
+      const saveArg = saveSpy.args[0][0]
+      // Check that the data of birth has been added
+      expect(saveArg.dateOfBirth).toBeDefined()
+      expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
+      // Check that the UI fields have been removed
+      expect(saveArg['dob-day']).toBeUndefined()
+      expect(saveArg['dob-month']).toBeUndefined()
+      expect(saveArg['dob-year']).toBeUndefined()
+      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).toHaveBeenCalled()
     } catch (error) {
       expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
     }
@@ -103,6 +129,7 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
+      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
     } catch (error) {
       fail('not expected to throw')
     }
