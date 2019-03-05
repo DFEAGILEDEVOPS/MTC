@@ -1,6 +1,6 @@
 CREATE TABLE [mtc_admin].[pupilAgeReason] (
   id int IDENTITY (1,1) NOT NULL,
-  pupil_id int NOT NULL,
+  pupil_id int NOT NULL UNIQUE,
   reason NVARCHAR(MAX) NOT NULL,
   CONSTRAINT [PK_pupilAgeReason] PRIMARY KEY CLUSTERED ([id] ASC)
   WITH (
