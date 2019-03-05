@@ -29,8 +29,14 @@
             <p>Please download the file below which highlights the errors.<br>
                 Correct the errors and upload the updated file.
             </p>
-            <div class="icon-file-download pupils-template"></div>
-            <b><a class="template-link" download='pupil-errors.csv' href="/pupil-register/pupil/download-error-csv">Pupil details file with errors (CSV, <%= csvErrorFileSize %>KB)</a></b>
+            <div class="icon-file-download pupils-template error-file-icon"></div>
+            <div class="error-csv-link">
+              <b>
+                <a class="template-link" download='pupil-errors.csv' href="/pupil-register/pupil/download-error-csv">
+                  Pupil details file with errors (CSV, <%= csvErrorFileSize %>KB)
+                </a>
+              </b>
+            </div>
             <% } %>
         </div>
     </div>
