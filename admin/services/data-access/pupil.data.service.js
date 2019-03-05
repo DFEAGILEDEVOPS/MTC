@@ -85,10 +85,13 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
   ]
   const sql = `
       SELECT TOP 1 
-      *  
-      FROM ${sqlService.adminSchema}.${table}
-      WHERE urlSlug = @urlSlug
-      AND school_id = @schoolId  
+      p.*,
+      pag.reason AS ageReason
+      FROM ${sqlService.adminSchema}.${table} p
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAgeReason] pag
+        ON p.id = pag.pupil_id
+      WHERE p.urlSlug = @urlSlug
+      AND p.school_id = @schoolId 
     `
   const results = await sqlService.query(sql, params)
   return R.head(results)
