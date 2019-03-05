@@ -5,6 +5,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
+const pupilAgeReasonDataService = require('./data-access/pupil-age-reason.data.service')
 
 const pupilAddService = {
   /**
@@ -27,7 +28,8 @@ const pupilAddService = {
       gender: reqBody.gender,
       'dob-month': reqBody['dob-month'],
       'dob-day': reqBody['dob-day'],
-      'dob-year': reqBody['dob-year']
+      'dob-year': reqBody['dob-year'],
+      ageReason: reqBody.ageReason
     }
 
     const validationError = await pupilValidator.validate(pupilData)
@@ -35,12 +37,18 @@ const pupilAddService = {
       throw validationError
     }
 
-    const saveData = R.omit(['dob-day', 'dob-month', 'dob-year'], pupilData)
+    const saveData = R.omit(['dob-day', 'dob-month', 'dob-year', 'ageReason'], pupilData)
     saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
     saveData.upn = R.pathOr('', ['upn'], pupilData).trim().toUpperCase()
 
     const res = await pupilDataService.sqlCreate(saveData)
-    return pupilDataService.sqlFindOneById(res.insertId)
+    const pupilRecord = await pupilDataService.sqlFindOneById(res.insertId)
+
+    if (pupilData.ageReason) {
+      await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilData.ageReason)
+    }
+
+    return pupilRecord
   },
 
   /**

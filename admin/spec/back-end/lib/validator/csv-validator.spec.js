@@ -3,6 +3,7 @@
 /* global describe, it, expect */
 
 const csvValidator = require('../../../../lib/validator/csv-validator')
+const csvPupilUploadErrors = require('../../../../lib/errors/csv-pupil-upload')
 
 describe('CSV validator', function () {
   let headers
@@ -24,7 +25,7 @@ describe('CSV validator', function () {
         [ 'Brown', 'Maria', 'Stella', 'X822200014002', '7/15/2005', 'F' ] ]
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
-      expect(validationError.get('template-upload')[0]).toBe('Ensure columns have the same headings and order as the template')
+      expect(validationError.get('template-upload')[0]).toBe(csvPupilUploadErrors.invalidHeader)
       done()
     })
     it('detected invalid header and invalid column number on a row', async function (done) {
@@ -34,8 +35,8 @@ describe('CSV validator', function () {
         [ 'Brown', 'Maria', 'Stella', 'X822200014002' ] ]
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
-      expect(validationError.get('template-upload')[0]).toBe('Ensure columns have the same headings and order as the template')
-      expect(validationError.get('template-upload')[1]).toBe('Rows must contain exactly 5 commas / 6 columns')
+      expect(validationError.get('template-upload')[0]).toBe(csvPupilUploadErrors.invalidHeader)
+      expect(validationError.get('template-upload')[1]).toBe(csvPupilUploadErrors.not6Columns)
       done()
     })
     it('detected only one data row', async function (done) {
@@ -44,7 +45,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0])
-        .toBe('Must contain at least two rows of data')
+        .toBe(csvPupilUploadErrors.hasOneRow)
       done()
     })
     it('detected a dataset which exceeds allowed max rows', async function (done) {
@@ -56,7 +57,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0])
-        .toBe('Upload a file with no more than 300 rows of data.')
+        .toBe(csvPupilUploadErrors.exceedsAllowedRows)
       done()
     })
   })
