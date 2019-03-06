@@ -9,7 +9,7 @@ Then(/^I can see the landing page as per the design$/) do
   expect(add_multiple_pupil_page).to have_heading
   expect(@page.sub_heading.map {|message| message.text}).to include "Download template"
   expect(@page.sub_heading.map {|message| message.text}).to include "Upload file"
-  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV file)"
+  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV, 0.05KB)"
   expect(@page.info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
   expect(@page.info_message.map {|message| message.text}).to include "Add pupil details using the given format"
   expect(@page.info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
