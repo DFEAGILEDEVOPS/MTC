@@ -1,0 +1,16 @@
+{
+  "name": "docker-worker",
+  "version": "1.0.0",
+  "description": "Test node package to run on Azure Batch Service",
+  "main": "index.js",
+  "author": "MTC",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "mssql": "^4.3.2",
+    "to-bool": "^0.0.1"
+  }
+}
