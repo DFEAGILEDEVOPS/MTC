@@ -21,7 +21,7 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.middleNames) && !isEmpty(pupilData.middleNames)) {
     validationError.addError('middleNames', addPupilErrorMessages.middleNameInvalidCharacters)
   }
-  if (pupilData.middleNames.length >= 128) {
+  if (pupilData.middleNames.length > 128) {
     validationError.addError('middleNames', addPupilErrorMessages.middleNameMaxLengthExceeded)
   }
   // Lastname validation
