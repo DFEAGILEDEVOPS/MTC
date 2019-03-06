@@ -46,7 +46,7 @@ describe('File validator', function () {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
-      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noCSVFile)
+      expect(validationError.get('template-upload')).toBe(fileCsvErrors.noFile)
       done()
     })
     it('detects empty file on unreadable file', async function (done) {

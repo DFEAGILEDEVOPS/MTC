@@ -7,7 +7,11 @@ const fileErrorMessages = require('../errors/file-csv')
 module.exports.validate = async (uploadedFile, element) => {
   let validationError = new ValidationError()
   // No File
-  if (!uploadedFile || !uploadedFile.file || uploadedFile.file.split('.').pop() !== 'csv') {
+  if (!uploadedFile || !uploadedFile.file) {
+    validationError.addError(element, fileErrorMessages.noFile)
+    return validationError
+  }
+  if (uploadedFile.file.split('.').pop() !== 'csv') {
     validationError.addError(element, fileErrorMessages.noCSVFile)
     return validationError
   }
