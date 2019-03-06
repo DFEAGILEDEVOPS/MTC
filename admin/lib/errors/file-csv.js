@@ -1,6 +1,7 @@
 'use strict'
 
 module.exports = {
-  'noFile': 'Please select a .csv file to save',
-  'isNotReadable': 'File rejected. File can\'t be read'
+  'noFile': 'Select a file to save',
+  'noCSVFile': 'Use a CSV file. See guidance for instructions.',
+  'isNotReadable': 'File can\'t be read'
 }
