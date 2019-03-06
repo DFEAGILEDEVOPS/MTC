@@ -91,15 +91,15 @@ if (formData.urlSlug) {
             <legend>
                 <span class="form-label-bold" id="date-of-birth">Date of birth</span>
                 <span class="form-hint">For example, 30 6 <%= pupilExampleYear %></span>
-                <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
-                <span class="error-message">
-                                    <%= ['dob-day', 'dob-month', 'dob-year'].filter(f => {
-                                        return err.isError(f);
-                                    })
-                                            .map(f => {
-                                                return err.get(f);
-                                            }).shift() %>
-                                 </span>
+                <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
+                <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>
+                  <div class="error-message"><%= err.get(dobErrors[0]) %></div>
+                <% } else { %>
+                  <% dobErrors.map(f => { %>
+                  <% if (typeof err.get(f) !== 'boolean') { %>
+                    <div class="error-message"><%= err.get(f) %></div>
+                  <% } %>
+                  <% }) %>
                 <% } %>
             </legend>
             <div class="form-date">
@@ -131,6 +131,23 @@ if (formData.urlSlug) {
                            max="<%= currentYear %>"
                            value="<%= formData['dob-year'] %>">
                 </div>
+            </div>
+            <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
+              <div class="panel panel-border-wide">
+                <div class="<%= err.isError('ageReason') ? 'form-group-error' : '' %>">
+                  <div class="form-label" for='ageReason'><div>The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.</div>
+                    <% if (err.isError('ageReason')) { %>
+                    <span class="error-message"> <%= err.get('ageReason') %></span>
+                    <% } %>
+                    <textarea
+                      id="ageReason"
+                      name="ageReason"
+                      class="form-control form-control-3-4 age-reason-textarea <%= err.isError('ageReason') ? 'form-control-error' : '' %>"
+                      rows="3"
+                      maxlength="1000"><%= formData['ageReason'] && formData['ageReason'].trim() %></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
         </fieldset>
     </div>
@@ -178,3 +195,9 @@ if (formData.urlSlug) {
 <div class="back-to-top-container">
     <a href="#top"> Back to top </a>
 </div>
+
+<script>
+  $(function () {
+    window.GOVUK.pupilForm()
+  })
+</script>
