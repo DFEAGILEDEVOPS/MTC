@@ -11,7 +11,7 @@
 
         <header class="page-header">
             <h1 class="heading-xlarge">
-                <% if(checkWindow && currentDate.isBefore(checkWindow.adminStartDate)) { %>
+                <% if(isBeforeStartDate) { %>
                 The service is unavailable
                 <% } else { %>
                 Sorry, the service is unavailable
@@ -36,7 +36,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <% if(checkWindow && currentDate.isBefore(checkWindow.adminStartDate)) { %>
+        <% if(isBeforeStartDate) { %>
             <p>You will be able to use the service from 9am on <%= startDateFormatted %></p>
         <% } else { %>
             <p>The service is currently unavailable. Please try again later.</p>
