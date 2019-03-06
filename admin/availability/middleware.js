@@ -3,6 +3,7 @@
 const moment = require('moment')
 const config = require('../config')
 const checkWindowV2Service = require('../services/check-window-v2.service')
+const dateService = require('../services/date.service')
 
 async function isAdminWindowAvailable (req, res, next) {
   if (config.OVERRIDE_AVAILABILITY_MIDDLEWARE) {
@@ -15,7 +16,7 @@ async function isAdminWindowAvailable (req, res, next) {
     return res.render('availability/admin-window-unavailable', {
       currentDate,
       checkWindow,
-      startDateFormatted: checkWindow.adminStartDate.format('dddd D MMMM YYYY')
+      startDateFormatted: dateService.formatDayDateAndYear(checkWindow.adminStartDate)
     })
   }
   return next()

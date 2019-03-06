@@ -110,6 +110,13 @@ describe('date service', () => {
     })
   })
 
+  describe('#formatDayDateAndYear', () => {
+    it('correctly formats a date', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 0, 0)
+      expect(dateService.formatDayDateAndYear(date)).toBe('Friday 31 December 2010')
+    })
+  })
+
   describe('#formatDateAndTime', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 12, 13)

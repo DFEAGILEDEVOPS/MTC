@@ -9,6 +9,7 @@ const yearFormat = 'YYYY'
 const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
 const dayAndDateFormat = 'dddd, D MMMM'
+const dayDateAndYearFormat = 'dddd D MMMM YYYY'
 const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
@@ -27,6 +28,10 @@ const dateService = {
 
   formatDayAndDate: function (date) {
     return moment(date).format(dayAndDateFormat)
+  },
+
+  formatDayDateAndYear: function (date) {
+    return moment(date).format(dayDateAndYearFormat)
   },
 
   formatDateAndTime: function (date) {
