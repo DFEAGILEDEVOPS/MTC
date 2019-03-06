@@ -6,7 +6,6 @@ const fileValidator = require('../lib/validator/file-validator')
 
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')

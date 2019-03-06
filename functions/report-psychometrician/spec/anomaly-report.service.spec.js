@@ -1,15 +1,69 @@
 'use strict'
-/* global describe, expect, it, beforeEach, spyOn */
+/* global describe, expect, it, beforeEach, spyOn, beforeEach, fail */
 
 const moment = require('moment')
 const R = require('ramda')
 
-const psUtilService = require('../../../services/psychometrician-util.service')
-const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-const checkFormMockOrig = require('../mocks/check-form')
+const psUtilService = require('../service/psychometrician-util.service')
+const completedCheckMockOrig = require('./mocks/completed-check-with-results')
+const checkFormMockOrig = require('./mocks/check-form')
+const psychometricianDataService = require('../service/data-service/psychometrician.data.service')
+const anomalyReportCacheDataService = require('../service/data-service/anomaly-report-cache.data.service')
 
 describe('anomaly-report.service', () => {
-  const service = require('../../../services/anomaly-report.service')
+  let service
+
+  beforeEach(() => {
+    service = require('../service/anomaly-report.service')
+  })
+
+  describe('batchProduceCacheData', () => {
+    it('throws an error if it fails to find any checks', async () => {
+      spyOn(psychometricianDataService, 'sqlFindChecksByIdsWithForms').and.returnValue([])
+      try {
+        await service.batchProduceCacheData([1, 2, 3])
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Failed to find any checks')
+      }
+    })
+
+    it('calls `detectAnomalies` once for each check found', async () => {
+      const mockChecks = [
+        R.clone(completedCheckMockOrig),
+        R.clone(completedCheckMockOrig),
+        R.clone(completedCheckMockOrig)
+      ]
+      spyOn(psychometricianDataService, 'sqlFindChecksByIdsWithForms').and.returnValue(mockChecks)
+      spyOn(service, 'detectAnomalies')
+      spyOn(anomalyReportCacheDataService, 'sqlInsertMany')
+      try {
+        await service.batchProduceCacheData([1, 2, 3])
+        expect(service.detectAnomalies).toHaveBeenCalledTimes(mockChecks.length)
+      } catch (error) {
+        fail(error)
+      }
+    })
+
+    it('calls `sqlInsertMany` if there are any anomalies', async () => {
+      const mockChecks = [
+        R.clone(completedCheckMockOrig),
+        R.clone(completedCheckMockOrig),
+        R.clone(completedCheckMockOrig)
+      ]
+      // Setup: To generate an anomaly, let's add an AppError
+      mockChecks[0].data.audit.push({ type: 'AppError', message: 'mock', clientTimestamp: '2018-02-11T15:42:21.095Z' })
+
+      spyOn(psychometricianDataService, 'sqlFindChecksByIdsWithForms').and.returnValue(mockChecks)
+      spyOn(anomalyReportCacheDataService, 'sqlInsertMany')
+      try {
+        await service.batchProduceCacheData([1, 2, 3])
+        expect(anomalyReportCacheDataService.sqlInsertMany).toHaveBeenCalled()
+      } catch (error) {
+        fail(error)
+      }
+    })
+  })
 
   describe('#produceReportData', () => {
     it('pushes a reported anomaly', async () => {
