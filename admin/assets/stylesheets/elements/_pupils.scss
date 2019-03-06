@@ -102,3 +102,16 @@
   font-size: small;
   display: block;
 }
+
+// multiple pupils submission
+// error container
+.error-file-icon {
+  float: left;
+}
+
+.error-csv-link {
+  margin-top: pem(10px);
+  display: inline-block;
+  padding-left: pem(10px);
+  padding-bottom: pem(10px);
+}

@@ -7,6 +7,7 @@ const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilAgeReasonService = require('../services/pupil-age-reason.service')
+const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -69,16 +70,24 @@ const postAddPupil = async (req, res, next) => {
  * @param res
  * @param next
  */
-const getAddMultiplePupils = (req, res, next) => {
+const getAddMultiplePupils = async (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
+  let templateFileSize
+  let csvErrorFileSize
+  const { csvErrorFile } = req.session
+  const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
   try {
+    templateFileSize = uploadedFileService.getFilesize(templateFile)
+    csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
     req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
       hasError,
-      fileErrors
+      fileErrors,
+      templateFileSize,
+      csvErrorFileSize
     })
   } catch (error) {
     next(error)
