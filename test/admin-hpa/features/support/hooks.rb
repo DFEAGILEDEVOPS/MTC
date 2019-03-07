@@ -139,7 +139,7 @@ After("@no_active_check_window") do
 end
 
 After("@multiple_pupil_upload") do
-  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
+  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
 After("@remove_access_arrangements") do

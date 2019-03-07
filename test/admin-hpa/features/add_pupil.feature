@@ -42,7 +42,6 @@ Feature:
       | 3 digit day within a month  |
       | invalid month within a year |
       | 3 digit month within a year |
-      | invalid year                |
       | 5 digit year                |
 
   Scenario: Users can navigate back to the pupil register page
@@ -158,3 +157,39 @@ Feature:
     Given I am on the add pupil page
     When I submit valid details with a UPN has a lowercase alpha character
     Then the pupil details should be stored
+
+  Scenario: Reason field must be entered if displayed
+    Given I am on the add pupil page
+    When I fill in the form with the pupil dob 10 years ago
+    And I submit
+    Then I should see an error with the reason field
+
+  Scenario: 11 year old pupils cannot be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 11 years ago
+    Then I should see an error with the DOB
+
+  Scenario: 10 year old pupils can be added by adding a reason
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 10 years ago
+    Then I should still be able to add the pupil after filling in the reason box
+
+  Scenario: 9 year old pupils can be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 9 years ago
+    Then the pupil details should be stored
+
+  Scenario: 8 year old pupils can be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 8 years ago
+    Then the pupil details should be stored
+
+  Scenario: 7 year old pupils can be added by adding a reason
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 7 years ago
+    Then I should still be able to add the pupil after filling in the reason box
+
+  Scenario: 6 year old pupils cannot be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 6 years ago
+    Then I should see an error with the DOB
