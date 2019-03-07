@@ -35,7 +35,7 @@ controller.getRestartOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  if (!availabilityData.pinsRestartsAvailable) {
+  if (!availabilityData.restartsAvailable) {
     return res.render('availability/section-unavailable', {
       title: res.locals.pageTitle,
       breadcrumbs: req.breadcrumbs()

@@ -78,7 +78,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ pinsRestartsAvailable: true })
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(res, 'render').and.returnValue(null)
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(checkWindowSanityCheckService, 'check')
@@ -98,7 +98,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ pinsRestartsAvailable: true })
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(res, 'render').and.returnValue(null)
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(checkWindowSanityCheckService, 'check')

@@ -39,7 +39,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
-    if (!availabilityData.pinsRestartsAvailable) {
+    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
