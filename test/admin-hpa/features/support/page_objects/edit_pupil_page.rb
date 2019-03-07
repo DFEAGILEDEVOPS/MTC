@@ -17,6 +17,7 @@ class EditPupilPage < SitePrism::Page
   section :phase_banner, PhaseBanner, '.phase-banner'
   section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
   elements :error_messages, '.error-message'
+  section :reason, ReasonSection, ".form-label[for='ageReason']"
 
   def enter_details(hash)
     first_name.set hash.fetch(:first_name, '')
