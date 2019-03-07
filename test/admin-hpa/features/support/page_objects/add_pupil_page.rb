@@ -18,6 +18,7 @@ class AddPupilPage < SitePrism::Page
   section :phase_banner, PhaseBanner, '.phase-banner'
   elements :error_messages, '.error-message'
   section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
+  section :reason, ReasonSection, ".form-label[for='ageReason']"
 
   section :what_is_upn, "details[role='group']" do
     element :toggle, "summary .summary"
