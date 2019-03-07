@@ -1,20 +1,19 @@
-@add_multiple_pupil_validation
+@add_multiple_pupil_validation @multiple_pupil_upload
 Feature: Add Multiple Pupil validation Error
 
   Background:
     Given I am logged in
     And I am on the add multiple pupil page
 
-
   @multiple_pupil_upload
   Scenario: Uploading a CSV file with less than 5 columns
     And I Upload a CSV file with four columns to add Multiple Pupil
-    Then I can see the error message for uploading multiple pupil 'Rows must contain exactly 5 commas / 6 columns'
+    Then I can see the error message for uploading multiple pupil 'Use a file with exactly 6 columns'
 
   @multiple_pupil_upload
   Scenario: Uploading a CSV file with only 1 row
     And I Upload a CSV file with 1 row to add Multiple Pupil
-    Then I can see the error message for uploading multiple pupil 'Must contain at least two rows of data'
+    Then I can see the error message for uploading multiple pupil 'Use a file with at least 2 pupils'
 
   Scenario: Uploading a CSV file with only more than 300 rows
     And I Upload a CSV file with more than 300 rows
@@ -103,3 +102,48 @@ Feature: Add Multiple Pupil validation Error
     And I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error
     Then I can see the validation error for wrong 13th char for UPN for multiple pupil upload
+
+  Scenario: Users must upload a file in CSV format
+    When I Upload a invalid format file to add Multiple Pupil
+    Then I should see an error stating that the file must be of CSV format
+
+  Scenario: Users must follow the format of the template
+    When I Upload a CSV file with the columns in the incorrect order
+    Then I should see an error stating that the columns must be of the same order
+
+  Scenario: Users must follow the format of the template
+    When I Upload a CSV file with the duplicate upns
+    Then I should see an error stating that there is a duplicate upn
+
+  Scenario: 11 year old pupils cannot be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 11
+    Then I should see an error with the upload stating the DOB is invalid
+
+  Scenario: 10 year old pupils can't be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 10
+    Then I should see an error with the upload stating i need to use the single upload function
+
+  Scenario: 9 year old pupils can be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 9
+    Then I should be taken to the Pupil register page
+    And I should see a flash message for the multiple pupil upload
+    And I can see the new pupils added to the list
+
+  Scenario: 8 year old pupils can be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 8
+    Then I should be taken to the Pupil register page
+    And I should see a flash message for the multiple pupil upload
+    And I can see the new pupils added to the list
+
+  Scenario: 7 year old pupils can't be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 7
+    Then I should see an error with the upload stating i need to use the single upload function
+
+  Scenario: 6 year old pupils cannot be added
+    When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 6
+    Then I should see an error with the upload stating the DOB is invalid
+
+  Scenario: Users have to upload a CSV file
+    When I decide to click on upload without selecting a file
+    Then I should see an error stating i need to upload a CSV
+
