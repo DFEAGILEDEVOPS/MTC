@@ -14,6 +14,7 @@ const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
+const businessAvailabilityService = require('../../../services/business-availability.service')
 
 describe('group controller', () => {
   function getRes () {
@@ -61,6 +62,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -69,6 +71,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
           done()
         })
@@ -86,6 +89,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
@@ -94,6 +98,7 @@ describe('group controller', () => {
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
           done()
         })
@@ -112,11 +117,15 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
@@ -128,11 +137,15 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
@@ -151,6 +164,8 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
@@ -167,6 +182,8 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
@@ -191,6 +208,8 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
@@ -214,6 +233,8 @@ describe('group controller', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
@@ -242,6 +263,8 @@ describe('group controller', () => {
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').addGroup
           await controller(req, res, next)
@@ -250,6 +273,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupService.create).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -270,6 +295,8 @@ describe('group controller', () => {
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupService, 'create').and.returnValue(Promise.reject(new Error()))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').addGroup
           await controller(req, res, next)
@@ -278,6 +305,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupService.create).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -300,6 +329,8 @@ describe('group controller', () => {
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(Promise.resolve(groupMock))
           spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').addGroup
           await controller(req, res, next)
@@ -330,6 +361,8 @@ describe('group controller', () => {
 
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').addGroup
           await controller(req, res, next)
@@ -390,6 +423,8 @@ describe('group controller', () => {
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').editGroup
           await controller(req, res, next)
@@ -399,6 +434,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupService.update).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -452,6 +489,8 @@ describe('group controller', () => {
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').editGroup
           await controller(req, res, next)
@@ -461,6 +500,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).not.toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupService.update).not.toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -485,6 +526,8 @@ describe('group controller', () => {
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').editGroup
           await controller(req, res, next)
@@ -495,6 +538,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(groupService.update).not.toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -519,6 +564,8 @@ describe('group controller', () => {
           spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').editGroup
           await controller(req, res, next)
@@ -529,6 +576,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(groupService.update).not.toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -552,6 +601,8 @@ describe('group controller', () => {
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'update').and.returnValue(Promise.reject(new Error()))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').editGroup
           await controller(req, res, next)
@@ -562,6 +613,8 @@ describe('group controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupService.update).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -580,11 +633,15 @@ describe('group controller', () => {
           }
 
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
 
           expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+          expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -601,6 +658,8 @@ describe('group controller', () => {
           }
 
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
@@ -622,6 +681,8 @@ describe('group controller', () => {
           }
 
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.reject(new Error()))
+          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)

@@ -16,7 +16,7 @@
         </div>
         <% } %>
 
-        <%- partial('partials/_readonly', {availabilityData: {hdfSubmitted}}) %>
+        <%- partial('partials/_readonly', {availabilityData}) %>
 
         <h1 class="heading-xlarge" id="heading-xlarge">Pupils not taking the check</h1>
 
@@ -28,7 +28,7 @@
         </p>
 
         <div class="button-wrapper">
-            <% if (hdfSubmitted) { %>
+            <% if (availabilityData.hdfSubmitted) { %>
             <a class="button-secondary" disabled>Select pupil and reason</a>
             <% } else { %>
             <a class="button" href="/pupils-not-taking-the-check/select-pupils" >Select pupil and reason</a>
@@ -63,7 +63,7 @@
                         <%= pupil.reason || '-' %>
                     </td>
                     <td class="align-right">
-                        <% if (!hdfSubmitted) { %>
+                        <% if (!availabilityData.hdfSubmitted) { %>
                         <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>">Remove</a>
                         <% } %>
                     </td>
