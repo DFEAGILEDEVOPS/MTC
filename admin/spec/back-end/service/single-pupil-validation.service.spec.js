@@ -4,6 +4,7 @@
 const singlePupilValidationCSVService = require('../../../services/single-pupil-validation.service')
 const PupilValidator = require('../../../lib/validator/pupil-validator')
 const ValidationError = require('../../../lib/validation-error')
+const addPupilErrorMessages = require('../../../lib/errors/pupil').addPupil
 const schoolMock = require('../mocks/school')
 
 describe('single-pupil-validation.service', () => {
@@ -16,8 +17,9 @@ describe('single-pupil-validation.service', () => {
     it('returns a pupil with no errors', async (done) => {
       const school = { _id: '001' }
       const data = [ 'John', 'Lawrence', 'Smith', 'X822200014001', '5/22/2005', 'M' ]
+      const isMultiplePupilsSubmission = true
       singlePupilValidationCSVService.init()
-      const { single } = await singlePupilValidationCSVService.validate(data, school)
+      const { single } = await singlePupilValidationCSVService.validate(data, school, isMultiplePupilsSubmission)
       expect(single).toBeDefined()
       expect(single[6]).toBeUndefined()
       done()
@@ -28,12 +30,13 @@ describe('single-pupil-validation.service', () => {
         ['surname', 'firstname', 'middlename', '21/11/2000', 'm', 'Y308212001120'],
         ['surname2', 'firstname2', 'middlename2', '22/11/2001', 'm', 'Y308212001120'] // dup upn!
       ]
+      const isMultiplePupilsSubmission = true
       singlePupilValidationCSVService.init()
       // 1st line
-      await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
+      await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock, isMultiplePupilsSubmission)
       // 2 line - with the duplicate
-      const { single } = await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
-      expect(single[6]).toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet')
+      const { single } = await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock, isMultiplePupilsSubmission)
+      expect(single[6]).toBe(addPupilErrorMessages.upnDuplicateInFile)
     })
   })
 
@@ -52,7 +55,8 @@ describe('single-pupil-validation.service', () => {
       const school = { _id: '001' }
       const data = [ 'John', 'Lawrence', 'Smith', 'X8222000140011', '5/22/2005', 'M' ]
       singlePupilValidationCSVService.init()
-      const { single } = await singlePupilValidationCSVService.validate(data, school)
+      const isMultiplePupilsSubmission = true
+      const { single } = await singlePupilValidationCSVService.validate(data, school, isMultiplePupilsSubmission)
       expect(single).toBeDefined()
       expect(single[6]).toBeDefined()
       expect(single[6])
