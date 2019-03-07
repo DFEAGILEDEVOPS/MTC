@@ -28,7 +28,7 @@
         </p>
 
         <div class="button-wrapper">
-            <% if (availabilityData.hdfSubmitted) { %>
+            <% if (availabilityData.hdfSubmitted || availabilityData.checkWindowClosed) { %>
             <a class="button-secondary" disabled>Select pupil and reason</a>
             <% } else { %>
             <a class="button" href="/pupils-not-taking-the-check/select-pupils" >Select pupil and reason</a>
@@ -63,7 +63,7 @@
                         <%= pupil.reason || '-' %>
                     </td>
                     <td class="align-right">
-                        <% if (!availabilityData.hdfSubmitted) { %>
+                        <% if (!availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                         <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>">Remove</a>
                         <% } %>
                     </td>
