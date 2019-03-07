@@ -23,7 +23,7 @@ ALTER VIEW [mtc_admin].[vewPupilsEligibleForRestart] AS
     AND   p.id NOT IN (
       -- remove pupils with unconsumed restarts
       SELECT
-        p.id
+        p2.id
       FROM
         [mtc_admin].[pupil] p2
           LEFT JOIN [mtc_admin].[pupilRestart] pr2 ON (p2.id = pr2.pupil_id and pr2.isDeleted = 0)
