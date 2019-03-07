@@ -64,6 +64,7 @@ const pupilRegisterService = {
   getPupilRegister: async function (schoolId) {
     const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
+      console.log(`pupilRegisterData: `, d)
       return {
         urlSlug: d.urlSlug,
         foreName: d.foreName,
@@ -75,7 +76,7 @@ const pupilRegisterService = {
           d.pupilStatusCode,
           d.lastCheckStatusCode,
           d.pupilRestartId,
-          d.pupilResartCheckId)
+          d.pupilRestartCheckId)
       }
     })
     pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
@@ -91,6 +92,7 @@ const pupilRegisterService = {
    * @return {string}
    */
   getProcessStatus: function (pupilStatusCode, checkStatusCode, pupilRestartId, pupilRestartCheckId) {
+    console.log(`pupilStatusCode: ${pupilStatusCode} checkStatusCode: ${checkStatusCode} pupilRestartId: ${pupilRestartId} pupilRestartCheckId: ${pupilRestartCheckId}`)
     let status
     switch (pupilStatusCode) {
       case 'UNALLOC':
