@@ -392,4 +392,13 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.pupil_reason(pupil_id)
+    sql = "select * from [mtc_admin].[pupilAgeReason] where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
+
 end
