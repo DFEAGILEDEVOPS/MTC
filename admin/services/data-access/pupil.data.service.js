@@ -435,6 +435,8 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   FROM ${sqlService.adminSchema}.${table} p 
     INNER JOIN ${sqlService.adminSchema}.[school] s
       ON p.school_id = s.id
+    INNER JOIN ${sqlService.adminSchema}.[pupilStatus] ps
+      ON p.pupilStatus_id = ps.id
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
       ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
     LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
@@ -442,6 +444,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
       ON pg.pupil_id = p.id 
   WHERE s.dfeNumber = @dfeNumber
+  AND ps.code = 'UNALLOC'
   ORDER BY ${sqlSort}
   `
   return sqlService.query(sql, params)
