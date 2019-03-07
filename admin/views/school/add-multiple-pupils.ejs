@@ -11,9 +11,9 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Errors in your uploaded file</h2>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
             <% if (fileErrors && fileErrors.hasError()) { %>
-            <p>You need to fix the errors on this page before continuing. See highlighted errors below.</p>
+            <p>See highlighted errors below.</p>
             <ul class="error-summary-list">
                 <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
                 <% const errors = fileErrors.get(f) %>
@@ -26,11 +26,17 @@
                 <% }) %>
             </ul>
             <% } else { %>
-            <p>Please download the file below which highlights the errors.<br>
-                Correct the errors and upload the updated file.
+            <p>Download the file below with errors indicated.<br>
+              Correct the errors and upload the updated file.
             </p>
-            <div class="icon-file-download pupils-template"></div>
-            <b><a class="template-link" download='pupil-errors.csv' href="/pupil-register/pupil/download-error-csv">Pupil details file with errors</a></b> (CSV file)
+            <div class="icon-file-download pupils-template error-file-icon"></div>
+            <div class="error-csv-link">
+              <b>
+                <a class="template-link" download='pupil-errors.csv' href="/pupil-register/pupil/download-error-csv">
+                  Pupil details file with errors (CSV, <%= csvErrorFileSize %>KB)
+                </a>
+              </b>
+            </div>
             <% } %>
         </div>
     </div>
@@ -49,11 +55,17 @@
         <ol class="list list-number">
             <li>Download the template
                 <div class="panel panel-border-wide short">
-                    <a href="/csv/mtc-pupil-details-template-sheet-1.csv" class="heading-small icon-download">Pupil details template</a> (CSV file)
+                    <a href="/csv/mtc-pupil-details-template-sheet-1.csv" class="heading-small icon-download">Pupil details template (CSV, <%= templateFileSize %>KB)</a>
                 </div>
             </li>
             <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
             <li>Add pupil details using the given format</li>
+              <p>
+                <ul class="list list-bullet">
+                  <li>Enter date of birth in format dd/mm/yyyy</li>
+                  <li>Enter a gender as M or F</li>
+                </ul>
+              </p>
             <li>Save as a CSV file on your computer</li>
             <li>Select 'Choose file' button and navigate to the file on your computer</li>
             <li>Choose the file to upload</li>
@@ -66,7 +78,15 @@
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
                 <% if (fileErrors && fileErrors.hasError()) { %>
-                <label class="error-message">There is a problem with the form content</label>
+                  <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+                  <% const errors = fileErrors.get(f) %>
+                  <% if (Array.isArray(errors)) { %>
+                  <%  errors.map(e => { %>
+                  <label class="error-message"><%= e %></label>
+                  <% }) } else { %>
+                  <label class="error-message"><%= errors %></label>
+                  <% } %>
+                  <% }) %>
                 <% } %>
                 <div class="font-xsmall">
                     <input type="file" name="csvTemplateFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload" />
@@ -74,7 +94,7 @@
                 <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file." />
             </div>
             <div class="form-buttons">
-                <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled" />
+                <input type="submit" id="upload-form-submit" class="button" value="Upload" />
                 <a href="/pupil-register/pupils-list" class="button button-secondary">Cancel</a>
             </div>
         </form>

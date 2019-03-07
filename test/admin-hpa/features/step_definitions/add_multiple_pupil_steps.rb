@@ -9,7 +9,7 @@ Then(/^I can see the landing page as per the design$/) do
   expect(add_multiple_pupil_page).to have_heading
   expect(@page.sub_heading.map {|message| message.text}).to include "Download template"
   expect(@page.sub_heading.map {|message| message.text}).to include "Upload file"
-  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV file)"
+  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV, 0.05KB)"
   expect(@page.info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
   expect(@page.info_message.map {|message| message.text}).to include "Add pupil details using the given format"
   expect(@page.info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
@@ -60,8 +60,8 @@ And(/^I can see the new pupil in the list$/) do
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
-  expect(add_multiple_pupil_page.error_message.text.include?('Errors in your uploaded file')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
-  expect(add_multiple_pupil_page.error_message.text.include?('Please download the file below which highlights the errors. Correct the errors and upload the updated file.')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
 end
 
 And(/^I can see link to download Error File$/) do
@@ -70,7 +70,6 @@ And(/^I can see link to download Error File$/) do
 end
 
 When(/^I download the Multiple Pupil upload CSV file with error$/) do
-
   page.execute_script("window.downloadCSVXHR = function(){ var url = '#{ENV["ADMIN_BASE_URL"]}/pupil-register/pupil/download-error-csv'; return getFile(url); }")
   page.execute_script("window.getFile = function(url) { var xhr = new XMLHttpRequest();  xhr.open('GET', url, false);  xhr.send(null); return xhr.responseText; }")
   data = page.evaluate_script("downloadCSVXHR()")

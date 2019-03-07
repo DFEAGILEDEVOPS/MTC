@@ -2,6 +2,7 @@ class ErrorSummary < SitePrism::Section
 
   element :heading, '.error-summary-heading'
   element :day, 'a[href="#dob-day"]'
+  element :reason, 'a[href="#ageReason"]'
   element :month, 'a[href="#dob-month"]'
   element :year, 'a[href="#dob-year"]'
   element :gender, 'a[href="#gender"]'
