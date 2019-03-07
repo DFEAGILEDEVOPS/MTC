@@ -78,7 +78,15 @@
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
                 <% if (fileErrors && fileErrors.hasError()) { %>
-                <label class="error-message">There is a problem with the form content</label>
+                  <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+                  <% const errors = fileErrors.get(f) %>
+                  <% if (Array.isArray(errors)) { %>
+                  <%  errors.map(e => { %>
+                  <label class="error-message"><%= e %></label>
+                  <% }) } else { %>
+                  <label class="error-message"><%= errors %></label>
+                  <% } %>
+                  <% }) %>
                 <% } %>
                 <div class="font-xsmall">
                     <input type="file" name="csvTemplateFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload" />
