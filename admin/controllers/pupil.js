@@ -28,7 +28,7 @@ const getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/add-pupil', {
       formData: req.body,
@@ -80,7 +80,7 @@ const getAddMultiplePupils = async (req, res, next) => {
   try {
     templateFileSize = uploadedFileService.getFilesize(templateFile)
     csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
