@@ -11,7 +11,7 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../../../services/pupil.status.service')
 const groupService = require('../../../services/group.service')
-const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../../../services/business-availability.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
@@ -56,7 +56,6 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsFormattedMock)
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
         controller = require('../../../controllers/school').getPupilNotTakingCheck
       })
 
@@ -64,6 +63,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -75,6 +75,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).not.toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
 
@@ -83,6 +84,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -92,6 +94,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
         done()
       })
     })
@@ -341,7 +344,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#viewPupilsNotTakingTheCheck', () => {
       it('should make a call to get the pupils', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
@@ -362,7 +365,7 @@ describe('pupils-not-taking-the-check controller:', () => {
       })
       it('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(Promise.reject(new Error())))
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
