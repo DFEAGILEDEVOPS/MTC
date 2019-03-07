@@ -60,8 +60,8 @@ And(/^I can see the new pupil in the list$/) do
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
-  expect(add_multiple_pupil_page.error_message.text.include?('Errors in your uploaded file')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
-  expect(add_multiple_pupil_page.error_message.text.include?('Please download the file below which highlights the errors. Correct the errors and upload the updated file.')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
 end
 
 And(/^I can see link to download Error File$/) do

@@ -367,5 +367,5 @@ end
 
 
 Then(/^I should see an error stating i need to upload a CSV$/) do
-  expect(add_multiple_pupil_page.error_message.text.include?('Select a file to save')).to be_truthy
+  expect(add_multiple_pupil_page.error_message.text.include?('Select a file to upload')).to be_truthy
 end
