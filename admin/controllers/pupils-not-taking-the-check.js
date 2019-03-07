@@ -165,19 +165,19 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   const highlight = req.query.hl || []
   let checkWindowData
   let pinGenerationEligibilityData
-  let hdfSubmitted
+  let availabilityData
   try {
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
       messages: res.locals.messages,
       highlight,
       pinGenerationEligibilityData,
-      hdfSubmitted
+      availabilityData
     })
   } catch (error) {
     return next(error)
