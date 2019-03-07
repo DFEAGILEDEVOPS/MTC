@@ -1,0 +1,57 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Settings for Service Children's Education (SCE)</h1>
+        <%- partial('partials/_session_expiry') %>
+        <p class="lede" id="lead-paragraph">Set timezones for schools listed as Service Children's Education (SCE). Add or remove schools listed as SCE.</p>
+        <div class="button-wrapper">
+            <a class="button button-secondary" href="/service-manager/sce-settings/add-school">Add school as SCE</a>
+        </div>
+        <table id="register-pupils" class="spacious">
+            <thead>
+                <tr>
+                    <th scope="col" class="two-thirds">
+                        <a class="no-underline sortingLink">School name<span class="sort-icon asc"><span>Sort by school name</span></span></a>
+                    </th>
+                    <th scope="col">
+                        <a class="no-underline sortingLink">Country<span class="sort-icon"><span>Sort by country</span></span></a>
+                    </th>
+                    <th scope="col">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
+                    </li>
+                    <li>
+                        <a href="/service-manager/check-settings">Settings on pupil check</a>
+                    </li>
+                    <li>
+                        <a href="/service-manager/home">Settings on school pages</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
@@ -11,6 +11,7 @@ const pupilCensusService = require('../services/pupil-census.service')
 const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
 const ValidationError = require('../lib/validation-error')
+const scePresenter = require('../helpers/sce')
 
 const featureToggles = require('feature-toggles')
 
@@ -298,6 +299,40 @@ const controller = {
     const { type, message } = result
     req.flash(type, message)
     return res.redirect('/service-manager/check-windows')
+  },
+
+  /**
+   * View sce settings.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceSettings: async (req, res, next) => {
+    res.locals.pageTitle = 'Settings for SCE'
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/sce-settings', {
+      breadcrumbs: req.breadcrumbs(),
+      countriesTzData: scePresenter.getCountriesTzData()
+    })
+  },
+
+  /**
+   * Add sce school form.
+   * @param req
+   * @param res
+   * @returns {Promise.<void>}
+   */
+
+  getSceAddSchool: async (req, res, next) => {
+    req.breadcrumbs('Settings for SCE', '/service-manager/sce-settings')
+    res.locals.pageTitle = 'Add school as SCE'
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/sce-add-school', {
+      breadcrumbs: req.breadcrumbs(),
+      err: new ValidationError(),
+      countriesTzData: scePresenter.getCountriesTzData()
+    })
   }
 }
 
