@@ -10,25 +10,13 @@ const pupilsNotTakingCheckDataService = {
  * @returns {Promise.<*>}
  */
   sqlFindPupilsWithReasons: async (dfeNumber) => {
-    const sql = `      
+    const sql = `
       SELECT p.*, ac.reason
-      FROM ${sqlService.adminSchema}.[pupil] p
+      FROM ${sqlService.adminSchema}.[pupil] p 
         INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
-        INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id
+        INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
         INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      LEFT OUTER JOIN
-              (SELECT
-                  chk.id,
-                  chk.pupil_id,
-                  ROW_NUMBER() OVER (PARTITION BY chk.pupil_id ORDER BY chk.id DESC) as rank
-                FROM ${sqlService.adminSchema}.[check] chk
-                INNER JOIN ${sqlService.adminSchema}.checkStatus cs ON (cs.id = chk.checkStatus_id)
-                WHERE cs.code = 'CMP'
-                AND isLiveCheck = 1
-                AND cs.code NOT IN ('STD', 'COL', 'NTR')
-              ) latestPupilCheck ON p.id = latestPupilCheck.pupil_id
-      WHERE s.dfeNumber = @dfeNumber
-      AND pa.isDeleted = 0
+      WHERE s.dfeNumber = @dfeNumber AND pa.isDeleted = 0
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
 
