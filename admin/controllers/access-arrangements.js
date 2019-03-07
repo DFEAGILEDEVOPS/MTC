@@ -3,7 +3,6 @@ const accessArrangementsService = require('../services/access-arrangements.servi
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
-const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -70,7 +69,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    pupils = await pupilService.getPupilsWithFullNames(req.user.School)
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
   } catch (error) {
     return next(error)
   }

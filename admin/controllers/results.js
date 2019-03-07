@@ -35,6 +35,8 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
   const currentDate = moment.utc()
   const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
+  const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
+  schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScore)
   if (!isHdfSubmitted || !isResultsPageAccessible) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
@@ -45,7 +47,7 @@ controller.getViewResultsPage = async (req, res, next) => {
     pupilData,
     groups,
     schoolScore,
-    nationalScore: checkWindow.score,
+    nationalScore,
     breadcrumbs: req.breadcrumbs()
   })
 }

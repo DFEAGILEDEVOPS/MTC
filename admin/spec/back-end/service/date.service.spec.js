@@ -242,4 +242,13 @@ describe('date service', () => {
       expect(res1).toBeNull()
     })
   })
+
+  describe('#formatFileName', () => {
+    it('correctly formats a date', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 0, 0)
+      expect(dateService.formatFileName(date)).toBe('2010-12-31-1410')
+    })
+
+    invalidInputTests('formatUKDate')
+  })
 })

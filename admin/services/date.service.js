@@ -12,6 +12,7 @@ const dayAndDateFormat = 'dddd, D MMMM'
 const dayDateAndYearFormat = 'dddd D MMMM YYYY'
 const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+const filenameFriendly = 'YYYY-MM-DD-HHmm'
 
 const dateService = {
   formatYear: function (date) {
@@ -143,6 +144,10 @@ const dateService = {
    */
   utcNowAsMoment: () => {
     return moment.utc()
+  },
+
+  formatFileName: function (date) {
+    return moment(date).format(filenameFriendly)
   }
 }
 
