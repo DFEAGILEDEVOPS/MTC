@@ -45,6 +45,42 @@ describe('businessAvailabilityService', () => {
       expect(result).toBeFalsy()
     })
   })
+  describe('#areGroupsAllowed', () => {
+    it('should return true if groups are allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isGroupsPageAccessible: true
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areGroupsAllowed(checkWindow)
+      expect(result).toBeTruthy()
+    })
+    it('should return false if groups are not allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isGroupsPageAccessible: false
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areGroupsAllowed(checkWindow)
+      expect(result).toBeFalsy()
+    })
+  })
+  describe('#areAccessArrangementsAllowed', () => {
+    it('should return true if access arrangements are allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isAccessArrangementsPageAccessible: true
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areAccessArrangementsAllowed(checkWindow)
+      expect(result).toBeTruthy()
+    })
+    it('should return false if access arrangements are not allowed', async () => {
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
+        isAccessArrangementsPageAccessible: false
+      })
+      const checkWindow = { id: 1 }
+      const result = await businessAvailabilityService.areAccessArrangementsAllowed(checkWindow)
+      expect(result).toBeFalsy()
+    })
+  })
   describe('#determinePinGenerationEligibility', () => {
     let isLiveCheck
     beforeEach(() => {
@@ -53,7 +89,7 @@ describe('businessAvailabilityService', () => {
     it('should not throw an error if eligibility is true', async () => {
       spyOn(businessAvailabilityService, 'isPinGenerationAllowed').and.returnValue(true)
       try {
-        await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+        await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, {})
       } catch (error) {
         fail()
       }
@@ -61,10 +97,67 @@ describe('businessAvailabilityService', () => {
     it('should throw an error if eligibility is false', async () => {
       spyOn(businessAvailabilityService, 'isPinGenerationAllowed').and.returnValue(false)
       try {
-        await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck)
+        await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, {})
         fail()
       } catch (error) {
         expect(error.message).toBe('Live pin generation is not allowed')
+      }
+    })
+  })
+  describe('#determineRestartsEligibility', () => {
+    it('should not throw an error if eligibility is true', async () => {
+      spyOn(businessAvailabilityService, 'areRestartsAllowed').and.returnValue(true)
+      try {
+        await businessAvailabilityService.determineRestartsEligibility({})
+      } catch (error) {
+        fail()
+      }
+    })
+    it('should throw an error if eligibility is false', async () => {
+      spyOn(businessAvailabilityService, 'areRestartsAllowed').and.returnValue(false)
+      try {
+        await businessAvailabilityService.determineRestartsEligibility({})
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Restarts are not allowed')
+      }
+    })
+  })
+  describe('#determineGroupsEligibility', () => {
+    it('should not throw an error if eligibility is true', async () => {
+      spyOn(businessAvailabilityService, 'areGroupsAllowed').and.returnValue(true)
+      try {
+        await businessAvailabilityService.determineGroupsEligibility({})
+      } catch (error) {
+        fail()
+      }
+    })
+    it('should throw an error if eligibility is false', async () => {
+      spyOn(businessAvailabilityService, 'areGroupsAllowed').and.returnValue(false)
+      try {
+        await businessAvailabilityService.determineGroupsEligibility({})
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Groups are not allowed')
+      }
+    })
+  })
+  describe('#determineAccessArrangementsEligibility', () => {
+    it('should not throw an error if eligibility is true', async () => {
+      spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(true)
+      try {
+        await businessAvailabilityService.determineAccessArrangementsEligibility({})
+      } catch (error) {
+        fail()
+      }
+    })
+    it('should throw an error if eligibility is false', async () => {
+      spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(false)
+      try {
+        await businessAvailabilityService.determineAccessArrangementsEligibility({})
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Access Arrangements are not allowed')
       }
     })
   })
