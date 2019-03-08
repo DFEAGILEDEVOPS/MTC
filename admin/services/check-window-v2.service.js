@@ -29,6 +29,14 @@ checkWindowV2Service.getActiveCheckWindow = async () => {
 }
 
 /**
+ * Get latest check window
+ * @return {Promise<Object>} Check window object
+ */
+checkWindowV2Service.getLatestCheckWindow = async () => {
+  return checkWindowDataService.sqlFindLatestCheckWindow()
+}
+
+/**
  * Get all check windows recorded in the database with their status
  * @returns {Array} List of check windows
  */

@@ -56,7 +56,6 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsFormattedMock)
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
         controller = require('../../../controllers/school').getPupilNotTakingCheck
       })
 
@@ -64,6 +63,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -75,6 +75,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).not.toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+        expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
         done()
       })
 
@@ -83,6 +84,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -92,6 +94,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
+        expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).not.toHaveBeenCalled()
         done()
       })
     })
