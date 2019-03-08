@@ -6,6 +6,7 @@ const attendanceCodeDataService = require('./data-access/attendance-code.data.se
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const pinService = require('./pin.service')
+const logger = require('./log.service').getLogger()
 
 const attendanceService = {
   /**
