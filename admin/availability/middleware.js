@@ -10,7 +10,7 @@ async function isAdminWindowAvailable (req, res, next) {
     return next()
   }
   const currentDate = moment.utc()
-  const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+  const checkWindow = await checkWindowV2Service.getLatestCheckWindow()
   if (checkWindow && currentDate.isBetween(checkWindow.adminStartDate, checkWindow.adminEndDate)) {
     return next()
   }
