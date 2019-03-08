@@ -75,7 +75,7 @@ const pupilRegisterService = {
           d.pupilStatusCode,
           d.lastCheckStatusCode,
           d.pupilRestartId,
-          d.pupilResartCheckId)
+          d.pupilRestartCheckId)
       }
     })
     pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
