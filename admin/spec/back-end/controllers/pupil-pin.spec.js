@@ -77,7 +77,6 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(res, 'render').and.returnValue(null)
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
@@ -86,7 +85,6 @@ describe('pupilPin controller:', () => {
         expect(res.locals.pageTitle).toBe('Start the MTC - password and PINs')
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
     })
@@ -97,7 +95,6 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(res, 'render').and.returnValue(null)
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
@@ -106,7 +103,6 @@ describe('pupilPin controller:', () => {
         expect(res.locals.pageTitle).toBe('Try it out - password and PINs')
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
     })

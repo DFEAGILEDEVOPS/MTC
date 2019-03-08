@@ -8,7 +8,7 @@ const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
-const businessAvailabilityService = require('../services/business-availability.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 /**
  * Pupils not taking the check: initial page.
@@ -23,13 +23,13 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   let checkWindowData
   let pupils
   let pinGenerationEligibilityData
-  let availabilityData
+  let hdfSubmitted
   try {
     // Get pupils for active school
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -39,7 +39,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     highlight: [],
     messages: req.flash('info'),
     pinGenerationEligibilityData,
-    availabilityData
+    hdfSubmitted
   })
 }
 
@@ -165,19 +165,19 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   const highlight = req.query.hl || []
   let checkWindowData
   let pinGenerationEligibilityData
-  let availabilityData
+  let hdfSubmitted
   try {
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
       messages: res.locals.messages,
       highlight,
       pinGenerationEligibilityData,
-      availabilityData
+      hdfSubmitted
     })
   } catch (error) {
     return next(error)
