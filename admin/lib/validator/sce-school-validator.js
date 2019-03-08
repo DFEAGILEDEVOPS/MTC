@@ -1,8 +1,6 @@
 var moment = require('moment-timezone')
 const { isEmpty } = require('validator')
-const XRegExp = require('xregexp')
 const ValidationError = require('../validation-error')
-const sceService = require('../../services/sce-service.js')
 const sceErrorMessages = require('../errors/sce')
 const sceSchoolValidator = {}
 
@@ -10,9 +8,9 @@ const sceSchoolValidator = {}
  * Validate restart reason
  * @param {String} restartCode
  * @param {String} reason
- * @returns {Boolean}
+ * @returns {Promise<ValidationError>}
  */
-sceSchoolValidator.validate = (data) => {
+sceSchoolValidator.validate = async (data, schoolNames, schoolUrns) => {
   const validationError = new ValidationError()
   const {
     schoolName,
@@ -20,18 +18,21 @@ sceSchoolValidator.validate = (data) => {
     timezone
   } = data
 
-  if (isEmpty(schoolName) || sceService.findSchoolByName(schoolName)) {
+  if (isEmpty(schoolName) || !schoolNames.includes(schoolName)) {
     validationError.addError('schoolName', sceErrorMessages.schoolName)
   }
 
-  if (isEmpty(urn) || !XRegExp('^[0-9]{13}$').test(urn) || sceService.findSchoolByURN(urn)) {
+  // TODO: parse int just for testing, needs consideration
+  if (isEmpty(urn) || !schoolUrns.includes(parseInt(urn, 10))) {
     validationError.addError('urn', sceErrorMessages.urn)
   }
 
   const timezones = moment.tz.names()
-  if (isEmpty(timezone) || timezones.indexOf(timezone) === -1) {
-    validationError.addError('timezone', sceErrorMessages.urn)
+  if (!isEmpty(timezone) && !timezones.includes(timezone)) {
+    validationError.addError('timezone', sceErrorMessages.timezone)
   }
+
+  return validationError
 }
 
 module.exports = sceSchoolValidator
