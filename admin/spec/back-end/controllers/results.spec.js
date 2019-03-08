@@ -42,6 +42,36 @@ describe('results controller:', () => {
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
       spyOn(resultService, 'getPupilsWithResults')
+      spyOn(resultService, 'getSchoolScore').and.returnValue(5)
+      spyOn(groupService, 'getGroups')
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible').and.returnValue(true)
+      spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5)
+      await controller.getViewResultsPage(req, res, next)
+      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(resultService.getPupilsWithResults).toHaveBeenCalled()
+      expect(resultService.getSchoolScore).toHaveBeenCalled()
+      expect(groupService.getGroups).toHaveBeenCalled()
+      expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
+      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        pupilData: undefined,
+        groups: undefined,
+        schoolScore: 5,
+        nationalScore: 5,
+        breadcrumbs: undefined
+      })
+    })
+    it('renders unavailable page when school score is undefined', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
+      spyOn(resultService, 'getPupilsWithResults')
       spyOn(resultService, 'getSchoolScore')
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
@@ -56,15 +86,9 @@ describe('results controller:', () => {
       expect(groupService.getGroups).toHaveBeenCalled()
       expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
-      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-results', {
-        pupilData: undefined,
-        groups: undefined,
-        schoolScore: undefined,
-        nationalScore: undefined,
-        breadcrumbs: undefined
-      })
+      expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { breadcrumbs: undefined })
     })
     it('calls next when getPupilsWithResults throws an error', async () => {
       const res = getRes()
