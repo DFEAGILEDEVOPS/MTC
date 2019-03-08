@@ -32,12 +32,6 @@ controller.getOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  if (!availabilityData.canEditArrangements) {
-    return res.render('availability/section-unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
   const { hl } = req.query
   return res.render('access-arrangements/overview', {
     highlight: hl,
