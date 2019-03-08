@@ -37,6 +37,9 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) =>
   // Groups
   featureEligibilityData.isGroupsPageAccessible = schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible(currentDate, checkWindowData)
 
+  // HDF
+  featureEligibilityData.isHdfPageAccessible = schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible(currentDate, checkWindowData)
+
   // Results page data
   featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTime)
   featureEligibilityData.isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindowData)
@@ -142,6 +145,16 @@ schoolHomeFeatureEligibilityPresenter.isRestartsPageAccessible = (currentDate, c
  */
 schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible = (currentDate, checkWindowData) => {
   return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
+}
+
+/**
+ * Determine if hdf page is accessible
+ * @param currentDate
+ * @param checkWindowData
+ * @returns {Boolean}
+ */
+schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkWindowData) => {
+  return currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
 }
 
 /**
