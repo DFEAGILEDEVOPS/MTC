@@ -43,6 +43,7 @@ Feature: Restarts
   Scenario: Pupil added to the restart list after Pupil is submitted using reason Classroom disruption
     Given I submitted pupils for Restart using reason Classroom disruption
     Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
+    And I should not see the pupil on the select pupils for restarts list
 
   Scenario: Pupil Restarts status changes to Restart Taken when pupil take 2nd check
     Given I submitted pupils for Restart
