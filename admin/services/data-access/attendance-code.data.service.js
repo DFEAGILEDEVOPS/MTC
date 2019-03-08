@@ -40,7 +40,7 @@ const attendanceCodeDataService = {
     const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
     const sql = `UPDATE [mtc_admin].[pupilRestart] 
                  SET isDeleted = 1, deletedByUser_id = @userId
-                 WHERE pupil_id IN (${paramIdentifiers.join(", ")}) 
+                 WHERE pupil_id IN (${paramIdentifiers.join(', ')}) 
                  AND isDeleted = 0
                  AND check_id IS NULL`
     params.push({
