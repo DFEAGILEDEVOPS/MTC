@@ -1,0 +1,32 @@
+<div class="grid-row">
+  <div class="column-one-third">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge">Sorry, the service is unavailable</h1>
+
+    <%- partial('partials/_session_expiry') %>
+
+    <p><span class="lede font-medium" id="lead-paragraph">The service is currently unavailable. Please try again later.</span></p>
+    <p>If you have an urgent enquiry please contact the helpline.</p>
+    <div class="panel panel-border-wide">
+      <p>National Curriculum Assessments Helpline</p>
+      <span>0300 303 3013</span>
+    </div>
+  </div>
+  <div class="column-one-third sidebar" aria-label="sidebar">
+    <aside role="complementary" class="support-column">
+      <h3 class="heading-medium">Related</h3>
+      <nav role="navigation">
+        <ul class="list">
+          <li>
+            <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>

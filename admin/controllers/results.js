@@ -42,6 +42,9 @@ controller.getViewResultsPage = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
+  if (!schoolScore) {
+    return res.render('service-unavailable')
+  }
   const pupilData = resultPresenter.getResultsViewData(pupils)
   return res.render('results/view-results', {
     pupilData,
