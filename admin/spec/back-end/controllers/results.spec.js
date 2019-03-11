@@ -3,6 +3,7 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
+const moment = require('moment')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const resultService = require('../../../services/result.service')
 const groupService = require('../../../services/group.service')
@@ -70,7 +71,7 @@ describe('results controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1, adminStartDate: moment.utc().subtract(20, 'days') })
       spyOn(resultService, 'getPupilsWithResults')
       spyOn(resultService, 'getSchoolScore')
       spyOn(groupService, 'getGroups')
@@ -88,7 +89,9 @@ describe('results controller:', () => {
       expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('service-unavailable')
+      expect(res.render).toHaveBeenCalledWith('availability/admin-window-unavailable', {
+        isBeforeStartDate: false
+      })
     })
     it('calls next when getPupilsWithResults throws an error', async () => {
       const res = getRes()

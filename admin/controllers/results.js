@@ -43,7 +43,9 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
   if (!schoolScore) {
-    return res.render('service-unavailable')
+    return res.render('availability/admin-window-unavailable', {
+      isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
+    })
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
   return res.render('results/view-results', {
