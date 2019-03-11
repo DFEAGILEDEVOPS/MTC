@@ -37,6 +37,9 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) =>
   // Groups
   featureEligibilityData.isGroupsPageAccessible = schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible(currentDate, checkWindowData)
 
+  // Access Arrangements
+  featureEligibilityData.isAccessArrangementsPageAccessible = schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible(currentDate, checkWindowData)
+
   // HDF
   featureEligibilityData.isHdfPageAccessible = schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible(currentDate, checkWindowData)
 
@@ -144,6 +147,16 @@ schoolHomeFeatureEligibilityPresenter.isRestartsPageAccessible = (currentDate, c
  * @returns {Boolean}
  */
 schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible = (currentDate, checkWindowData) => {
+  return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
+}
+
+/**
+ * Determine if access arragements page is accessible
+ * @param currentDate
+ * @param checkWindowData
+ * @returns {Boolean}
+ */
+schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible = (currentDate, checkWindowData) => {
   return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
 }
 
