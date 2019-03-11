@@ -351,6 +351,19 @@ const checkWindowDataService = {
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
     const result = await sqlService.query(sql)
     return R.head(result)
+  },
+
+  /**
+   * Fetch latest check window
+   * @return {Object}
+   */
+  sqlFindLatestCheckWindow: async () => {
+    const sql = `SELECT TOP 1 *
+    FROM ${sqlService.adminSchema}.${table}
+    WHERE isDeleted = 0
+    ORDER BY createdAt DESC`
+    const result = await sqlService.query(sql)
+    return R.head(result)
   }
 }
 
