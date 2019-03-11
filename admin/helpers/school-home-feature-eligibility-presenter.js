@@ -37,6 +37,9 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) =>
   // Groups
   featureEligibilityData.isGroupsPageAccessible = schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible(currentDate, checkWindowData)
 
+  // Access Arrangements
+  featureEligibilityData.isAccessArrangementsPageAccessible = schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible(currentDate, checkWindowData)
+
   // HDF
   featureEligibilityData.isHdfPageAccessible = schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible(currentDate, checkWindowData)
 
