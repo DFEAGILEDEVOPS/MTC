@@ -19,10 +19,17 @@
                     <span class="error-message"><%= err.get('schoolName') %></span>
                     <% } %>
                 </label>
-                <input type="text"
-                    id="schoolName"
-                    class="form-control <%= err.isError('schoolName') ? 'form-control-error' : '' %>"
-                    name="schoolName"/>
+                <div class='form-control-1-2'>
+                    <select
+                        class="form-control <%= err.isError('schoolName') ? 'form-control-error' : '' %>"
+                        id="schoolName"
+                        name="schoolName">
+                        <option value=""></option>
+                        <% schools.map(t => { %>
+                            <option value="<%= t.urn %>"><%= t.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
             </div>
             <div class="form-group <%= err.isError('urn') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold" for="urn">Unique reference number (URN)
@@ -31,10 +38,17 @@
                     <span class="error-message"><%= err.get('urn') %></span>
                     <% } %>
                 </label>
-                <input type="text"
-                    id="urn"
-                    class="form-control <%= err.isError('urn') ? 'form-control-error' : '' %>"
-                    name="urn"/>
+                <div class='form-control-1-2'>
+                    <select
+                        class="form-control <%= err.isError('urn') ? 'form-control-error' : '' %>"
+                        id="urn"
+                        name="urn">
+                        <option value=""></option>
+                        <% schools.map(t => { %>
+                            <option value="<%= t.urn %>"><%= t.urn %></option>
+                        <% }) %>
+                    </select>
+                </div>
             </div>
             <div class="form-group <%= err.isError('timezone') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold" for="timezone">Country
@@ -62,10 +76,8 @@
 </div>
 <script>
   $(function () {
-    window.accessibleAutocomplete.enhanceSelectElement({
-      selectElement: document.querySelector('#timezone'),
-      minLength: 2,
-      defaultValue: ''
-    })
+    window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
+    window.GOVUK.autoComplete.createComponent('#schoolName', 3, '')
+    window.GOVUK.autoComplete.createComponent('#urn', 3, '')
   })
 </script>
