@@ -292,3 +292,14 @@ And(/^the pin should also be removed$/) do
   array_of_names = view_and_custom_print_live_check_page.pupil_list.rows.map {|row| row.name.text}
   expect(array_of_names).to_not include @details_hash[:first_name]
 end
+
+
+And(/^I should not see the pupil on the select pupils for restarts list$/) do
+  restarts_page.load
+  restarts_page.select_pupil_to_restart_btn.click
+  if restarts_page.has_pupil_list?
+    expect(restarts_page.pupil_list.rows.find {|pupil| pupil.text.include? @details_hash[:first_name]}).to be_nil
+  else
+    expect(restarts_page).to have_no_pupils
+  end
+end
