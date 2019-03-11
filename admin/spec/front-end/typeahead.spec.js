@@ -24,5 +24,25 @@ describe('autoComplete', function () {
       expect(window.accessibleAutocomplete.enhanceSelectElement).not.toHaveBeenCalled()
       expect(document.querySelector).not.toHaveBeenCalled()
     })
+    it('should call enhanceSelectElement with the templates passed', function () {
+      spyOn(window.accessibleAutocomplete, 'enhanceSelectElement')
+      spyOn(document, 'querySelector').and.returnValue('selected-element')
+      const templates = { template1: 2 }
+      window.GOVUK.autoComplete.createComponent('#container', 2, 'default', templates)
+      expect(window.accessibleAutocomplete.enhanceSelectElement).toHaveBeenCalledWith({
+        selectElement: 'selected-element',
+        minLength: 2,
+        defaultValue: 'default',
+        templates: templates
+      })
+      expect(document.querySelector).toHaveBeenCalledWith('#container')
+    })
+  })
+  describe('createNameComponent', function () {
+    it('should call createComponent with the name templates', function () {
+      spyOn(window.GOVUK.autoComplete, 'createComponent')
+      window.GOVUK.autoComplete.createNameComponent('#container', 2, 'default')
+      expect(window.GOVUK.autoComplete.createComponent).toHaveBeenCalledWith('#container', 2, 'default', jasmine.any(Object))
+    })
   })
 })
