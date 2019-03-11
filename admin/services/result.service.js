@@ -33,7 +33,7 @@ resultService.getSchoolScore = async (schoolId, checkWindowId) => {
   }
   const schoolScore = await resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId(schoolId, checkWindowId)
   if (!schoolScore || !schoolScore.score) {
-    throw new Error(`no school score record is found or no score is set for school id: ${schoolId} and check window id: ${checkWindowId}`)
+    return
   }
   return schoolScore.score
 }
