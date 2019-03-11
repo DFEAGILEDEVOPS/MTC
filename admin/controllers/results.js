@@ -37,10 +37,13 @@ controller.getViewResultsPage = async (req, res, next) => {
   const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
   const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
   schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScore)
-  if (!isHdfSubmitted || !isResultsPageAccessible || !schoolScore) {
+  if (!isHdfSubmitted || !isResultsPageAccessible) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
     })
+  }
+  if (!schoolScore) {
+    return res.render('service-unavailable')
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
   return res.render('results/view-results', {
