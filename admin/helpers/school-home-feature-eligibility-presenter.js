@@ -148,6 +148,16 @@ schoolHomeFeatureEligibilityPresenter.isGroupsPageAccessible = (currentDate, che
 }
 
 /**
+ * Determine if access arragements page is accessible
+ * @param currentDate
+ * @param checkWindowData
+ * @returns {Boolean}
+ */
+schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible = (currentDate, checkWindowData) => {
+  return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
+}
+
+/**
  * Determine if hdf page is accessible
  * @param currentDate
  * @param checkWindowData
