@@ -77,7 +77,39 @@
 <script>
   $(function () {
     window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
-    window.GOVUK.autoComplete.createComponent('#schoolName', 3, '')
-    window.GOVUK.autoComplete.createComponent('#urn', 3, '')
+    window.GOVUK.autoComplete.createComponent('#schoolName', 3, '', {
+      autoselect: true,
+      onConfirm: function (name) {
+        $('#schoolName').val(name)
+        $('#schoolName').trigger('change')
+      },
+    })
+    window.GOVUK.autoComplete.createComponent('#urn', 3, '', {
+      autoselect: true,
+      onConfirm: function (urn) {
+        $('#urn').val(urn)
+        $('#urn').trigger('change')
+      }
+    })
+    $('#schoolName').change(function () {
+      var name = $(this).val()
+      var urnForSchool = $('#schoolName-select option')
+        .filter(function () {
+          return $(this).html() == name;
+        })
+        .first()
+        .val()
+      $('#urn').val(urnForSchool)
+    })
+    $('#urn').change(function () {
+      var urn = $(this).val()
+      var schoolNameForUrn = $('#schoolName-select option')
+        .filter(function () {
+          return $(this).val() == urn;
+        })
+        .first()
+        .html()
+      $('#schoolName').val(schoolNameForUrn)
+    })
   })
 </script>
