@@ -14,8 +14,8 @@ module.exports = {
   user: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
   password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!', // docker default
   pool: {
-    min: process.env.SQL_POOL_MIN_COUNT || 100,
-    max: process.env.SQL_POOL_MAX_COUNT || 200
+    min: process.env.SQL_POOL_MIN_COUNT || 2,
+    max: process.env.SQL_POOL_MAX_COUNT || 10
   },
   options: {
     appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
