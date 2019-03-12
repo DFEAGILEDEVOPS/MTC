@@ -14,19 +14,19 @@ $(function () {
      * @param {String} autoCompleteContainer
      * @param {Number} minLength
      * @param {String} defaultValue
-     * @param {Object} templates
+     * @param {Object} extraOptions
      * @returns {void}
      */
-    createComponent: function (autoCompleteContainer, minLength, defaultValue, templates) {
-      if (!templates) templates = {}
-
+    createComponent: function (autoCompleteContainer, minLength, defaultValue, extraOptions) {
       if (autoCompleteContainer && typeof autoCompleteContainer === 'string') {
-        return window.accessibleAutocomplete.enhanceSelectElement({
-          selectElement: document.querySelector(autoCompleteContainer),
-          minLength: minLength,
-          defaultValue: defaultValue,
-          templates: templates
-        })
+        return window.accessibleAutocomplete.enhanceSelectElement(Object.assign(
+          {
+            selectElement: document.querySelector(autoCompleteContainer),
+            minLength: minLength,
+            defaultValue: defaultValue
+          },
+          extraOptions
+        ))
       }
     },
 
@@ -35,7 +35,6 @@ $(function () {
      * @param {String} autoCompleteContainer
      * @param {Number} minLength
      * @param {String} defaultValue
-     * @param {Object} templates
      * @returns {void}
      */
     createNameComponent: function (autoCompleteContainer, minLength, defaultValue) {
@@ -57,8 +56,10 @@ $(function () {
         minLength,
         defaultValue,
         {
-          inputValue: inputValueTemplate,
-          suggestion: suggestionTemplate
+          templates: {
+            inputValue: inputValueTemplate,
+            suggestion: suggestionTemplate
+          }
         }
       )
     }
