@@ -6,6 +6,7 @@ const checkWindowService = require('../../../services/check-window.service')
 const pupilCensusService = require('../../../services/pupil-census.service')
 const checkWindowAddService = require('../../../services/check-window-add.service')
 const checkWindowEditService = require('../../../services/check-window-edit.service')
+const uploadedFileService = require('../../../services/uploaded-file.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -270,6 +271,7 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(res, 'render')
       spyOn(pupilCensusService, 'getUploadedFile')
+      spyOn(uploadedFileService, 'getFilesize')
       await controller.getUploadPupilCensus(req, res, next)
       expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
@@ -279,6 +281,7 @@ describe('service manager controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(res, 'render')
+      spyOn(uploadedFileService, 'getFilesize')
       spyOn(pupilCensusService, 'getUploadedFile').and.returnValue(Promise.reject(new Error('error')))
       try {
         await controller.getUploadPupilCensus(req, res, next)

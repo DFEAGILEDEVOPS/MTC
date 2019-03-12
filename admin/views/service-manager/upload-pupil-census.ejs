@@ -18,9 +18,26 @@
 
             <%- partial('partials/_session_expiry') %>
 
-            <br />
-            <p class="font-medium">Use this page to upload pupil data. The file must be
-                in CSV format.</p>
+            <h3 class="heading-medium">Download template</h3>
+            <ol class="list list-number">
+                <li>Download the template
+                    <div class="panel panel-border-wide short">
+                      <a href="/csv/mtc-pupil-details-template-sheet-1.csv" class="heading-small icon-download">Pupil census template (CSV, <%= templateFileSize %>KB)</a>
+                    </div>
+                </li>
+                <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+                <li>Add pupil details using the given format</li>
+                <p>
+                    <ul class="list list-bullet">
+                        <li>Enter date of birth in format dd/mm/yyyy</li>
+                        <li>Enter a gender as M or F</li>
+                    </ul>
+                </p>
+                <li>Save as a CSV file on your computer</li>
+                <li>Select 'Choose file' button and navigate to the file on your computer</li>
+                <li>Choose the file to upload</li>
+                <li>Click 'Upload'</li>
+            </ol>
         </header>
         <br>
         <% if (!pupilCensus || pupilCensus.jobStatusCode !== 'COM') { %>
