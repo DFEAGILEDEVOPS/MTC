@@ -56,6 +56,19 @@ describe('result.service', () => {
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
       expect(schoolScore).toBe(6)
     })
+    it('returns 0 as school score', async () => {
+      spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1, score: 0 })
+      const checkWindowId = 1
+      const schoolId = 2
+      let schoolScore
+      try {
+        schoolScore = await resultService.getSchoolScore(schoolId, checkWindowId)
+      } catch (error) {
+        fail()
+      }
+      expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(schoolScore).toBe(0)
+    })
     it('throws an error if check window id is not provided', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
       const checkWindowId = undefined
@@ -92,29 +105,31 @@ describe('result.service', () => {
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
     })
-    it('throws an error if sqlFindResultsBySchool returns an empty object', async () => {
+    it('returns if sqlFindResultsBySchool returns an empty object', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
       const checkWindowId = 1
       const schoolId = 2
+      let score
       try {
-        await resultService.getSchoolScore(schoolId, checkWindowId)
-        fail()
+        score = await resultService.getSchoolScore(schoolId, checkWindowId)
       } catch (error) {
-        expect(error.message).toBe(`no school score record is found or no score is set for school id: ${schoolId} and check window id: ${checkWindowId}`)
+        fail()
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(score).toBeUndefined()
     })
-    it('throws an error if sqlFindResultsBySchool returns no score property', async () => {
+    it('returns if sqlFindResultsBySchool returns no score property', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1 })
       const checkWindowId = 1
       const schoolId = 2
+      let score
       try {
-        await resultService.getSchoolScore(schoolId, checkWindowId)
-        fail()
+        score = await resultService.getSchoolScore(schoolId, checkWindowId)
       } catch (error) {
-        expect(error.message).toBe(`no school score record is found or no score is set for school id: ${schoolId} and check window id: ${checkWindowId}`)
+        fail()
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(score).toBeUndefined()
     })
   })
 })
