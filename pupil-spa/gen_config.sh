@@ -1,5 +1,5 @@
 #!/bin/bash
-featureUseHpa=${FEATURE_USE_HPA:-"false"}
+featureUseHpa=${FEATURE_USE_HPA:-"true"}
 if [[ "$featureUseHpa" == "true" ]]; then
     authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
 else
