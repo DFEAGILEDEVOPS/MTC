@@ -20,11 +20,11 @@
     <dl class="score-presenter">
       <dd>
         <h3>School Average</h3>
-        <div class="font-xlarge"><%= schoolScore %></div>
+        <div class="font-xlarge"><%= schoolScore ? schoolScore : 'N/A' %></div>
       </dd>
       <dd>
         <h3>National Average</h3>
-        <div class="font-xlarge"><%= nationalScore ? nationalScore: 'N/A' %></div>
+        <div class="font-xlarge"><%= nationalScore ? nationalScore : 'N/A' %></div>
       </dd>
     </dl>
   </div>
