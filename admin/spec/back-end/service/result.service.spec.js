@@ -56,6 +56,19 @@ describe('result.service', () => {
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
       expect(schoolScore).toBe(6)
     })
+    it('returns 0 as school score', async () => {
+      spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1, score: 0 })
+      const checkWindowId = 1
+      const schoolId = 2
+      let schoolScore
+      try {
+        schoolScore = await resultService.getSchoolScore(schoolId, checkWindowId)
+      } catch (error) {
+        fail()
+      }
+      expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(schoolScore).toBe(0)
+    })
     it('throws an error if check window id is not provided', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
       const checkWindowId = undefined
