@@ -98,6 +98,7 @@ $(function () {
           .html()
         $(linkedContainer).attr('placeholder', inputText)
         $(linkedContainer + '-select').val(value).trigger('change')
+        $(autoCompleteContainer + '-select').val(inputText).trigger('change')
       }
     }
   }

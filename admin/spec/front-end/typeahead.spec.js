@@ -80,6 +80,7 @@ describe('autoComplete', function () {
       cb(event, value)
       expect($('#container2').attr('placeholder')).toBe('op-2')
       expect($('#container2-select').val()).toBe('Option 2')
+      expect($('#container1-select').val()).toBe('op-2')
     })
     it('should populate the value of the first container based on the second one', function () {
       var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container2', '#container1')
@@ -89,6 +90,7 @@ describe('autoComplete', function () {
       cb(event, value)
       expect($('#container1').attr('placeholder')).toBe('Option 2')
       expect($('#container1-select').val()).toBe('op-2')
+      expect($('#container2-select').val()).toBe('Option 2')
     })
   })
 })
