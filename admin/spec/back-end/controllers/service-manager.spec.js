@@ -2,10 +2,12 @@
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/service-manager')
 const settingService = require('../../../services/setting.service')
+const sceService = require('../../../services/sce.service')
 const checkWindowService = require('../../../services/check-window.service')
 const pupilCensusService = require('../../../services/pupil-census.service')
 const checkWindowAddService = require('../../../services/check-window-add.service')
 const checkWindowEditService = require('../../../services/check-window-edit.service')
+const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -360,6 +362,90 @@ describe('service manager controller:', () => {
       await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('getSceAddSchool', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/service-manager/sce-add-school',
+      params: {
+        id: 1
+      }
+    }
+
+    it('calls render after fetching schools', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'getSchools')
+        .and.returnValue([{ name: 'school', urn: '42' }])
+      spyOn(res, 'render')
+      await controller.getSceAddSchool(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      expect(sceService.getSchools).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('throws an error when fetching schools call is rejected', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'getSchools').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(res, 'render')
+      await controller.getSceAddSchool(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postSceAddSchool', () => {
+    const goodReqParams = {
+      method: 'POST',
+      url: '/service-manager/sce-add-school',
+      body: {
+        timezone: '1',
+        urn: 123456,
+        schoolName: 'Test School'
+      }
+    }
+
+    beforeEach(() => {
+      spyOn(sceService, 'getSchools')
+        .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
+    })
+
+    it('redirects to the sce settings page when successfully added a school', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceSchoolValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(res, 'redirect')
+      spyOn(sceService, 'insertOrUpdateSceSchool')
+      await controller.postSceAddSchool(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+
+    it('calls next when insert or update failed', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceSchoolValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(res, 'redirect')
+      spyOn(sceService, 'insertOrUpdateSceSchool').and.returnValue(Promise.reject(new Error('error')))
+      await controller.postSceAddSchool(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('renders sce add school if validator error occurs', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const validationError = new ValidationError()
+      validationError.addError('schoolName', true)
+      spyOn(sceSchoolValidator, 'validate').and.returnValue(validationError)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      await controller.postSceAddSchool(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
     })
   })
 })
