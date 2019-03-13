@@ -317,6 +317,7 @@ const controller = {
       const sceSchools = await sceService.getSceSchools()
       res.render('service-manager/sce-settings', {
         breadcrumbs: req.breadcrumbs(),
+        messages: res.locals.messages,
         countriesTzData: scePresenter.getCountriesTzData(),
         sceSchools
       })
@@ -329,6 +330,7 @@ const controller = {
    * Add sce school form.
    * @param req
    * @param res
+   * @param next
    * @returns {Promise.<void>}
    */
   getSceAddSchool: async (req, res, next) => {
@@ -353,6 +355,7 @@ const controller = {
    * sce school form submit handler
    * @param req
    * @param res
+   * @param next
    * @returns {Promise.<void>}
    */
   postSceAddSchool: async (req, res, next) => {
@@ -372,7 +375,6 @@ const controller = {
       schoolName
     } = req.body
 
-    // TODO: parse int just for testing, needs consideration
     const school = schools.find(s => s.urn === parseInt(urn, 10) && s.name === schoolName)
 
     try {
@@ -381,6 +383,7 @@ const controller = {
       return next(error)
     }
 
+    req.flash('info', `'${school.name}' added as an SCE school`)
     return res.redirect('/service-manager/sce-settings')
   }
 }

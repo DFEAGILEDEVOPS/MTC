@@ -22,7 +22,6 @@ sceSchoolValidator.validate = async (data, schoolNames, schoolUrns) => {
     validationError.addError('schoolName', sceErrorMessages.schoolName)
   }
 
-  // TODO: parse int just for testing, needs consideration
   if (isEmpty(urn) || !schoolUrns.includes(parseInt(urn, 10))) {
     validationError.addError('urn', sceErrorMessages.urn)
   }

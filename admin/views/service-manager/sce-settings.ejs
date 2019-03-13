@@ -9,6 +9,11 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info) { %>
+          <div class="info-message">
+            <%= messages.info %>
+          </div>
+        <% } %>
         <h1 class="heading-xlarge">Settings for Service Children's Education (SCE)</h1>
         <%- partial('partials/_session_expiry') %>
         <p class="lede" id="lead-paragraph">Set timezones for schools listed as Service Children's Education (SCE). Add or remove schools listed as SCE.</p>
