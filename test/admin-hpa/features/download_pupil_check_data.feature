@@ -14,6 +14,5 @@ Feature:
 
   Scenario: Error message is not displayed after generating PS report
     And I am on the download pupil check data page
-    When I click generate latest file
     Then I will not see the error message
 
