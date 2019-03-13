@@ -51,7 +51,7 @@ $(function () {
         return result
       }
 
-      this.createComponent(
+      window.GOVUK.autoComplete.createComponent(
         autoCompleteContainer,
         minLength,
         defaultValue,
@@ -62,6 +62,43 @@ $(function () {
           }
         }
       )
+    },
+
+    /**
+     * Links two autocomplete fields to autopopulate each other
+     * @param {String} autoCompleteContainer
+     * @param {Number} minLength
+     * @param {String} linkedContainer
+     * @returns {void}
+     */
+    createLinkedComponent: function (autoCompleteContainer, minLength, linkedContainer) {
+      window.GOVUK.autoComplete.createComponent(autoCompleteContainer, minLength, '', {
+        onConfirm: function (name) {
+          $(autoCompleteContainer).trigger('confirm', [name])
+        }
+      })
+      $(autoCompleteContainer).on('confirm', window.GOVUK.autoComplete.setupLinkedConfirm(autoCompleteContainer, linkedContainer))
+    },
+
+    /**
+      * Sets up the custom on confirm event handler
+      * @param {String} autoCompleteContainer
+      * @param {String} linkedContainer
+      * @returns {void}
+      */
+    setupLinkedConfirm: function (autoCompleteContainer, linkedContainer) {
+      return function (event, value) {
+        if (typeof value === 'undefined') return
+        $(linkedContainer).val('')
+        var inputText = $(linkedContainer + '-select option')
+          .filter(function () {
+            return $(this).val() === value
+          })
+          .first()
+          .html()
+        $(linkedContainer).attr('placeholder', inputText)
+        $(linkedContainer + '-select').val(value).trigger('change')
+      }
     }
   }
 })

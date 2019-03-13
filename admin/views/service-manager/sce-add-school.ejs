@@ -23,7 +23,7 @@
                     <select
                         class="form-control <%= err.isError('schoolName') ? 'form-control-error' : '' %>"
                         id="schoolName"
-                        name="schoolName">
+                        name="urn">
                         <option value=""></option>
                         <% schools.map(t => { %>
                             <option value="<%= t.urn %>"><%= t.name %></option>
@@ -42,10 +42,10 @@
                     <select
                         class="form-control <%= err.isError('urn') ? 'form-control-error' : '' %>"
                         id="urn"
-                        name="urn">
+                        name="schoolName">
                         <option value=""></option>
                         <% schools.map(t => { %>
-                            <option value="<%= t.urn %>"><%= t.urn %></option>
+                            <option value="<%= t.name %>"><%= t.urn %></option>
                         <% }) %>
                     </select>
                 </div>
@@ -77,39 +77,7 @@
 <script>
   $(function () {
     window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
-    window.GOVUK.autoComplete.createComponent('#schoolName', 3, '', {
-      autoselect: true,
-      onConfirm: function (name) {
-        $('#schoolName').val(name)
-        $('#schoolName').trigger('change')
-      },
-    })
-    window.GOVUK.autoComplete.createComponent('#urn', 3, '', {
-      autoselect: true,
-      onConfirm: function (urn) {
-        $('#urn').val(urn)
-        $('#urn').trigger('change')
-      }
-    })
-    $('#schoolName').change(function () {
-      var name = $(this).val()
-      var urnForSchool = $('#schoolName-select option')
-        .filter(function () {
-          return $(this).html() == name;
-        })
-        .first()
-        .val()
-      $('#urn').val(urnForSchool)
-    })
-    $('#urn').change(function () {
-      var urn = $(this).val()
-      var schoolNameForUrn = $('#schoolName-select option')
-        .filter(function () {
-          return $(this).val() == urn;
-        })
-        .first()
-        .html()
-      $('#schoolName').val(schoolNameForUrn)
-    })
+    window.GOVUK.autoComplete.createLinkedComponent('#schoolName', 3, '#urn')
+    window.GOVUK.autoComplete.createLinkedComponent('#urn', 3, '#schoolName')
   })
 </script>
