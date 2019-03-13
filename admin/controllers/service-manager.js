@@ -137,15 +137,16 @@ const controller = {
    * @param req
    * @param res
    * @param next
+   * @param error
    * @returns {Promise.<void>}
    */
-  getUploadPupilCensus: async (req, res, next) => {
+  getUploadPupilCensus: async (req, res, next, error = null) => {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
     let pupilCensus
     let templateFileSize
     try {
-      const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
+      const templateFile = 'assets/csv/mtc-census-headers.csv'
       templateFileSize = uploadedFileService.getFilesize(templateFile)
       pupilCensus = await pupilCensusService.getUploadedFile()
     } catch (error) {
@@ -155,7 +156,8 @@ const controller = {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
       pupilCensus: pupilCensus,
-      templateFileSize
+      templateFileSize,
+      fileErrors: error || new ValidationError()
     })
   },
 
@@ -168,8 +170,11 @@ const controller = {
    */
   postUploadPupilCensus: async (req, res, next) => {
     const uploadFile = req.files && req.files.csvPupilCensusFile
-    if (!uploadFile) return next('No file to upload')
     try {
+      const validationError = await pupilCensusService.process(uploadFile)
+      if (validationError.hasError()) {
+        return controller.getUploadPupilCensus(req, res, next, validationError)
+      }
       await pupilCensusService.upload(uploadFile)
     } catch (error) {
       return next(error)
