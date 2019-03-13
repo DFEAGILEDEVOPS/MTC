@@ -5,7 +5,7 @@ class AssignFormToWindowV2Page < SitePrism::Page
   element :information, '#lead-paragraph', text: 'Select forms to assign to each window. Each form can be used for multiple windows.'
   element :flash_message, '.info-message.clickable'
   element :save_button, 'input[value="Save"]'
-  element :cancel_button, 'a.button.button-secondary'
+  element :cancel_button, 'a.button-secondary'
 
 
   section :check_windows, '.assigned-check-windows' do

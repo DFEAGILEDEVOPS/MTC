@@ -431,36 +431,40 @@ Then(/^I should see validation error for the UPN field fo the following$/) do |t
 end
 
 When(/^I add 2 pupil with same firstname and lastname and different dob$/) do
+  today_date = Date.today
+  @pupil1_dob = "#{today_date.day} #{today_date.strftime("%b")} #{today_date.year - 10}"
+  @pupil2_dob = "#{today_date.day + 2} #{today_date.strftime("%b")} #{today_date.year - 10}"
   step "I am logged in"
   step "I am on the add pupil page"
   name = (0...8).map {(65 + rand(26)).chr}.join
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
+  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
   step "I am on the add pupil page"
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: '10', month: '9', year: '2012'}
+  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: "#{today_date.day + 2}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
 end
 
 When(/^I add 2 pupil with same firstname lastname and same dob$/) do
+  today_date = Date.today
   step "I am logged in"
   step "I am on the add pupil page"
   name = (0...8).map {(65 + rand(26)).chr}.join
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
+  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
   step "I am on the add pupil page"
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
+  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
