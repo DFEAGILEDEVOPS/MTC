@@ -53,6 +53,7 @@ const checkFormV2DataService = {
           ON cF2.id = cFW.checkForm_id
         LEFT JOIN ${sqlService.adminSchema}.checkWindow cW
           ON cW.id = cFW.checkWindow_id
+        WHERE GETUTCDATE() <= cW.checkEndDate
         ) checkFormRanked
       ON cF.id = checkFormRanked.id
     WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
