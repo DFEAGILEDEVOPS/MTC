@@ -7,7 +7,7 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arran
   select_access_arrangements_page.auto_search_list[0].click
   access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
   select_access_arrangements_page.save.click
-  sleep(120)
+  sleep(10)
   sign_in_page.load
   sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click

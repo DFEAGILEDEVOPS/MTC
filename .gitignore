@@ -79,6 +79,7 @@ test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/reports/*
 test/pupil-hpa/*.png
 test/pupil-hpa/*.html
+test/pupil-hpa/features/support/dev_env.rb
 
 
 #admin
