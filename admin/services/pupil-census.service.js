@@ -7,8 +7,18 @@ const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
+const fileValidator = require('../lib/validator/file-validator.js')
 
 const pupilCensusService = {}
+
+/**
+ * Checks pupil census file for errors
+ * @param {Object} uploadFile
+ * @return {Object} validation error
+ */
+pupilCensusService.process = async (uploadFile) => {
+  return fileValidator.validate(uploadFile, 'file-upload')
+}
 
 /**
  * Upload handler for pupil census

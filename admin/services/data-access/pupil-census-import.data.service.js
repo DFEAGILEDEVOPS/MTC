@@ -69,7 +69,7 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
         foreName: csvRow[4] || null,
         middleNames: csvRow[5],
         gender: csvRow[6] || null,
-        dateOfBirth: csvRow[7] !== '' ? moment(csvRow[7], 'MM/DD/YY').toDate() : null,
+        dateOfBirth: csvRow[7] !== '' ? moment(csvRow[7], 'DD/MM/YYYY').toDate() : null,
         job_id: jobId
       })
     }
