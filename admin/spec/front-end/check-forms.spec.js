@@ -42,7 +42,7 @@ function initUploadCheckFormElements () {
             </div>
 
             <div class="form-buttons">
-                <input type="submit" class="button" id="upload-check-forms" value="Upload" />
+                <input type="submit" class="button" id="upload-form-submit" value="Upload" />
                 <a href="/check-form/view-forms" class="button button-secondary">Cancel</a>
             </div>
         </form>
@@ -71,7 +71,7 @@ function initUploadCheckFormElements () {
 
 describe('check-forms', function () {
   let formSubmitSpy
-  const checkFormSubmit = $('#upload-check-forms')
+  const checkFormSubmit = $('#upload-form-submit')
   beforeEach(() => {
     $('body').empty()
     initUploadCheckFormElements()
@@ -83,7 +83,7 @@ describe('check-forms', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
     familiarisationRadioButton.attr('checked', true)
-    const checkFormSubmit = $('#upload-check-forms')
+    const checkFormSubmit = $('#upload-form-submit')
     checkFormSubmit.trigger('click')
     expect($('#js-modal-box')[0].classList[1]).toBe('show')
     expect(formSubmitSpy).not.toHaveBeenCalled()
@@ -106,7 +106,7 @@ describe('check-forms', function () {
     $('#hasExistingFamiliarisationCheckForm').val('true')
     const familiarisationRadioButton = $('#check-form-type').find(':input[value="F"]')
     familiarisationRadioButton.attr('checked', true)
-    const checkFormSubmit = $('#upload-check-forms')
+    const checkFormSubmit = $('#upload-form-submit')
     checkFormSubmit.trigger('click')
     $('#js-modal-confirmation-button').trigger('click')
     expect(formSubmitSpy).toHaveBeenCalled()
