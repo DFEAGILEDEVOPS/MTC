@@ -8,6 +8,7 @@ const pupilCensusService = require('../../../services/pupil-census.service')
 const checkWindowAddService = require('../../../services/check-window-add.service')
 const checkWindowEditService = require('../../../services/check-window-edit.service')
 const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
+const scePresenter = require('../../../helpers/sce')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -362,6 +363,56 @@ describe('service manager controller:', () => {
       await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('getSceSettings', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/service-manager/sce-settings'
+    }
+
+    it('calls render after fetching schools', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'getSceSchools')
+        .and.returnValue([{ name: 'school', urn: '42' }])
+      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
+      spyOn(res, 'render')
+      await controller.getSceSettings(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      expect(sceService.getSceSchools).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('throws an error when fetching schools call is rejected', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'getSceSchools').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
+      spyOn(res, 'render')
+      await controller.getSceSettings(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('cancelSceSettings', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/service-manager/sce-settings/cancel',
+      session: {
+        sceSettingsData: 'data'
+      }
+    }
+
+    it('should clear session data and redirect to the index page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      await controller.cancelSceSettings(req, res)
+      expect(typeof req.session.sceSettingsData).toBe('undefined')
+      expect(res.redirect).toHaveBeenCalledWith('/service-manager')
     })
   })
 

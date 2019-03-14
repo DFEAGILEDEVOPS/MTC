@@ -327,6 +327,19 @@ const controller = {
   },
 
   /**
+   * Cancel sce settings. Clears session and redirects to index.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  cancelSceSettings: async (req, res) => {
+    req.session.sceSettingsData = undefined
+
+    return res.redirect('/service-manager')
+  },
+
+  /**
    * Add sce school form.
    * @param req
    * @param res
