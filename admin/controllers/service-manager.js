@@ -367,6 +367,31 @@ const controller = {
   },
 
   /**
+   * Remove SCE school.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceRemoveSchool: async (req, res, next) => {
+    const { sceSchoolsData } = req.session
+    if (!sceSchoolsData) {
+      return res.redirect('/service-manager/sce-settings')
+    }
+
+    const { urn } = req.params
+
+    try {
+      req.session.sceSchoolsData = await sceService.removeSceSchool(sceSchoolsData, urn)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', 'SCE School has been removed')
+    res.redirect('/service-manager/sce-settings')
+  },
+
+  /**
    * Add SCE school form.
    * @param req
    * @param res

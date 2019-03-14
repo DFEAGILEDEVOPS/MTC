@@ -36,7 +36,7 @@ sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) =>
   }
 
   // update the timezone
-  sceSchoolsData[idx].timezone = timezone
+  sceSchoolsData[schoolIdxInSceSchoolsData].timezone = timezone
 
   return sceSchoolsData
 }
