@@ -300,7 +300,7 @@ class SqlDbHelper
   end
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
-    sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    sql = "UPDATE [mtc_admin].[checkWindow] set familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}', adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -392,4 +392,13 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.pupil_reason(pupil_id)
+    sql = "select * from [mtc_admin].[pupilAgeReason] where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
+
 end

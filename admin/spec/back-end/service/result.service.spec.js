@@ -47,14 +47,27 @@ describe('result.service', () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1, score: 6 })
       const checkWindowId = 1
       const schoolId = 2
-      let schoolScore
+      let scoreRecord
       try {
-        schoolScore = await resultService.getSchoolScore(schoolId, checkWindowId)
+        scoreRecord = await resultService.getSchoolScore(schoolId, checkWindowId)
       } catch (error) {
         fail()
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
-      expect(schoolScore).toBe(6)
+      expect(scoreRecord).toEqual({ id: 1, score: 6 })
+    })
+    it('returns 0 as school score', async () => {
+      spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1, score: 0 })
+      const checkWindowId = 1
+      const schoolId = 2
+      let scoreRecord
+      try {
+        scoreRecord = await resultService.getSchoolScore(schoolId, checkWindowId)
+      } catch (error) {
+        fail()
+      }
+      expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(scoreRecord).toEqual({ id: 1, score: 0 })
     })
     it('throws an error if check window id is not provided', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
@@ -80,7 +93,7 @@ describe('result.service', () => {
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).not.toHaveBeenCalled()
     })
-    it('throws an error if sqlFindResultsBySchool returns an error', async () => {
+    it('throws an error if sqlFindSchoolScoreBySchoolIdAndCheckWindowId returns an error', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue(Promise.reject(new Error('error')))
       const checkWindowId = 1
       const schoolId = 2
@@ -92,29 +105,31 @@ describe('result.service', () => {
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
     })
-    it('throws an error if sqlFindResultsBySchool returns an empty object', async () => {
+    it('returns if sqlFindSchoolScoreBySchoolIdAndCheckWindowId returns undefined or empty object', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId')
       const checkWindowId = 1
       const schoolId = 2
+      let scoreRecord
       try {
-        await resultService.getSchoolScore(schoolId, checkWindowId)
-        fail()
+        scoreRecord = await resultService.getSchoolScore(schoolId, checkWindowId)
       } catch (error) {
-        expect(error.message).toBe(`no school score record is found or no score is set for school id: ${schoolId} and check window id: ${checkWindowId}`)
+        fail()
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(scoreRecord).toBeUndefined()
     })
-    it('throws an error if sqlFindResultsBySchool returns no score property', async () => {
+    it('does not return if sqlFindResultsBySchool returns no score property', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1 })
       const checkWindowId = 1
       const schoolId = 2
+      let scoreRecord
       try {
-        await resultService.getSchoolScore(schoolId, checkWindowId)
-        fail()
+        scoreRecord = await resultService.getSchoolScore(schoolId, checkWindowId)
       } catch (error) {
-        expect(error.message).toBe(`no school score record is found or no score is set for school id: ${schoolId} and check window id: ${checkWindowId}`)
+        fail()
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
+      expect(scoreRecord).toEqual({ id: 1 })
     })
   })
 })

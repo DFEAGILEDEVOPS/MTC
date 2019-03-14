@@ -8,7 +8,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
-    archive-zip (0.11.0)
+    archive-zip (0.12.0)
       io-like (~> 0.3.0)
     azure-core (0.1.14)
       faraday (~> 0.9)
@@ -41,7 +41,7 @@ GEM
       launchy
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
-    chromedriver-helper (1.2.0)
+    chromedriver-helper (2.1.0)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
     cliver (0.3.2)
@@ -150,7 +150,7 @@ DEPENDENCIES
   browserstack-local
   capybara
   capybara-screenshot
-  chromedriver-helper
+  chromedriver-helper (>= 2.1.0)
   cucumber
   httparty
   mongo
@@ -169,4 +169,4 @@ DEPENDENCIES
   waitutil
 
 BUNDLED WITH
-   1.16.0
+   1.16.6

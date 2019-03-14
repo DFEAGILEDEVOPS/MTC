@@ -148,7 +148,8 @@ end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2010'}
+  dob = calculate_age(8)
+  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   add_pupil_page.enter_details(@details_hash)
   add_pupil_page.add_pupil.click
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
@@ -170,7 +171,7 @@ end
 
 When(/^I add a pupil$/) do
   @name = (0...8).map {(65 + rand(26)).chr}.join
-  step 'I login to the admin app with teacher3'
+  step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
@@ -195,11 +196,10 @@ end
 
 When(/^I have generated a live pin$/) do
   step 'I add a pupil'
-  step 'I login to the admin app with teacher3'
+  step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
-
 end

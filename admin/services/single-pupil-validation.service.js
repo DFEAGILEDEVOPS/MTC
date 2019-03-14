@@ -19,9 +19,10 @@ const service = {
    * Validate a single pupil record
    * @param {Array} pupilCsvData - pupilCsvData pupil row data from csv.  ['lastName', 'foreName', 'middleNames', 'dateOfBirth', 'gender', 'upn']
    * @param {object} school
+   * @param {Boolean} isMultiplePupilsSubmission
    * @return {Promise<{pupil: {school_id, upn: string, foreName: *, lastName: *, middleNames: *, gender: *, dateOfBirth: Date}, pupilCsvData: *}>}
    */
-  validate: async (pupilCsvData, school) => {
+  validate: async (pupilCsvData, school, isMultiplePupilsSubmission) => {
     const p = ({
       school_id: school.id,
       upn: pupilCsvData[ 5 ].trim().toUpperCase(),
@@ -37,7 +38,7 @@ const service = {
       'dob-month': dob[ 1 ] || '',
       'dob-year': dob[ 2 ] || ''
     }, p)
-    const validationError = await pupilValidator.validate(pupil)
+    const validationError = await pupilValidator.validate(pupil, isMultiplePupilsSubmission)
 
     // Check for duplicate UPNs with the batch file
     if (R.prop(p.upn, seenUpns)) {

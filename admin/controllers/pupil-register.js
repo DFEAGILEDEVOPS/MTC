@@ -2,7 +2,8 @@
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 const featureToggles = require('feature-toggles')
 
 const listPupils = async (req, res, next) => {
@@ -10,9 +11,12 @@ const listPupils = async (req, res, next) => {
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
 
+  let checkWindowData
+  let availabilityData
   let pupilsFormatted = []
-  let hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   try {
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
     } else {
@@ -35,7 +39,7 @@ const listPupils = async (req, res, next) => {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
-    hdfSubmitted
+    availabilityData
   })
 }
 
