@@ -20,15 +20,25 @@ sceService.getSceSchools = async () => {
 
 /**
  * Inserts or updates the sce data for a school
- * @param schoolId
+ * @param sceSchoolsData
+ * @param school
  * @param timezone
  * @return {Promise<object>}
  */
-sceService.insertOrUpdateSceSchool = async (schoolId, timezone) => {
-  if (!schoolId || !timezone) {
-    throw new Error('schoolId and timezone are required')
+sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) => {
+  if (!school.id || !timezone) {
+    throw new Error('school id and timezone are required')
   }
-  return sceDataService.sqlUpsertSceSchool(schoolId, timezone)
+  const schoolIdxInSceSchoolsData = sceSchoolsData.findIndex(s => s.id === school.id)
+  if (schoolIdxInSceSchoolsData === -1) {
+    // specified school is not present in the data, add it
+    return [ ...sceSchoolsData, school ]
+  }
+
+  // update the timezone
+  sceSchoolsData[idx].timezone = timezone
+
+  return sceSchoolsData
 }
 
 /**
@@ -41,6 +51,18 @@ sceService.removeSceSchool = async (schoolId) => {
     throw new Error('schoolId is required')
   }
   return sceDataService.sqlDeleteSceSchool(schoolId)
+}
+
+/**
+ * Applies the current session changes for SCE schools
+ * @param sceSchoolsData
+ * @return {Promise<void>}
+ */
+sceService.applySceSettings = async (sceSchoolsData) => {
+  // TODO: temporary, change to batch upsert
+  await Promise.all(sceSchoolsData.map(async (school) => {
+    return sceDataService.sqlUpsertSceSchool(school.id, school.timezone)
+  }))
 }
 
 module.exports = sceService

@@ -314,7 +314,11 @@ const controller = {
     res.locals.pageTitle = 'Settings for SCE'
     req.breadcrumbs(res.locals.pageTitle)
     try {
-      const sceSchools = await sceService.getSceSchools()
+      if (!req.session.sceSchoolsData) {
+        const fetchedSceSchools = await sceService.getSceSchools()
+        req.session.sceSchoolsData = fetchedSceSchools
+      }
+      const sceSchools = req.session.sceSchoolsData
       res.render('service-manager/sce-settings', {
         breadcrumbs: req.breadcrumbs(),
         messages: res.locals.messages,
@@ -334,13 +338,36 @@ const controller = {
    * @returns {Promise.<void>}
    */
   cancelSceSettings: async (req, res) => {
-    req.session.sceSettingsData = undefined
+    req.session.sceSchoolsData = undefined
 
     return res.redirect('/service-manager')
   },
 
   /**
-   * Add sce school form.
+   * Apply SCE school changes
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postSceSettings: async (req, res, next) => {
+    const { sceSchoolsData } = req.session
+    if (!sceSchoolsData) {
+      return res.redirect('/service-manager/sce-settings')
+    }
+
+    try {
+      await sceService.applySceSettings(sceSchoolsData)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', 'Timezone saved for the school(s)')
+    return res.redirect('/service-manager/sce-settings')
+  },
+
+  /**
+   * Add SCE school form.
    * @param req
    * @param res
    * @param next
@@ -365,7 +392,7 @@ const controller = {
   },
 
   /**
-   * sce school form submit handler
+   * SCE school form submit handler
    * @param req
    * @param res
    * @param next
@@ -382,6 +409,7 @@ const controller = {
       return controller.getSceAddSchool(req, res, next)
     }
 
+    const { sceSchoolsData } = req.session
     const {
       timezone,
       urn,
@@ -391,7 +419,7 @@ const controller = {
     const school = schools.find(s => s.urn === parseInt(urn, 10) && s.name === schoolName)
 
     try {
-      await sceService.insertOrUpdateSceSchool(school.id, timezone)
+      req.session.sceSchoolsData = await sceService.insertOrUpdateSceSchool(sceSchoolsData, school, timezone)
     } catch (error) {
       return next(error)
     }

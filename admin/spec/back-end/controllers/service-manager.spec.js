@@ -367,12 +367,17 @@ describe('service manager controller:', () => {
   })
 
   describe('getSceSettings', () => {
-    let goodReqParams = {
-      method: 'GET',
-      url: '/service-manager/sce-settings'
-    }
+    let goodReqParams
 
-    it('calls render after fetching schools', async () => {
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/sce-settings',
+        session: {}
+      }
+    })
+
+    it('should render after fetching schools', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(sceService, 'getSceSchools')
@@ -385,7 +390,20 @@ describe('service manager controller:', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('throws an error when fetching schools call is rejected', async () => {
+    it('should not refetch schools if present in the session', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.session.sceSchoolsData = []
+      spyOn(sceService, 'getSceSchools')
+      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
+      spyOn(res, 'render')
+      await controller.getSceSettings(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      expect(sceService.getSceSchools).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should throw an error when fetching schools call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(sceService, 'getSceSchools').and.returnValue(Promise.reject(new Error('error')))
@@ -398,11 +416,11 @@ describe('service manager controller:', () => {
   })
 
   describe('cancelSceSettings', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/sce-settings/cancel',
       session: {
-        sceSettingsData: 'data'
+        sceSchoolsData: 'data'
       }
     }
 
@@ -411,8 +429,56 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(res, 'redirect')
       await controller.cancelSceSettings(req, res)
-      expect(typeof req.session.sceSettingsData).toBe('undefined')
+      expect(typeof req.session.sceSchoolsData).toBe('undefined')
       expect(res.redirect).toHaveBeenCalledWith('/service-manager')
+    })
+  })
+
+  describe('postSceSettings', () => {
+    let goodReqParams
+
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'POST',
+        url: '/service-manager/sce-settings',
+        session: { sceSchoolsData: [] }
+      }
+      spyOn(sceService, 'getSceSchools')
+        .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
+    })
+
+    it('redirects to the sce settings page when there is no data in the session', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.session.sceSchoolsData = undefined
+      spyOn(res, 'redirect')
+      spyOn(sceService, 'applySceSettings')
+      await controller.postSceSettings(req, res, next)
+      expect(sceService.applySceSettings).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+    })
+
+    it('redirects to the sce settings page when successfully applied changes', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(sceService, 'applySceSettings')
+      await controller.postSceSettings(req, res, next)
+      expect(sceService.applySceSettings).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+
+    it('calls next when applying sce settings failed', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(sceService, 'applySceSettings').and.returnValue(Promise.reject(new Error('error')))
+      await controller.postSceSettings(req, res, next)
+      expect(sceService.applySceSettings).toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
 
@@ -449,17 +515,20 @@ describe('service manager controller:', () => {
   })
 
   describe('postSceAddSchool', () => {
-    const goodReqParams = {
-      method: 'POST',
-      url: '/service-manager/sce-add-school',
-      body: {
-        timezone: '1',
-        urn: 123456,
-        schoolName: 'Test School'
-      }
-    }
+    let goodReqParams
 
     beforeEach(() => {
+      goodReqParams = {
+        method: 'POST',
+        url: '/service-manager/sce-add-school',
+        body: {
+          timezone: '1',
+          urn: 123456,
+          schoolName: 'Test School'
+        },
+        session: {}
+      }
+
       spyOn(sceService, 'getSchools')
         .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
     })
