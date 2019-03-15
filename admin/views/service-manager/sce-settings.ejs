@@ -9,11 +9,20 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <% if (messages && messages.info) { %>
+        <% if (messages && messages.info && messages.info.length) { %>
           <div class="info-message">
             <%= messages.info %>
           </div>
         <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+          <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+              <%= messages.error %>
+            </h2>
+          </div>
+        <% } %>
+
         <h1 class="heading-xlarge">Settings for Service Children's Education (SCE)</h1>
         <%- partial('partials/_session_expiry') %>
         <p class="lede" id="lead-paragraph">Set timezones for schools listed as Service Children's Education (SCE). Add or remove schools listed as SCE.</p>

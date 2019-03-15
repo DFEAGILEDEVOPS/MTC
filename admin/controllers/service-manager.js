@@ -380,14 +380,17 @@ const controller = {
     }
 
     const { urn } = req.params
+    let school
 
     try {
-      req.session.sceSchoolsData = await sceService.removeSceSchool(sceSchoolsData, urn)
+      const [updatedSchools, deletedSchool] = await sceService.removeSceSchool(sceSchoolsData, urn)
+      req.session.sceSchoolsData = updatedSchools
+      school = deletedSchool
     } catch (error) {
       return next(error)
     }
 
-    req.flash('info', 'SCE School has been removed')
+    req.flash('error', `'${school.name}' removed as SCE school`)
     res.redirect('/service-manager/sce-settings')
   },
 

@@ -26,5 +26,6 @@ router.get('/sce-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (
 router.get('/sce-settings/cancel', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res) => serviceManagerController.cancelSceSettings(req, res))
 router.get('/sce-settings/add-school', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getSceAddSchool(req, res, next))
 router.post('/sce-settings/add-school', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.postSceAddSchool(req, res, next))
+router.get('/sce-settings/remove-school/:urn', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getSceRemoveSchool(req, res, next))
 
 module.exports = router

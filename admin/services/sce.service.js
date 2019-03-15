@@ -46,11 +46,16 @@ sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) =>
  * @param schoolId
  * @return {Promise<object>}
  */
-sceService.removeSceSchool = async (schoolId) => {
-  if (!schoolId) {
-    throw new Error('schoolId is required')
+sceService.removeSceSchool = async (sceSchoolsData, urn) => {
+  if (!urn) {
+    throw new Error('School URN is required')
   }
-  return sceDataService.sqlDeleteSceSchool(schoolId)
+  const schoolToDeleteIdx = sceSchoolsData.findIndex(s => s.urn === parseInt(urn, 10))
+  if (schoolToDeleteIdx === -1) {
+    throw new Error('SCE school not found')
+  }
+  const deletedSchool = sceSchoolsData.splice(schoolToDeleteIdx, 1)[0]
+  return [sceSchoolsData, deletedSchool]
 }
 
 /**

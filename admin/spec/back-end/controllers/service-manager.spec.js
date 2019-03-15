@@ -568,4 +568,44 @@ describe('service manager controller:', () => {
       expect(res.render).toHaveBeenCalled()
     })
   })
+
+  describe('getSceRemoveSchool', () => {
+    let goodReqParams
+
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/sce-settings/remove-school',
+        params: {
+          urn: 123456
+        },
+        session: {
+          sceSchoolsData: [{ urn: 123456, name: 'Test School' }]
+        }
+      }
+    })
+
+    it('should flash the deleted message and call redirect after removing school', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'removeSceSchool').and.returnValue([[], { name: 'Test School' }])
+      spyOn(res, 'redirect')
+      await controller.getSceRemoveSchool(req, res, next)
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(sceService.removeSceSchool).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should throw an error when removing a school fails', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(sceService, 'removeSceSchool').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(res, 'redirect')
+      await controller.getSceRemoveSchool(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+  })
 })
