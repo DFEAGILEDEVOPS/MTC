@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
@@ -10,7 +10,10 @@ const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
 const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
+const sceService = require('../services/sce.service')
+const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const ValidationError = require('../lib/validation-error')
+const scePresenter = require('../helpers/sce')
 
 const featureToggles = require('feature-toggles')
 
@@ -298,6 +301,90 @@ const controller = {
     const { type, message } = result
     req.flash(type, message)
     return res.redirect('/service-manager/check-windows')
+  },
+
+  /**
+   * View sce settings.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceSettings: async (req, res, next) => {
+    res.locals.pageTitle = 'Settings for SCE'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      const sceSchools = await sceService.getSceSchools()
+      res.render('service-manager/sce-settings', {
+        breadcrumbs: req.breadcrumbs(),
+        messages: res.locals.messages,
+        countriesTzData: scePresenter.getCountriesTzData(),
+        sceSchools
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+   * Add sce school form.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceAddSchool: async (req, res, next) => {
+    req.breadcrumbs('Settings for SCE', '/service-manager/sce-settings')
+    res.locals.pageTitle = 'Add school as SCE'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      const schools = await sceService.getSchools()
+      res.render('service-manager/sce-add-school', {
+        breadcrumbs: req.breadcrumbs(),
+        err: res.error || new ValidationError(),
+        countriesTzData: scePresenter.getCountriesTzData(),
+        schools
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+   * sce school form submit handler
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postSceAddSchool: async (req, res, next) => {
+    const schools = await sceService.getSchools()
+    const schoolNames = schools.map(s => s.name)
+    const schoolUrns = schools.map(s => s.urn)
+
+    let validationError = await sceSchoolValidator.validate(req.body, schoolNames, schoolUrns)
+    if (validationError.hasError()) {
+      res.error = validationError
+      return controller.getSceAddSchool(req, res, next)
+    }
+
+    const {
+      timezone,
+      urn,
+      schoolName
+    } = req.body
+
+    const school = schools.find(s => s.urn === parseInt(urn, 10) && s.name === schoolName)
+
+    try {
+      await sceService.insertOrUpdateSceSchool(school.id, timezone)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', `'${school.name}' added as an SCE school`)
+    return res.redirect('/service-manager/sce-settings')
   }
 }
 
