@@ -114,8 +114,48 @@ Then(/^the pupil census should match design$/) do
   step 'I should see an option to upload a file'
   step 'I should see upload and cancel buttons'
   step 'I should see an area where it displays files uploaded'
+  step 'I should see an option to download the template'
 end
 
 
+Then(/^I should see an option to download the template$/) do
+  expect(upload_pupil_census_page).to have_download_template
+  expect(upload_pupil_census_page.download_template.text).to eql 'Pupil census template (CSV, 0.05KB)'
+end
 
 
+When(/^I have chosen a file to submit that is not a CSV$/) do
+  driver = page.driver.browser
+  driver.file_detector = lambda do |args|
+    str = args.first.to_s
+    str if File.exist?(str)
+  end if Capybara.current_driver.to_s.include? 'bs_'
+  @file_name = "pupil-census-data-#{rand(234243234234234)}.txt"
+  @file_path = "data/fixtures/#{@file_name}"
+  upload_pupil_census_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/pupil-census-data.csv')))
+  page.attach_file('csvPupilCensusFile', File.expand_path("#{@file_path}"))
+  upload_pupil_census_page.upload.click
+  upload_and_view_forms_page.delete_csv_file(@file_path)
+end
+
+
+Then(/^I should see an error stating the file type must be CSV$/) do
+  expect(upload_pupil_census_page.error_summary.error_messages.first.text).to eql 'Use a CSV file. See guidance for instructions.'
+  expect(upload_pupil_census_page.error_message.text).to eql 'Use a CSV file. See guidance for instructions.'
+end
+
+
+When(/^I have not chosen a file to submit$/) do
+  upload_pupil_census_page.upload.click
+end
+
+
+Then(/^I should see an error stating I need to select a file to upload$/) do
+  expect(upload_pupil_census_page.error_summary.error_messages.first.text).to eql 'Select a file to upload'
+  expect(upload_pupil_census_page.error_message.text).to eql 'Select a file to upload'
+end
+
+
+When(/^I decide to cancel uploading a file$/) do
+  upload_pupil_census_page.cancel.click
+end
