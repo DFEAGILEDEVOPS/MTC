@@ -198,6 +198,7 @@ sqlService.initPool = async () => {
 }
 
 sqlService.drainPool = async () => {
+  await pool
   if (!pool) {
     logger.warn('The connection pool is not initialised')
     return
@@ -231,7 +232,10 @@ sqlService.query = async (sql, params = []) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
 
+  await pool
+
   const request = new mssql.Request(pool)
+
   if (params) {
     for (let index = 0; index < params.length; index++) {
       const param = params[index]
