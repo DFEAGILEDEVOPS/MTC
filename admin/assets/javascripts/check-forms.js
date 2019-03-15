@@ -22,7 +22,7 @@ $(function () {
     }
 
     // Display modal if familiarisation form already exists
-    $('#upload-check-forms').click(function (e) {
+    $('#upload-form-submit').click(function (e) {
       var hasExistingFamiliarisationCheckForm = $('#hasExistingFamiliarisationCheckForm').val()
       var selectedCheckFormType = $('input[name=checkFormType]:checked').val()
       if (selectedCheckFormType === 'F' &&

@@ -89,6 +89,31 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors).toEqual([checkFormErrorMessages.familiarisationFormAssigned])
       })
+      it('and returns no validation error object with deleted assigned existing familiarisation form error', async () => {
+        const uploadedFiles = [
+          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
+        ]
+        const existingCheckForms = [
+          { name: 'checkForm1', 'checkWindow_id': null, 'isLiveCheckForm': true },
+          { name: 'checkForm2', 'checkWindow_id': 1, 'isLiveCheckForm': false, 'isDeleted': true }
+        ]
+        const checkFormType = 'F'
+        const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
+        expect(multipleCheckFormErrors.length).toBe(0)
+      })
+      it('and returns validation error object with assigned existing familiarisation form error that is not deleted', async () => {
+        const uploadedFiles = [
+          { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
+        ]
+        const existingCheckForms = [
+          { name: 'checkForm1', 'checkWindow_id': null, 'isLiveCheckForm': true },
+          { name: 'checkForm2', 'checkWindow_id': 1, 'isLiveCheckForm': false, 'isDeleted': true },
+          { name: 'checkForm3', 'checkWindow_id': 1, 'isLiveCheckForm': false, 'isDeleted': false }
+        ]
+        const checkFormType = 'F'
+        const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
+        expect(multipleCheckFormErrors).toEqual([checkFormErrorMessages.familiarisationFormAssigned])
+      })
     })
   })
 })
