@@ -27,13 +27,13 @@ Feature: Upload and View Forms
       | live            |
       | familiarisation |
 
-  @remove_uploaded_forms @bug
+  @remove_uploaded_forms
   Scenario: Users can choose to overwrite an existing familirisation form
     When I have uploaded a valid familiarisation form
     Then I decide to overwrite the existing familiarisation form by uploading a new familiarisation form
     Then the previous form should be replaced
 
-  @remove_uploaded_forms @bug
+  @remove_uploaded_forms
   Scenario: Users can choose to cancel overwriting an existing familirisation form
     When I have uploaded a valid familiarisation form
     Then I decide to cancel overwriting the existing familiarisation form
