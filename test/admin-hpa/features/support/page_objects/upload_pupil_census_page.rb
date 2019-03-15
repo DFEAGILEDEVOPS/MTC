@@ -6,8 +6,14 @@ class UploadPupilCensusPage < SitePrism::Page
   element :upload, '#upload-form-submit'
   element :cancel, 'a[href="/service-manager/home"]'
   element :uploaded_title, '.bold-small'
+  element :download_template, 'a[href="/csv/mtc-census-headers.csv"]'
   element :csrf, 'input[name="_csrf"]', visible: false
-
+  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
+    element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
+    element :error_text, 'p', text: 'See highlighted errors below'
+    elements :error_messages, '.error-summary-list li'
+  end
+  element :error_message, '.error-message'
 
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
     element :file, 'dd:nth-of-type(1)'
