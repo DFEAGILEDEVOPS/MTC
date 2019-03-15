@@ -7,21 +7,24 @@ const getOffset = zone => {
 }
 
 const scePresenter = {}
+let countryZonesCache = []
 
 scePresenter.getCountriesTzData = () => {
-  const countryZones = []
+  if (countryZonesCache.length > 0) return countryZonesCache
+
   Object.values(tzMetaData.countries).forEach(val => {
     if (val.zones.length > 1) {
       val.zones.forEach(z => {
         const zoneName = z.split('/').pop().replace('_', ' ')
-        countryZones.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z })
+        countryZonesCache.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z })
       })
     } else {
       const z = val.zones[0]
-      countryZones.push({ name: `${val.name} (GMT ${getOffset(z)})`, zone: z })
+      countryZonesCache.push({ name: `${val.name} (GMT ${getOffset(z)})`, zone: z })
     }
   })
-  return countryZones
+
+  return countryZonesCache
 }
 
 module.exports = scePresenter
