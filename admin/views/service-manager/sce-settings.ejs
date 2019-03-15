@@ -52,9 +52,9 @@
                         </div>
                     </td>
                     <td>
-                        <select class="form-control"
-                            id="timezone"
-                            name="timezone">
+                        <select class="form-control timezone"
+                            id="timezone-<%= s.urn %>"
+                            name="timezone-<%= s.urn %>">
                             <option value=""></option>
                             <% countriesTzData.map(t => { %>
                             <option value="<%= t.zone %>" <% if (t.zone === s.timezone) { %>selected="selected"<% } %>><%= t.name %></option>
@@ -98,20 +98,22 @@
 </div>
 
 <%- partial('partials/_modal_box', {
-    modalTitle: 'Remove SCE school',
-    modalText: 'Are you sure you want to remove this?',
-    modalConfirmationLabel: 'Confirm',
-    modalConfirmationUrl: '#',
-    modalCancelLabel: 'Cancel',
-    modalCancelUrl: '#'
+  modalTitle: 'Remove SCE school',
+  modalText: 'Are you sure you want to remove this?',
+  modalConfirmationLabel: 'Confirm',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'Cancel',
+  modalCancelUrl: '#'
 }) %>
 
 <script>
 $(function () {
-    window.accessibleAutocomplete.enhanceSelectElement({
-        selectElement: document.querySelector('#timezone'),
-        minLength: 2,
-        defaultValue: ''
+    $(".timezone").each(function() {
+      window.accessibleAutocomplete.enhanceSelectElement({
+          selectElement: $(this)[0],
+          minLength: 2,
+          defaultValue: ''
+      })
     })
     window.GOVUK.tableSort.applySorting(window.document, 'sce-schools', {
         sortNullsLast: true,
