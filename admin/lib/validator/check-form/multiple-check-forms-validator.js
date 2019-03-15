@@ -19,7 +19,7 @@ multipleCheckFormsValidator.validate = (uploadedFiles, existingCheckForms, check
   // Fetch uploaded file names without extensions and stored check form names in a single array
   const checkFormNames = R.concat(R.map(ncf => ncf && ncf.filename.replace(/\.[^/.]+$/, ''), uploadedFiles), R.map(ecf => ecf && ecf.name, existingCheckForms))
   const duplicateCheckFormNames = R.uniq(checkFormNames.filter((item, pos) => checkFormNames.indexOf(item) !== pos))
-  const existingFamiliarisationCheckForm = R.find(ecf => ecf && !ecf.isLiveCheckForm, existingCheckForms)
+  const existingFamiliarisationCheckForm = R.find(ecf => ecf && !ecf.isLiveCheckForm && !ecf.isDeleted, existingCheckForms)
   if (duplicateCheckFormNames.length > 0) {
     duplicateCheckFormNames.forEach(duplicateName =>
       csvErrors.push(`${duplicateName} ${checkFormErrorMessages.duplicateCheckFormName}`)
