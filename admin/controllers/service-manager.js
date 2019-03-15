@@ -362,6 +362,7 @@ const controller = {
       return next(error)
     }
 
+    req.session.sceSchoolsData = undefined
     req.flash('info', 'Timezone saved for the school(s)')
     return res.redirect('/service-manager/sce-settings')
   },

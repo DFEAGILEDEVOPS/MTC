@@ -26,6 +26,7 @@ sceDataService.sqlFindSchools = async () => {
 sceDataService.sqlFindSceSchools = async () => {
   const sql = `
   SELECT
+    school.id,
     sce.timezone,
     school.name,
     school.urn
@@ -73,6 +74,36 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone) => {
     }
   ]
   return sqlService.query(sql, params)
+}
+
+/**
+  * Batch upsert sce schools using the stored procedure
+  *
+  * @param {[{school_id, timestamp}]} schools - array of schools to upsert
+  * @return {Promise<void>}
+  */
+sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
+  const declareTable = `declare @tvp as [mtc_admin].SceTableType`
+  const insertHeader = `INSERT into @tvp
+        (school_id, timezone, isOpen)
+        VALUES`
+  const inserts = schools.map((school, index) => {
+    return `(@schoolId${index}, @timezone${index}, 1)`
+  })
+  const params = []
+  schools.map((school, index) => {
+    params.push({ name: `schoolId${index}`, value: school.id, type: TYPES.Int })
+    params.push({ name: `timezone${index}`, value: school.timezone, type: TYPES.NVarChar })
+  })
+  const exec = 'EXEC [mtc_admin].[spUpsertSceSchools] @tvp'
+  const insertSql = insertHeader + inserts.join(',\n')
+  const sql = [declareTable, schools.length ? insertSql : '', exec].join(';\n')
+  const res = await sqlService.query(sql, params)
+  const upsertedIds = []
+  res.forEach(row => {
+    upsertedIds.push(row.id)
+  })
+  return { upsertId: upsertedIds }
 }
 
 /**

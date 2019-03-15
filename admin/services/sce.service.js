@@ -64,10 +64,7 @@ sceService.removeSceSchool = async (sceSchoolsData, urn) => {
  * @return {Promise<void>}
  */
 sceService.applySceSettings = async (sceSchoolsData) => {
-  // TODO: temporary, change to batch upsert
-  await Promise.all(sceSchoolsData.map(async (school) => {
-    return sceDataService.sqlUpsertSceSchool(school.id, school.timezone)
-  }))
+  return sceDataService.sqlUpsertSchoolsBatch(sceSchoolsData)
 }
 
 module.exports = sceService

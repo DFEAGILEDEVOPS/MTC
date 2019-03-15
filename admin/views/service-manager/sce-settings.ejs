@@ -26,52 +26,55 @@
         <h1 class="heading-xlarge">Settings for Service Children's Education (SCE)</h1>
         <%- partial('partials/_session_expiry') %>
         <p class="lede" id="lead-paragraph">Set timezones for schools listed as Service Children's Education (SCE). Add or remove schools listed as SCE.</p>
-        <div class="button-wrapper">
-            <a class="button button-secondary" href="/service-manager/sce-settings/add-school">Add school as SCE</a>
-        </div>
-        <table id="sce-schools" class="spacious">
-            <thead>
-                <tr>
-                    <th scope="col">
-                        <a class="no-underline sortingLink">School name<span class="sort-icon asc"><span>Sort by school name</span></span></a>
-                    </th>
-                    <th scope="col">
-                        <a class="no-underline sortingLink">Country<span class="sort-icon"><span>Sort by country</span></span></a>
-                    </th>
-                    <th scope="col">
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-            <% sceSchools.forEach((s) => { %>
-                <tr>
-                    <td>
-                        <%= s.name %>
-                        <div class="font-greyed-out font-xsmall">
-                            URN: <%= s.urn %>
-                        </div>
-                    </td>
-                    <td>
-                        <select class="form-control timezone"
-                            id="timezone-<%= s.urn %>"
-                            name="timezone-<%= s.urn %>">
-                            <option value=""></option>
-                            <% countriesTzData.map(t => { %>
-                            <option value="<%= t.zone %>" <% if (t.zone === s.timezone) { %>selected="selected"<% } %>><%= t.name %></option>
-                            <% }) %>
-                        </select>
-                    </td>
-                    <td class="nowrap column-narrow">
-                        <a href="/service-manager/sce-settings/remove-school/<%= s.urn %>" class="modal-link" id="js-modal-link">Remove school</a>
-                    </td>
-                </tr>
-            <% }) %>
-            </tbody>
-        </table>
-        <div class="form-buttons">
-            <input type="submit" class="button" value="Save"/>
-            <a href="/service-manager/sce-settings/cancel" class="button button-secondary">Cancel</a>
-        </div>
+        <form action="/service-manager/sce-settings" method="post" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <div class="button-wrapper">
+                <a class="button button-secondary" href="/service-manager/sce-settings/add-school">Add school as SCE</a>
+            </div>
+            <table id="sce-schools" class="spacious">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <a class="no-underline sortingLink">School name<span class="sort-icon asc"><span>Sort by school name</span></span></a>
+                        </th>
+                        <th scope="col">
+                            <a class="no-underline sortingLink">Country<span class="sort-icon"><span>Sort by country</span></span></a>
+                        </th>
+                        <th scope="col">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% sceSchools.forEach((s) => { %>
+                    <tr>
+                        <td>
+                            <%= s.name %>
+                            <div class="font-greyed-out font-xsmall">
+                                URN: <%= s.urn %>
+                            </div>
+                        </td>
+                        <td>
+                            <select class="form-control timezone"
+                                id="timezone-<%= s.urn %>"
+                                name="timezone-<%= s.urn %>">
+                                <option value=""></option>
+                                <% countriesTzData.map(t => { %>
+                                <option value="<%= t.zone %>" <% if (t.zone === s.timezone) { %>selected="selected"<% } %>><%= t.name %></option>
+                                <% }) %>
+                            </select>
+                        </td>
+                        <td class="nowrap column-narrow">
+                            <a href="/service-manager/sce-settings/remove-school/<%= s.urn %>" class="modal-link" id="js-modal-link">Remove school</a>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Save"/>
+                <a href="/service-manager/sce-settings/cancel" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
         </div>
