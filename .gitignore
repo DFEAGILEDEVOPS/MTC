@@ -83,12 +83,14 @@ test/pupil-hpa/features/support/dev_env.rb
 
 
 #admin
-test/admin/reports/
-test/admin/screenshots/*.png
-test/admin/screenshots/*.html
-test/admin/reports/*
-test/admin/*.png
-test/admin/*.html
+test/admin-hpa/reports/
+test/admin-hpa/data/fixtures/pupil-census-data-*
+test/admin-hpa/screenshots/*.png
+test/admin-hpa/screenshots/*.html
+test/admin-hpa/reports/*
+test/admin-hpa/*.png
+test/admin-hpa/*.html
+test/admin-hpa/features/support/dev_env.rb
 
 test-output/*/*
 
