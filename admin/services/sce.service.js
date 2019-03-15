@@ -32,7 +32,7 @@ sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) =>
   const schoolIdxInSceSchoolsData = sceSchoolsData.findIndex(s => s.id === school.id)
   if (schoolIdxInSceSchoolsData === -1) {
     // specified school is not present in the data, add it
-    return [ ...sceSchoolsData, school ]
+    return [ ...sceSchoolsData, { ...school, timezone } ]
   }
 
   // update the timezone
