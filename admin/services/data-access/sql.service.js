@@ -340,7 +340,6 @@ sqlService.modify = async (sql, params = []) => {
     }
   }
 
-
   if (rawResponse && rawResponse.recordset) {
     for (let obj of rawResponse.recordset) {
       if (obj && obj.SCOPE_IDENTITY) {
