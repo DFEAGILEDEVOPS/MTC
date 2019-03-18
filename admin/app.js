@@ -38,7 +38,7 @@ setupLogging(app)
  * @param ms - milliseconds
  * @return {Promise}
  */
-function sleep(ms) {
+function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
@@ -46,19 +46,19 @@ function sleep(ms) {
 
 // Initialise the Database Connection pool
 ;(async function () {
-    try {
-      logger.debug('Attempting to initialise the connection pool')
-      await sqlService.initPool()
-    } catch (error) {
-      logger.alert('Failed to connect to the database', error)
-      // The initial probe connection was not able to connection: the DB is not available.  This will cause all
-      // connections in the connection pool to be initialised to closed connections. By pausing, we allow time for the
-      // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
-      // hopefully the DB will be up by then.
-      await sqlService.drainPool()
-      await sleep(30000)
-      process.exit(1)
-    }
+  try {
+    logger.debug('Attempting to initialise the connection pool')
+    await sqlService.initPool()
+  } catch (error) {
+    logger.alert('Failed to connect to the database', error)
+    // The initial probe connection was not able to connection: the DB is not available.  This will cause all
+    // connections in the connection pool to be initialised to closed connections. By pausing, we allow time for the
+    // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
+    // hopefully the DB will be up by then.
+    await sqlService.drainPool()
+    await sleep(30000)
+    process.exit(1)
+  }
 })()
 
 /**
