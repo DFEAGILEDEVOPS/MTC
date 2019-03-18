@@ -136,14 +136,17 @@ let sessionStore
 
 if (config.Redis.Host) {
   const RedisStore = require('connect-redis')(session)
-  sessionStore = new RedisStore({
+  const options = {
     host: config.Redis.Host,
-    port: config.Redis.Port,
-    auth_pass: config.Redis.Key,
-    tls: {
-      servername: config.Redis.Host
-    }
-  })
+    port: config.Redis.Port
+  }
+  if (config.Redis.Key) {
+    options.auth_pass = config.Redis.Key
+  }
+  if (config.Redis.useTLS) {
+    options.tls = { servername: config.Redis.Host }
+  }
+  sessionStore = new RedisStore(options)
 } else {
   const TediousSessionStore = require('connect-tedious')(session)
   sessionStore = new TediousSessionStore({
