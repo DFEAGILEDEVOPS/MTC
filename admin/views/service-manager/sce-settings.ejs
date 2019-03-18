@@ -47,16 +47,19 @@
                 <tbody>
                 <% sceSchools.forEach((s) => { %>
                     <tr>
-                        <td>
+                        <td class="allow-wrap">
                             <%= s.name %>
                             <div class="font-greyed-out font-xsmall">
                                 URN: <%= s.urn %>
                             </div>
                         </td>
-                        <td>
+                        <td class="column-wide">
+                            <!-- hidden text used for column sorting -->
+                            <div style="width: 0; height: 0; overflow: hidden;"><%=s.timezone %></div>
+                            <input type="hidden" name="urn" value="<%= s.urn %>" />
                             <select class="form-control timezone"
-                                id="timezone-<%= s.urn %>"
-                                name="timezone-<%= s.urn %>">
+                                id="timezone"
+                                name="timezone">
                                 <option value=""></option>
                                 <% countriesTzData.map(t => { %>
                                 <option value="<%= t.zone %>" <% if (t.zone === s.timezone) { %>selected="selected"<% } %>><%= t.name %></option>

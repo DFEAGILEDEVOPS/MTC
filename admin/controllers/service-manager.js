@@ -357,13 +357,17 @@ const controller = {
     }
 
     try {
+      req.body.urn.forEach((urn, i) => {
+        const schoolIndex = sceSchoolsData.findIndex(s => s.urn.toString() === urn)
+        sceSchoolsData[schoolIndex].timezone = req.body.timezone[i]
+      })
       await sceService.applySceSettings(sceSchoolsData)
     } catch (error) {
       return next(error)
     }
 
-    req.session.sceSchoolsData = undefined
     req.flash('info', 'Timezone saved for the school(s)')
+    req.session.sceSchoolsData = undefined
     return res.redirect('/service-manager/sce-settings')
   },
 
