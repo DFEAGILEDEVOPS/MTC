@@ -270,11 +270,12 @@ Given(/^pupil logs in and completed the check$/) do
     RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
     fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] != 4
   rescue
+    sleep(1)
     retry if (retries += 1) < 5
   end
-  Timeout.timeout(60, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
   response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-  Timeout.timeout(60, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
 end
 
 And(/^I generate a pin for that pupil$/) do
