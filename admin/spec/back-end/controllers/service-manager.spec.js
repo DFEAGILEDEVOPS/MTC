@@ -441,7 +441,8 @@ describe('service manager controller:', () => {
       goodReqParams = {
         method: 'POST',
         url: '/service-manager/sce-settings',
-        session: { sceSchoolsData: [] }
+        session: { sceSchoolsData: [] },
+        body: { urn: [], timezone: [] }
       }
       spyOn(sceService, 'getSceSchools')
         .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
@@ -476,7 +477,6 @@ describe('service manager controller:', () => {
       spyOn(res, 'redirect')
       spyOn(sceService, 'applySceSettings').and.returnValue(Promise.reject(new Error('error')))
       await controller.postSceSettings(req, res, next)
-      expect(sceService.applySceSettings).toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })

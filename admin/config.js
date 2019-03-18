@@ -35,7 +35,7 @@ module.exports = {
   CHECK_FORM_MAX_INTEGER: 12,
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  DEFAULT_TIMEZONE: 'Europe/London',
+  DEFAULT_TIMEZONE: 'Etc/UTC',
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,

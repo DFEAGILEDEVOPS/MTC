@@ -24,7 +24,7 @@ const groupPupilsPage = async (req, res, next) => {
   try {
     groups = await groupService.getGroups(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
   } catch (error) {
     next(error)
   }

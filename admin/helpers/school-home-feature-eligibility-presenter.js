@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const config = require('../config')
 const dateService = require('../services/date.service')
@@ -12,8 +12,8 @@ const schoolHomeFeatureEligibilityPresenter = {}
  * @param checkWindowData
  * @returns {Object} Eligibility data including flags and relevant datetimes
  */
-schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData) => {
-  const currentDate = moment.utc()
+schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, timezone) => {
+  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const featureEligibilityData = {}
   const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone().add(1, 'weeks').isoWeekday('Monday').set({ hour: 8, minutes: 0, seconds: 0 })
 
