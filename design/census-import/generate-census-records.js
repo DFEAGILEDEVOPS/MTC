@@ -37,13 +37,6 @@ async function getSchoolDfeNumbers () {
   return R.map(r => R.prop('dfeNumber', r), result)
 }
 
-async function getSchoolDfeNumberCount () {
-  const sql = `SELECT COUNT(dfeNumber) AS cnt
-  FROM ${sqlService.adminSchema}.school`
-  const result = await sqlService.query(sql, [])
-  return R.prop('cnt', R.head(result))
-}
-
 function generateUpn (dfeNumber) {
   const leaCode = dfeNumber.slice(0, 3)
   const estabCode = dfeNumber.slice(3, dfeNumber.length)
@@ -65,15 +58,13 @@ async function main () {
   console.log('Generating census records...')
   const csvData = []
   let dfeNumbers
-  let dfeNumberCount
   try {
     dfeNumbers = await getSchoolDfeNumbers()
-    dfeNumberCount = await getSchoolDfeNumberCount()
-    dfeNumberCount = dfeNumberCount - 1
   } catch (error) {
     console.log(error)
+    await sqlService.drainPool()
   }
-  for (let i = 0; i <= dfeNumberCount; i++) {
+  for (let i = 0; i < dfeNumbers.length; i++) {
     for (let j = 0; j <= 31; j++) {
       const dfeNumber = dfeNumbers[i].toString()
       const upn = generateUpn(dfeNumber, pupilCount)
