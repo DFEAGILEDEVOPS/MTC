@@ -1,5 +1,5 @@
 Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arrangments_type|
-  @pupil_details = SqlDbHelper.find_pupil_from_school(@details_hash[:first_name], SqlDbHelper.find_teacher('teacher1')['school_id'])
+  step 'I add a pupil'
   step 'I login to the admin app with teacher1'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.select_pupil_and_arrangement_btn.click
@@ -8,6 +8,14 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arran
   access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
   select_access_arrangements_page.save.click
   sleep(10)
+
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+
   sign_in_page.load
   sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
@@ -51,7 +59,7 @@ Then(/^I can see following message for input assistance$/) do |table|
 end
 
 Given(/^I logged in with user with the access arrangement '(.+)'$/) do |access_arrangments_type|
-  # @pupil_details = SqlDbHelper.find_pupil_from_school(@details_hash[:first_name], SqlDbHelper.find_teacher('teacher1')['school_id'])
+  step 'I add a pupil'
   step 'I login to the admin app with teacher1'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.select_pupil_and_arrangement_btn.click
@@ -59,6 +67,15 @@ Given(/^I logged in with user with the access arrangement '(.+)'$/) do |access_a
   select_access_arrangements_page.auto_search_list[0].click
   access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
   select_access_arrangements_page.save.click
+  sleep(10)
+
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+
   sign_in_page.load
   sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
