@@ -40,7 +40,13 @@ async function getSchoolDfeNumberCount () {
 function generateUpn (dfeNumber) {
   const leaCode = dfeNumber.slice(0, 3)
   const estabCode = dfeNumber.slice(3, dfeNumber.length)
-  const year = Math.floor(Math.random() * (2009 - 2008 + 1) + 2008).toString().substr(-2)
+  const currentUTCDate = moment.utc()
+  const currentYear = currentUTCDate.year()
+  const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
+    ? currentYear - 1 : currentYear
+  const minYearValue = academicYear - 11
+  const maxYearValue = academicYear - 7
+  const year = Math.floor(Math.random() * (maxYearValue - minYearValue + 1) + minYearValue).toString().substr(-2)
   let baseUpn = leaCode + estabCode + year
   pupilCount += 1
   if (pupilCount > 999) {
