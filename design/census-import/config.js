@@ -1,29 +1,12 @@
 'use strict'
 require('dotenv').config()
-const os = require('os')
 const toBool = require('to-bool')
 
-const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
-
-const getEnvironment = () => {
-  return process.env.ENVIRONMENT_NAME || 'Local-Dev'
-}
 
 module.exports = {
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
-    LogDna: {
-      key: process.env.LOGDNA_API_KEY,
-      hostname: `${os.hostname()}:${process.pid}`,
-      ip: undefined,
-      mac: undefined,
-      app: `MTCAdmin:${getEnvironment()}`,
-      env: `${getEnvironment()}`
-    },
-    Express: {
-      UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
-    },
     SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
   },
   Monitoring: {
@@ -48,14 +31,6 @@ module.exports = {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 100,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 200,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
-    },
-    Migrator: {
-      Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
-      Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
-    },
-    Azure: {
-      Scale: process.env.SQL_AZURE_SCALE
     }
   }
 }
