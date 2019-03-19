@@ -6,9 +6,16 @@ const fs = require('fs')
 const faker = require('faker')
 const R = require('ramda')
 const moment = require('moment')
+const momentRandom = require('moment-random')
+
 const sqlService = require('./services/data-access/sql.service')
 const upnService = require('./services/upn.service')
 const outputFilename = 'pupilCensusData.csv'
+
+const currentUTCDate = moment.utc()
+const currentYear = currentUTCDate.year()
+const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
+  ? currentYear - 1 : currentYear
 
 let pupilCount = 0
 
@@ -40,10 +47,6 @@ async function getSchoolDfeNumberCount () {
 function generateUpn (dfeNumber) {
   const leaCode = dfeNumber.slice(0, 3)
   const estabCode = dfeNumber.slice(3, dfeNumber.length)
-  const currentUTCDate = moment.utc()
-  const currentYear = currentUTCDate.year()
-  const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
-    ? currentYear - 1 : currentYear
   const minYearValue = academicYear - 11
   const maxYearValue = academicYear - 7
   const year = Math.floor(Math.random() * (maxYearValue - minYearValue + 1) + minYearValue).toString().substr(-2)
@@ -84,7 +87,10 @@ async function main () {
         faker.name.firstName(), // Forename
         i % 100 === 0 ? faker.name.firstName() : '', // Middlenames
         i % 10 === 0 ? 'M' : 'F', // Gender
-        moment(faker.date.between('2008', '2009')).format('DD/MM/YYYY') // DOB
+        momentRandom(
+          moment.utc(`${academicYear - 7}-09-01`),
+          moment.utc(`${academicYear - 11}-09-02`)
+        ).format('DD/MM/YYYY') // DOB
       ]
       csvData.push(record)
     }

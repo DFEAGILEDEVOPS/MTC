@@ -8,6 +8,7 @@
     "faker": "^4.1.0",
     "fast-csv": "^2.4.1",
     "moment": "^2.24.0",
+    "moment-random": "^1.0.4",
     "mssql": "^4.1.0",
     "ramda": "^0.26.1",
     "tedious": "^3.0.1",
