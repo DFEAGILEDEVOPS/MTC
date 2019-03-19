@@ -1,0 +1,18 @@
+{
+  "name": "census-import",
+  "version": "0.1.0",
+  "private": false,
+  "license": "GPL-3.0",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "faker": "^4.1.0",
+    "fast-csv": "^2.4.1",
+    "moment": "^2.24.0",
+    "mssql": "^4.1.0",
+    "ramda": "^0.26.1",
+    "tedious": "^3.0.1",
+    "tedious-connection-pool": "^1.0.5",
+    "to-bool": "^0.0.1",
+    "winston": "^3.2.1"
+  }
+}
