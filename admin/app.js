@@ -132,39 +132,18 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }))
 
-let sessionStore
-
-if (config.Redis.Host) {
-  const RedisStore = require('connect-redis')(session)
-  const options = {
-    host: config.Redis.Host,
-    port: config.Redis.Port
-  }
-  if (config.Redis.Key) {
-    options.auth_pass = config.Redis.Key
-  }
-  if (config.Redis.useTLS) {
-    options.tls = { servername: config.Redis.Host }
-  }
-  sessionStore = new RedisStore(options)
-} else {
-  const TediousSessionStore = require('connect-tedious')(session)
-  sessionStore = new TediousSessionStore({
-    config: {
-      appName: config.Sql.Application.Name,
-      userName: config.Sql.Application.Username,
-      password: config.Sql.Application.Password,
-      server: config.Sql.Server,
-      options: {
-        port: config.Sql.Port,
-        database: config.Sql.Database,
-        encrypt: true,
-        requestTimeout: config.Sql.Timeout
-      }
-    },
-    tableName: '[mtc_admin].[sessions]'
-  })
+const RedisStore = require('connect-redis')(session)
+const options = {
+  host: config.Redis.Host,
+  port: config.Redis.Port
 }
+if (config.Redis.Key) {
+  options.auth_pass = config.Redis.Key
+}
+if (config.Redis.useTLS) {
+  options.tls = { servername: config.Redis.Host }
+}
+const sessionStore = new RedisStore(options)
 
 const sessionOptions = {
   name: 'mtc-admin-session-id',
@@ -179,6 +158,7 @@ const sessionOptions = {
   },
   store: sessionStore
 }
+
 app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
