@@ -1,26 +1,26 @@
 'use strict'
 
 var ConnectionPool = require('tedious-connection-pool')
-const config = require('../../config')
+const sqlConfig = require('../../config/sql.config')
 const logger = require('../log.service').getLogger()
 
 var poolConfig = {
-  min: config.Sql.Pooling.MinCount,
-  max: config.Sql.Pooling.MaxCount,
-  log: config.Sql.Pooling.LoggingEnabled
+  min: sqlConfig.pool.min,
+  max: sqlConfig.pool.min,
+  log: sqlConfig.pool.loggingEnabled
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js
 var connectionConfig = {
-  appName: config.Sql.Application.Name,
-  userName: config.Sql.Application.Username,
-  password: config.Sql.Application.Password,
-  server: config.Sql.Server,
+  appName: sqlConfig.application.name,
+  userName: sqlConfig.application.username,
+  password: sqlConfig.application.password,
+  server: sqlConfig.server,
   options: {
-    port: config.Sql.Port,
-    database: config.Sql.Database,
+    port: sqlConfig.port,
+    database: sqlConfig.database,
     encrypt: true,
-    requestTimeout: config.Sql.Timeout
+    requestTimeout: sqlConfig.requestTimeout
   }
 }
 

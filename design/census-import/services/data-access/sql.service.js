@@ -3,7 +3,7 @@
 const R = require('ramda')
 const mssql = require('mssql')
 const dateService = require('../date.service')
-const poolConfig = require('../../config/sql.config')
+const sqlConfig = require('../../config/sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 let cache = {}
@@ -190,7 +190,7 @@ sqlService.initPool = async () => {
     logger.warn('The connection pool has already been initialised')
     return
   }
-  pool = new mssql.ConnectionPool(poolConfig)
+  pool = new mssql.ConnectionPool(sqlConfig)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
