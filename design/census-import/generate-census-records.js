@@ -66,7 +66,6 @@ async function main () {
   const csvData = []
   let dfeNumbers
   let dfeNumberCount
-  let upns = []
   try {
     dfeNumbers = await getSchoolDfeNumbers()
     dfeNumberCount = await getSchoolDfeNumberCount()
@@ -78,7 +77,6 @@ async function main () {
     for (let j = 0; j <= 31; j++) {
       const dfeNumber = dfeNumbers[i].toString()
       const upn = generateUpn(dfeNumber, pupilCount)
-      upns.push(upn)
       const record = [
         dfeNumber.slice(0, 3), // LEA
         dfeNumber.slice(3, dfeNumber.length), // Estab
