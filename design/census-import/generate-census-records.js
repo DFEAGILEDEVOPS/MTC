@@ -3,21 +3,21 @@
 
 const csv = require('fast-csv')
 const fs = require('fs')
-const R = require('ramda')
 const faker = require('faker')
+const R = require('ramda')
 const moment = require('moment')
-const commandLineArgs = require('command-line-args')
-const winston = require('winston')
+const momentRandom = require('moment-random')
 
-const sqlService = require('../admin/services/data-access/sql.service')
-const upnService = require('../admin/services/upn.service')
+const sqlService = require('./services/data-access/sql.service')
+const upnService = require('./services/upn.service')
 const outputFilename = 'pupilCensusData.csv'
 
-const optionDefinitions = [
-  { name: 'recordsLength', alias: 'r', type: Number }
-]
+const currentUTCDate = moment.utc()
+const currentYear = currentUTCDate.year()
+const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
+  ? currentYear - 1 : currentYear
 
-const options = commandLineArgs(optionDefinitions)
+let pupilCount = 0
 
 function writeCsv (data) {
   if (!data.length) {
@@ -26,53 +26,68 @@ function writeCsv (data) {
   const headers = ['LEA', 'Estab', 'UPN', 'Surname', 'Forename', 'Middlenames', 'Gender', 'DOB']
   const ws = fs.createWriteStream(outputFilename, { flags: 'a' })
   csv
-    .write(data, {headers: headers})
+    .write(data, { headers: headers })
     .pipe(ws)
 }
 
-async function getSchoolsLength () {
-  const sql = `SELECT COUNT(*) AS [cnt]
+async function getSchoolDfeNumbers () {
+  const sql = `SELECT dfeNumber
   FROM ${sqlService.adminSchema}.school`
   const result = await sqlService.query(sql, [])
-  const obj = R.head(result)
-  return R.prop('cnt', obj)
+  return R.map(r => R.prop('dfeNumber', r), result)
 }
 
-async function main (options) {
-  winston.info('Generating census records...')
-  const { recordsLength } = options
-  const csvData = []
-  let baseUpn = '702500001'
-  let schoolsLength
-  try {
-    schoolsLength = await getSchoolsLength()
-    schoolsLength = schoolsLength - 1
-  } catch (error) {
-    winston.info(error)
+function generateUpn (dfeNumber) {
+  const leaCode = dfeNumber.slice(0, 3)
+  const estabCode = dfeNumber.slice(3, dfeNumber.length)
+  const minYearValue = academicYear - 11
+  const maxYearValue = academicYear - 7
+  const year = Math.floor(Math.random() * (maxYearValue - minYearValue + 1) + minYearValue).toString().substr(-2)
+  let baseUpn = leaCode + estabCode + year
+  pupilCount += 1
+  if (pupilCount > 999) {
+    pupilCount = 1
+    baseUpn = (parseInt(baseUpn) + 1000).toString()
   }
-  for (let i = 0; i <= recordsLength; i++) {
-    let pupilIdx = i + 1
-    if (pupilIdx > 999) {
-      baseUpn = (parseInt(baseUpn) + 1000).toString()
-      pupilIdx = 1
+  const serial = pupilCount.toString().padStart(3, '0')
+  return upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
+}
+
+async function main () {
+  await sqlService.initPool()
+  console.log('Generating census records...')
+  const csvData = []
+  let dfeNumbers
+  try {
+    dfeNumbers = await getSchoolDfeNumbers()
+  } catch (error) {
+    console.log(error)
+    await sqlService.drainPool()
+    process.exitCode = 1
+  }
+  for (let i = 0; i < dfeNumbers.length; i++) {
+    for (let j = 0; j <= 31; j++) {
+      const dfeNumber = dfeNumbers[i].toString()
+      const upn = generateUpn(dfeNumber, pupilCount)
+      const record = [
+        dfeNumber.slice(0, 3), // LEA
+        dfeNumber.slice(3, dfeNumber.length), // Estab
+        upn,
+        faker.name.lastName(), // Surname
+        faker.name.firstName(), // Forename
+        i % 100 === 0 ? faker.name.firstName() : '', // Middlenames
+        i % 10 === 0 ? 'M' : 'F', // Gender
+        momentRandom(
+          moment.utc(`${academicYear - 7}-09-01`),
+          moment.utc(`${academicYear - 11}-09-02`)
+        ).format('DD/MM/YYYY') // DOB
+      ]
+      csvData.push(record)
     }
-    const serial = pupilIdx.toString().padStart(3, '0')
-    const upn = upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
-    const randomEstabCode = (Math.floor(Math.random() * schoolsLength) + 1001).toString()
-    const record = [
-      '999', // LEA
-      randomEstabCode, // Estab
-      upn,
-      faker.name.lastName(), // Surname
-      faker.name.firstName(), // Forename
-      i % 100 === 0 ? faker.name.firstName() : '', // Middlenames
-      i % 10 === 0 ? 'M' : 'F', // Gender
-      moment(faker.date.between('2005', '2006')).format('MM/DD/YY') // DOB
-    ]
-    csvData.push(record)
   }
   writeCsv(csvData)
-  winston.info('Census CSV generated')
+  console.log('Census CSV generated')
+  await sqlService.drainPool()
 }
 
-main(options)
+main()
