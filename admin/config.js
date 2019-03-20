@@ -63,7 +63,7 @@ module.exports = {
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
+      Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
