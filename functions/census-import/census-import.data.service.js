@@ -19,8 +19,8 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
     port: config.Sql.Port,
     requestTimeout: config.Sql.Timeout,
     connectionTimeout: config.Sql.Timeout,
-    user: config.Sql.Application.Username,
-    password: config.Sql.Application.Password,
+    user: config.Sql.PupilCensus.Username,
+    password: config.Sql.PupilCensus.Password,
     pool: {
       min: 1,
       max: 3
