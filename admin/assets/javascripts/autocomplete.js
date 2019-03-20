@@ -97,7 +97,13 @@ $(function () {
     setupLinkedConfirm: function (autoCompleteContainer, linkedContainer, findValueFunc) {
       return function (event, value) {
         if (typeof value === 'undefined') return
-        $(linkedContainer).val(findValueFunc(value))
+        var ul = $(linkedContainer).find('ul')
+        ul.hide()
+        $(linkedContainer).find('input').val(findValueFunc(value))
+        setTimeout(function() {
+          ul.removeClass('autocomplete__menu--visible').addClass('autocomplete__menu--hidden')
+          ul[0].style = ''
+        }, 100)
       }
     }
   }

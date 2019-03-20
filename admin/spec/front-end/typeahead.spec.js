@@ -72,15 +72,15 @@ describe('autoComplete', function () {
       $('body').append(fixture)
       const source1 = ['source1_1', 'source1_2']
       const source2 = ['source2_1', 'source2_2']
-      window.GOVUK.autoComplete.createLinkedComponent('#container1', 'id1', source1, 2, '#id2', null)
-      window.GOVUK.autoComplete.createLinkedComponent('#container2', 'id2', source2, 2, '#id1', null)
+      window.GOVUK.autoComplete.createLinkedComponent('#container1', 'id1', source1, 2, '#container2', null)
+      window.GOVUK.autoComplete.createLinkedComponent('#container2', 'id2', source2, 2, '#container1', null)
     })
     afterEach(() => {
       fixture.remove()
     })
     it('should populate the value of the second container based on the first one', function () {
       const f = jasmine.createSpy().and.callFake(() => 'source2_2')
-      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container1', '#id2', f)
+      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container1', '#container2', f)
       var event = {}
       var value = 'source1_2'
       // trigger the onconfirm function
@@ -90,7 +90,7 @@ describe('autoComplete', function () {
     })
     it('should populate the value of the first container based on the second one', function () {
       const f = jasmine.createSpy().and.callFake(() => 'source1_2')
-      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container2', '#id1', f)
+      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container2', '#container1', f)
       var event = {}
       var value = 'source2_2'
       // trigger the onconfirm function
