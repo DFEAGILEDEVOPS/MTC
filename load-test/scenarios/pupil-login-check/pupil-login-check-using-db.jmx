@@ -26,7 +26,12 @@
           </elementProp>
           <elementProp name="OFFSET_VALUE" elementType="Argument">
             <stringProp name="Argument.name">OFFSET_VALUE</stringProp>
-            <stringProp name="Argument.value">5</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PUPIL_LOGIN_FILE" elementType="Argument">
+            <stringProp name="Argument.name">PUPIL_LOGIN_FILE</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) + &quot;-pupilLogins.csv&quot; )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -48,11 +53,71 @@
         <stringProp name="username">${__P(dbUserName)}</stringProp>
       </JDBCDataSource>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - Pupil SignIn" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group - Prepare Pupil Data" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request - Select Pupil Credentials" enabled="true">
+          <stringProp name="dataSource">mtc-admin</stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="query">SELECT p.val as [pupilPin], s.pin as [schoolPin] FROM mtc_admin.checkPin cp
+INNER JOIN mtc_admin.pin p ON cp.pin_id = p.id
+INNER JOIN mtc_admin.school s ON s.id = cp.school_id
+ORDER BY p.val
+OFFSET ${OFFSET_VALUE_NODE} ROWS
+FETCH NEXT 1000 ROWS ONLY</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes">VARCHAR</stringProp>
+          <stringProp name="variableNames">pupilPin,schoolPin</stringProp>
+          <stringProp name="resultVariable">resultSet</stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor - Export Results To CSV" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">resultSet = vars.getObject(&quot;resultSet&quot;)
+result = new StringBuilder()
+
+def randomRow = resultSet.get(org.apache.commons.lang3.RandomUtils.nextInt(0,resultSet.size()))
+
+randomRow.each { k, v -&gt; 
+    result.append(&quot;${k}&quot;).append(&quot;,&quot;)
+}
+result.append(System.getProperty(&quot;line.separator&quot;))
+
+for (Object row : resultSet ) {
+    iter = row.entrySet().iterator()
+    while (iter.hasNext()) {
+        pair = iter.next()
+        result.append(pair.getValue())
+        result.append(&quot;,&quot;)
+    }
+    result.append(System.getProperty(&quot;line.separator&quot;))
+}
+org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/files/&quot;, &quot;${PUPIL_LOGIN_FILE}&quot;), result.toString(), &quot;UTF-8&quot;)
+//Use the below to write the file to your local file system
+//org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;apache-jmeter-4.0/bin&quot;, &quot;${PUPIL_LOGIN_FILE}&quot;), result.toString(), &quot;UTF-8&quot;)</stringProp>
+        </JSR223PostProcessor>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - Pupil SignIn" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${__P(threads,10)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${__P(rampup,1)}</stringProp>
@@ -75,31 +140,17 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </ConfigTestElement>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request - SelectPupilCredentials" enabled="true">
-          <stringProp name="dataSource">mtc-admin</stringProp>
-          <stringProp name="queryType">Select Statement</stringProp>
-          <stringProp name="query">SELECT p.val as [pupilPin], s.pin as [schoolPin] FROM mtc_admin.checkPin cp
-INNER JOIN mtc_admin.pin p ON cp.pin_id = p.id
-INNER JOIN mtc_admin.school s ON s.id = cp.school_id
-ORDER BY p.val
-OFFSET ${OFFSET_VALUE_NODE} ROWS
-FETCH NEXT 1000 ROWS ONLY</stringProp>
-          <stringProp name="queryArguments"></stringProp>
-          <stringProp name="queryArgumentsTypes"></stringProp>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Pupil Logins DataSet" enabled="true">
+          <stringProp name="delimiter">,</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="filename">${PUPIL_LOGIN_FILE}</stringProp>
+          <boolProp name="ignoreFirstLine">true</boolProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+          <boolProp name="stopThread">true</boolProp>
           <stringProp name="variableNames">pupilPin,schoolPin</stringProp>
-          <stringProp name="resultVariable"></stringProp>
-          <stringProp name="queryTimeout"></stringProp>
-          <stringProp name="resultSetHandler">Store as String</stringProp>
-        </JDBCSampler>
-        <hashTree/>
-        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
-          <stringProp name="CounterConfig.start">1</stringProp>
-          <stringProp name="CounterConfig.end"></stringProp>
-          <stringProp name="CounterConfig.incr">1</stringProp>
-          <stringProp name="CounterConfig.name">counter</stringProp>
-          <stringProp name="CounterConfig.format"></stringProp>
-          <boolProp name="CounterConfig.per_user">false</boolProp>
-        </CounterConfig>
+        </CSVDataSet>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Pupil-Sign-In" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -107,8 +158,8 @@ FETCH NEXT 1000 ROWS ONLY</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;schoolPin&quot;:&quot;${__V(schoolPin_${counter})}&quot;, &#xd;
- &quot;pupilPin&quot;:&quot;${__V(pupilPin_${counter})}&quot;&#xd;
+                <stringProp name="Argument.value">{&quot;schoolPin&quot;:&quot;${schoolPin}&quot;,&#xd;
+ &quot;pupilPin&quot;:&quot;${pupilPin}&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -151,7 +202,7 @@ FETCH NEXT 1000 ROWS ONLY</stringProp>
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="true">
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
             <stringProp name="DurationAssertion.duration">750</stringProp>
           </DurationAssertion>
           <hashTree/>
