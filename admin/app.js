@@ -51,11 +51,12 @@ function sleep (ms) {
     await sqlService.initPool()
   } catch (error) {
     logger.alert('Failed to connect to the database', error)
-    // The initial probe connection was not able to connection: the DB is not available.  This will cause all
-    // connections in the connection pool to be initialised to closed connections. By pausing, we allow time for the
+    // The initial probe connection was not able to connect: the DB is not available.  This will cause all
+    // connections in the connection pool to be initialised to closed. By pausing, we allow time for the
     // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
     // hopefully the DB will be up by then.
     await sqlService.drainPool()
+    logger/alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating.`)
     await sleep(config.WaitTimeBeforeExitInSeconds * 1000)
     process.exit(1)
   }
