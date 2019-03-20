@@ -20,15 +20,7 @@
                     <% } %>
                 </label>
                 <div class='form-control-1-2'>
-                    <select
-                        class="form-control <%= err.isError('schoolName') ? 'form-control-error' : '' %>"
-                        id="schoolName"
-                        name="urn">
-                        <option value=""></option>
-                        <% schools.map(t => { %>
-                            <option value="<%= t.urn %>"><%= t.name %></option>
-                        <% }) %>
-                    </select>
+                  <div id="schoolNameContainer"></div>
                 </div>
             </div>
             <div class="form-group <%= err.isError('urn') ? 'form-group-error' : '' %>">
@@ -39,15 +31,7 @@
                     <% } %>
                 </label>
                 <div class='form-control-1-2'>
-                    <select
-                        class="form-control <%= err.isError('urn') ? 'form-control-error' : '' %>"
-                        id="urn"
-                        name="schoolName">
-                        <option value=""></option>
-                        <% schools.map(t => { %>
-                            <option value="<%= t.name %>"><%= t.urn %></option>
-                        <% }) %>
-                    </select>
+                  <div id="urnContainer"></div>
                 </div>
             </div>
             <div class="form-group <%= err.isError('timezone') ? 'form-group-error' : '' %>">
@@ -76,8 +60,10 @@
 </div>
 <script>
   $(function () {
+    const schoolNames = <%- schoolNames %>
+    const schoolUrns = <%- schoolUrns %>
     window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
-    window.GOVUK.autoComplete.createLinkedComponent('#schoolName', 3, '#urn')
-    window.GOVUK.autoComplete.createLinkedComponent('#urn', 3, '#schoolName')
+    window.GOVUK.autoComplete.createLinkedComponent('#schoolNameContainer', 'schoolName', schoolNames, 3, '#urn', value => schoolUrns[schoolNames.indexOf(value)])
+    window.GOVUK.autoComplete.createLinkedComponent('#urnContainer', 'urn', schoolUrns, 3, '#schoolName', value => schoolNames[schoolUrns.indexOf(value)])
   })
 </script>

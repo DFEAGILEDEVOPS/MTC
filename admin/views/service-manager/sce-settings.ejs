@@ -114,16 +114,17 @@
 
 <script>
 $(function () {
-    $(".timezone").each(function() {
-      window.accessibleAutocomplete.enhanceSelectElement({
-          selectElement: $(this)[0],
-          minLength: 2,
-          defaultValue: ''
-      })
+  $(".timezone").each(function() {
+    window.accessibleAutocomplete.enhanceSelectElement({
+      selectElement: $(this)[0],
+      minLength: 2,
+      defaultValue: '',
+      confirmOnBlur: false
     })
-    window.GOVUK.tableSort.applySorting(window.document, 'sce-schools', {
-        sortNullsLast: true,
-        ignoredStrings: ['-']
-    })
+  })
+  window.GOVUK.tableSort.applySorting(window.document, 'sce-schools', {
+    sortNullsLast: true,
+    ignoredStrings: ['-']
+  })
 })
 </script>

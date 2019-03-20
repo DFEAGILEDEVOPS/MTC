@@ -10,7 +10,7 @@ $(function () {
   }
   window.GOVUK.autoComplete = {
     /**
-     * Utilises and renders general accessible autcomplete select list component
+     * Utilises and renders general accessible autcomplete enhanced select list component
      * @param {String} autoCompleteContainer
      * @param {Number} minLength
      * @param {String} defaultValue
@@ -67,17 +67,25 @@ $(function () {
     /**
      * Links two autocomplete fields to autopopulate each other
      * @param {String} autoCompleteContainer
+     * @param {int} id
+     * @param {Array} source
      * @param {Number} minLength
      * @param {String} linkedContainer
      * @returns {void}
      */
-    createLinkedComponent: function (autoCompleteContainer, minLength, linkedContainer) {
-      window.GOVUK.autoComplete.createComponent(autoCompleteContainer, minLength, '', {
+    createLinkedComponent: function (autoCompleteContainer, id, source, minLength, linkedContainer, findValueFunc) {
+      window.accessibleAutocomplete({
+        element: document.querySelector(autoCompleteContainer),
+        id: id,
+        name: id,
+        source: source,
+        minLength: minLength,
+        defaultValue: '',
         onConfirm: function (name) {
           $(autoCompleteContainer).trigger('confirm', [name])
         }
       })
-      $(autoCompleteContainer).on('confirm', window.GOVUK.autoComplete.setupLinkedConfirm(autoCompleteContainer, linkedContainer))
+      $(autoCompleteContainer).on('confirm', window.GOVUK.autoComplete.setupLinkedConfirm(autoCompleteContainer, linkedContainer, findValueFunc))
     },
 
     /**
@@ -86,19 +94,10 @@ $(function () {
       * @param {String} linkedContainer
       * @returns {void}
       */
-    setupLinkedConfirm: function (autoCompleteContainer, linkedContainer) {
+    setupLinkedConfirm: function (autoCompleteContainer, linkedContainer, findValueFunc) {
       return function (event, value) {
         if (typeof value === 'undefined') return
-        $(linkedContainer).val('')
-        var inputText = $(linkedContainer + '-select option')
-          .filter(function () {
-            return $(this).val() === value
-          })
-          .first()
-          .html()
-        $(linkedContainer).attr('placeholder', inputText)
-        $(linkedContainer + '-select').val(value).trigger('change')
-        $(autoCompleteContainer + '-select').val(inputText).trigger('change')
+        $(linkedContainer).val(findValueFunc(value))
       }
     }
   }

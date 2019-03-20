@@ -314,11 +314,7 @@ const controller = {
     res.locals.pageTitle = 'Settings for SCE'
     req.breadcrumbs(res.locals.pageTitle)
     try {
-      if (!req.session.sceSchoolsData) {
-        const fetchedSceSchools = await sceService.getSceSchools()
-        req.session.sceSchoolsData = fetchedSceSchools
-      }
-      const sceSchools = req.session.sceSchoolsData
+      const sceSchools = await sceService.getSceSchools()
       res.render('service-manager/sce-settings', {
         breadcrumbs: req.breadcrumbs(),
         messages: res.locals.messages,
@@ -331,15 +327,13 @@ const controller = {
   },
 
   /**
-   * Cancel sce settings. Clears session and redirects to index.
+   * Cancel sce settings. Redirects to index.
    * @param req
    * @param res
    * @param next
    * @returns {Promise.<void>}
    */
   cancelSceSettings: async (req, res) => {
-    req.session.sceSchoolsData = undefined
-
     return res.redirect('/service-manager')
   },
 
@@ -351,23 +345,18 @@ const controller = {
    * @returns {Promise.<void>}
    */
   postSceSettings: async (req, res, next) => {
-    const { sceSchoolsData } = req.session
-    if (!sceSchoolsData) {
-      return res.redirect('/service-manager/sce-settings')
-    }
-
+    const sceSchools = await sceService.getSceSchools()
     try {
       req.body.urn.forEach((urn, i) => {
-        const schoolIndex = sceSchoolsData.findIndex(s => s.urn.toString() === urn)
-        sceSchoolsData[schoolIndex].timezone = req.body.timezone[i]
+        const schoolIndex = sceSchools.findIndex(s => s.urn.toString() === urn)
+        sceSchools[schoolIndex].timezone = req.body.timezone[i]
       })
-      await sceService.applySceSettings(sceSchoolsData)
+      await sceService.applySceSettings(sceSchools)
     } catch (error) {
       return next(error)
     }
 
     req.flash('info', 'Timezone saved for the school(s)')
-    req.session.sceSchoolsData = undefined
     return res.redirect('/service-manager/sce-settings')
   },
 
@@ -379,18 +368,11 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getSceRemoveSchool: async (req, res, next) => {
-    const { sceSchoolsData } = req.session
-    if (!sceSchoolsData) {
-      return res.redirect('/service-manager/sce-settings')
-    }
-
     const { urn } = req.params
     let school
 
     try {
-      const [updatedSchools, deletedSchool] = await sceService.removeSceSchool(sceSchoolsData, urn)
-      req.session.sceSchoolsData = updatedSchools
-      school = deletedSchool
+      school = await sceService.removeSceSchool(urn)
     } catch (error) {
       return next(error)
     }
@@ -413,11 +395,14 @@ const controller = {
 
     try {
       const schools = await sceService.getSchools()
+      const schoolNames = schools.map(s => s.name)
+      const schoolUrns = schools.map(s => s.urn.toString())
       res.render('service-manager/sce-add-school', {
         breadcrumbs: req.breadcrumbs(),
         err: res.error || new ValidationError(),
         countriesTzData: scePresenter.getCountriesTzData(),
-        schools
+        schoolNames: JSON.stringify(schoolNames),
+        schoolUrns: JSON.stringify(schoolUrns)
       })
     } catch (error) {
       return next(error)
@@ -442,17 +427,15 @@ const controller = {
       return controller.getSceAddSchool(req, res, next)
     }
 
-    const { sceSchoolsData } = req.session
     const {
       timezone,
       urn,
       schoolName
     } = req.body
 
-    const school = schools.find(s => s.urn === parseInt(urn, 10) && s.name === schoolName)
-
+    const school = schools.find(s => s.urn.toString() === urn && s.name === schoolName)
     try {
-      req.session.sceSchoolsData = await sceService.insertOrUpdateSceSchool(sceSchoolsData, school, timezone)
+      await sceService.insertOrUpdateSceSchool(school.id, timezone)
     } catch (error) {
       return next(error)
     }

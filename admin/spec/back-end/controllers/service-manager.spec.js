@@ -372,8 +372,7 @@ describe('service manager controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/sce-settings',
-        session: {}
+        url: '/service-manager/sce-settings'
       }
     })
 
@@ -387,19 +386,6 @@ describe('service manager controller:', () => {
       await controller.getSceSettings(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(sceService.getSceSchools).toHaveBeenCalled()
-      expect(next).not.toHaveBeenCalled()
-    })
-
-    it('should not refetch schools if present in the session', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      req.session.sceSchoolsData = []
-      spyOn(sceService, 'getSceSchools')
-      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
-      spyOn(res, 'render')
-      await controller.getSceSettings(req, res, next)
-      expect(res.render).toHaveBeenCalled()
-      expect(sceService.getSceSchools).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -424,12 +410,11 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('should clear session data and redirect to the index page', async () => {
+    it('redirect to the index page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(res, 'redirect')
       await controller.cancelSceSettings(req, res)
-      expect(typeof req.session.sceSchoolsData).toBe('undefined')
       expect(res.redirect).toHaveBeenCalledWith('/service-manager')
     })
   })
@@ -441,23 +426,10 @@ describe('service manager controller:', () => {
       goodReqParams = {
         method: 'POST',
         url: '/service-manager/sce-settings',
-        session: { sceSchoolsData: [] },
         body: { urn: [], timezone: [] }
       }
       spyOn(sceService, 'getSceSchools')
         .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
-    })
-
-    it('redirects to the sce settings page when there is no data in the session', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      req.session.sceSchoolsData = undefined
-      spyOn(res, 'redirect')
-      spyOn(sceService, 'applySceSettings')
-      await controller.postSceSettings(req, res, next)
-      expect(sceService.applySceSettings).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalled()
-      expect(req.flash).not.toHaveBeenCalled()
     })
 
     it('redirects to the sce settings page when successfully applied changes', async () => {
@@ -523,10 +495,9 @@ describe('service manager controller:', () => {
         url: '/service-manager/sce-add-school',
         body: {
           timezone: '1',
-          urn: 123456,
+          urn: '123456',
           schoolName: 'Test School'
-        },
-        session: {}
+        }
       }
 
       spyOn(sceService, 'getSchools')
@@ -540,6 +511,7 @@ describe('service manager controller:', () => {
       spyOn(res, 'redirect')
       spyOn(sceService, 'insertOrUpdateSceSchool')
       await controller.postSceAddSchool(req, res, next)
+      expect(sceService.insertOrUpdateSceSchool).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
@@ -578,9 +550,6 @@ describe('service manager controller:', () => {
         url: '/service-manager/sce-settings/remove-school',
         params: {
           urn: 123456
-        },
-        session: {
-          sceSchoolsData: [{ urn: 123456, name: 'Test School' }]
         }
       }
     })

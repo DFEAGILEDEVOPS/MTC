@@ -47,50 +47,56 @@ describe('autoComplete', function () {
   })
   describe('createLinkedComponent', function () {
     it('should call createComponent with the autoCompleteContainer', function () {
-      spyOn(window.GOVUK.autoComplete, 'createComponent')
-      window.GOVUK.autoComplete.createLinkedComponent('#container', 2, '#container2')
-      expect(window.GOVUK.autoComplete.createComponent).toHaveBeenCalledWith('#container', 2, '', { onConfirm: jasmine.any(Function) })
+      spyOn(window, 'accessibleAutocomplete')
+      spyOn(document, 'querySelector').and.returnValue('element')
+      window.GOVUK.autoComplete.createLinkedComponent('#container', 'id', [], 2, '#id', null)
+      expect(document.querySelector).toHaveBeenCalledWith('#container')
+      expect(window.accessibleAutocomplete).toHaveBeenCalledWith({
+        element: 'element',
+        id: 'id',
+        name: 'id',
+        source: [],
+        minLength: 2,
+        defaultValue: '',
+        onConfirm: jasmine.any(Function)
+      })
     })
   })
   describe('setupLinkedConfirm', function () {
     let fixture
     beforeEach(() => {
       fixture = $(`<div>
-        <select id="container1" name="container2">
-          <option value="op-1">Option 1</option>
-          <option value="op-2">Option 2</option>
-        </select>
-        <select id="container2" name="container1">
-          <option value="Option 1">op-1</option>
-          <option value="Option 2">op-2</option>
-        </select>
+        <div id="container1"></div>
+        <div id="container2"></div>
       </div>`)
       $('body').append(fixture)
-      window.GOVUK.autoComplete.createLinkedComponent('#container1', 2, '#container2')
-      window.GOVUK.autoComplete.createLinkedComponent('#container2', 2, '#container1')
+      const source1 = ['source1_1', 'source1_2']
+      const source2 = ['source2_1', 'source2_2']
+      window.GOVUK.autoComplete.createLinkedComponent('#container1', 'id1', source1, 2, '#id2', null)
+      window.GOVUK.autoComplete.createLinkedComponent('#container2', 'id2', source2, 2, '#id1', null)
     })
     afterEach(() => {
       fixture.remove()
     })
     it('should populate the value of the second container based on the first one', function () {
-      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container1', '#container2')
+      const f = jasmine.createSpy().and.callFake(() => 'source2_2')
+      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container1', '#id2', f)
       var event = {}
-      var value = 'Option 2'
+      var value = 'source1_2'
       // trigger the onconfirm function
       cb(event, value)
-      expect($('#container2').attr('placeholder')).toBe('op-2')
-      expect($('#container2-select').val()).toBe('Option 2')
-      expect($('#container1-select').val()).toBe('op-2')
+      expect(f).toHaveBeenCalledWith(value)
+      expect($('#container2').find('input').val()).toBe('source2_2')
     })
     it('should populate the value of the first container based on the second one', function () {
-      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container2', '#container1')
+      const f = jasmine.createSpy().and.callFake(() => 'source1_2')
+      var cb = window.GOVUK.autoComplete.setupLinkedConfirm('#container2', '#id1', f)
       var event = {}
-      var value = 'op-2'
+      var value = 'source2_2'
       // trigger the onconfirm function
       cb(event, value)
-      expect($('#container1').attr('placeholder')).toBe('Option 2')
-      expect($('#container1-select').val()).toBe('op-2')
-      expect($('#container2-select').val()).toBe('Option 2')
+      expect(f).toHaveBeenCalledWith(value)
+      expect($('#container1').find('input').val()).toBe('source1_2')
     })
   })
 })

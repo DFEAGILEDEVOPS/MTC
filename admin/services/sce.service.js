@@ -20,25 +20,15 @@ sceService.getSceSchools = async () => {
 
 /**
  * Inserts or updates the sce data for a school
- * @param sceSchoolsData
- * @param school
+ * @param schoolId
  * @param timezone
  * @return {Promise<object>}
  */
-sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) => {
-  if (!school.id || !timezone) {
-    throw new Error('school id and timezone are required')
+sceService.insertOrUpdateSceSchool = async (schoolId, timezone) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
   }
-  const schoolIdxInSceSchoolsData = sceSchoolsData.findIndex(s => s.id === school.id)
-  if (schoolIdxInSceSchoolsData === -1) {
-    // specified school is not present in the data, add it
-    return [ ...sceSchoolsData, { ...school, timezone } ]
-  }
-
-  // update the timezone
-  sceSchoolsData[schoolIdxInSceSchoolsData].timezone = timezone
-
-  return sceSchoolsData
+  return sceDataService.sqlUpsertSceSchool(schoolId, timezone || '')
 }
 
 /**
@@ -46,20 +36,22 @@ sceService.insertOrUpdateSceSchool = async (sceSchoolsData, school, timezone) =>
  * @param schoolId
  * @return {Promise<object>}
  */
-sceService.removeSceSchool = async (sceSchoolsData, urn) => {
+sceService.removeSceSchool = async (urn) => {
   if (!urn) {
     throw new Error('School URN is required')
   }
-  const schoolToDeleteIdx = sceSchoolsData.findIndex(s => s.urn === parseInt(urn, 10))
+  const sceSchools = await sceService.getSceSchools()
+  const schoolToDeleteIdx = sceSchools.findIndex(s => s.urn === parseInt(urn, 10))
   if (schoolToDeleteIdx === -1) {
     throw new Error('SCE school not found')
   }
-  const deletedSchool = sceSchoolsData.splice(schoolToDeleteIdx, 1)[0]
-  return [sceSchoolsData, deletedSchool]
+  const deletedSchool = sceSchools.splice(schoolToDeleteIdx, 1)[0]
+  await sceService.applySceSettings(sceSchools)
+  return deletedSchool
 }
 
 /**
- * Applies the current session changes for SCE schools
+ * Applies the current changes for SCE schools
  * @param sceSchoolsData
  * @return {Promise<void>}
  */
