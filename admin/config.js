@@ -20,22 +20,26 @@ const getLinesPerCheck = () => {
 }
 
 module.exports = {
+  ADMIN_SESSION_DISPLAY_NOTICE_AFTER: (process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER || 5) * 60, // Display notice after 5 minutes by default
+  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: (process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS || 10) * 60, // Expire after 10 minutes inactivity by default
+  AssetPath: process.env.ASSET_PATH || '/',
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
+  CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
+  CHECK_FORM_MAX_INTEGER: 12,
+  CHECK_FORM_MIN_INTEGER: 1,
+  CHECK_FORM_NAME_MAX_CHARACTERS: 128,
+  Environment: getEnvironment(),
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
+  LINES_PER_CHECK_FORM: getLinesPerCheck(),
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
+  OVERRIDE_AVAILABILITY_CHECKS: false,
+  OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
+  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
-  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: (process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS || 10) * 60, // Expire after 10 minutes inactivity by default
-  ADMIN_SESSION_DISPLAY_NOTICE_AFTER: (process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER || 5) * 60, // Display notice after 5 minutes by default
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  CHECK_FORM_NAME_MAX_CHARACTERS: 128,
-  CHECK_FORM_MIN_INTEGER: 1,
-  CHECK_FORM_MAX_INTEGER: 12,
-  LINES_PER_CHECK_FORM: getLinesPerCheck(),
-  CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
-  OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
-  OVERRIDE_AVAILABILITY_CHECKS: false,
+  WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
@@ -83,7 +87,6 @@ module.exports = {
     },
     SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
   },
-  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   Certificates: {
     Azure: {
       BlobContainer: process.env.CERT_BLOB_CONTAINER,
@@ -95,8 +98,6 @@ module.exports = {
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
   },
-  Environment: getEnvironment(),
-  AssetPath: process.env.ASSET_PATH || '/',
   Cors: {
     Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
   },
