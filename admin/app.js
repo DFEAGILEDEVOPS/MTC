@@ -56,7 +56,7 @@ function sleep (ms) {
     // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
     // hopefully the DB will be up by then.
     await sqlService.drainPool()
-    logger/alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating.`)
+    logger.alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating.`)
     await sleep(config.WaitTimeBeforeExitInSeconds * 1000)
     process.exit(1)
   }
