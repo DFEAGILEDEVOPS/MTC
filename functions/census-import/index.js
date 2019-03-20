@@ -18,5 +18,4 @@ module.exports = async function (context, blob) {
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`census-import: ${timeStamp} processed ${meta.processCount} pupil records, run took ${durationInMilliseconds} ms`)
-
 }
