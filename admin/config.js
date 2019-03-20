@@ -56,14 +56,14 @@ module.exports = {
       Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
     },
     Pooling: {
-      MinCount: process.env.SQL_POOL_MIN_COUNT || 100,
-      MaxCount: process.env.SQL_POOL_MAX_COUNT || 200,
+      MinCount: process.env.SQL_POOL_MIN_COUNT || 0,
+      MaxCount: process.env.SQL_POOL_MAX_COUNT || 5,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
+      Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
