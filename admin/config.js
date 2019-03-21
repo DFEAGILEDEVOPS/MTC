@@ -66,7 +66,7 @@ module.exports = {
       Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
     },
     PupilCensus: {
-      Username: process.env.SQL_PUPIL_CENSUS_USER,
+      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Azure: {
