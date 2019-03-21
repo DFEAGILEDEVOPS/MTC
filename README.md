@@ -7,7 +7,21 @@ Nightly: [![Build status](https://agilefactory.visualstudio.com/MTC/_apis/build/
 
 # Multiplication Tables Check (MTC) Project
 
-Requires Docker 17.05 or later.
+## Project tooling requirements
+
+- Docker (current LTS)
+- Node JS (best installed via nvm)
+- Text Editor
+- bash
+- Azure storage explorer
+- An azure storage account
+
+## Quickstart
+
+Ensure you have set the `AZURE_STORAGE_CONNECTION_STRING` value to your azure storage account.
+From the repository root (this directory) run `./start.sh`.  This will create the necessary storage queues, storage tables and stand up a docker instance of SQL Server Linux and run all the migrations to create the MTC database.
+
+You can now start the admin, pupil-spa & pupil-api applications individually.
 
 ## Docker Compose
 
@@ -48,16 +62,10 @@ to build an individual docker image, navigate to the relevant app folder and run
 
 `docker build -t <image name> .`
 
-where `<image-name>` is a friendly name that allows you to easily identify the image. 
+where `<image-name>` is a friendly name that allows you to easily identify the image.
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 ### Using microservices
 
 To make the pupil-spa use the auth microservice instead of the API in admin, change the AUTH_URL environment variable in `pupil-spa/Dockerfile` and the `docker-compose.*.yml` files relevant for pupil-spa
-
-# Enabling AMQP 1.0 in Rabbit MQ
-
-In order to use the npm package `amqp10` with Rabbit MQ the `rabbitmq_amqp1_0` plugin must be enabled within Rabbit MQ.
-
-This is achieved by mapping the local `rabbit_enabled_plugins` file to `etc/rabbitmq/` within the container.
