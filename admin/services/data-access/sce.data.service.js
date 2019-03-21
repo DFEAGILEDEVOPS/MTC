@@ -28,14 +28,16 @@ sceDataService.sqlFindSceSchools = async () => {
   const sql = `
   SELECT
     school.id,
-    sce.timezone,
-    sce.countryCode,
     school.name,
     school.urn,
-    school.urlSlug
-  FROM ${sqlService.adminSchema}.[sce]
-  LEFT JOIN ${sqlService.adminSchema}.[school]
-    ON school.id = sce.school_id
+    school.urlSlug,
+    sce.timezone,
+    sce.countryCode
+  FROM ${sqlService.adminSchema}.[school]
+  LEFT JOIN ${sqlService.adminSchema}.[sce]
+    ON sce.school_id = school.id
+  WHERE school.leaCode = 702 
+  OR sce.id IS NOT NULL
   ORDER BY school.name ASC`
   return sqlService.query(sql)
 }
