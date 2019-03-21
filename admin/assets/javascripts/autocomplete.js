@@ -98,9 +98,14 @@ $(function () {
       return function (event, value) {
         if (typeof value === 'undefined') return
         var ul = $(linkedContainer).find('ul')
-        ul.hide()
+        /*
+         * The autocomplete library triggers the dropdown when setting the value on the linkedContainer
+         * we need to hide the menu using the style attribute, wait for the dropdown to appear, 
+         * change the dropdown class then remove the style attribute
+         */
+        ul.style = 'display: none'
         $(linkedContainer).find('input').val(findValueFunc(value))
-        setTimeout(function() {
+        setTimeout(function () {
           ul.removeClass('autocomplete__menu--visible').addClass('autocomplete__menu--hidden')
           ul[0].style = ''
         }, 100)

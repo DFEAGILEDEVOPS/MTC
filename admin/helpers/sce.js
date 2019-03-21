@@ -28,7 +28,7 @@ scePresenter.getCountriesTzData = () => {
 }
 
 scePresenter.parseCountryTimezoneFromInput = (countryTz) => {
-  if (countryTz) {
+  if (countryTz && countryTz.indexOf('|') !== -1) {
     return countryTz.split('|')
   } else {
     return ['', '']
