@@ -7,17 +7,18 @@ const censusImportDataService = require('./census-import.data.service')
 
 const v1 = {
   process: async function (context, blob) {
-    const rowsModified = await this.handleCensusImport(context, blob)
+    const rowsAffected = await this.handleCensusImport(context, blob)
     return {
-      processCount: rowsModified
+      processCount: rowsAffected
     }
   },
 
   handleCensusImport: async function (context, blob) {
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_admin].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`
-    await censusImportDataService.sqlCreateCensusImportTable(context, censusTable, blobContent)
-    return censusImportDataService.sqlInsertCensusImportTableData(context, censusTable)
+    const result = await censusImportDataService.sqlCreateCensusImportTable(context, censusTable, blobContent)
+    await censusImportDataService.sqlUpsertCensusImportTableData(context, censusTable)
+    return result
   }
 }
 

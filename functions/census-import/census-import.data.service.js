@@ -52,25 +52,15 @@ module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobCon
   }
 
   const request = new mssql.Request(pool)
-  await request.bulk(table)
+  const result = await request.bulk(table)
+  return result.rowsAffected
 }
 
-module.exports.sqlInsertCensusImportTableData = async (context, censusTable) => {
+module.exports.sqlUpsertCensusImportTableData = async (context, censusTable) => {
   const sql = `
-  INSERT INTO [mtc_admin].pupil
-  (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn)
-  SELECT
-    s.id,
-    tmp.forename,
-    tmp.middlenames,
-    tmp.surname,
-    tmp.gender,
-    CONVERT(DATETIMEOFFSET(3), tmp.dob, 103),
-    tmp.upn
-  FROM ${censusTable} tmp
-  INNER JOIN mtc_admin.school s
-    ON s.dfeNumber = CONVERT(INT, CONCAT(tmp.lea, tmp.estab))
+  DECLARE @citt mtc_admin.censusImportTableType
+  INSERT INTO @citt SELECT * FROM ${censusTable}
+  EXEC mtc_admin.spPupilCensusUpsert @censusImportTable = @citt
   `
-  const result = await sqlService.modify(sql)
-  return result.rowsModified
+  return sqlService.query(sql)
 }
