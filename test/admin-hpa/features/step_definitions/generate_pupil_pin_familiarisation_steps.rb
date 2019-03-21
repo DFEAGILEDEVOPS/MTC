@@ -144,5 +144,5 @@ end
 
 Then(/^familiarisation school password should be generated from the specified pool of characters$/) do
   school_pwd = view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text
-  school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstvwxyz").to include char}
+  school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstuvwxyz").to include char}
 end
