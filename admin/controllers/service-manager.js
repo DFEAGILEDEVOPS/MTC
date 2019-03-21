@@ -381,7 +381,7 @@ const controller = {
       return next(error)
     }
 
-    req.flash('error', `'${school.name}' removed as MOD school`)
+    req.flash('info', `'${school.name}' removed as MOD school`)
     res.redirect('/service-manager/mod-settings')
   },
 
