@@ -47,10 +47,12 @@
                 <tbody>
                 <% sceSchools.forEach((s) => { %>
                     <tr>
-                        <td class="allow-wrap">
-                            <%= s.name %>
-                            <div class="font-greyed-out font-xsmall">
-                                URN: <%= s.urn %>
+                        <td class="allow-wrap <% if (highlight === s.urlSlug) { %>highlight-item<% } %>">
+                            <div class="highlight-wrapper">
+                              <%= s.name %>
+                              <div class="font-greyed-out font-xsmall">
+                                  URN: <%= s.urn %>
+                              </div>
                             </div>
                         </td>
                         <td class="column-wide">

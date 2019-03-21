@@ -313,10 +313,12 @@ const controller = {
   getSceSettings: async (req, res, next) => {
     res.locals.pageTitle = 'Settings for SCE'
     req.breadcrumbs(res.locals.pageTitle)
+    const { hl } = req.query
     try {
       const sceSchools = await sceService.getSceSchools()
       res.render('service-manager/sce-settings', {
         breadcrumbs: req.breadcrumbs(),
+        highlight: hl,
         messages: res.locals.messages,
         countriesTzData: scePresenter.getCountriesTzData(),
         sceSchools
@@ -444,7 +446,7 @@ const controller = {
     }
 
     req.flash('info', `'${school.name}' added as an SCE school`)
-    return res.redirect('/service-manager/sce-settings')
+    return res.redirect(`/service-manager/sce-settings?hl=${school.urlSlug}`)
   }
 }
 

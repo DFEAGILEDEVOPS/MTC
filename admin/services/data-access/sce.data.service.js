@@ -13,7 +13,8 @@ sceDataService.sqlFindSchools = async () => {
   SELECT
     id,
     name,
-    urn
+    urn,
+    urlSlug
   FROM ${sqlService.adminSchema}.[school]
   ORDER BY name ASC`
   return sqlService.query(sql)
@@ -30,7 +31,8 @@ sceDataService.sqlFindSceSchools = async () => {
     sce.timezone,
     sce.countryCode,
     school.name,
-    school.urn
+    school.urn,
+    school.urlSlug
   FROM ${sqlService.adminSchema}.[sce]
   LEFT JOIN ${sqlService.adminSchema}.[school]
     ON school.id = sce.school_id
