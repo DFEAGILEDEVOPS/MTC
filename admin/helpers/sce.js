@@ -16,15 +16,23 @@ scePresenter.getCountriesTzData = () => {
     if (val.zones.length > 1) {
       val.zones.forEach(z => {
         const zoneName = z.split('/').pop().replace('_', ' ')
-        countryZonesCache.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z })
+        countryZonesCache.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z, countryCode: val.abbr })
       })
     } else {
       const z = val.zones[0]
-      countryZonesCache.push({ name: `${val.name} (GMT ${getOffset(z)})`, zone: z })
+      countryZonesCache.push({ name: `${val.name} (GMT ${getOffset(z)})`, zone: z, countryCode: val.abbr })
     }
   })
 
   return countryZonesCache
+}
+
+scePresenter.parseCountryTimezoneFromInput = (countryTz) => {
+  if (countryTz) {
+    return countryTz.split('|')
+  } else {
+    return ['', '']
+  }
 }
 
 module.exports = scePresenter

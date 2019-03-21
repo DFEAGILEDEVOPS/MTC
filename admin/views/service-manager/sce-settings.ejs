@@ -60,9 +60,9 @@
                             <select class="form-control timezone"
                                 id="timezone"
                                 name="timezone">
-                                <option value=""></option>
+                                <option value="" <% if (s.timezone === '') { %>selected="selected"<% } %>></option>
                                 <% countriesTzData.map(t => { %>
-                                <option value="<%= t.zone %>" <% if (t.zone === s.timezone) { %>selected="selected"<% } %>><%= t.name %></option>
+                                <option value="<%= t.countryCode %>|<%= t.zone %>" <% if (t.zone === s.timezone && t.countryCode === s.countryCode) { %>selected="selected"<% } %>><%= t.name %></option>
                                 <% }) %>
                             </select>
                         </td>
@@ -115,11 +115,12 @@
 <script>
 $(function () {
   $(".timezone").each(function() {
+    const elm = $(this)[0]
     window.accessibleAutocomplete.enhanceSelectElement({
-      selectElement: $(this)[0],
+      selectElement: elm,
       minLength: 2,
-      defaultValue: '',
-      confirmOnBlur: false
+      preserveNullOptions: true,
+      defaultValue: ''
     })
   })
   window.GOVUK.tableSort.applySorting(window.document, 'sce-schools', {

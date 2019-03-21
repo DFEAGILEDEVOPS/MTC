@@ -348,8 +348,10 @@ const controller = {
     const sceSchools = await sceService.getSceSchools()
     try {
       req.body.urn.forEach((urn, i) => {
+        const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone[i])
         const schoolIndex = sceSchools.findIndex(s => s.urn.toString() === urn)
-        sceSchools[schoolIndex].timezone = req.body.timezone[i]
+        sceSchools[schoolIndex].timezone = timezone
+        sceSchools[schoolIndex].countryCode = countryCode
       })
       await sceService.applySceSettings(sceSchools)
     } catch (error) {
@@ -421,21 +423,22 @@ const controller = {
     const schoolNames = schools.map(s => s.name)
     const schoolUrns = schools.map(s => s.urn)
 
-    let validationError = await sceSchoolValidator.validate(req.body, schoolNames, schoolUrns)
+    const {
+      urn,
+      schoolName
+    } = req.body
+
+    const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone)
+
+    let validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
     if (validationError.hasError()) {
       res.error = validationError
       return controller.getSceAddSchool(req, res, next)
     }
 
-    const {
-      timezone,
-      urn,
-      schoolName
-    } = req.body
-
     const school = schools.find(s => s.urn.toString() === urn && s.name === schoolName)
     try {
-      await sceService.insertOrUpdateSceSchool(school.id, timezone)
+      await sceService.insertOrUpdateSceSchool(school.id, timezone, countryCode)
     } catch (error) {
       return next(error)
     }

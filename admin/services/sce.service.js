@@ -24,11 +24,11 @@ sceService.getSceSchools = async () => {
  * @param timezone
  * @return {Promise<object>}
  */
-sceService.insertOrUpdateSceSchool = async (schoolId, timezone) => {
+sceService.insertOrUpdateSceSchool = async (schoolId, timezone, countryCode) => {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  return sceDataService.sqlUpsertSceSchool(schoolId, timezone || '')
+  return sceDataService.sqlUpsertSceSchool(schoolId, timezone, countryCode)
 }
 
 /**

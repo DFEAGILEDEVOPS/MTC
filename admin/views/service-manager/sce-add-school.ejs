@@ -46,7 +46,7 @@
                         name="timezone">
                         <option value=""></option>
                         <% countriesTzData.map(t => { %>
-                        <option value="<%= t.zone %>"><%= t.name %></option>
+                        <option value="<%= t.countryCode %>|<%= t.zone %>"><%= t.name %></option>
                         <% }) %>
                     </select>
                 </div>

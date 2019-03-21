@@ -28,6 +28,7 @@ sceDataService.sqlFindSceSchools = async () => {
   SELECT
     school.id,
     sce.timezone,
+    sce.countryCode,
     school.name,
     school.urn
   FROM ${sqlService.adminSchema}.[sce]
@@ -43,22 +44,24 @@ sceDataService.sqlFindSceSchools = async () => {
  * @param {string} timezone
  * @return {Promise<Object>}
  */
-sceDataService.sqlUpsertSceSchool = async (schoolId, timezone) => {
+sceDataService.sqlUpsertSceSchool = async (schoolId, timezone, countryCode) => {
   // TODO: what is isOpen? When is it set?
   const sql = `
   IF NOT EXISTS (SELECT id FROM ${sqlService.adminSchema}.[sce] WHERE school_id = @schoolId)
     INSERT INTO ${sqlService.adminSchema}.[sce] (
       school_id,
       timezone,
+      countryCode,
       isOpen
     ) VALUES (
       @schoolId,
       @timezone,
+      @countryCode,
       1
     )
   ELSE
     UPDATE ${sqlService.adminSchema}.[sce]
-    SET timezone = @timezone
+    SET timezone = @timezone, countryCode = @countryCode
     WHERE school_id = @schoolId
   `
   const params = [
@@ -71,6 +74,11 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone) => {
       name: 'timezone',
       value: timezone,
       type: TYPES.NVarChar
+    },
+    {
+      name: 'countryCode',
+      value: countryCode,
+      type: TYPES.Char
     }
   ]
   return sqlService.query(sql, params)
@@ -85,15 +93,16 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone) => {
 sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
   const declareTable = `declare @tvp as [mtc_admin].SceTableType`
   const insertHeader = `INSERT into @tvp
-        (school_id, timezone, isOpen)
+        (school_id, timezone, countryCode, isOpen)
         VALUES`
   const inserts = schools.map((school, index) => {
-    return `(@schoolId${index}, @timezone${index}, 1)`
+    return `(@schoolId${index}, @timezone${index}, @countryCode${index}, 1)`
   })
   const params = []
   schools.map((school, index) => {
     params.push({ name: `schoolId${index}`, value: school.id, type: TYPES.Int })
     params.push({ name: `timezone${index}`, value: school.timezone, type: TYPES.NVarChar })
+    params.push({ name: `countryCode${index}`, value: school.countryCode, type: TYPES.Char })
   })
   const exec = 'EXEC [mtc_admin].[spUpsertSceSchools] @tvp'
   const insertSql = insertHeader + inserts.join(',\n')
