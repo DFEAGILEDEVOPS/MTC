@@ -9,20 +9,24 @@ async function isAdminWindowAvailable (req, res, next) {
   if (config.OVERRIDE_AVAILABILITY_MIDDLEWARE) {
     return next()
   }
-  const currentDate = moment.utc()
-  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-  // if there is no current active check window, default to the latest found
-  if (!checkWindow) checkWindow = await checkWindowV2Service.getLatestCheckWindow()
-  if (checkWindow && currentDate.isBetween(checkWindow.adminStartDate, checkWindow.adminEndDate)) {
-    return next()
+  try {
+    const currentDate = moment.utc()
+    let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+    // if there is no current active check window, default to the latest found
+    if (!checkWindow) checkWindow = await checkWindowV2Service.getLatestCheckWindow()
+    if (checkWindow && currentDate.isBetween(checkWindow.adminStartDate, checkWindow.adminEndDate)) {
+      return next()
+    }
+    const isBeforeStartDate = checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
+    const startDateFormatted = checkWindow && dateService.formatDayDateAndYear(checkWindow.adminStartDate)
+    res.locals.pageTitle = 'Unavailable'
+    return res.render('availability/admin-window-unavailable', {
+      isBeforeStartDate,
+      startDateFormatted
+    })
+  } catch (error) {
+    next(error)
   }
-  const isBeforeStartDate = checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
-  const startDateFormatted = checkWindow && dateService.formatDayDateAndYear(checkWindow.adminStartDate)
-  res.locals.pageTitle = 'Unavailable'
-  return res.render('availability/admin-window-unavailable', {
-    isBeforeStartDate,
-    startDateFormatted
-  })
 }
 
 module.exports = isAdminWindowAvailable
