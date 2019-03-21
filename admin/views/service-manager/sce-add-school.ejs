@@ -25,9 +25,9 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Add school as Service children's education (SCE)</h1>
+        <h1 class="heading-xlarge">Convert school as Ministry of Defence schools (MOD)</h1>
         <%- partial('partials/_session_expiry') %>
-        <form action="/service-manager/sce-settings/add-school" method="post" novalidate>
+        <form action="/service-manager/mod-settings/add-school" method="post" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group <%= err.isError('schoolName') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold" for="schoolName">School name

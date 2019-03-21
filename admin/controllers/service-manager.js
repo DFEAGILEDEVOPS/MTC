@@ -311,7 +311,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getSceSettings: async (req, res, next) => {
-    res.locals.pageTitle = 'Settings for SCE'
+    res.locals.pageTitle = 'Settings for MOD'
     req.breadcrumbs(res.locals.pageTitle)
     const { hl } = req.query
     try {
@@ -361,7 +361,7 @@ const controller = {
     }
 
     req.flash('info', 'Timezone saved for the school(s)')
-    return res.redirect('/service-manager/sce-settings')
+    return res.redirect('/service-manager/mod-settings')
   },
 
   /**
@@ -381,8 +381,8 @@ const controller = {
       return next(error)
     }
 
-    req.flash('error', `'${school.name}' removed as SCE school`)
-    res.redirect('/service-manager/sce-settings')
+    req.flash('error', `'${school.name}' removed as MOD school`)
+    res.redirect('/service-manager/mod-settings')
   },
 
   /**
@@ -393,8 +393,8 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getSceAddSchool: async (req, res, next) => {
-    req.breadcrumbs('Settings for SCE', '/service-manager/sce-settings')
-    res.locals.pageTitle = 'Add school as SCE'
+    req.breadcrumbs('Settings for MOD', '/service-manager/mod-settings')
+    res.locals.pageTitle = 'Convert school as MOD'
     req.breadcrumbs(res.locals.pageTitle)
 
     try {
@@ -445,8 +445,8 @@ const controller = {
       return next(error)
     }
 
-    req.flash('info', `'${school.name}' added as an SCE school`)
-    return res.redirect(`/service-manager/sce-settings?hl=${school.urlSlug}`)
+    req.flash('info', `'${school.name}' added as an MOD school`)
+    return res.redirect(`/service-manager/mod-settings?hl=${school.urlSlug}`)
   }
 }
 
