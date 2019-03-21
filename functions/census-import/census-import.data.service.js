@@ -2,7 +2,6 @@ const mssql = require('mssql')
 const config = require('../config')
 let pool
 
-
 module.exports.initPool = async function initPool (context) {
   const poolConfig = {
     database: config.Sql.Database,
