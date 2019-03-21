@@ -13,17 +13,17 @@ export class WarmupQuestionService extends QuestionService {
     {
       'order': 1,
       'factor1': 1,
-      'factor2': 7
+      'factor2': 12
     },
     {
       'order': 2,
-      'factor1': 3,
-      'factor2': 10
+      'factor1': 2,
+      'factor2': 2
     },
     {
       'order': 3,
-      'factor1': 2,
-      'factor2': 6
+      'factor1': 10,
+      'factor2': 10
     }
   ];
 
