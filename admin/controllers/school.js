@@ -14,22 +14,19 @@ const controller = {}
  */
 controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
-  let checkWindowData
-  let featureEligibilityData
-  let schoolName = ''
   try {
     // Fetch set of flags to determine pin generation allowance on UI
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
-    featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
+    const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    return res.render('school/school-home', {
+      breadcrumbs: [ { 'name': 'School Home' } ],
+      featureEligibilityData,
+      schoolName
+    })
   } catch (error) {
     return next(error)
   }
-  return res.render('school/school-home', {
-    breadcrumbs: [ { 'name': 'School Home' } ],
-    featureEligibilityData,
-    schoolName
-  })
 }
 
 module.exports = controller
