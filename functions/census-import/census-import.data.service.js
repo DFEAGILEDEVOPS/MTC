@@ -1,21 +1,14 @@
 const mssql = require('mssql')
-const sqlService = require('less-tedious')
-
 const config = require('../config')
+let pool
 
-/**
- * Create census import table
- * @param {Object} context
- * @param {String} censusTable
- * @param {Array} blobContent
- * @return {Object}
- */
-module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobContent) => {
+
+module.exports.initPool = async function initPool (context) {
   const poolConfig = {
     database: config.Sql.Database,
     server: config.Sql.Server,
     port: config.Sql.Port,
-    requestTimeout: config.Sql.Timeout,
+    requestTimeout: 10 * 60 * 1000,
     connectionTimeout: config.Sql.Timeout,
     user: config.Sql.PupilCensus.Username,
     password: config.Sql.PupilCensus.Password,
@@ -29,12 +22,25 @@ module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobCon
     }
   }
 
-  const pool = new mssql.ConnectionPool(poolConfig)
+  pool = new mssql.ConnectionPool(poolConfig)
   pool.on('error', err => {
     context.log('SQL Pool Error:', err)
   })
   await pool.connect()
+  return pool
+}
 
+/**
+ * Create census import table
+ * @param {Object} context
+ * @param {String} censusTable
+ * @param {Array} blobContent
+ * @return {Object}
+ */
+module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobContent) => {
+  if (!pool) {
+    await this.initPool(context)
+  }
   const table = new mssql.Table(censusTable)
   table.create = true
   table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
@@ -57,10 +63,16 @@ module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobCon
 }
 
 module.exports.sqlUpsertCensusImportTableData = async (context, censusTable) => {
+  if (!pool) {
+    await this.initPool(context)
+  }
   const sql = `
   DECLARE @citt mtc_admin.censusImportTableType
   INSERT INTO @citt SELECT * FROM ${censusTable}
   EXEC mtc_admin.spPupilCensusUpsert @censusImportTable = @citt
   `
-  return sqlService.query(sql)
+  const request = new mssql.Request(pool)
+  const result = await request.query(sql)
+  console.log('RESULT', result)
+  return result
 }
