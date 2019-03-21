@@ -22,7 +22,7 @@ async function recalculatePupilStatus (context, pupilIds) {
     }
   })
 
-  await updatePupilStatuses(updates)
+  await updatePupilStatuses(updates, context)
 }
 
 /**
@@ -31,7 +31,7 @@ async function recalculatePupilStatus (context, pupilIds) {
  * @return {Promise<*>}
  */
 async function getCurrentPupilsData (pupilIds) {
-  const sql = `SELECT 
+  const sql = `SELECT
     p.id                      as pupil_id,
     pstatus.code              as pupilStatusCode,
     lastCheck.id              as check_id,
@@ -39,11 +39,11 @@ async function getCurrentPupilsData (pupilIds) {
     lastPupilRestart.id       as pupilRestart_id,
     lastPupilRestart.check_id as pupilRestart_check_id,
     pa.id                     as pupilAttendance_id,
-    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated 
-  FROM 
+    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated
+  FROM
         ${sqlService.adminSchema}.[pupil] p
         INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
-        LEFT OUTER JOIN  
+        LEFT OUTER JOIN
         (
            SELECT *,
               ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
@@ -59,7 +59,7 @@ async function getCurrentPupilsData (pupilIds) {
          WHERE isDeleted = 0
        ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
   LEFT OUTER JOIN [mtc_admin].[pupilRestart] pupilRestart ON (pupilRestart.check_id = lastCheck.id)
-  WHERE  
+  WHERE
         p.id IN (${pupilIds.map((o, i) => '@pupilId' + i).join(', ')})
   AND   (lastCheck.rank = 1 or lastCheck.rank IS NULL)
   AND   (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL);
@@ -69,21 +69,41 @@ async function getCurrentPupilsData (pupilIds) {
 }
 
 /**
+ *
+ * @param {[{name: <string>, value: <any>}]} params
+ */
+function parseParams (params) {
+  const output = []
+  params.forEach(p => {
+    output.push(`${p.name}:${p.value}`)
+  })
+  return output.join('\n')
+}
+
+/**
  * Update a batch of pupils in one sql call
  * @param {[{pupilId: <number>, targetStatusCode: <string>}]} updates
  */
-function updatePupilStatuses (updates) {
+function updatePupilStatuses (updates, context) {
   const sql = []
   const params = []
 
   updates.forEach((o, i) => {
-    sql.push(`UPDATE ${sqlService.adminSchema}.[pupil] 
+    sql.push(`UPDATE ${sqlService.adminSchema}.[pupil]
               SET pupilStatus_id = (SELECT id from ${sqlService.adminSchema}.[pupilStatus] WHERE code = @code${i})
               WHERE id = @pupilId${i};`)
     params.push({ name: `code${i}`, value: o.targetStatusCode, type: TYPES.NVarChar })
     params.push({ name: `pupilId${i}`, value: o.pupilId, type: TYPES.Int })
   })
-
-  return sqlService.modify(sql.join('\n'), params)
+  context.log('updatePupilStatuses is attempting to execute the following sql:')
+  context.log(`${sql.join('\n')}`)
+  try {
+    const result = sqlService.modify(sql.join('\n'), params)
+    return result
+  } catch (error) {
+    context.log.error('execution of sql in updatePupilStatuses failed')
+    context.log.error(parseParams(params))
+    throw error
+  }
 }
 module.exports = { recalculatePupilStatus }
