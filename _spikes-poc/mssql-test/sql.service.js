@@ -2,10 +2,10 @@
 
 const R = require('ramda')
 const mssql = require('mssql')
-const dateService = require('../date.service')
-const poolConfig = require('../../config/sql.config')
+const dateService = require('./date.service')
+const poolConfig = require('./sql.config')
 const moment = require('moment')
-const logger = require('../log.service').getLogger()
+const logger = require('./logger')
 let cache = {}
 /* @var mssql.ConnectionPool */
 let pool
@@ -186,8 +186,10 @@ const sqlService = {
 sqlService.adminSchema = '[mtc_admin]'
 
 sqlService.initPool = async () => {
+
   if (pool) {
     logger.warn('The connection pool has already been initialised')
+    console.log('POOL', pool)
     return
   }
   pool = new mssql.ConnectionPool(poolConfig)
@@ -203,6 +205,7 @@ sqlService.drainPool = async () => {
     logger.warn('The connection pool is not initialised')
     return
   }
+  logger.log('CLosing pool')
   return pool.close()
 }
 
@@ -222,16 +225,6 @@ sqlService.transformResult = function (data) {
   ), recordSet)
 }
 
-function addParamsToRequestSimple (params, request) {
-  if (params) {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index]
-      // TODO support other options
-      request.input(param.name, param.type, param.value)
-    }
-  }
-}
-
 /**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
@@ -241,38 +234,58 @@ function addParamsToRequestSimple (params, request) {
 sqlService.query = async (sql, params = []) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+
+  console.log('Waiting on the pool')
   await pool
+  console.log('Pool is ready')
 
   const request = new mssql.Request(pool)
-  addParamsToRequestSimple(params, request)
+
+  // nothing happens here
+  request.on('error', function (error) {
+    console.log('REQUEST ERORROR JMS ', error)
+  })
+
+  if (params) {
+    for (let index = 0; index < params.length; index++) {
+      const param = params[index]
+      // TODO support other options
+      request.input(param.name, param.type, param.value)
+    }
+  }
 
   let result
   try {
+    // console.log('Query Pool is', pool)
     result = await request.query(sql)
   } catch (error) {
-    logger.error('sqlService.query(): SQL Query threw an error', error)
     if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
-      logger.alert('sqlService.query(): An SQL request was attempted but the connection is closed', error)
-    }
-    try {
-      logger.error('sqlService.query(): SQL RETRY', error)
-      const retryRequest = new mssql.Request(pool)
-      addParamsToRequestSimple(params, retryRequest)
-      result = await retryRequest.query(sql)
-    } catch (error2) {
-      logger.alert('sqlService.query(): SQL RETRY FAILED', error2)
-      throw error2
+      console.log('\n\n\nCONNECTION CLOSED DETECTED\n\n\n', error)
+    } else {
+      try {
+        console.log('ATTEMPT SQL RETRY 1 because of ', error)
+        result = await request.query(sql)
+      } catch (error) {
+        console.log('SQL RETRY 1 FAILED, new error is', error)
+        throw error
+      }
     }
   }
   return sqlService.transformResult(result)
 }
 
 /**
- * Add parameters to an SQL request
- * @param {{name, value, type}[]} params - array of parameter objects
- * @param {{}} request -  mssql request
+ * Modify data in SQL Server via mssql library.
+ * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
  */
-function addParamsToRequest (params, request) {
+sqlService.modify = async (sql, params = []) => {
+  logger.debug('sql.service.modify(): SQL: ' + sql)
+  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+
+  const request = new mssql.Request(pool)
+
   if (params) {
     for (let index = 0; index < params.length; index++) {
       let param = params[index]
@@ -288,7 +301,7 @@ function addParamsToRequest (params, request) {
       }
       const opts = param.options ? param.options : options
       if (opts && Object.keys(opts).length) {
-        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+        logger.debug('sql.service: modify(): opts to addParameter are: ', opts)
       }
 
       if (opts.precision) {
@@ -300,46 +313,12 @@ function addParamsToRequest (params, request) {
       }
     }
   }
-}
 
-/**
- * Modify data in SQL Server via mssql library.
- * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
- */
-sqlService.modify = async (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-  await pool
-
-  const request = new mssql.Request(pool)
-  addParamsToRequest(params, request)
   const returnValue = {}
   const insertIds = []
-  let rawResponse
 
-  try {
-    rawResponse = await request.query(sql)
-    logger.debug('sql.service.modify(): result:', rawResponse)
-  } catch (error) {
-    logger.error('sqlService.modify(): SQL Query threw an error', error)
-    if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
-      logger.alert('sqlService.modify(): An SQL request was attempted but the connection is closed', error)
-    }
-    try {
-      logger.error('sqlService.modify(): attempting SQL retry', error)
-      const retryRequest = new mssql.Request(pool)
-      addParamsToRequest(params, retryRequest)
-      rawResponse = await retryRequest.query(sql)
-      logger.error('sqlService.modify(): SQL retry success', error)
-      logger.debug('sql.service: modify: result:', rawResponse)
-    } catch (error2) {
-      logger.alert('sqlService.modify(): SQL RETRY FAILED', error2)
-      throw error2
-    }
-  }
-
+  const rawResponse = await request.query(sql)
+  logger.debug('sql.service: modify: result:', rawResponse)
   if (rawResponse && rawResponse.recordset) {
     for (let obj of rawResponse.recordset) {
       if (obj && obj.SCOPE_IDENTITY) {
