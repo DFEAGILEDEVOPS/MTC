@@ -1,5 +1,7 @@
 'use strict'
 const csvString = require('csv-string')
+const moment = require('moment')
+const uuidv4 = require('uuid/v4')
 
 const censusImportDataService = require('./census-import.data.service')
 
@@ -13,7 +15,10 @@ const v1 = {
 
   handleCensusImport: async function (context, blob) {
     const blobContent = csvString.parse(blob.toString())
-    return censusImportDataService.sqlCreateCensusImportTable(context, blobContent)
+    const censusTable = `[mtc_admin].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`
+    const result = await censusImportDataService.sqlCreateCensusImportTable(context, censusTable, blobContent)
+    await censusImportDataService.sqlUpsertCensusImportTableData(context, censusTable)
+    return result
   }
 }
 
