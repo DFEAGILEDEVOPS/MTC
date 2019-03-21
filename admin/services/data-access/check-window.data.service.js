@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const sqlService = require('./sql.service')
-const TYPES = require('tedious').TYPES
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 
 const table = '[checkWindow]'
@@ -349,6 +349,19 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
+    const result = await sqlService.query(sql)
+    return R.head(result)
+  },
+
+  /**
+   * Fetch latest check window
+   * @return {Object}
+   */
+  sqlFindLatestCheckWindow: async () => {
+    const sql = `SELECT TOP 1 *
+    FROM ${sqlService.adminSchema}.${table}
+    WHERE isDeleted = 0
+    ORDER BY createdAt DESC`
     const result = await sqlService.query(sql)
     return R.head(result)
   }

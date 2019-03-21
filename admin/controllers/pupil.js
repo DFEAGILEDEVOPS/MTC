@@ -6,7 +6,8 @@ const fileValidator = require('../lib/validator/file-validator')
 
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
+const pupilAgeReasonService = require('../services/pupil-age-reason.service')
+const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -27,7 +28,7 @@ const getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/add-pupil', {
       formData: req.body,
@@ -69,16 +70,24 @@ const postAddPupil = async (req, res, next) => {
  * @param res
  * @param next
  */
-const getAddMultiplePupils = (req, res, next) => {
+const getAddMultiplePupils = async (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
+  let templateFileSize
+  let csvErrorFileSize
+  const { csvErrorFile } = req.session
+  const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
   try {
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
+    templateFileSize = uploadedFileService.getFilesize(templateFile)
+    csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
       hasError,
-      fileErrors
+      fileErrors,
+      templateFileSize,
+      csvErrorFileSize
     })
   } catch (error) {
     next(error)
@@ -166,7 +175,7 @@ const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   let pupilExampleYear
   try {
-    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
+    const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
     pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
@@ -201,7 +210,7 @@ const postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug, req.user.schoolId)
+    pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.body.urlSlug, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
@@ -229,7 +238,8 @@ const postEditPupil = async (req, res, next) => {
   }
 
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
-
+  await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, req.body.ageReason, pupil.ageReason)
+  // TODO: old core! Needs refactor this to a service and data service
   const update = {
     id: pupil.id,
     foreName: req.body.foreName,
@@ -250,25 +260,6 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }
 
-/**
- * Print the pupil and school pins.
- * @param req
- * @param res
- * @param next
- * @returns {Promise<*>}
- */
-const getPrintPupils = async (req, res, next) => {
-  res.locals.pageTitle = 'Print pupils'
-  try {
-    const pupilData = await pupilService.getPrintPupils(req.user.School)
-    res.render('pupil-register/pupils-print', {
-      pupils: pupilData
-    })
-  } catch (error) {
-    return next(error)
-  }
-}
-
 module.exports = {
   getAddPupil,
   postAddPupil,
@@ -276,6 +267,5 @@ module.exports = {
   postAddMultiplePupils,
   getErrorCSVFile,
   getEditPupilById,
-  postEditPupil,
-  getPrintPupils
+  postEditPupil
 }

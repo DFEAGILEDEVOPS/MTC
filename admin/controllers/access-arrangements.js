@@ -3,10 +3,9 @@ const accessArrangementsService = require('../services/access-arrangements.servi
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
-const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -24,12 +23,12 @@ controller.getOverview = async (req, res, next) => {
   let pupils
   let pinGenerationEligibilityData
   let checkWindowData
-  let hdfSubmitted
+  let availabilityData
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
   } catch (error) {
     return next(error)
   }
@@ -40,7 +39,7 @@ controller.getOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
     pupils,
-    hdfSubmitted
+    availabilityData
   })
 }
 
@@ -60,9 +59,11 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   let questionReaderReasons
   let pupils
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    pupils = await pupilService.getPupilsWithFullNames(req.user.School)
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -84,6 +85,12 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
  */
 controller.postSubmitAccessArrangements = async (req, res, next) => {
   let pupil
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
   try {
     const submittedData = R.pick([
       'accessArrangements',
@@ -119,6 +126,14 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
+
   let accessArrangements
   let questionReaderReasons
   let formData
@@ -160,6 +175,8 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   const dfeNumber = req.user.School
   let pupil
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
     pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)
   } catch (error) {

@@ -110,7 +110,7 @@ describe('checkFormPresenter', () => {
         liveCheckEndDate: dateService.formatFullGdsDate(moment.utc().add(2, 'days')),
         checkFormTypeTitle: 'Multiplication tables check',
         checkPeriod: 'MTC',
-        isWithinCheckType: true
+        isBeforeCheckType: false
       })
     })
   })
@@ -132,6 +132,36 @@ describe('checkFormPresenter', () => {
         urlSlug: 'urlSlug',
         checked: true
       }])
+    })
+  })
+  describe('getAssignFormsFlashMessage', () => {
+    it('returns appropriate highlight message for the number of check forms assigned to the live check window', () => {
+      const checkForms = [{ id: 1 }, { id: 2 }]
+      const checkWindowName = 'checkWindowName'
+      const checkFormType = 'live'
+      const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
+      expect(result).toEqual('2 forms have been assigned to checkWindowName, MTC')
+    })
+    it('returns appropriate highlight message for a single check form that has been assigned to the live check window', () => {
+      const checkForms = [{ id: 1 }]
+      const checkWindowName = 'checkWindowName'
+      const checkFormType = 'live'
+      const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
+      expect(result).toEqual('1 form has been assigned to checkWindowName, MTC')
+    })
+    it('returns appropriate highlight message for a single check form that has been assigned to the familiarisation check window', () => {
+      const checkForms = [{ id: 1 }]
+      const checkWindowName = 'checkWindowName'
+      const checkFormType = 'familiarisation'
+      const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
+      expect(result).toEqual('1 form has been assigned to checkWindowName, Try it out')
+    })
+    it('returns appropriate highlight message for a single check form that has been unassigned to the familiarisation check window', () => {
+      const checkForms = undefined
+      const checkWindowName = 'checkWindowName'
+      const checkFormType = 'familiarisation'
+      const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
+      expect(result).toEqual('Check form has been unassigned from checkWindowName, Try it out')
     })
   })
 })

@@ -1,73 +1,128 @@
 <div class="grid-row">
-    <div class="column-one-half">
-        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    </div>
-    <div class="column-one-half">
-        <%- partial('partials/_name_and_sign_out') %>
-    </div>
+  <div class="column-one-half">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+  </div>
+  <div class="column-one-half">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
 </div>
+
+<% if (fileErrors.hasError()) { %>
 <div class="grid-row">
-    <div class="column-two-thirds">
-        <header class="page-header">
-            <% if (messages && messages.info) { %>
-            <div class="info-message">
-                <%= messages.info %>
-            </div>
-            <% } %>
-            <h1 class="heading-xlarge">Upload pupil census</h1>
-
-            <%- partial('partials/_session_expiry') %>
-
-            <br />
-            <p class="font-medium">Use this page to upload pupil data. The file must be
-                in CSV format.</p>
-        </header>
-        <br>
-        <% if (!pupilCensus || pupilCensus.jobStatusCode !== 'COM') { %>
-            <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
-                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-                <div class="form-group">
-                    <div class="font-xsmall">
-                        <input type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
-                               aria-label="Choose a file to upload"/>
-                    </div>
-                    <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
-                           aria-label="Remove uploaded file."/>
-                </div>
-                <div class="form-buttons">
-                    <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled"/>
-                    <a href="/service-manager/home" class="button button-secondary">Cancel</a>
-                </div>
-            </form>
+  <div class="column-two-thirds">
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+      <% if (fileErrors && fileErrors.hasError()) { %>
+      <p>See highlighted errors below.</p>
+      <ul class="error-summary-list">
+        <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+        <% const errors = fileErrors.get(f) %>
+        <% if (Array.isArray(errors)) { %>
+        <%  errors.map(e => { %>
+        <li><a href="#<%= f %>"><%= e %></a></li>
+        <% }) } else { %>
+        <li><a href="#<%= f %>"><%= errors %></a></li>
         <% } %>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>
 
-        <span class="bold-small">
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <header class="page-header">
+      <% if (messages && messages.info) { %>
+      <div class="info-message">
+        <%= messages.info %>
+      </div>
+      <% } %>
+      <h1 class="heading-xlarge">Upload pupil census</h1>
+
+      <%- partial('partials/_session_expiry') %>
+
+      <h3 class="heading-medium">Download template</h3>
+      <ol class="list list-number">
+        <li>Download the template
+          <div class="panel panel-border-wide short">
+            <a href="/csv/mtc-census-headers.csv" class="heading-small icon-download">Pupil census template (CSV, <%= templateFileSize %>KB)</a>
+          </div>
+        </li>
+        <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+        <li>Add pupil details using the given format</li>
+        <p>
+        <ul class="list list-bullet">
+          <li>Enter date of birth in format dd/mm/yyyy</li>
+          <li>Enter a gender as M or F</li>
+        </ul>
+        </p>
+        <li>Save as a CSV file on your computer</li>
+        <li>Select 'Choose file' button and navigate to the file on your computer</li>
+        <li>Choose the file to upload</li>
+        <li>Click 'Upload'</li>
+      </ol>
+
+    </header>
+    <br>
+    <% if (!pupilCensus || pupilCensus.jobStatusCode !== 'COM') { %>
+    <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
+      <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+      <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
+        <% if (fileErrors && fileErrors.hasError()) { %>
+        <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+        <% const errors = fileErrors.get(f) %>
+        <% if (Array.isArray(errors)) { %>
+        <%  errors.map(e => { %>
+        <label class="error-message"><%= e %></label>
+        <% }) } else { %>
+        <label class="error-message"><%= errors %></label>
+        <% } %>
+        <% }) %>
+        <% } %>
+        <div class="font-xsmall">
+          <input type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
+                 aria-label="Choose a file to upload"/>
+        </div>
+        <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
+               aria-label="Remove uploaded file."/>
+      </div>
+      <div class="form-buttons">
+        <input type="submit" id="upload-form-submit" class="button" value="Upload" />
+        <a href="/service-manager/home" class="button button-secondary">Cancel</a>
+      </div>
+    </form>
+    <% } %>
+
+    <span class="bold-small">
             <span>Uploaded file</span>
             <span class="job-status">Status</span>
         </span>
-            <dl class="pupil-census-uploaded-file">
-                <% if (pupilCensus) { %>
-                    <dd><span><%= pupilCensus.csvName %></span></dd>
-                    <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
-                    <% if (pupilCensus.jobStatusCode === 'COM') { %>
-                        <dd>
+    <dl class="pupil-census-uploaded-file">
+      <% if (pupilCensus) { %>
+      <dd><span><%= pupilCensus.csvName %></span></dd>
+      <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
+      <% if (pupilCensus.jobStatusCode === 'COM') { %>
+      <dd>
                             <span class="job-remove">
                                 <a class="modal-link font-small" id="js-modal-link" href="/service-manager/upload-pupil-census/delete/<%= pupilCensus.id %>">Remove</a>
                             </span>
-                        </dd>
-                    <% } %>
-                <% } else { %>
-                <dd><span class="no-file-uploaded">No file uploaded</span></dd>
-                <% } %>
-            </dl>
-        </form>
-    </div>
+      </dd>
+      <% } %>
+      <% } else { %>
+      <dd><span class="no-file-uploaded">No file uploaded</span></dd>
+      <% } %>
+    </dl>
+    </form>
+  </div>
 </div>
 <%- partial('partials/_modal_box', {
-    modalTitle: 'Please confirm',
-    modalText: 'Are you sure you want to remove this?',
-    modalConfirmationLabel: 'Yes',
-    modalConfirmationUrl: '#',
-    modalCancelLabel: 'No',
-    modalCancelUrl: '#'
+  modalTitle: 'Please confirm',
+  modalText: 'Are you sure you want to remove this?',
+  modalConfirmationLabel: 'Yes',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'No',
+  modalCancelUrl: '#'
 }) %>

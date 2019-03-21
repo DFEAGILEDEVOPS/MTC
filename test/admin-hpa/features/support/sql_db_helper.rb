@@ -1,5 +1,19 @@
 class SqlDbHelper
 
+  def self.connect(admin_user,admin_password,server,port,database,azure_var)
+    begin
+      TinyTds::Client.new(username: admin_user,
+                                       password: admin_password,
+                                       host: server,
+                                       port: port,
+                                       database: database,
+                                       azure: azure_var
+      )
+    rescue TinyTds::Error => e
+      abort 'Test run failed due to - ' + e.to_s
+    end
+  end
+
   def self.pupil_details(upn)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
     result = SQL_CLIENT.execute(sql)
@@ -286,7 +300,7 @@ class SqlDbHelper
   end
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
-    sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    sql = "UPDATE [mtc_admin].[checkWindow] set familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}', adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -335,6 +349,18 @@ class SqlDbHelper
     result.do
   end
 
+  def self.delete_pupils_not_taking_check
+    sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_pupil_status(reset_from, reset_to)
+      sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
+      result = SQL_CLIENT.execute(sql)
+      result.do
+    end
+
   def self.get_default_assigned_fam_form
     sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
     result = SQL_CLIENT.execute(sql)
@@ -366,4 +392,13 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.pupil_reason(pupil_id)
+    sql = "select * from [mtc_admin].[pupilAgeReason] where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
+
 end

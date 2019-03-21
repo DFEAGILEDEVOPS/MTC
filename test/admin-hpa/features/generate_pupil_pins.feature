@@ -97,7 +97,7 @@ Feature: Generate Pupil PINs
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
 
-#  @reset_all_pins @bug_18993
+  @reset_all_pins @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
@@ -153,7 +153,7 @@ Feature: Generate Pupil PINs
   @no_active_check_window
   Scenario: Generate Pin Overview page display error if there is no active check window
     Given I have signed in with teacher2
-    When I navigate to generate pupil pins page
+    And I am on the generate pupil pins page
     Then I should see an error message to contact helpdesk
 
   Scenario: Generate pins page has related content

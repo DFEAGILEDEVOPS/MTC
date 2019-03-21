@@ -6,13 +6,14 @@ const attendanceCodeDataService = require('./data-access/attendance-code.data.se
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const pinService = require('./pin.service')
+const logger = require('./log.service').getLogger()
 
 const attendanceService = {
   /**
-   * Update pupil attendance by slug url.
-   * @param slugs
-   * @param code
-   * @param userId
+   * Set pupils to be non-attending
+   * @param slugs - pupil slugs
+   * @param code - attendance code
+   * @param userId - user.id of user performing the action
    * @returns {Promise<void>}
    */
   updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
@@ -25,22 +26,33 @@ const attendanceService = {
       throw new Error(`attendanceCode not found: ${code}`)
     }
 
+    const pupilIds = pupils.map(p => { return p.id })
+
+    // Pupils with a Restart (unconsumed) are allowed to transition to NOT ATTENDING,
+    // so we must delete any unconsumed restarts for the pupils.
+    try {
+      await attendanceCodeDataService.sqlDeleteUnconsumedRestarts(pupilIds, userId)
+    } catch (error) {
+      logger.error('Failed to delete unconsumed restarts', error)
+      throw error
+    }
+
     // We need to determine if this is an update or an insert, the db doesn't support
     // UPSERT so we need to do it manually.
-    const ids = pupils.map(p => { return p.id })
-    const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
+    const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(pupilIds)
 
     const updates = pupilAttendance.map(pa => { return pa.pupil_id })
-    const inserts = R.difference(ids, updates)
+    const inserts = R.difference(pupilIds, updates)
 
     if (updates && updates.length) {
       await pupilAttendanceDataService.sqlUpdateBatch(updates, attendanceCode.id, userId)
     }
+
     if (inserts && inserts.length) {
       await pupilAttendanceDataService.sqlInsertBatch(inserts, attendanceCode.id, userId)
     }
 
-    await pinService.expireMultiplePins(ids, schoolId)
+    await pinService.expireMultiplePins(pupilIds, schoolId)
   },
 
   /**

@@ -31,4 +31,7 @@
 .access-arrangements-list {
   width: pem(230px);
   line-height: pem(30px);
+  > div {
+    width: pem(235px);
+  }
 }

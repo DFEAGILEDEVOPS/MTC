@@ -33,11 +33,11 @@ Feature: Access Arrangements
     Given I am on the select access arrangements page
     When I save access arrangements without providing explanation for input assistance
     Then I can see the error message for access arrangmenets 'Enter an explanation for input assistance'
-  
+
   Scenario: Validation error is displayed if no explanation is provided for next between questions
     Given I am on the select access arrangements page
     When I save access arrangements without providing explanation for next between questions
-    Then I can see the error message for access arrangmenets 'Enter an explanation for next between questions'
+    Then I can see the error message for access arrangmenets 'Enter an explanation for next button between questions'
 
   Scenario: Validation error is displayed if no question reader reason is selected
     Given I am on the select access arrangements page

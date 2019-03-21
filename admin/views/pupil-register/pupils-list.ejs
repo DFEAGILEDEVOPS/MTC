@@ -15,7 +15,7 @@
         <% } %>
         <div>
 
-            <%- partial('partials/_readonly', {hdfSubmitted}) %>
+            <%- partial('partials/_readonly', {availabilityData}) %>
 
             <h1 class="heading-xlarge">Pupil register</h1>
 
@@ -25,13 +25,13 @@
               This list is taken from your school's census. Review your list and add pupils, if required. If a pupil is not going to participate, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
             </p>
             <div class="button-wrapper">
-                <% if (isFeatureEnabled('pupilAdd') && !hdfSubmitted) { %>
+                <% if (isFeatureEnabled('pupilAdd') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                 <a class="button button-secondary" href="/pupil-register/pupil/add"> Add pupil </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
                 <% } %>
 
-                <% if (isFeatureEnabled('pupilUpload') && !hdfSubmitted) { %>
+                <% if (isFeatureEnabled('pupilUpload') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                 <a class="button button-secondary" href="/pupil-register/pupil/add-batch-pupils"> Add multiple pupils </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
@@ -57,7 +57,7 @@
                 <tr>
                     <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper">
-                            <% if (isFeatureEnabled('pupilEdit') && !hdfSubmitted) { %>
+                            <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                                 <a class="bold-small truncate" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.fullName}` %>
                                 </a>

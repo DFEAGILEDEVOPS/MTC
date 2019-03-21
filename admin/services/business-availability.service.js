@@ -1,6 +1,10 @@
 'use strict'
 
+const moment = require('moment')
+const config = require('../config')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const dateService = require('../services/date.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 const businessAvailabilityService = {}
 
@@ -32,6 +36,26 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
 }
 
 /**
+ * Return groups availability
+ * @param {Object} checkWindowData
+ * @returns {Boolean} groups allowance
+ */
+businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  return pinGenerationEligibilityData.isGroupsPageAccessible
+}
+
+/**
+ * Return access arrangements availability
+ * @param {Object} checkWindowData
+ * @returns {Boolean} groups allowance
+ */
+businessAvailabilityService.areAccessArrangementsAllowed = (checkWindowData) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  return pinGenerationEligibilityData.isAccessArrangementsPageAccessible
+}
+
+/**
  * Determine if pin generation is allowed
  * @param {Boolean} isLiveCheck
  * @param {Object} checkWindowData
@@ -40,8 +64,82 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
 businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, checkWindowData) => {
   const isPinGenerationAllowed = businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindowData)
   const pinEnv = isLiveCheck ? 'Live' : 'Familiarisation'
-  if (!isPinGenerationAllowed) {
+  if (!isPinGenerationAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error(`${pinEnv} pin generation is not allowed`)
+  }
+}
+
+/**
+ * Determine if restarts are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areRestartsAllowed is false
+ */
+businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => {
+  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
+  if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Restarts are not allowed`)
+  }
+}
+
+/**
+ * Determine if groups are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areGroupsAllowed is false
+ */
+businessAvailabilityService.determineGroupsEligibility = (checkWindowData) => {
+  const areGroupsAllowed = businessAvailabilityService.areGroupsAllowed(checkWindowData)
+  if (!areGroupsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Groups are not allowed`)
+  }
+}
+
+/**
+ * Determine if groups are permitted
+ * @param {Object} checkWindowData
+ * @throws Will throw an error if areGroupsAllowed is false
+ */
+businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindowData) => {
+  const areAccessArrangementsAllowed = businessAvailabilityService.areAccessArrangementsAllowed(checkWindowData)
+  if (!areAccessArrangementsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
+    throw new Error(`Access Arrangements are not allowed`)
+  }
+}
+
+/**
+ * Returns data for the availability partial
+ * @param {Number} dfeNumber
+ * @param {Object} checkWindowData
+ * @returns {Object}
+ */
+businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
+  const currentDate = moment.utc()
+  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
+  const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
+  const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
+  const checkWindowStarted = currentDate.isAfter(checkWindowData.checkStartDate)
+  const checkWindowClosed = currentDate.isAfter(checkWindowData.checkEndDate)
+  const checkWindowYear = dateService.formatYear(checkWindowData.checkEndDate)
+  const adminWindowStarted = currentDate.isAfter(checkWindowData.adminStartDate)
+  const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
+  const canEditArrangements = (!hdfSubmitted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const restartsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const livePinsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const familiarisationPinsAvailable = (!hdfSubmitted && familiarisationWindowStarted && !familiarisationWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const groupsAvailable = !checkWindowClosed || config.OVERRIDE_AVAILABILITY_CHECKS
+  return {
+    familiarisationWindowStarted,
+    familiarisationWindowClosed,
+    checkWindowStarted,
+    checkWindowClosed,
+    checkWindowYear,
+    adminWindowStarted,
+    adminWindowClosed,
+    hdfSubmitted,
+    canEditArrangements,
+    restartsAvailable,
+    livePinsAvailable,
+    familiarisationPinsAvailable,
+    groupsAvailable
   }
 }
 

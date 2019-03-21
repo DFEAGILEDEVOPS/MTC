@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 
 const table = '[pupil]'
@@ -89,6 +89,31 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
       FROM ${sqlService.adminSchema}.${table}
       WHERE urlSlug = @urlSlug
       AND school_id = @schoolId  
+    `
+  const results = await sqlService.query(sql, params)
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by their urlSlug with age reason
+ * @param urlSlug - GUID
+ * @param schoolId - look for the pupil only in a particular school
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, schoolId) {
+  const params = [
+    { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug },
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
+  const sql = `
+      SELECT TOP 1 
+      p.*,
+      pag.reason AS ageReason
+      FROM ${sqlService.adminSchema}.${table} p
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAgeReason] pag
+        ON p.id = pag.pupil_id
+      WHERE p.urlSlug = @urlSlug
+      AND p.school_id = @schoolId 
     `
   const results = await sqlService.query(sql, params)
   return R.head(results)
@@ -410,6 +435,8 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   FROM ${sqlService.adminSchema}.${table} p 
     INNER JOIN ${sqlService.adminSchema}.[school] s
       ON p.school_id = s.id
+    INNER JOIN ${sqlService.adminSchema}.[pupilStatus] ps
+      ON p.pupilStatus_id = ps.id
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
       ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
     LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
@@ -417,6 +444,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
       ON pg.pupil_id = p.id 
   WHERE s.dfeNumber = @dfeNumber
+  AND ps.code = 'UNALLOC'
   ORDER BY ${sqlSort}
   `
   return sqlService.query(sql, params)
@@ -475,8 +503,8 @@ pupilDataService.sqlInsertMany = async (pupils) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
-  return sqlService.modify(sql, params)
-  // E.g. { insertId: [1, 2], rowsModified: 4 }
+  const res = await sqlService.query(sql, params)
+  return { insertId: res.map(x => x.id) }
 }
 
 module.exports = pupilDataService

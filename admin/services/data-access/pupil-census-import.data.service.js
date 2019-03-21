@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const TediousTypes = require('tedious').TYPES
 const moment = require('moment')
 
 const config = require('../../config')
@@ -45,14 +45,14 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
       resolve(`Inserted ${rowCount} rows`)
     })
 
-    bulkLoad.addColumn('school_id', TYPES.Int, { nullable: false })
-    bulkLoad.addColumn('upn', TYPES.Char, { length: 13, nullable: false })
-    bulkLoad.addColumn('lastName', TYPES.NVarChar, { length: 'max', nullable: false })
-    bulkLoad.addColumn('foreName', TYPES.NVarChar, { length: 'max', nullable: false })
-    bulkLoad.addColumn('middleNames', TYPES.NVarChar, { length: 'max', nullable: true })
-    bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
-    bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
-    bulkLoad.addColumn('job_id', TYPES.Int, { nullable: true })
+    bulkLoad.addColumn('school_id', TediousTypes.Int, { nullable: false })
+    bulkLoad.addColumn('upn', TediousTypes.Char, { length: 13, nullable: false })
+    bulkLoad.addColumn('lastName', TediousTypes.NVarChar, { length: 'max', nullable: false })
+    bulkLoad.addColumn('foreName', TediousTypes.NVarChar, { length: 'max', nullable: false })
+    bulkLoad.addColumn('middleNames', TediousTypes.NVarChar, { length: 'max', nullable: true })
+    bulkLoad.addColumn('gender', TediousTypes.Char, { length: 1, nullable: false })
+    bulkLoad.addColumn('dateOfBirth', TediousTypes.DateTimeOffset, { nullable: false })
+    bulkLoad.addColumn('job_id', TediousTypes.Int, { nullable: true })
 
     for (let index = 0; index < pupilData.length; index++) {
       const csvRow = pupilData[index]
@@ -69,7 +69,7 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
         foreName: csvRow[4] || null,
         middleNames: csvRow[5],
         gender: csvRow[6] || null,
-        dateOfBirth: csvRow[7] !== '' ? moment(csvRow[7], 'MM/DD/YY').toDate() : null,
+        dateOfBirth: csvRow[7] !== '' ? moment(csvRow[7], 'DD/MM/YYYY').toDate() : null,
         job_id: jobId
       })
     }

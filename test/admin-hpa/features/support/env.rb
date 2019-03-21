@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'active_support'
+require 'active_support/all'
 require 'capybara'
 require 'capybara/cucumber'
 require 'require_all'
@@ -12,6 +13,7 @@ require 'mongo'
 require 'csv'
 require 'fileutils'
 require 'date'
+require 'chromedriver-helper'
 require 'waitutil'
 require 'tiny_tds'
 require 'httparty'
@@ -21,6 +23,7 @@ require 'nokogiri'
 require 'numbers_in_words'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require_relative '../../features/support/sql_db_helper'
 require 'azure/storage/table'
 require 'azure/storage/blob'
 require_relative '../../features/support/azure_blob_helper'
@@ -31,6 +34,8 @@ ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '300'
+
+Chromedriver.set_version '2.46'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
@@ -57,7 +62,6 @@ Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 
-sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
@@ -71,17 +75,7 @@ else
   admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 end
 
-begin
-  SQL_CLIENT = TinyTds::Client.new(username: admin_user,
-                                   password: admin_password,
-                                   host: server,
-                                   port: port,
-                                   database: database,
-                                   azure: azure_var
-  )
-rescue TinyTds::Error => e
-  abort 'Test run failed due to - ' + e.to_s
-end
+SQL_CLIENT = SqlDbHelper.connect(admin_user,admin_password,server,port,database,azure_var)
 
 SQL_CLIENT.execute('SET ANSI_NULLS ON').do
 SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
@@ -112,5 +106,4 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}-pupil")
 
-sleep 60
-Capybara.visit Capybara.app_host
+

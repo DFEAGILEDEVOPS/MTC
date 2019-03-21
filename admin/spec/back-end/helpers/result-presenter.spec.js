@@ -52,4 +52,16 @@ describe('resultPresenter', () => {
       }])
     })
   })
+  describe('getScoreWithOneDecimalPlace', () => {
+    it('returns score with 1 decimal point', () => {
+      const scoreValue = 7.8976
+      const score = resultPresenter.getScoreWithOneDecimalPlace(scoreValue)
+      expect(score.toString().split('.')[1].length).toBe(1)
+    })
+    it('returns undefined if score passed in undefined', () => {
+      const scoreValue = undefined
+      const score = resultPresenter.getScoreWithOneDecimalPlace(scoreValue)
+      expect(score).toBeUndefined()
+    })
+  })
 })

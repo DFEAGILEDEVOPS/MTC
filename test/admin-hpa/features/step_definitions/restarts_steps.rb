@@ -155,8 +155,8 @@ And(/^Pupil has taken a 2nd restart$/) do
 end
 
 And(/^Pupil has taken a 3rd check$/) do
-  step 'Pupil has taken a 2nd restart'
-  step 'Pupil has taken a 2nd check'
+    step 'Pupil has taken a 2nd restart'
+    step 'Pupil has taken a 2nd check'
 end
 
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do |restart_status|
@@ -265,12 +265,17 @@ Given(/^pupil logs in and completed the check$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-  response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
-  p 'sleeping'
-  sleep(60)
+  begin
+    retries ||= 0
+    RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
+    fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] != 4
+  rescue
+    sleep(1)
+    retry if (retries += 1) < 5
+  end
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
   response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-  p 'sleeping'
-  sleep(60)
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
 end
 
 And(/^I generate a pin for that pupil$/) do
@@ -287,4 +292,15 @@ And(/^the pin should also be removed$/) do
   view_and_custom_print_live_check_page.load
   array_of_names = view_and_custom_print_live_check_page.pupil_list.rows.map {|row| row.name.text}
   expect(array_of_names).to_not include @details_hash[:first_name]
+end
+
+
+And(/^I should not see the pupil on the select pupils for restarts list$/) do
+  restarts_page.load
+  restarts_page.select_pupil_to_restart_btn.click
+  if restarts_page.has_pupil_list?
+    expect(restarts_page.pupil_list.rows.find {|pupil| pupil.text.include? @details_hash[:first_name]}).to be_nil
+  else
+    expect(restarts_page).to have_no_pupils
+  end
 end

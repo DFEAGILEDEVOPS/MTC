@@ -1,6 +1,6 @@
 'use strict'
 
-const { TYPES } = require('tedious')
+const { TYPES } = require('./sql.service')
 const R = require('ramda')
 
 const sqlService = require('./sql.service')
@@ -146,17 +146,76 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
       type: TYPES.Int
     }
   ]
-  const sql =
-    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description
-  FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
-    INNER JOIN ${sqlService.adminSchema}.pupil p
-      ON paa.pupil_id = p.id
-    INNER JOIN ${sqlService.adminSchema}.school s
-      ON p.school_id = s.id
-    INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
-      ON aa.id = paa.accessArrangements_id
-  WHERE s.dfeNumber = @dfeNumber
-  ORDER BY p.lastName`
+  const sql = `
+    SELECT *, completedCheck & ~unusedRestart hasCompletedCheck
+    FROM (
+      SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
+      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
+      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
+      FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
+        INNER JOIN ${sqlService.adminSchema}.pupil p
+          ON paa.pupil_id = p.id
+        INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
+         ON ps.id = p.pupilStatus_id
+        INNER JOIN ${sqlService.adminSchema}.school s
+          ON p.school_id = s.id
+        INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
+          ON aa.id = paa.accessArrangements_id
+        LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+          ON pa.pupil_id = p.id AND pa.isDeleted = 0
+        LEFT JOIN (
+          SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
+             FROM ${sqlService.adminSchema}.[pupilRestart] pr
+             WHERE isDeleted = 0
+             AND check_id is NULL
+           ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
+      WHERE s.dfeNumber = @dfeNumber
+    ) p
+    ORDER BY p.lastName
+  `
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find pupils eligible for access arrangements based on DfE Number.
+ * @param {Number} dfeNumber
+ * @return {Promise<Array>}
+ */
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfeNumber) => {
+  const params = [
+    {
+      name: 'dfeNumber',
+      value: dfeNumber,
+      type: TYPES.Int
+    }
+  ]
+  const sql = `
+    SELECT *
+    FROM (
+      SELECT p.*,
+      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
+      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
+      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
+      FROM ${sqlService.adminSchema}.pupil p
+      INNER JOIN ${sqlService.adminSchema}.school s
+        ON p.school_id = s.id
+      INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
+         ON ps.id = p.pupilStatus_id
+      LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+        ON pa.pupil_id = p.id AND pa.isDeleted = 0
+      LEFT JOIN (
+        SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
+           FROM ${sqlService.adminSchema}.[pupilRestart] pr
+           WHERE isDeleted = 0
+           AND check_id is NULL
+         ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
+      WHERE s.dfeNumber = @dfeNumber
+    ) p
+    WHERE notTakingCheck = 0
+    AND completedCheck = 0 OR unusedRestart = 1
+    ORDER BY lastName
+  `
   return sqlService.query(sql, params)
 }
 
@@ -206,8 +265,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
       type: TYPES.NVarChar
     }
   ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
+  return sqlService.query(sql, params)
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {

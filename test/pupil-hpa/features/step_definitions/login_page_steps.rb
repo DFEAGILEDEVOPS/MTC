@@ -148,7 +148,8 @@ end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2010'}
+  dob = calculate_age(8)
+  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   add_pupil_page.enter_details(@details_hash)
   add_pupil_page.add_pupil.click
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)

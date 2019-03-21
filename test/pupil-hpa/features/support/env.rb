@@ -1,4 +1,5 @@
 require 'active_support'
+require 'active_support/all'
 require 'capybara'
 require 'capybara/cucumber'
 require 'require_all'
@@ -11,10 +12,12 @@ require 'numbers_in_words'
 require 'mongo'
 require 'waitutil'
 require 'tiny_tds'
+require 'chromedriver-helper'
 require 'show_me_the_cookies'
 require 'httparty'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require_relative '../../features/support/sql_db_helper'
 require 'azure/storage/table'
 require 'azure/storage/queue'
 require 'azure/storage/blob'
@@ -28,6 +31,7 @@ ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '20'
 
+Chromedriver.set_version '2.46'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
@@ -60,13 +64,12 @@ if ENV['MONGO_CONNECTION_STRING']
 else
   CLIENT = Mongo::Client.new('mongodb://mongo/mtc')
 end
-sleep 20
+
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 azure_test = ENV['AZURE'] || 'false'
-
 if azure_test == 'true'
   azure_var = true
   admin_user = ENV['SQL_ADMIN_USER'] + '@' + ENV['SQL_SERVER_SHORTNAME']
@@ -75,20 +78,7 @@ else
   admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 end
 
-print 'the admin user is ' + admin_user
-print 'the admin password is ' + admin_password
-
-begin
-  SQL_CLIENT = TinyTds::Client.new(username: admin_user,
-                                   password: admin_password,
-                                   host: server,
-                                   port: port,
-                                   database: database,
-                                   azure: azure_var
-  )
-rescue TinyTds::Error => e
-  abort 'Test run failed due to - ' + e.to_s
-end
+SQL_CLIENT = SqlDbHelper.connect(admin_user,admin_password,server,port,database,azure_var)
 
 SQL_CLIENT.execute('SET ANSI_NULLS ON').do
 SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
@@ -98,7 +88,6 @@ SQL_CLIENT.execute('SET ANSI_PADDING ON').do
 SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
 SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
-
 
 if File.exist?('../../admin/.env')
   credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')

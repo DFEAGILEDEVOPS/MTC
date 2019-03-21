@@ -1,5 +1,6 @@
 Before do
   page.current_window.resize_to(1270, 768)
+  Capybara.visit Capybara.app_host
 end
 
 Before("@add_a_pupil") do
@@ -36,16 +37,8 @@ Before("@poltergeist") do
 end
 
 After("@pupil_not_taking_check") do
-  step "I have signed in with teacher3"
-  pupils_not_taking_check_page.load
-  expect(pupils_not_taking_check_page).to be_displayed
-  rows = all('a', text: 'Remove').count
-  rows.to_i.times do |row|
-    all('a', text: 'Remove').first.click
-    pupils_not_taking_check_page.load
-  end if pupils_not_taking_check_page.has_pupil_list?
-  pupils_not_taking_check_page.sign_out.click
-  visit current_url
+  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.set_pupil_status(6,1)
 end
 
 Before('@reset_hdf_submission') do
@@ -70,16 +63,9 @@ Before("@hdf") do
 end
 
 After("@hdf") do
-  step "I have signed in with teacher4"
-  pupils_not_taking_check_page.load
-  expect(pupils_not_taking_check_page).to be_displayed
-  rows = all('a', text: 'Remove').count
-  rows.to_i.times do |row|
-    all('a', text: 'Remove').first.click
-    pupils_not_taking_check_page.load
-  end if pupils_not_taking_check_page.has_pupil_list?
-  pupils_not_taking_check_page.sign_out.click
-  visit current_url
+  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.set_pupil_status(6, 1)
+
 end
 
 Before("@create_new_window") do
@@ -153,7 +139,7 @@ After("@no_active_check_window") do
 end
 
 After("@multiple_pupil_upload") do
-  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
+  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
 After("@remove_access_arrangements") do
@@ -162,7 +148,7 @@ After("@remove_access_arrangements") do
   access_arrangements_page.remove_all_pupils
 end
 
-After("@remove_uploaded_forms,@upload_new_live_form,@upload_new_fam_form") do
+After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form") do
   SqlDbHelper.delete_assigned_forms
   SqlDbHelper.delete_forms
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
