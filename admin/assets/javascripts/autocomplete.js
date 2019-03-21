@@ -100,7 +100,7 @@ $(function () {
         var ul = $(linkedContainer).find('ul')
         /*
          * The autocomplete library triggers the dropdown when setting the value on the linkedContainer
-         * we need to hide the menu using the style attribute, wait for the dropdown to appear, 
+         * we need to hide the menu using the style attribute, wait for the dropdown to appear,
          * change the dropdown class then remove the style attribute
          */
         ul.style = 'display: none'

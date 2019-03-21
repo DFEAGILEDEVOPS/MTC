@@ -7,6 +7,22 @@
     </div>
 </div>
 
+<% if (err.hasError()) { %>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% err.getUniqueFields(['timezone', 'schoolName', 'urn']).map(f => { %>
+                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-xlarge">Add school as Service children's education (SCE)</h1>
