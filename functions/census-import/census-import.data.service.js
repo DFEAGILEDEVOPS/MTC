@@ -1,16 +1,16 @@
-const moment = require('moment')
 const mssql = require('mssql')
-const uuidv4 = require('uuid/v4')
+const sqlService = require('less-tedious')
 
 const config = require('../config')
 
 /**
  * Create census import table
  * @param {Object} context
+ * @param {String} censusTable
  * @param {Array} blobContent
  * @return {Object}
  */
-module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
+module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobContent) => {
   const poolConfig = {
     database: config.Sql.Database,
     server: config.Sql.Server,
@@ -35,7 +35,7 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
   })
   await pool.connect()
 
-  const table = new mssql.Table(`[mtc_admin].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`)
+  const table = new mssql.Table(censusTable)
   table.create = true
   table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
   table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
@@ -54,4 +54,13 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
   const request = new mssql.Request(pool)
   const result = await request.bulk(table)
   return result.rowsAffected
+}
+
+module.exports.sqlUpsertCensusImportTableData = async (context, censusTable) => {
+  const sql = `
+  DECLARE @citt mtc_admin.censusImportTableType
+  INSERT INTO @citt SELECT * FROM ${censusTable}
+  EXEC mtc_admin.spPupilCensusUpsert @censusImportTable = @citt
+  `
+  return sqlService.query(sql)
 }
