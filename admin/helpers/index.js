@@ -40,6 +40,9 @@ module.exports = async function (app) {
   } catch (error) {
     buildNumber = 'NOT FOUND'
   }
+  // Ensure we initialise the `isAuthenticated` variable so that it is defined
+  // even if the database is not yet up.
+  app.locals.isAuthenticated = false
   app.locals.assetPath = config.AssetPath
   app.locals.bodyClasses = ''
   app.locals.formatPageTitle = formatPageTitle
