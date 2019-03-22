@@ -35,7 +35,7 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
   })
   await pool.connect()
 
-  const table = new mssql.Table(`[mtc_admin].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`)
+  const table = new mssql.Table(`[mtc_census_import].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`)
   table.create = true
   table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
   table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
