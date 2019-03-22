@@ -68,7 +68,7 @@ module.exports.sqlUpsertCensusImportTableData = async (context, censusTable) => 
   const sql = `
   DECLARE @citt mtc_admin.censusImportTableType
   INSERT INTO @citt SELECT * FROM ${censusTable}
-  EXEC mtc_admin.spPupilCensusUpsert @censusImportTable = @citt
+  EXEC mtc_admin.spPupilCensusImportFromStaging @censusImportTable = @citt
   `
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
