@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const R = require('ramda')
 const logger = require('./log.service').getLogger()
 
@@ -408,7 +408,8 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
       },
       school: {
         id: o.school_id,
-        name: o.school_name
+        name: o.school_name,
+        timezone: o.timezone
       },
       tokens: {
         checkStarted: {

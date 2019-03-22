@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
@@ -10,8 +10,11 @@ const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
 const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
+const sceService = require('../services/sce.service')
+const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
 const ValidationError = require('../lib/validation-error')
+const scePresenter = require('../helpers/sce')
 
 const featureToggles = require('feature-toggles')
 
@@ -308,6 +311,152 @@ const controller = {
     const { type, message } = result
     req.flash(type, message)
     return res.redirect('/service-manager/check-windows')
+  },
+
+  /**
+   * View sce settings.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceSettings: async (req, res, next) => {
+    res.locals.pageTitle = 'Settings for MOD'
+    req.breadcrumbs(res.locals.pageTitle)
+    const { hl } = req.query
+    try {
+      const sceSchools = await sceService.getSceSchools()
+      res.render('service-manager/sce-settings', {
+        breadcrumbs: req.breadcrumbs(),
+        highlight: hl,
+        messages: res.locals.messages,
+        countriesTzData: scePresenter.getCountriesTzData(),
+        sceSchools
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+   * Cancel sce settings. Redirects to index.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  cancelSceSettings: async (req, res) => {
+    return res.redirect('/service-manager')
+  },
+
+  /**
+   * Apply SCE school changes
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postSceSettings: async (req, res, next) => {
+    const sceSchools = await sceService.getSceSchools()
+    try {
+      req.body.urn.forEach((urn, i) => {
+        const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone[i])
+        const schoolIndex = sceSchools.findIndex(s => s.urn.toString() === urn)
+        sceSchools[schoolIndex].timezone = timezone
+        sceSchools[schoolIndex].countryCode = countryCode
+      })
+      await sceService.applySceSettings(sceSchools)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', 'Timezone saved for the school(s)')
+    return res.redirect('/service-manager/mod-settings')
+  },
+
+  /**
+   * Remove SCE school.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceRemoveSchool: async (req, res, next) => {
+    const { urn } = req.params
+    let school
+
+    try {
+      school = await sceService.removeSceSchool(urn)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', `'${school.name}' removed as MOD school`)
+    res.redirect('/service-manager/mod-settings')
+  },
+
+  /**
+   * Add SCE school form.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getSceAddSchool: async (req, res, next) => {
+    req.breadcrumbs('Settings for MOD', '/service-manager/mod-settings')
+    res.locals.pageTitle = 'Convert school as MOD'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      const schools = await sceService.getSchools()
+      const schoolNames = schools.map(s => s.name)
+      const schoolUrns = schools.map(s => s.urn.toString())
+      res.render('service-manager/sce-add-school', {
+        breadcrumbs: req.breadcrumbs(),
+        err: res.error || new ValidationError(),
+        countriesTzData: scePresenter.getCountriesTzData(),
+        schoolNames: JSON.stringify(schoolNames),
+        schoolUrns: JSON.stringify(schoolUrns)
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+   * SCE school form submit handler
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postSceAddSchool: async (req, res, next) => {
+    const schools = await sceService.getSchools()
+    const schoolNames = schools.map(s => s.name)
+    const schoolUrns = schools.map(s => s.urn)
+
+    const {
+      urn,
+      schoolName
+    } = req.body
+
+    const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone)
+
+    let validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
+    if (validationError.hasError()) {
+      res.error = validationError
+      return controller.getSceAddSchool(req, res, next)
+    }
+
+    const school = schools.find(s => s.urn.toString() === urn && s.name === schoolName)
+    try {
+      await sceService.insertOrUpdateSceSchool(school.id, timezone, countryCode)
+    } catch (error) {
+      return next(error)
+    }
+
+    req.flash('info', `'${school.name}' added as an MOD school`)
+    return res.redirect(`/service-manager/mod-settings?hl=${school.urlSlug}`)
   }
 }
 
