@@ -8,6 +8,7 @@ const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
 const fileValidator = require('../lib/validator/file-validator.js')
+const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const pupilCensusService = {}
 
@@ -62,6 +63,23 @@ pupilCensusService.upload = async (uploadFile) => {
 }
 
 /**
+ * Upload handler for pupil census 2
+ * Reads the file contents and creates of the pupil census record
+ * @param uploadFile
+ * @return {Promise<void>}
+ */
+pupilCensusService.upload2 = async (uploadFile) => {
+  const stream = fs.createReadStream(uploadFile.file)
+  const job = await pupilCensusService.create(uploadFile)
+  if (!job || !job.insertId) {
+    throw new Error('Job has not been created')
+  }
+  await azureBlobDataService.createContainerIfNotExistsAsync('census')
+  const result = await azureBlobDataService.createBlockBlobFromStreamAsync('census', uploadFile.filename, stream, stream.bytesRead)
+  pupilCensusService.updateJobOutput2(job.insertId, result)
+}
+
+/**
  * Creates a new pupilCensus record
  * @param {Object} uploadFile
  * @return {Promise}
@@ -93,6 +111,18 @@ pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
 }
 
 /**
+ * Updates the output of a pupilCensus record 2
+ * @param {Number} jobId
+ * @param {Object} submissionResult
+ * @returns {Promise.<void>}
+ */
+pupilCensusService.updateJobOutput2 = async (jobId, submissionResult) => {
+  const jobStatusCode = submissionResult && submissionResult.name ? 'SUB' : 'FLD'
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
+  await jobDataService.sqlUpdate(jobId, jobStatus.id, 'Submitted')
+}
+
+/**
  * Gets existing pupil census file
  * @return {Object}
  */
@@ -110,13 +140,20 @@ pupilCensusService.getUploadedFile = async () => {
   }
   const completedWithErrors = 'CWR'
   const deleted = 'DEL'
+  const submitted = 'SUB'
   let outcome
-  if (jobStatus.jobStatusCode === completedWithErrors) {
-    outcome = pupilCensus.errorOutput
-  } else if (jobStatus.jobStatusCode === deleted) {
-    outcome = jobStatus.description
-  } else {
-    outcome = `${jobStatus.description} : ${pupilCensus.jobOutput}`
+  switch (jobStatus.jobStatusCode) {
+    case submitted:
+      outcome = pupilCensus.jobOutput
+      break
+    case deleted:
+      outcome = jobStatus.description
+      break
+    case completedWithErrors:
+      outcome = pupilCensus.errorOutput
+      break
+    default:
+      outcome = `${jobStatus.description} : ${pupilCensus.jobOutput}`
   }
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
