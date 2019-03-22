@@ -59,6 +59,15 @@ Before("@hdf") do
   step "I select a reason"
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
+  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  begin
+    retries ||= 0
+    pupil_detail = SqlDbHelper.get_pupil_with_no_attandance_code(school_id)
+    fail if !(pupil_detail.nil?)
+  rescue
+    sleep(1)
+    retry if (retries += 1) < 5
+  end
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
