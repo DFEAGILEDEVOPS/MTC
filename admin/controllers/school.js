@@ -18,7 +18,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     // Fetch set of flags to determine pin generation allowance on UI
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
-    const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     return res.render('school/school-home', {
       breadcrumbs: [ { 'name': 'School Home' } ],
       featureEligibilityData,

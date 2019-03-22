@@ -1,0 +1,126 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+          <div class="info-message">
+            <%= messages.info %>
+          </div>
+        <% } %>
+
+        <h1 class="heading-xlarge">Settings for Ministry of Defence schools (MOD)</h1>
+        <%- partial('partials/_session_expiry') %>
+        <p class="lede" id="lead-paragraph">Set timezones for schools listed as Ministry of Defence schools (MOD). Add or remove schools listed as MOD.</p>
+        <form action="/service-manager/mod-settings" method="post" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <div class="button-wrapper">
+                <a class="button button-secondary" href="/service-manager/mod-settings/add-school">Convert school as MOD</a>
+            </div>
+            <table id="sce-schools" class="spacious">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <a class="no-underline sortingLink">School name<span class="sort-icon asc"><span>Sort by school name</span></span></a>
+                        </th>
+                        <th scope="col">
+                            <a class="no-underline sortingLink">Country<span class="sort-icon"><span>Sort by country</span></span></a>
+                        </th>
+                        <th scope="col">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% sceSchools.forEach((s) => { %>
+                    <tr>
+                        <td class="allow-wrap <% if (highlight === s.urlSlug) { %>highlight-item<% } %>">
+                            <div class="highlight-wrapper">
+                              <%= s.name %>
+                              <div class="font-greyed-out font-xsmall">
+                                  URN: <%= s.urn %>
+                              </div>
+                            </div>
+                        </td>
+                        <td class="column-wide">
+                            <!-- hidden text used for column sorting -->
+                            <div style="width: 0; height: 0; overflow: hidden;"><%=s.timezone %></div>
+                            <input type="hidden" name="urn" value="<%= s.urn %>" />
+                            <select class="form-control timezone"
+                                id="timezone"
+                                name="timezone">
+                                <option value="" <% if (s.timezone === '') { %>selected="selected"<% } %>></option>
+                                <% countriesTzData.map(t => { %>
+                                <option value="<%= t.countryCode %>|<%= t.zone %>" <% if (t.zone === s.timezone && t.countryCode === s.countryCode) { %>selected="selected"<% } %>><%= t.name %></option>
+                                <% }) %>
+                            </select>
+                        </td>
+                        <td class="nowrap column-narrow">
+                            <a href="/service-manager/mod-settings/remove-school/<%= s.urn %>" class="modal-link" id="js-modal-link">Remove school</a>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Save"/>
+                <a href="/service-manager/mod-settings/cancel" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
+                    </li>
+                    <li>
+                        <a href="/service-manager/check-settings">Settings on pupil check</a>
+                    </li>
+                    <li>
+                        <a href="/service-manager/home">Settings on school pages</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+
+<%- partial('partials/_modal_box', {
+  modalTitle: 'Remove SCE school',
+  modalText: 'Are you sure you want to remove this?',
+  modalConfirmationLabel: 'Confirm',
+  modalConfirmationUrl: '#',
+  modalCancelLabel: 'Cancel',
+  modalCancelUrl: '#'
+}) %>
+
+<script>
+$(function () {
+  $(".timezone").each(function() {
+    const elm = $(this)[0]
+    window.accessibleAutocomplete.enhanceSelectElement({
+      selectElement: elm,
+      minLength: 2,
+      preserveNullOptions: true,
+      defaultValue: '',
+      showAllValues: true
+    })
+  })
+  window.GOVUK.tableSort.applySorting(window.document, 'sce-schools', {
+    sortNullsLast: true,
+    ignoredStrings: ['-']
+  })
+})
+</script>
