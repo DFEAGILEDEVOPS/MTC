@@ -14,14 +14,29 @@ We are targeting V2, which is currently in preview.
 - For versions of `azure-functions-core-tools >= 2.0.1-beta.37` you also need to install the extensions
 
     `func extensions install`
-    
+
 NB: you can review what npm packages and versions are installed:
-    `npm list -g --depth=0`  
+    `npm list -g --depth=0`
 
 ## Running locally
 
 execute `func host start` from `functions` directory.  A shortcut script has been added to `package.json` so you can
 also just call `yarn start` if you prefer.
+
+the functions depend on a `local.settings.json` file when running locally.  This is purposely ignored by git and should be of the following format...
+
+```
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "<connection-string>",
+    "AzureWebJobsDashboard": "<connection-string>",
+    "StorageAccount": "<your-storage-connection-string>",
+    "AZURE_STORAGE_CONNECTION_STRING": "<your-storage-connection-string>"
+  }
+}
+```
 
 ## Creating a new function
 
