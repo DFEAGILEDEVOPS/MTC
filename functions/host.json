@@ -8,5 +8,6 @@
   },
   "tracing": {
     "consoleLevel": "verbose"
-  }
+  },
+  "functionTimeout": "00:10:00"
 }
