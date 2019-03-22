@@ -5,6 +5,7 @@ const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const businessAvailabilityService = require('../services/business-availability.service')
 
 /**
  * Render the initial 'groups' page.
@@ -20,11 +21,19 @@ const groupPupilsPage = async (req, res, next) => {
   let groups
   let pupilsPerGroup
   let pinGenerationEligibilityData
+  let availabilityData
 
   try {
     groups = await groupService.getGroups(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (!availabilityData.groupsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     next(error)
   }
@@ -51,6 +60,13 @@ const manageGroupPage = async (req, res, next) => {
   let group
   let action = 'add'
   res.locals.pageTitle = 'Create group'
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
 
   if (req.params.groupId) {
     action = 'edit'
@@ -92,6 +108,13 @@ const addGroup = async (req, res, next) => {
   if (!req.body.name || !req.body.pupil) {
     req.flash('error', 'Missing fields.')
     return res.redirect('/group/pupils-list/add')
+  }
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
   }
 
   let validationError
@@ -160,6 +183,13 @@ const editGroup = async (req, res, next) => {
     return res.redirect('/group/pupils-list/edit')
   }
 
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
+
   let group
   let oldGroup
 
@@ -224,6 +254,8 @@ const removeGroup = async (req, res, next) => {
   }
 
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
     await groupDataService.sqlMarkGroupAsDeleted(req.params.groupId)
   } catch (error) {
     return next(error)

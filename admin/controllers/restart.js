@@ -9,7 +9,7 @@ const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 
@@ -22,7 +22,7 @@ controller.getRestartOverview = async (req, res, next) => {
   let checkWindowData
   let restarts
   let pinGenerationEligibilityData
-  let hdfSubmitted
+  let availabilityData
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
@@ -30,13 +30,13 @@ controller.getRestartOverview = async (req, res, next) => {
       restarts = await restartService.getSubmittedRestarts(req.user.School)
     }
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone, req.user.timezone)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
   } catch (error) {
     return next(error)
   }
-  if (hdfSubmitted) {
-    return res.render('hdf/unavailable', {
+  if (!availabilityData.restartsAvailable) {
+    return res.render('availability/section-unavailable', {
       title: res.locals.pageTitle,
       breadcrumbs: req.breadcrumbs()
     })
@@ -65,6 +65,8 @@ controller.getSelectRestartList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
     } else {
@@ -94,6 +96,14 @@ controller.postSubmitRestartList = async (req, res, next) => {
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
+  } catch (error) {
+    return next(error)
+  }
+
   const info = classDisruptionInfo || didNotCompleteInfo
   const validationError = restartValidator.validateReason(restartReason, info)
   if (validationError.hasError()) {
@@ -131,6 +141,8 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let pupilsRestarted
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupilsRestarted = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
@@ -157,6 +169,8 @@ controller.postDeleteRestart = async (req, res, next) => {
   let pupil
   const pupilSlug = req.body && req.body.pupil
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {
     logger.error('Failed to mark restart as deleted', error)

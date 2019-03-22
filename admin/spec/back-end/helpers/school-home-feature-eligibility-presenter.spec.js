@@ -227,6 +227,37 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeTruthy()
       })
+
+      it('disallows hdf before live check period', async () => {
+        const checkWindowData = {
+          id: 1,
+          adminStartDate: moment.utc().subtract(3, 'days'),
+          adminEndDate: moment.utc().add(10, 'days'),
+          familiarisationCheckStartDate: moment.utc().add(1, 'days'),
+          familiarisationCheckEndDate: moment.utc().add(5, 'days'),
+          checkStartDate: moment.utc().add(2, 'days'),
+          checkEndDate: moment.utc().add(5, 'days')
+        }
+        const allowedDateTime = moment.utc().set({ hour: 11 })
+        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+        expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeFalsy()
+      })
+      it('allows hdf when within live check period', async () => {
+        const checkWindowData = {
+          id: 1,
+          adminStartDate: moment.utc().subtract(10, 'days'),
+          adminEndDate: moment.utc().add(10, 'days'),
+          familiarisationCheckStartDate: moment.utc().subtract(4, 'days'),
+          familiarisationCheckEndDate: moment.utc().add(5, 'days'),
+          checkStartDate: moment.utc().subtract(2, 'days'),
+          checkEndDate: moment.utc().add(7, 'days')
+        }
+        const allowedDateTime = moment.utc().set({ hour: 11 })
+        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+        expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeTruthy()
+      })
       it('disallows results when live check period is active', async () => {
         const checkWindowData = {
           id: 1,

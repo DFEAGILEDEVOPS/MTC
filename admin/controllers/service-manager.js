@@ -12,6 +12,7 @@ const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
+const uploadedFileService = require('../services/uploaded-file.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 
@@ -139,13 +140,17 @@ const controller = {
    * @param req
    * @param res
    * @param next
+   * @param error
    * @returns {Promise.<void>}
    */
-  getUploadPupilCensus: async (req, res, next) => {
+  getUploadPupilCensus: async (req, res, next, error = null) => {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
     let pupilCensus
+    let templateFileSize
     try {
+      const templateFile = 'assets/csv/mtc-census-headers.csv'
+      templateFileSize = uploadedFileService.getFilesize(templateFile)
       pupilCensus = await pupilCensusService.getUploadedFile()
     } catch (error) {
       return next(error)
@@ -153,7 +158,9 @@ const controller = {
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      pupilCensus: pupilCensus
+      pupilCensus: pupilCensus,
+      templateFileSize,
+      fileErrors: error || new ValidationError()
     })
   },
 
@@ -166,8 +173,11 @@ const controller = {
    */
   postUploadPupilCensus: async (req, res, next) => {
     const uploadFile = req.files && req.files.csvPupilCensusFile
-    if (!uploadFile) return next('No file to upload')
     try {
+      const validationError = await pupilCensusService.process(uploadFile)
+      if (validationError.hasError()) {
+        return controller.getUploadPupilCensus(req, res, next, validationError)
+      }
       await pupilCensusService.upload(uploadFile)
     } catch (error) {
       return next(error)

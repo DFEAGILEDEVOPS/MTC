@@ -198,6 +198,7 @@ sqlService.initPool = async () => {
 }
 
 sqlService.drainPool = async () => {
+  await pool
   if (!pool) {
     logger.warn('The connection pool is not initialised')
     return
@@ -221,6 +222,16 @@ sqlService.transformResult = function (data) {
   ), recordSet)
 }
 
+function addParamsToRequestSimple (params, request) {
+  if (params) {
+    for (let index = 0; index < params.length; index++) {
+      const param = params[index]
+      // TODO support other options
+      request.input(param.name, param.type, param.value)
+    }
+  }
+}
+
 /**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
@@ -230,32 +241,38 @@ sqlService.transformResult = function (data) {
 sqlService.query = async (sql, params = []) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  await pool
 
   const request = new mssql.Request(pool)
-  if (params) {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index]
-      // TODO support other options
-      request.input(param.name, param.type, param.value)
+  addParamsToRequestSimple(params, request)
+
+  let result
+  try {
+    result = await request.query(sql)
+  } catch (error) {
+    logger.error('sqlService.query(): SQL Query threw an error', error)
+    if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
+      logger.alert('sqlService.query(): An SQL request was attempted but the connection is closed', error)
+    }
+    try {
+      logger.error('sqlService.query(): SQL RETRY', error)
+      const retryRequest = new mssql.Request(pool)
+      addParamsToRequestSimple(params, retryRequest)
+      result = await retryRequest.query(sql)
+    } catch (error2) {
+      logger.alert('sqlService.query(): SQL RETRY FAILED', error2)
+      throw error2
     }
   }
-
-  const result = await request.query(sql)
   return sqlService.transformResult(result)
 }
 
 /**
- * Modify data in SQL Server via mssql library.
- * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
+ * Add parameters to an SQL request
+ * @param {{name, value, type}[]} params - array of parameter objects
+ * @param {{}} request -  mssql request
  */
-sqlService.modify = async (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-
-  const request = new mssql.Request(pool)
-
+function addParamsToRequest (params, request) {
   if (params) {
     for (let index = 0; index < params.length; index++) {
       let param = params[index]
@@ -271,7 +288,7 @@ sqlService.modify = async (sql, params = []) => {
       }
       const opts = param.options ? param.options : options
       if (opts && Object.keys(opts).length) {
-        logger.debug('sql.service: modify(): opts to addParameter are: ', opts)
+        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
       }
 
       if (opts.precision) {
@@ -283,12 +300,46 @@ sqlService.modify = async (sql, params = []) => {
       }
     }
   }
+}
 
+/**
+ * Modify data in SQL Server via mssql library.
+ * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
+ */
+sqlService.modify = async (sql, params = []) => {
+  logger.debug('sql.service.modify(): SQL: ' + sql)
+  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  await pool
+
+  const request = new mssql.Request(pool)
+  addParamsToRequest(params, request)
   const returnValue = {}
   const insertIds = []
+  let rawResponse
 
-  const rawResponse = await request.query(sql)
-  logger.debug('sql.service: modify: result:', rawResponse)
+  try {
+    rawResponse = await request.query(sql)
+    logger.debug('sql.service.modify(): result:', rawResponse)
+  } catch (error) {
+    logger.error('sqlService.modify(): SQL Query threw an error', error)
+    if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
+      logger.alert('sqlService.modify(): An SQL request was attempted but the connection is closed', error)
+    }
+    try {
+      logger.error('sqlService.modify(): attempting SQL retry', error)
+      const retryRequest = new mssql.Request(pool)
+      addParamsToRequest(params, retryRequest)
+      rawResponse = await retryRequest.query(sql)
+      logger.error('sqlService.modify(): SQL retry success', error)
+      logger.debug('sql.service: modify: result:', rawResponse)
+    } catch (error2) {
+      logger.alert('sqlService.modify(): SQL RETRY FAILED', error2)
+      throw error2
+    }
+  }
+
   if (rawResponse && rawResponse.recordset) {
     for (let obj of rawResponse.recordset) {
       if (obj && obj.SCOPE_IDENTITY) {

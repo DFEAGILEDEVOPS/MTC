@@ -7,6 +7,7 @@ const jobDataService = require('../../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../../services/data-access/job-type.data.service')
 const pupilCensusDataService = require('../../../services/data-access/pupil-census.data.service')
+const fileValidator = require('../../../lib/validator/file-validator.js')
 
 const pupilCensusUploadMock = {
   'uuid': 'bfa9ab1b-88ae-46f2-a4ff-726c0567e37c',
@@ -45,6 +46,13 @@ const jobTypeMock = {
 }
 
 describe('pupilCensusService', () => {
+  describe('process', () => {
+    it('calls file validator', async () => {
+      spyOn(fileValidator, 'validate')
+      pupilCensusService.process(pupilCensusUploadMock)
+      expect(fileValidator.validate).toHaveBeenCalled()
+    })
+  })
   describe('upload', () => {
     it('calls create then processes the data and finally calls update', async () => {
       spyOn(pupilCensusProcessingService, 'process').and.returnValue({ output: 'output' })

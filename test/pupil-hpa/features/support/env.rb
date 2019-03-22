@@ -1,4 +1,5 @@
 require 'active_support'
+require 'active_support/all'
 require 'capybara'
 require 'capybara/cucumber'
 require 'require_all'
@@ -11,6 +12,7 @@ require 'numbers_in_words'
 require 'mongo'
 require 'waitutil'
 require 'tiny_tds'
+require 'chromedriver-helper'
 require 'show_me_the_cookies'
 require 'httparty'
 require_relative '../../features/support/browserstack_driver_helper'
@@ -29,6 +31,7 @@ ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '20'
 
+Chromedriver.set_version '2.46'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym

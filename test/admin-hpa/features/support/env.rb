@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'active_support'
+require 'active_support/all'
 require 'capybara'
 require 'capybara/cucumber'
 require 'require_all'
@@ -12,6 +13,7 @@ require 'mongo'
 require 'csv'
 require 'fileutils'
 require 'date'
+require 'chromedriver-helper'
 require 'waitutil'
 require 'tiny_tds'
 require 'httparty'
@@ -32,6 +34,8 @@ ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '300'
+
+Chromedriver.set_version '2.46'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym

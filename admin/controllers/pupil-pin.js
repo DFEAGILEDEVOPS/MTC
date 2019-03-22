@@ -14,7 +14,6 @@ const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -30,25 +29,25 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   let checkWindowData
-  let hdfSubmitted
+  let availabilityData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (err) {
     return next(err)
   }
-  if (hdfSubmitted) {
-    return res.render('hdf/unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
+
   let error
   try {
     error = await checkWindowSanityCheckService.check()
@@ -59,7 +58,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils
+    pupils,
+    pupilAppURL: config.PUPIL_APP_URL
   })
 }
 

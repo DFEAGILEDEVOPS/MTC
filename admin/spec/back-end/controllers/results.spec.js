@@ -3,6 +3,7 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
+const moment = require('moment')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const resultService = require('../../../services/result.service')
 const groupService = require('../../../services/group.service')
@@ -42,6 +43,36 @@ describe('results controller:', () => {
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
       spyOn(resultService, 'getPupilsWithResults')
+      spyOn(resultService, 'getSchoolScore').and.returnValue({ score: 5 })
+      spyOn(groupService, 'getGroups')
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible').and.returnValue(true)
+      spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5)
+      await controller.getViewResultsPage(req, res, next)
+      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(resultService.getPupilsWithResults).toHaveBeenCalled()
+      expect(resultService.getSchoolScore).toHaveBeenCalled()
+      expect(groupService.getGroups).toHaveBeenCalled()
+      expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
+      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        pupilData: undefined,
+        groups: undefined,
+        schoolScore: 5,
+        nationalScore: 5,
+        breadcrumbs: undefined
+      })
+    })
+    it('renders unavailable service page when school score is undefined', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1, adminStartDate: moment.utc().subtract(20, 'days') })
+      spyOn(resultService, 'getPupilsWithResults')
       spyOn(resultService, 'getSchoolScore')
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
@@ -56,14 +87,10 @@ describe('results controller:', () => {
       expect(groupService.getGroups).toHaveBeenCalled()
       expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible).toHaveBeenCalled()
-      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-results', {
-        pupilData: undefined,
-        groups: undefined,
-        schoolScore: undefined,
-        nationalScore: undefined,
-        breadcrumbs: undefined
+      expect(res.render).toHaveBeenCalledWith('availability/admin-window-unavailable', {
+        isBeforeStartDate: false
       })
     })
     it('calls next when getPupilsWithResults throws an error', async () => {
@@ -73,12 +100,12 @@ describe('results controller:', () => {
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
       spyOn(resultService, 'getPupilsWithResults').and.returnValue(Promise.reject(err))
-      spyOn(resultService, 'getSchoolScore')
+      spyOn(resultService, 'getSchoolScore').and.returnValue({ score: 5.25 })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible')
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace')
+      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -98,11 +125,12 @@ describe('results controller:', () => {
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
       spyOn(resultService, 'getPupilsWithResults')
-      spyOn(resultService, 'getSchoolScore')
+      spyOn(resultService, 'getSchoolScore').and.returnValue({ score: 5.25 })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible').and.returnValue(true)
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -120,11 +148,12 @@ describe('results controller:', () => {
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
       spyOn(resultService, 'getPupilsWithResults')
-      spyOn(resultService, 'getSchoolScore')
+      spyOn(resultService, 'getSchoolScore').and.returnValue({ score: 5.25 })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessible').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
