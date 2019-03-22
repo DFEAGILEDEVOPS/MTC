@@ -122,7 +122,8 @@ checkStartService.prepareCheck2 = async function (
   pupilIds,
   dfeNumber,
   schoolId,
-  isLiveCheck
+  isLiveCheck,
+  schoolTimezone = null
 ) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
@@ -177,7 +178,8 @@ checkStartService.prepareCheck2 = async function (
       allForms,
       usedFormIds,
       isLiveCheck,
-      schoolId
+      schoolId,
+      schoolTimezone
     )
     checks.push(c)
   }
@@ -267,7 +269,8 @@ checkStartService.initialisePupilCheck = async function (
   availableForms,
   usedFormIds,
   isLiveCheck,
-  schoolId = null
+  schoolId = null,
+  schoolTimezone = null
 ) {
   const checkForm = await checkFormService.allocateCheckForm(
     availableForms,
@@ -294,7 +297,7 @@ checkStartService.initialisePupilCheck = async function (
   }
 
   if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-    checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime()
+    checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime(schoolTimezone)
     checkData.school_id = schoolId
   }
 

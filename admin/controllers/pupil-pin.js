@@ -165,7 +165,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
-      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck)
+      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
     }
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
