@@ -4,6 +4,8 @@ const config = require('../../../config')
 
 module.exports.generateSql = function () {
   return `
+    REVOKE SELECT ON [mtc_admin].[school] TO [${config.Sql.PupilCensus.Username}];
+    GO
     REVOKE UPDATE,INSERT ON [mtc_admin].[pupil] TO [${config.Sql.PupilCensus.Username}];
     GO
     REVOKE CONTROL ON schema::[mtc_census_import] TO [${config.Sql.PupilCensus.Username}];

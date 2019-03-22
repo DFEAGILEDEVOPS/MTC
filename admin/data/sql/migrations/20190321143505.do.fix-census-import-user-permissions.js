@@ -12,6 +12,8 @@ module.exports.generateSql = function () {
     GO    
     GRANT CONTROL ON schema::[mtc_census_import] TO [${config.Sql.PupilCensus.Username}];
     GO    
-    GRANT UPDATE,INSERT ON [mtc_admin].[pupil] TO [${config.Sql.PupilCensus.Username}];    
+    GRANT UPDATE,INSERT ON [mtc_admin].[pupil] TO [${config.Sql.PupilCensus.Username}];
+    GO
+    GRANT SELECT ON [mtc_admin].[school] TO [${config.Sql.PupilCensus.Username}];
     `
 }
