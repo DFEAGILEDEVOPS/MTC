@@ -359,7 +359,15 @@ class SqlDbHelper
       sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
       result = SQL_CLIENT.execute(sql)
       result.do
-    end
+  end
+
+  def self.get_pupil_with_no_attandance_code(school_id)
+    sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
 
   def self.get_default_assigned_fam_form
     sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
