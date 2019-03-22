@@ -2,7 +2,7 @@ import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 import { clone, path } from 'ramda'
 import * as winston from 'winston'
-import * as moment from 'moment-timezone'
+import * as moment from 'moment'
 import * as azureQueueService from './azure-queue.service'
 require('../config')
 
@@ -53,11 +53,10 @@ export const pupilAuthenticationService = {
       throw new Error(`PIN expiry is missing ${result.checkCode._}`)
     }
 
-    const school = JSON.parse(result.school._)
-    const pinExpires = moment.tz(moment(result.pinExpiresAt._).format('YYYY-MM-DDTHH:mm:ss.SSS'), school.timezone)
-    const now = moment.tz(school.timezone)
+    const pinExpires = moment(result.pinExpiresAt._)
+    const now = moment()
 
-    if (now.isAfter(pinExpires)) {
+    if (pinExpires.isBefore(now)) {
       throw new Error(`PIN has expired ${result.checkCode._}`)
     }
 
