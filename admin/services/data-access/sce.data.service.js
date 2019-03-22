@@ -105,8 +105,8 @@ sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
   const params = []
   schools.map((school, index) => {
     params.push({ name: `schoolId${index}`, value: school.id, type: TYPES.Int })
-    params.push({ name: `timezone${index}`, value: school.timezone, type: TYPES.NVarChar })
-    params.push({ name: `countryCode${index}`, value: school.countryCode, type: TYPES.Char })
+    params.push({ name: `timezone${index}`, value: school.timezone || '', type: TYPES.NVarChar })
+    params.push({ name: `countryCode${index}`, value: school.countryCode || '', type: TYPES.Char })
   })
   const exec = 'EXEC [mtc_admin].[spUpsertSceSchools] @tvp'
   const insertSql = insertHeader + inserts.join(',\n')
