@@ -175,7 +175,7 @@ const controller = {
       if (validationError.hasError()) {
         return controller.getUploadPupilCensus(req, res, next, validationError)
       }
-      await pupilCensusService.upload(uploadFile)
+      await pupilCensusService.upload2(uploadFile)
     } catch (error) {
       return next(error)
     }
