@@ -72,6 +72,5 @@ module.exports.sqlUpsertCensusImportTableData = async (context, censusTable) => 
   `
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
-  console.log('RESULT', result)
   return result
 }
