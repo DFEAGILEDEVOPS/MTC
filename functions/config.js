@@ -22,8 +22,8 @@ module.exports = {
       Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
     },
     PupilCensus: {
-      Username: process.env.SQL_PUPIL_CENSUS_USER || 'sa', // docker default
-      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r' // docker default
+      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
+      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
