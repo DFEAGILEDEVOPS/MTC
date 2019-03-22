@@ -411,8 +411,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
       },
       school: {
         id: o.school_id,
-        name: o.school_name,
-        timezone: o.timezone
+        name: o.school_name
       },
       tokens: {
         checkStarted: {
