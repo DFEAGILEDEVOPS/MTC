@@ -15,7 +15,7 @@ const v1 = {
 
   handleCensusImport: async function (context, blob) {
     const blobContent = csvString.parse(blob.toString())
-    const censusTable = `[mtc_admin].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`
+    const censusTable = `[mtc_admin].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     const result = await censusImportDataService.sqlCreateCensusImportTable(context, censusTable, blobContent)
     await censusImportDataService.sqlUpsertCensusImportTableData(context, censusTable)
     return result
