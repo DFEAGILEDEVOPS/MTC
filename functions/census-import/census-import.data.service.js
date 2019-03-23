@@ -68,7 +68,7 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
     await this.initPool(context)
   }
   const sql = `
-  DECLARE @citt  mtc_census_import.censusImportTableType
+  DECLARE @citt mtc_census_import.censusImportTableType
   INSERT INTO @citt SELECT * FROM ${censusTable}
   EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt
   `
@@ -84,6 +84,6 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
  * @return {Object}
  */
 module.exports.sqlDeleteStagingTable = async (context, censusTable) => {
-  const sql = `DROP TABLE ${censusTable}`
+  const sql = `DROP TABLE ${censusTable};`
   return sqlService.modify(sql)
 }
