@@ -16,9 +16,10 @@ const v1 = {
   },
 
   handleCensusImport: async function (context, blob) {
-    const jobUrlSlug = R.compose(arr => arr[arr.length - 1], r => r.split('/'))(context.bindingData.uri)
+    // const jobUrlSlug = R.compose(arr => arr[arr.length - 1], r => r.split('/'))(context.bindingData.uri)
+
     // Update job status to Processing
-    await jobDataService.sqlUpdateStatus(jobUrlSlug, 'PRC')
+    // await jobDataService.sqlUpdateStatus(jobUrlSlug, 'PRC')
 
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
