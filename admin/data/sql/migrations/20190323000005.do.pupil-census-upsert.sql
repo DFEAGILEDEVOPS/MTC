@@ -23,6 +23,9 @@ AS
   DECLARE @gender NVARCHAR(max)
   DECLARE @dateOfBirth NVARCHAR(max)
   DECLARE @upn NVARCHAR(max)
+  DECLARE @insertCount INT = 0
+  DECLARE @errorCount INT = 0
+  DECLARE @errorText NVARCHAR(max) = ''
 
   BEGIN TRY
   BEGIN TRANSACTION
@@ -42,13 +45,17 @@ AS
         (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn)
         VALUES
         (@schoolId, @foreName, @middleNames, @lastName, @gender, CONVERT(DATETIMEOFFSET, @dateOfBirth, 103), @upn);
+
+        SET @insertCount += 1;
     END TRY
     BEGIN CATCH
+        SET @errorCount += 1;
         PRINT 'ERROR dob is ' + CONVERT(VARCHAR, @dateOfBirth)
     END CATCH
     FETCH Source INTO @schoolId, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   END
 
+  SELECT @insertCount as insertCount, @errorCount as errorCount, @errorText as errorText;
   COMMIT TRANSACTION
 
   CLOSE Source

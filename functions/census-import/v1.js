@@ -23,11 +23,15 @@ const v1 = {
 
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
-    const result = await censusImportDataService.sqlLoadStagingTable(context, censusTable, blobContent)
-    await censusImportDataService.sqlLoadPupilsFromStaging(context, censusTable)
+    const stagingInsertCount = await censusImportDataService.sqlLoadStagingTable(context, censusTable, blobContent)
+    const pupilMeta = await censusImportDataService.sqlLoadPupilsFromStaging(context, censusTable)
     await censusImportDataService.sqlDeleteStagingTable(context, censusTable)
 
-    return result
+    if (stagingInsertCount !== pupilMeta['insertCount']) {
+      context.log.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta['insertCount']} rows inserted to pupil table`)
+    }
+
+    return pupilMeta['insertCount']
   }
 }
 

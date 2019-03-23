@@ -1,5 +1,6 @@
 const mssql = require('mssql')
 const config = require('../config')
+const R = require('ramda')
 
 let pool
 
@@ -73,7 +74,7 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
   `
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
-  return result
+  return R.head(result.recordset)
 }
 
 /**
