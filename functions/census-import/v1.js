@@ -23,9 +23,10 @@ const v1 = {
 
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
-    const result = await censusImportDataService.sqlLoadStagingTable(context, censusTable, blobContent)
-    await censusImportDataService.sqlLoadPupilsFromStaging(context, censusTable)
-    await censusImportDataService.sqlDeleteStagingTable(context, censusTable)
+    const pool = await censusImportDataService.initPool(context)
+    const result = await censusImportDataService.sqlLoadStagingTable(context, pool, censusTable, blobContent)
+    await censusImportDataService.sqlLoadPupilsFromStaging(context, pool, censusTable)
+    await censusImportDataService.sqlDeleteStagingTable(context, pool, censusTable)
 
     return result
   }
