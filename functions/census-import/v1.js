@@ -25,6 +25,8 @@ const v1 = {
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     const result = await censusImportDataService.sqlLoadStagingTable(context, censusTable, blobContent)
     await censusImportDataService.sqlLoadPupilsFromStaging(context, censusTable)
+    await censusImportDataService.sqlDeleteStagingTable(context, censusTable)
+
     return result
   }
 }

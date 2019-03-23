@@ -1,5 +1,7 @@
 const mssql = require('mssql')
 const config = require('../config')
+const sqlService = require('less-tedious')
+
 let pool
 
 module.exports.initPool = async function initPool (context) {
@@ -30,7 +32,7 @@ module.exports.initPool = async function initPool (context) {
 }
 
 /**
- * Create census import table
+ * Create census import staging table
  * @param {Object} context
  * @param {String} censusTable
  * @param {Array} blobContent
@@ -73,4 +75,15 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
   return result
+}
+
+/**
+ * Delete census import staging table
+ * @param {Object} context
+ * @param {String} censusTable
+ * @return {Object}
+ */
+module.exports.sqlDeleteStagingTable = async (context, censusTable) => {
+  const sql = `DROP TABLE ${censusTable}`
+  return sqlService.modify(sql)
 }
