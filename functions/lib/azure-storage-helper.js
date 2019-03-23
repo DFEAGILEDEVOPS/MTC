@@ -9,6 +9,7 @@ const R = require('ramda')
 const preparedCheckTable = 'preparedCheck'
 let azureTableService
 let azureQueueService
+let azureBlobService
 
 const azureStorageHelper = {
   getFromPreparedCheckTableStorage: async function getFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
@@ -113,6 +114,35 @@ const azureStorageHelper = {
     })
 
     return azureQueueService
+  },
+
+  /**
+   * Promisify the azureBlobService
+   * @return {*}
+   */
+  getPromisifiedAzureBlobService: function getPromisifiedAzureBlobService () {
+    if (azureBlobService) {
+      return azureBlobService
+    }
+    azureBlobService = azureStorage.createBlobService()
+    bluebird.promisifyAll(azureBlobService, {
+      promisifier: (originalFunction) => function (...args) {
+        return new Promise((resolve, reject) => {
+          try {
+            originalFunction.call(this, ...args, (error, result, response) => {
+              if (error) {
+                return reject(error)
+              }
+              resolve({ result, response })
+            })
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
+    })
+
+    return azureBlobService
   },
 
   /**
