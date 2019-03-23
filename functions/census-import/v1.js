@@ -5,6 +5,7 @@ const moment = require('moment')
 const uuidv4 = require('uuid/v4')
 
 const censusImportDataService = require('./census-import.data.service')
+const azureStorageHelper = require('../lib/azure-storage-helper')
 // const jobDataService = require('./job.data.service')
 
 const v1 = {
@@ -26,7 +27,10 @@ const v1 = {
     const pool = await censusImportDataService.initPool(context)
     const stagingInsertCount = await censusImportDataService.sqlLoadStagingTable(context, pool, censusTable, blobContent)
     const pupilMeta = await censusImportDataService.sqlLoadPupilsFromStaging(context, pool, censusTable)
+
     await censusImportDataService.sqlDeleteStagingTable(context, pool, censusTable)
+    const azureBlobService = azureStorageHelper.getPromisifiedAzureBlobService()
+    await azureBlobService.deleteContainerAsync('census')
 
     if (stagingInsertCount !== pupilMeta['insertCount']) {
       context.log.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta['insertCount']} rows inserted to pupil table`)
