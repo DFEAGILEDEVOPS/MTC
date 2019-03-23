@@ -5,7 +5,7 @@ const R = require('ramda')
 const uuidv4 = require('uuid/v4')
 
 const censusImportDataService = require('./census-import.data.service')
-const jobDataService = require('./job.data.service')
+// const jobDataService = require('./job.data.service')
 
 const v1 = {
   process: async function (context, blob) {
