@@ -40,7 +40,7 @@ module.exports.sqlCreateCensusImportTable = async (context, censusTable, blobCon
   if (!pool) {
     await this.initPool(context)
   }
-  const table = new mssql.Table(censusTable)
+  const table = new mssql.Table(`[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`)
   table.create = true
   table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
   table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
