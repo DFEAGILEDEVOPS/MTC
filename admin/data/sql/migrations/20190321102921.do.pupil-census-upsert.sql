@@ -1,4 +1,4 @@
-CREATE PROCEDURE [mtc_admin].[spPupilCensusImportFromStaging]
+CREATE PROCEDURE [mtc_census_import].[spPupilCensusImportFromStaging]
   (
     @censusImportTable AS censusImportTableType READONLY
   )
@@ -28,12 +28,10 @@ AS
   BEGIN TRANSACTION
 
   -- Delete all existing pupils not registered to test schools
-  PRINT CONVERT(VARCHAR, GETUTCDATE()) + ' Delete Starting';
   DELETE FROM [mtc_admin].[pupil]
   FROM [mtc_admin].[pupil] p
   INNER JOIN [mtc_admin].[school] s ON (p.school_id = s.id)
   WHERE s.leaCode <> 999;
-  PRINT CONVERT(VARCHAR, GETUTCDATE()) + ' Delete complete';
 
   -- Insert all new pupils
   OPEN Source

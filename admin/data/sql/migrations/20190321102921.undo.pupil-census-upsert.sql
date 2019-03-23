@@ -1,1 +1,1 @@
-DROP PROCEDURE [mtc_admin].spPupilCensusUpsert
+DROP PROCEDURE [mtc_census_import].[spPupilCensusImportFromStaging];
