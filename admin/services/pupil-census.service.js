@@ -12,6 +12,15 @@ const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const pupilCensusService = {}
 
+const jobStatuses = {
+  completedWithErrors: 'CWR',
+  completed: 'COM',
+  failed: 'FLD',
+  processed: 'PRC',
+  removed: 'DEL',
+  submitted: 'SUB'
+}
+
 /**
  * Checks pupil census file for errors
  * @param {Object} uploadFile
@@ -71,12 +80,16 @@ pupilCensusService.upload = async (uploadFile) => {
 pupilCensusService.upload2 = async (uploadFile) => {
   const stream = fs.createReadStream(uploadFile.file)
   const job = await pupilCensusService.create(uploadFile)
-  if (!job || !job.insertId) {
+  if (!job || !job.id || !job.urlSlug) {
     throw new Error('Job has not been created')
   }
-  await azureBlobDataService.createContainerIfNotExistsAsync('census')
-  const result = await azureBlobDataService.createBlockBlobFromStreamAsync('census', uploadFile.filename, stream, stream.bytesRead)
-  pupilCensusService.updateJobOutput2(job.insertId, result)
+  try {
+    await azureBlobDataService.createContainerIfNotExistsAsync('census')
+    await azureBlobDataService.createBlockBlobFromStreamAsync('census', job.urlSlug, stream, stream.bytesRead)
+  } catch (error) {
+    await jobDataService.sqlUpdateStatus(job.urlSlug, 'FLD')
+    throw new Error(error)
+  }
 }
 
 /**
@@ -111,18 +124,6 @@ pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
 }
 
 /**
- * Updates the output of a pupilCensus record 2
- * @param {Number} jobId
- * @param {Object} submissionResult
- * @returns {Promise.<void>}
- */
-pupilCensusService.updateJobOutput2 = async (jobId, submissionResult) => {
-  const jobStatusCode = submissionResult && submissionResult.name ? 'SUB' : 'FLD'
-  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
-  await jobDataService.sqlUpdate(jobId, jobStatus.id, 'Submitted')
-}
-
-/**
  * Gets existing pupil census file
  * @return {Object}
  */
@@ -130,39 +131,23 @@ pupilCensusService.getUploadedFile = async () => {
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
   const pupilCensus = await jobDataService.sqlFindLatestByTypeId(jobType.id)
   if (!pupilCensus) return
-  const jobStatusId = pupilCensus.jobStatus_id
-  if (!jobStatusId) {
+  if (!pupilCensus.jobStatusDescription || !pupilCensus.jobStatusCode) {
     throw new Error('Pupil census record does not have a job status reference')
   }
-  const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  if (!jobStatus) {
-    throw new Error(`There is no job status for job status id ${jobStatusId}`)
-  }
-  const completedWithErrors = 'CWR'
-  const deleted = 'DEL'
-  const submitted = 'SUB'
   let outcome
-  switch (jobStatus.jobStatusCode) {
-    case submitted:
-      outcome = pupilCensus.jobOutput
-      break
-    case deleted:
-      outcome = jobStatus.description
-      break
-    case completedWithErrors:
-      outcome = pupilCensus.errorOutput
-      break
-    default:
-      outcome = `${jobStatus.description} : ${pupilCensus.jobOutput}`
+  if (pupilCensus.jobStatusCode !== jobStatuses.completedWithErrors || pupilCensus.jobStatusCode !== jobStatuses.failed) {
+    outcome = pupilCensus.jobStatusDescription
+  } else {
+    outcome = pupilCensus.errorOutput || `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''}`
   }
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
-  pupilCensus.jobStatusCode = jobStatus.jobStatusCode
   return pupilCensus
 }
 
 /**
  * Remove a pupil census file record
+ * @deprecated
  * @param {String} pupilCensusId
  * @return {Object}
  */

@@ -155,7 +155,7 @@ const controller = {
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      pupilCensus: pupilCensus,
+      pupilCensus,
       templateFileSize,
       fileErrors: error || new ValidationError()
     })
@@ -290,6 +290,7 @@ const controller = {
 
   /**
    * Soft delete a check window by id.
+   * @deprecated
    * @param req
    * @param res
    * @param next
