@@ -1,4 +1,4 @@
-ALTER PROCEDURE [mtc_census_import].[spPupilCensusImportFromStaging]
+CREATE PROCEDURE [mtc_census_import].[spPupilCensusImportFromStaging]
   (
     @censusImportTable AS censusImportTableType READONLY
   )
@@ -6,6 +6,7 @@ AS
   DECLARE Source CURSOR
     FOR SELECT
           school.id,
+          school.dfeNumber,
           census.foreName,
           census.middlenames,
           census.surname as lastName,
@@ -27,6 +28,7 @@ AS
   DECLARE @errorCount INT = 0
   DECLARE @lineCount INT = 0
   DECLARE @errorText NVARCHAR(max) = ''
+  DECLARE @dfeNumber INT
 
 
   -- Delete all existing pupils not registered to test schools
@@ -37,7 +39,7 @@ AS
 
   -- Insert all new pupils
   OPEN Source
-  FETCH Source INTO @schoolId, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
+  FETCH Source INTO @schoolId, @dfeNumber, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   WHILE (@@FETCH_STATUS = 0) BEGIN
     BEGIN TRY
         SET @lineCount += 1;
@@ -52,12 +54,11 @@ AS
         IF LEN(@errorText) > 0
           SET @errorText += '\n'
         IF (@errorCount <=  100)
-          SET @errorText += 'Error inserting pupil for dfeNumber %d, line ' + CONVERT(VARCHAR, @lineCount + 1) + ': ' + ERROR_MESSAGE()
+          SET @errorText += 'Error inserting pupil for dfeNumber ' + CONVERT(VARCHAR, @dfeNumber) + ', line ' + CONVERT(VARCHAR, @lineCount + 1) + ': ' + ERROR_MESSAGE()
         ELSE IF @errorCount = 101
-          SET @errorText = 'Too many errors; errors may have been ommitted'
-
+          SET @errorText = 'Too many errors; remaining errors have been omitted'
     END CATCH
-    FETCH Source INTO @schoolId, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
+    FETCH Source INTO @schoolId, @dfeNumber, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   END
 
   SELECT @insertCount as insertCount, @errorCount as errorCount, @errorText as errorText;
