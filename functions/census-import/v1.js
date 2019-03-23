@@ -1,7 +1,7 @@
 'use strict'
 const csvString = require('csv-string')
 const moment = require('moment')
-const R = require('ramda')
+// const R = require('ramda')
 const uuidv4 = require('uuid/v4')
 
 const censusImportDataService = require('./census-import.data.service')
