@@ -66,9 +66,9 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
     await this.initPool(context)
   }
   const sql = `
-  DECLARE @citt mtc_admin.censusImportTableType
+  DECLARE @citt  mtc_census_import.censusImportTableType
   INSERT INTO @citt SELECT * FROM ${censusTable}
-  EXEC mtc_admin.spPupilCensusImportFromStaging @censusImportTable = @citt
+  EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt
   `
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
