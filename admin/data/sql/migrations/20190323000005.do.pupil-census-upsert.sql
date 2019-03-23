@@ -25,6 +25,7 @@ AS
   DECLARE @upn NVARCHAR(max)
   DECLARE @insertCount INT = 0
   DECLARE @errorCount INT = 0
+  DECLARE @lineCount INT = 0
   DECLARE @errorText NVARCHAR(max) = ''
 
 
@@ -39,15 +40,22 @@ AS
   FETCH Source INTO @schoolId, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   WHILE (@@FETCH_STATUS = 0) BEGIN
     BEGIN TRY
+        SET @lineCount += 1;
         INSERT INTO [mtc_admin].[pupil]
         (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn)
         VALUES
         (@schoolId, @foreName, @middleNames, @lastName, @gender, CONVERT(DATETIMEOFFSET, @dateOfBirth, 103), @upn);
-
         SET @insertCount += 1;
     END TRY
     BEGIN CATCH
         SET @errorCount += 1;
+        IF LEN(@errorText) > 0
+          SET @errorText += '\n'
+        IF (@errorCount <=  100)
+          SET @errorText += 'Error inserting pupil for dfeNumber %d, line ' + CONVERT(VARCHAR, @lineCount + 1) + ': ' + ERROR_MESSAGE()
+        ELSE IF @errorCount = 101
+          SET @errorText = 'Too many errors; errors may have been ommitted'
+
     END CATCH
     FETCH Source INTO @schoolId, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   END
