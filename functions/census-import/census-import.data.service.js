@@ -34,11 +34,12 @@ module.exports.initPool = async function initPool (context) {
 /**
  * Create census import staging table
  * @param {Object} context
+ * @param {Object} pool
  * @param {String} censusTable
  * @param {Array} blobContent
  * @return {Object}
  */
-module.exports.sqlLoadStagingTable = async (context, censusTable, blobContent) => {
+module.exports.sqlLoadStagingTable = async (context, pool, censusTable, blobContent) => {
   if (!pool) {
     await this.initPool(context)
   }
@@ -63,7 +64,14 @@ module.exports.sqlLoadStagingTable = async (context, censusTable, blobContent) =
   return result.rowsAffected
 }
 
-module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
+/**
+ * Execute store procedure to load pupils from staging to pupils table
+ * @param {Object} context
+ * @param {Object} pool
+ * @param {String} censusTable
+ * @return {Object}
+ */
+module.exports.sqlLoadPupilsFromStaging = async (context, pool, censusTable) => {
   if (!pool) {
     await this.initPool(context)
   }
@@ -80,10 +88,11 @@ module.exports.sqlLoadPupilsFromStaging = async (context, censusTable) => {
 /**
  * Delete census import staging table
  * @param {Object} context
+ * @param {Object} pool
  * @param {String} censusTable
  * @return {Object}
  */
-module.exports.sqlDeleteStagingTable = async (context, censusTable) => {
+module.exports.sqlDeleteStagingTable = async (context, pool, censusTable) => {
   const request = new mssql.Request(pool)
   const sql = `DROP TABLE ${censusTable};`
   return request.query(sql)
