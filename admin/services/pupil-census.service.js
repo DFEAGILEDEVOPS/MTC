@@ -76,7 +76,8 @@ pupilCensusService.upload2 = async (uploadFile) => {
   }
   try {
     await azureBlobDataService.createContainerIfNotExistsAsync('census')
-    return azureBlobDataService.createBlockBlobFromStreamAsync('census', job.urlSlug, stream, stream.bytesRead)
+    await azureBlobDataService.createBlockBlobFromStreamAsync('census', job.urlSlug, stream, stream.bytesRead)
+    return
   } catch (error) {
     await jobDataService.sqlUpdateStatus(job.urlSlug, 'FLD')
     throw new Error(error)
