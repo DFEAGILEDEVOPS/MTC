@@ -136,7 +136,7 @@ pupilCensusService.getUploadedFile = async () => {
   }
   let outcome
   if (pupilCensus.jobStatusCode !== jobStatuses.completedWithErrors || pupilCensus.jobStatusCode !== jobStatuses.failed) {
-    outcome = pupilCensus.jobStatusDescription
+    outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''}`
   } else {
     outcome = pupilCensus.errorOutput || `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''}`
   }
