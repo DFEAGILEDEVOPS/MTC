@@ -51,12 +51,15 @@ AS
     END TRY
     BEGIN CATCH
         SET @errorCount += 1;
-        IF LEN(@errorText) > 0
-          SET @errorText += '\n'
+
         IF (@errorCount <=  100)
+        BEGIN
+          IF LEN(@errorText) > 0
+            SET @errorText += '\n'
           SET @errorText += 'Error inserting pupil for dfeNumber ' + CONVERT(VARCHAR, @dfeNumber) + ', line ' + CONVERT(VARCHAR, @lineCount + 1) + ': ' + ERROR_MESSAGE()
+        END
         ELSE IF @errorCount = 101
-          SET @errorText = 'Too many errors; remaining errors have been omitted'
+          SET @errorText += '\n\nToo many errors; remaining errors have been omitted'
     END CATCH
     FETCH Source INTO @schoolId, @dfeNumber, @foreName, @middleNames, @lastName, @gender, @dateOfBirth, @upn
   END
