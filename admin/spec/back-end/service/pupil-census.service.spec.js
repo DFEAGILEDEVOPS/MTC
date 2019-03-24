@@ -147,7 +147,7 @@ describe('pupilCensusService', () => {
         await pupilCensusService.upload2(pupilCensusUploadMock)
         fail()
       } catch (error) {
-        expect(error.message).toBe('Error: error')
+        expect(error.message).toBe('error')
       }
       expect(pupilCensusService.create).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
