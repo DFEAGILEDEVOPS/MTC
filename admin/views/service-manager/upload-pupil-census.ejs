@@ -102,12 +102,17 @@
         </span>
     <dl class="pupil-census-uploaded-file">
       <% if (pupilCensus) { %>
-      <dd><span class="nowrap"><%= pupilCensus.csvName %></span></dd>
+      <dd><span><%= pupilCensus.csvName %></span></dd>
       <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
       <% } else { %>
       <dd><span class="no-file-uploaded">No file uploaded</span></dd>
       <% } %>
     </dl>
+    <% if (pupilCensus && pupilCensus.dbErrorText) { %>
+      <span>
+        <%- pupilCensus.dbErrorText %>
+      </span>
+    <% } %>
     </form>
   </div>
 </div>

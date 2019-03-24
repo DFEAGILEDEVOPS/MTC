@@ -124,9 +124,10 @@ pupilCensusService.getUploadedFile = async () => {
   if (!pupilCensus.jobStatusDescription || !pupilCensus.jobStatusCode) {
     throw new Error('Pupil census record does not have a job status reference')
   }
-  let outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''} ${pupilCensus.errorOutput ? `: ${pupilCensus.errorOutput}` : ''}`
+  let outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? pupilCensus.jobOutput : ''}`
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
+  pupilCensus.dbErrorText = pupilCensus.errorOutput && pupilCensus.errorOutput.replace(/\n/g, '<br><br>')
   return pupilCensus
 }
 
