@@ -1,21 +1,15 @@
-const moment = require('moment')
 const mssql = require('mssql')
-const uuidv4 = require('uuid/v4')
-
 const config = require('../config')
+const R = require('ramda')
 
-/**
- * Create census import table
- * @param {Object} context
- * @param {Array} blobContent
- * @return {Object}
- */
-module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
+let pool
+
+module.exports.initPool = async function initPool (context) {
   const poolConfig = {
     database: config.Sql.Database,
     server: config.Sql.Server,
     port: config.Sql.Port,
-    requestTimeout: config.Sql.Timeout,
+    requestTimeout: 10 * 60 * 1000,
     connectionTimeout: config.Sql.Timeout,
     user: config.Sql.PupilCensus.Username,
     password: config.Sql.PupilCensus.Password,
@@ -29,13 +23,27 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
     }
   }
 
-  const pool = new mssql.ConnectionPool(poolConfig)
+  pool = new mssql.ConnectionPool(poolConfig)
   pool.on('error', err => {
     context.log('SQL Pool Error:', err)
   })
   await pool.connect()
+  return pool
+}
 
-  const table = new mssql.Table(`[mtc_census_import].[census-import-${moment.utc().format('YYYYMMDDHHMMSS')}-${uuidv4()}]`)
+/**
+ * Create census import staging table
+ * @param {Object} context
+ * @param {Object} pool
+ * @param {String} censusTable
+ * @param {Array} blobContent
+ * @return {Object}
+ */
+module.exports.sqlLoadStagingTable = async (context, pool, censusTable, blobContent) => {
+  if (!pool) {
+    await this.initPool(context)
+  }
+  const table = new mssql.Table(censusTable)
   table.create = true
   table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
   table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
@@ -54,4 +62,38 @@ module.exports.sqlCreateCensusImportTable = async (context, blobContent) => {
   const request = new mssql.Request(pool)
   const result = await request.bulk(table)
   return result.rowsAffected
+}
+
+/**
+ * Execute store procedure to load pupils from staging to pupils table
+ * @param {Object} context
+ * @param {Object} pool
+ * @param {String} censusTable
+ * @return {Object}
+ */
+module.exports.sqlLoadPupilsFromStaging = async (context, pool, censusTable) => {
+  if (!pool) {
+    await this.initPool(context)
+  }
+  const sql = `
+  DECLARE @citt mtc_census_import.censusImportTableType
+  INSERT INTO @citt SELECT * FROM ${censusTable}
+  EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt
+  `
+  const request = new mssql.Request(pool)
+  const result = await request.query(sql)
+  return R.head(result.recordset)
+}
+
+/**
+ * Delete census import staging table
+ * @param {Object} context
+ * @param {Object} pool
+ * @param {String} censusTable
+ * @return {Object}
+ */
+module.exports.sqlDeleteStagingTable = async (context, pool, censusTable) => {
+  const request = new mssql.Request(pool)
+  const sql = `DROP TABLE ${censusTable};`
+  return request.query(sql)
 }
