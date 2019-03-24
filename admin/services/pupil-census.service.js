@@ -12,15 +12,6 @@ const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const pupilCensusService = {}
 
-const jobStatuses = {
-  completedWithErrors: 'CWR',
-  completed: 'COM',
-  failed: 'FLD',
-  processed: 'PRC',
-  removed: 'DEL',
-  submitted: 'SUB'
-}
-
 /**
  * Checks pupil census file for errors
  * @param {Object} uploadFile
