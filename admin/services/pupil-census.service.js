@@ -134,12 +134,7 @@ pupilCensusService.getUploadedFile = async () => {
   if (!pupilCensus.jobStatusDescription || !pupilCensus.jobStatusCode) {
     throw new Error('Pupil census record does not have a job status reference')
   }
-  let outcome
-  if (pupilCensus.jobStatusCode !== jobStatuses.completedWithErrors || pupilCensus.jobStatusCode !== jobStatuses.failed) {
-    outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''}`
-  } else {
-    outcome = pupilCensus.errorOutput || `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''}`
-  }
+  let outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? `: ${pupilCensus.jobOutput}` : ''} ${pupilCensus.errorOutput ? `: ${pupilCensus.errorOutput}` : ''}`
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
   return pupilCensus
