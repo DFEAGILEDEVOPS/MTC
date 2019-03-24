@@ -26,10 +26,10 @@ jobDataService.sqlUpdateStatus = async (pool, urlSlug, jobStatusCode, jobOutput 
   WHERE urlSlug=@urlSlug`
 
   const request = new mssql.Request(pool)
-  request.input('urlSlug', sql.UniqueIdentifier, urlSlug)
-  request.input('jobStatusCode', sql.Char, jobStatusCode)
-  request.input('jobOutput', sql.NVarChar, jobOutput)
-  request.input('errorOutput', sql.NVarChar, errorOutput)
+  request.input('urlSlug', mssql.UniqueIdentifier, urlSlug)
+  request.input('jobStatusCode', mssql.Char(3), jobStatusCode)
+  request.input('jobOutput', mssql.NVarChar(mssql.MAX), jobOutput)
+  request.input('errorOutput', mssql.NVarChar(mssql.MAX), errorOutput)
   return request.query(sql)
 }
 
