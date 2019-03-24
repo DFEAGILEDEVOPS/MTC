@@ -69,14 +69,13 @@ pupilCensusService.upload = async (uploadFile) => {
  * @return {Promise<void>}
  */
 pupilCensusService.upload2 = async (uploadFile) => {
-  const stream = fs.createReadStream(uploadFile.file)
   const job = await pupilCensusService.create(uploadFile)
   if (!job || !job.id || !job.urlSlug) {
     throw new Error('Job has not been created')
   }
   try {
     await azureBlobDataService.createContainerIfNotExistsAsync('census')
-    await azureBlobDataService.createBlockBlobFromStreamAsync('census', job.urlSlug, stream, stream.bytesRead)
+    await azureBlobDataService.createBlockBlobFromLocalFileAsync('census', job.urlSlug, uploadFile.file)
   } catch (error) {
     await jobDataService.sqlUpdateStatus(job.urlSlug, 'FLD')
     throw new Error(error)
