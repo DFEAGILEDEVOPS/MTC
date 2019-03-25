@@ -53,7 +53,7 @@
                             <input type="hidden" name="urn" value="<%= s.urn %>" />
                             <select class="form-control timezone"
                                 id="timezone"
-                                name="timezone">
+                                name="timezone[<%= s.urn %>]">
                                 <option value="" <% if (s.timezone === '') { %>selected="selected"<% } %>></option>
                                 <% countriesTzData.map(t => { %>
                                 <option value="<%= t.countryCode %>|<%= t.zone %>" <% if (t.zone === s.timezone && t.countryCode === s.countryCode) { %>selected="selected"<% } %>><%= t.name %></option>

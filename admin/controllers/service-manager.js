@@ -360,7 +360,7 @@ const controller = {
     const sceSchools = await sceService.getSceSchools()
     try {
       req.body.urn.forEach((urn, i) => {
-        const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone[i])
+        const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone[urn])
         const schoolIndex = sceSchools.findIndex(s => s.urn.toString() === urn)
         sceSchools[schoolIndex].timezone = timezone
         sceSchools[schoolIndex].countryCode = countryCode
