@@ -21,21 +21,28 @@ Then(/^I should see an area where it displays files uploaded$/) do
 end
 
 When(/^I have chosen a file to submit$/) do
-  driver = page.driver.browser
-  driver.file_detector = lambda do |args|
-    str = args.first.to_s
-    str if File.exist?(str)
-  end if Capybara.current_driver.to_s.include? 'bs_'
   @file_name = "pupil-census-data-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
-  upload_pupil_census_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/pupil-census-data.csv')))
-  page.attach_file('csvPupilCensusFile', File.expand_path("#{@file_path}"))
+
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  @old_date1 = dobs[0]
+  @old_date2 = dobs[1]
+  @upn = UpnGenerator.generate
+  @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  pupil_detail_array = ["881", "2879", @upn, @pupil_name, @pupil_name, @pupil_name, "F", @old_date1]
+
+  @upn2 = UpnGenerator.generate
+  pupil_detail_array2 = ["881", "2879", @upn2, @pupil_name, @pupil_name, @pupil_name, "M", @old_date2]
+
+  upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click
+
   upload_and_view_forms_page.delete_csv_file(@file_path)
+
 end
 
 Then(/^I should see the file uploaded$/) do
-  expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_path.split('/').last.split('.').first
+  expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
   jobs = SqlDbHelper.get_jobs
   expect(jobs.last['jobInput']).to include @file_name.split('.').first
 end
@@ -48,7 +55,7 @@ end
 Then(/^I should see the completed status$/) do
   expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
   actual_message = upload_pupil_census_page.uploaded_file.status.text
-  expect(actual_message.include?('Completed')).to be_truthy, "Expected status: 'Completed' to be included in Actual Message: #{actual_message}"
+  expect(actual_message.include?('Submitted')).to be_truthy, "Expected status: 'Submitted' to be included in Actual Message: #{actual_message}"
 end
 
 Then(/^I should see the error status for the duplicate upn$/) do
