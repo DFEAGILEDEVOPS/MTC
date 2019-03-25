@@ -23,5 +23,15 @@ export default {
       LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
+  },
+  Redis: {
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() === 'Local-Dev' ? false : true
+  },
+  RateLimit: {
+    Threshold: process.env.RATE_LIMIT_THRESHOLD || 100,
+    Duration: 1000 * 60 // 1 minute in ms
   }
 }

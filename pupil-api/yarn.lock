@@ -2349,6 +2349,11 @@ invert-kv@^2.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
 
+ioredis-ratelimit@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ioredis-ratelimit/-/ioredis-ratelimit-2.0.1.tgz#2b70fd19b5f6d13782f5170be76b0e64ca55d1df"
+  integrity sha512-gOqvciO1TMBxWi2zlIfdICT/JXZpX4dsYktnMBV/ynRDeqbDBrmbJ/AsfYZxnOV2owc45C1uM0S+3oVuFzbvIA==
+
 ioredis@^4.9.0:
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.9.0.tgz#0c52de498363309ebd48b5f6695d9d432b0f6669"
