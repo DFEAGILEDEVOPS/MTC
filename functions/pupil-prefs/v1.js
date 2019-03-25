@@ -17,7 +17,7 @@ const pupilTable = '[pupil]'
 const schema = '[mtc_admin]'
 
 winston.level = 'error'
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 
 const v1 = {}
 
@@ -69,9 +69,9 @@ v1.process = async function (context, pupilPrefsMessage) {
 v1.updatePupilAccessArrangementsPreference = async function (checkCode, prefField, prefTable, prefCode, accessArrangementCode) {
   const sql = `UPDATE ${schema}.${pupilAccessArrangementsTable}
                SET ${prefField} = (
-                SELECT id FROM ${schema}.${prefTable} 
+                SELECT id FROM ${schema}.${prefTable}
                 WHERE code = @prefCode
-               )                
+               )
                WHERE pupil_Id = (
                   SELECT p.id FROM ${schema}.${pupilTable} p
                   INNER JOIN ${schema}.${checkTable} chk

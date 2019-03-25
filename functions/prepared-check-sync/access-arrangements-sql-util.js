@@ -8,7 +8,7 @@ const pupilTable = '[pupil]'
 const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
 const config = require('../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 
 const sqlUtil = {}
 const accessArrangementCodes = {}
