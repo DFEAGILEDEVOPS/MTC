@@ -1917,9 +1917,9 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
-"less-tedious@https://github.com/DFEAGILEDEVOPS/less-tedious#v2.0.0":
-  version "1.1.1"
-  resolved "https://github.com/DFEAGILEDEVOPS/less-tedious#931d3cfe8a86ee5796703eb3eaf003a7d0653bcc"
+"less-tedious@https://github.com/DFEAGILEDEVOPS/less-tedious#v2.0.1":
+  version "2.0.1"
+  resolved "https://github.com/DFEAGILEDEVOPS/less-tedious#03dd8b5c44d7f09548fc4d86fd4a5cbfea139c38"
   dependencies:
     dotenv "^7.0.0"
     express "^4.16.4"
