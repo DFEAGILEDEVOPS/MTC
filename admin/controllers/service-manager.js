@@ -158,7 +158,7 @@ const controller = {
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      pupilCensus: pupilCensus,
+      pupilCensus,
       templateFileSize,
       fileErrors: error || new ValidationError()
     })
@@ -178,7 +178,7 @@ const controller = {
       if (validationError.hasError()) {
         return controller.getUploadPupilCensus(req, res, next, validationError)
       }
-      await pupilCensusService.upload(uploadFile)
+      await pupilCensusService.upload2(uploadFile)
     } catch (error) {
       return next(error)
     }
@@ -293,6 +293,7 @@ const controller = {
 
   /**
    * Soft delete a check window by id.
+   * @deprecated
    * @param req
    * @param res
    * @param next

@@ -70,8 +70,8 @@ module.exports = {
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     PupilCensus: {
-      Username: process.env.SQL_PUPIL_CENSUS_USER || 'sa', // docker default
-      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r' // docker default
+      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
+      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE

@@ -41,11 +41,16 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Not taking the Check' for pupil not taking the check
 
-  @wip @bug
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Restart'
+
+  Scenario: Pupil status changes to Complete when pupil take 2nd check
+    Given I submitted pupils for Restart
+    And Pupil has taken a 2nd check
+    When I am on the Pupil Register page
+    Then I can see the status for the pupil is 'Complete'
 
   @manual
   Scenario: Pupil status is Restart when a Restart is taken and PIN is expired

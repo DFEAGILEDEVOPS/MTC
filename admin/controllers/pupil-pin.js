@@ -50,7 +50,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
 
   let error
   try {
-    error = await checkWindowSanityCheckService.check()
+    error = await checkWindowSanityCheckService.check(isLiveCheck)
   } catch (err) {
     return next(err)
   }
@@ -209,7 +209,7 @@ const getViewAndPrintPins = async (req, res, next) => {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
     school = await pinService.getActiveSchool(req.user.School)
-    error = await checkWindowSanityCheckService.check()
+    error = await checkWindowSanityCheckService.check(isLiveCheck)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)
@@ -257,7 +257,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
     school = await pinService.getActiveSchool(req.user.School)
-    error = await checkWindowSanityCheckService.check()
+    error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
