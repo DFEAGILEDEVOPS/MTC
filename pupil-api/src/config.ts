@@ -31,7 +31,8 @@ export default {
     useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   RateLimit: {
-    Threshold: process.env.RATE_LIMIT_THRESHOLD || 100,
-    Duration: 1000 * 60 // 1 minute in ms
+    Threshold: parseInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
+    Duration: parseInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
+    Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : true
   }
 }

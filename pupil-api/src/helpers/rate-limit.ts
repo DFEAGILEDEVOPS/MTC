@@ -9,7 +9,7 @@ const rateLimit = RateLimit({
     return 'ratelimit::' + req.ip
   },
 
-  // 100 requests are allowed in 1s (Duration is in millseconds)
+  // 100 requests are allowed per 60s by default (Duration is in millseconds)
   limit: config.RateLimit.Threshold,
   duration: config.RateLimit.Duration,
 
