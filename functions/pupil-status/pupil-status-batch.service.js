@@ -4,7 +4,7 @@ const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const sqlService = require('less-tedious')
 const { TYPES } = require('tedious')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 
 async function recalculatePupilStatus (context, pupilIds) {
   if (!Array.isArray(pupilIds)) {
