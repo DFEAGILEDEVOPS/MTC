@@ -70,6 +70,8 @@
         -ms-transform: rotate(180deg);
         height: pem(65px);
         font-weight: bold;
+        width: 16px;
+        white-space: nowrap;
       }
     }
     &.line-empty {
