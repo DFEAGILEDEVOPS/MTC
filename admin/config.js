@@ -125,6 +125,6 @@ module.exports = {
     Host: process.env.REDIS_HOST || 'localhost',
     Port: process.env.REDIS_PORT || 6379,
     Key: process.env.REDIS_KEY,
-    useTLS: getEnvironment() === 'Local-Dev' ? false : true
+    useTLS: getEnvironment() !== 'Local-Dev'
   }
 }

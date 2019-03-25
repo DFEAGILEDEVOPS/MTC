@@ -9,7 +9,7 @@ module.exports = {
   database: process.env.SQL_DATABASE || 'mtc',
   server: process.env.SQL_SERVER || 'localhost',
   port: process.env.SQL_PORT || 1433,
-  requestTimeout:  parseInt(process.env.SQL_TIMEOUT, 10) || oneMinuteInMilliseconds,
+  requestTimeout: parseInt(process.env.SQL_TIMEOUT, 10) || oneMinuteInMilliseconds,
   connectionTimeout: parseInt(process.env.SQL_TIMEOUT, 10) || oneMinuteInMilliseconds,
   user: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
   password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!', // docker default
