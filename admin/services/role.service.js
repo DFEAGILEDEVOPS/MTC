@@ -16,7 +16,8 @@ const service = {
       SchoolNomAA: 'TEACHER',
       Admin: 'HELPDESK',
       AdminAA: 'HELPDESK',
-      DataAdmin: 'TEST-DEVELOPER'
+      DataAdmin: 'TEST-DEVELOPER',
+      SchoolNomAAMTC: 'TEACHER'
     }
 
     let role = mapping[ncaUserType]
