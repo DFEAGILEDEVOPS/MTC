@@ -8,7 +8,12 @@ const getEnvironment = () => {
 }
 
 export default {
+  AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+  Environment: getEnvironment(),
   PORT: process.env.PORT || '3003',
+  Cors: {
+    Whitelist: process.env.CORS_WHITELIST || ''
+  },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'debug',
     Express: {
@@ -19,9 +24,14 @@ export default {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
-  Cors: {
-    Whitelist: process.env.CORS_WHITELIST || ''
+  Redis: {
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
-  Environment: getEnvironment(),
-  AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING
+  RateLimit: {
+    Threshold: process.env.RATE_LIMIT_THRESHOLD || 100,
+    Duration: 1000 * 60 // 1 minute in ms
+  }
 }
