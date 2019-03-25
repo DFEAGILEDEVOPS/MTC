@@ -18,7 +18,6 @@ class UploadPupilCensusPage < SitePrism::Page
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
     element :file, 'dd:nth-of-type(1)'
     element :status, 'dd:nth-of-type(2)'
-    element :remove, 'dd:nth-of-type(3) a'
   end
   section :removal_modal, '.modal-buttons' do
     element :yes, '.modal-confirm'
@@ -45,6 +44,16 @@ class UploadPupilCensusPage < SitePrism::Page
         page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupilCensusDataEmptyGender.csv"))
     end
   end
+
+  def upload__pupil_census(filename, pupil_array1, pupil_array2=nil)
+    CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"), 'wb') do |csv_object|
+      csv_object << ["LEA","Estab", "UPN","Surname","Forename","Middlenames","Gender","DOB"]
+      csv_object << pupil_array1
+      csv_object << pupil_array2 if !pupil_array2.nil?
+    end
+    page.attach_file('csvPupilCensusFile', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"))
+  end
+
 
 
 end
