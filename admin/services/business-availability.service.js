@@ -113,6 +113,7 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  */
 businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
   const currentDate = moment.utc()
+  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
   const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
   const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
@@ -123,8 +124,8 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
   const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
   const canEditArrangements = (!hdfSubmitted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
   const restartsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
-  const livePinsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
-  const familiarisationPinsAvailable = (!hdfSubmitted && familiarisationWindowStarted && !familiarisationWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const livePinsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed && isWithinOpeningHours) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const familiarisationPinsAvailable = (!hdfSubmitted && familiarisationWindowStarted && !familiarisationWindowClosed && isWithinOpeningHours) || config.OVERRIDE_AVAILABILITY_CHECKS
   const groupsAvailable = !checkWindowClosed || config.OVERRIDE_AVAILABILITY_CHECKS
   return {
     familiarisationWindowStarted,
