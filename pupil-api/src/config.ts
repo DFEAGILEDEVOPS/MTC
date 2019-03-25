@@ -8,7 +8,12 @@ const getEnvironment = () => {
 }
 
 export default {
+  AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+  Environment: getEnvironment(),
   PORT: process.env.PORT || '3003',
+  Cors: {
+    Whitelist: process.env.CORS_WHITELIST || ''
+  },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'debug',
     Express: {
@@ -18,10 +23,5 @@ export default {
       LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
-  },
-  Cors: {
-    Whitelist: process.env.CORS_WHITELIST || ''
-  },
-  Environment: getEnvironment(),
-  AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING
+  }
 }
