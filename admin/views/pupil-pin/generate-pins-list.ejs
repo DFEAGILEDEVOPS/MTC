@@ -28,7 +28,7 @@
 
         <%- partial('partials/_groups_filter', { groups: groups }) %>
 
-        <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off">
+        <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off" id="pupilListForm">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <% if (pupils && pupils.length > 0) { %>
             <table class="spacious reduced-top-margin" id="generatePins" role="listbox" aria-label="Select pupils.">
@@ -104,4 +104,11 @@
       ignoredStrings: []
     })
   })
+</script>
+
+<script>
+    $('#pupilListForm').on('submit', function (event) {
+        $('#stickyConfirm').prop('disabled', true);
+        return true;
+    });
 </script>
