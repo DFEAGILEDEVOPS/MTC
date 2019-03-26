@@ -34,7 +34,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const currentDate = moment.utc()
+  const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
   const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
   const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
   schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
