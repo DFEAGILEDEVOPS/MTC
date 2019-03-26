@@ -1,5 +1,5 @@
 ### STAGE 1: Build ###
-FROM node:10.6.0 as builder
+FROM node:10.14.1 as builder
 
 SHELL ["/bin/bash", "-c"]
 
