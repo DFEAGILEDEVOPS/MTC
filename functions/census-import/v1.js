@@ -22,12 +22,12 @@ const v1 = {
     const pool = await censusImportDataService.initPool(context)
 
     // Update job status to Processing
-    await jobDataService.sqlUpdateStatus(pool, jobUrlSlug, 'PRC')
+    const jobId = await jobDataService.sqlUpdateStatus(pool, jobUrlSlug, 'PRC')
 
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     const stagingInsertCount = await censusImportDataService.sqlLoadStagingTable(context, pool, censusTable, blobContent)
-    const pupilMeta = await censusImportDataService.sqlLoadPupilsFromStaging(context, pool, censusTable)
+    const pupilMeta = await censusImportDataService.sqlLoadPupilsFromStaging(context, pool, censusTable, jobId)
 
     await censusImportDataService.sqlDeleteStagingTable(context, pool, censusTable)
     const azureBlobService = azureStorageHelper.getPromisifiedAzureBlobService()
