@@ -26,6 +26,7 @@ const R = require('ramda')
 const session = require('express-session')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
+const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
 
 const logger = require('./services/log.service').getLogger()
@@ -280,6 +281,9 @@ app.use((req, res, next) => {
   if (!csrfExcludedPaths.includes(req.url)) res.locals.csrftoken = req.csrfToken()
   next()
 })
+
+// Prevent forms being submitted more than once
+app.use(preventDuplicateFormSubmission)
 
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
