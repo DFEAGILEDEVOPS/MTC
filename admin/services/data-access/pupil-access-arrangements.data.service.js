@@ -212,8 +212,11 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
          ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
       WHERE s.dfeNumber = @dfeNumber
     ) p
+    LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa
+      ON paa.pupil_id = p.id
     WHERE notTakingCheck = 0
-    AND completedCheck = 0 OR unusedRestart = 1
+    AND (completedCheck = 0 OR unusedRestart = 1)
+    AND paa.pupil_id IS NULL
     ORDER BY lastName
   `
   return sqlService.query(sql, params)
