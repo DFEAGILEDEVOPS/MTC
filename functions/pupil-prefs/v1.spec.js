@@ -1,12 +1,19 @@
 'use strict'
 
-/* global describe expect it spyOn fail */
+/* global describe, expect, it, spyOn, fail, beforeAll */
 
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const context = require('../mock-context')
-const v1 = require('./v1')
 
 describe('pupil-prefs: v1', () => {
+  let sqlService, v1
+
+  beforeAll(() => {
+    sqlService = require('less-tedious')
+    spyOn(sqlService, 'initialise')
+    v1 = require('./v1')
+  })
+
   describe('process', () => {
     describe('when async methods do not throw errors', () => {
       it('calls updates pupil preferences and submits to prepared check sync queue', async () => {
