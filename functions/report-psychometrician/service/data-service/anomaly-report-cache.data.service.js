@@ -1,9 +1,9 @@
 'use strict'
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 const config = require('../../../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 
 const table = '[anomalyReportCache]'
 

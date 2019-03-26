@@ -2,8 +2,8 @@
 
 const sqlService = require('less-tedious')
 const config = require('../config')
-sqlService.initialise(config)
-const { TYPES } = require('tedious')
+sqlService.initialise(config.Sql)
+const { TYPES } = sqlService
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlHelper = require('../lib/sql-helper')
 
