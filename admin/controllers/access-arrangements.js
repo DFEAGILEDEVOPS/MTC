@@ -27,8 +27,8 @@ controller.getOverview = async (req, res, next) => {
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
   } catch (error) {
     return next(error)
   }
