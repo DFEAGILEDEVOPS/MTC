@@ -59,6 +59,15 @@ Before("@hdf") do
   step "I select a reason"
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
+  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  begin
+    retries ||= 0
+    pupil_detail = SqlDbHelper.get_pupil_with_no_attandance_code(school_id)
+    fail if !(pupil_detail.nil?)
+  rescue
+    sleep(1)
+    retry if (retries += 1) < 5
+  end
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
@@ -105,12 +114,6 @@ Before("@upload_new_fam_form") do
   step 'I have uploaded a valid familiarisation form'
   step 'it should be tagged as a familiarisation form'
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-end
-
-After("@delete_census") do
-  step "I am logged in with a service manager"
-  upload_pupil_census_page.load
-  step 'I decide to remove the file' if upload_pupil_census_page.uploaded_file.has_remove?
 end
 
 Before("@remove_all_groups") do
