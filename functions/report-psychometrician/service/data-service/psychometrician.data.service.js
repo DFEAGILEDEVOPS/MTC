@@ -3,7 +3,7 @@ const sqlService = require('less-tedious')
 const { TYPES } = require('tedious')
 
 const config = require('../../../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 const R = require('ramda')
 
 /**
@@ -37,7 +37,7 @@ const psychometricianDataService = {
    */
   sqlFindCompletedChecksByIds: async function sqlFindCompletedChecksByIds (batchIds) {
     let select = `
-      SELECT 
+      SELECT
       chk.*,
       cr.payload,
       cs.code,
@@ -142,12 +142,12 @@ const psychometricianDataService = {
    */
   sqlFindChecksByIdsWithForms: async function sqlFindChecksByIdsWithForms (batchIds) {
     let select = `
-      SELECT 
-             chk.*, 
+      SELECT
+             chk.*,
              f.formData,
              cr.payload
       FROM ${sqlService.adminSchema}.[check] chk JOIN
-        ${sqlService.adminSchema}.[checkResult] cr on (chk.id = cr.check_id) JOIN 
+        ${sqlService.adminSchema}.[checkResult] cr on (chk.id = cr.check_id) JOIN
         ${sqlService.adminSchema}.[checkForm] f ON chk.checkForm_id = f.id
       `
     const where = sqlService.buildParameterList(batchIds, TYPES.Int)
