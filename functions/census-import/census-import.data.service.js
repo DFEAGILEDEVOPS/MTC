@@ -69,16 +69,17 @@ module.exports.sqlLoadStagingTable = async (context, pool, censusTable, blobCont
  * @param {Object} context
  * @param {Object} pool
  * @param {String} censusTable
+ * @param {Number} jobId
  * @return {Object}
  */
-module.exports.sqlLoadPupilsFromStaging = async (context, pool, censusTable) => {
+module.exports.sqlLoadPupilsFromStaging = async (context, pool, censusTable, jobId) => {
   if (!pool) {
     await this.initPool(context)
   }
   const sql = `
   DECLARE @citt mtc_census_import.censusImportTableType
   INSERT INTO @citt SELECT * FROM ${censusTable}
-  EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt
+  EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt, @jobId = ${jobId}
   `
   const request = new mssql.Request(pool)
   const result = await request.query(sql)
