@@ -1,4 +1,4 @@
-@upload_pupil_census @delete_census
+@upload_pupil_census @delete_census @local
 Feature:
   Upload Pupil Census
 
@@ -35,12 +35,6 @@ Feature:
     Given I am on the upload pupil census page
     When I have chosen a file with 'empty gender' to submit
     Then I should see the error status for the empty gender
-
-  Scenario: Pupil census can be removed
-    Given I have uploaded a pupil census file
-    When I decide to remove the file
-    Then it should be removed and the status updated
-    And the pupils should be removed from the register
 
   Scenario: Pupil census has to be of CSV format
     Given I am on the upload pupil census page
