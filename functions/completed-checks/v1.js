@@ -3,7 +3,7 @@
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 const config = require('../config')
 sqlService.initialise(config.Sql)

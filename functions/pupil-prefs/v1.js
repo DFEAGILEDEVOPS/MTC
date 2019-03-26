@@ -1,14 +1,16 @@
 'use strict'
 
-const moment = require('moment')
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
+const config = require('../config')
+sqlService.initialise(config.Sql)
+
+const moment = require('moment')
 const uuid = require('uuid/v4')
 const winston = require('winston')
 
 const accessArrangementsTable = '[accessArrangements]'
 const azureStorageHelper = require('../lib/azure-storage-helper')
-const config = require('../config')
 const checkTable = '[check]'
 const pupilAccessArrangementsTable = '[pupilAccessArrangements]'
 const pupilFontSizesTable = '[pupilFontSizes]'
@@ -17,7 +19,6 @@ const pupilTable = '[pupil]'
 const schema = '[mtc_admin]'
 
 winston.level = 'error'
-sqlService.initialise(config.Sql)
 
 const v1 = {}
 

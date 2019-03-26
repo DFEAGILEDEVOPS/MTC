@@ -1,14 +1,14 @@
 'use strict'
 
 const sqlService = require('less-tedious')
+const { TYPES } = sqlService
+const config = require('../config')
+sqlService.initialise(config.Sql)
 
 const checkTable = '[check]'
 const pupilAccessArrangementsTable = '[pupilAccessArrangements]'
 const pupilTable = '[pupil]'
-const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
-const config = require('../config')
-sqlService.initialise(config.Sql)
 
 const sqlUtil = {}
 const accessArrangementCodes = {}

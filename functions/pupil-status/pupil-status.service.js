@@ -4,7 +4,7 @@ const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 sqlService.initialise(config.Sql)
 
 async function recalculatePupilStatus (pupilId) {

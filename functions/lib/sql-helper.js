@@ -2,8 +2,8 @@
 
 const R = require('ramda')
 const sqlService = require('less-tedious')
+const { TYPES } = sqlService
 const checkTable = '[check]'
-const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
 const config = require('../config')
 
