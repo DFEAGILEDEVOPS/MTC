@@ -103,6 +103,13 @@ describe('date service', () => {
     })
   })
 
+  describe('#formatIso8601WithoutTimezone', () => {
+    it('correctly formats a date', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 2, 3)
+      expect(dateService.formatIso8601WithoutTimezone(date)).toBe('2010-12-31T14:10:02.003')
+    })
+  })
+
   describe('#formatDayAndDate', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
