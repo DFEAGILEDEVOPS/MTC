@@ -1,6 +1,7 @@
 'use strict'
 
 const mssql = require('mssql')
+const R = require('ramda')
 
 const jobDataService = {}
 
@@ -23,6 +24,7 @@ jobDataService.sqlUpdateStatus = async (pool, urlSlug, jobStatusCode, jobOutput 
   ),
   jobOutput=@jobOutput,
   errorOutput=@errorOutput
+  OUTPUT Inserted.id
   WHERE urlSlug=@urlSlug`
 
   const request = new mssql.Request(pool)
@@ -30,7 +32,8 @@ jobDataService.sqlUpdateStatus = async (pool, urlSlug, jobStatusCode, jobOutput 
   request.input('jobStatusCode', mssql.Char(3), jobStatusCode)
   request.input('jobOutput', mssql.NVarChar(mssql.MAX), jobOutput)
   request.input('errorOutput', mssql.NVarChar(mssql.MAX), errorOutput)
-  return request.query(sql)
+  const result = await request.query(sql)
+  return R.path(['id'], R.head(R.path(['recordset'], result)))
 }
 
 module.exports = jobDataService

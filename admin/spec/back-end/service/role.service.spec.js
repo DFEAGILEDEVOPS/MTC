@@ -14,6 +14,7 @@ describe('role.service', () => {
       expect(roleService.mapNcaRoleToMtcRole('SchoolNom')).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('Admin', 9991234)).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('DataAdmin')).toBe('TEST-DEVELOPER')
+      expect(roleService.mapNcaRoleToMtcRole('SchoolNomAAMTC')).toBe('TEACHER')
     })
 
     it('throws an exception if the ncaUserType does not map to a known role', () => {
