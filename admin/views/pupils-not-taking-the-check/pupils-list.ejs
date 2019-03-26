@@ -54,9 +54,6 @@
                         <a class="sortingLink">Pupil name <span class="sort-icon asc"><span>Sort by pupil name</span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="sortingLink">Reason <span class="sort-icon"><span>Sort by reason</span></span></a>
-                    </th>
-                    <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
                             <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
                             <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
@@ -80,9 +77,6 @@
                                 Date of birth: <%= pupil.dateOfBirth %>
                             </div>
                             <% } %>
-                        </td>
-                        <td>
-                            <%= pupil.reason || '-' %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">
