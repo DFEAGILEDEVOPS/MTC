@@ -1,0 +1,85 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<% if (err.hasError()) { %>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% err.getUniqueFields(['timezone', 'schoolName', 'urn']).map(f => { %>
+                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Convert school to Ministry of Defence schools (MOD)</h1>
+        <%- partial('partials/_session_expiry') %>
+        <form action="/service-manager/mod-settings/add-school" method="post" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <div class="form-group <%= err.isError('schoolName') ? 'form-group-error' : '' %>">
+                <label class="form-label-bold" for="schoolName">School name
+                    <% if (err.isError('schoolName')) { %>
+                    <span class="error-message"><%= err.get('schoolName') %></span>
+                    <% } %>
+                </label>
+                <div class='form-control-1-2'>
+                  <div id="schoolNameContainer"></div>
+                </div>
+            </div>
+            <div class="form-group <%= err.isError('urn') ? 'form-group-error' : '' %>">
+                <label class="form-label-bold" for="urn">Unique reference number (URN)
+                    <span class="form-hint hint-spacious">For example, 3424352342343</span>
+                    <% if (err.isError('urn')) { %>
+                    <span class="error-message"><%= err.get('urn') %></span>
+                    <% } %>
+                </label>
+                <div class='form-control-1-2'>
+                  <div id="urnContainer"></div>
+                </div>
+            </div>
+            <div class="form-group <%= err.isError('timezone') ? 'form-group-error' : '' %>">
+                <label class="form-label-bold" for="timezone">Country
+                    <% if (err.isError('timezone')) { %>
+                    <span class="error-message"><%= err.get('timezone') %></span>
+                    <% } %>
+                </label>
+                <div class='form-control-1-2'>
+                    <select class="form-control"
+                        id="timezone"
+                        name="timezone">
+                        <option value=""></option>
+                        <% countriesTzData.map(t => { %>
+                        <option value="<%= t.countryCode %>|<%= t.zone %>"><%= t.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Save"/>
+                <a href="/service-manager/mod-settings" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+  $(function () {
+    const schoolNames = <%- schoolNames %>
+    const schoolUrns = <%- schoolUrns %>
+    window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
+    window.GOVUK.autoComplete.createLinkedComponent('#schoolNameContainer', 'schoolName', schoolNames, 3, '#urnContainer', function(value) { return schoolUrns[schoolNames.indexOf(value)] })
+    window.GOVUK.autoComplete.createLinkedComponent('#urnContainer', 'urn', schoolUrns, 3, '#schoolNameContainer', function(value) { return schoolNames[schoolUrns.indexOf(value)] })
+  })
+</script>
