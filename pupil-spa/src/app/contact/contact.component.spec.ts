@@ -10,8 +10,7 @@ describe('ContactComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContactComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ],
-
+      declarations: [ ContactComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ]
     })
     .compileComponents();
   }));
