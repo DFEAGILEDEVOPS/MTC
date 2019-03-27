@@ -6,6 +6,20 @@ const dateService = require('../date.service')
 const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
+const retry = require('./retry-async')
+
+const retryConfig = {
+  attempts: 3,
+  pauseTimeMs: 5000,
+  pauseMultiplier: 1.5
+}
+const connectionLimitReachedErrorCode = 10928
+
+const dbLimitReached = (error) => {
+  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
+  return error.number === connectionLimitReachedErrorCode
+}
+
 let cache = {}
 /* @var mssql.ConnectionPool */
 let pool
@@ -243,28 +257,14 @@ sqlService.query = async (sql, params = []) => {
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
-  const request = new mssql.Request(pool)
-  addParamsToRequestSimple(params, request)
-
-  let result
-  try {
-    result = await request.query(sql)
-  } catch (error) {
-    logger.error('sqlService.query(): SQL Query threw an error', error)
-    if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
-      logger.alert('sqlService.query(): An SQL request was attempted but the connection is closed', error)
-    }
-    try {
-      logger.error('sqlService.query(): SQL RETRY', error)
-      const retryRequest = new mssql.Request(pool)
-      addParamsToRequestSimple(params, retryRequest)
-      result = await retryRequest.query(sql)
-    } catch (error2) {
-      logger.alert('sqlService.query(): SQL RETRY FAILED', error2)
-      throw error2
-    }
+  const query = async () => {
+    const request = new mssql.Request(pool)
+    addParamsToRequestSimple(params, request)
+    const result = await request.query(sql)
+    return sqlService.transformResult(result)
   }
-  return sqlService.transformResult(result)
+
+  return retry(query, retryConfig, dbLimitReached)
 }
 
 /**
@@ -313,35 +313,22 @@ sqlService.modify = async (sql, params = []) => {
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
-  const request = new mssql.Request(pool)
-  addParamsToRequest(params, request)
+  const modify = async () => {
+    const request = new mssql.Request(pool)
+    addParamsToRequest(params, request)
+    return request.query(sql)
+  }
+
   const returnValue = {}
   const insertIds = []
   let rawResponse
 
-  try {
-    rawResponse = await request.query(sql)
-    logger.debug('sql.service.modify(): result:', rawResponse)
-  } catch (error) {
-    logger.error('sqlService.modify(): SQL Query threw an error', error)
-    if (error.code && (error.code === 'ECONNCLOSED' || error.code === 'ESOCKET')) {
-      logger.alert('sqlService.modify(): An SQL request was attempted but the connection is closed', error)
-    }
-    try {
-      logger.error('sqlService.modify(): attempting SQL retry', error)
-      const retryRequest = new mssql.Request(pool)
-      addParamsToRequest(params, retryRequest)
-      rawResponse = await retryRequest.query(sql)
-      logger.error('sqlService.modify(): SQL retry success', error)
-      logger.debug('sql.service: modify: result:', rawResponse)
-    } catch (error2) {
-      logger.alert('sqlService.modify(): SQL RETRY FAILED', error2)
-      throw error2
-    }
-  }
+  rawResponse = await retry(modify, retryConfig, dbLimitReached)
 
   if (rawResponse && rawResponse.recordset) {
     for (let obj of rawResponse.recordset) {
+      /* TODO remove this strict column name limitation and
+        extract column value regardless of name */
       if (obj && obj.SCOPE_IDENTITY) {
         insertIds.push(obj.SCOPE_IDENTITY)
       }

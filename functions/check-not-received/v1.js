@@ -2,7 +2,7 @@
 
 const sqlService = require('less-tedious')
 const config = require('../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 const azureStorageHelper = require('../lib/azure-storage-helper')
 
 const v1 = {
@@ -44,7 +44,7 @@ async function updateChecksNotReceived () {
           AND chk.startedAt IS NOT NULL
           AND chk.isLiveCheck = 1
           AND GETDATE() > DATEADD(minute, @checkTimeLimit, chk.startedAt);
-                 
+
     SELECT
        checkId,
        pupilId,

@@ -3,10 +3,10 @@
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 const config = require('../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
 const markingService = require('./marking.service')
@@ -168,9 +168,9 @@ async function sqlInsertPayload (payload, checkId) {
 async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
-               SET checkStatus_id = 
+               SET checkStatus_id =
                   (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP'),
-               receivedByServerAt = @receivedByServerAt          
+               receivedByServerAt = @receivedByServerAt
                WHERE checkCode = @checkCode`
 
   const params = [

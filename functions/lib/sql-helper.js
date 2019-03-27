@@ -2,12 +2,12 @@
 
 const R = require('ramda')
 const sqlService = require('less-tedious')
-
+const { TYPES } = sqlService
 const checkTable = '[check]'
-const { TYPES } = require('tedious')
 const schema = '[mtc_admin]'
 const config = require('../config')
-sqlService.initialise(config)
+
+sqlService.initialise(config.Sql)
 
 /**
  * Retrieve the checkFormAllocation data from the db
@@ -16,8 +16,8 @@ sqlService.initialise(config)
  */
 module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
   const sql = `SELECT TOP 1 chk.* , cs.code
-               FROM ${schema}.${checkTable} chk JOIN 
-                    ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id) 
+               FROM ${schema}.${checkTable} chk JOIN
+                    ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
                WHERE checkCode = @checkCode`
   const params = [
     {
@@ -37,9 +37,9 @@ module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
  */
 module.exports.sqlFindCheckWithFormDataByCheckCode = async function (checkCode) {
   const sql = `SELECT TOP 1 chk.* , cs.code AS checkStatusCode, f.formData
-               FROM ${schema}.${checkTable} chk 
+               FROM ${schema}.${checkTable} chk
                INNER JOIN ${schema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-               INNER JOIN ${schema}.[checkForm] f ON chk.checkForm_id = f.id 
+               INNER JOIN ${schema}.[checkForm] f ON chk.checkForm_id = f.id
                WHERE checkCode = @checkCode`
   const params = [
     {
@@ -83,10 +83,10 @@ module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
  * @return {Promise<object>}
  */
 module.exports.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.[check] 
-  SET mark=@mark, 
-  maxMark=@maxMark, 
-  markedAt=@markedAt 
+  const sql = `UPDATE ${sqlService.adminSchema}.[check]
+  SET mark=@mark,
+  maxMark=@maxMark,
+  markedAt=@markedAt
   WHERE checkCode=@checkCode`
 
   const params = [
@@ -126,8 +126,8 @@ module.exports.sqlUpdateAnswersWithResults = async (checkId, answers) => {
     throw new Error('answers not provided')
   }
   const insertSql = `INSERT INTO ${sqlService.adminSchema}.${table} (
-      check_id, 
-      questionNumber, 
+      check_id,
+      questionNumber,
       factor1,
       factor2,
       answer,
