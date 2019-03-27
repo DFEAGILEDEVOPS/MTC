@@ -121,7 +121,7 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   // if (!isEmpty(upn) && !(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
   //   upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacters5To12)
   // }
-  if (isEmpty(upn) && (upn.length !== 13 || (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(upn[12])))) {
+  if (!isEmpty(upn) && (upn.length !== 13 || (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(upn[12])))) {
     upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacter13)
   }
   if (isEmpty(upn)) {

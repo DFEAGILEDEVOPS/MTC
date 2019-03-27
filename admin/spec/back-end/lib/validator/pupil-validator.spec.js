@@ -587,11 +587,15 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidLaCode,
+          pupilErrors.addPupil.upnInvalidCharacters5To12,
+          pupilErrors.addPupil.upnInvalidCharacter13])
         done()
       })
 
-      it('detects when the UPN has an error in char 5', async (done) => {
+      it('detects when the UPN has an error in char 1 and 5', async (done) => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -599,7 +603,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -611,7 +618,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -623,7 +633,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -635,7 +648,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -647,7 +663,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -659,7 +678,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -671,7 +693,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -683,7 +708,10 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacters5To12)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
         done()
       })
 
@@ -706,7 +734,9 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCheckDigit)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit
+        ])
         done()
       })
 
@@ -718,7 +748,9 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidLaCode)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidLaCode
+        ])
         done()
       })
 
@@ -746,7 +778,9 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCharacter13
+        ])
         done()
       })
 
@@ -756,7 +790,9 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCharacter13
+        ])
         done()
       })
 
@@ -766,7 +802,9 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnInvalidCharacter13)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCharacter13
+        ])
         done()
       })
 
