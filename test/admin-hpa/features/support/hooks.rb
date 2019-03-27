@@ -116,12 +116,6 @@ Before("@upload_new_fam_form") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-After("@delete_census") do
-  step "I am logged in with a service manager"
-  upload_pupil_census_page.load
-  step 'I decide to remove the file' if upload_pupil_census_page.uploaded_file.has_remove?
-end
-
 Before("@remove_all_groups") do
   SqlDbHelper.delete_all_from_pupil_group
   SqlDbHelper.delete_all_from_group
