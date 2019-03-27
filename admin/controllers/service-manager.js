@@ -405,7 +405,7 @@ const controller = {
    */
   getSceAddSchool: async (req, res, next) => {
     req.breadcrumbs('Settings for MOD', '/service-manager/mod-settings')
-    res.locals.pageTitle = 'Convert school as MOD'
+    res.locals.pageTitle = 'Convert school to MOD'
     req.breadcrumbs(res.locals.pageTitle)
 
     try {

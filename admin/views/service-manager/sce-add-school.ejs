@@ -25,7 +25,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Convert school as Ministry of Defence schools (MOD)</h1>
+        <h1 class="heading-xlarge">Convert school to Ministry of Defence schools (MOD)</h1>
         <%- partial('partials/_session_expiry') %>
         <form action="/service-manager/mod-settings/add-school" method="post" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -69,7 +69,7 @@
             </div>
             <div class="form-buttons">
                 <input type="submit" class="button" value="Save"/>
-                <a href="/service-manager/sce-settings" class="button button-secondary">Cancel</a>
+                <a href="/service-manager/mod-settings" class="button button-secondary">Cancel</a>
             </div>
         </form>
     </div>
