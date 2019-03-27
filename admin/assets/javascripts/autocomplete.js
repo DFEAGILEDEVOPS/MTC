@@ -19,7 +19,7 @@ $(function () {
      */
     createComponent: function (autoCompleteContainer, minLength, defaultValue, extraOptions) {
       if (autoCompleteContainer && typeof autoCompleteContainer === 'string') {
-        return window.accessibleAutocomplete.enhanceSelectElement(Object.assign(
+        return window.accessibleAutocomplete.enhanceSelectElement($.extend(
           {
             selectElement: document.querySelector(autoCompleteContainer),
             minLength: minLength,
