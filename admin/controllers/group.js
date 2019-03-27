@@ -26,7 +26,7 @@ const groupPupilsPage = async (req, res, next) => {
   try {
     groups = await groupService.getGroups(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
     if (!availabilityData.groupsAvailable) {
       return res.render('availability/section-unavailable', {

@@ -1,6 +1,6 @@
 /* global describe, beforeEach, expect, it spyOn */
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const config = require('../../../config')
@@ -22,7 +22,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()
@@ -42,7 +42,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -62,7 +62,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(12, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -82,7 +82,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(6, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -102,7 +102,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'utc').and.returnValue(disallowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -122,7 +122,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'utc').and.returnValue(disallowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -142,7 +142,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'utc').and.returnValue(disallowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -162,7 +162,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(12, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isRestartsPageAccessible).toBeFalsy()
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
@@ -178,7 +178,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isRestartsPageAccessible).toBeTruthy()
       })
@@ -193,7 +193,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
       })
@@ -208,7 +208,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
       })
@@ -223,7 +223,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeTruthy()
       })
@@ -269,7 +269,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
       })
@@ -284,7 +284,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(3, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 7 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
       })
@@ -299,7 +299,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeTruthy()
       })
@@ -319,7 +319,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()
