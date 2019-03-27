@@ -714,6 +714,20 @@ describe('pupil validator', function () {
         ])
         done()
       })
+      it('detects when the UPN has more than one alphabetic characters between position 5 to 12', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H81311ED111E1'
+        const validationError = await pupilValidator.validate(req.body)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toEqual([
+          pupilErrors.addPupil.upnInvalidCheckDigit,
+          pupilErrors.addPupil.upnInvalidCharacters5To12
+        ])
+        done()
+      })
 
       it('validates the check letter', async (done) => {
         req.body = getBody()

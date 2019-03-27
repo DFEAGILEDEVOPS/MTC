@@ -115,7 +115,7 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
     upnErrorArr.push(addPupilErrorMessages.upnInvalidLaCode)
   }
   const characters5to12 = upn && upn.length > 0 && upn.substring(4, 12)
-  if (!isEmpty(upn) && characters5to12 && !/^\d+$/.test(characters5to12)) {
+  if (!isEmpty(upn) && characters5to12 && !/^\d{8}$/.test(characters5to12)) {
     upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacters5To12)
   }
   // if (!isEmpty(upn) && !(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
