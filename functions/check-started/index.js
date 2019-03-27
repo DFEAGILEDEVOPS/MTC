@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
 const config = require('../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 winston.level = 'error'
 
 const checkStatusTable = '[checkStatus]'
@@ -79,9 +79,9 @@ module.exports = async function (context, checkStartMessage) {
 async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
-               SET checkStatus_id = 
+               SET checkStatus_id =
                   (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'STD'),
-                  startedAt = @startedAt                
+                  startedAt = @startedAt
                where checkCode = @checkCode`
 
   const params = [

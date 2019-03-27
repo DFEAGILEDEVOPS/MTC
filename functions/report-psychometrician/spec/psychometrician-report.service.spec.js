@@ -1,17 +1,22 @@
 'use strict'
-/* global describe, expect, it, beforeEach, fail, spyOn */
+/* global describe, expect, it, beforeEach, fail, spyOn, beforeAll */
 
 const moment = require('moment')
-
-const psychometricianReportCacheDataService = require('../service/data-service/psychometrician-report-cache.data.service')
-const psychometricianDataService = require('../service/data-service/psychometrician.data.service')
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMock = require('./mocks/check-form')
 
 describe('psychometricians-report.service', () => {
-  const service = require('../service/psychometrician-report.service')
+  let sqlService, psychometricianDataService, psychometricianReportCacheDataService, service
+
+  beforeAll(() => {
+    sqlService = require('less-tedious')
+    spyOn(sqlService, 'initialise')
+    psychometricianDataService = require('../service/data-service/psychometrician.data.service')
+    psychometricianReportCacheDataService = require('../service/data-service/psychometrician-report-cache.data.service')
+    service = require('../service/psychometrician-report.service')
+  })
 
   describe('#batchProduceCacheData', () => {
     const checkMock = Object.assign({}, checkFormMock)

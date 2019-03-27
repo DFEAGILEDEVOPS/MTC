@@ -4,8 +4,8 @@ const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
-sqlService.initialise(config)
+const { TYPES } = sqlService
+sqlService.initialise(config.Sql)
 
 async function recalculatePupilStatus (pupilId) {
   const currentData = await getCurrentPupilData(pupilId)
@@ -19,7 +19,7 @@ async function recalculatePupilStatus (pupilId) {
 }
 
 async function getCurrentPupilData (pupilId) {
-  const sql = `SELECT 
+  const sql = `SELECT
     p.id                      as pupil_id,
     pstatus.code              as pupilStatusCode,
     lastCheck.id              as check_id,
@@ -27,11 +27,11 @@ async function getCurrentPupilData (pupilId) {
     lastPupilRestart.id       as pupilRestart_id,
     lastPupilRestart.check_id as pupilRestart_check_id,
     pa.id                     as pupilAttendance_id,
-    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated 
-  FROM 
+    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated
+  FROM
         ${sqlService.adminSchema}.[pupil] p
         INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
-        LEFT OUTER JOIN  
+        LEFT OUTER JOIN
         (
            SELECT *,
               ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
@@ -47,7 +47,7 @@ async function getCurrentPupilData (pupilId) {
          WHERE isDeleted = 0
        ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
        LEFT OUTER JOIN [mtc_admin].[pupilRestart] pupilRestart ON (pupilRestart.check_id = lastCheck.id)
-  WHERE  
+  WHERE
         p.id = @pupilId
   AND   (lastCheck.rank = 1 or lastCheck.rank IS NULL)
   AND   (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL); `
