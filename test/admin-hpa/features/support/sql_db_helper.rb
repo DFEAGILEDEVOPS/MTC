@@ -300,7 +300,7 @@ class SqlDbHelper
   end
 
   def self.activate_or_deactivate_active_check_window(check_end_date)
-    sql = "UPDATE [mtc_admin].[checkWindow] set familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}', adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -407,6 +407,21 @@ class SqlDbHelper
     school_res = result.first
     result.cancel
     school_res
+  end
+
+
+  def self.get_mod_schools
+    sql = "SELECT * FROM [mtc_admin].[school] WHERE leaCode='702'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.count_schools
+    sql = "SELECT COUNT(*) FROM mtc_admin.school"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res.values.first
   end
 
 end
