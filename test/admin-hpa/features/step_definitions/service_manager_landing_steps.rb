@@ -79,6 +79,11 @@ end
 Then(/^I should be given the option to download pupil check data$/) do
   expect(testdeveloper_landing_page).to have_download_pupil_check_data
   expect(testdeveloper_landing_page).to have_download_pupil_check_data_text
+  end
+
+Then(/^I should be given the option to update mod schools$/) do
+  expect(admin_page).to have_mod_schools_settings
+  expect(admin_page).to have_mod_schools_settings_text
 end
 
 And(/^the service managers homepage should match design$/) do
@@ -89,6 +94,8 @@ And(/^the service managers homepage should match design$/) do
   step "I should be given the option to adjust settings on school pages"
   # step "I should be given the option to manage access arangements"
   # step "I should be given the option to manage restart requests"
-  step "I should be given the option to view progress reports"
+  # step "I should be given the option to view progress reports"
+  step "I should be given the option to update mod schools"
+
   step "I should be given some guidance"
 end
