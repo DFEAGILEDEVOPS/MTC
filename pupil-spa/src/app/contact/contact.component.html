@@ -1,3 +1,15 @@
-<p>
-  contact works!
-</p>
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+  <app-breadcrumbs [breadcrumbs]="[{ url: '.', name: 'Home' }, { name: 'Contact' } ]"></app-breadcrumbs>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">Contact</h1>
+      <div class="panel panel-border-wide">
+        National curriculum assessments helpline
+        <br />
+        0345 278 8080
+      </div>
+    </div>
+  </div>
+</main>
+<app-footer></app-footer>

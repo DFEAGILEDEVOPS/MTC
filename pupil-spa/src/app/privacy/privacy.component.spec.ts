@@ -31,7 +31,6 @@ describe('PrivacyComponent', () => {
   });
 });
 
-
 @Component({
   selector: 'app-header',
   template: ''
