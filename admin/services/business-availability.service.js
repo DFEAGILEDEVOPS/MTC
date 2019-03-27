@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const config = require('../config')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const dateService = require('../services/date.service')
@@ -15,8 +15,8 @@ const businessAvailabilityService = {}
  * @returns {Boolean} live pin generation allowance
  * @throws Will throw an error if the argument passed is not boolean type
  */
-businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowData, timezone) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, timezone)
   if (isLiveCheck) {
     return pinGenerationEligibilityData.isLivePinGenerationAllowed
   } else {
@@ -30,8 +30,8 @@ businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowDa
  * @returns {Boolean} live pin generation allowance
  * @throws Will throw an error if the argument passed is not boolean type
  */
-businessAvailabilityService.areRestartsAllowed = (checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+businessAvailabilityService.areRestartsAllowed = (checkWindowData, timezone) => {
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, timezone)
   return pinGenerationEligibilityData.isRestartsPageAccessible
 }
 
@@ -61,8 +61,8 @@ businessAvailabilityService.areAccessArrangementsAllowed = (checkWindowData) => 
  * @param {Object} checkWindowData
  * @throws Will throw an error if isPinGenerationAllowed method returns false
  */
-businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, checkWindowData) => {
-  const isPinGenerationAllowed = businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindowData)
+businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, checkWindowData, timezone) => {
+  const isPinGenerationAllowed = businessAvailabilityService.isPinGenerationAllowed(isLiveCheck, checkWindowData, timezone)
   const pinEnv = isLiveCheck ? 'Live' : 'Familiarisation'
   if (!isPinGenerationAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error(`${pinEnv} pin generation is not allowed`)
@@ -111,8 +111,8 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  * @param {Object} checkWindowData
  * @returns {Object}
  */
-businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData) => {
-  const currentDate = moment.utc()
+businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData, timezone) => {
+  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
   const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
   const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
