@@ -2,11 +2,11 @@
 
 const uuid = require('uuid/v4')
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 const sqlUtil = require('../lib/sql-helper')
 const config = require('../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 const schema = '[mtc_admin]'
 const feedbackTable = '[pupilFeedback]'
 
