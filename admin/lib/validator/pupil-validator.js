@@ -107,24 +107,28 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   // UPN Validation
   const upn = pupilData['upn'].trim().toUpperCase()
   const expected = upnService.calculateCheckLetter(upn.substring(1))
-  if (expected !== upn[0]) {
-    validationError.addError('upn', addPupilErrorMessages.upnInvalidCheckDigit)
+  const upnErrorArr = []
+  if (!isEmpty(upn) && expected !== upn[0]) {
+    upnErrorArr.push(addPupilErrorMessages.upnInvalidCheckDigit)
   }
-  if (!upnService.hasValidLaCode(upn)) {
-    validationError.addError('upn', addPupilErrorMessages.upnInvalidLaCode)
+  if (!isEmpty(upn) && !upnService.hasValidLaCode(upn)) {
+    upnErrorArr.push(addPupilErrorMessages.upnInvalidLaCode)
   }
-  if (!(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
-    validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacters5To12)
+  const characters5to12 = upn && upn.length > 0 && upn.substring(4, 12)
+  if (!isEmpty(upn) && characters5to12 && !/^\d{8}$/.test(characters5to12)) {
+    upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacters5To12)
   }
-  if (upn.length !== 13) {
-    validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
-  }
-  const char = upn[12] // 13th char
-  if (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(char)) {
-    validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
+  // if (!isEmpty(upn) && !(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
+  //   upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacters5To12)
+  // }
+  if (!isEmpty(upn) && (upn.length !== 13 || (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(upn[12])))) {
+    upnErrorArr.push(addPupilErrorMessages.upnInvalidCharacter13)
   }
   if (isEmpty(upn)) {
-    validationError.addError('upn', addPupilErrorMessages.upnRequired)
+    upnErrorArr.push(addPupilErrorMessages.upnRequired)
+  }
+  if (upnErrorArr.length > 0) {
+    validationError.addError('upn', upnErrorArr)
   }
   // Check that the UPN is unique
   if (!(validationError.get('upn'))) {
