@@ -15,6 +15,7 @@ import { AppConfigService, loadConfigService } from './services/config/config.se
 import { AccessibilityStatementComponent } from './accessibility-statement/accessibility-statement.component';
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
@@ -102,6 +103,7 @@ const appRoutes: Routes = [
   declarations: [
     AccessibilityStatementComponent,
     AppComponent,
+    BreadcrumbsComponent,
     CheckCompleteComponent,
     CheckComponent,
     ContactComponent,

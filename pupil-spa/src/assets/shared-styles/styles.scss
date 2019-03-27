@@ -261,6 +261,10 @@ ol, ul {
   padding-left: 0;
 }
 
+.list-item--dashed:before {
+  content: "— ";
+}
+
 /* AA Page Modification */
 #page-modifications {
   min-height: 100vh;
