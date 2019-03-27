@@ -4,15 +4,18 @@ Pre-reqs for ubuntu: https://github.com/Microsoft/vsts-agent/blob/master/docs/st
 
 ## Pre-reqs for MTC
 
-### Install docker
-** check to see if docker works.  if you get a permissions error, run the following...
-``` bash
-sudo usermod -a -G docker $USER
-```
-Install docker-compose if installing docker alone does not include it.
-Install nvm
-Install yarn
-[Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+### Install dependent services
+
+Install the following...
+- [docker](https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/)
+  - add build user to docker user group `sudo usermod -a -G docker $USER`
+- [docker-compose](https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/)
+- [nvm](https://github.com/creationix/nvm#installation-and-update)
+- [yarn](https://yarnpkg.com/lang/en/docs/install/#debian-stable)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [rvm](https://github.com/rvm/ubuntu_rvm)
+  - add build user to rvm user group `sudo usermod -a -G rvm $USER`
+- [Open SSL libraries](https://websiteforstudents.com/manually-install-the-latest-openssl-toolkit-on-ubuntu-16-04-18-04-lts/)
 
 ### Install FreeTDS for ruby SQL driver
 
@@ -20,8 +23,10 @@ execute `admin/bin/install-freetds.sh` on the build server.
 
 ### Install google chrome for ruby headless automation tests
 
-`wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb`
-`sudo apt -y install ./google-chrome*.deb`
+```bash
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt -y install ./google-chrome*.deb
+```
 
 ## Install the VSTS agent
 
@@ -29,18 +34,6 @@ Go to the agents page in VSO, click the download button, and choose the linux op
 It will give you instructions on how to install the agent.
 
 ## Service configuration
-
-Running config.sh can fail with: `Failed to initialize CoreCLR, HRESULT: 0x80131500`
-
-This is due to compatibility issues with the icu library v55 on 16.04.
-To install v52 run the following...
-
-``` bash
-wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-8ubuntu0.2_amd64.deb
-sudo dpkg -i libicu52_52.1-8ubuntu0.2_amd64.deb
-```
-
-Now you can continue with the documented steps...
 
 run the configuration tool
 
@@ -54,13 +47,21 @@ You will be asked for the following...
 
 *PAT (Personal access token):* can be found in your account security section
 
-The agent should be configured to run as a service...
-
-https://github.com/Microsoft/vsts-agent/blob/master/docs/start/svcsystemd.md
+Configure the agent to [run as a service](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops)
 
 ## Known issues
 
-retained docker images can fill up the disks regularly.  run `docker system prune -f` to purge
+- retained docker images can fill up the disks regularly.  run `docker system prune -a -f` to purge
+
+- Running config.sh can fail with: `Failed to initialize CoreCLR, HRESULT: 0x80131500`
+
+This is due to compatibility issues with the icu library v55 on 16.04.
+To install v52 run the following...
+
+``` bash
+wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-8ubuntu0.2_amd64.deb
+sudo dpkg -i libicu52_52.1-8ubuntu0.2_amd64.deb
+```
 
 ### PATH updates
 
@@ -68,7 +69,7 @@ If you ever update PATH this will not automatically be reflected in VSO agent me
 
 ``` bash
 # update the vso PATH metadata
-~/vstsagent/env.sh 
+~/vstsagent/env.sh
 # restart the vso agent service
 ~/vstsagent/svc.sh stop
 ~/vstsagent/svc.sh start
