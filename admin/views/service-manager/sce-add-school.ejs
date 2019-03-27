@@ -79,7 +79,7 @@
     const schoolNames = <%- schoolNames %>
     const schoolUrns = <%- schoolUrns %>
     window.GOVUK.autoComplete.createComponent('#timezone', 2, '')
-    window.GOVUK.autoComplete.createLinkedComponent('#schoolNameContainer', 'schoolName', schoolNames, 3, '#urnContainer', value => schoolUrns[schoolNames.indexOf(value)])
-    window.GOVUK.autoComplete.createLinkedComponent('#urnContainer', 'urn', schoolUrns, 3, '#schoolNameContainer', value => schoolNames[schoolUrns.indexOf(value)])
+    window.GOVUK.autoComplete.createLinkedComponent('#schoolNameContainer', 'schoolName', schoolNames, 3, '#urnContainer', function(value) { return schoolUrns[schoolNames.indexOf(value)] })
+    window.GOVUK.autoComplete.createLinkedComponent('#urnContainer', 'urn', schoolUrns, 3, '#schoolNameContainer', function(value) { return schoolNames[schoolUrns.indexOf(value)] })
   })
 </script>
