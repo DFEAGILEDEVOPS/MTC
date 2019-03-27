@@ -261,7 +261,7 @@
   $(function () {
     <% if(!formData['isEditView']) { %>
     var getPupilUrlSlug = '<%= pupilUrlSlug %>'
-    window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
+    window.GOVUK.autoComplete.createNameComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
     <% } %>
     window.GOVUK.accessArrangements()
   })

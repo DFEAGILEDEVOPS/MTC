@@ -3,6 +3,7 @@
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
+const config = require('../../config')
 
 const table = '[school]'
 
@@ -14,7 +15,16 @@ const schoolDataService = {
    * @return {Promise<object>}
    */
   sqlFindOneById: async (id) => {
-    return sqlService.findOneById(table, id)
+    const paramId = { name: 'id', type: TYPES.Int, value: id }
+    const sql = `
+        SELECT school.*, ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
+        FROM ${sqlService.adminSchema}.${table}
+        LEFT JOIN ${sqlService.adminSchema}.sce
+          ON sce.school_id = school.id
+        WHERE school.id = @id
+      `
+    const rows = await sqlService.query(sql, [paramId])
+    return R.head(rows)
   },
 
   /**
@@ -41,8 +51,10 @@ const schoolDataService = {
   sqlFindOneByDfeNumber: async (dfeNumber) => {
     const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
     const sql = `
-        SELECT *    
+        SELECT school.*, ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
         FROM ${sqlService.adminSchema}.${table}
+        LEFT JOIN ${sqlService.adminSchema}.sce
+          ON sce.school_id = school.id
         WHERE dfeNumber = @dfeNumber
       `
     const rows = await sqlService.query(sql, [paramDfeNumber])
