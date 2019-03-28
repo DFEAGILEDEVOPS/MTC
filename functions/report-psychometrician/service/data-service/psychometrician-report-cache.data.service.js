@@ -1,9 +1,9 @@
 'use strict'
 const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 const config = require('../../../config')
-sqlService.initialise(config)
+sqlService.initialise(config.Sql)
 
 const psychometricianReportCacheDataService = {
   /**
@@ -14,7 +14,7 @@ const psychometricianReportCacheDataService = {
   sqlInsertMany: async function (dataObjects) {
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO [mtc_admin].[psychometricianReportCache] 
+    INSERT INTO [mtc_admin].[psychometricianReportCache]
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES
@@ -54,12 +54,12 @@ const psychometricianReportCacheDataService = {
     }
     const safeBatchSize = parseInt(batchSize, 10)
 
-    const sql = `SELECT TOP ${safeBatchSize} chk.id 
+    const sql = `SELECT TOP ${safeBatchSize} chk.id
       FROM ${sqlService.adminSchema}.[check] chk
       LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
       JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-      WHERE 
-        prc.check_id IS NULL 
+      WHERE
+        prc.check_id IS NULL
       AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')
       ORDER BY NEWID()`
 
