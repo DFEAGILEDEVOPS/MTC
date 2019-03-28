@@ -117,7 +117,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${__P(threads,10)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${__P(rampup,1)}</stringProp>
@@ -202,10 +202,6 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
-            <stringProp name="DurationAssertion.duration">750</stringProp>
-          </DurationAssertion>
-          <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor - CheckStartToken" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">checkStartToken</stringProp>
             <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.token</stringProp>
@@ -262,7 +258,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
           </elementProp>
           <stringProp name="HTTPSampler.domain">${__P(pupilAppHost,localAppHost)}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">check-started/messages?${checkStartToken}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -295,6 +291,10 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
             <collectionProp name="HeaderManager.headers"/>
           </HeaderManager>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">20000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Check-Complete" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -309,7 +309,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
           </elementProp>
           <stringProp name="HTTPSampler.domain">${__P(pupilAppHost,localAppHost)}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">check-complete/messages?${checkCompleteToken}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -337,6 +337,10 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
             <boolProp name="UserParameters.per_iteration">false</boolProp>
           </UserParameters>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">30000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Submit-Feedback" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -351,7 +355,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
           </elementProp>
           <stringProp name="HTTPSampler.domain">${__P(pupilAppHost,localAppHost)}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">pupil-feedback/messages?${feedbackToken}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -375,6 +379,10 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
             </collectionProp>
             <boolProp name="UserParameters.per_iteration">false</boolProp>
           </UserParameters>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">10000</stringProp>
+          </ConstantTimer>
           <hashTree/>
         </hashTree>
       </hashTree>

@@ -47,7 +47,7 @@
         <stringProp name="filename">${PUPIL_LOGIN_FILE}</stringProp>
         <boolProp name="ignoreFirstLine">true</boolProp>
         <boolProp name="quotedData">false</boolProp>
-        <boolProp name="recycle">true</boolProp>
+        <boolProp name="recycle">false</boolProp>
         <stringProp name="shareMode">shareMode.all</stringProp>
         <boolProp name="stopThread">true</boolProp>
         <stringProp name="variableNames">schoolPin,pupilPin</stringProp>
@@ -115,10 +115,6 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree/>
-          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
-            <stringProp name="DurationAssertion.duration">750</stringProp>
-          </DurationAssertion>
           <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor - CheckStartToken" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">checkStartToken</stringProp>
@@ -209,6 +205,10 @@
             <collectionProp name="HeaderManager.headers"/>
           </HeaderManager>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">20000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Check-Complete" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -251,6 +251,10 @@
             <boolProp name="UserParameters.per_iteration">false</boolProp>
           </UserParameters>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">30000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Submit-Feedback" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -290,9 +294,13 @@
             <boolProp name="UserParameters.per_iteration">false</boolProp>
           </UserParameters>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">10000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
