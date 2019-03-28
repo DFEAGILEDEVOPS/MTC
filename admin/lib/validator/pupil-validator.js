@@ -127,17 +127,18 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   if (isEmpty(upn)) {
     upnErrorArr.push(addPupilErrorMessages.upnRequired)
   }
-  if (upnErrorArr.length > 0) {
-    validationError.addError('upn', upnErrorArr)
-  }
   // Check that the UPN is unique
   if (!(validationError.get('upn'))) {
     const existingPupil = await pupilDataService.sqlFindOneByUpn(pupilData.upn)
     // if pupil is not stored already under the same id and UPN
-    if (existingPupil && existingPupil.urlSlug.toString() !== pupilData.urlSlug &&
+    if (!isEmpty(upn) && existingPupil &&
+      existingPupil.urlSlug.toString() !== pupilData.urlSlug &&
       existingPupil.upn === pupilData.upn) {
-      validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
+      upnErrorArr.push(addPupilErrorMessages.upnDuplicate)
     }
+  }
+  if (upnErrorArr.length > 0) {
+    validationError.addError('upn', upnErrorArr)
   }
   return validationError
 }

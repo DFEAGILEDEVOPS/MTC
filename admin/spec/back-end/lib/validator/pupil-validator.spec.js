@@ -847,7 +847,9 @@ describe('pupil validator', function () {
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
-      expect(validationError.get('upn')).toBe(pupilErrors.addPupil.upnDuplicate)
+      expect(validationError.get('upn')).toEqual([
+        pupilErrors.addPupil.upnDuplicate
+      ])
       done()
     })
 
