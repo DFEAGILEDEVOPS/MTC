@@ -91,7 +91,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(isLiveCheck, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
