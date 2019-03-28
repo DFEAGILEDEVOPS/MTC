@@ -3,7 +3,8 @@
   "extensions": {
     "queues": {
       "maxPollingInterval": "00:00:60",
-      "visibilityTimeout": "00:00:30"
+      "visibilityTimeout": "00:00:30",
+      "batchSize": 8
     }
   },
   "tracing": {
