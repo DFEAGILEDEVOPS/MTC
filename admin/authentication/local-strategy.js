@@ -70,6 +70,7 @@ module.exports = async function (req, email, password, done) {
       UserType: 'SchoolNom',
       School: school.dfeNumber,
       schoolId: school.id,
+      timezone: school.timezone,
       role: role.title,
       logonAt: Date.now(),
       id: user.id

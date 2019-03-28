@@ -22,5 +22,11 @@ router.post('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER)
 router.get('/upload-pupil-census', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUploadPupilCensus(req, res, next))
 router.post('/upload-pupil-census/upload', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.postUploadPupilCensus(req, res, next))
 router.get('/upload-pupil-census/delete/:pupilCensusId', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getRemovePupilCensus(req, res, next))
+router.get('/mod-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getSceSettings(req, res, next))
+router.post('/mod-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.postSceSettings(req, res, next))
+router.get('/mod-settings/cancel', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res) => serviceManagerController.cancelSceSettings(req, res))
+router.get('/mod-settings/add-school', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getSceAddSchool(req, res, next))
+router.post('/mod-settings/add-school', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.postSceAddSchool(req, res, next))
+router.get('/mod-settings/remove-school/:urn', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getSceRemoveSchool(req, res, next))
 
 module.exports = router
