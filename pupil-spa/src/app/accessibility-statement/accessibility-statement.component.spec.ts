@@ -1,7 +1,9 @@
+import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { AccessibilityStatementComponent } from './accessibility-statement.component';
-import { Component } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AccessibilityStatementComponent', () => {
   let component: AccessibilityStatementComponent;
@@ -9,7 +11,11 @@ describe('AccessibilityStatementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccessibilityStatementComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ]
+      imports: [ RouterTestingModule.withRoutes([]) ],
+      declarations: [ AccessibilityStatementComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } }, fragment: { subscribe: () => {} } } }
+      ]
     })
     .compileComponents();
   }));
