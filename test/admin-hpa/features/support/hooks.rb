@@ -135,6 +135,14 @@ Before("@remove_assigned_form") do
   SqlDbHelper.delete_assigned_forms
 end
 
+
+After('@remove_mod_school') do
+  step "I am logged in with a service manager"
+  step 'I navigate to the settings for MOD schools page'
+  mod_schools_page.remove_school(@school)
+end
+
+
 After("@no_active_check_window") do
   today_date = Date.today
   check_end_date = today_date + 35

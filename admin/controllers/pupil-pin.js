@@ -37,7 +37,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -91,7 +91,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -148,7 +148,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     // OLD code - writes to check table
     if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
@@ -165,7 +165,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
-      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck)
+      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
     }
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
@@ -199,7 +199,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
@@ -250,7 +250,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData)
+    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     } else {
