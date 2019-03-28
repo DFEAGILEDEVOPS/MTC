@@ -1,10 +1,11 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 const bluebird = require('bluebird')
 const R = require('ramda')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const groupDataService = require('../services/data-access/group.data.service')
+const dateService = require('../services/date.service')
 const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilAttendanceService = require('../services/attendance.service')
@@ -18,12 +19,16 @@ const allowedWords = new Set(
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 
-const pinExpiryTime = () => {
+const pinExpiryTime = (schoolTimezone = null) => {
   let toReturn
   if (config.OverridePinExpiry) {
     toReturn = moment().endOf('day')
   } else {
     toReturn = fourPmToday()
+  }
+  if (schoolTimezone) {
+    // needed to parse the date in the specified timezone and convert to utc for storing
+    toReturn = moment.tz(dateService.formatIso8601WithoutTimezone(toReturn), schoolTimezone).utc()
   }
   return toReturn
 }
@@ -187,7 +192,7 @@ pinGenerationService.generateSchoolPassword = school => {
     wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = pinExpiryTime()
+  const newExpiry = pinExpiryTime(school.timezone)
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 
