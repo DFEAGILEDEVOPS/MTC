@@ -63,7 +63,13 @@ const manageGroupPage = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (!availabilityData.groupsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     return next(error)
   }

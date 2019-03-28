@@ -118,14 +118,14 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
@@ -138,14 +138,14 @@ describe('group controller', () => {
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-          expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
+          expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
@@ -165,7 +165,7 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
@@ -183,7 +183,7 @@ describe('group controller', () => {
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
@@ -209,7 +209,7 @@ describe('group controller', () => {
           req.params.groupId = '123456abcde'
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
@@ -234,7 +234,7 @@ describe('group controller', () => {
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
           await controller(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')

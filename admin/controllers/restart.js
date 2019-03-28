@@ -32,6 +32,12 @@ controller.getRestartOverview = async (req, res, next) => {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (!availabilityData.restartsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     return next(error)
   }
@@ -66,7 +72,13 @@ controller.getSelectRestartList = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    if (!availabilityData.restartsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
     } else {
