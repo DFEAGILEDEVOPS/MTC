@@ -50,7 +50,7 @@
                         <td class="column-wide">
                             <!-- hidden text used for column sorting -->
                             <div style="width: 0; height: 0; overflow: hidden;"><%=s.timezone %></div>
-                            <input type="hidden" name="urn" value="<%= s.urn %>" />
+                            <input type="hidden" name="urn[]" value="<%= s.urn %>" />
                             <select class="form-control timezone"
                                 id="timezone"
                                 name="timezone[<%= s.urn %>]">
