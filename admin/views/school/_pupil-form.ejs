@@ -54,11 +54,13 @@ if (formData.urlSlug) {
                name="lastName"
                value="<%= formData['lastName'] %>"/>
     </div>
-
-    <div class="form-group <%= err.isError('upn') ? 'form-group-error' : '' %>">
+    <% const upnErrors = err.get('upn') %>
+    <div class="form-group <% if (upnErrors && upnErrors.length > 0) { %> form-group-error<% } %>">
         <label class="form-label-bold" for="upn">Unique pupil number (UPN)
-            <% if (err.isError('upn')) { %>
-            <span class="error-message"><%= err.get('upn') %></span>
+            <% if (upnErrors) { %>
+            <% upnErrors.map(e => { %>
+            <label class="error-message"><%= e %></label>
+            <% }) %>
             <% } %>
         </label>
         <input type="text"
