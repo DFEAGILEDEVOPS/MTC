@@ -2,7 +2,7 @@
     <app-header class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
         <div class="grid-row">
-            <div class="column-full">
+            <div class="column-full" *ngIf="!familiarisationCheck">
                 <header class="page-header">
                     <h1 class="heading-xlarge aa-title-size" tabindex="0">Out of time</h1>
                 </header>
@@ -30,6 +30,15 @@
                     <a id='sign-out' routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button">Sign out</a>
                 </p>
             </div>
+          <div class="column-full" *ngIf="familiarisationCheck">
+            <header class="page-header">
+              <h1 class="heading-xlarge aa-title-size" tabindex="0">Thank you</h1>
+            </header>
+              <p class="lede aa-lead-size" tabindex="0">
+                You can <a routerLink="">start again</a> if you would like to try again.
+              </p>
+              <a routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button" id="next-pupil-button">Sign out</a>
+          </div>
         </div>
     </main>
 </app-page-modifications>
