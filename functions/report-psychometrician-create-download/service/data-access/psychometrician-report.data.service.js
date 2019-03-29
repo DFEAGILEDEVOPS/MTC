@@ -1,5 +1,5 @@
 'use strict'
-const sqlService = require('../lib/sql/sql.service')
+const sqlService = require('../../../lib/sql/sql.service')
 const R = require('ramda')
 const { TYPES } = sqlService
 
