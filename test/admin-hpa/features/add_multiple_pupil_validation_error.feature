@@ -26,6 +26,37 @@ Feature: Add Multiple Pupil validation Error
     Then I can see the validation error for duplicate UPN in the spreadsheet for multiple pupil upload
 
   @multiple_pupil_upload @multiple_pupil_csv_download
+  Scenario: Uploading a CSV file with empty UPN
+    And I Upload a CSV file with empty UPN to add Multiple Pupil
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for empty UPN for multiple pupil upload
+
+  @multiple_pupil_upload @multiple_pupil_csv_download
+  Scenario: Uploading a CSV file with wrong letter for at 1st Char for UPN
+    And I Upload a CSV file with wrong letter for at 1st Char for UPN to add Multiple Pupil
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for wrong letter for at 1st Char for UPN for multiple pupil upload
+
+  @multiple_pupil_upload @multiple_pupil_csv_download
+  Scenario: Uploading a CSV file with wrong LA code for UPN
+    And I Upload a CSV file with wrong LA code for UPN to add Multiple Pupil
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for wrong LA code for UPN for multiple pupil upload
+
+  @multiple_pupil_upload @multiple_pupil_csv_download
+  Scenario: Uploading a CSV file with wrong letter for 6th Char for UPN
+    And I Upload a CSV file with wrong 6th char for UPN to add Multiple Pupil
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for wrong 6th char for UPN for multiple pupil upload
+
+  @multiple_pupil_upload @multiple_pupil_csv_download
+  Scenario: Uploading a CSV file with wrong letter for 13th Char for UPN
+    And I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for wrong 13th char for UPN for multiple pupil upload
+
+
+  @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with wrong Gender format
     And I Upload a CSV file with wrong gender format to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error
@@ -67,42 +98,6 @@ Feature: Add Multiple Pupil validation Error
     When I download the Multiple Pupil upload CSV file with error
     And I can see the validation error for future date of birth for multiple pupil upload
 
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with duplicate UPN from attendance register
-    And I Upload a CSV file with duplicate UPN from attendance register to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for duplicate UPN from attendance register for multiple pupil upload
-
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with empty UPN
-    And I Upload a CSV file with empty UPN to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for empty UPN for multiple pupil upload
-
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with wrong letter for at 1st Char for UPN
-    And I Upload a CSV file with wrong letter for at 1st Char for UPN to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for wrong letter for at 1st Char for UPN for multiple pupil upload
-
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with wrong LA code for UPN
-    And I Upload a CSV file with wrong LA code for UPN to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for wrong LA code for UPN for multiple pupil upload
-
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with wrong letter for 6th Char for UPN
-    And I Upload a CSV file with wrong 6th char for UPN to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for wrong 6th char for UPN for multiple pupil upload
-
-  @multiple_pupil_upload @multiple_pupil_csv_download
-  Scenario: Uploading a CSV file with wrong letter for 13th Char for UPN
-    And I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil
-    When I download the Multiple Pupil upload CSV file with error
-    Then I can see the validation error for wrong 13th char for UPN for multiple pupil upload
-
   Scenario: Users must upload a file in CSV format
     When I Upload a invalid format file to add Multiple Pupil
     Then I should see an error stating that the file must be of CSV format
@@ -110,10 +105,6 @@ Feature: Add Multiple Pupil validation Error
   Scenario: Users must follow the format of the template
     When I Upload a CSV file with the columns in the incorrect order
     Then I should see an error stating that the columns must be of the same order
-
-  Scenario: Users must follow the format of the template
-    When I Upload a CSV file with the duplicate upns
-    Then I should see an error stating that there is a duplicate upn
 
   Scenario: 11 year old pupils cannot be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 11

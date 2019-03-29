@@ -164,8 +164,11 @@ And(/^I Upload a CSV file with wrong letter for at 1st Char for UPN to add Multi
   old_date1 = dobs[0]
   old_date2 = dobs[1]
   @upn = UpnGenerator.generate
+  @invalid_first_char_upn = UpnGenerator.generate
+  @invalid_first_char_upn[0] = 'O'
+
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "X938021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @invalid_first_char_upn]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
@@ -178,8 +181,10 @@ And(/^I Upload a CSV file with wrong LA code for UPN to add Multiple Pupil$/) do
   old_date1 = dobs[0]
   old_date2 = dobs[1]
   @upn = UpnGenerator.generate
+  @invalid_la_code_upn = UpnGenerator.generate
+  @invalid_la_code_upn[1..3]= '000'
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D136021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @invalid_la_code_upn]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
@@ -192,8 +197,10 @@ And(/^I Upload a CSV file with wrong 6th char for UPN to add Multiple Pupil$/) d
   old_date1 = dobs[0]
   old_date2 = dobs[1]
   @upn = UpnGenerator.generate
+  @invalid_sixth_char_upn = UpnGenerator.generate
+  @invalid_sixth_char_upn[6]= 'A'
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D93802X200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @invalid_sixth_char_upn]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
@@ -206,8 +213,10 @@ And(/^I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil$/) 
   old_date1 = dobs[0]
   old_date2 = dobs[1]
   @upn = UpnGenerator.generate
+  @invalid_thirteenth_char_upn = UpnGenerator.generate
+  @invalid_thirteenth_char_upn[12]= 'S'
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D93802120002I"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @invalid_thirteenth_char_upn]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
@@ -277,19 +286,19 @@ And(/^I can see the validation error for empty UPN for multiple pupil upload$/) 
 end
 
 Then(/^I can see the validation error for wrong letter for at 1st Char for UPN for multiple pupil upload$/) do
-  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. First character is not recognised. See guidance for instructions.')).to be_truthy, "Expected: 'Enter a valid UPN. First character is not recognised. See guidance for instructions.'... But Got: #{@hashed_data[0][:errors].to_s}"
+  expect(@hashed_data[0][:errors].to_s).to include ('Enter a valid UPN. First character is not recognised. See guidance for instructions.')
 end
 
 Then(/^I can see the validation error for wrong LA code for UPN for multiple pupil upload$/) do
-  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions.')).to be_truthy, "Expected: 'Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions.'... But Got: #{@hashed_data[0][:errors].to_s}"
+  expect(@hashed_data[0][:errors].to_s).to include ("Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions.")
 end
 
 Then(/^I can see the validation error for wrong 6th char for UPN for multiple pupil upload$/) do
-  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions.')).to be_truthy, "Expected: 'Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions.'... But Got: #{@hashed_data[0][:errors].to_s}"
+  expect(@hashed_data[0][:errors].to_s).to include ('Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions.')
 end
 
 Then(/^I can see the validation error for wrong 13th char for UPN for multiple pupil upload$/) do
-  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. Character 13 not recognised. See guidance for instructions.')).to be_truthy, "Expected: 'Enter a valid UPN. Character 13 not recognised. See guidance for instructions.'... But Got: #{@hashed_data[0][:errors].to_s}"
+  expect(@hashed_data[0][:errors].to_s).to include ('Enter a valid UPN. Character 13 not recognised. See guidance for instructions.')
 end
 
 

@@ -23,8 +23,14 @@ const headingClass = 'heading-xlarge';
             <p>You need to fix the errors on this page before continuing. See highlighted errors below.</p>
             <ul class="error-summary-list">
                 <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
-                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
-                <% }); %>
+                <% const errors = err.get(f) %>
+                <% if (Array.isArray(errors)) { %>
+                <%  errors.map(e => { %>
+                <li><a href="#<%= f %>"><%= e %></a></li>
+                <% }) } else { %>
+                <li><a href="#<%= f %>"><%= errors %></a></li>
+                <% } %>
+              <% }) %>
             </ul>
         </div>
     </div>
