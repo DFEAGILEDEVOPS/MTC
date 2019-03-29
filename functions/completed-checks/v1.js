@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
 const { TYPES } = sqlService
 

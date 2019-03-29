@@ -12,7 +12,7 @@ describe('anomaly-report.service', () => {
   let sqlService, service, psychometricianDataService, anomalyReportCacheDataService
 
   beforeEach(() => {
-    sqlService = require('less-tedious')
+    sqlService = require('../../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     service = require('../service/anomaly-report.service')
     psychometricianDataService = require('../service/data-service/psychometrician.data.service')

@@ -9,7 +9,7 @@ describe('pupil-prefs: v1', () => {
   let sqlService, v1
 
   beforeAll(() => {
-    sqlService = require('less-tedious')
+    sqlService = require('../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     v1 = require('./v1')
   })

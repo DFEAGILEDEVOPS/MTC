@@ -3,7 +3,7 @@
 const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
 sqlService.initialise(config.Sql)
 

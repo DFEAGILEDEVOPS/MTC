@@ -9,7 +9,7 @@ describe('markingService', () => {
 
   beforeAll(() => {
     // sql-helper connects to the database as a side-effect of requiring it.
-    sqlService = require('less-tedious')
+    sqlService = require('../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     sqlHelper = require('../lib/sql-helper')
     service = require('./marking.service')

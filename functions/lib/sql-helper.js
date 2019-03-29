@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
 const checkTable = '[check]'
 const schema = '[mtc_admin]'

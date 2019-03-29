@@ -10,7 +10,7 @@ describe('pupil-login: v1-process', () => {
   let sqlService, sqlHelper, v1
 
   beforeAll(() => {
-    sqlService = require('less-tedious')
+    sqlService = require('../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     sqlHelper = require('../lib/sql-helper')
     v1 = require('./v1')

@@ -28,7 +28,7 @@ describe('prepared-check-sync: v1', () => {
 
   beforeAll(() => {
     // sql-helper connects to the database as a side-effect of requiring it.
-    sqlService = require('less-tedious')
+    sqlService = require('../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     sqlUtils = require('../lib/sql-helper')
     v1 = require('./v1')

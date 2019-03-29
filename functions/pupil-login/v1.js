@@ -1,6 +1,6 @@
 'use strict'
 
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const config = require('../config')
 sqlService.initialise(config.Sql)
 const { TYPES } = sqlService

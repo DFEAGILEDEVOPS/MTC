@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const process = require('process')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
 const winston = require('winston')
 const { TYPES } = require('tedious')

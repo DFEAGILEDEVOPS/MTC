@@ -11,7 +11,7 @@ describe('psychometricians-report.service', () => {
   let sqlService, psychometricianDataService, psychometricianReportCacheDataService, service
 
   beforeAll(() => {
-    sqlService = require('less-tedious')
+    sqlService = require('../../lib/sql/sql.service')
     spyOn(sqlService, 'initialise')
     psychometricianDataService = require('../service/data-service/psychometrician.data.service')
     psychometricianReportCacheDataService = require('../service/data-service/psychometrician-report-cache.data.service')
