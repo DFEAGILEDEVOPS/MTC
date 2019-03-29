@@ -10,7 +10,7 @@
       "type": "queueTrigger",
       "direction": "in",
       "queueName": "prepare-check",
-      "connection": "StorageAccount"
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     },
     {
       "type": "table",
@@ -18,7 +18,7 @@
       // this name refers to the name of the context.binding property that will be inserted into the table
       "name": "data",
       "tableName": "pupilEvent",
-      "connection": "StorageAccount"
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }
