@@ -11,11 +11,15 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
 const hdfPresenter = require('../helpers/hdf-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const scoreService = require('../services/score.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const attendanceCodeService = require('../services/attendance.service')
 
-const getResults = async (req, res, next) => {
+const controller = {}
+
+controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
   const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
@@ -48,7 +52,7 @@ const getResults = async (req, res, next) => {
 }
 
 // TODO: refactor this into a service call
-const downloadResults = async (req, res, next) => {
+controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
   const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
@@ -120,7 +124,7 @@ const downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-const getReviewPupilDetails = async (req, res, next) => {
+controller.getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
@@ -135,7 +139,7 @@ const getReviewPupilDetails = async (req, res, next) => {
   })
 }
 
-const getEditReason = async (req, res, next) => {
+controller.getEditReason = async (req, res, next) => {
   res.locals.pageTitle = 'Edit reason for not taking the check'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
@@ -163,7 +167,7 @@ const getEditReason = async (req, res, next) => {
   })
 }
 
-const postSubmitEditReason = async (req, res, next) => {
+controller.postSubmitEditReason = async (req, res, next) => {
   const { urlSlug, attendanceCode } = req.body
 
   let pupil
@@ -179,24 +183,45 @@ const postSubmitEditReason = async (req, res, next) => {
   return res.redirect('/attendance/review-pupil-details')
 }
 
-const getConfirmSubmit = async (req, res, next) => {
+controller.getConfirmSubmit = async (req, res, next) => {
   res.locals.pageTitle = 'Confirm and submit'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs(res.locals.pageTitle)
 
-  return res.render('hdf/confirm-and-submit', {
-    formData: req.body,
-    error: res.error || new ValidationError(),
-    breadcrumbs: req.breadcrumbs()
-  })
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    if (!hdfEligibility) {
+      return res.render('hdf/declaration-form', {
+        hdfEligibility,
+        formData: req.body,
+        error: new ValidationError(),
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
+    if (!availabilityData.hdfAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
+    return res.render('hdf/confirm-and-submit', {
+      formData: req.body,
+      error: res.error || new ValidationError(),
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    return next(error)
+  }
 }
 
-const postConfirmSubmit = async (req, res, next) => {
+controller.postConfirmSubmit = async (req, res, next) => {
   let validationError = await hdfConfirmValidator.validate(req.body)
   if (validationError.hasError()) {
     res.error = validationError
-    return getConfirmSubmit(req, res, next)
+    return controller.getConfirmSubmit(req, res, next)
   }
 
   // Re-validate the hdf form data
@@ -215,7 +240,7 @@ const postConfirmSubmit = async (req, res, next) => {
   return res.redirect('/attendance/submitted')
 }
 
-const getDeclarationForm = async (req, res, next) => {
+controller.getDeclarationForm = async (req, res, next) => {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -238,7 +263,7 @@ const getDeclarationForm = async (req, res, next) => {
   })
 }
 
-const postDeclarationForm = async (req, res, next) => {
+controller.postDeclarationForm = async (req, res, next) => {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
 
@@ -266,7 +291,7 @@ const postDeclarationForm = async (req, res, next) => {
   return res.redirect('/attendance/review-pupil-details')
 }
 
-const getHDFSubmitted = async (req, res, next) => {
+controller.getHDFSubmitted = async (req, res, next) => {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
   try {
@@ -286,7 +311,7 @@ const getHDFSubmitted = async (req, res, next) => {
   }
 }
 
-const getHDFSubmittedForm = async (req, res, next) => {
+controller.getHDFSubmittedForm = async (req, res, next) => {
   res.locals.pageTitle = 'View submission'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
@@ -305,16 +330,4 @@ const getHDFSubmittedForm = async (req, res, next) => {
   }
 }
 
-module.exports = {
-  getResults,
-  downloadResults,
-  getReviewPupilDetails,
-  getEditReason,
-  postSubmitEditReason,
-  getConfirmSubmit,
-  postConfirmSubmit,
-  getDeclarationForm,
-  postDeclarationForm,
-  getHDFSubmitted,
-  getHDFSubmittedForm
-}
+module.exports = controller
