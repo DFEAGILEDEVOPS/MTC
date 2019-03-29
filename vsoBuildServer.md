@@ -17,6 +17,7 @@ Install the following...
   - add build user to rvm user group `sudo usermod -a -G rvm $USER`
 - [Open SSL libraries](https://websiteforstudents.com/manually-install-the-latest-openssl-toolkit-on-ubuntu-16-04-18-04-lts/)
 - [zip](https://www.luminanetworks.com/docs-lsc-610/Topics/SDN_Controller_Software_Installation_Guide/Appendix/Installing_Zip_and_Unzip_for_Ubuntu_1.html)
+- [dotnet](https://dotnet.microsoft.com/download/linux-package-manager/ubuntu18-04/sdk-current)
 - [Azure Functions Core Tools](https://github.com/Azure/azure-functions-core-tools)
 
 ### Install FreeTDS for ruby SQL driver
