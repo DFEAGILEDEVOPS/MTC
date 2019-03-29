@@ -1,0 +1,13 @@
+<div class="column-one-half">
+  <div class="breadcrumbs">
+    <div *ngFor="let breadcrumb of breadcrumbs;">
+      <div *ngIf="breadcrumb.url">
+        <a href="/{{breadcrumb.url}}">{{breadcrumb.name}}</a>
+        <span class="breadcrumb-separator">&gt;</span>
+      </div>
+      <div *ngIf="!breadcrumb.url">
+        {{breadcrumb.name}}
+      </div>
+    </div>
+  </div>
+</div>
