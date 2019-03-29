@@ -178,6 +178,7 @@ describe('attendance controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'render').and.returnValue(null)
       await controller.getConfirmSubmit(req, res)
       expect(res.render).toHaveBeenCalled()
@@ -189,6 +190,7 @@ describe('attendance controller:', () => {
       const req = getReq(goodReqParams)
       const error = new Error('error')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.reject(error))
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(businessAvailabilityService, 'getAvailabilityData')
       spyOn(res, 'render')
       await controller.getConfirmSubmit(req, res, next)
@@ -196,6 +198,26 @@ describe('attendance controller:', () => {
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+    it('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(false)
+      spyOn(businessAvailabilityService, 'getAvailabilityData')
+      spyOn(res, 'render')
+      await controller.getConfirmSubmit(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('hdf/declaration-form', (
+        {
+          hdfEligibility: false,
+          formData: {},
+          error: new ValidationError(),
+          breadcrumbs: undefined
+        })
+      )
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 

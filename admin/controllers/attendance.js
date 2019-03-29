@@ -192,6 +192,15 @@ controller.getConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    if (!hdfEligibility) {
+      return res.render('hdf/declaration-form', {
+        hdfEligibility,
+        formData: req.body,
+        error: new ValidationError(),
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
