@@ -41,14 +41,7 @@ controller.getRestartOverview = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  if (!availabilityData.restartsAvailable) {
-    return res.render('availability/section-unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
   let { hl } = req.query
-
   if (hl) {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
