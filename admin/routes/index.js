@@ -9,6 +9,7 @@ const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
 const { getPrivacyPage } = require('../controllers/privacy')
 const { getCookiesPage } = require('../controllers/cookies')
+const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const { home,
@@ -48,6 +49,8 @@ router.get('/contact', (req, res) => getContactPage(req, res))
 router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 /* Cookies page */
 router.get('/cookies', (req, res) => getCookiesPage(req, res))
+/* ccessibility statement */
+router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPage(req, res))
 /* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt
