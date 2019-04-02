@@ -1,5 +1,5 @@
 DROP INDEX [mtc_admin].pupil.pupil_upn_uindex;
-CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_uindex] ON [mtc_admin].[pupil]
+CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_school_id_uindex] ON [mtc_admin].[pupil]
 (
   [upn], school_id
 )
