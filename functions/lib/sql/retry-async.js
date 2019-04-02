@@ -1,11 +1,13 @@
 'use strict'
+const config = require('../../config')
 
 const pause = (duration) => new Promise(res => setTimeout(res, duration), noReject => undefined)
 const defaultRetryCondition = () => true
+
 const defaultConfiguration = {
-  attempts: 3,
-  pauseTimeMs: 5000,
-  pauseMultiplier: 1.5
+  attempts: config.DatabaseRetry.MaxRetryAttempts,
+  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
+  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
 
 /**
