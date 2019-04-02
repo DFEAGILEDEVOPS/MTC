@@ -46,7 +46,7 @@ Then(/^I should see validation errors$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a last name in no more than 128 characters"
   expect(@page.error_summary.year.text).to eql "Enter a date of birth"
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a date of birth"
-  expect(@page.error_summary.upn.text).to eql "Enter a UPN"
+  expect(@page.error_summary.upn.first.text).to eql "Enter a UPN"
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a UPN"
 
 end
