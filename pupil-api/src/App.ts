@@ -57,27 +57,6 @@ class App {
       preload: true
     }))
 
-    // azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
-    // if production ensure x-forwarded-proto is https OR x-arr-ssl is present
-    this.express.use((req, res, next) => {
-      if (azure.isAzure()) {
-        this.express.enable('trust proxy')
-        req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
-      }
-      next()
-    })
-
-    // force HTTPS in azure
-    this.express.use((req, res, next) => {
-      if (azure.isAzure()) {
-        if (req.protocol !== 'https') {
-          res.redirect(`https://${req.header('host')}${req.url}`)
-        }
-      } else {
-        next()
-      }
-    })
-
     this.express.use(bodyParser.json())
   }
 
