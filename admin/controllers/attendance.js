@@ -246,7 +246,15 @@ controller.getDeclarationForm = async (req, res, next) => {
 
   let hdfEligibility
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    if (!availabilityData.hdfAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     if (submitted) {
       return res.redirect('/attendance/submitted')
     }

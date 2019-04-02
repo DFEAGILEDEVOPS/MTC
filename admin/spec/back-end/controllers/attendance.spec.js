@@ -46,7 +46,9 @@ describe('attendance controller:', () => {
     it('renders the declaration form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
       spyOn(res, 'render').and.returnValue(null)
       await controller.getDeclarationForm(req, res)
@@ -56,13 +58,33 @@ describe('attendance controller:', () => {
     it('redirects when the hdf has been submitted', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       await controller.getDeclarationForm(req, res)
       expect(res.redirect).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
+    })
+    it('renders section unavailable when hdf is not available', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: false })
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      await controller.getDeclarationForm(req, res)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('availability/section-unavailable', (
+        {
+          title: "Headteacher's declaration form",
+          breadcrumbs: undefined
+        })
+      )
     })
   })
 
