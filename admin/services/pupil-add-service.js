@@ -32,7 +32,7 @@ const pupilAddService = {
       ageReason: reqBody.ageReason
     }
 
-    const validationError = await pupilValidator.validate(pupilData)
+    const validationError = await pupilValidator.validate(pupilData, schoolId)
     if (validationError.hasError()) {
       throw validationError
     }
