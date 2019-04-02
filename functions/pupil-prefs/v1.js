@@ -15,7 +15,6 @@ const pupilColourContrastsTable = '[pupilColourContrasts]'
 const pupilTable = '[pupil]'
 const schema = '[mtc_admin]'
 
-
 const v1 = {}
 
 v1.process = async function (context, pupilPrefsMessage) {
