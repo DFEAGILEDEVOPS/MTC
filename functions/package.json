@@ -14,7 +14,6 @@
     "device": "^0.3.9",
     "dotenv": "^7.0.0",
     "fast-csv": "^2.4.1",
-    "less-tedious": "https://github.com/DFEAGILEDEVOPS/less-tedious#v2.0.1",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.2.2",
     "mssql": "^5.0.3",
@@ -22,8 +21,7 @@
     "ramda": "^0.26.1",
     "to-bool": "^0.0.1",
     "useragent": "^2.3.0",
-    "uuid": "^3.3.2",
-    "winston": "^3.0.0"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jasmine": "~3.3.1",
