@@ -153,6 +153,36 @@ pupilDataService.sqlFindOneByUpn = async (upn = '') => {
 }
 
 /**
+ * Find a pupil by upn within school
+ * @param {String} upn
+ * @param {Number} schoolId
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn = '', schoolId) => {
+  const params = [
+    {
+      name: 'upn',
+      type: TYPES.NVarChar,
+      value: upn.trim().toUpperCase()
+    },
+    {
+      name: 'schoolId',
+      type: TYPES.Int,
+      value: schoolId
+    }
+  ]
+  const sql = `
+      SELECT TOP 1 
+      *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE upn = @upn
+      AND school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, params)
+  return R.head(results)
+}
+
+/**
  * Find a pupil by Id
  * @param id
  * @return {Promise<void>}

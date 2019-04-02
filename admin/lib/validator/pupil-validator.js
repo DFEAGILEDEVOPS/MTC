@@ -7,7 +7,7 @@ const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 
-module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) => {
+module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission = false) => {
   // TODO: Move to reusable validation service
   let validationError = new ValidationError()
   // Forename validation
@@ -129,7 +129,7 @@ module.exports.validate = async (pupilData, isMultiplePupilsSubmission = false) 
   }
   // Check that the UPN is unique
   if (!(validationError.get('upn'))) {
-    const existingPupil = await pupilDataService.sqlFindOneByUpn(pupilData.upn)
+    const existingPupil = await pupilDataService.sqlFindOneByUpnAndSchoolId(pupilData.upn, schoolId)
     // if pupil is not stored already under the same id and UPN
     if (!isEmpty(upn) && existingPupil &&
       existingPupil.urlSlug.toString() !== pupilData.urlSlug &&

@@ -38,7 +38,7 @@ const service = {
       'dob-month': dob[ 1 ] || '',
       'dob-year': dob[ 2 ] || ''
     }, p)
-    const validationError = await pupilValidator.validate(pupil, isMultiplePupilsSubmission)
+    const validationError = await pupilValidator.validate(pupil, school.id, isMultiplePupilsSubmission)
 
     // Check for duplicate UPNs with the batch file
     if (R.prop(p.upn, seenUpns)) {
