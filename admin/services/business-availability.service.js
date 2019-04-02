@@ -109,10 +109,12 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  * Returns data for the availability partial
  * @param {Number} dfeNumber
  * @param {Object} checkWindowData
+ * @param timezone
  * @returns {Object}
  */
 businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
+  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowData.id)
   const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
   const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
@@ -123,9 +125,11 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
   const adminWindowClosed = currentDate.isAfter(checkWindowData.adminEndDate)
   const canEditArrangements = (!hdfSubmitted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
   const restartsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
-  const livePinsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
-  const familiarisationPinsAvailable = (!hdfSubmitted && familiarisationWindowStarted && !familiarisationWindowClosed) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const livePinsAvailable = (!hdfSubmitted && checkWindowStarted && !checkWindowClosed && isWithinOpeningHours) || config.OVERRIDE_AVAILABILITY_CHECKS
+  const familiarisationPinsAvailable = (!hdfSubmitted && familiarisationWindowStarted && !familiarisationWindowClosed && isWithinOpeningHours) || config.OVERRIDE_AVAILABILITY_CHECKS
   const groupsAvailable = !checkWindowClosed || config.OVERRIDE_AVAILABILITY_CHECKS
+  const accessArrangementsAvailable = businessAvailabilityService.areAccessArrangementsAllowed(checkWindowData)
+  const hdfAvailable = currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
   return {
     familiarisationWindowStarted,
     familiarisationWindowClosed,
@@ -134,12 +138,14 @@ businessAvailabilityService.getAvailabilityData = async (dfeNumber, checkWindowD
     checkWindowYear,
     adminWindowStarted,
     adminWindowClosed,
+    hdfAvailable,
     hdfSubmitted,
     canEditArrangements,
     restartsAvailable,
     livePinsAvailable,
     familiarisationPinsAvailable,
-    groupsAvailable
+    groupsAvailable,
+    accessArrangementsAvailable
   }
 }
 
