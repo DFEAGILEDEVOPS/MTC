@@ -1,9 +1,6 @@
 'use strict'
-const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
-
-const config = require('../../../config')
-sqlService.initialise(config)
+const sqlService = require('../../../lib/sql/sql.service')
+const { TYPES } = sqlService
 
 const table = '[anomalyReportCache]'
 
@@ -25,7 +22,7 @@ const anomalyReportCacheDataService = {
     }
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO ${sqlService.adminSchema}.${table}
+    INSERT INTO [mtc_admin].${table}
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES
