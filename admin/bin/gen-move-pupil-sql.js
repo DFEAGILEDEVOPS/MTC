@@ -26,7 +26,10 @@ async function main () {
       return
     }
     const targetDfeNumber = row[4]
-    const pupilUpn = row[7].replace(/[^a-zA-Z0-9]/g, '')
+    const pupilUpn = row[7] && row[7].replace(/[^a-zA-Z0-9]/g, '')
+    if (!targetDfeNumber || !pupilUpn) {
+      return
+    }
     const s = generateSql(targetDfeNumber, pupilUpn)
     sql.push(s)
   })
