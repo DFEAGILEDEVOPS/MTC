@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect it spyOn fail */
+/* global describe expect spyOn fail it */
 
 const moment = require('moment')
 
