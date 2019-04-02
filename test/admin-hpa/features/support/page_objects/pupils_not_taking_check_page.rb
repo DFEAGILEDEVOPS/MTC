@@ -12,7 +12,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
   element :related_heading, ".heading-medium", text: 'Related'
   element :guidance, "a", text: 'Guidance'
-  element :access_arrangements, ".disabled-link", text: 'Access arrangements'
+  element :access_arrangements, "a", text: 'Access arrangements'
   element :generate_pins, "aside ul li:nth-child(3) a", text: 'Start the MTC - password and PINs'
 
   section :pupil_list, 'tbody' do
