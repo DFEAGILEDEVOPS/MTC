@@ -1,10 +1,12 @@
 'use strict'
 
-/* global describe it expect jasmine spyOn */
+/* global describe it expect jasmine spyOn beforeEach */
 
 const httpMocks = require('node-mocks-http')
 const moment = require('moment')
 
+const businessAvailabilityService = require('../../../services/business-availability.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const controller = require('../../../controllers/attendance')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const attendanceCodeService = require('../../../services/attendance.service')
@@ -13,6 +15,8 @@ const hdfConfirmValidator = require('../../../lib/validator/hdf-confirm-validato
 const ValidationError = require('../../../lib/validation-error')
 
 describe('attendance controller:', () => {
+  let next
+
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -27,6 +31,10 @@ describe('attendance controller:', () => {
     req.flash = jasmine.createSpy('flash')
     return req
   }
+
+  beforeEach(() => {
+    next = jasmine.createSpy('next')
+  })
 
   describe('getDeclarationForm', () => {
     let goodReqParams = {
@@ -168,9 +176,48 @@ describe('attendance controller:', () => {
     it('renders the confirm and submit page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'render').and.returnValue(null)
       await controller.getConfirmSubmit(req, res)
       expect(res.render).toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+    })
+    it('calls next if a service method throws', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.reject(error))
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
+      spyOn(businessAvailabilityService, 'getAvailabilityData')
+      spyOn(res, 'render')
+      await controller.getConfirmSubmit(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+    it('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(false)
+      spyOn(businessAvailabilityService, 'getAvailabilityData')
+      spyOn(res, 'render')
+      await controller.getConfirmSubmit(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('hdf/declaration-form', (
+        {
+          hdfEligibility: false,
+          formData: {},
+          error: new ValidationError(),
+          breadcrumbs: undefined
+        })
+      )
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 
@@ -208,11 +255,12 @@ describe('attendance controller:', () => {
       const validationError = new ValidationError()
       validationError.addError('confirmBoxes', true)
       spyOn(hdfConfirmValidator, 'validate').and.returnValue(validationError)
+      spyOn(controller, 'getConfirmSubmit')
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       await controller.postConfirmSubmit(req, res)
       expect(res.redirect).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+      expect(controller.getConfirmSubmit).toHaveBeenCalled()
       expect(res.error).toEqual(validationError)
     })
   })
