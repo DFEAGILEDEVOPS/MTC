@@ -5,8 +5,6 @@ const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
 const { TYPES } = sqlService
 
-const config = require('../config')
-sqlService.initialise(config.Sql)
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
 const markingService = require('./marking.service')

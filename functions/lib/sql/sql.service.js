@@ -3,9 +3,10 @@
 const R = require('ramda')
 const moment = require('moment')
 let cache = {}
-const mssql = require('mssql')
+const { mssql, poolPromise } = require('./pool-config')
 const dateService = require('./date.service')
 const retry = require('./retry-async')
+let pool
 
 const retryConfig = {
   attempts: 3,
@@ -14,8 +15,6 @@ const retryConfig = {
 }
 
 const connectionLimitReachedErrorCode = 10928
-
-let pool
 
 /** Utility functions **/
 
@@ -173,8 +172,10 @@ const sqlService = {
   // SQL type-mapping adapter.  Add new types as required.
   TYPES: {
     BigInt: mssql.BigInt,
+    Binary: mssql.Binary,
     Bit: mssql.Bit,
     Char: mssql.Char,
+    DateTime: mssql.DateTime,
     DateTimeOffset: mssql.DateTimeOffset,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
@@ -183,57 +184,14 @@ const sqlService = {
     NVarChar: mssql.NVarChar,
     Real: mssql.Real,
     SmallInt: mssql.SmallInt,
-    UniqueIdentifier: mssql.UniqueIdentifier
+    TinyInt: mssql.TinyInt,
+    UniqueIdentifier: mssql.UniqueIdentifier,
+    VarChar: mssql.VarChar
   }
 }
 
-function validateSqlConfig (config) {
-  const ex = (propertyName) => {
-    throw new Error(`${propertyName} is required`)
-  }
-  if (!config.Application.Username) {
-    ex('Application.Username')
-  }
-  if (!config.Application.Password) {
-    ex('Application.Password')
-  }
-  if (!config.Server) {
-    ex('Server')
-  }
-  if (!config.Database) {
-    ex('Server')
-  }
-}
-
-sqlService.initPool = async (sqlConfig) => {
-  if (!sqlConfig) {
-    throw new Error('sqlConfig is required')
-  }
-  if (pool) {
-    return
-  }
-  validateSqlConfig(sqlConfig)
-  const config = {
-    user: sqlConfig.Application.Username,
-    password: sqlConfig.Application.Password,
-    server: sqlConfig.Server,
-    database: sqlConfig.Database,
-    connectionTimeout: sqlConfig.connectionTimeout || 30000,
-    requestTimeout: sqlConfig.requestTimeout || 15000,
-    pool: {
-      max: sqlConfig.Pooling.MaxCount || 5,
-      min: sqlConfig.Pooling.MinCount || 0,
-      idleTimeoutMillis: sqlConfig.Pooling.IdleTimeout || 30000
-    },
-    options: {
-      encrypt: sqlConfig.Encrypt
-    }
-  }
-
-  pool = new mssql.ConnectionPool(config)
-  // TODO emit error
-  pool.on('error', () => {})
-  return pool.connect()
+sqlService.initPool = async () => {
+  pool = await poolPromise
 }
 
 sqlService.drainPool = async () => {
@@ -281,8 +239,8 @@ const dbLimitReached = (error) => {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = []) => {
-  await pool
+sqlService.query = async function query (sql, params = []) {
+  await this.initPool()
 
   const query = async () => {
     const request = new mssql.Request(pool)
@@ -332,8 +290,8 @@ function addParamsToRequest (params, request) {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = []) => {
-  await pool
+sqlService.modify = async function modify (sql, params = []) {
+  await this.initPool()
 
   const modify = async () => {
     const request = new mssql.Request(pool)
@@ -624,14 +582,6 @@ END CATCH
   `
   const modify = async () => sqlService.modify(wrappedSQL, params)
   return retry(modify, retryConfig, dbLimitReached)
-}
-
-/**
- * Initialise the sql service and set up the connection pool
- * @param config
- */
-sqlService.initialise = async (config) => {
-  await sqlService.initPool(config)
 }
 
 module.exports = sqlService

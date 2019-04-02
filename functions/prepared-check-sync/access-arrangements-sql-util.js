@@ -2,8 +2,6 @@
 
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
-const config = require('../config')
-sqlService.initialise(config.Sql)
 
 const checkTable = '[check]'
 const pupilAccessArrangementsTable = '[pupilAccessArrangements]'
@@ -30,9 +28,9 @@ sqlUtil.sqlFindPupilAccessArrangementsByCheckCode = async function (checkCode) {
   const sql = `
   SELECT pAA.*, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
   FROM ${schema}.${pupilAccessArrangementsTable} pAA
-  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
+  LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
     ON pAA.pupilFontSizes_id = pfs.id
-  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
+  LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc
     ON pAA.pupilColourContrasts_id = pcc.id
   INNER JOIN ${schema}.${pupilTable} p
     ON pAA.pupil_id = p.id

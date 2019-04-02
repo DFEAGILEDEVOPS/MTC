@@ -6,11 +6,9 @@ const azureStorageHelper = require('../lib/azure-storage-helper')
 const context = require('../mock-context')
 
 describe('pupil-prefs: v1', () => {
-  let sqlService, v1
+  let v1
 
   beforeAll(() => {
-    sqlService = require('../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     v1 = require('./v1')
   })
 

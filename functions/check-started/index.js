@@ -4,8 +4,7 @@ const moment = require('moment')
 const process = require('process')
 const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
-const winston = require('winston')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -13,9 +12,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
-const config = require('../config')
-sqlService.initialise(config.Sql)
-winston.level = 'error'
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'

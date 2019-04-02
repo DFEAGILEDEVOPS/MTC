@@ -5,11 +5,9 @@
 const contextMock = require('../../mock-context')
 
 describe('checkProcessingService', () => {
-  let sqlService, service, psychometricianReportDataService, psychometricianReportService, anomalyReportService
+  let service, psychometricianReportDataService, psychometricianReportService, anomalyReportService
 
   beforeAll(() => {
-    sqlService = require('../../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     service = require('../service/check-processing.service')
     psychometricianReportDataService = require('../service/data-service/psychometrician-report-cache.data.service')
     psychometricianReportService = require('../service/psychometrician-report.service')

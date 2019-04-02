@@ -2,9 +2,6 @@
 const sqlService = require('../../../lib/sql/sql.service')
 const { TYPES } = sqlService
 
-const config = require('../../../config')
-sqlService.initialise(config.Sql)
-
 const psychometricianReportCacheDataService = {
   /**
    * Batch insert multiple objects
@@ -55,9 +52,9 @@ const psychometricianReportCacheDataService = {
     const safeBatchSize = parseInt(batchSize, 10)
 
     const sql = `SELECT TOP ${safeBatchSize} chk.id
-      FROM ${sqlService.adminSchema}.[check] chk
-      LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc ON (chk.id = prc.check_id)
-      JOIN ${sqlService.adminSchema}.[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+      FROM [mtc_admin].[check] chk
+      LEFT JOIN [mtc_admin].psychometricianReportCache prc ON (chk.id = prc.check_id)
+      JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
       WHERE
         prc.check_id IS NULL
       AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')

@@ -5,9 +5,6 @@ const sqlService = require('./sql/sql.service')
 const { TYPES } = sqlService
 const checkTable = '[check]'
 const schema = '[mtc_admin]'
-const config = require('../config')
-
-sqlService.initialise(config.Sql)
 
 /**
  * Retrieve the checkFormAllocation data from the db
@@ -83,7 +80,7 @@ module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
  * @return {Promise<object>}
  */
 module.exports.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.[check]
+  const sql = `UPDATE [mtc_admin].[check]
   SET mark=@mark,
   maxMark=@maxMark,
   markedAt=@markedAt
@@ -125,7 +122,7 @@ module.exports.sqlUpdateAnswersWithResults = async (checkId, answers) => {
   if (!answers || !Array.isArray(answers)) {
     throw new Error('answers not provided')
   }
-  const insertSql = `INSERT INTO ${sqlService.adminSchema}.${table} (
+  const insertSql = `INSERT INTO [mtc_admin].${table} (
       check_id,
       questionNumber,
       factor1,

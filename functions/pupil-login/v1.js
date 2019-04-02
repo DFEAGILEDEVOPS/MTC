@@ -1,8 +1,6 @@
 'use strict'
 
 const sqlService = require('../lib/sql/sql.service')
-const config = require('../config')
-sqlService.initialise(config.Sql)
 const { TYPES } = sqlService
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlHelper = require('../lib/sql-helper')

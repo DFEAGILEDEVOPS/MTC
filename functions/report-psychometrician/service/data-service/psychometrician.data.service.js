@@ -1,9 +1,6 @@
 'use strict'
 const sqlService = require('../../../lib/sql/sql.service')
 const { TYPES } = sqlService
-
-const config = require('../../../config')
-sqlService.initialise(config.Sql)
 const R = require('ramda')
 
 /**
@@ -22,7 +19,7 @@ const psychometricianDataService = {
     }
     const select = `
     SELECT *
-    FROM ${sqlService.adminSchema}.[pupil]
+    FROM [mtc_admin].[pupil]
     `
     const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
@@ -146,9 +143,9 @@ const psychometricianDataService = {
              chk.*,
              f.formData,
              cr.payload
-      FROM ${sqlService.adminSchema}.[check] chk JOIN
-        ${sqlService.adminSchema}.[checkResult] cr on (chk.id = cr.check_id) JOIN
-        ${sqlService.adminSchema}.[checkForm] f ON chk.checkForm_id = f.id
+      FROM [mtc_admin].[check] chk JOIN
+        [mtc_admin].[checkResult] cr on (chk.id = cr.check_id) JOIN
+        [mtc_admin].[checkForm] f ON chk.checkForm_id = f.id
       `
     const where = sqlService.buildParameterList(batchIds, TYPES.Int)
     const sql = [select, 'WHERE chk.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')

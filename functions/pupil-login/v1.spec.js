@@ -7,11 +7,9 @@ const azureStorageHelper = require('../lib/azure-storage-helper')
 describe('pupil-login: v1-process', () => {
   const message = { checkCode: 'abc-def-123', loginAt: '2018-12-31T16:23:59.123Z', version: 1 }
 
-  let sqlService, sqlHelper, v1
+  let sqlHelper, v1
 
   beforeAll(() => {
-    sqlService = require('../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     sqlHelper = require('../lib/sql-helper')
     v1 = require('./v1')
   })

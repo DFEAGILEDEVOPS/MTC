@@ -3,9 +3,6 @@ const sqlService = require('../../../lib/sql/sql.service')
 const R = require('ramda')
 const { TYPES } = sqlService
 
-const config = require('../../../config')
-sqlService.initialise(config.Sql)
-
 const psychometricianReportDataService = {
   sqlFindAllPsychometricianReports: async function sqlFindAllPsychometricianReports () {
     const sql = 'SELECT * from [mtc_admin].[psychometricianReportCache]'

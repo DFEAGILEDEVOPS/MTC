@@ -2,9 +2,6 @@
 const sqlService = require('../../../lib/sql/sql.service')
 const { TYPES } = sqlService
 
-const config = require('../../../config')
-sqlService.initialise(config.Sql)
-
 const table = '[anomalyReportCache]'
 
 const anomalyReportCacheDataService = {
@@ -25,7 +22,7 @@ const anomalyReportCacheDataService = {
     }
     const insertSql = `
     DECLARE @output TABLE (id int);
-    INSERT INTO ${sqlService.adminSchema}.${table}
+    INSERT INTO [mtc_admin].${table}
     (check_id, jsonData)
     OUTPUT inserted.ID INTO @output
     VALUES

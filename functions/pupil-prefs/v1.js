@@ -2,8 +2,6 @@
 
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
-const config = require('../config')
-sqlService.initialise(config.Sql)
 
 const moment = require('moment')
 const uuid = require('uuid/v4')

@@ -9,11 +9,9 @@ const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMockOrig = require('./mocks/check-form')
 
 describe('anomaly-report.service', () => {
-  let sqlService, service, psychometricianDataService, anomalyReportCacheDataService
+  let service, psychometricianDataService, anomalyReportCacheDataService
 
   beforeEach(() => {
-    sqlService = require('../../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     service = require('../service/anomaly-report.service')
     psychometricianDataService = require('../service/data-service/psychometrician.data.service')
     anomalyReportCacheDataService = require('../service/data-service/anomaly-report-cache.data.service')

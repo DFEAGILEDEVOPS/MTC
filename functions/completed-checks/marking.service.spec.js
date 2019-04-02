@@ -5,12 +5,10 @@ const completedCheckMock = require('./mocks/completed-check-with-results')
 const checkFormMock = require('./mocks/check-form')
 
 describe('markingService', () => {
-  let service, sqlHelper, sqlService
+  let service, sqlHelper
 
   beforeAll(() => {
     // sql-helper connects to the database as a side-effect of requiring it.
-    sqlService = require('../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     sqlHelper = require('../lib/sql-helper')
     service = require('./marking.service')
   })

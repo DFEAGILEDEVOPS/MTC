@@ -24,12 +24,10 @@ const checkConfig = {
 }
 
 describe('prepared-check-sync: v1', () => {
-  let sqlService, sqlUtils, v1, accessArrangementsSqlUtil
+  let sqlUtils, v1, accessArrangementsSqlUtil
 
   beforeAll(() => {
     // sql-helper connects to the database as a side-effect of requiring it.
-    sqlService = require('../lib/sql/sql.service')
-    spyOn(sqlService, 'initialise')
     sqlUtils = require('../lib/sql-helper')
     v1 = require('./v1')
     accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
