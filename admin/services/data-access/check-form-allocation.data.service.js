@@ -2,6 +2,7 @@
 
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
+const config = require('../../config')
 const table = '[checkFormAllocation]'
 
 const checkFormAllocationDataService = {}
@@ -22,7 +23,8 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       checkForm.formData as checkForm_formData,
       school.id as school_id,
       school.name as school_name,
-      school.pin as school_pin
+      school.pin as school_pin,
+      ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
     FROM 
       ${sqlService.adminSchema}.[check] chk
       JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
@@ -30,6 +32,7 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       JOIN ${sqlService.adminSchema}.[school] school on (pupil.school_id = school.id)
       JOIN ${sqlService.adminSchema}.[checkPin] cp on (chk.id = cp.check_id)
       JOIN ${sqlService.adminSchema}.[pin] pin ON (cp.pin_id = pin.id)
+      LEFT JOIN ${sqlService.adminSchema}.sce ON (sce.school_id = school.id)
     `
   let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`

@@ -39,6 +39,7 @@ module.exports = {
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
+  DEFAULT_TIMEZONE: 'Etc/UTC',
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
@@ -69,8 +70,8 @@ module.exports = {
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     PupilCensus: {
-      Username: process.env.SQL_PUPIL_CENSUS_USER || 'sa', // docker default
-      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r' // docker default
+      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
+      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE

@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "applicationinsights": "^1.0.8",
-    "azure-storage": "^2.8.0",
+    "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -49,6 +49,7 @@
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.1.1",
     "moment": "^2.20.1",
+    "moment-timezone": "^0.5.23",
     "morgan": "~1.9.0",
     "mssql": "5.0.2",
     "passport": "^0.4.0",
