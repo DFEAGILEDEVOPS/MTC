@@ -220,7 +220,7 @@ const postEditPupil = async (req, res, next) => {
       return next(new Error(`School not found`))
     }
 
-    validationError = await pupilValidator.validate(req.body)
+    validationError = await pupilValidator.validate(req.body, school.id)
   } catch (error) {
     return next(error)
   }
