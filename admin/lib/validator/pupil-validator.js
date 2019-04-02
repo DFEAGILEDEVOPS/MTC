@@ -128,7 +128,7 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     upnErrorArr.push(addPupilErrorMessages.upnRequired)
   }
   // Check that the UPN is unique
-  if (!(validationError.get('upn'))) {
+  if (upnErrorArr.length === 0) {
     const existingPupil = await pupilDataService.sqlFindOneByUpnAndSchoolId(pupilData.upn, schoolId)
     // if pupil is not stored already under the same id and UPN
     if (!isEmpty(upn) && existingPupil &&

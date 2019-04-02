@@ -158,7 +158,7 @@ pupilDataService.sqlFindOneByUpn = async (upn = '') => {
  * @param {Number} schoolId
  * @return {Promise<void>}
  */
-pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn = '', schoolId) => {
+pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn, schoolId) => {
   const params = [
     {
       name: 'upn',
