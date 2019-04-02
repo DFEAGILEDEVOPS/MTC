@@ -7,10 +7,10 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as helmet from 'helmet'
 import * as uuidV4 from 'uuid/v4'
-import * as winston from 'winston'
-import * as azure from './azure'
+import * as appInsights from './helpers/app-insights'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
+import logger from './services/log.service'
 
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
@@ -27,7 +27,7 @@ class App {
     this.middleware()
     this.routes()
 
-    azure.startInsightsIfConfigured().catch(e => winston.error(e))
+    appInsights.startInsightsIfConfigured().catch(e => logger.error(e))
   }
 
   // Configure Express middleware.
@@ -88,8 +88,7 @@ class App {
       // @TODO: change this to a real logger with an error string that contains
       // all pertinent information. Assume 2nd/3rd line support would pick this
       // up from logging web interface (e.g. ELK / LogDNA)
-      winston.error('ERROR: ' + err.message + ' ID:' + errorId)
-      winston.error(err.stack)
+      logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
       // return the error as an JSON object
       err.message = err.message || 'An error occurred'
