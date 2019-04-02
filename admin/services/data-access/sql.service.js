@@ -7,12 +7,14 @@ const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
+const config = require('../../config')
 
 const retryConfig = {
-  attempts: 3,
-  pauseTimeMs: 5000,
-  pauseMultiplier: 1.5
+  attempts: config.DatabaseRetry.MaxRetryAttempts,
+  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
+  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
+
 const connectionLimitReachedErrorCode = 10928
 
 const dbLimitReached = (error) => {
