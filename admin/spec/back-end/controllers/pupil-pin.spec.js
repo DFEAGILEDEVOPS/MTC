@@ -454,7 +454,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
@@ -463,7 +463,7 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
         const res = getRes()
@@ -471,12 +471,12 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
       it('calls next if no pin generation environment has been set', async (done) => {
@@ -497,7 +497,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
@@ -506,7 +506,7 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
         const res = getRes()
@@ -514,12 +514,12 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ familiarisationPinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
     })
@@ -565,7 +565,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
@@ -577,7 +577,7 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
         const res = getRes()
@@ -585,12 +585,12 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
       it('calls next if no pin generation environment has been set', async (done) => {
@@ -612,7 +612,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
@@ -624,7 +624,7 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
       it('calls next if error occurs', async (done) => {
         const res = getRes()
@@ -632,12 +632,12 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ familiarisationPinsAvailable: true })
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(businessAvailabilityService.determinePinGenerationEligibility).toHaveBeenCalled()
+        expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
         done()
       })
     })
