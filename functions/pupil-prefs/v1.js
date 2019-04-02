@@ -5,7 +5,6 @@ const { TYPES } = sqlService
 
 const moment = require('moment')
 const uuid = require('uuid/v4')
-const winston = require('winston')
 
 const accessArrangementsTable = '[accessArrangements]'
 const azureStorageHelper = require('../lib/azure-storage-helper')
@@ -16,7 +15,6 @@ const pupilColourContrastsTable = '[pupilColourContrasts]'
 const pupilTable = '[pupil]'
 const schema = '[mtc_admin]'
 
-winston.level = 'error'
 
 const v1 = {}
 
