@@ -30,8 +30,8 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.window = windowRefService.nativeWindow;
     const timeoutData = this.storageService.getItem(TimeoutStorageKey);
     if (timeoutData) {
-       this.numQuestions = timeoutData.numQuestions;
-       this.numCompleted = timeoutData.numCompleted;
+        this.numQuestions = timeoutData.numQuestions;
+        this.numCompleted = timeoutData.numCompleted;
     }
     this.userService.logout();
     this.questionService.reset();
