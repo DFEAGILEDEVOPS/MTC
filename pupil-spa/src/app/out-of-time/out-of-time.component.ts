@@ -19,7 +19,6 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   public numQuestions: number;
   public numCompleted: number;
   private speechListenerEvent: any;
-  public familiarisationCheck: boolean;
 
   constructor(protected windowRefService: WindowRefService,
               private storageService: StorageService,
@@ -31,16 +30,12 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.window = windowRefService.nativeWindow;
     const timeoutData = this.storageService.getItem(TimeoutStorageKey);
     if (timeoutData) {
-        this.numQuestions = timeoutData.numQuestions;
-        this.numCompleted = timeoutData.numCompleted;
+      this.numQuestions = timeoutData.numQuestions;
+      this.numCompleted = timeoutData.numCompleted;
     }
-    const config = this.questionService.getConfig();
-    this.familiarisationCheck = config && config.practice;
-    if (!this.familiarisationCheck) {
-      this.userService.logout();
-      this.questionService.reset();
-      this.warmupQuestionService.reset();
-    }
+    this.userService.logout();
+    this.questionService.reset();
+    this.warmupQuestionService.reset();
   }
 
   ngOnInit() {
