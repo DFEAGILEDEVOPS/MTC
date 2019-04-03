@@ -29,6 +29,12 @@ controller.getOverview = async (req, res, next) => {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData.accessArrangementsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     return next(error)
   }
@@ -60,10 +66,16 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   let pupils
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData.accessArrangementsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     return next(error)
   }
