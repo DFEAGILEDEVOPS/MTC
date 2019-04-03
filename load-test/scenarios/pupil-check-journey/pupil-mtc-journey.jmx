@@ -103,7 +103,7 @@
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Referer</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net/sign-in</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}/sign-in</stringProp>
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -111,7 +111,7 @@
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
