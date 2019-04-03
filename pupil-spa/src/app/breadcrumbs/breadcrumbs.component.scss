@@ -1,0 +1,18 @@
+.breadcrumbs {
+  padding-top: 10px;
+  padding-bottom: 15px;
+  div {
+    display: inline-block;
+    font-size: medium;
+    a {
+      font-size: medium;
+    }
+  }
+}
+
+.breadcrumb-separator {
+  color: #bfc1c3;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-right: 10px;
+}
