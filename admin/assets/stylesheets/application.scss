@@ -451,7 +451,7 @@ table.spacious {
   th, td {
     display: table-cell;
 
-    &:first-child {
+    &:first-child:not(.allow-wrap) {
       white-space: nowrap;
     }
   }
@@ -492,6 +492,10 @@ table.spacious.reduced-top-margin {
 
 .column-narrow {
   width: 10%;
+}
+
+.column-wide {
+  width: 50%;
 }
 
 .master-detail {

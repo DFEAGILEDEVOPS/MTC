@@ -46,7 +46,7 @@ Then(/^I should see validation errors$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a last name in no more than 128 characters"
   expect(@page.error_summary.year.text).to eql "Enter a date of birth"
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a date of birth"
-  expect(@page.error_summary.upn.text).to eql "Enter a UPN"
+  expect(@page.error_summary.upn.first.text).to eql "Enter a UPN"
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a UPN"
 
 end
@@ -308,13 +308,13 @@ When(/^I submit valid details with a already used UPN$/) do
 end
 
 Then(/^I should see an error stating more than (\d+) pupil with the same UPN$/) do |arg|
-  expect(@page.error_summary.upn.text).to eql "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
-  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
+  expect(@page.error_summary.upn.map{|error| error.text}).to eql ["Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."]
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql ["Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."]
 end
 
 When(/^I submit valid details with a UPN that has a incorrect check letter$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @upn = UpnGenerator.generate
   @upn[0]= 'O'
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
@@ -324,13 +324,13 @@ When(/^I submit valid details with a UPN that has a incorrect check letter$/) do
 end
 
 Then(/^I should see an error stating wrong check letter at character (\d+)$/) do |_x|
-  expect(@page.error_summary.upn.text).to eql "Enter a valid UPN. First character is not recognised. See guidance for instructions."
-  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid UPN. First character is not recognised. See guidance for instructions."
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. First character is not recognised. See guidance for instructions."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql ["Enter a valid UPN. First character is not recognised. See guidance for instructions."]
 end
 
 When(/^I submit valid details with a UPN that has a invalid LA code$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @upn = UpnGenerator.generate
   @upn[1..3]= '000'
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
@@ -340,13 +340,13 @@ When(/^I submit valid details with a UPN that has a invalid LA code$/) do
 end
 
 Then(/^I should see an error stating characters between 2\-4 are invalid$/) do
-  expect(@page.error_summary.upn.text).to eql "Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions."
-  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions."
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql  ["Enter a valid UPN. First character is not recognised. See guidance for instructions.", "Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions."]
 end
 
 When(/^I submit valid details with a UPN that has a alpha character between characters 5\-12$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @upn = UpnGenerator.generate
   @upn[6]= 'A'
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
@@ -356,13 +356,13 @@ When(/^I submit valid details with a UPN that has a alpha character between char
 end
 
 Then(/^I should see an error stating characters between 5\-12 are invalid$/) do
-  expect(@page.error_summary.upn.text).to eql "Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions."
-  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions."
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql  ["Enter a valid UPN. First character is not recognised. See guidance for instructions.", "Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions."]
 end
 
 When(/^I submit valid details with a UPN that has a invalid alpha character at character 13$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @upn = UpnGenerator.generate
   @upn[12]= 'S'
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
@@ -372,13 +372,13 @@ When(/^I submit valid details with a UPN that has a invalid alpha character at c
 end
 
 Then(/^I should see an error stating character 13 is invalid$/) do
-  expect(@page.error_summary.upn.text).to eql "Enter a valid UPN. Character 13 not recognised. See guidance for instructions."
-  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid UPN. Character 13 not recognised. See guidance for instructions."
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. Character 13 not recognised. See guidance for instructions."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to include "Enter a valid UPN. Character 13 not recognised. See guidance for instructions."
 end
 
 When(/^I submit valid details with a UPN has a lowercase alpha character$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @upn = UpnGenerator.generate
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
