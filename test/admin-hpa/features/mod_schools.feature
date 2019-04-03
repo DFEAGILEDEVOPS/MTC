@@ -23,7 +23,7 @@ Feature:
     When I navigate to the settings for MOD schools page
     Then I should see a list of schools with the LEA code of 702
 
-  @remove_mod_school
+  @remove_mod_school @wip
   Scenario: Service manager can amend a schools timezone after it has been set
     Given I have updated a mod school to be of a different timezone
     When I decide to update it from the mod schools page
