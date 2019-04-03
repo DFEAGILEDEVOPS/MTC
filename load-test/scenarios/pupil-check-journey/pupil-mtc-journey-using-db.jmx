@@ -93,7 +93,7 @@ result = new StringBuilder()
 
 def randomRow = resultSet.get(org.apache.commons.lang3.RandomUtils.nextInt(0,resultSet.size()))
 
-randomRow.each { k, v -&gt; 
+randomRow.each { k, v -&gt;
     result.append(&quot;${k}&quot;).append(&quot;,&quot;)
 }
 result.append(System.getProperty(&quot;line.separator&quot;))
@@ -189,7 +189,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Referer</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net/sign-in</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}</stringProp>
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -197,7 +197,7 @@ org.apache.commons.io.FileUtils.writeStringToFile(new File(&quot;/data/flood/fil
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
