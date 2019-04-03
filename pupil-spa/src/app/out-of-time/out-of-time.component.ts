@@ -36,9 +36,11 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const config = this.questionService.getConfig();
     this.familiarisationCheck = config && config.practice;
-    this.userService.logout();
-    this.questionService.reset();
-    this.warmupQuestionService.reset();
+    if (!this.familiarisationCheck) {
+      this.userService.logout();
+      this.questionService.reset();
+      this.warmupQuestionService.reset();
+    }
   }
 
   ngOnInit() {
