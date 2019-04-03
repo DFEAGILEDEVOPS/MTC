@@ -9,6 +9,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 
 /**
  * Pupils not taking the check: initial page.
@@ -61,6 +62,14 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (availabilityData.hdfSubmitted) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
     pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber(req.user.School)
   } catch (error) {
