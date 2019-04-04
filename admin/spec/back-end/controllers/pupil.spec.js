@@ -17,6 +17,8 @@ const pupilValidator = require('../../../lib/validator/pupil-validator')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const schoolMock = require('../mocks/school')
 const uploadedFileService = require('../../../services/uploaded-file.service')
+const businessAvailabilityService = require('../../../services/business-availability.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const ValidationError = require('../../../lib/validation-error')
 
 describe('pupil controller:', () => {
@@ -63,6 +65,8 @@ describe('pupil controller:', () => {
       it('displays an add pupil page', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
@@ -72,6 +76,8 @@ describe('pupil controller:', () => {
       it('catches errors in the render() call', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         spyOn(res, 'render').and.throwError('test')
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
@@ -96,6 +102,8 @@ describe('pupil controller:', () => {
       res = getRes()
       req = getReq(goodReqParams)
       nextSpy = sandbox.spy()
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
     afterEach(() => { sandbox.restore() })
@@ -174,6 +182,8 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(uploadedFileService, 'getFilesize')
       spyOn(uploadedFileService, 'getAzureBlobFileSize')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
       await controller(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
@@ -187,6 +197,8 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(uploadedFileService, 'getFilesize')
       spyOn(uploadedFileService, 'getAzureBlobFileSize')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
       spyOn(res, 'render').and.throwError('test')
       await controller(req, res, next)
       expect(res.statusCode).toBe(200)
@@ -216,6 +228,8 @@ describe('pupil controller:', () => {
     beforeEach(() => {
       sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
     afterEach(() => {
