@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="4.0" jmeter="4.0 r1823414">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Pupil-Login-using-db" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Pupil-Login-using-teacher-pin-generation" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
@@ -565,7 +565,7 @@ FETCH NEXT 1000 ROWS ONLY</stringProp>
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Referer</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net/sign-in</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}/sign-in/sign-in</stringProp>
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -573,7 +573,7 @@ FETCH NEXT 1000 ROWS ONLY</stringProp>
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://loadpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">${__P(pupilSiteUrl)}/sign-in</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
