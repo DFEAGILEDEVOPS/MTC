@@ -3,6 +3,7 @@
 require('dotenv').config()
 const toBool = require('to-bool')
 
+const thirtySecondsInMilliseconds = 30000
 const oneMinuteInMilliseconds = 60000
 
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
   server: process.env.SQL_SERVER || 'localhost',
   port: process.env.SQL_PORT || 1433,
   requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || oneMinuteInMilliseconds,
-  connectionTimeout: parseInt(process.env.SQL_CONNECT_TIMEOUT, 10) || oneMinuteInMilliseconds,
+  connectionTimeout: parseInt(process.env.SQL_CONNECT_TIMEOUT, 10) || thirtySecondsInMilliseconds,
   user: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
   password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!', // docker default
   pool: {

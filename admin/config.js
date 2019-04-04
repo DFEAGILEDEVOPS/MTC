@@ -4,7 +4,6 @@ const os = require('os')
 const toBool = require('to-bool')
 const sql = require('./config/sql.config')
 const twoMinutesInMilliseconds = 120000
-const oneMinuteInMilliseconds = 60000
 const thirtySecondsInMilliseconds = 30000
 
 const getEnvironment = () => {
