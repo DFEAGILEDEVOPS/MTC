@@ -18,15 +18,18 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
   let retryPolicy = {}
   try {
     Object.assign(retryPolicy, retryConfiguration)
-    logger.debug(`asyncRetryHandler: attempting method.  attempts left:${retryPolicy.attempts}`)
+    logger.debug(`asyncRetryHandler: executing retryable method...`)
     const result = await asyncRetryableFunction()
+    logger.debug(`asyncRetryHandler: execution successful.`)
     return result
   } catch (error) {
+    logger.debug(`asyncRetryHandler: method call failed with ${error}`)
     if (retryPolicy.attempts > 1 && retryCondition(error)) {
-      logger.debug(`asyncRetryHandler: failed with ${error} \n retrying in ${retryPolicy.pauseTimeMs}...`)
+      logger.debug(`asyncRetryHandler: pausing for ${retryPolicy.pauseTimeMs}...`)
       await pause(retryPolicy.pauseTimeMs)
       retryPolicy.attempts -= 1
       retryPolicy.pauseTimeMs *= retryConfiguration.pauseMultiplier
+      logger.debug(`asyncRetryHandler: pause passed. attempts left:${retryPolicy.attempts}`)
       await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryCondition)
     } else {
       throw error
