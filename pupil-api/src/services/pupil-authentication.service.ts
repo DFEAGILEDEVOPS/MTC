@@ -1,9 +1,9 @@
 import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 import { clone, path } from 'ramda'
-import * as winston from 'winston'
 import * as moment from 'moment'
 import * as azureQueueService from './azure-queue.service'
+import logger from './log.service'
 require('../config')
 
 let azureTableService: any
@@ -67,7 +67,7 @@ export const pupilAuthenticationService = {
     try {
       await this.markAsCollected(tableService, clone(result))
     } catch (error) {
-      winston.error(error.message)
+      logger.error(error)
       throw error
     }
 
@@ -119,7 +119,7 @@ export const pupilAuthenticationService = {
         throw new Error('Update was not successful')
       }
     } catch (error) {
-      winston.error('Failed to update: ' + error.message)
+      logger.error('Failed to update: ', error)
       throw error
     }
   }
