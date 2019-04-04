@@ -7,12 +7,14 @@ const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilAgeReasonService = require('../services/pupil-age-reason.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
 const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
+const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 
@@ -30,6 +32,14 @@ const getAddPupil = async (req, res, next, error = null) => {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (availabilityData.hdfSubmitted) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     res.render('pupil-register/add-pupil', {
       formData: req.body,
       error: error || new ValidationError(),
@@ -78,6 +88,14 @@ const getAddMultiplePupils = async (req, res, next) => {
   const { csvErrorFile } = req.session
   const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
   try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (availabilityData.hdfSubmitted) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     templateFileSize = uploadedFileService.getFilesize(templateFile)
     csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
@@ -220,7 +238,7 @@ const postEditPupil = async (req, res, next) => {
       return next(new Error(`School not found`))
     }
 
-    validationError = await pupilValidator.validate(req.body)
+    validationError = await pupilValidator.validate(req.body, school.id)
   } catch (error) {
     return next(error)
   }
