@@ -6,14 +6,14 @@
       "type": "queueTrigger",
       "direction": "in",
       "queueName": "prepared-check-sync",
-      "connection": "StorageAccount"
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     },
     {
       "name": "pupilEventsTable",
       "type": "table",
       "direction": "out",
       "tableName": "pupilEvent",
-      "connection": "StorageAccount"
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }

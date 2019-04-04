@@ -32,7 +32,6 @@ the functions depend on a `local.settings.json` file when running locally.  This
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "<connection-string>",
     "AzureWebJobsDashboard": "<connection-string>",
-    "StorageAccount": "<your-storage-connection-string>",
     "AZURE_STORAGE_CONNECTION_STRING": "<your-storage-connection-string>"
   }
 }
@@ -52,4 +51,3 @@ From the `functions` directory, execute `func function new`.
 ## Installing package dependencies
 
 npm packages should be installed in the `functions` root folder, not in each function directory.
-
