@@ -89,43 +89,45 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   if (checkWindowId) {
     checkWindowData.id = checkWindowId
   }
+  const utcOffsetInHours = moment().utcOffset() / 60
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
     dateService.createUTCFromDayMonthYear(
       requestData['adminStartDay'],
       requestData['adminStartMonth'],
       requestData['adminStartYear']
-    )
+    ).utcOffset(utcOffsetInHours)
   checkWindowData.adminEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
       requestData['adminEndYear']
-    )
+    ).utcOffset(utcOffsetInHours)
   checkWindowData.familiarisationCheckStartDate =
     dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
-    )
+    ).utcOffset(utcOffsetInHours)
   checkWindowData.familiarisationCheckEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
       requestData['familiarisationCheckEndYear']
-    )
+    ).utcOffset(utcOffsetInHours)
   checkWindowData.checkStartDate =
     dateService.createUTCFromDayMonthYear(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
-    )
+    ).utcOffset(utcOffsetInHours)
   checkWindowData.checkEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
       requestData['liveCheckEndYear']
-    )
+    ).utcOffset(utcOffsetInHours)
+
   // This will ensure the last day of the check window will be taken into account for checks
   // To avoid overflow to the next day during BST the time is set at 1 hour 59mins and 59 seconds before the day change
   const endofDayTime = { hour: 23, minute: 59, second: 59 }
