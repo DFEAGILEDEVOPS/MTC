@@ -9,6 +9,9 @@ import * as helmet from 'helmet'
 import * as uuidV4 from 'uuid/v4'
 import * as winston from 'winston'
 import * as azure from './azure'
+import { rateLimit } from './helpers/rate-limit'
+import config from './config'
+
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
 
@@ -75,6 +78,20 @@ class App {
         }
       } else {
         next()
+      }
+    })
+
+    // rate limit requests
+    this.express.use(async (req, res, next) => {
+      try {
+        if (!config.RateLimit.Enabled) {
+          return next()
+        }
+        await rateLimit(req)
+        next()
+      } catch (error) {
+        // Rate limit exceeded
+        next(error)
       }
     })
 
