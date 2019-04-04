@@ -5,6 +5,7 @@ const httpMocks = require('node-mocks-http')
 
 const checkStartService = require('../../../services/check-start.service')
 const dateService = require('../../../services/date.service')
+const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pinService = require('../../../services/pin.service')
 const checkWindowSanityCheckService = require('../../../services/check-window-sanity-check.service')
@@ -78,8 +79,8 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
-        spyOn(res, 'render').and.returnValue(null)
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(res, 'render')
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(checkWindowSanityCheckService, 'check')
         await controller(req, res, next)
         expect(res.locals.pageTitle).toBe('Start the MTC - password and PINs')
@@ -97,7 +98,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ livePinsAvailable: true })
         spyOn(res, 'render').and.returnValue(null)
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(checkWindowSanityCheckService, 'check')
         await controller(req, res, next)
         expect(res.locals.pageTitle).toBe('Try it out - password and PINs')
@@ -169,7 +170,7 @@ describe('pupilPin controller:', () => {
           const res = getRes()
           const req = getReq(goodReqParamsLive)
           spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-          spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
+          spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGeneration').and.returnValue(Promise.resolve({}))
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(res, 'render').and.returnValue(null)
@@ -201,7 +202,7 @@ describe('pupilPin controller:', () => {
           const res = getRes()
           const req = getReq(goodReqParamsFam)
           spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-          spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
+          spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGeneration').and.returnValue(Promise.resolve({}))
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(res, 'render').and.returnValue(null)
@@ -283,7 +284,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -315,7 +315,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -334,7 +333,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -354,7 +352,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -376,7 +373,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -395,7 +391,6 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(checkStartService, 'prepareCheck')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
@@ -454,7 +449,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
@@ -471,7 +466,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -497,7 +492,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
@@ -514,7 +509,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -565,7 +560,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
@@ -585,7 +580,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -612,7 +607,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue([])
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
@@ -632,7 +627,7 @@ describe('pupilPin controller:', () => {
 
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
