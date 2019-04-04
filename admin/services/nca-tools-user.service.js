@@ -44,6 +44,7 @@ const service = {
       // user exists - check requested school
       if (school && (userRecord.school_id !== school.id)) {
         await userDataService.sqlUpdateSchool(userRecord.id, school.id)
+        userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
       }
     }
     userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
