@@ -1,6 +1,5 @@
 'use strict'
 
-const pupilService = require('../services/pupil.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')

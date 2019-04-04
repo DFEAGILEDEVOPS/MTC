@@ -6,7 +6,6 @@ const pupilService = require('../../../services/pupil.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
-const pupilWithGroupAndStatusMock = require('../mocks/pupils-with-group-and-status')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 
 /* global describe, it, expect, spyOn, fail */

@@ -11,7 +11,6 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
-const featureToggles = require('feature-toggles')
 const azureQueueService = require('../services/azure-queue.service')
 
 const restartService = {}

@@ -1,5 +1,4 @@
 'use strict'
-const featureToggles = require('feature-toggles')
 
 const attendanceCodeService = require('../services/attendance.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')

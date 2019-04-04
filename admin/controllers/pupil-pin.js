@@ -1,4 +1,3 @@
-const featureToggles = require('feature-toggles')
 const R = require('ramda')
 
 const config = require('../config')
