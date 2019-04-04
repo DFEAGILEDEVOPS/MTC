@@ -17,13 +17,7 @@ const listPupils = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
-    } else {
-      pupilsFormatted = await pupilRegisterService.getPupils(req.user.School, req.user.schoolId, sortDirection)
-      pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
-      pupilRegisterService.sortPupils(pupilsFormatted, sortField, sortDirection)
-    }
+    pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
   } catch (error) {
     next(error)
   }

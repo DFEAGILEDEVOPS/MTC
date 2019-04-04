@@ -114,49 +114,6 @@ describe('pupil service', () => {
     })
   })
 
-  describe('#sortByStatus', () => {
-    it('it sorts an array of pupils by status asc', async () => {
-      const mock = pupilWithGroupAndStatusMock
-      const service = setupService(pupilService)
-      const sortedPupils = await service.sortByStatus(mock, 'asc')
-      expect(sortedPupils[0].foreName).toBe('Juliana')
-      expect(sortedPupils[1].foreName).toBe('Gregory')
-      expect(sortedPupils[2].foreName).toBe('Burns')
-      expect(sortedPupils[3].foreName).toBe('Koch')
-    })
-
-    it('it sorts an array of pupils by status desc', async () => {
-      const mock = pupilWithGroupAndStatusMock
-      const service = setupService(pupilService)
-      const sortedPupils = await service.sortByStatus(mock, 'desc')
-      expect(sortedPupils[0].foreName).toBe('Ebony')
-      expect(sortedPupils[1].foreName).toBe('Nieves')
-      expect(sortedPupils[2].foreName).toBe('Juliana')
-      expect(sortedPupils[3].foreName).toBe('Gregory')
-    })
-  })
-
-  describe('#sortByGroup', () => {
-    it('it sorts an array of pupils by group asc', async () => {
-      const mock = pupilWithGroupAndStatusMock
-      const service = setupService(pupilService)
-      const sortedPupils = await service.sortByGroup(mock, 'asc')
-      expect(sortedPupils[0].foreName).toBe('Ebony')
-      expect(sortedPupils[1].foreName).toBe('Gregory')
-      expect(sortedPupils[2].foreName).toBe('Nieves')
-      expect(sortedPupils[3].foreName).toBe('Koch')
-    })
-
-    it('it sorts an array of pupils by group desc', async () => {
-      const mock = pupilWithGroupAndStatusMock
-      const service = setupService(pupilService)
-      const sortedPupils = await service.sortByGroup(mock, 'desc')
-      expect(sortedPupils[0].foreName).toBe('Nieves')
-      expect(sortedPupils[1].foreName).toBe('Koch')
-      expect(sortedPupils[2].foreName).toBe('Bessie')
-      expect(sortedPupils[3].foreName).toBe('Ebony')
-    })
-  })
   describe('#getPupilsWithFullNames', () => {
     it('it returns an object with combined name values and urlSlug', async () => {
       const pupilMocks = [

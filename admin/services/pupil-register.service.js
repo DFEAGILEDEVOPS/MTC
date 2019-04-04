@@ -37,26 +37,6 @@ const pupilRegisterService = {
   },
 
   /**
-   * Sorting.
-   * @param pupilList
-   * @param sortField
-   * @param sortDirection
-   * @deprecated
-   * @returns {*}
-   */
-  sortPupils: (pupilList, sortField, sortDirection) => {
-    // If sorting by 'status', use custom method.
-    if (sortField === 'status') {
-      return pupilService.sortByStatus(pupilList, sortDirection)
-    }
-
-    // If sorting by 'group', use custom method.
-    if (sortField === 'group') {
-      return pupilService.sortByGroup(pupilList, sortDirection)
-    }
-  },
-
-  /**
    * Return the pupil register
    * @param schoolId
    * @return {Promise<*>}
