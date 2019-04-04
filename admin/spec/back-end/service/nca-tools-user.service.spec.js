@@ -73,18 +73,24 @@ describe('nca-tools-user.service', () => {
       }
     })
 
-    it('updates user school if different to current one', async (done) => {
+    it('updates user school if different to current one and refetches the object', async (done) => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
-      spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
+      spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
+        Promise.resolve({ school_id: 999 }),
+        Promise.resolve({ school_id: 998 })
+      )
       spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
       spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-      await ncaToolsUserService.mapNcaUserToMtcUser({
+      const user = await ncaToolsUserService.mapNcaUserToMtcUser({
         School: 999999,
         UserType: 'SchoolNom',
         UserName: 'robin'
       })
       expect(userDataService.sqlUpdateSchool).toHaveBeenCalled()
+      expect(userDataService.sqlFindOneByIdentifier).toHaveBeenCalled()
+      expect(user).toBeDefined()
+      expect(user.school_id).toBe(998)
       done()
     })
 
