@@ -116,12 +116,12 @@ describe('restart controller:', () => {
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ restartsAvailable: true })
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(businessAvailabilityService.determineRestartsEligibility).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       done()
     })
 
@@ -133,7 +133,7 @@ describe('restart controller:', () => {
       spyOn(restartService, 'getPupils').and.throwError(new Error('mock error'))
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.throwError(new Error('mock error'))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ restartsAvailable: true })
       try {
         await controller(req, res, next)
         expect(next).toHaveBeenCalledWith(new Error('mock error'))

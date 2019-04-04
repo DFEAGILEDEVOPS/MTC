@@ -4,6 +4,7 @@
 const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
+const businessAvailabilityService = require('../../../services/business-availability.service')
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -104,6 +105,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -119,6 +122,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue(Promise.reject(new Error()))
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -134,6 +139,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(Promise.reject(new Error()))
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -149,6 +156,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(Promise.reject(new Error()))
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
