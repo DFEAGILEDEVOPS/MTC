@@ -1,14 +1,18 @@
-
 'use strict'
-/* global describe, it, fail, expect, spyOn */
-const psychometricianReportDataService = require('../service/data-service/psychometrician-report-cache.data.service')
-const psychometricianReportService = require('../service/psychometrician-report.service')
-const anomalyReportService = require('../service/anomaly-report.service')
+
+/* global describe, it, fail, expect, spyOn, beforeAll */
 
 const contextMock = require('../../mock-context')
 
 describe('checkProcessingService', () => {
-  const service = require('../service/check-processing.service')
+  let service, psychometricianReportDataService, psychometricianReportService, anomalyReportService
+
+  beforeAll(() => {
+    service = require('../service/check-processing.service')
+    psychometricianReportDataService = require('../service/data-service/psychometrician-report-cache.data.service')
+    psychometricianReportService = require('../service/psychometrician-report.service')
+    anomalyReportService = require('../service/anomaly-report.service')
+  })
 
   describe('cachePsychometricanReportData', () => {
     it('throws when the `batchSize` param is missing', async () => {
