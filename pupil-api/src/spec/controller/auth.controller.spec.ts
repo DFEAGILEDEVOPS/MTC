@@ -4,7 +4,7 @@
 
 import { default as authController } from '../../controllers/auth.controller'
 import * as httpMocks from 'node-mocks-http'
-import * as winston from 'winston'
+import logger from '../../services/log.service'
 import { pupilAuthenticationService } from '../../services/pupil-authentication.service'
 
 describe('auth controller', () => {
@@ -22,7 +22,7 @@ describe('auth controller', () => {
 
     it('returns an 400 error if the request is not JSON', async () => {
       req = createMockRequest('text/html')
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
       await authController.postAuth(req, res)
       expect(res.statusCode).toBe(400)
       const data = JSON.parse(res._getData())
@@ -52,7 +52,7 @@ describe('auth controller', () => {
 
     it('returns unauthorised if the login failed', async () => {
       spyOn(pupilAuthenticationService, 'authenticate').and.returnValue(Promise.reject(mockErrorResponse))
-      spyOn(winston, 'error')
+      spyOn(logger, 'error')
       await authController.postAuth(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(401)
