@@ -1,4 +1,4 @@
-const mssql = require('mssql')
+const mssql = require('mssql') /* special */
 const config = require('../config')
 const R = require('ramda')
 
