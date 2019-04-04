@@ -44,7 +44,7 @@ async function expireChecks () {
   WHERE
     cp.pinExpiresAt < GETUTCDATE()
   AND
-    cs.code IN ('NEW', 'COL');
+  (cs.code IN ('NEW', 'COL') OR (cs.code = 'STD' AND chk.isLiveCheck=0));
 
   SELECT
        checkId,
