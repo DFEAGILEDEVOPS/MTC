@@ -51,20 +51,8 @@ describe('FeedbackService', () => {
       };
       accessTokenMock = 'accessToken';
     });
-    it('should call postPupilFeedback when featureUseHpa config variable is false',
+    it('should call queueSubmit',
       inject([FeedbackService], async (service: FeedbackService) => {
-        service.featureUseHpa = false;
-        spyOn(storageService, 'getItem').and.returnValues(storedFeedbackMock, accessTokenMock);
-        spyOn(service, 'postPupilFeedback');
-        spyOn(service, 'queueSubmit');
-        await service.postFeedback();
-        expect(service.queueSubmit).not.toHaveBeenCalled();
-        expect(service.postPupilFeedback).toHaveBeenCalled();
-        expect(storageService.getItem).toHaveBeenCalledTimes(2);
-      }));
-    it('should call queueSubmit when featureUseHpa config variable is true',
-      inject([FeedbackService], async (service: FeedbackService) => {
-        service.featureUseHpa = true;
         spyOn(storageService, 'getItem').and.returnValues(storedFeedbackMock, accessTokenMock);
         spyOn(service, 'postPupilFeedback');
         spyOn(service, 'queueSubmit');
@@ -75,7 +63,6 @@ describe('FeedbackService', () => {
       }));
     it('should return if feedback is not fetched before making any call',
       inject([FeedbackService], async (service: FeedbackService) => {
-        service.featureUseHpa = true;
         spyOn(storageService, 'getItem').and.returnValues(undefined, accessTokenMock);
         spyOn(service, 'postPupilFeedback');
         spyOn(service, 'queueSubmit');

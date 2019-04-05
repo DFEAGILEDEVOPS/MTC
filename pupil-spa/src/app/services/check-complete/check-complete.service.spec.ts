@@ -64,104 +64,59 @@ describe('CheckCompleteService', () => {
   it('should be created', () => {
     expect(checkCompleteService).toBeTruthy();
   });
-  describe('when featureUseHpa toggle is off', () => {
-    beforeEach(() => {
-      checkCompleteService.featureUseHpa = false;
-    });
-    it('submit should call submission service successfully and audit successful call', async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
-      spyOn(appUsageService , 'store');
-      spyOn(submissionService, 'submitData')
-        .and.returnValue({toPromise: () => Promise.resolve()});
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-      expect(submissionService.submitData).toHaveBeenCalledTimes(1);
-    });
-    it('submit should call submission service unsuccessfully and audit failure', async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
-      spyOn(appUsageService , 'store');
-      spyOn(submissionService, 'submitData')
-        .and.returnValue({toPromise: () => Promise.reject(new Error('error'))});
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(1);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(submissionService.submitData).toHaveBeenCalledTimes(1);
-    });
-    it('submit should return if the app is configured to run in practice mode', async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
-      spyOn(appUsageService , 'store');
-      spyOn(submissionService, 'submitData');
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(0);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(submissionService.submitData).toHaveBeenCalledTimes(0);
-    });
+  it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
+    const addEntrySpy = spyOn(auditService, 'addEntry');
+    spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+    spyOn(appUsageService , 'store');
+    spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+    spyOn(storageService, 'setItem');
+    spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
+    spyOn(azureQueueService, 'addMessage')
+      .and.returnValue(Promise.resolve());
+    await checkCompleteService.submit(Date.now());
+    expect(addEntrySpy).toHaveBeenCalledTimes(2);
+    expect(appUsageService.store).toHaveBeenCalledTimes(1);
+    expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
+    expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
+    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(2);
+    expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
   });
-  describe('when featureUseHpa toggle is on', () => {
-    beforeEach(() => {
-      checkCompleteService.featureUseHpa = true;
-    });
-    it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
-      spyOn(appUsageService , 'store');
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-      spyOn(azureQueueService, 'addMessage')
-        .and.returnValue(Promise.resolve());
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
-      expect(storageService.setItem).toHaveBeenCalledTimes(2);
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
-    });
-    it(`submit should call azure queue service service unsuccessfully, audit failure
-      and redirect to submission failed page`, async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
-      spyOn(appUsageService , 'store');
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-      spyOn(azureQueueService, 'addMessage')
-        .and.returnValue(Promise.reject(new Error('error')));
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
-      expect(storageService.setItem).toHaveBeenCalledTimes(0);
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
-    });
-    it('submit should return if the app is configured to run in practice mode', async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
-      spyOn(appUsageService , 'store');
-      spyOn(tokenService, 'getToken');
-      spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems');
-      spyOn(azureQueueService, 'addMessage');
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(0);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
-      expect(storageService.setItem).toHaveBeenCalledTimes(2);
-      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
-    });
+  it(`submit should call azure queue service service unsuccessfully, audit failure
+    and redirect to submission failed page`, async () => {
+    const addEntrySpy = spyOn(auditService, 'addEntry');
+    spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+    spyOn(appUsageService , 'store');
+    spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+    spyOn(storageService, 'setItem');
+    spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
+    spyOn(azureQueueService, 'addMessage')
+      .and.returnValue(Promise.reject(new Error('error')));
+    await checkCompleteService.submit(Date.now());
+    expect(addEntrySpy).toHaveBeenCalledTimes(2);
+    expect(appUsageService.store).toHaveBeenCalledTimes(1);
+    expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
+    expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
+    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(0);
+    expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
+  });
+  it('submit should return if the app is configured to run in practice mode', async () => {
+    const addEntrySpy = spyOn(auditService, 'addEntry');
+    spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
+    spyOn(appUsageService , 'store');
+    spyOn(tokenService, 'getToken');
+    spyOn(storageService, 'setItem');
+    spyOn(storageService, 'getAllItems');
+    spyOn(azureQueueService, 'addMessage');
+    await checkCompleteService.submit(Date.now());
+    expect(addEntrySpy).toHaveBeenCalledTimes(0);
+    expect(appUsageService.store).toHaveBeenCalledTimes(1);
+    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
+    expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
+    expect(storageService.setItem).toHaveBeenCalledTimes(2);
+    expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
   });
 });
