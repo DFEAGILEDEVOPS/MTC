@@ -2,7 +2,7 @@
 
 import * as http from 'http'
 import * as debug from 'debug'
-import * as winston from 'winston'
+import logger from './services/log.service'
 import config from './config'
 
 import App from './App'
@@ -12,7 +12,7 @@ debug('check-submission:server')
 const port = normalizePort(config.PORT)
 App.set('port', port)
 
-winston.info(`${config.Environment} server listening on port ${port}`)
+logger.info(`${config.Environment} server listening on port ${port}`)
 
 const server = http.createServer(App)
 server.listen(port)
