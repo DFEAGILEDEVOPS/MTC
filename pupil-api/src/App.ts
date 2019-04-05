@@ -11,8 +11,8 @@ import * as appInsights from './helpers/app-insights'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
 import logger from './services/log.service'
-/* import { rateLimit } from './helpers/rate-limit'
-import config from './config' */
+import { rateLimit } from './helpers/rate-limit'
+import config from './config'
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 
@@ -59,7 +59,7 @@ class App {
     }))
 
      // rate limit requests
-/*      this.express.use(async (req, res, next) => {
+     this.express.use(async (req, res, next) => {
       try {
         if (!config.RateLimit.Enabled) {
           return next()
@@ -70,7 +70,7 @@ class App {
         // Rate limit exceeded
         next(error)
       }
-    }) */
+    })
 
     this.express.use(bodyParser.json())
   }
