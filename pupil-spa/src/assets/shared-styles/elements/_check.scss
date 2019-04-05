@@ -54,7 +54,7 @@ $horizontal-breakpoint-3: 781px;
 */
 .copy-size-regular .familiarisation-title:after {
   @media (max-width: $horizontal-breakpoint-1) {
-    content: "Learn";
+    content: "Try it out";
   }
 }
 
