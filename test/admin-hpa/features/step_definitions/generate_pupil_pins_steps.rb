@@ -241,7 +241,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  sleep(180)
+  Timeout.timeout(20){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'])['pupilStatus_id'] == 6}
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -348,7 +348,7 @@ And(/^I should be able to see a count of pupils$/) do
 end
 
 Then(/^I should see an error message to contact helpdesk$/) do
-  expect(page).to have_content("The service is unavailable")
+  expect(page).to have_content("Currently unavailable")
 end
 
 Then(/^I should see related content on the generate pins page$/) do

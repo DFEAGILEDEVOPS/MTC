@@ -68,18 +68,14 @@ $path: "../../assets/govuk_frontend_toolkit/images/";
 @import './elements/font-size-copy';
 @import './elements/colour-contrast';
 
+html {
+  background-color: $grey-3;
+}
+
 /* Header and footer */
 
 #footer {
   border-top: 10px solid $mainstream-brand;
-
-  .footer-wrapper {
-    padding-top: 0;
-
-    .copyright {
-      float: right;
-    }
-  }
 }
 
 /* General elements */
@@ -263,6 +259,10 @@ ol, ul {
 
 .list-number, .list-bullet {
   padding-left: 0;
+}
+
+.list-item--dashed:before {
+  content: "— ";
 }
 
 /* AA Page Modification */

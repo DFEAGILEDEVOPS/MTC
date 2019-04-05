@@ -86,7 +86,13 @@ const getGeneratePinsList = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -184,7 +190,13 @@ const getViewAndPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
@@ -231,7 +243,13 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)

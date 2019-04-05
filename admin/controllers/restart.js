@@ -24,18 +24,17 @@ controller.getRestartOverview = async (req, res, next) => {
     restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData.restartsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
   } catch (error) {
     return next(error)
   }
-  if (!availabilityData.restartsAvailable) {
-    return res.render('availability/section-unavailable', {
-      title: res.locals.pageTitle,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
   let { hl } = req.query
-
   if (hl) {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
@@ -59,7 +58,13 @@ controller.getSelectRestartList = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    if (!availabilityData.restartsAvailable) {
+      return res.render('availability/section-unavailable', {
+        title: res.locals.pageTitle,
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
     pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
     reasons = await restartService.getReasons()
 

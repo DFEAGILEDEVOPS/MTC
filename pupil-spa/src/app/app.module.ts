@@ -12,12 +12,16 @@ import { GlobalErrorHandler } from './error-handler';
 
 import { AppConfigService, loadConfigService } from './services/config/config.service';
 
+import { AccessibilityStatementComponent } from './accessibility-statement/accessibility-statement.component';
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
+import { ContactComponent } from './contact/contact.component';
 import { DeviceService } from './services/device/device.service';
+import { FooterComponent } from './footer/footer.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -28,6 +32,7 @@ import { LoggedInGuard } from './logged-in.guard';
 import { LoginComponent } from './login/login.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { RegisterInputService} from './services/register-input/registerInput.service';
@@ -86,15 +91,22 @@ const appRoutes: Routes = [
   {path: 'font-choice', component: AAFontsComponent },
   {path: 'colour-choice', component: AAColoursComponent },
   {path: 'access-settings', component: AASettingsComponent },
-  {path: 'out-of-time', component: OutOfTimeComponent }
+  {path: 'out-of-time', component: OutOfTimeComponent },
+  {path: 'contact', component: ContactComponent },
+  {path: 'accessibility-statement', component: AccessibilityStatementComponent },
+  {path: 'privacy', component: PrivacyComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
   declarations: [
+    AccessibilityStatementComponent,
     AppComponent,
+    BreadcrumbsComponent,
     CheckCompleteComponent,
     CheckComponent,
+    ContactComponent,
+    FooterComponent,
     FeedbackComponent,
     FeedbackThanksComponent,
     HeaderComponent,
@@ -104,6 +116,7 @@ const appRoutes: Routes = [
     LoginSuccessComponent,
     LogoutComponent,
     PracticeQuestionComponent,
+    PrivacyComponent,
     QuestionComponent,
     SoundComponent,
     SpokenPracticeQuestionComponent,
