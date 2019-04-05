@@ -1,5 +1,5 @@
 import * as azure from 'azure-storage'
-import * as winston from 'winston'
+import logger from './log.service'
 
 let azureQueueService // cache the queueService for repeated use
 
@@ -20,8 +20,8 @@ export function addMessage (queueName: string, payload: object, queueService?: a
   const encodedMessage = Buffer.from(message).toString('base64')
   queueService.createMessage(queueName, encodedMessage, function (error, result, response) {
     if (error) {
-      winston.error(`Error injecting message into queue [${queueName}]: ${error.message}`)
-      winston.error(error)
+      logger.error(`Error injecting message into queue [${queueName}]: ${error.message}`)
+      logger.error(error)
     }
   })
 }
