@@ -28,7 +28,7 @@ addons:
   chrome: stable
 services:
 - docker
-- redis-server
+#- redis-server
 sudo: required
 before_install:
 - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
