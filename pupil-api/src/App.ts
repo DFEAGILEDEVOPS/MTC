@@ -11,8 +11,8 @@ import * as appInsights from './helpers/app-insights'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
 import logger from './services/log.service'
-import { rateLimit } from './helpers/rate-limit'
-import config from './config'
+/* import { rateLimit } from './helpers/rate-limit'
+import config from './config' */
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 
