@@ -18,7 +18,6 @@ import { queueNames } from '../azure-queue/queue-names';
 @Injectable()
 export class CheckStartService {
 
-  featureUseHpa;
   checkStartAPIErrorDelay;
   checkStartAPIErrorMaxAttempts;
 
@@ -27,11 +26,10 @@ export class CheckStartService {
               private storageService: StorageService,
               private tokenService: TokenService,
               private auditService: AuditService) {
-    const { featureUseHpa,
+    const {
       checkStartAPIErrorDelay,
       checkStartAPIErrorMaxAttempts
     } = APP_CONFIG;
-    this.featureUseHpa = featureUseHpa;
     this.checkStartAPIErrorDelay = checkStartAPIErrorDelay;
     this.checkStartAPIErrorMaxAttempts = checkStartAPIErrorMaxAttempts;
   }
@@ -41,31 +39,21 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    if (this.featureUseHpa === true) {
-      const queueName = queueNames.checkStarted;
-      const { url, token } = this.tokenService.getToken('checkStarted');
-      // Create a model for the payload
-      const payload = this.storageService.getItem('pupil');
-      payload.clientCheckStartedAt = new Date();
-      const retryConfig = {
-        errorDelay: this.checkStartAPIErrorDelay,
-        errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
-      };
-      try {
-        this.auditService.addEntry(new CheckStartedApiCalled());
-        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-      } catch (error) {
-        this.auditService.addEntry(new CheckStartedAPICallFailed(error));
-      }
-    } else {
-      try {
-        await this.submissionService.submitCheckStartData().toPromise();
-        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      } catch (error) {
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      }
+    const queueName = queueNames.checkStarted;
+    const { url, token } = this.tokenService.getToken('checkStarted');
+    // Create a model for the payload
+    const payload = this.storageService.getItem('pupil');
+    payload.clientCheckStartedAt = new Date();
+    const retryConfig = {
+      errorDelay: this.checkStartAPIErrorDelay,
+      errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
+    };
+    try {
+      this.auditService.addEntry(new CheckStartedApiCalled());
+      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+    } catch (error) {
+      this.auditService.addEntry(new CheckStartedAPICallFailed(error));
     }
   }
 }
