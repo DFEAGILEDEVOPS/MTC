@@ -1,13 +1,7 @@
 import * as appInsights from 'applicationinsights'
-import PingController from './controllers/ping.controller'
+import PingController from '../controllers/ping.controller'
 
-const azure = {
-  /**
-   * identify if the environment is azure
-   */
-  isAzure: () => {
-    return process.env.KUDU_APPPATH !== undefined
-  },
+const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
     if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
       appInsights.setup()
@@ -33,4 +27,4 @@ const azure = {
   }
 }
 
-export = azure
+export = appInsightsHelper
