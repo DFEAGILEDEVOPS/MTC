@@ -23,4 +23,4 @@ CREATE VIEW [mtc_admin].[vewPupilsWithActiveLivePins] AS
   WHERE  cp.pinExpiresAt > GETUTCDATE()
     AND  chkStatus.code IN ('NEW', 'COL')
     AND  chk.isLiveCheck = 1
-    AND paa.id IS NULL;
+    AND (paa.id IS NULL OR paa.isDeleted = 1);
