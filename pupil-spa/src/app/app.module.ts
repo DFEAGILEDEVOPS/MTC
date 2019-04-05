@@ -34,7 +34,6 @@ import { RegisterInputService} from './services/register-input/registerInput.ser
 import { SoundComponent } from './sound/sound.component';
 import { SpeechService } from './services/speech/speech.service';
 import { StorageService } from './services/storage/storage.service';
-import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
@@ -159,7 +158,6 @@ const appRoutes: Routes = [
     RegisterInputService,
     SpeechService,
     StorageService,
-    SubmissionService,
     UserService,
     WarmupQuestionService,
     WindowRefService,

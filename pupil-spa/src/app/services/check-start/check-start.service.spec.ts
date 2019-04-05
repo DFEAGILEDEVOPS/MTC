@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { CheckStartService } from './check-start.service';
-import { SubmissionService } from '../submission/submission.service';
-import { SubmissionServiceMock } from '../submission/submission.service.mock';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
@@ -13,7 +11,6 @@ import { APP_INITIALIZER } from '@angular/core';
 
 let checkStartService: CheckStartService;
 let mockStorageService: StorageServiceMock;
-let submissionService: SubmissionService;
 let tokenService: TokenService;
 let azureQueueService: AzureQueueService;
 let auditService: AuditService;
@@ -25,7 +22,6 @@ describe('CheckStartService', () => {
         providers: [
           AppConfigService,
           { provide: StorageService, useValue: mockStorageService },
-          { provide: SubmissionService, useClass: SubmissionServiceMock },
           { provide: QUEUE_STORAGE_TOKEN },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           TokenService,
@@ -36,7 +32,6 @@ describe('CheckStartService', () => {
       }
     );
     checkStartService = inject.get(CheckStartService);
-    submissionService = inject.get(SubmissionService);
     tokenService = inject.get(TokenService);
     azureQueueService = inject.get(AzureQueueService);
     auditService = inject.get(AuditService);

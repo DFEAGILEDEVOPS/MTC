@@ -6,8 +6,6 @@ import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
-import { SubmissionService } from '../submission/submission.service';
-import { SubmissionServiceMock } from '../submission/submission.service.mock';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
@@ -16,7 +14,6 @@ let auditService: AuditService;
 let azureQueueService: AzureQueueService;
 let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
-let submissionService: SubmissionService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
 
@@ -46,13 +43,11 @@ describe('CheckCompleteService', () => {
           AppUsageService,
           {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
           {provide: QUEUE_STORAGE_TOKEN},
-          {provide: SubmissionService, useClass: SubmissionServiceMock},
           {provide: Router, useValue: mockRouter}
         ]
       }
     );
     checkCompleteService = inject.get(CheckCompleteService);
-    submissionService = inject.get(SubmissionService);
     appUsageService = TestBed.get(AppUsageService);
     tokenService = inject.get(TokenService);
     azureQueueService = inject.get(AzureQueueService);

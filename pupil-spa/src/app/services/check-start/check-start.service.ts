@@ -7,7 +7,6 @@ import {
 } from '../audit/auditEntry';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
-import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
@@ -22,7 +21,6 @@ export class CheckStartService {
   checkStartAPIErrorMaxAttempts;
 
   constructor(private azureQueueService: AzureQueueService,
-              private submissionService: SubmissionService,
               private storageService: StorageService,
               private tokenService: TokenService,
               private auditService: AuditService) {

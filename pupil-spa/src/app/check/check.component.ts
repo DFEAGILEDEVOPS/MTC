@@ -8,7 +8,6 @@ import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
@@ -46,7 +45,6 @@ export class CheckComponent implements OnInit {
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
-              private submissionService: SubmissionService,
               private timerService: TimerService,
               private warmupQuestionService: WarmupQuestionService,
               private auditService: AuditService,

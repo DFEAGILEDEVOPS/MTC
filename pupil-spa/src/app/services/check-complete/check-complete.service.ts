@@ -8,7 +8,6 @@ import {
 } from '../audit/auditEntry';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
@@ -28,7 +27,6 @@ export class CheckCompleteService {
               private azureQueueService: AzureQueueService,
               private router: Router,
               private storageService: StorageService,
-              private submissionService: SubmissionService,
               private tokenService: TokenService,
               private appUsageService: AppUsageService) {
     const {
