@@ -33,6 +33,7 @@ export class AppComponent {
     this.window = windowRefService.nativeWindow;
     if (APP_CONFIG.googleAnalyticsTrackingCode) {
       this.window.ga('create', APP_CONFIG.googleAnalyticsTrackingCode, 'auto');
+      this.window.ga('set', 'anonymizeIp', true);
     }
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       AppInsights.downloadAndSetup({
