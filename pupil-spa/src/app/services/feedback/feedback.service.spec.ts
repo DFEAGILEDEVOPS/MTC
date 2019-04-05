@@ -54,21 +54,17 @@ describe('FeedbackService', () => {
     it('should call queueSubmit',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(storageService, 'getItem').and.returnValues(storedFeedbackMock, accessTokenMock);
-        spyOn(service, 'postPupilFeedback');
         spyOn(service, 'queueSubmit');
         await service.postFeedback();
         expect(service.queueSubmit).toHaveBeenCalled();
-        expect(service.postPupilFeedback).not.toHaveBeenCalled();
         expect(storageService.getItem).toHaveBeenCalledTimes(2);
       }));
     it('should return if feedback is not fetched before making any call',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(storageService, 'getItem').and.returnValues(undefined, accessTokenMock);
-        spyOn(service, 'postPupilFeedback');
         spyOn(service, 'queueSubmit');
         await service.postFeedback();
         expect(service.queueSubmit).not.toHaveBeenCalled();
-        expect(service.postPupilFeedback).not.toHaveBeenCalled();
       }));
   });
   describe('queueSubmit ', () => {
