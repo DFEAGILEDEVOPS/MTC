@@ -1,5 +1,6 @@
 const moment = require('moment')
 
+const config = require('../config')
 const groupService = require('../services/group.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const resultService = require('../services/result.service')
@@ -34,8 +35,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const timezone = moment.tz(req.user.timezone)
-  const currentDate = moment.utc().utcOffset(timezone.utcOffset(), true)
+  const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
   const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
   const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
   schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
