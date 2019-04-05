@@ -6,7 +6,7 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '<%= googleTrackingId %>');
+  gtag('config', '<%= googleTrackingId %>', { 'anonymize_ip': true });
 </script>
 <% } %>
 <% if (appInsightsClientKey) { %>
