@@ -177,10 +177,13 @@ schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkW
  * @returns {Boolean}
  */
 schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible = (currentDate, checkWindowData) => {
-  const resultsPageEligibilityDate = checkWindowData.checkEndDate.clone().add(3, 'days')
-  const isAfterReleaseDay = currentDate.isAfter(resultsPageEligibilityDate)
-  const isAfterReleaseTime = currentDate.hour() >= 8
-  return isAfterReleaseDay && isAfterReleaseTime
+  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone()
+    .add(1, 'weeks').isoWeekday('Monday')
+    // first converting the date to the local compared date before setting the opening hour
+    .utcOffset(currentDate.utcOffset(), true)
+    .set({ hour: 8, minutes: 0, seconds: 0 })
+
+  return currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
 }
 
 module.exports = schoolHomeFeatureEligibilityPresenter
