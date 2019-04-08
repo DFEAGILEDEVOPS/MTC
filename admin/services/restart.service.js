@@ -11,7 +11,6 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
-const featureToggles = require('feature-toggles')
 const azureQueueService = require('../services/azure-queue.service')
 
 const restartService = {}
@@ -201,19 +200,17 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
   const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
 
-  if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-    // see if there is a check associated with this restart, ideally the slug
-    // would refer to the restart itself, and not the pupil.
-    if (restart.check_id) {
-      const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
-      await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
-      azureQueueService.addMessage('prepared-check-delete', { version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId })
-    }
-  } else {
-    let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupil.id)
-    await checkStateService.changeState(lastStartedCheck.checkCode, checkStateService.States.Expired)
-    pupil.pinExpiresAt = lastStartedCheck.startedAt
-    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
+  // see if there is a check associated with this restart, ideally the slug
+  // would refer to the restart itself, and not the pupil.
+  if (restart.check_id) {
+    const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
+    await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
+    azureQueueService.addMessage('prepared-check-delete', {
+      version: 1,
+      checkCode: check.checkCode,
+      reason: 'restart deleted',
+      actionedByUserId: userId
+    })
   }
 
   await pupilRestartDataService.sqlMarkRestartAsDeleted(restart.id, userId)

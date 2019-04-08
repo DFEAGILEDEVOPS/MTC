@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach jasmine spyOn fail xit */
+/* global describe it expect beforeEach jasmine spyOn fail */
 
 const httpMocks = require('node-mocks-http')
 const logger = require('../../../services/log.service.js').getLogger()
@@ -10,7 +10,6 @@ const restartV2Service = require('../../../services/restart-v2.service')
 const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
 const pupilStatusService = require('../../../services/pupil.status.service')
-const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
@@ -54,7 +53,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getSubmittedRestarts').and.returnValue({ id: 'test' })
+      spyOn(restartV2Service, 'getRestartsForSchool').and.returnValue({ id: 'test' })
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ restartsAvailable: true })
@@ -71,7 +70,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getSubmittedRestarts').and.returnValue(Promise.reject(new Error()))
+      spyOn(restartV2Service, 'getRestartsForSchool').and.returnValue(Promise.reject(new Error()))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ restartsAvailable: true })
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
@@ -110,8 +109,6 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
-      spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
@@ -130,7 +127,6 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getPupils').and.throwError(new Error('mock error'))
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.throwError(new Error('mock error'))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ restartsAvailable: true })
@@ -178,9 +174,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
-      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
       spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
@@ -236,7 +230,7 @@ describe('restart controller:', () => {
       done()
     })
 
-    xit('HPA: makes a request to update the pupil status after adding the restart', async () => {
+    it('makes a request to update the pupil status after adding the restart', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -254,7 +248,7 @@ describe('restart controller:', () => {
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
     })
 
-    xit('HPA: throws an error if the attempt to refresh the pupils status fails', async () => {
+    it('throws an error if the attempt to refresh the pupils status fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -326,7 +320,7 @@ describe('restart controller:', () => {
       done()
     })
 
-    xit('HPA: makes a request for the pupil status to be refreshed', async () => {
+    it('makes a request for the pupil status to be refreshed', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
@@ -339,7 +333,7 @@ describe('restart controller:', () => {
       expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
     })
 
-    xit('HPA: throws an error if the pupil status refresh goes wrong', async () => {
+    it('throws an error if the pupil status refresh goes wrong', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
