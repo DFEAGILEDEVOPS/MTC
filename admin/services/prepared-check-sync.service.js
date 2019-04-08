@@ -8,9 +8,9 @@ preparedCheckSyncService.addMessages = async (urlSlug) => {
   // Sync existing preparedCheck(s) when 1 or more active pins exist
   if (results.length > 0) {
     const checkCodes = results.map(r => r.checkCode)
-    checkCodes.forEach(checkCode => {
-      azureQueueService.addMessage('prepared-check-sync', { version: 1, checkCode: checkCode })
-    })
+    for (const checkCode of checkCodes) {
+      await azureQueueService.addMessageAsync('prepared-check-sync', { version: 1, checkCode: checkCode })
+    }
   }
 }
 

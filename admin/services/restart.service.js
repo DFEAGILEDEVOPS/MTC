@@ -207,7 +207,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     if (restart.check_id) {
       const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
       await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
-      azureQueueService.addMessage('prepared-check-delete', { version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId })
+      await azureQueueService.addMessageAsync('prepared-check-delete', { version: 1, checkCode: check.checkCode, reason: 'restart deleted', actionedByUserId: userId })
     }
   } else {
     let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupil.id)
