@@ -166,7 +166,7 @@ const azureStorageHelper = {
   updatePupilStatus: async function (logger, logPrefix, checkData) {
     logger.info(`${logPrefix}: updatePupilStatus(): got ${checkData.length} pupils`)
     // Batch the async messages up, to limit max concurrency
-    const batches = R.splitEvery(100, checkData)
+    const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
     checkData = null
 
     logger.verbose(`${logPrefix}: updatePupilStatus(): ${batches.length} batches detected`)
