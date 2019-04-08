@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import * as winston from 'winston'
+import logger from '../services/log.service'
 
 import * as apiResponse from './api-response'
 import { pupilAuthenticationService } from '../services/pupil-authentication.service'
@@ -8,7 +8,7 @@ class AuthController {
   async postAuth (req: Request, res: Response) {
     const contentType = req.get('Content-Type')
     if (!req.is('application/json')) {
-      winston.error('Bad Request: Content type is: ' + contentType)
+      logger.error('Bad Request: Content type is: ' + contentType)
       return apiResponse.badRequest(res)
     }
 
@@ -18,7 +18,7 @@ class AuthController {
       const data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
       apiResponse.sendJson(res, data)
     } catch (error) {
-      winston.error('Failed to authenticate pupil: ' + error.message)
+      logger.error('Failed to authenticate pupil: ', error)
       return apiResponse.unauthorised(res)
     }
   }
