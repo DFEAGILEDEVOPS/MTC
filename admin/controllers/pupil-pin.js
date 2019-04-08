@@ -1,4 +1,3 @@
-const featureToggles = require('feature-toggles')
 const R = require('ramda')
 
 const config = require('../config')
@@ -32,11 +31,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   let availabilityData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    } else {
-      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    }
+    pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
@@ -103,11 +98,7 @@ const getGeneratePinsList = async (req, res, next) => {
       return next(Error(`School [${req.user.school}] not found`))
     }
 
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id, isLiveCheck)
-    } else {
-      pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
-    }
+    pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id, isLiveCheck)
 
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
@@ -155,10 +146,6 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
-    // OLD code - writes to check table
-    if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
-    }
 
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
@@ -169,10 +156,8 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
 
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      // New code, depends on school pin being ready
-      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
-    }
+    // depends on school pin being ready
+    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
@@ -212,11 +197,7 @@ const getViewAndPrintPins = async (req, res, next) => {
         breadcrumbs: req.breadcrumbs()
       })
     }
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    } else {
-      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    }
+    pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
@@ -269,11 +250,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
         breadcrumbs: req.breadcrumbs()
       })
     }
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    } else {
-      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    }
+    pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (pupils.length > 0) {

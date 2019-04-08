@@ -1,13 +1,5 @@
 #!/bin/bash
-featureUseHpa=${FEATURE_USE_HPA:-"true"}
-if [[ "$featureUseHpa" == "true" ]]; then
-    authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
-else
-    authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
-    apiUrl=${API_URL:-"http://localhost:3001"}
-    checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
-    checkSubmissionUrl=${CHECK_SUBMISSION_URL:-"http://localhost:3001/api/completed-check"}
-fi
+authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
 production=${PRODUCTION:-"false"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}
 checkStartAPIErrorMaxAttempts=${CHECK_START_MAX_ATTEMPTS:-"3"}
@@ -36,11 +28,7 @@ fi
 
 cat <<EOF > config.json
 {
-  "featureUseHpa": $featureUseHpa,
-  "apiURL": "$apiUrl",
   "authURL": "$authUrl",
-  "checkStartedURL": "$checkStartedUrl",
-  "checkSubmissionURL": "$checkSubmissionUrl",
   "production": $production,
   "checkStartAPIErrorDelay": $checkStartAPIErrorDelay,
   "checkStartAPIErrorMaxAttempts": $checkStartAPIErrorMaxAttempts,

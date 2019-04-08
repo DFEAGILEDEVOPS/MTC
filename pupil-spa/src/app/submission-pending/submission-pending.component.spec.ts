@@ -3,8 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SubmissionPendingComponent } from './submission-pending.component';
-import { SubmissionService } from '../services/submission/submission.service';
-import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { CheckCompleteService } from '../services/check-complete/check-complete.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
@@ -41,7 +39,6 @@ describe('SubmissionPendingComponent', () => {
         AzureQueueService,
         TokenService,
         AppUsageService,
-        { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },

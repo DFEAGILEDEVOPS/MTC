@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef, OnD
 
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered } from '../services/audit/auditEntry';
-import { SubmissionService } from '../services/submission/submission.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
@@ -26,7 +25,6 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
 
   constructor(
     private auditService: AuditService,
-    private submissionService: SubmissionService,
     private questionService: QuestionService,
     private speechService: SpeechService,
     private elRef: ElementRef

@@ -3,8 +3,9 @@ import { AppConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs/Observable';
 
 describe('AppConfigService', () => {
   let service: AppConfigService;

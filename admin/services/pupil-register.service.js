@@ -1,6 +1,5 @@
 'use strict'
 
-const pupilService = require('../services/pupil.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
@@ -34,26 +33,6 @@ const pupilRegisterService = {
         outcome
       }
     }))
-  },
-
-  /**
-   * Sorting.
-   * @param pupilList
-   * @param sortField
-   * @param sortDirection
-   * @deprecated
-   * @returns {*}
-   */
-  sortPupils: (pupilList, sortField, sortDirection) => {
-    // If sorting by 'status', use custom method.
-    if (sortField === 'status') {
-      return pupilService.sortByStatus(pupilList, sortDirection)
-    }
-
-    // If sorting by 'group', use custom method.
-    if (sortField === 'group') {
-      return pupilService.sortByGroup(pupilList, sortDirection)
-    }
   },
 
   /**
