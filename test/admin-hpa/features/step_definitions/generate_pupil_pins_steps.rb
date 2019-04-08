@@ -348,7 +348,7 @@ And(/^I should be able to see a count of pupils$/) do
 end
 
 Then(/^I should see an error message to contact helpdesk$/) do
-  expect(page).to have_content("Currently unavailable")
+  expect(page).to have_content("The service is unavailable")
 end
 
 Then(/^I should see related content on the generate pins page$/) do
