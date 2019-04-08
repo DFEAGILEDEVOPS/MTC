@@ -103,9 +103,6 @@ module.exports = {
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
   },
-  Cors: {
-    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
-  },
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
