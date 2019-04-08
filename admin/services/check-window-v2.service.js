@@ -89,6 +89,10 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   if (checkWindowId) {
     checkWindowData.id = checkWindowId
   }
+
+  const startOfDayTime = { hour: 0, minute: 0, second: 0 }
+  const endOfDayTime = { hour: 23, minute: 59, second: 59 }
+
   const utcOffsetInHours = moment().utcOffset() / 60
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
@@ -97,42 +101,43 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
       requestData['adminStartMonth'],
       requestData['adminStartYear']
     ).utcOffset(utcOffsetInHours)
+      .set(startOfDayTime)
   checkWindowData.adminEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
       requestData['adminEndYear']
     ).utcOffset(utcOffsetInHours)
+      .set(endOfDayTime)
   checkWindowData.familiarisationCheckStartDate =
     dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
     ).utcOffset(utcOffsetInHours)
+      .set(startOfDayTime)
   checkWindowData.familiarisationCheckEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
       requestData['familiarisationCheckEndYear']
     ).utcOffset(utcOffsetInHours)
+      .set(endOfDayTime)
   checkWindowData.checkStartDate =
     dateService.createUTCFromDayMonthYear(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
     ).utcOffset(utcOffsetInHours)
+      .set(startOfDayTime)
   checkWindowData.checkEndDate =
     dateService.createUTCFromDayMonthYear(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
       requestData['liveCheckEndYear']
     ).utcOffset(utcOffsetInHours)
+      .set(endOfDayTime)
 
-  // This will ensure the last day of the check window will be taken into account for checks
-  // To avoid overflow to the next day during BST the time is set at 1 hour 59mins and 59 seconds before the day change
-  const endofDayTime = { hour: 23, minute: 59, second: 59 }
-  checkWindowData.checkEndDate.set(endofDayTime)
-  checkWindowData.familiarisationCheckEndDate.set(endofDayTime)
   return checkWindowData
 }
 
