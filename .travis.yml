@@ -14,7 +14,7 @@ cache:
 env:
   global:
   - OVERRIDE_PIN_EXPIRY=true
-  - ENVIRONMENT_NAME=hpa-travis
+#  - ENVIRONMENT_NAME=hpa-travis
   - FEATURE_USE_HPA=true
   - CORS_WHITELIST=http://localhost:4200
   - AUTH_URL=http://localhost:3003/auth
@@ -28,6 +28,7 @@ addons:
   chrome: stable
 services:
 - docker
+#- redis-server
 sudo: required
 before_install:
 - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST

@@ -69,3 +69,9 @@ where `<image-name>` is a friendly name that allows you to easily identify the i
 ### Using microservices
 
 To make the pupil-spa use the auth microservice instead of the API in admin, change the AUTH_URL environment variable in `pupil-spa/Dockerfile` and the `docker-compose.*.yml` files relevant for pupil-spa
+
+### SQL Connectivity
+
+See the following docs for info on sql connection and pooling behaviour...
+- https://tediousjs.github.io/node-mssql/#connection-pools
+- https://github.com/vincit/tarn.js/#usage
