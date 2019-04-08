@@ -112,7 +112,6 @@ Feature:
     When I enter all the years for each of the dates with an invalid year
     Then I should see an error stating I should enter a valid year
 
-  @wip @bug
   Scenario: Users can save changes made to a check window
     Given I previously created a check window
     And I decide to edit it
