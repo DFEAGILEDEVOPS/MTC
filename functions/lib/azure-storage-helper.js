@@ -166,6 +166,36 @@ const azureStorageHelper = {
   updatePupilStatus: async function (logger, logPrefix, checkData) {
     logger.info(`${logPrefix}: updatePupilStatus(): got ${checkData.length} pupils`)
     // Batch the async messages up, to limit max concurrency
+    const batches = R.splitEvery(100, checkData)
+    checkData = null
+
+    logger.verbose(`${logPrefix}: updatePupilStatus(): ${batches.length} batches detected`)
+
+    batches.forEach(async (checks, batchNumber) => {
+      try {
+        const msgs = checks.map(check => this.addMessageToQueue('pupil-status', {
+          version: 1,
+          pupilId: check.pupilId,
+          checkCode: check.checkCode
+        }))
+        await Promise.all(msgs)
+        logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
+      } catch (error) {
+        logger.error(`${logPrefix}: updatePupilStatus(): ERROR: ${error.message}`)
+      }
+    })
+  },
+
+  /**
+   * Filter for live checks and make a request for the pupil-status to be updated for multiple pupils
+   * @param {Object} logger
+   * @param {String} logPrefix
+   * @param {[{checkId: <number>, pupilId: <number>, checkCode: <string>, isLiveCheck: <boolean>}]} checkData - must contain `checkId`, `pupilId`, `checkCode` and `isLiveCheck` props
+   * @return {Promise<*|Promise<*>>}
+   */
+  updatePupilStatusForLiveChecks: async function (logger, logPrefix, checkData) {
+    logger.info(`${logPrefix}: updatePupilStatus(): got ${checkData.length} pupils`)
+    // Batch the async messages up for live checks only, to limit max concurrency
     const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
     checkData = null
 

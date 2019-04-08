@@ -11,7 +11,7 @@ const v2 = {
     const checkData = await updateChecksNotReceived()
 
     // Make requests for pupil status updates
-    await azureStorageHelper.updatePupilStatus(logger, 'check-not-received', checkData)
+    await azureStorageHelper.updatePupilStatusForLiveChecks(logger, 'check-not-received', checkData)
 
     return {
       checksUpdated: checkData.length

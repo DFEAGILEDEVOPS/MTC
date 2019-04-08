@@ -17,7 +17,7 @@ const v2 = {
     await expireRestarts(checkData)
 
     // finally, update the pupil status
-    await azureStorageHelper.updatePupilStatus(logger, 'check-expiry', checkData)
+    await azureStorageHelper.updatePupilStatusForLiveChecks(logger, 'check-expiry', checkData)
 
     return {
       processCount: checkData.length
