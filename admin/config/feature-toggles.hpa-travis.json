@@ -7,7 +7,6 @@
   "pupilUpload": true,
   "dependencyTracking": true,
   "accessArrangements": false,
-  "prepareCheckMessaging": true,
   "newCheckWindow": true,
   "newCheckForm": true
 }
