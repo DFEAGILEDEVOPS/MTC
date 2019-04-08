@@ -1,9 +1,6 @@
-const featureToggles = require('feature-toggles')
-
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 
-const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
@@ -24,11 +21,7 @@ controller.getRestartOverview = async (req, res, next) => {
   let pinGenerationEligibilityData
   let availabilityData
   try {
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
-    } else {
-      restarts = await restartService.getSubmittedRestarts(req.user.School)
-    }
+    restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
@@ -72,12 +65,7 @@ controller.getSelectRestartList = async (req, res, next) => {
         breadcrumbs: req.breadcrumbs()
       })
     }
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
-    } else {
-      pupils = await restartService.getPupils(req.user.School)
-    }
-
+    pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
     reasons = await restartService.getReasons()
 
     if (pupils.length > 0) {
@@ -122,12 +110,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
     let groupIds = req.params.groupIds || ''
 
     try {
-      if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-        pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
-      } else {
-        pupils = await restartService.getPupils(req.user.School)
-        pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
-      }
+      pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
       reasons = await restartService.getReasons()
       if (pupils.length > 0) {
         groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
@@ -159,9 +142,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
 
   // Ask for these pupils to have their status updated
   try {
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
-    }
+    await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
   } catch (error) {
     logger.error('Failed to recalculate pupil status', error)
     throw error
@@ -184,9 +165,7 @@ controller.postDeleteRestart = async (req, res, next) => {
 
   // Ask for these pupils to have their status updated
   try {
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
-    }
+    await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
   } catch (error) {
     logger.error('Failed to recalculate pupil status', error)
     throw error

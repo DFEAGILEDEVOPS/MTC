@@ -13,7 +13,6 @@ import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFaile
 @Injectable()
 export class PupilPrefsService {
 
-  featureUseHpa;
   pupilPrefsAPIErrorDelay;
   pupilPrefsAPIErrorMaxAttempts;
   accessArrangements;
@@ -25,11 +24,10 @@ export class PupilPrefsService {
               private storageService: StorageService,
               private tokenService: TokenService,
               private auditService: AuditService) {
-    const { featureUseHpa,
+    const {
       pupilPrefsAPIErrorDelay,
       pupilPrefsAPIErrorMaxAttempts
     } = APP_CONFIG;
-    this.featureUseHpa = featureUseHpa;
     this.pupilPrefsAPIErrorDelay = pupilPrefsAPIErrorDelay;
     this.pupilPrefsAPIErrorMaxAttempts = pupilPrefsAPIErrorMaxAttempts;
     this.fontSettings = AccessArrangementsConfig.fontSettings;
@@ -37,9 +35,6 @@ export class PupilPrefsService {
   }
 
   public async storePupilPrefs() {
-    if (!this.featureUseHpa) {
-      return;
-    }
     const accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
