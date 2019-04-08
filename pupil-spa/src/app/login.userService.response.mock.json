@@ -19,5 +19,10 @@
   "config": {
     "questionTime": 5,
     "loadingTime": 2
+  },
+  "tokens": {
+    "jwt": {
+      "token": "token"
+    }
   }
 }

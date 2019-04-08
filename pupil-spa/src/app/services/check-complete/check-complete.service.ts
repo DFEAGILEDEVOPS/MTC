@@ -8,7 +8,6 @@ import {
 } from '../audit/auditEntry';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
@@ -22,24 +21,21 @@ export class CheckCompleteService {
 
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
-  featureUseHpa;
   submissionPendingViewMinDisplay;
 
   constructor(private auditService: AuditService,
               private azureQueueService: AzureQueueService,
               private router: Router,
               private storageService: StorageService,
-              private submissionService: SubmissionService,
               private tokenService: TokenService,
               private appUsageService: AppUsageService) {
-    const { featureUseHpa,
+    const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
       submissionPendingViewMinDisplay,
     } = APP_CONFIG;
     this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
     this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
-    this.featureUseHpa = featureUseHpa;
     this.submissionPendingViewMinDisplay = submissionPendingViewMinDisplay;
   }
 
@@ -63,36 +59,25 @@ export class CheckCompleteService {
     if (config.practice) {
       return this.onSuccess(startTime);
     }
-    if (this.featureUseHpa === true) {
-      const queueName = queueNames.checkComplete;
-      const {url, token} = this.tokenService.getToken('checkComplete');
-      const retryConfig = {
-        errorDelay: this.checkSubmissionApiErrorDelay,
-        errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
-      };
-      this.auditService.addEntry(new CheckSubmissionApiCalled());
-      const payload = this.storageService.getAllItems();
-      const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
-      excludedItems.forEach(i => delete payload[i]);
-      payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
+    const queueName = queueNames.checkComplete;
+    const {url, token} = this.tokenService.getToken('checkComplete');
+    const retryConfig = {
+      errorDelay: this.checkSubmissionApiErrorDelay,
+      errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
+    };
+    this.auditService.addEntry(new CheckSubmissionApiCalled());
+    const payload = this.storageService.getAllItems();
+    const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
+    excludedItems.forEach(i => delete payload[i]);
+    payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
 
-      try {
-        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-        this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        this.onSuccess(startTime);
-      } catch (error) {
-        this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
-        this.router.navigate(['/submission-failed']);
-      }
-    } else {
-      this.auditService.addEntry(new CheckSubmissionApiCalled());
-      try {
-        await this.submissionService.submitData().toPromise();
-        this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        this.onSuccess(startTime);
-      } catch (error) {
-        this.router.navigate(['/submission-failed']);
-      }
+    try {
+      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
+      this.onSuccess(startTime);
+    } catch (error) {
+      this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
+      this.router.navigate(['/submission-failed']);
     }
   }
 

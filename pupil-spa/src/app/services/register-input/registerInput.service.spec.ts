@@ -6,7 +6,6 @@ import { QuestionServiceMock } from '../question/question.service.mock';
 import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
-import { SubmissionService } from '../submission/submission.service';
 
 let mockStorageService: StorageServiceMock;
 let mockQuestionService: QuestionServiceMock;
@@ -31,7 +30,6 @@ describe('RegisterInputService', () => {
       imports: [HttpModule],
       providers: [
         TestRegisterInputService,
-        SubmissionService,
         {provide: StorageService, useValue: mockStorageService}
       ]
     });
