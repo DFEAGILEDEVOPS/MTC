@@ -177,7 +177,12 @@ schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkW
  * @returns {Boolean}
  */
 schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible = (currentDate, checkWindowData) => {
-  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone().add(3, 'days').set({ hour: 8, minutes: 0, seconds: 0 })
+  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone()
+    .add(1, 'weeks').isoWeekday('Monday')
+    // first converting the date to the local compared date before setting the opening hour
+    .utcOffset(currentDate.utcOffset(), true)
+    .set({ hour: 8, minutes: 0, seconds: 0 })
+
   return currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
 }
 
