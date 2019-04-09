@@ -156,14 +156,14 @@ const dateService = {
   },
 
   /**
-   * Returns ISO date based on day, month, year and time if provided
+   * Returns UTC date based on day, month, year and time if provided
    * @param {Number|string} day
    * @param {Number|string} month
    * @param {Number|string} year
    * @param {String} datetime
-   * @returns {Date} ISO date
+   * @returns {Date}
    */
-  createISODateFromDayMonthYear: function (day, month, year, datetime = '') {
+  createUTCDateFromDayMonthYearTime: function (day, month, year, datetime = '') {
     const paddedDay = (+day).toString().padStart(2, '0')
     const paddedMonth = (+month).toString().padStart(2, '0')
     const generatedDate = new Date(`${(+year).toString()}-${paddedMonth}-${paddedDay} ${datetime}`)

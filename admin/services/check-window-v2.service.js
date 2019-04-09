@@ -94,39 +94,39 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
 
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['adminStartDay'],
       requestData['adminStartMonth'],
       requestData['adminStartYear']
     )
   checkWindowData.adminEndDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
       requestData['adminEndYear'],
       endOfDayTime
     )
   checkWindowData.familiarisationCheckStartDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
     )
   checkWindowData.familiarisationCheckEndDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
       requestData['familiarisationCheckEndYear'],
       endOfDayTime
     )
   checkWindowData.checkStartDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
     )
   checkWindowData.checkEndDate =
-    dateService.createISODateFromDayMonthYear(
+    dateService.createUTCDateFromDayMonthYearTime(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
       requestData['liveCheckEndYear'],
