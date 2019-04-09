@@ -153,6 +153,25 @@ const dateService = {
 
   formatFileName: function (date) {
     return moment(date).format(filenameFriendly)
+  },
+
+  /**
+   * Returns ISO date based on day, month, year and time if provided
+   * @param {Number|string} day
+   * @param {Number|string} month
+   * @param {Number|string} year
+   * @param {String} datetime
+   * @returns {Date} ISO date
+   */
+  createISODateFromDayMonthYear: function (day, month, year, datetime = '') {
+    const paddedDay = (+day).toString().padStart(2, '0')
+    const paddedMonth = (+month).toString().padStart(2, '0')
+    const generatedDate = new Date(`${(+year).toString()}-${paddedMonth}-${paddedDay} ${datetime}`)
+
+    return new Date(generatedDate.toISOString())
+
+    // return new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate(),
+    //   generatedDate.getUTCHours(), generatedDate.getUTCMinutes(), generatedDate.getUTCSeconds()))
   }
 }
 

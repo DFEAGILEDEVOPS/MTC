@@ -258,4 +258,19 @@ describe('date service', () => {
 
     invalidInputTests('formatUKDate')
   })
+
+  describe('createISODateFromDayMonthYear', () => {
+    it('creates an ISO date based on given day month and year with default time set', () => {
+      const isoDate = dateService.createISODateFromDayMonthYear('1', '5', '2010')
+      expect(isoDate.toString()).toBe('Sat May 01 2010 00:00:00 GMT+0100 (BST)')
+    })
+    it('creates an ISO date based on given day month and year and time', () => {
+      const isoDate = dateService.createISODateFromDayMonthYear('1', '5', '2010', '23:59:59')
+      expect(isoDate.toString()).toBe('Sat May 01 2010 23:59:59 GMT+0100 (BST)')
+    })
+    it('creates an ISO date based on given day month and year and time as numeric arguments', () => {
+      const isoDate = dateService.createISODateFromDayMonthYear(1, 5, 2010)
+      expect(isoDate.toString()).toBe('Sat May 01 2010 00:00:00 GMT+0100 (BST)')
+    })
+  })
 })

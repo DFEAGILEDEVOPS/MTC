@@ -90,46 +90,48 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
     checkWindowData.id = checkWindowId
   }
 
-  const startOfDayTime = { hour: 0, minute: 0, second: 0 }
-  const endOfDayTime = { hour: 23, minute: 59, second: 59 }
+  const endOfDayTime = '23:59:59'
 
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['adminStartDay'],
       requestData['adminStartMonth'],
       requestData['adminStartYear']
-    ).set(startOfDayTime)
+    )
   checkWindowData.adminEndDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
-      requestData['adminEndYear']
-    ).set(endOfDayTime)
+      requestData['adminEndYear'],
+      endOfDayTime
+    )
   checkWindowData.familiarisationCheckStartDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
-    ).set(startOfDayTime)
+    )
   checkWindowData.familiarisationCheckEndDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
-      requestData['familiarisationCheckEndYear']
-    ).set(endOfDayTime)
+      requestData['familiarisationCheckEndYear'],
+      endOfDayTime
+    )
   checkWindowData.checkStartDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
-    ).set(startOfDayTime)
+    )
   checkWindowData.checkEndDate =
-    dateService.createLocalTimeFromDayMonthYear(
+    dateService.createISODateFromDayMonthYear(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
-      requestData['liveCheckEndYear']
-    ).set(endOfDayTime)
+      requestData['liveCheckEndYear'],
+      endOfDayTime
+    )
 
   return checkWindowData
 }
