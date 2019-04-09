@@ -13,7 +13,6 @@ import { AuditEntry, CheckStarted, QuestionIntroRendered } from '../services/aud
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
-import { SubmissionService } from '../services/submission/submission.service';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -43,7 +42,6 @@ describe('QuestionsIntroComponent', () => {
         TokenService,
         StorageService,
         CheckStartService,
-        SubmissionService,
         CheckStartService,
         AppUsageService
       ]

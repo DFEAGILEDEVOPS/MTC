@@ -1,5 +1,6 @@
 const sinon = require('sinon')
 const moment = require('moment')
+const azureQueueService = require('../../../services/azure-queue.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
@@ -197,7 +198,7 @@ describe('restart.service', () => {
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(pupilMock)
-      spyOn(checkDataService, 'sqlFindLastStartedCheckByPupilId').and.returnValue(startedCheckMock)
+      spyOn(pupilRestartDataService, 'sqlFindCheckById').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
       spyOn(checkStateService, 'changeState')
@@ -205,8 +206,10 @@ describe('restart.service', () => {
         id: 1,
         check_id: 42
       })
+      spyOn(azureQueueService, 'addMessage')
       const deleted = await restartService.markDeleted(pupilMock.id)
       expect(deleted).toBeDefined()
+      expect(azureQueueService.addMessage).toHaveBeenCalled()
     })
   })
   describe('getReasons', () => {
