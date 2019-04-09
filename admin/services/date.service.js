@@ -168,10 +168,8 @@ const dateService = {
     const paddedMonth = (+month).toString().padStart(2, '0')
     const generatedDate = new Date(`${(+year).toString()}-${paddedMonth}-${paddedDay} ${datetime}`)
 
-    return new Date(generatedDate.toISOString())
-
-    // return new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate(),
-    //   generatedDate.getUTCHours(), generatedDate.getUTCMinutes(), generatedDate.getUTCSeconds()))
+    return new Date(Date.UTC(generatedDate.getUTCFullYear(), generatedDate.getUTCMonth(), generatedDate.getUTCDate(),
+      generatedDate.getUTCHours(), generatedDate.getUTCMinutes(), generatedDate.getUTCSeconds()))
   }
 }
 
