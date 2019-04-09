@@ -117,11 +117,10 @@ Feature: Generate Pupil PINs
     Then I should see generated pin page as per design
     And the displayed school password is generated as per the requirement
 
-  Scenario: Pin is expired when pupil is not taking the check
+  Scenario: Pupil should not appear in the list of pupil for not taking the check after Live pin is generated
     Given I have generated a live pin for a pupil
-    When I decide the pupil should not be taking the check
-    Then the status of the pupil should be Not taking the Check
-    And the pin should be expired
+    When I want to add a reason for pupils not taking a check
+    Then I cannot see pupil in the list for pupil for not taking check
 
   @remove_all_groups @pupil_not_taking_check
   Scenario: Pupils can be filtered by group
