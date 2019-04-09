@@ -93,50 +93,43 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   const startOfDayTime = { hour: 0, minute: 0, second: 0 }
   const endOfDayTime = { hour: 23, minute: 59, second: 59 }
 
-  const utcOffsetInHours = moment().utcOffset() / 60
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['adminStartDay'],
       requestData['adminStartMonth'],
       requestData['adminStartYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(startOfDayTime)
+    ).set(startOfDayTime)
   checkWindowData.adminEndDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
       requestData['adminEndYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(endOfDayTime)
+    ).set(endOfDayTime)
   checkWindowData.familiarisationCheckStartDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(startOfDayTime)
+    ).set(startOfDayTime)
   checkWindowData.familiarisationCheckEndDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
       requestData['familiarisationCheckEndYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(endOfDayTime)
+    ).set(endOfDayTime)
   checkWindowData.checkStartDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(startOfDayTime)
+    ).set(startOfDayTime)
   checkWindowData.checkEndDate =
-    dateService.createUTCFromDayMonthYear(
+    dateService.createLocalTimeFromDayMonthYear(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
       requestData['liveCheckEndYear']
-    ).utcOffset(utcOffsetInHours)
-      .set(endOfDayTime)
+    ).set(endOfDayTime)
 
   return checkWindowData
 }
