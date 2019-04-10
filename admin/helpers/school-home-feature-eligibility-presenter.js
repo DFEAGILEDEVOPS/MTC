@@ -8,6 +8,20 @@ const dateService = require('../services/date.service')
 const schoolHomeFeatureEligibilityPresenter = {}
 
 /**
+ * Determine the results eligibility date
+ * @param currentDate
+ * @param checkEndDate
+ * @returns {Object} moment date object
+ */
+schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime = (currentDate, checkEndDate) => {
+  return checkEndDate.clone()
+    .add(1, 'weeks').isoWeekday('Monday')
+    // first converting the date to the local compared date before setting the opening hour
+    .utcOffset(currentDate.utcOffset(), true)
+    .set({ hour: 8, minutes: 0, seconds: 0 })
+}
+
+/**
  * Fetch data for familiarisation and live pin generation eligibility
  * @param checkWindowData
  * @returns {Object} Eligibility data including flags and relevant datetimes
@@ -15,7 +29,7 @@ const schoolHomeFeatureEligibilityPresenter = {}
 schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const featureEligibilityData = {}
-  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone().add(1, 'weeks').isoWeekday('Monday').set({ hour: 8, minutes: 0, seconds: 0 })
+  const resultsPageEligibilityDateTime = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime(currentDate, checkWindowData.checkEndDate)
 
   // Pin generation
   featureEligibilityData.familiarisationCheckStartDate = dateService.formatFullGdsDate(checkWindowData.familiarisationCheckStartDate)
@@ -177,12 +191,7 @@ schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkW
  * @returns {Boolean}
  */
 schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible = (currentDate, checkWindowData) => {
-  const resultsPageEligibilityDateTime = checkWindowData.checkEndDate.clone()
-    .add(1, 'weeks').isoWeekday('Monday')
-    // first converting the date to the local compared date before setting the opening hour
-    .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
-
+  const resultsPageEligibilityDateTime = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime(currentDate, checkWindowData.checkEndDate)
   return currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
 }
 
