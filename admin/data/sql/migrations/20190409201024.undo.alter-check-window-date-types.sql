@@ -1,30 +1,71 @@
-DECLARE @columnName VARCHAR(max)
-DECLARE @sql NVARCHAR(max)
+DECLARE
+    @ObjectName1 NVARCHAR(100)
+SELECT @ObjectName1 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'adminStartDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName1)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN adminStartDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR adminStartDate
 
-DECLARE cur CURSOR FOR
- SELECT COLUMN_NAME
-   FROM INFORMATION_SCHEMA.COLUMNS
-  WHERE COLUMN_NAME LIKE '%Date'
-    AND TABLE_NAME = 'checkWindow'
+DECLARE
+    @ObjectName2 NVARCHAR(100)
+SELECT @ObjectName2 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'checkStartDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName2)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN checkStartDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR checkStartDate
 
-OPEN cur
+DECLARE
+    @ObjectName3 NVARCHAR(100)
+SELECT @ObjectName3 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'checkEndDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName3)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN checkEndDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR checkEndDate
 
-FETCH NEXT FROM cur INTO @columnName;
+DECLARE
+    @ObjectName4 NVARCHAR(100)
+SELECT @ObjectName4 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'adminEndDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName4)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN adminEndDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR adminEndDate
 
-WHILE @@fetch_status = 0
-BEGIN
-    SET @sql = '
-    DECLARE @ObjectName NVARCHAR(100)
-    SELECT @ObjectName = OBJECT_NAME([default_object_id]) FROM SYS.COLUMNS
-    WHERE [object_id] = OBJECT_ID(''[mtc_admin].[checkWindow]'') AND [name] = ' + QUOTENAME(@columnName,'''') + '
-    EXEC(''ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT '' + @ObjectName)
-    ALTER TABLE [mtc_admin].checkWindow ALTER COLUMN ' + @columnName + ' DATETIMEOFFSET(3) NOT NULL
-    ALTER TABLE [mtc_admin].checkWindow ADD DEFAULT GETUTCDATE() FOR ' + @columnName + '
-    '
-    EXEC(@sql)
+DECLARE
+    @ObjectName5 NVARCHAR(100)
+SELECT @ObjectName5 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'familiarisationCheckStartDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName5)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN familiarisationCheckStartDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR familiarisationCheckStartDate
 
-   FETCH NEXT FROM cur INTO @columnName;
-END
-
-CLOSE cur
-DEALLOCATE cur
+DECLARE
+    @ObjectName6 NVARCHAR(100)
+SELECT @ObjectName6 = OBJECT_NAME([default_object_id])
+FROM SYS.COLUMNS
+WHERE [object_id] = OBJECT_ID('[mtc_admin].[checkWindow]')
+  AND [name] = 'familiarisationCheckEndDate'
+EXEC ('ALTER TABLE [mtc_admin].[checkWindow] DROP CONSTRAINT ' + @ObjectName6)
+ALTER TABLE [mtc_admin].checkWindow
+    ALTER COLUMN familiarisationCheckEndDate DATETIMEOFFSET(3) NOT NULL
+ALTER TABLE [mtc_admin].checkWindow
+    ADD DEFAULT GETUTCDATE() FOR familiarisationCheckEndDate
