@@ -35,7 +35,7 @@ class PupilReasonPage < SitePrism::Page
     element :below_standard, 'strong', text: 'Working below expectation'
     element :below_standard_explanation, 'div', text: "Headteachers should use their knowledge of each pupil when considering whether it's appropriate to administer the check. The headteacher should consider entering any pupils who know, apply and understand the matters, skills and processes specified in the key stage 1 programme of study in relation to multiplication tables."
     element :just_arrived, 'strong', text: 'Just arrived with EAL'
-    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has arrived during the check window and there isn't enough time to establish their abilities"
+    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has arrived during the check period and there isn't enough time to establish their abilities."
   end
 
 
