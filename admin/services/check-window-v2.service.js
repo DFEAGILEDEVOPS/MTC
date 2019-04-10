@@ -89,50 +89,48 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   if (checkWindowId) {
     checkWindowData.id = checkWindowId
   }
-
-  const endOfDayTime = '23:59:59'
-
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['adminStartDay'],
       requestData['adminStartMonth'],
       requestData['adminStartYear']
     )
   checkWindowData.adminEndDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['adminEndDay'],
       requestData['adminEndMonth'],
-      requestData['adminEndYear'],
-      endOfDayTime
+      requestData['adminEndYear']
     )
   checkWindowData.familiarisationCheckStartDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckStartDay'],
       requestData['familiarisationCheckStartMonth'],
       requestData['familiarisationCheckStartYear']
     )
   checkWindowData.familiarisationCheckEndDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['familiarisationCheckEndDay'],
       requestData['familiarisationCheckEndMonth'],
-      requestData['familiarisationCheckEndYear'],
-      endOfDayTime
+      requestData['familiarisationCheckEndYear']
     )
   checkWindowData.checkStartDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['liveCheckStartDay'],
       requestData['liveCheckStartMonth'],
       requestData['liveCheckStartYear']
     )
   checkWindowData.checkEndDate =
-    dateService.createUTCDateFromDayMonthYearTime(
+    dateService.createUTCFromDayMonthYear(
       requestData['liveCheckEndDay'],
       requestData['liveCheckEndMonth'],
-      requestData['liveCheckEndYear'],
-      endOfDayTime
+      requestData['liveCheckEndYear']
     )
 
+  const endofDayTime = { hour: 23, minute: 59, second: 59 }
+  checkWindowData.adminEndDate.set(endofDayTime)
+  checkWindowData.familiarisationCheckEndDate.set(endofDayTime)
+  checkWindowData.checkEndDate.set(endofDayTime)
   return checkWindowData
 }
 
