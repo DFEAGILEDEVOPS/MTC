@@ -181,7 +181,7 @@ describe('check-window-v2.service', () => {
   })
   describe('prepareSubmissionData', () => {
     it('should prepare data for submission', async () => {
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(moment.utc())
+      spyOn(dateService, 'createISODateStringFromDayMonthYearTime').and.returnValue(moment.utc())
       const requestData = {
         checkWindowName: 'Check window'
       }
@@ -193,9 +193,7 @@ describe('check-window-v2.service', () => {
       expect(checkWindowData.familiarisationCheckEndDate).toBeDefined()
       expect(checkWindowData.checkStartDate).toBeDefined()
       expect(checkWindowData.checkEndDate).toBeDefined()
-      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(6)
-      expect(checkWindowData.checkEndDate.format('HH:mm:ss')).toBe('23:59:59')
-      expect(checkWindowData.familiarisationCheckEndDate.format('HH:mm:ss')).toBe('23:59:59')
+      expect(dateService.createISODateStringFromDayMonthYearTime).toHaveBeenCalledTimes(6)
     })
   })
   describe('getActiveCheckWindow', () => {
