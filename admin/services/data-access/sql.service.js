@@ -170,6 +170,7 @@ const sqlService = {
     BigInt: mssql.BigInt,
     Bit: mssql.Bit,
     Char: mssql.Char,
+    DateTime2: mssql.DateTime2,
     DateTimeOffset: mssql.DateTimeOffset,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
