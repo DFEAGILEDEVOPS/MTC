@@ -3,6 +3,7 @@ require 'cucumber'
 require 'cucumber/rake/task'
 require 'pry'
 require 'capybara'
+require 'colorize'
 
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
 
