@@ -126,11 +126,11 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
       requestData['liveCheckEndMonth'],
       requestData['liveCheckEndYear']
     )
-  // This will ensure the last day of the check window will be taken into account for checks
-  // To avoid overflow to the next day during BST the time is set at 1 hour 59mins and 59 seconds before the day change
+
   const endofDayTime = { hour: 23, minute: 59, second: 59 }
-  checkWindowData.checkEndDate.set(endofDayTime)
+  checkWindowData.adminEndDate.set(endofDayTime)
   checkWindowData.familiarisationCheckEndDate.set(endofDayTime)
+  checkWindowData.checkEndDate.set(endofDayTime)
   return checkWindowData
 }
 
