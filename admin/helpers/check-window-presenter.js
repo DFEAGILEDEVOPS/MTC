@@ -11,39 +11,46 @@ const checkWindowPresenter = {}
  */
 checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
   const currentDate = moment.utc()
+  const adminStartDate = moment.utc(checkWindowData.adminStartDate)
+  const adminEndDate = moment.utc(checkWindowData.adminEndDate)
+  const familiarisationCheckStartDate = moment.utc(checkWindowData.familiarisationCheckStartDate)
+  const familiarisationCheckEndDate = moment.utc(checkWindowData.familiarisationCheckEndDate)
+  const checkStartDate = moment.utc(checkWindowData.checkStartDate)
+  const checkEndDate = moment.utc(checkWindowData.checkEndDate)
+
   const checkWindowViewData = {
-    adminStartDate: checkWindowData.adminStartDate,
-    adminStartDay: requestData.adminStartDay || checkWindowData.adminStartDate.format('D'),
-    adminStartMonth: requestData.adminStartMonth || checkWindowData.adminStartDate.format('MM'),
-    adminStartYear: requestData.adminStartYear || checkWindowData.adminStartDate.format('YYYY'),
-    adminStartDateDisabled: currentDate.isSameOrAfter(checkWindowData.adminStartDate),
-    adminEndDate: checkWindowData.adminEndDate,
-    adminEndDay: requestData.adminEndDay || checkWindowData.adminEndDate.format('D'),
-    adminEndMonth: requestData.adminEndMonth || checkWindowData.adminEndDate.format('MM'),
-    adminEndYear: requestData.adminEndYear || checkWindowData.adminEndDate.format('YYYY'),
-    adminEndDateDisabled: currentDate.isSameOrAfter(checkWindowData.adminEndDate),
+    adminStartDate: adminStartDate,
+    adminStartDay: requestData.adminStartDay || adminStartDate.format('D'),
+    adminStartMonth: requestData.adminStartMonth || adminStartDate.format('MM'),
+    adminStartYear: requestData.adminStartYear || adminStartDate.format('YYYY'),
+    adminStartDateDisabled: currentDate.isSameOrAfter(adminStartDate),
+    adminEndDate: adminEndDate,
+    adminEndDay: requestData.adminEndDay || adminEndDate.format('D'),
+    adminEndMonth: requestData.adminEndMonth || adminEndDate.format('MM'),
+    adminEndYear: requestData.adminEndYear || adminEndDate.format('YYYY'),
+    adminEndDateDisabled: currentDate.isSameOrAfter(adminEndDate),
     checkWindowUrlSlug: checkWindowData.urlSlug,
     checkWindowName: checkWindowData.name,
-    familiarisationCheckStartDate: checkWindowData.familiarisationCheckStartDate,
-    familiarisationCheckStartDay: requestData.familiarisationCheckStartDay || checkWindowData.familiarisationCheckStartDate.format('D'),
-    familiarisationCheckStartMonth: requestData.familiarisationCheckStartMonth || checkWindowData.familiarisationCheckStartDate.format('MM'),
-    familiarisationCheckStartYear: requestData.familiarisationCheckStartYear || checkWindowData.familiarisationCheckStartDate.format('YYYY'),
-    familiarisationCheckStartDateDisabled: currentDate.isSameOrAfter(checkWindowData.familiarisationCheckStartDate),
-    familiarisationCheckEndDate: checkWindowData.familiarisationCheckEndDate,
-    familiarisationCheckEndDay: requestData.familiarisationCheckEndDay || checkWindowData.familiarisationCheckEndDate.format('D'),
-    familiarisationCheckEndMonth: requestData.familiarisationCheckEndMonth || checkWindowData.familiarisationCheckEndDate.format('MM'),
-    familiarisationCheckEndYear: requestData.familiarisationCheckEndYear || checkWindowData.familiarisationCheckEndDate.format('YYYY'),
-    familiarisationCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindowData.familiarisationCheckEndDate),
-    liveCheckStartDate: checkWindowData.checkStartDate,
-    liveCheckStartDay: requestData.liveCheckStartDay || checkWindowData.checkStartDate.format('D'),
-    liveCheckStartMonth: requestData.liveCheckStartMonth || checkWindowData.checkStartDate.format('MM'),
-    liveCheckStartYear: requestData.liveCheckStartYear || checkWindowData.checkStartDate.format('YYYY'),
-    liveCheckStartDateDisabled: currentDate.isSameOrAfter(checkWindowData.checkStartDate),
-    liveCheckEndDate: checkWindowData.checkEndDate,
-    liveCheckEndDay: requestData.liveCheckEndDay || checkWindowData.checkEndDate.format('D'),
-    liveCheckEndMonth: requestData.liveCheckEndMonth || checkWindowData.checkEndDate.format('MM'),
-    liveCheckEndYear: requestData.liveCheckEndYear || checkWindowData.checkEndDate.format('YYYY'),
-    liveCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindowData.checkEndDate)
+    familiarisationCheckStartDate: familiarisationCheckStartDate,
+    familiarisationCheckStartDay: requestData.familiarisationCheckStartDay || familiarisationCheckStartDate.format('D'),
+    familiarisationCheckStartMonth: requestData.familiarisationCheckStartMonth || familiarisationCheckStartDate.format('MM'),
+    familiarisationCheckStartYear: requestData.familiarisationCheckStartYear || familiarisationCheckStartDate.format('YYYY'),
+    familiarisationCheckStartDateDisabled: currentDate.isSameOrAfter(familiarisationCheckStartDate),
+    familiarisationCheckEndDate: familiarisationCheckEndDate,
+    familiarisationCheckEndDay: requestData.familiarisationCheckEndDay || familiarisationCheckEndDate.format('D'),
+    familiarisationCheckEndMonth: requestData.familiarisationCheckEndMonth || familiarisationCheckEndDate.format('MM'),
+    familiarisationCheckEndYear: requestData.familiarisationCheckEndYear || familiarisationCheckEndDate.format('YYYY'),
+    familiarisationCheckEndDateDisabled: currentDate.isSameOrAfter(familiarisationCheckEndDate),
+    liveCheckStartDate: checkStartDate,
+    liveCheckStartDay: requestData.liveCheckStartDay || checkStartDate.format('D'),
+    liveCheckStartMonth: requestData.liveCheckStartMonth || checkStartDate.format('MM'),
+    liveCheckStartYear: requestData.liveCheckStartYear || checkStartDate.format('YYYY'),
+    liveCheckStartDateDisabled: currentDate.isSameOrAfter(checkStartDate),
+    liveCheckEndDate: checkEndDate,
+    liveCheckEndDay: requestData.liveCheckEndDay || checkEndDate.format('D'),
+    liveCheckEndMonth: requestData.liveCheckEndMonth || checkEndDate.format('MM'),
+    liveCheckEndYear: requestData.liveCheckEndYear || checkEndDate.format('YYYY'),
+    liveCheckEndDateDisabled: currentDate.isSameOrAfter(checkEndDate)
   }
   checkWindowViewData.adminPeriodDisabled = checkWindowViewData.adminStartDateDisabled && checkWindowViewData.adminEndDateDisabled
   checkWindowViewData.familiarisationCheckPeriodDisabled = checkWindowViewData.familiarisationCheckStartDateDisabled && checkWindowViewData.familiarisationCheckEndDateDisabled

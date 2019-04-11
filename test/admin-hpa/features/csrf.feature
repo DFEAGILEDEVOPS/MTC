@@ -49,7 +49,7 @@ Feature: CSRF token
     When I am on the Upload new forms page
     Then I should see the upload new form has a hidden csrf field
 
-  @create_new_window_v2 @wip @bug
+  @create_new_window_v2
   Scenario: Assign check form has hidden csrf field
     Given I am logged in with a test developer
     When I am on the assign check window page
