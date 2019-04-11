@@ -26,7 +26,7 @@
 
         <p class="lede">
           Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>.<br />
-          The link for pupils to try it out is:<br />
+          The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:<br />
           <a target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a><br />
           <br>These expire at 4pm daily.
 
