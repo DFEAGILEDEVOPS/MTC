@@ -125,7 +125,7 @@ const convertDateToMoment = (d) => {
   if (!(d instanceof Date)) {
     return d
   }
-  return moment(d)
+  return moment.utc(d)
 }
 
 /**
