@@ -141,7 +141,7 @@ const convertDateToMoment = (d) => {
   if (!(d instanceof Date)) {
     return d
   }
-  return moment(d)
+  return moment.utc(d)
 }
 
 /**
@@ -186,7 +186,13 @@ const sqlService = {
     BigInt: mssql.BigInt,
     Bit: mssql.Bit,
     Char: mssql.Char,
-    DateTimeOffset: mssql.DateTimeOffset,
+    /*
+      Using mssql.DateTimeOffset would store both a local and UTC version of the datetime
+      The UTC value seems to always be returned by sqlService.query, but this can be
+      confusing when checking data manually, as many GUIs (e.g. DBeaver) will then show
+      the datetime with the server's TZ offset.
+    */
+    DateTimeOffset: mssql.DateTime,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
     Int: mssql.Int,

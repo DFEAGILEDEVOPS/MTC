@@ -110,9 +110,6 @@ module.exports = {
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
   },
-  Cors: {
-    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
-  },
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
@@ -130,8 +127,9 @@ module.exports = {
     }
   },
   Redis: {
-    Host: process.env.REDIS_HOST,
-    Port: process.env.REDIS_PORT,
-    Key: process.env.REDIS_KEY
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() !== 'Local-Dev'
   }
 }

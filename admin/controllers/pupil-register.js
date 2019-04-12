@@ -1,15 +1,11 @@
 'use strict'
 
-const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilRegisterService = require('../services/pupil-register.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
-const featureToggles = require('feature-toggles')
 
 const listPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
-  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
-  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
 
   let checkWindowData
   let availabilityData
@@ -17,13 +13,7 @@ const listPupils = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
-    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId, sortDirection)
-    } else {
-      pupilsFormatted = await pupilRegisterService.getPupils(req.user.School, req.user.schoolId, sortDirection)
-      pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
-      pupilRegisterService.sortPupils(pupilsFormatted, sortField, sortDirection)
-    }
+    pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId)
   } catch (error) {
     next(error)
   }
