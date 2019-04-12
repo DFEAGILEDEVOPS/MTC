@@ -93,7 +93,7 @@ end
 Then(/^my feedback should be saved$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("feedback");'))
   stored_check = SqlDbHelper.get_pupil_check_metadata(local_storage['checkCode'])
-  wait_until {!SqlDbHelper.get_feedback(stored_check['id']).nil?}
+  wait_until(20,5){!SqlDbHelper.get_feedback(stored_check['id']).nil?}
   saved_feedback = SqlDbHelper.get_feedback(stored_check['id'])
   expect(saved_feedback['inputType']).to eql 3
   expect(saved_feedback['satisfactionRating']).to eql 1

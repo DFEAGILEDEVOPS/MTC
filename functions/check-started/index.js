@@ -2,10 +2,9 @@
 
 const moment = require('moment')
 const process = require('process')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
-const winston = require('winston')
-const { TYPES } = require('tedious')
+const { TYPES } = sqlService
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -13,9 +12,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const sqlUtil = require('../lib/sql-helper')
-const config = require('../config')
-sqlService.initialise(config)
-winston.level = 'error'
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
@@ -79,9 +75,9 @@ module.exports = async function (context, checkStartMessage) {
 async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
-               SET checkStatus_id = 
+               SET checkStatus_id =
                   (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'STD'),
-                  startedAt = @startedAt                
+                  startedAt = @startedAt
                where checkCode = @checkCode`
 
   const params = [

@@ -1,12 +1,17 @@
 'use strict'
-/* global describe, it, expect, spyOn, fail */
+/* global describe, it, expect, spyOn, fail, beforeAll */
 
-const sqlHelper = require('../lib/sql-helper')
 const completedCheckMock = require('./mocks/completed-check-with-results')
 const checkFormMock = require('./mocks/check-form')
 
 describe('markingService', () => {
-  let service = require('./marking.service')
+  let service, sqlHelper
+
+  beforeAll(() => {
+    // sql-helper connects to the database as a side-effect of requiring it.
+    sqlHelper = require('../lib/sql-helper')
+    service = require('./marking.service')
+  })
 
   describe('#mark', () => {
     it('throws an error if the arg is missing', async () => {

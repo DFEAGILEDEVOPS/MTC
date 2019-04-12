@@ -1,5 +1,5 @@
-const { TYPES } = require('tedious')
-const sqlService = require('less-tedious')
+const sqlService = require('../lib/sql/sql.service')
+const { TYPES } = sqlService
 const R = require('ramda')
 
 const schema = '[mtc_admin]'
