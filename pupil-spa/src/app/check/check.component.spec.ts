@@ -12,8 +12,6 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
-import { SubmissionService } from '../services/submission/submission.service';
-import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { TimerService } from '../services/timer/timer.service';
@@ -54,7 +52,6 @@ describe('CheckComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
-        { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: TimerService, useClass: TimerServiceMock },
         { provide: Router, useValue: mockRouter },

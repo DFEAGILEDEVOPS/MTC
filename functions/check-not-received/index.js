@@ -2,13 +2,13 @@
 
 const { performance } = require('perf_hooks')
 
-const v1 = require('./v1')
+const v2 = require('./v2')
 
 module.exports = async function (context, timer) {
   const start = performance.now()
   let meta
   try {
-    meta = await v1.process(context.log)
+    meta = await v2.process(context.log)
   } catch (error) {
     context.log.error(`check-not-received: ERROR: ${error.message}`)
     throw error

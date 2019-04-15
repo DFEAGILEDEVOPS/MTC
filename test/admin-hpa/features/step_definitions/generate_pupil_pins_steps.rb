@@ -48,6 +48,11 @@ Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/)
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
 
+Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
+  pupils_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
+end
+
 When(/^I click on the Pupil heading$/) do
   generate_pins_overview_page.pupil_column_heading.click
 end
@@ -348,7 +353,7 @@ And(/^I should be able to see a count of pupils$/) do
 end
 
 Then(/^I should see an error message to contact helpdesk$/) do
-  expect(page).to have_content("Currently unavailable")
+  expect(page).to have_content("The service is unavailable")
 end
 
 Then(/^I should see related content on the generate pins page$/) do

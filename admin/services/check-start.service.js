@@ -12,12 +12,10 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
-const featureToggles = require('feature-toggles')
 // const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
@@ -26,87 +24,6 @@ const azureQueueService = require('../services/azure-queue.service')
 const checkStateService = require('../services/check-state.service')
 
 const checkStartService = {}
-
-/**
- * Create a check entry for a pupil, generate a pin, and allocate a form
- * Called from the admin app when the teacher generates a pin
- * Generates the pin and check for a specific pin environment (live/fam)
- * @param {Array.<number>} pupilIds
- * @param {number} dfeNumber
- * @param {string} pinEnv
- * @return {Promise<void>}
- */
-checkStartService.prepareCheck = async function (
-  pupilIds,
-  dfeNumber,
-  schoolId,
-  pinEnv
-) {
-  // TODO: add transaction wrapper around the service calls to generate pins and checks
-
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is required')
-  }
-
-  if (!schoolId) {
-    throw new Error('schoolId is required')
-  }
-
-  // Validate the incoming pupil list to ensure that the pupils are real ids
-  // and that they belong to the user's school
-  const pupils = await pupilDataService.sqlFindByIdAndDfeNumber(
-    pupilIds,
-    dfeNumber
-  )
-  const difference = setValidationService.validate(
-    pupilIds.map(x => parseInt(x, 10)),
-    pupils
-  )
-  if (difference.size > 0) {
-    logger.warn(
-      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
-      difference
-    )
-    throw new Error('Validation failed')
-  }
-
-  // Find the check window we are working in
-  const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-  // TODO: Remove maxAttempts and reintroduce it within pin generation service once verified that travis can successfully use node env variables
-  const maxAttempts = config.Data.pinSubmissionMaxAttempts
-  const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
-  // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(
-    pupilIds,
-    dfeNumber,
-    maxAttempts,
-    attemptsRemaining,
-    schoolId,
-    pinEnv
-  )
-
-  // Find all used forms for each pupil, so we make sure they do not
-  // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindow(
-    checkWindow.id
-  )
-  const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
-
-  // Create the check for each pupil
-  const checks = []
-  for (let pid of pupilIds) {
-    const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
-    const c = await checkStartService.initialisePupilCheck(
-      pid,
-      checkWindow,
-      allForms,
-      usedFormIds,
-      pinEnv === 'live'
-    )
-    checks.push(c)
-  }
-  await checkDataService.sqlCreateBatch(checks)
-}
 
 /**
  * Prepare a check for one or more pupils
@@ -296,10 +213,8 @@ checkStartService.initialisePupilCheck = async function (
     isLiveCheck: isLiveCheck
   }
 
-  if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-    checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime(schoolTimezone)
-    checkData.school_id = schoolId
-  }
+  checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime(schoolTimezone)
+  checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
