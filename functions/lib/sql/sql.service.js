@@ -1,30 +1,20 @@
 'use strict'
 
 const R = require('ramda')
-const mssql = require('mssql')
-const dateService = require('../date.service')
-const poolConfig = require('../../config/sql.config')
 const moment = require('moment')
-const logger = require('../log.service').getLogger()
+let cache = {}
+const { mssql, poolPromise } = require('./pool-config')
+const dateService = require('./date.service')
 const retry = require('./retry-async')
-const config = require('../../config')
+let pool
 
 const retryConfig = {
-  attempts: config.DatabaseRetry.MaxRetryAttempts,
-  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
-  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
+  attempts: 3,
+  pauseTimeMs: 5000,
+  pauseMultiplier: 1.5
 }
 
 const connectionLimitReachedErrorCode = 10928
-
-const dbLimitReached = (error) => {
-  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
-  return error.number === connectionLimitReachedErrorCode
-}
-
-let cache = {}
-/* @var mssql.ConnectionPool */
-let pool
 
 /** Utility functions **/
 
@@ -36,7 +26,6 @@ let pool
  * @return {string | undefined}
  */
 const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
-  logger.debug(`findDataType('${type}'): called`)
   if (type.toUpperCase() === k.toUpperCase()) {
     return k
   }
@@ -141,7 +130,7 @@ const convertDateToMoment = (d) => {
   if (!(d instanceof Date)) {
     return d
   }
-  return moment.utc(d)
+  return moment(d)
 }
 
 /**
@@ -168,7 +157,6 @@ async function generateParams (tableName, data) {
       options.length = cacheData.maxLength
     }
 
-    logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
@@ -184,15 +172,11 @@ const sqlService = {
   // SQL type-mapping adapter.  Add new types as required.
   TYPES: {
     BigInt: mssql.BigInt,
+    Binary: mssql.Binary,
     Bit: mssql.Bit,
     Char: mssql.Char,
-    /*
-      Using mssql.DateTimeOffset would store both a local and UTC version of the datetime
-      The UTC value seems to always be returned by sqlService.query, but this can be
-      confusing when checking data manually, as many GUIs (e.g. DBeaver) will then show
-      the datetime with the server's TZ offset.
-    */
-    DateTimeOffset: mssql.DateTime,
+    DateTime: mssql.DateTime,
+    DateTimeOffset: mssql.DateTimeOffset,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
     Int: mssql.Int,
@@ -200,29 +184,19 @@ const sqlService = {
     NVarChar: mssql.NVarChar,
     Real: mssql.Real,
     SmallInt: mssql.SmallInt,
-    UniqueIdentifier: mssql.UniqueIdentifier
+    TinyInt: mssql.TinyInt,
+    UniqueIdentifier: mssql.UniqueIdentifier,
+    VarChar: mssql.VarChar
   }
 }
 
-// Name of the admin database
-sqlService.adminSchema = '[mtc_admin]'
-
 sqlService.initPool = async () => {
-  if (pool) {
-    logger.warn('The connection pool has already been initialised')
-    return
-  }
-  pool = new mssql.ConnectionPool(poolConfig)
-  pool.on('error', err => {
-    logger.error('SQL Pool Error:', err)
-  })
-  return pool.connect()
+  pool = await poolPromise
 }
 
 sqlService.drainPool = async () => {
   await pool
   if (!pool) {
-    logger.warn('The connection pool is not initialised')
     return
   }
   return pool.close()
@@ -254,16 +228,19 @@ function addParamsToRequestSimple (params, request) {
   }
 }
 
+const dbLimitReached = (error) => {
+  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
+  return error.number === connectionLimitReachedErrorCode // || error.message.indexOf('request limit') !== -1
+}
+
 /**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = []) => {
-  logger.debug(`sql.service.query(): ${sql}`)
-  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
-  await pool
+sqlService.query = async function query (sql, params = []) {
+  await this.initPool()
 
   const query = async () => {
     const request = new mssql.Request(pool)
@@ -295,9 +272,6 @@ function addParamsToRequest (params, request) {
         options.scale = param.scale || 5
       }
       const opts = param.options ? param.options : options
-      if (opts && Object.keys(opts).length) {
-        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
-      }
 
       if (opts.precision) {
         request.input(param.name, param.type(opts.precision, opts.scale), param.value)
@@ -316,10 +290,8 @@ function addParamsToRequest (params, request) {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-  await pool
+sqlService.modify = async function modify (sql, params = []) {
+  await this.initPool()
 
   const modify = async () => {
     const request = new mssql.Request(pool)
@@ -358,7 +330,7 @@ sqlService.modify = async (sql, params = []) => {
  * @param {number} id
  * @return {Promise<void>}
  */
-sqlService.findOneById = async (table, id) => {
+sqlService.findOneById = async (table, id, schema = '[mtc_admin]') => {
   const paramId = {
     name: 'id',
     type: sqlService.TYPES.Int,
@@ -366,10 +338,15 @@ sqlService.findOneById = async (table, id) => {
   }
   const sql = `
       SELECT *    
-      FROM ${sqlService.adminSchema}.${table}
+      FROM ${schema}.${table}
       WHERE id = @id
     `
-  const rows = await sqlService.query(sql, [paramId])
+
+  const query = async () => {
+    return sqlService.query(sql, [paramId])
+  }
+
+  const rows = await retry(query, retryConfig, dbLimitReached)
   return R.head(rows)
 }
 
@@ -388,12 +365,9 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     await sqlService.updateDataTypeCache()
   }
   if (!cache.hasOwnProperty(key)) {
-    logger.debug(`sql.service: cache miss for ${key}`)
     return undefined
   }
   const cacheData = cache[key]
-  logger.debug(`sql.service: cache hit for ${key}`)
-  logger.debug('sql.service: cache', cacheData)
   return cacheData
 }
 
@@ -403,11 +377,10 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  * @param {object} data
  * @return {{sql: string, params}}
  */
-sqlService.generateInsertStatement = async (table, data) => {
+sqlService.generateInsertStatement = async (table, data, schema = '[mtc_admin]') => {
   const params = await generateParams(table, data)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
-  INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
+  INSERT INTO ${schema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]`
   return {
     sql,
@@ -422,7 +395,7 @@ sqlService.generateInsertStatement = async (table, data) => {
  * @param {array} data
  * @return {{sql: string, params}}
  */
-sqlService.generateMultipleInsertStatements = async (table, data) => {
+sqlService.generateMultipleInsertStatements = async (table, data, schema = '[mtc_admin]') => {
   if (!Array.isArray(data)) throw new Error('Insert data is not an array')
   const paramsWithTypes = await generateParams(table, R.head(data))
   const headers = extractColumns(R.head(data))
@@ -441,9 +414,8 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
     )
   })
   params = R.flatten(params)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
-  INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
+  INSERT INTO ${schema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`
   return {
     sql,
@@ -458,10 +430,10 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
  * @param data
  * @return {Promise<{sql, params: Array}>}
  */
-sqlService.generateUpdateStatement = async (table, data) => {
+sqlService.generateUpdateStatement = async (table, data, schema = '[mtc_admin]') => {
   const params = await generateParams(table, data)
   const sql = R.join(' ', [
-    `UPDATE ${sqlService.adminSchema}.${table}`,
+    `UPDATE ${schema}.${table}`,
     'SET',
     generateSetStatements(R.omit(['id'], data)),
     'WHERE id=@id'
@@ -485,13 +457,11 @@ sqlService.create = async (tableName, data) => {
     params,
     outputParams
   } = await sqlService.generateInsertStatement(tableName, preparedData)
-  try {
-    const res = await sqlService.modify(sql, params, outputParams)
-    return res
-  } catch (error) {
-    logger.warn('sql.service: Failed to INSERT', error)
-    throw error
+
+  const create = async () => {
+    return sqlService.modify(sql, params, outputParams)
   }
+  return retry(create, retryConfig, dbLimitReached)
 }
 
 /**
@@ -528,7 +498,6 @@ sqlService.updateDataTypeCache = async function () {
       maxLength: row.CHARACTER_MAXIMUM_LENGTH && row.CHARACTER_MAXIMUM_LENGTH > 0 ? row.CHARACTER_MAXIMUM_LENGTH : undefined
     }
   })
-  logger.debug('sql.service: updateDataTypeCache() complete')
 }
 
 /**
@@ -549,19 +518,18 @@ sqlService.update = async function (tableName, data) {
     sql,
     params
   } = await sqlService.generateUpdateStatement(tableName, preparedData)
-  try {
-    const res = await sqlService.modify(sql, params)
-    return res
-  } catch (error) {
-    logger.warn('sql.service: Failed to UPDATE', error)
-    throw error
+
+  const update = async () => {
+    return sqlService.modify(sql, params)
   }
+
+  return retry(update, retryConfig, dbLimitReached)
 }
 
 /**
  * Helper function useful for constructing parameterised WHERE clauses
  * @param {Array} ary
- * @param {Tedious.TYPE} type
+ * @param {sqlService.TYPE} type
  * @return {Promise<{params: Array, paramIdentifiers: Array}>}
  */
 sqlService.buildParameterList = (ary, type) => {
@@ -612,6 +580,8 @@ BEGIN CATCH
                );
 END CATCH
   `
-  return sqlService.modify(wrappedSQL, params)
+  const modify = async () => sqlService.modify(wrappedSQL, params)
+  return retry(modify, retryConfig, dbLimitReached)
 }
+
 module.exports = sqlService

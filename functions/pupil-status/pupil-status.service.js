@@ -1,11 +1,9 @@
 'use strict'
 
-const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
-const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
-sqlService.initialise(config)
+const sqlService = require('../lib/sql/sql.service')
+const { TYPES } = sqlService
 
 async function recalculatePupilStatus (pupilId) {
   const currentData = await getCurrentPupilData(pupilId)
@@ -19,7 +17,7 @@ async function recalculatePupilStatus (pupilId) {
 }
 
 async function getCurrentPupilData (pupilId) {
-  const sql = `SELECT 
+  const sql = `SELECT
     p.id                      as pupil_id,
     pstatus.code              as pupilStatusCode,
     lastCheck.id              as check_id,
@@ -27,19 +25,19 @@ async function getCurrentPupilData (pupilId) {
     lastPupilRestart.id       as pupilRestart_id,
     lastPupilRestart.check_id as pupilRestart_check_id,
     pa.id                     as pupilAttendance_id,
-    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated 
-  FROM 
-        ${sqlService.adminSchema}.[pupil] p
-        INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
-        LEFT OUTER JOIN  
+    CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated
+  FROM
+        [mtc_admin].[pupil] p
+        INNER JOIN [mtc_admin].[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
+        LEFT OUTER JOIN
         (
            SELECT *,
               ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
            FROM [mtc_admin].[check]
            WHERE isLiveCheck = 1
         ) lastCheck ON (lastCheck.pupil_id = p.id)
-        LEFT OUTER JOIN ${sqlService.adminSchema}.[checkStatus] chkStatus ON (lastCheck.checkStatus_id = chkStatus.id)
-        LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
+        LEFT OUTER JOIN [mtc_admin].[checkStatus] chkStatus ON (lastCheck.checkStatus_id = chkStatus.id)
+        LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
         LEFT OUTER JOIN (
          SELECT *,
                 ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
@@ -47,7 +45,7 @@ async function getCurrentPupilData (pupilId) {
          WHERE isDeleted = 0
        ) lastPupilRestart ON (p.id = lastPupilRestart.pupil_id)
        LEFT OUTER JOIN [mtc_admin].[pupilRestart] pupilRestart ON (pupilRestart.check_id = lastCheck.id)
-  WHERE  
+  WHERE
         p.id = @pupilId
   AND   (lastCheck.rank = 1 or lastCheck.rank IS NULL)
   AND   (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL); `
@@ -61,8 +59,8 @@ async function getCurrentPupilData (pupilId) {
 }
 
 async function changePupilState (pupilId, targetStatusCode) {
-  const sql = `UPDATE ${sqlService.adminSchema}.[pupil]
-               SET pupilStatus_id = (SELECT id from ${sqlService.adminSchema}.[pupilStatus] WHERE code = @code)
+  const sql = `UPDATE [mtc_admin].[pupil]
+               SET pupilStatus_id = (SELECT id from [mtc_admin].[pupilStatus] WHERE code = @code)
                WHERE id = @pupilId`
   const params = [
     { name: 'code', value: targetStatusCode, type: TYPES.NVarChar },
