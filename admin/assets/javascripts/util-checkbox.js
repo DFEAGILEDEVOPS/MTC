@@ -199,12 +199,14 @@ var stickyBanner = {
    */
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
-    var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
-    var y = $(document).scrollTop()
-    if (y > distance) {
-      stickyBannerEl.css({ bottom: y - distance })
+    var scroll = $(document).scrollTop()
+    var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
+    var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
+    var windowBottom = $(window).height() + scroll
+    if (windowBottom < stickyBannerTop) {
+      stickyBannerEl.css({ bottom: 0, top: 'auto' })
     } else {
-      stickyBannerEl.css({ bottom: 0 })
+      stickyBannerEl.css({ top: stickyBannerTop - scroll, bottom: 'auto' })
     }
   },
 
