@@ -170,8 +170,6 @@ var inputStatus = {
   * @type {{toggle: toggle}}
   */
 
-var documentHeight = 0
-
 var stickyBanner = {
   /**
     * @param status
@@ -187,24 +185,18 @@ var stickyBanner = {
   },
 
   /**
-   * Reset the document height, stored instead of recalculating
-   * every time the user scrolls / resize the page (expensive)
-   */
-  resetDocumentHeight: function () {
-    documentHeight = $(document).height()
-  },
-
-  /**
    * Calculate and update the sticky banner position
    */
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
-    var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
-    var y = $(document).scrollTop()
-    if (y > distance) {
-      stickyBannerEl.css({ bottom: y - distance })
+    var scroll = $(document).scrollTop()
+    var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
+    var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
+    var windowBottom = $(window).height() + scroll
+    if (windowBottom < stickyBannerTop) {
+      stickyBannerEl.css({ bottom: 0, top: 'auto' })
     } else {
-      stickyBannerEl.css({ bottom: 0 })
+      stickyBannerEl.css({ top: stickyBannerTop - scroll, bottom: 'auto' })
     }
   },
 
@@ -212,7 +204,6 @@ var stickyBanner = {
     * Sticky banner positioning, set the scroll and resize handlers
     */
   positioning: function () {
-    stickyBanner.resetDocumentHeight()
     // Initial position.
     stickyBanner.calculatePosition()
 
