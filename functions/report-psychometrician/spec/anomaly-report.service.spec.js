@@ -7,14 +7,14 @@ const R = require('ramda')
 const psUtilService = require('../service/psychometrician-util.service')
 const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMockOrig = require('./mocks/check-form')
-const psychometricianDataService = require('../service/data-service/psychometrician.data.service')
-const anomalyReportCacheDataService = require('../service/data-service/anomaly-report-cache.data.service')
 
 describe('anomaly-report.service', () => {
-  let service
+  let service, psychometricianDataService, anomalyReportCacheDataService
 
   beforeEach(() => {
     service = require('../service/anomaly-report.service')
+    psychometricianDataService = require('../service/data-service/psychometrician.data.service')
+    anomalyReportCacheDataService = require('../service/data-service/anomaly-report-cache.data.service')
   })
 
   describe('batchProduceCacheData', () => {
