@@ -206,10 +206,10 @@ describe('restart.service', () => {
         id: 1,
         check_id: 42
       })
-      spyOn(azureQueueService, 'addMessage')
+      spyOn(azureQueueService, 'addMessageAsync')
       const deleted = await restartService.markDeleted(pupilMock.id)
       expect(deleted).toBeDefined()
-      expect(azureQueueService.addMessage).toHaveBeenCalled()
+      expect(azureQueueService.addMessageAsync).toHaveBeenCalled()
     })
   })
   describe('getReasons', () => {
