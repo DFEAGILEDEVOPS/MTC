@@ -95,7 +95,7 @@ pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) 
   const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(pupilSlugs, schoolId)
 
   for (let pupil of pupils) {
-    azureQueueService.addMessage('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
+    await azureQueueService.addMessageAsync('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
   }
 }
 
@@ -113,7 +113,7 @@ pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
   const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
 
   for (let pupil of pupils) {
-    azureQueueService.addMessage('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
+    await azureQueueService.addMessageAsync('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
   }
 }
 
