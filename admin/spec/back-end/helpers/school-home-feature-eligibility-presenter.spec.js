@@ -283,7 +283,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkStartDate: moment.utc().subtract(6, 'days'),
           checkEndDate: moment.utc().subtract(3, 'days')
         }
-        const allowedDateTime = moment.utc().set({ hour: 7 })
+        const allowedDateTime = checkWindowData.checkEndDate.day(8).set({ hour: 7 }) // next monday after checkEndDate
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
