@@ -10,7 +10,7 @@ async function process (context, v1Message) {
   try {
     preparedCheckSchemaValidator.validateMessage(v1Message)
   } catch (error) {
-    // After 5 attempts at processing the message will be moved to the poison queue
+    // After $MAX_ATTEMPTS attempts at processing the message will be moved to the poison queue
     // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue#trigger---poison-messages
     context.log.error('prepareCheck: message failed validation', v1Message.checkCode)
     throw error
