@@ -12,7 +12,6 @@ $(function () {
           $(this).removeClass('filter-hidden-name')
         })
 
-        stickyBanner.resetDocumentHeight()
         stickyBanner.calculatePosition()
         return
       }
@@ -25,7 +24,6 @@ $(function () {
         }
       })
 
-      stickyBanner.resetDocumentHeight()
       stickyBanner.calculatePosition()
     })
     // Edge / IE hack to detect input clearing

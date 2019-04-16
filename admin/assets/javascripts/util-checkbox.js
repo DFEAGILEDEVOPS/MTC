@@ -170,8 +170,6 @@ var inputStatus = {
   * @type {{toggle: toggle}}
   */
 
-var documentHeight = 0
-
 var stickyBanner = {
   /**
     * @param status
@@ -184,14 +182,6 @@ var stickyBanner = {
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
       $('#stickyBanner').addClass('show')
     }
-  },
-
-  /**
-   * Reset the document height, stored instead of recalculating
-   * every time the user scrolls / resize the page (expensive)
-   */
-  resetDocumentHeight: function () {
-    documentHeight = $(document).height()
   },
 
   /**
@@ -214,7 +204,6 @@ var stickyBanner = {
     * Sticky banner positioning, set the scroll and resize handlers
     */
   positioning: function () {
-    stickyBanner.resetDocumentHeight()
     // Initial position.
     stickyBanner.calculatePosition()
 
