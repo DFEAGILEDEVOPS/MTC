@@ -1,11 +1,4 @@
-<div class="grid-row no-print">
-    <div class="column-two-thirds">
-        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    </div>
-    <div class="column-one-third">
-        <%- partial('partials/_name_and_sign_out') %>
-    </div>
-</div>
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 
 <%- partial('partials/_print_pupils', {
   pupils: pupils,
