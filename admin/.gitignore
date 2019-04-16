@@ -46,6 +46,7 @@ public/javascripts/app.js
 public/pdfs
 public/images
 public/images/*
+public/csv/mtc-census-headers.csv
 
 #Ignore cucumber screenshots
 test/screenshots
