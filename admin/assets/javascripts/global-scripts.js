@@ -176,4 +176,11 @@ $(function () {
       stickyBanner.toggle(true)
     }
   }
+
+  $(window).resize(function () {
+    if (stickyBanner) {
+      // this will handle the sticky banner position being wrong if the browser is zoomed in/out
+      stickyBanner.positioning()
+    }
+  })
 })
