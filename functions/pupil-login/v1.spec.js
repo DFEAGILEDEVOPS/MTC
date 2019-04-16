@@ -1,13 +1,18 @@
 'use strict'
 
-/* global describe expect it spyOn beforeEach */
+/* global describe, expect, it, spyOn, beforeEach, beforeAll */
 
-const v1 = require('./v1')
-const sqlHelper = require('../lib/sql-helper')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 
 describe('pupil-login: v1-process', () => {
   const message = { checkCode: 'abc-def-123', loginAt: '2018-12-31T16:23:59.123Z', version: 1 }
+
+  let sqlHelper, v1
+
+  beforeAll(() => {
+    sqlHelper = require('../lib/sql-helper')
+    v1 = require('./v1')
+  })
 
   beforeEach(() => {
     spyOn(v1, 'sqlUpdateLoginTimestampAndCheckStatus')

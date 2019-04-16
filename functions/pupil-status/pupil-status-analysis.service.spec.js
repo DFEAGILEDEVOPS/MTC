@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect it */
+/* global describe, expect, it */
 
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 

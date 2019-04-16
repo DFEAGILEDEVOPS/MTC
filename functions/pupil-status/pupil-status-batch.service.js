@@ -1,10 +1,8 @@
 'use strict'
 
-const config = require('../config')
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
-const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
-sqlService.initialise(config)
+const sqlService = require('../lib/sql/sql.service')
+const { TYPES } = sqlService
 
 async function recalculatePupilStatus (context, pupilIds) {
   if (!Array.isArray(pupilIds)) {
@@ -41,8 +39,8 @@ async function getCurrentPupilsData (pupilIds) {
     pa.id                     as pupilAttendance_id,
     CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated
   FROM
-        ${sqlService.adminSchema}.[pupil] p
-        INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
+        [mtc_admin].[pupil] p
+        INNER JOIN [mtc_admin].[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
         LEFT OUTER JOIN
         (
            SELECT *,
@@ -50,8 +48,8 @@ async function getCurrentPupilsData (pupilIds) {
            FROM [mtc_admin].[check]
            WHERE isLiveCheck = 1
         ) lastCheck ON (lastCheck.pupil_id = p.id)
-        LEFT OUTER JOIN ${sqlService.adminSchema}.[checkStatus] chkStatus ON (lastCheck.checkStatus_id = chkStatus.id)
-        LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
+        LEFT OUTER JOIN [mtc_admin].[checkStatus] chkStatus ON (lastCheck.checkStatus_id = chkStatus.id)
+        LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
         LEFT OUTER JOIN (
          SELECT *,
                 ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
@@ -89,8 +87,8 @@ function updatePupilStatuses (updates, context) {
   const params = []
 
   updates.forEach((o, i) => {
-    sql.push(`UPDATE ${sqlService.adminSchema}.[pupil]
-              SET pupilStatus_id = (SELECT id from ${sqlService.adminSchema}.[pupilStatus] WHERE code = @code${i})
+    sql.push(`UPDATE [mtc_admin].[pupil]
+              SET pupilStatus_id = (SELECT id from [mtc_admin].[pupilStatus] WHERE code = @code${i})
               WHERE id = @pupilId${i};`)
     params.push({ name: `code${i}`, value: o.targetStatusCode, type: TYPES.NVarChar })
     params.push({ name: `pupilId${i}`, value: o.pupilId, type: TYPES.Int })
