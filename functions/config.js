@@ -34,6 +34,11 @@ module.exports = {
       Scale: process.env.SQL_AZURE_SCALE
     }
   },
+  DatabaseRetry: {
+    MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,
+    InitialPauseMs: parseInt(process.env.RETRY_PAUSE_MS, 10) || 5000,
+    PauseMultiplier: parseFloat(process.env.RETRY_PAUSE_MULTIPLIER) || 1.5
+  },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'debug',
     LogDna: {

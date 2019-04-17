@@ -2,9 +2,9 @@
 require('dotenv').config()
 const os = require('os')
 const toBool = require('to-bool')
-
+const sql = require('./config/sql.config')
 const twoMinutesInMilliseconds = 120000
-const oneMinuteInMilliseconds = 60000
+const thirtySecondsInMilliseconds = 30000
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -28,6 +28,7 @@ module.exports = {
   CHECK_FORM_MAX_INTEGER: 12,
   CHECK_FORM_MIN_INTEGER: 1,
   CHECK_FORM_NAME_MAX_CHARACTERS: 128,
+  DEFAULT_TIMEZONE: 'Europe/London',
   Environment: getEnvironment(),
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
@@ -39,7 +40,6 @@ module.exports = {
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  DEFAULT_TIMEZONE: 'Europe/London',
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
@@ -49,19 +49,21 @@ module.exports = {
     psychometricianReportMaxSizeFileUploadMb: process.env.PS_REPORT_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
   },
   Sql: {
-    Database: process.env.SQL_DATABASE || 'mtc',
-    Server: process.env.SQL_SERVER || 'localhost',
-    Port: process.env.SQL_PORT || 1433,
-    Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
-    Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
+    Database: sql.database,
+    Server: sql.server,
+    Port: sql.port,
+    // DEPRECATED - misused across both request and connection timeouts
+    Timeout: parseInt(process.env.SQL_TIMEOUT, 10) || thirtySecondsInMilliseconds,
+    Encrypt: sql.options.encrypt,
     Application: {
-      Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
-      Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
-      Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
+      Name: sql.options.appName,
+      Username: sql.user,
+      Password: sql.password
     },
     Pooling: {
-      MinCount: process.env.SQL_POOL_MIN_COUNT || 0,
-      MaxCount: process.env.SQL_POOL_MAX_COUNT || 5,
+      MinCount: sql.pool.min,
+      MaxCount: sql.pool.max,
+      // DEPRECATED - not supported in MSSQL
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
@@ -76,6 +78,11 @@ module.exports = {
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
     }
+  },
+  DatabaseRetry: {
+    MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,
+    InitialPauseMs: parseInt(process.env.RETRY_PAUSE_MS, 10) || 5000,
+    PauseMultiplier: parseFloat(process.env.RETRY_PAUSE_MULTIPLIER) || 1.5
   },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
