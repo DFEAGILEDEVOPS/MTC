@@ -41,7 +41,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   const fileContentArray = fileContent && fileContent.split('\n')
 
   const trimmedContent = fileContent.trim()
-  const emptyLines = fileContentArray.filter(r => r === '').length
+  const emptyLines = fileContentArray.filter(r => r.trim() === '').length
   const fileLines = trimmedContent && trimmedContent.split('\n').length
 
   // Invalid total file lines
