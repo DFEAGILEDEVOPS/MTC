@@ -19,6 +19,26 @@
   }
 }
 
+.warning-message {
+  border: 5px solid $red;
+  padding: 1em;
+  margin-top: 40px;
+  color: $red;
+  font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: $red;
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: $red;
+  }
+}
+
 // Green border to highlight table cell content
 .highlight-item {
   display: flex;
@@ -26,6 +46,24 @@
   &:before {
     content: '';
     border-left: 7px solid $green;
+    display: table-cell;
+    padding-left: 10px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+  }
+
+  .highlight-wrapper {
+    display: table-cell;
+  }
+}
+
+// Red border to display warning on table cell content
+.warning-item {
+  display: flex;
+
+  &:before {
+    content: '';
+    border-left: 7px solid $red;
     display: table-cell;
     padding-left: 10px;
     margin-top: -5px;
