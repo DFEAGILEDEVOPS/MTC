@@ -114,7 +114,7 @@ const pupilRegisterService = {
    */
   hasIncompleteChecks: async function (schoolId) {
     const result = await pupilRegisterDataService.getIncompleteChecks(schoolId)
-    return R.has('id', R.head(result) || {})
+    return R.has('urlSlug', R.head(result) || {})
   }
 }
 

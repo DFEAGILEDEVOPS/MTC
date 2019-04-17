@@ -63,7 +63,7 @@ describe('pupil-register.service', () => {
 
   describe('#hasIncompleteChecks', () => {
     it('returns true if incomplete checks are found', async () => {
-      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([{ id: 1 }])
+      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([{ urlSlug: 1 }])
       const result = await pupilRegisterService.hasIncompleteChecks(42)
       expect(result).toBeTruthy()
     })
