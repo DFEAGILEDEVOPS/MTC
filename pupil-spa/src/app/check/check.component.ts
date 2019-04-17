@@ -94,6 +94,8 @@ export class CheckComponent implements OnInit {
         numQuestions: this.questionService.getNumberOfQuestions(),
         numCompleted: this.questionService.getCurrentQuestionNumber()
       });
+      // stop the check timer on sign out, so it's reset for the next log-in
+      this.timerService.stopCheckTimer();
       this.router.navigate(['/out-of-time']);
   });
 
