@@ -62,7 +62,7 @@
                 <tr>
                     <td
                     <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>
-                    <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="red-highlight-item"<% } %>
+                    <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="warning-item"<% } %>
                     >
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
