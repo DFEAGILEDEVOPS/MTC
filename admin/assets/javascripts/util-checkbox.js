@@ -189,14 +189,23 @@ var stickyBanner = {
    */
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
-    var scroll = $(document).scrollTop()
-    var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
-    var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
-    var windowBottom = $(window).height() + scroll
-    if (windowBottom < stickyBannerTop) {
-      stickyBannerEl.css({ bottom: 0, top: 'auto' })
-    } else {
-      stickyBannerEl.css({ top: stickyBannerTop - scroll, bottom: 'auto' })
+    if (stickyBannerEl.next('#footer').length === 0) {
+      // move the sticky banner to be a sibling of content and footer
+      // so it can be full width
+      stickyBannerEl.insertBefore('#footer')
+    }
+    var isIE = (navigator.userAgent.indexOf('MSIE') !== -1) || !!document.documentMode
+    if (isIE) {
+      // IE doesn't support position: sticky, so toggle fixed class instead
+      var scroll = $(document).scrollTop()
+      var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
+      var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
+      var windowBottom = $(window).height() + scroll
+      if (windowBottom < stickyBannerTop) {
+        stickyBannerEl.addClass('fixed')
+      } else {
+        stickyBannerEl.removeClass('fixed')
+      }
     }
   },
 
