@@ -53,6 +53,7 @@ async function createTables (tables) {
 
 async function deleteQueueMessages (queues) {
   const queueDeletes = queues.map(q => {
+    console.log(`clearing queue ${q}`)
     return queueService.clearMessagesAsync(q)
   })
   return Promise.all(queueDeletes)
@@ -68,6 +69,7 @@ async function createQueues (queues) {
 async function main () {
   await createQueues(allQueues)
   await deleteQueueMessages(allQueues)
+  console.log('all queues cleared')
   await createTables(tableNames)
   await deleteTableEntities(tableNames)
 }

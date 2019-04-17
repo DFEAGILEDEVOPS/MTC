@@ -1,10 +1,10 @@
 #!/bin/bash -x
 
 # start pupil-api
-cd ../../pupil-api && npm start > api.log 2>&1 &
+cd ../../pupil-api && yarn start > api.log 2>&1 &
 
 # start pupil app
-cd ../../pupil-spa && npm start &
+cd ../../pupil-spa && yarn start &
 
 cd ../../admin && yarn start > admin.log 2>&1 &
 PID=$!
@@ -22,7 +22,7 @@ kill -9 $PID
 # echo " ADMIN LOG"
 # echo "************"
 # cat ../../admin/admin.log
-# 
+#
 # echo "***********"
 # echo " API LOG"
 # echo "***********"
