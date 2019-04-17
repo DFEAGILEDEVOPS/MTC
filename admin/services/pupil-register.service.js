@@ -1,5 +1,7 @@
 'use strict'
 
+const R = require('ramda')
+
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
@@ -103,6 +105,16 @@ const pupilRegisterService = {
     }
 
     return status
+  },
+
+  /**
+   * Identifies whether school's register has incomplete checks.
+   * @param {number} schoolId
+   * @return {boolean}
+   */
+  hasIncompleteChecks: async function (schoolId) {
+    const result = await pupilRegisterDataService.getIncompleteChecks(schoolId)
+    return R.has('id', R.head(result) || {})
   }
 }
 
