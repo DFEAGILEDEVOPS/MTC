@@ -38,16 +38,11 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
     return csvErrors
   }
   const fileContent = fileBuffer && fileBuffer.toString()
-  const fileContentArray = fileContent && fileContent.split('\n')
-
-  const trimmedContent = fileContent.trim()
-  const emptyLines = fileContentArray.filter(r => r.trim() === '').length
-  const fileLines = trimmedContent && trimmedContent.split('\n').length
-
+  const fileLines = fileContent && fileContent.split('\n').length
   // Invalid total file lines
   const linesPerCheckForm = config.LINES_PER_CHECK_FORM
 
-  if (fileLines !== linesPerCheckForm || emptyLines > 1) {
+  if (fileLines !== linesPerCheckForm) {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.invalidNumberOfItems}`)
   }
   let hasInvalidNumberOfColumns = false
