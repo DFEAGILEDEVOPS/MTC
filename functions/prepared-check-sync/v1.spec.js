@@ -1,13 +1,10 @@
 'use strict'
 
-/* global describe expect it spyOn beforeEach fail */
+/* global describe, expect, it, spyOn, beforeEach, beforeAll, fail */
 
-const accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const context = require('../mock-context')
-const sqlUtils = require('../lib/sql-helper')
-const v1 = require('./v1')
 
 const aaConfig = {
   audibleSounds: false,
@@ -27,6 +24,15 @@ const checkConfig = {
 }
 
 describe('prepared-check-sync: v1', () => {
+  let sqlUtils, v1, accessArrangementsSqlUtil
+
+  beforeAll(() => {
+    // sql-helper connects to the database as a side-effect of requiring it.
+    sqlUtils = require('../lib/sql-helper')
+    v1 = require('./v1')
+    accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
+  })
+
   describe('process', () => {
     it('fetches all checks for a pupil and updates each preparedCheck', async () => {
       const message = { checkCode: 'abc-def-123', version: 1 }
