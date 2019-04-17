@@ -170,8 +170,6 @@ var inputStatus = {
   * @type {{toggle: toggle}}
   */
 
-var documentHeight = 0
-
 var stickyBanner = {
   /**
     * @param status
@@ -187,24 +185,27 @@ var stickyBanner = {
   },
 
   /**
-   * Reset the document height, stored instead of recalculating
-   * every time the user scrolls / resize the page (expensive)
-   */
-  resetDocumentHeight: function () {
-    documentHeight = $(document).height()
-  },
-
-  /**
    * Calculate and update the sticky banner position
    */
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
-    var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
-    var y = $(document).scrollTop()
-    if (y > distance) {
-      stickyBannerEl.css({ bottom: y - distance })
-    } else {
-      stickyBannerEl.css({ bottom: 0 })
+    if (stickyBannerEl.next('#footer').length === 0) {
+      // move the sticky banner to be a sibling of content and footer
+      // so it can be full width
+      stickyBannerEl.insertBefore('#footer')
+    }
+    var isIE = (navigator.userAgent.indexOf('MSIE') !== -1) || !!document.documentMode
+    if (isIE) {
+      // IE doesn't support position: sticky, so toggle fixed class instead
+      var scroll = $(document).scrollTop()
+      var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
+      var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
+      var windowBottom = $(window).height() + scroll
+      if (windowBottom < stickyBannerTop) {
+        stickyBannerEl.addClass('fixed')
+      } else {
+        stickyBannerEl.removeClass('fixed')
+      }
     }
   },
 
@@ -212,7 +213,6 @@ var stickyBanner = {
     * Sticky banner positioning, set the scroll and resize handlers
     */
   positioning: function () {
-    stickyBanner.resetDocumentHeight()
     // Initial position.
     stickyBanner.calculatePosition()
 
