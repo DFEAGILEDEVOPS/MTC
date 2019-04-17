@@ -46,7 +46,7 @@ describe('pupil-register.service', () => {
     })
   })
 
-  describe('#getPupilRegsitee', () => {
+  describe('#getPupilRegister', () => {
     beforeEach(() => {
       spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
@@ -58,6 +58,19 @@ describe('pupil-register.service', () => {
     it('calls the pupil identification flag service', async () => {
       await pupilRegisterService.getPupilRegister(42)
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
+    })
+  })
+
+  describe('#hasIncompleteChecks', () => {
+    it('returns true if incomplete checks are found', async () => {
+      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([{ urlSlug: 1 }])
+      const result = await pupilRegisterService.hasIncompleteChecks(42)
+      expect(result).toBeTruthy()
+    })
+    it('returns false if incomplete checks are not found', async () => {
+      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([])
+      const result = await pupilRegisterService.hasIncompleteChecks(42)
+      expect(result).toBeFalsy()
     })
   })
 })
