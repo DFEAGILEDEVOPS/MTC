@@ -37,6 +37,13 @@ the functions depend on a `local.settings.json` file when running locally.  This
 }
 ```
 
+
+## Disabling functions Locally
+
+1. You need an environment variable named `AzureWebJobs.<function-name>.Disabled` set to 'true'
+2. There is an example env file `disable-functions.env` that may be used:
+    * `env $(cat disable-functions.env | grep Azure | xargs ) yarn start`
+
 ## Creating a new function
 
 From the `functions` directory, execute `func function new`.
