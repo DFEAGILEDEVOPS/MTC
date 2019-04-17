@@ -6,6 +6,7 @@ COPY package.json /usr/src/app
 COPY ./assets /usr/src/app
 COPY ./gulpfile.js /usr/src/app
 COPY ./config.js /usr/src/app
+COPY ./config/sql.config.js /usr/src/app/config
 RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .
