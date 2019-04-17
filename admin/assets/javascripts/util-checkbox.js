@@ -190,6 +190,12 @@ var stickyBanner = {
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
     if (stickyBannerEl.next('#footer').length === 0) {
+      // we're moving the banner outside of the form, so add a click handler
+      // to submit it
+      var form = stickyBannerEl.closest('form')
+      $('#stickyConfirm').on('click touchstart', function () {
+        form.submit()
+      })
       // move the sticky banner to be a sibling of content and footer
       // so it can be full width
       stickyBannerEl.insertBefore('#footer')
