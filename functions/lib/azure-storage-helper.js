@@ -1,5 +1,6 @@
 'use strict'
 
+require('dotenv').config()
 const azureStorage = require('azure-storage')
 const QueryComparisons = azureStorage.TableUtilities.QueryComparisons
 const TableQuery = azureStorage.TableQuery

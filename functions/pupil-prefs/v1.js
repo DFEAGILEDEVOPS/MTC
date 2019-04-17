@@ -1,23 +1,19 @@
 'use strict'
 
+const sqlService = require('../lib/sql/sql.service')
+const { TYPES } = sqlService
+
 const moment = require('moment')
-const sqlService = require('less-tedious')
-const { TYPES } = require('tedious')
 const uuid = require('uuid/v4')
-const winston = require('winston')
 
 const accessArrangementsTable = '[accessArrangements]'
 const azureStorageHelper = require('../lib/azure-storage-helper')
-const config = require('../config')
 const checkTable = '[check]'
 const pupilAccessArrangementsTable = '[pupilAccessArrangements]'
 const pupilFontSizesTable = '[pupilFontSizes]'
 const pupilColourContrastsTable = '[pupilColourContrasts]'
 const pupilTable = '[pupil]'
 const schema = '[mtc_admin]'
-
-winston.level = 'error'
-sqlService.initialise(config)
 
 const v1 = {}
 
@@ -69,9 +65,9 @@ v1.process = async function (context, pupilPrefsMessage) {
 v1.updatePupilAccessArrangementsPreference = async function (checkCode, prefField, prefTable, prefCode, accessArrangementCode) {
   const sql = `UPDATE ${schema}.${pupilAccessArrangementsTable}
                SET ${prefField} = (
-                SELECT id FROM ${schema}.${prefTable} 
+                SELECT id FROM ${schema}.${prefTable}
                 WHERE code = @prefCode
-               )                
+               )
                WHERE pupil_Id = (
                   SELECT p.id FROM ${schema}.${pupilTable} p
                   INNER JOIN ${schema}.${checkTable} chk
