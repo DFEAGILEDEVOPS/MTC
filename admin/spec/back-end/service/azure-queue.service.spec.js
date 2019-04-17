@@ -12,37 +12,37 @@ describe('azure-queue-service', () => {
 
     beforeEach(() => {
       queueServiceMock = {
-        createMessage: jasmine.createSpy()
+        createMessageAsync: jasmine.createSpy()
       }
     })
 
-    it('throws an error if the queueName param is zero length', () => {
+    it('throws an error if the queueName param is zero length', async () => {
       try {
-        azureQueueService.addMessage('', payload, queueServiceMock)
+        await azureQueueService.addMessageAsync('', payload, queueServiceMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Missing queueName')
       }
     })
 
-    it('throws an error if the queueName param is not provided', () => {
+    it('throws an error if the queueName param is not provided', async () => {
       try {
-        azureQueueService.addMessage(null, payload, queueServiceMock)
+        await azureQueueService.addMessageAsync(null, payload, queueServiceMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Missing queueName')
       }
     })
 
-    it('stringifies the payload', () => {
+    it('stringifies the payload', async () => {
       spyOn(JSON, 'stringify').and.callThrough()
-      azureQueueService.addMessage(queueName, payload, queueServiceMock)
+      await azureQueueService.addMessageAsync(queueName, payload, queueServiceMock)
       expect(JSON.stringify).toHaveBeenCalledWith(payload)
     })
 
-    it('injects the message into the queue by calling `createMessage`', () => {
-      azureQueueService.addMessage(queueName, payload, queueServiceMock)
-      expect(queueServiceMock.createMessage).toHaveBeenCalled()
+    it('injects the message into the queue by calling `createMessageAsync`', async () => {
+      await azureQueueService.addMessageAsync(queueName, payload, queueServiceMock)
+      expect(queueServiceMock.createMessageAsync).toHaveBeenCalled()
     })
   })
 })
