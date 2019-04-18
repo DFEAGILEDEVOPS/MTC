@@ -1,6 +1,7 @@
 'use strict'
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
+const pupilRegisterService = require('../services/pupil-register.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const schoolService = require('../services/school.service')
 const controller = {}
@@ -19,9 +20,11 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
     const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+    const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
     return res.render('school/school-home', {
       breadcrumbs: [ { 'name': 'School Home' } ],
       featureEligibilityData,
+      hasIncompleteChecks,
       schoolName
     })
   } catch (error) {
