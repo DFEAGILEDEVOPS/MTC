@@ -68,15 +68,10 @@ describe('singleCheckFormValidator', function () {
         const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
         expect(singleCheckFormErrors).toEqual([`${checkFormErrorMessages.invalidFileCharacters} ${fileName}`])
       })
-      it('and returns a validation error object when two additional empty rows are found', async () => {
+      it('and returns no validation error object when two additional empty rows are found', async () => {
         const uploadedFile = { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-two-blank-rows.csv' }
-        const fileName = uploadedFile.filename.replace(/\.[^/.]+$/, '')
         const singleCheckFormErrors = await singleCheckFormValidator.validate(uploadedFile)
-        expect(singleCheckFormErrors).toEqual([
-          `${fileName} ${checkFormErrorMessages.invalidNumberOfItems}`,
-          `${fileName} ${checkFormErrorMessages.invalidNumberOfColumns}`,
-          `${checkFormErrorMessages.invalidFileCharacters} ${fileName}`
-        ])
+        expect(singleCheckFormErrors).toEqual([])
       })
     })
   })
