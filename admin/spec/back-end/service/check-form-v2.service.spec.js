@@ -60,7 +60,6 @@ describe('check-form-v2.service', () => {
       ]
       const fileData = fs.readFileSync(fileDir, 'utf8')
       const rows = fileData.split('\n')
-      rows.splice(-1, 1)
       const dataRows = rows.map(r => r.split(','))
       const formData = []
       dataRows.forEach(dataRow => {
