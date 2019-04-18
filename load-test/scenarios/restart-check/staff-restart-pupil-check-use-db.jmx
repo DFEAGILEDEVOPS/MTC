@@ -83,7 +83,11 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request - Select Teacher Credentials" enabled="true">
           <stringProp name="dataSource">mtc-admin</stringProp>
           <stringProp name="queryType">Select Statement</stringProp>
-          <stringProp name="query">SELECT DISTINCT u.identifier as [userName], LEN(u.identifier) as [length]
+          <stringProp name="query">/*Select teacher names from database, who will have the pupil eligigible for check restart,
+length column is not really needed for the test but, it is only being used in 
+this query to sort teacher names*/
+
+SELECT DISTINCT u.identifier as [userName], LEN(u.identifier) as [length]
 FROM mtc_admin.vewPupilsEligibleForRestart vpr
 INNER JOIN  mtc_admin.[user] u ON vpr.school_id = u.school_id
 ORDER BY LEN(u.identifier), u.identifier
@@ -97,12 +101,16 @@ FETCH NEXT 1000 ROWS ONLY</stringProp>
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor - Export Results To CSV" enabled="true">
+        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor - Export JDBC Result Set To CSV" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="script">resultSet = vars.getObject(&quot;resultSet&quot;)
+          <stringProp name="script">/*export teacher names returned in &apos;JDBC Request - Select Teacher Credentials&apos; request will be exported
+into csv file ({TEACHER_LOGIN_FILE}), which already exists at specified location. This file will be 
+used for Admin SignIn request in next Thread Group &apos;Thread Group - Restart Check&apos; */
+
+resultSet = vars.getObject(&quot;resultSet&quot;)
 result = new StringBuilder()
 
 def randomRow = resultSet.get(org.apache.commons.lang3.RandomUtils.nextInt(0,resultSet.size()))
