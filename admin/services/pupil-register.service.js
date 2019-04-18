@@ -114,7 +114,18 @@ const pupilRegisterService = {
    */
   hasIncompleteChecks: async function (schoolId) {
     const result = await pupilRegisterDataService.getIncompleteChecks(schoolId)
-    return R.has('urlSlug', R.head(result) || {})
+    const pupilRegister = result.map(d => {
+      return {
+        urlSlug: d.urlSlug,
+        outcome: pupilRegisterService.getProcessStatus(
+          d.pupilStatusCode,
+          d.lastCheckStatusCode,
+          d.pupilRestartId,
+          d.pupilRestartCheckId)
+      }
+    })
+    const incompletePupilChecks = pupilRegister.filter(p => p.outcome === 'Incomplete')
+    return R.has('urlSlug', R.head(incompletePupilChecks) || {})
   }
 }
 
