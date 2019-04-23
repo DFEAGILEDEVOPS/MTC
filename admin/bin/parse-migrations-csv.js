@@ -4,6 +4,58 @@
 require('dotenv').config()
 const csv = require('fast-csv')
 const fs = require('fs')
+const sqlService = require('../services/data-access/sql.service')
+const { TYPES } = sqlService
+
+function functionUpdateSchools (rows) {
+  const queries = []
+  const params = []
+  rows.forEach((row, i) => {
+    const {
+      dfeNumber,
+      estabCode,
+      leaCode,
+      OLD_dfeNumber: oldDFENumber,
+      name
+    } = row
+    queries.push(`
+      UPDATE [mtc_admin].[school]
+      SET dfeNumber=dfeNumber${i},
+      estabCode=estabCode${i},
+      leaCode=leaCode${i},
+      name=name${i}
+      WHERE dfeNumber=oldDFENumber${i}
+    `)
+    params.push({
+      name: `dfeNumber${i}`,
+      value: dfeNumber,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `estabCode${i}`,
+      value: estabCode,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `leaCode${i}`,
+      value: leaCode,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `name${i}`,
+      value: name,
+      type: TYPES.NVarChar
+    })
+    params.push({
+      name: `oldDFENumber${i}`,
+      value: oldDFENumber,
+      type: TYPES.Int
+    })
+  })
+  console.log(queries)
+  console.log(params)
+  // sqlService.modifyWithTransaction(queries.join('\n'), params)
+}
 
 function main () {
   const csvPath = process.argv[2]
@@ -31,7 +83,7 @@ function main () {
         }
       })
       .on('end', () => {
-        console.log(rows)
+        functionUpdateSchools(rows)
       })
       .on('error', error => {
         throw error
