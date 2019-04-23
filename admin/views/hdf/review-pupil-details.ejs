@@ -38,7 +38,7 @@
                 <tr>
                     <td<% if (messages.urlSlug && messages.urlSlug == pupil.urlSlug) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper" id="anchor-<%= pupil.urlSlug %>">
-                            <span><%= pupil.lastName %>, <%= pupil.foreName %></span>
+                            <span><%=pupil.fullName %></span>
                             <% if (pupil.showDoB) { %>
                                 <div class="font-greyed-out font-xsmall">
                                     Date of birth: <%= pupil.dateOfBirth %>

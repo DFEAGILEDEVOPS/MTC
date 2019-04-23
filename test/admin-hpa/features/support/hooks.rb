@@ -142,6 +142,11 @@ After('@remove_mod_school') do
   mod_schools_page.remove_school(@school)
 end
 
+After('@incomplete_pupil') do
+  p @stored_pupil_details['id']
+  SqlDbHelper.set_pupil_status_via_id(2, @stored_pupil_details['id'])
+  SqlDbHelper.set_check_status(1,@check_id)
+end
 
 After("@no_active_check_window") do
   today_date = Date.today

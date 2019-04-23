@@ -85,3 +85,9 @@ Feature: Restarts
     And they become eligable for a restart
     Then I should be able to filter the pupil list by the group
     And I should be able to see the number of pupils in the group
+
+  @manual
+  Scenario: Incomplete status is removed when a pupil has a restart applied
+    Given there is a pupil with an incomplete status
+    When I apply a restart to this pupil
+    Then the pupil status should be restart

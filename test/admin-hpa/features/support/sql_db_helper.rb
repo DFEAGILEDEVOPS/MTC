@@ -361,6 +361,12 @@ class SqlDbHelper
       result.do
   end
 
+  def self.set_pupil_status_via_id(status_id, pupil_id)
+      sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{status_id} WHERE id=#{pupil_id}"
+      result = SQL_CLIENT.execute(sql)
+      result.do
+  end
+
   def self.get_pupil_with_no_attandance_code(school_id)
     sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
     result = SQL_CLIENT.execute(sql)
@@ -422,6 +428,12 @@ class SqlDbHelper
     school_res = result.first
     result.cancel
     school_res.values.first
+  end
+
+  def self.set_check_status(status_id,check_id)
+    sql = "UPDATE [mtc_admin].[check] set checkStatus_id=#{status_id} WHERE id=#{check_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
   end
 
 end
