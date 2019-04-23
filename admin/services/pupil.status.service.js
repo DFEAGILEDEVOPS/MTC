@@ -83,6 +83,19 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
 }
 
 /**
+ * Make a request to the pupil status service to recalculate the status for a supplied array of pupils.
+ * @param {[object]}pupils
+ */
+pupilStatusService.dispatchPupilStatusMessages = async (pupils) => {
+  if (!(Array.isArray(pupils) && pupils.length > 0)) {
+    throw new Error('Invalid parameter: pupils')
+  }
+
+  const messages = pupils.map(({ id }) => ({ pupilId: id, checkCode: `pupilId-${id}` }))
+  await azureQueueService.addMessageAsync('pupil-status', { version: 2, messages })
+}
+
+/**
  * Make a request to the pupil status service to recalculate the status for one or more pupils.
  * This function has to fabricate a checkCode as in the not-taking-check example one isn't available.
  * @param {[number]}postedPupilSlugs
@@ -94,9 +107,7 @@ pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) 
 
   const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(pupilSlugs, schoolId)
 
-  for (let pupil of pupils) {
-    await azureQueueService.addMessageAsync('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
-  }
+  await pupilStatusService.dispatchPupilStatusMessages(pupils)
 }
 
 /**
@@ -112,9 +123,7 @@ pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
 
   const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
 
-  for (let pupil of pupils) {
-    await azureQueueService.addMessageAsync('pupil-status', { version: 1, pupilId: pupil.id, checkCode: `pupilId-${pupil.id}` })
-  }
+  await pupilStatusService.dispatchPupilStatusMessages(pupils)
 }
 
 module.exports = pupilStatusService
