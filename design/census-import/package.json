@@ -12,7 +12,6 @@
     "mssql": "^4.1.0",
     "ramda": "^0.26.1",
     "tedious": "^3.0.1",
-    "tedious-connection-pool": "^1.0.5",
     "to-bool": "^0.0.1",
     "winston": "^3.2.1"
   }
