@@ -6,6 +6,8 @@ class SchoolLandingPage < SitePrism::Page
   element :heading, '.heading-xlarge'
   element :pupil_register, 'a[href="/pupil-register/pupils-list"]'
   element :pupil_register_text, 'p', text: 'Add, edit and review pupils'
+  element :incomplete_banner, '.warning-banner', text: 'INCOMPLETE'
+  element :incomplete_banner_text, '.font-xsmall.font-greyed-out', text: 'There are pupils with an incomplete status in your register'
   element :group_pupils, 'a[href="/group/pupils-list'
   element :group_pupils_text, 'p', text: 'Create groups'
   element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check/pupils-list"]'
