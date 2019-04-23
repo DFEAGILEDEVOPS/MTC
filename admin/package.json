@@ -17,7 +17,8 @@
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
     "purgestorage": "bin/init-dev-storage.js",
-    "debug": "node --inspect=0.0.0.0:9229 ./server.js"
+    "debug": "node --inspect=0.0.0.0:9229 ./server.js",
+    "parse-migrations-csv": "node bin/parse-migrations-csv.js"
   },
   "engines": {
     "node": ">= 8.11"
