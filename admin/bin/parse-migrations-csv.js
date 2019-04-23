@@ -4,10 +4,29 @@
 require('dotenv').config()
 const csv = require('fast-csv')
 const fs = require('fs')
+const poolService = require('../services/data-access/sql.pool.service')
 const sqlService = require('../services/data-access/sql.service')
 const { TYPES } = sqlService
 
-function functionUpdateSchools (rows) {
+async function checkSchools (rows) {
+  const oldDfeNumbers = rows
+    .map(({ OLD_dfeNumber: oldDFENumber }) => oldDFENumber)
+    .filter(e => /^\d+$/.test(e))
+
+  if (oldDfeNumbers.length === 0) {
+    throw new Error('No valid `OLD_dfeNumber` values supplied')
+  }
+  const results = await sqlService.query(`
+    SELECT COUNT(1) AS count FROM [mtc_admin].[school]
+    WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
+  `)
+
+  if (results[0].count === 0) {
+    throw new Error('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
+  }
+}
+
+async function updateSchools (rows) {
   const queries = []
   const params = []
   rows.forEach((row, i) => {
@@ -54,10 +73,16 @@ function functionUpdateSchools (rows) {
   })
   console.log(queries)
   console.log(params)
-  // sqlService.modifyWithTransaction(queries.join('\n'), params)
+  // await sqlService.modifyWithTransaction(queries.join('\n'), params)
 }
 
-function main () {
+async function updateDatabase (rows) {
+  await sqlService.initPool()
+  await checkSchools(rows)
+  await updateSchools(rows)
+}
+
+async function main () {
   const csvPath = process.argv[2]
 
   if (csvPath === undefined) {
@@ -83,7 +108,9 @@ function main () {
         }
       })
       .on('end', () => {
-        functionUpdateSchools(rows)
+        updateDatabase(rows).catch(error => {
+          throw error
+        })
       })
       .on('error', error => {
         throw error
@@ -94,3 +121,10 @@ function main () {
 }
 
 main()
+  .then(() => {
+    poolService.drain()
+  })
+  .catch(e => {
+    console.warn(e)
+    poolService.drain()
+  })
