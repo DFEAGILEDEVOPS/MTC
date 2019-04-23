@@ -18,7 +18,7 @@ const v1Service = {
 
     result = await azureQueueService.getMessagesAsync(feedbackQueue, { numOfMessages: 32, visibilityTimeout: 60 })
     while (result.result.length && moment().isBefore(cutoffTime)) {
-      const batchResult = await processBatch(result)
+      const batchResult = await processBatch(result, logger)
       totalNumberOfMessagesProcessed += batchResult.batchProcessCount
       totalNumberOfInvalidMessages += batchResult.batchInvalidCount
       result = await azureQueueService.getMessagesAsync(feedbackQueue, { numOfMessages: 32, visibilityTimeout: 60 })
@@ -31,7 +31,7 @@ const v1Service = {
   }
 }
 
-async function processBatch (result) {
+async function processBatch (result, logger) {
   const messages = result.result
 
   /** messages[] - raw message
@@ -57,7 +57,7 @@ async function processBatch (result) {
     numberOfInvalidMessages = (messages.length - messagesProcessed.length)
     console.log(`Batch complete: ${messagesProcessed.length} processed, ${(messages.length - messagesProcessed.length)} invalid`)
   } catch (error) {
-    logger.error(`${functionName}: Failed to save messages: ${error.message}`, error)
+    logger.error(`${functionName}: Failed to process feedback: ${error.message}`, error)
     throw error
   }
 
@@ -68,8 +68,8 @@ async function processBatch (result) {
 }
 
 function decodeMessages (messages) {
-  return messages.map( msg => {
-    const buf = Buffer.from(msg.messageText, 'base64');
+  return messages.map(msg => {
+    const buf = Buffer.from(msg.messageText, 'base64')
     const text = buf.toString()
     let obj = ''
     try {
@@ -87,7 +87,7 @@ async function addDatabaseCheckIds (messages) {
   const sql = `SELECT id, checkCode from [mtc_admin].[check] where checkCode IN (${paramIdentifiers.join(', ')})`
   const checks = await sqlService.query(sql, params)
   const checksByCheckCode = {}
-  checks.forEach(check => checksByCheckCode[check.checkCode] = check.id)
+  checks.forEach(check => { checksByCheckCode[check.checkCode] = check.id })
   return messages.map(msg => {
     return R.assoc('checkId', checksByCheckCode[msg.message.checkCode], msg)
   })
@@ -101,7 +101,7 @@ async function deleteProcessedMessages (messages) {
   return Promise.all(deleteMsgPromises)
 }
 
-async function batchSaveFeedback(messages) {
+async function batchSaveFeedback (messages) {
   const checkMessages = await addDatabaseCheckIds(messages)
   // Filter out all messages that do not have a valid checkCode
   const messagesToProcess = checkMessages.filter(msg => !!msg.checkId)
@@ -137,9 +137,8 @@ async function batchSaveFeedback(messages) {
     params.push(...stmtParams)
   })
 
-  await sqlService.modify(sqls.join("\n"), params)
+  await sqlService.modify(sqls.join('\n'), params)
   return messagesToProcess
-
 }
 
 module.exports = v1Service
