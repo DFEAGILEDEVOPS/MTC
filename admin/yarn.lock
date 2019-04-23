@@ -1296,17 +1296,6 @@ connect-redis@^3.4.0:
     debug "^4.1.1"
     redis "^2.8.0"
 
-connect-tedious@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/connect-tedious/-/connect-tedious-1.1.2.tgz#c69dab52bc0b2e10c5d1cd79e4fbc7ef06999001"
-  integrity sha1-xp2rUrwLLhDF0c155PvH7waZkAE=
-  dependencies:
-    debug "^2.2.0"
-    node-connection-string-builder "^0.0.1"
-    retry "^0.9.0"
-    tedious "^1.13.2"
-    tedious-connection-pool "^0.3.9"
-
 connect@^3.6.0:
   version "3.6.6"
   resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.6.tgz#09eff6c55af7236e137135a72574858b6786f524"
@@ -5076,11 +5065,6 @@ nocache@2.0.0:
   resolved "https://registry.yarnpkg.com/nocache/-/nocache-2.0.0.tgz#202b48021a0c4cbde2df80de15a17443c8b43980"
   integrity sha1-ICtIAhoMTL3i34DeFaF0Q8i0OYA=
 
-node-connection-string-builder@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/node-connection-string-builder/-/node-connection-string-builder-0.0.1.tgz#b34ba85cd854d4ebbeb55a563616a341e99d5442"
-  integrity sha1-s0uoXNhU1Ou+tVpWNhajQemdVEI=
-
 node-emoji@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.8.1.tgz#6eec6bfb07421e2148c75c6bba72421f8530a826"
@@ -6447,11 +6431,6 @@ ret@~0.1.10:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
-retry@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/retry/-/retry-0.9.0.tgz#6f697e50a0e4ddc8c8f7fb547a9b60dead43678d"
-  integrity sha1-b2l+UKDk3cjI9/tUeptg3q1DZ40=
-
 rfdc@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/rfdc/-/rfdc-1.1.2.tgz#e6e72d74f5dc39de8f538f65e00c36c18018e349"
@@ -7174,13 +7153,6 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-tedious-connection-pool@^0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-0.3.9.tgz#e99e52596ba7ca404dc7d3c21bc8007c239442c2"
-  integrity sha1-6Z5SWWunykBNx9PCG8gAfCOUQsI=
-  dependencies:
-    tedious "^1.13.0"
-
 tedious-connection-pool@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-1.0.5.tgz#2d694a72a2f4773564ef2911e86e5fd622ca01c1"
@@ -7188,7 +7160,7 @@ tedious-connection-pool@^1.0.5:
   dependencies:
     tedious "^1.14.0"
 
-tedious@^1.13.0, tedious@^1.13.2, tedious@^1.14.0:
+tedious@^1.14.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
   integrity sha1-m9qel5ghLI/NlDinDLKoBqvK5wo=
