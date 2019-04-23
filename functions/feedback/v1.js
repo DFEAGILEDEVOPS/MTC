@@ -9,6 +9,18 @@ const sqlService = require('../lib/sql/sql.service')
 const feedbackQueue = 'pupil-feedback'
 const functionName = 'feedback'
 
+async function fetchFeedBackMessages (logger) {
+  try {
+    return await azureQueueService.getMessagesAsync(feedbackQueue, { numOfMessages: 32, visibilityTimeout: 60 })
+  } catch (error) {
+    logger.error('Failed to fetch new pupil-feedback messages from the queue: ' + error.message)
+    logger.error(error)
+    // If we are having difficulty getting new messages from the queue, bail out and let the next timer trigger pick up
+    // the remaining work
+    return null
+  }
+}
+
 const v1Service = {
   process: async function process (logger) {
     const cutoffTime = moment().add(9, 'minutes').add(45, 'seconds')
@@ -16,12 +28,13 @@ const v1Service = {
     let totalNumberOfMessagesProcessed = 0
     let totalNumberOfInvalidMessages = 0
 
-    result = await azureQueueService.getMessagesAsync(feedbackQueue, { numOfMessages: 32, visibilityTimeout: 60 })
-    while (result.result.length && moment().isBefore(cutoffTime)) {
+
+    result = await fetchFeedBackMessages()
+    while (result && result.result.length && moment().isBefore(cutoffTime)) {
       const batchResult = await processBatch(result, logger)
       totalNumberOfMessagesProcessed += batchResult.batchProcessCount
       totalNumberOfInvalidMessages += batchResult.batchInvalidCount
-      result = await azureQueueService.getMessagesAsync(feedbackQueue, { numOfMessages: 32, visibilityTimeout: 60 })
+      result = await fetchFeedBackMessages()
     }
 
     return {
@@ -33,6 +46,7 @@ const v1Service = {
 
 async function processBatch (result, logger) {
   const messages = result.result
+  let messagesProcessed, numberOfMessagesProcessed, numberOfInvalidMessages
 
   /** messages[] - raw message
    * QueueMessageResult {
@@ -49,17 +63,23 @@ async function processBatch (result, logger) {
     return { processCount: 0 }
   }
 
-  let numberOfMessagesProcessed, numberOfInvalidMessages
+
   try {
-    const messagesProcessed = await batchSaveFeedback(decodeMessages(messages))
-    await deleteProcessedMessages(messagesProcessed)
-    numberOfMessagesProcessed = messagesProcessed.length
-    numberOfInvalidMessages = (messages.length - messagesProcessed.length)
-    console.log(`Batch complete: ${messagesProcessed.length} processed, ${(messages.length - messagesProcessed.length)} invalid`)
+    messagesProcessed = await batchSaveFeedback(decodeMessages(messages))
   } catch (error) {
-    logger.error(`${functionName}: Failed to process feedback: ${error.message}`, error)
+    logger.error(`${functionName}: Error from batchSaveFeedback(): ${error.message}`)
     throw error
   }
+
+  try {
+    await deleteProcessedMessages(messagesProcessed)
+  } catch (error) {
+    logger.error(`${functionName}: Failed to delete messages from the '${feedbackQueue}' queue: ${error.message}`)
+    throw error
+  }
+
+  numberOfMessagesProcessed = messagesProcessed.length
+  numberOfInvalidMessages = (messages.length - messagesProcessed.length)
 
   return {
     batchProcessCount: numberOfMessagesProcessed,
