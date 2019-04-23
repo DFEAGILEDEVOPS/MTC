@@ -115,3 +115,19 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see option to view guidance in the before you start section"
   step "I should see an option to generate pins familiarisation"
 end
+
+Given(/^there is a pupil with an incomplete status$/) do
+  step 'I have generated a live pin for a pupil'
+  SqlDbHelper.set_pupil_status_via_id(4, @stored_pupil_details['id'])
+  @check_id = SqlDbHelper.check_details(@stored_pupil_details['id'])['id']
+  SqlDbHelper.set_check_status(6,@check_id)
+end
+
+Then(/^I should see a incomplete banner$/) do
+  expect(school_landing_page).to have_incomplete_banner
+  expect(school_landing_page).to have_incomplete_banner_text
+end
+
+When(/^I navigate to the school landing page$/) do
+  school_landing_page.load
+end

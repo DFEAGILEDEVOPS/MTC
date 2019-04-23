@@ -65,3 +65,9 @@ Then(/^any pupils not part of a group should not have an entry for group$/) do
   empty_group_value = pupil_register_page.pupil_list.pupil_row.map! {|row|row.names.text if  row.group.text == '-'}.compact
   expect(pupils_with_no_group).to eql empty_group_value
 end
+
+Then(/^these pupils should be highlighted in red$/) do
+  expect(pupil_register_page).to have_incomplete_message
+  pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
+  expect(pupil_row).to have_incomplete_pupil
+end

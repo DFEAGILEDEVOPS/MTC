@@ -14,7 +14,13 @@
         <ol class="list">
             <li>
                 <h2 class="heading-small arrow-up"><a href="/pupil-register/pupils-list">Pupil register</a></h2>
-                <p>Add, edit and review pupils</p>
+                <span>Add, edit and review pupils</span>
+                <% if (hasIncompleteChecks) { %>
+                <p>
+                  <strong class="warning-banner">INCOMPLETE</strong>
+                  <span class="font-xsmall font-greyed-out">There are pupils with an incomplete status in your register</span>
+                </p>
+              <% } %>
             </li>
 
             <li>
