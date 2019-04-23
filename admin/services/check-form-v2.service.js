@@ -43,6 +43,9 @@ checkFormV2Service.prepareSubmissionData = async (uploadedFiles, checkFormType) 
     return new Promise((resolve, reject) => {
       csv.fromPath(uploadedFile.file, { headers: false, trim: true })
         .on('data', function (row) {
+          if (!row[0] && !row[1]) {
+            return
+          }
           const question = {}
           question.f1 = parseInt(row[0], 10)
           question.f2 = parseInt(row[1], 10)
