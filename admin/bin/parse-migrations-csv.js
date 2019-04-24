@@ -57,14 +57,14 @@ function checkSchools (rows) {
           WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
         `)
         .then(result => {
-          resolve(result[0].count > 0)
+          resolve(result[0].count)
         })
         .catch(reject)
     }
   })
 }
 
-async function updateSchools (rows) {
+function updateSchools (rows) {
   const queries = []
   const params = []
   rows.forEach((row, i) => {
@@ -77,11 +77,11 @@ async function updateSchools (rows) {
     } = row
     queries.push(`
       UPDATE [mtc_admin].[school]
-      SET dfeNumber=dfeNumber${i},
-      estabCode=estabCode${i},
-      leaCode=leaCode${i},
-      name=name${i}
-      WHERE dfeNumber=oldDFENumber${i}
+      SET dfeNumber=@dfeNumber${i},
+      estabCode=@estabCode${i},
+      leaCode=@leaCode${i},
+      name=@name${i}
+      WHERE dfeNumber=@oldDFENumber${i}
     `)
     params.push({
       name: `dfeNumber${i}`,
@@ -109,9 +109,7 @@ async function updateSchools (rows) {
       type: TYPES.Int
     })
   })
-  console.log(queries)
-  console.log(params)
-  // await sqlService.modifyWithTransaction(queries.join('\n'), params)
+  return sqlService.modifyWithTransaction(queries.join('\n'), params)
 }
 
 async function main () {
@@ -121,11 +119,13 @@ async function main () {
     const rows = await readCSV(csvPath)
     await sqlService.initPool()
     const schoolChanges = await checkSchools(rows)
-    if (!schoolChanges) {
+    if (schoolChanges === 0) {
       console.log('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
       process.exit(1)
     }
     await updateSchools(rows)
+    console.log(`Updated ${schoolChanges} schools`)
+    process.exit(0)
   } catch (error) {
     throw error
   }
