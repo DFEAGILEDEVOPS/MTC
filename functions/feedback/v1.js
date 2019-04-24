@@ -87,11 +87,27 @@ async function parallelInsertToAzureStorageTable (tableData, tableName) {
  * Process multiple queue messages
  * Save to sql DB, remove them from the queue, add the data to pupilEvent table
  * @param result
- * @return {Promise<{processCount: number}|{batchInvalidCount: number, batchProcessCount: *}>}
+ * @return {Promise<{batchInvalidCount: number, batchProcessCount: number}>}
  */
 async function processBatch (result) {
+  const counters = {
+    batchProcessCount: 0,
+    batchInvalidCount: 0
+  }
+
+  if (!result) {
+    return counters
+  }
+
+  if (!result.result) {
+    return counters
+  }
+
+  if (!Array.isArray(result.result)) {
+    return counters
+  }
+
   const messages = result.result
-  let messagesProcessed, numberOfMessagesProcessed, numberOfInvalidMessages
 
   /** messages[] - raw message
    * QueueMessageResult {
@@ -105,11 +121,14 @@ async function processBatch (result) {
    */
 
   if (!(messages && messages.length)) {
-    return { processCount: 0 }
+    return counters
   }
 
+  let messagesProcessed
   try {
     messagesProcessed = await batchSaveFeedback(decodeMessages(messages))
+    counters.batchProcessCount = messagesProcessed.length
+    counters.batchInvalidCount = (messages.length - messagesProcessed.length)
   } catch (error) {
     logger.error(`${functionName}: Error from batchSaveFeedback(): ${error.message}`)
     throw error
@@ -124,25 +143,18 @@ async function processBatch (result) {
 
   try {
     const pupilEventEntities = pupilEventData(messagesProcessed)
-    console.log(pupilEventEntities)
     await parallelInsertToAzureStorageTable(pupilEventEntities, pupilEventTableName)
   } catch (error) {
     logger.error(`${functionName}: failed to add data to pupil event table`)
   }
 
-  numberOfMessagesProcessed = messagesProcessed.length
-  numberOfInvalidMessages = (messages.length - messagesProcessed.length)
-
-  return {
-    batchProcessCount: numberOfMessagesProcessed,
-    batchInvalidCount: numberOfInvalidMessages
-  }
+  return counters
 }
 
 /**
  * Add object 'message' to the raw queue message containing the JSON parsed object
  * @param messages
- * @return {*}
+ * @return {Object[]}
  */
 function decodeMessages (messages) {
   return messages.map(msg => {
