@@ -2,17 +2,10 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "5 */15 * * * *",
+      "schedule": "5 */15 18-23 * * *",
       "name": "timer",
       "type": "timerTrigger",
       "direction": "in"
-    },
-    {
-      "name": "pupilEventsTable",
-      "type": "table",
-      "direction": "out",
-      "tableName": "pupilEvent",
-      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }
