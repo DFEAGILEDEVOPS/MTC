@@ -6,3 +6,13 @@
   color: #fff;
   background-color: $grey-1;
 }
+
+.warning-banner {
+  margin: 0 pem(5px) 0 0;
+  padding: pem(2px) pem(10px);
+  font-size: large;
+  letter-spacing: 1px;
+  color: #fff;
+  background-color: $red;
+}
+
