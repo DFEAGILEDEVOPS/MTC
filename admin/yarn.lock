@@ -629,14 +629,6 @@ babel-code-frame@^6.26.0:
     esutils "^2.0.2"
     js-tokens "^3.0.2"
 
-babel-runtime@^6.9.2:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
-  integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.11.0"
-
 backo2@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/backo2/-/backo2-1.0.2.tgz#31ab1ac8b129363463e35b3ebb69f4dfcfba7947"
@@ -701,11 +693,6 @@ better-assert@~1.0.0:
   dependencies:
     callsite "1.0.0"
 
-big-number@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/big-number/-/big-number-0.3.1.tgz#ac73020c0a59bb79eb17c2ce2db77f77d974e013"
-  integrity sha1-rHMCDApZu3nrF8LOLbd/d9l04BM=
-
 big-number@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/big-number/-/big-number-1.0.0.tgz#a0277607a0adb06492d3099546ef0d547785df18"
@@ -720,14 +707,6 @@ binaryextensions@2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/binaryextensions/-/binaryextensions-2.1.2.tgz#c83c3d74233ba7674e4f313cb2a2b70f54e94b7c"
   integrity sha512-xVNN69YGDghOqCCtA6FI7avYrr02mTJjOgB0/f1VPD3pJC8QEvjTKWc4epDx8AqxxA75NI0QpVM2gPJXUbE4Tg==
-
-bl@^1.0.0:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.2.tgz#a160911717103c07410cef63ef51b397c025af9c"
-  integrity sha512-e8tQYnZodmebYDWGH7KMRvtzKXaJHx3BbilrgZCfvyLUYdKpK1t5PSPmpkny/SgiTSCnjfLW7v5rlONXVFkQEA==
-  dependencies:
-    readable-stream "^2.3.5"
-    safe-buffer "^5.1.1"
 
 bl@^2.0.1:
   version "2.1.2"
@@ -1296,17 +1275,6 @@ connect-redis@^3.4.0:
     debug "^4.1.1"
     redis "^2.8.0"
 
-connect-tedious@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/connect-tedious/-/connect-tedious-1.1.2.tgz#c69dab52bc0b2e10c5d1cd79e4fbc7ef06999001"
-  integrity sha1-xp2rUrwLLhDF0c155PvH7waZkAE=
-  dependencies:
-    debug "^2.2.0"
-    node-connection-string-builder "^0.0.1"
-    retry "^0.9.0"
-    tedious "^1.13.2"
-    tedious-connection-pool "^0.3.9"
-
 connect@^3.6.0:
   version "3.6.6"
   resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.6.tgz#09eff6c55af7236e137135a72574858b6786f524"
@@ -1377,7 +1345,7 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-core-js@^2.2.0, core-js@^2.4.0, core-js@^2.5.7:
+core-js@^2.2.0, core-js@^2.5.7:
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
   integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
@@ -1778,13 +1746,6 @@ dijkstrajs@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/dijkstrajs/-/dijkstrajs-1.0.1.tgz#d3cd81221e3ea40742cfcde556d4e99e98ddc71b"
   integrity sha1-082BIh4+pAdCz83lVtTpnpjdxxs=
-
-dns-lookup-all@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/dns-lookup-all/-/dns-lookup-all-1.0.2.tgz#4d8b2b1af69c83a7b262eb5de92485b7b3a215eb"
-  integrity sha1-TYsrGvacg6eyYutd6SSFt7OiFes=
-  dependencies:
-    semver "^5.3.0"
 
 dns-prefetch-control@0.1.0:
   version "0.1.0"
@@ -3480,7 +3441,7 @@ iconv-lite@0.4.23:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-iconv-lite@^0.4.11, iconv-lite@^0.4.17, iconv-lite@^0.4.19, iconv-lite@^0.4.23, iconv-lite@^0.4.4:
+iconv-lite@^0.4.17, iconv-lite@^0.4.19, iconv-lite@^0.4.23, iconv-lite@^0.4.4:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
@@ -5076,11 +5037,6 @@ nocache@2.0.0:
   resolved "https://registry.yarnpkg.com/nocache/-/nocache-2.0.0.tgz#202b48021a0c4cbde2df80de15a17443c8b43980"
   integrity sha1-ICtIAhoMTL3i34DeFaF0Q8i0OYA=
 
-node-connection-string-builder@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/node-connection-string-builder/-/node-connection-string-builder-0.0.1.tgz#b34ba85cd854d4ebbeb55a563616a341e99d5442"
-  integrity sha1-s0uoXNhU1Ou+tVpWNhajQemdVEI=
-
 node-emoji@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.8.1.tgz#6eec6bfb07421e2148c75c6bba72421f8530a826"
@@ -6246,11 +6202,6 @@ referrer-policy@1.1.0:
   resolved "https://registry.yarnpkg.com/referrer-policy/-/referrer-policy-1.1.0.tgz#35774eb735bf50fb6c078e83334b472350207d79"
   integrity sha1-NXdOtzW/UPtsB46DM0tHI1AgfXk=
 
-regenerator-runtime@^0.11.0:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
-  integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
-
 regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
@@ -6446,11 +6397,6 @@ ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
-
-retry@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/retry/-/retry-0.9.0.tgz#6f697e50a0e4ddc8c8f7fb547a9b60dead43678d"
-  integrity sha1-b2l+UKDk3cjI9/tUeptg3q1DZ40=
 
 rfdc@^1.1.2:
   version "1.1.2"
@@ -6880,11 +6826,6 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-sprintf@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
-  integrity sha1-j4PjmpMXwaUCy324BQ5Rxnn27c8=
-
 sshpk@^1.7.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.15.2.tgz#c946d6bd9b1a39d0e8635763f5242d6ed6dcb629"
@@ -7173,33 +7114,6 @@ tar@^4:
     mkdirp "^0.5.0"
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
-
-tedious-connection-pool@^0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-0.3.9.tgz#e99e52596ba7ca404dc7d3c21bc8007c239442c2"
-  integrity sha1-6Z5SWWunykBNx9PCG8gAfCOUQsI=
-  dependencies:
-    tedious "^1.13.0"
-
-tedious-connection-pool@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-1.0.5.tgz#2d694a72a2f4773564ef2911e86e5fd622ca01c1"
-  integrity sha1-LWlKcqL0dzVk7ykR6G5f1iLKAcE=
-  dependencies:
-    tedious "^1.14.0"
-
-tedious@^1.13.0, tedious@^1.13.2, tedious@^1.14.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
-  integrity sha1-m9qel5ghLI/NlDinDLKoBqvK5wo=
-  dependencies:
-    babel-runtime "^6.9.2"
-    big-number "0.3.1"
-    bl "^1.0.0"
-    dns-lookup-all "^1.0.2"
-    iconv-lite "^0.4.11"
-    readable-stream "^2.0.2"
-    sprintf "0.1.5"
 
 tedious@^3.0.1:
   version "3.0.1"
