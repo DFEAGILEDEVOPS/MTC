@@ -6,7 +6,6 @@ const fs = require('fs-extra')
 const path = require('path')
 const winston = require('winston')
 const R = require('ramda')
-const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
 const sqlService = require('../../admin/services/data-access/sql.service')
 
 async function main () {
@@ -35,7 +34,7 @@ async function main () {
 
     writableStream.on('finish', function () {
       console.log('DONE')
-      sqlPoolService.drain()
+      sqlService.drainPool()
     })
 
     csvStream.pipe(writableStream)
@@ -45,7 +44,7 @@ async function main () {
   } catch (error) {
     winston.info(error)
     process.exitCode = 1
-    sqlPoolService.drain()
+    sqlService.drainPool()
   }
 }
 

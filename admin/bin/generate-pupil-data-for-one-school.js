@@ -7,8 +7,6 @@ const winston = require('winston')
 const upnService = require('../services/upn.service')
 winston.level = 'info'
 const moment = require('moment')
-
-const poolService = require('../services/data-access/sql.pool.service')
 const sqlService = require('../services/data-access/sql.service')
 const pupilCountPerSchool = 30
 
@@ -39,11 +37,11 @@ async function main () {
 
 main()
   .then(() => {
-    poolService.drain()
+    sqlService.drainPool()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
+    sqlService.drainPool()
   })
 
 async function insertPupils (school, count) {
