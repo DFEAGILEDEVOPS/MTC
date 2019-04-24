@@ -93,8 +93,6 @@ function updatePupilStatuses (updates, context) {
     params.push({ name: `code${i}`, value: o.targetStatusCode, type: TYPES.NVarChar })
     params.push({ name: `pupilId${i}`, value: o.pupilId, type: TYPES.Int })
   })
-  // context.log('updatePupilStatuses is attempting to execute the following sql:')
-  // context.log(`${sql.join('\n')}`)
   try {
     const result = sqlService.modify(sql.join('\n'), params)
     return result
