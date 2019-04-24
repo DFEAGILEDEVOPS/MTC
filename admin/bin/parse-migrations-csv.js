@@ -8,22 +8,64 @@ const poolService = require('../services/data-access/sql.pool.service')
 const sqlService = require('../services/data-access/sql.service')
 const { TYPES } = sqlService
 
-async function checkSchools (rows) {
-  const oldDfeNumbers = rows
-    .map(({ OLD_dfeNumber: oldDFENumber }) => oldDFENumber)
-    .filter(e => /^\d+$/.test(e))
+function readCSV (csvPath) {
+  return new Promise((resolve, reject) => {
+    if (csvPath === undefined) {
+      reject(new Error('Please supply a valid CSV path'))
+    } else if (!fs.existsSync(csvPath)) {
+      reject(new Error('The supplied CSV path does not exist'))
+    } else {
+      const stream = fs.createReadStream(csvPath)
 
-  if (oldDfeNumbers.length === 0) {
-    throw new Error('No valid `OLD_dfeNumber` values supplied')
-  }
-  const results = await sqlService.query(`
-    SELECT COUNT(1) AS count FROM [mtc_admin].[school]
-    WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
-  `)
+      let columns = false
+      const rows = []
 
-  if (results[0].count === 0) {
-    throw new Error('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
-  }
+      const csvStream = csv()
+        .on('data', data => {
+          if (!columns) {
+            columns = data
+          } else {
+            const row = {}
+            data.forEach((e, i) => {
+              row[columns[i]] = e
+            })
+            rows.push(row)
+          }
+        })
+        .on('end', () => {
+          resolve(rows)
+        })
+        .on('error', reject)
+
+      stream.pipe(csvStream)
+    }
+  })
+}
+
+function checkSchools (rows) {
+  return new Promise((resolve, reject) => {
+    const oldDfeNumbers = rows
+      .map(({ OLD_dfeNumber: oldDFENumber }) => oldDFENumber)
+      .filter(e => /^\d+$/.test(e))
+
+    if (oldDfeNumbers.length === 0) {
+      reject(new Error('No valid `OLD_dfeNumber` values supplied'))
+    } else {
+      sqlService
+        .query(`
+          SELECT COUNT(1) AS count FROM [mtc_admin].[school]
+          WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
+        `)
+        .then(result => {
+          if (result[0].count > 0) {
+            resolve()
+          } else {
+            reject(new Error('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV'))
+          }
+        })
+        .catch(reject)
+    }
+  })
 }
 
 async function updateSchools (rows) {
@@ -76,47 +118,16 @@ async function updateSchools (rows) {
   // await sqlService.modifyWithTransaction(queries.join('\n'), params)
 }
 
-async function updateDatabase (rows) {
-  await sqlService.initPool()
-  await checkSchools(rows)
-  await updateSchools(rows)
-}
-
 async function main () {
   const csvPath = process.argv[2]
 
-  if (csvPath === undefined) {
-    throw new Error('Please supply a valid CSV path')
-  } else if (!fs.existsSync(csvPath)) {
-    throw new Error('The supplied CSV path does not exist')
-  } else {
-    const stream = fs.createReadStream(csvPath)
-
-    let columns = false
-    const rows = []
-
-    const csvStream = csv()
-      .on('data', data => {
-        if (!columns) {
-          columns = data
-        } else {
-          const row = {}
-          data.forEach((e, i) => {
-            row[columns[i]] = e
-          })
-          rows.push(row)
-        }
-      })
-      .on('end', () => {
-        updateDatabase(rows).catch(error => {
-          throw error
-        })
-      })
-      .on('error', error => {
-        throw error
-      })
-
-    stream.pipe(csvStream)
+  try {
+    const rows = await readCSV(csvPath)
+    await sqlService.initPool()
+    await checkSchools(rows)
+    await updateSchools(rows)
+  } catch (error) {
+    throw error
   }
 }
 
