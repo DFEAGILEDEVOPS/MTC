@@ -18,5 +18,5 @@ module.exports = async function (context, timer) {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} run complete: processed ${meta.messageCount} check(s) in ${durationInMilliseconds} ms`)
+  context.log(`${name}: ${timeStamp} run complete: processed ${meta.processCount} valid messages, ${meta.invalidCount} invalid messages in ${durationInMilliseconds} ms`)
 }
