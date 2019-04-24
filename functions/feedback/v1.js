@@ -57,7 +57,7 @@ const v1Service = {
  * @param messages - array of messages
  * @return {Object[]}
  */
-function pupilEventData(messages) {
+function pupilEventData (messages) {
   return messages.map(msg => {
     return {
       PartitionKey: msg.message.checkCode,
@@ -75,7 +75,7 @@ function pupilEventData(messages) {
  * @param {String} tableName - name of the azure storage table
  * @return {Promise<*>}
  */
-async function parallelInsertToAzureStorageTable(tableData, tableName) {
+async function parallelInsertToAzureStorageTable (tableData, tableName) {
   const insertPromises = tableData.map(entity => {
     azureTableService.insertEntityAsync(tableName, entity)
   })
