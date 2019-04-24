@@ -2,7 +2,6 @@ const winston = require('winston')
 const { TYPES } = require('tedious')
 const moment = require('moment')
 const sqlService = require('../../admin/services/data-access/sql.service')
-const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
 
 async function main () {
   try {
@@ -73,16 +72,16 @@ async function main () {
         BEGIN
           BEGIN TRY
 
-            INSERT INTO ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount) 
+            INSERT INTO ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount)
             VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1);
 
             INSERT INTO @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
             VALUES (scope_identity(), 1, 1, 1, @pinExpiresAt, @schoolId);
-          
+
           END TRY
           BEGIN CATCH
             -- The try/catch statement catches duplicate inserts for already generated pupils
-            -- If the generated pupil already exists in the db then we can assume that the 
+            -- If the generated pupil already exists in the db then we can assume that the
             -- spCreateChecks procedure has already been called for that pupil
             -- Keep a count of existingPupils for feedback later on
             SET @existingPupils = @existingPupils + 1;
@@ -90,7 +89,7 @@ async function main () {
           SET @cnt = @cnt + 1;
         END
       COMMIT TRAN
-      
+
       EXEC [mtc_admin].[spCreateChecks] @tvp;
 
       SELECT @existingPupils as existingPupils;
@@ -104,12 +103,12 @@ async function main () {
     } else {
       winston.info(`Generated ${numPupils} new pupils`)
     }
-    sqlPoolService.drain()
+    sqlService.drainPool()
   } catch (error) {
     console.log('error')
     winston.info(error)
     process.exitCode = 1
-    sqlPoolService.drain()
+    sqlService.drainPool()
   }
 }
 

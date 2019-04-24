@@ -26,7 +26,7 @@ async@^2.6.1:
   dependencies:
     lodash "^4.17.11"
 
-babel-runtime@^6.26.0, babel-runtime@^6.9.2:
+babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -44,7 +44,7 @@ big-number@1.0.0:
   resolved "https://registry.yarnpkg.com/big-number/-/big-number-1.0.0.tgz#a0277607a0adb06492d3099546ef0d547785df18"
   integrity sha512-cHUzdT+mMXd1ozht8n5ZwBlNiPO/4zCqqkyp3lF1TMPsRJLXUbQ7cKnfXRkrW475H5SOtSOP0HFeihNbpa53MQ==
 
-bl@^1.0.0, bl@^1.2.2:
+bl@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.2.tgz#a160911717103c07410cef63ef51b397c025af9c"
   integrity sha512-e8tQYnZodmebYDWGH7KMRvtzKXaJHx3BbilrgZCfvyLUYdKpK1t5PSPmpkny/SgiTSCnjfLW7v5rlONXVFkQEA==
@@ -156,13 +156,6 @@ diagnostics@^1.1.1:
     enabled "1.0.x"
     kuler "1.0.x"
 
-dns-lookup-all@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/dns-lookup-all/-/dns-lookup-all-1.0.2.tgz#4d8b2b1af69c83a7b262eb5de92485b7b3a215eb"
-  integrity sha1-TYsrGvacg6eyYutd6SSFt7OiFes=
-  dependencies:
-    semver "^5.3.0"
-
 dotenv@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-7.0.0.tgz#a2be3cd52736673206e8a85fb5210eea29628e7c"
@@ -224,7 +217,7 @@ generic-pool@^3.6.1:
   resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.6.1.tgz#a51a8439ee86f0bbcf100fc1db3f45c86289deb4"
   integrity sha512-iMmD/pY4q0+V+f8o4twE9JPeqfNuX+gJAaIPB3B0W1lFkBOtTxBo6B0HxHPgGhzQA8jego7EWopcYq/UDJO2KA==
 
-iconv-lite@^0.4.11, iconv-lite@^0.4.23:
+iconv-lite@^0.4.23:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
@@ -339,7 +332,7 @@ ramda@^0.26.1:
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
   integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
 
-readable-stream@^2.0.2, readable-stream@^2.3.5, readable-stream@^2.3.6:
+readable-stream@^2.3.5, readable-stream@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   integrity sha512-tQtKA9WIAhBF3+VLAseyMqZeBjW0AHJoxOtYqSUZNJxauErmLbVm2FW1y+J/YA9dUrAC39ITejlZWhVIwawkKw==
@@ -376,11 +369,6 @@ safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-semver@^5.3.0:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-5.6.0.tgz#7e74256fbaa49c75aa7c7a205cc22799cac80004"
-  integrity sha512-RS9R6R35NYgQn++fkDWaOmqGoj4Ek9gGs+DPxNUZKuwE183xjJroKvyo1IzVFeXvUrvmALy6FWD5xrdJT25gMg==
-
 simple-swizzle@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/simple-swizzle/-/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
@@ -392,11 +380,6 @@ sprintf-js@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.1.2.tgz#da1765262bf8c0f571749f2ad6c26300207ae673"
   integrity sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==
-
-sprintf@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
-  integrity sha1-j4PjmpMXwaUCy324BQ5Rxnn27c8=
 
 stack-trace@0.0.x:
   version "0.0.10"
@@ -426,26 +409,6 @@ string_decoder@~1.1.1:
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   dependencies:
     safe-buffer "~5.1.0"
-
-tedious-connection-pool@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-1.0.5.tgz#2d694a72a2f4773564ef2911e86e5fd622ca01c1"
-  integrity sha1-LWlKcqL0dzVk7ykR6G5f1iLKAcE=
-  dependencies:
-    tedious "^1.14.0"
-
-tedious@^1.14.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
-  integrity sha1-m9qel5ghLI/NlDinDLKoBqvK5wo=
-  dependencies:
-    babel-runtime "^6.9.2"
-    big-number "0.3.1"
-    bl "^1.0.0"
-    dns-lookup-all "^1.0.2"
-    iconv-lite "^0.4.11"
-    readable-stream "^2.0.2"
-    sprintf "0.1.5"
 
 tedious@^2.7.1:
   version "2.7.1"
