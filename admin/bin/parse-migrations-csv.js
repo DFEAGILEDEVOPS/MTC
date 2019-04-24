@@ -57,11 +57,7 @@ function checkSchools (rows) {
           WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
         `)
         .then(result => {
-          if (result[0].count > 0) {
-            resolve()
-          } else {
-            reject(new Error('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV'))
-          }
+          resolve(result[0].count > 0)
         })
         .catch(reject)
     }
@@ -124,7 +120,11 @@ async function main () {
   try {
     const rows = await readCSV(csvPath)
     await sqlService.initPool()
-    await checkSchools(rows)
+    const schoolChanges = await checkSchools(rows)
+    if (!schoolChanges) {
+      console.log('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
+      process.exit(1)
+    }
     await updateSchools(rows)
   } catch (error) {
     throw error
