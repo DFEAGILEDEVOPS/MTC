@@ -218,7 +218,7 @@ async function batchSaveFeedback (messages) {
     params.push(...stmtParams)
   })
 
-  await sqlService.modify(sqls.join('\n'), params)
+  await sqlService.modifyWithTransaction(sqls.join('\n'), params)
   return messagesToProcess
 }
 
