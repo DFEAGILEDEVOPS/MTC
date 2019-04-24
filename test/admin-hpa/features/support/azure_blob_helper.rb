@@ -14,4 +14,9 @@ class AzureBlobHelper
     end
   end
 
+  def self.remove_old_containers
+    containers = AZURE_BLOB_CLIENT.list_containers.map {|containers| containers if containers.name.include? 'screenshots'}.compact
+    old_containers = containers.compact.map {|container| container if ((Date.today.mjd - Date.strptime(container.name.split('screenshots-')[1].gsub("-", ' '), "%d %m %y").mjd) >= 3)}.compact
+    old_containers.each {|container| AZURE_BLOB_CLIENT.delete_container(container.name)}
+  end
 end
