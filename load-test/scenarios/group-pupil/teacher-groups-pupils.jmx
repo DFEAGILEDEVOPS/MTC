@@ -38,6 +38,11 @@
             <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) + &quot;-teacherLogins.csv&quot; )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="GROUP_SIZE" elementType="Argument">
+            <stringProp name="Argument.name">GROUP_SIZE</stringProp>
+            <stringProp name="Argument.value">${__P(pupilGroupSize,10)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -148,7 +153,7 @@
         <hashTree>
           <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil IDs from list" enabled="true">
             <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
-            <stringProp name="XPathExtractor.refname">PUPIL_ID</stringProp>
+            <stringProp name="XPathExtractor.refname">pupilId</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">//*[1]/input[@type=&apos;checkbox&apos;]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
@@ -176,20 +181,6 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Create-Pupil-Group" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
-              <elementProp name="pupil[${PUPIL_ID_1}]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_1}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[${PUPIL_ID_1}]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[${PUPIL_ID_2}]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_2}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[${PUPIL_ID_2}]</stringProp>
-              </elementProp>
               <elementProp name="_csrf" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">${CSRF_TOKEN}</stringProp>
@@ -220,14 +211,31 @@
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Select Pupil To Group" enabled="true">
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">/* select the number of pupil from extracted list (pupilId) based on the group size and add them as request parameters */
+int count = Integer.parseInt(vars.get(&quot;pupilId_matchNr&quot;));
+if(count &lt; (${GROUP_SIZE})) {
+	log.error(&quot;There are not enough pupil to create a group with given group size&quot;); 
+}
+else{ 
+	for(int i=1;i&lt;=${GROUP_SIZE};i++) {
+	sampler.addArgument(&quot;pupil[${pupilId_&quot;+ i +&quot;}]&quot;, vars.get(&quot;pupilId_&quot; + i));
+	}
+} </stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+        </hashTree>
         <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>
         </DebugSampler>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
