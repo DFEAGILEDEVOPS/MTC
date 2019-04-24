@@ -1,11 +1,4 @@
-<div class="grid-row">
-    <div class="column-one-half">
-        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    </div>
-    <div class="column-one-half">
-        <%- partial('partials/_name_and_sign_out') %>
-    </div>
-</div>
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <div class="grid-row">
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
@@ -14,6 +7,11 @@
             </div>
         <% } %>
         <div>
+        <% if (incompletePupils && incompletePupils.length > 0) { %>
+            <div class="warning-message">
+              <%= incompletePupils.length %> <%= incompletePupils.length > 1 ? 'pupils have' : 'pupil has'  %> an Incomplete status
+            </div>
+        <% } %>
 
             <%- partial('partials/_readonly', {availabilityData}) %>
 
@@ -55,7 +53,10 @@
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
+                    <td
+                    <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>
+                    <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="warning-item"<% } %>
+                    >
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                                 <a class="bold-small truncate" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" >

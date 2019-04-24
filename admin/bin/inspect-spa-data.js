@@ -4,7 +4,7 @@
 const commandLineArgs = require('command-line-args')
 const moment = require('moment')
 
-const poolService = require('../services/data-access/sql.pool.service')
+const sqlService = require('../services/data-access/sql.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
 
 const optionDefinitions = [
@@ -18,10 +18,10 @@ const usage = function () {
   return console.log(`
     Usage: <script> --checkCode <checkCode> [--addRelTiming ] [-t] [--verbose] [-v] [--filter [answers|audit|config|device|inputs|pupil|questions]]
     E.g. inspect-spa-data.js -c C367DCE8-150B-4FFD-A92C-74F766C42004 audit
-    
+
     Fancy pants stuff
     -----------------
-    
+
     * pipe into jq and search for an object in an array
     E.g. ./bin/inspect-spa-data.js -c 8AF9B1DC-4C78-4999-8A07-E4CEDBC28838 -f audit  | jq -C '.[] | select(.data.sequenceNumber==3)'
     `)
@@ -126,7 +126,7 @@ async function main (options) {
 try {
   const options = commandLineArgs(optionDefinitions)
   main(options)
-    .then(() => poolService.drain())
+    .then(() => sqlService.drainPool())
 } catch (e) {
   console.log('Error: ' + e.message)
 }
