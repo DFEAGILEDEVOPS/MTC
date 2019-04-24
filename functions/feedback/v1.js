@@ -29,29 +29,6 @@ async function fetchFeedBackMessages () {
   }
 }
 
-const v1Service = {
-  process: async function process (passedLogger) {
-    logger = passedLogger
-    const cutoffTime = moment().add(9, 'minutes').add(45, 'seconds')
-    let result // object
-    let totalNumberOfMessagesProcessed = 0
-    let totalNumberOfInvalidMessages = 0
-
-    result = await fetchFeedBackMessages()
-    while (result && result.result.length && moment().isBefore(cutoffTime)) {
-      const batchResult = await processBatch(result)
-      totalNumberOfMessagesProcessed += batchResult.batchProcessCount
-      totalNumberOfInvalidMessages += batchResult.batchInvalidCount
-      result = await fetchFeedBackMessages()
-    }
-
-    return {
-      processCount: totalNumberOfMessagesProcessed,
-      invalidCount: totalNumberOfInvalidMessages
-    }
-  }
-}
-
 /**
  * Generate objects suitable for inserting into the pupilData table
  * @param messages - array of messages
@@ -243,6 +220,29 @@ async function batchSaveFeedback (messages) {
 
   await sqlService.modify(sqls.join('\n'), params)
   return messagesToProcess
+}
+
+const v1Service = {
+  process: async function process (passedLogger) {
+    logger = passedLogger
+    const cutoffTime = moment().add(9, 'minutes').add(45, 'seconds')
+    let result // object
+    let totalNumberOfMessagesProcessed = 0
+    let totalNumberOfInvalidMessages = 0
+
+    result = await fetchFeedBackMessages()
+    while (result && result.result.length && moment().isBefore(cutoffTime)) {
+      const batchResult = await processBatch(result)
+      totalNumberOfMessagesProcessed += batchResult.batchProcessCount
+      totalNumberOfInvalidMessages += batchResult.batchInvalidCount
+      result = await fetchFeedBackMessages()
+    }
+
+    return {
+      processCount: totalNumberOfMessagesProcessed,
+      invalidCount: totalNumberOfInvalidMessages
+    }
+  }
 }
 
 module.exports = v1Service
