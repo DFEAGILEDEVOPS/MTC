@@ -8,6 +8,8 @@ let blobService
 
 if (config.AZURE_STORAGE_CONNECTION_STRING) {
   blobService = azureStorage.createBlobService()
+} else {
+  blobService = {}
 }
 
 bluebird.promisifyAll(blobService, {
