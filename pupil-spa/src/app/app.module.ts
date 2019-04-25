@@ -25,6 +25,7 @@ import { FooterComponent } from './footer/footer.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
+import { ForceUserInteractionComponent } from './force-user-interaction/force-user-interaction.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
     FooterComponent,
     FeedbackComponent,
     FeedbackThanksComponent,
+    ForceUserInteractionComponent,
     HeaderComponent,
     InstructionsComponent,
     LoadingComponent,
