@@ -70,11 +70,14 @@ describe('CheckComponent', () => {
         // we can change this to a valid state number to simulate
         // a page refresh.
         return checkStateMock;
+      } else if (arg === 'forceuserinteraction') {
+        return null;
       } else {
         return [];
       }
     });
     spyOn(storageService, 'setItem').and.callThrough();
+    spyOn(storageService, 'removeItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
