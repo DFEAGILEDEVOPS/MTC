@@ -15,10 +15,10 @@ let messagesToSend = 300000
 
 function createMessage() {
   return {
-    'version': '1',
+    'version': '2',
     'checkCode': uuid(),
-    'inputType': 1,
-    'satisfactionRating': 5,
+    'inputType': "Touchscreen",
+    'satisfactionRating': "Easy",
     'comments': `Message comment`
   }
 }
