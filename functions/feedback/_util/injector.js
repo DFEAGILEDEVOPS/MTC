@@ -13,17 +13,17 @@ const feedbackQueue = 'pupil-feedback'
 let totalMessagesSent = 0
 let messagesToSend = 300000
 
-function createMessage() {
+function createMessage () {
   return {
     'version': '2',
     'checkCode': uuid(),
-    'inputType': "Touchscreen",
-    'satisfactionRating': "Easy",
+    'inputType': 'Touchscreen',
+    'satisfactionRating': 'Easy',
     'comments': `Message comment`
   }
 }
 
-function generateMessageBatch(count) {
+function generateMessageBatch (count) {
   return R.times(createMessage, count)
 }
 
