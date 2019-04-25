@@ -351,6 +351,10 @@ export class CheckComponent implements OnInit {
   questionsIntroClickHandler() {
     this.changeState();
   }
+  
+  forceUserInteractionClickHandler() {
+    this.changeState();
+  }
 
   /**
    * Initialise the allowedStates array.

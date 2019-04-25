@@ -1,6 +1,9 @@
 <app-sound #sound></app-sound>
 <app-page-modifications>
     <div [ngSwitch]="viewState">
+        <app-force-user-interaction *ngSwitchCase="'force-user-interaction'"
+            (clickEvent)="forceUserInteractionClickHandler()">
+        </app-force-user-interaction>
         <app-warmup-intro *ngSwitchCase="'warmup-intro'"
             (clickEvent)="warmupIntroClickHandler()">
         </app-warmup-intro>
