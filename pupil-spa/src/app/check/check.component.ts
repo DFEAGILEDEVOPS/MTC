@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
 
 export class CheckComponent implements OnInit {
   public static readonly checkStateKey = 'checkstate';
+  public static readonly forceUserInteractionKey = 'forceuserinteraction';
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
@@ -148,15 +149,31 @@ export class CheckComponent implements OnInit {
    * As there is a linear sequence of events the next state is determined by the
    * current state. No args required.
    */
-  private changeState() {
+  private changeState(refreshWithSpeakEnabled?: boolean) {
+    if (refreshWithSpeakEnabled) {
+      /*
+        add force user interaction slide, this forces the user to "interact",
+        enabling speech e.g. in Chrome https://www.chromestatus.com/feature/5687444770914304
+      */
+      this.allowedStates.splice(this.state, 0, 'force-user-interaction')
+      /*
+        set a local storage key, so if refresh happens again,
+        we can determine the correct state
+      */
+      this.storageService.setItem(CheckComponent.forceUserInteractionKey, true);
+    } else {
+      this.state += 1; // increment state to next level - it's defined by an array
+    }
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
-    this.state += 1; // increment state to next level - it's defined by an array
     // console.log(`changeState(): state is now set to ${this.state}`);
     this.storageService.setItem(CheckComponent.checkStateKey, this.state);
 
     const stateDesc = this.getStateDescription();
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
+      case stateDesc === 'force-user-interaction':
+        this.viewState = 'force-user-interaction';
+        break;
       case CheckComponent.warmupIntroRe.test(stateDesc):
         // Show the warmup-intro screen
         this.isWarmUp = true;
@@ -396,9 +413,20 @@ export class CheckComponent implements OnInit {
    * Handle a page refresh
    */
   refreshDetected() {
-    const stateDesc = this.getStateDescription();
+    let stateDesc = this.getStateDescription();
     console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
     this.auditService.addEntry(new RefreshDetected());
+
+    if (this.storageService.getItem(CheckComponent.forceUserInteractionKey)) {
+      /*
+        there has already been a refresh during the questions, decriment the state,
+        as the force-user-interaction view will no longer be in allowedStates
+      */
+      this.state -= 1;
+      this.storageService.setItem(CheckComponent.checkStateKey, this.state);
+      stateDesc = this.getStateDescription();
+      this.storageService.removeItem(CheckComponent.forceUserInteractionKey);
+    }
 
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case
@@ -424,7 +452,7 @@ export class CheckComponent implements OnInit {
       const answer = new Answer(this.question.factor1, this.question.factor2, '', this.question.sequenceNumber);
       this.answerService.setAnswer(answer);
       // console.log('refreshDetected(): calling changeState()');
-      this.changeState();
+      this.changeState(true);
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc) || CheckComponent.spokenWarmupQuestionRe.test(stateDesc)) {
       this.changeState();
     } else {
