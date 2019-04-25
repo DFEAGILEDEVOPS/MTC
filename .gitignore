@@ -107,3 +107,5 @@ rabbitmq
 # config related files
 config.json
 src/public/config.json
+test/admin-hpa/features/support/test_env.rb
+test/pupil-hpa/features/support/test_env.rb
