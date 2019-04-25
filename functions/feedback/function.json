@@ -2,10 +2,18 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "5 */15 18-23 * * *",
-      "name": "timer",
-      "type": "timerTrigger",
-      "direction": "in"
+      "name": "queueMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "pupil-feedback",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "type": "table",
+      "direction": "out",
+      "name": "data",
+      "tableName": "pupilFeedback",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }

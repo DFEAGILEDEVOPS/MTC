@@ -3,30 +3,52 @@
 'use strict'
 
 const path = require('path')
+const uuid = require('uuid/v4')
+const R = require('ramda')
 const envLoc = path.resolve(__dirname, '../../.env')
 require('dotenv').config({ path: envLoc })
 const azureStorageHelper = require('../../lib/azure-storage-helper')
 
 const feedbackQueue = 'pupil-feedback'
+let totalMessagesSent = 0
+let messagesToSend = 300000
 
-async function inject (numberOfMessages) {
-  for (let i = 1; i <= numberOfMessages; i++) {
-    try {
-      const msg = {
-        'version': '1',
-        'checkCode': 'B6213E44-EC68-4ADC-ACB7-F8F19AC4F150',
-        'inputType': 1,
-        'satisfactionRating': 5,
-        'comments': `Message ${i}`
-      }
-      await azureStorageHelper.addMessageToQueue(feedbackQueue, msg)
-    } catch (error) {
-      console.error(error)
-    }
+function createMessage() {
+  return {
+    'version': '1',
+    'checkCode': uuid(),
+    'inputType': 1,
+    'satisfactionRating': 5,
+    'comments': `Message comment`
+  }
+}
+
+function generateMessageBatch(count) {
+  return R.times(createMessage, count)
+}
+
+async function sendBatch (batchNumber) {
+  const batch = generateMessageBatch(20)
+  const promises = batch.map(msg => azureStorageHelper.addMessageToQueue(feedbackQueue, msg))
+
+  try {
+    await Promise.all(promises)
+    console.log(`Batch ${batchNumber} sent`)
+  } catch (error) {
+    console.error(`Batch ${batchNumber} error: ${error.message}`)
+  }
+
+  totalMessagesSent += batch.length
+}
+
+async function inject () {
+  let batchNumber = 1
+  while (totalMessagesSent < messagesToSend) {
+    await sendBatch(batchNumber++)
   }
 }
 
 // inject a bunch of messages to the feedback queue
-inject(100)
+inject()
   .then(res => console.log('All done'))
   .catch(error => console.error('Failed', error))

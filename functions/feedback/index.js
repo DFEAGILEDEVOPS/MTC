@@ -1,22 +1,20 @@
 'use strict'
 
-const { performance } = require('perf_hooks')
+const uuid = require('uuid/v4')
 
-const v1 = require('./v1')
-const name = 'feedback'
-
-module.exports = async function (context, timer) {
-  const start = performance.now()
-  let meta
-  try {
-    meta = await v1.process(context.log)
-  } catch (error) {
-    context.log.error(`${name}: ERROR: ${error.message}`)
-    throw error
+function createEntityFromMessage (message) {
+  return {
+    PartitionKey: message.checkCode,
+    RowKey: uuid(),
+    checkCode: message.checkCode,
+    inputType: message.inputType,
+    satisfactionRating: message.satisfactionRating,
+    comments: message.comments
   }
+}
 
-  const end = performance.now()
-  const durationInMilliseconds = end - start
-  const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} run complete: processed ${meta.processCount} valid messages, ${meta.invalidCount} invalid messages in ${durationInMilliseconds} ms`)
+module.exports = async function (context, message) {
+  context.bindings.data = []
+  const entity = createEntityFromMessage(message)
+  context.bindings.data.push(entity)
 }
