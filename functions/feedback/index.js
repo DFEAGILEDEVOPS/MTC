@@ -13,8 +13,9 @@ function createEntityFromMessage (message) {
   }
 }
 
-module.exports = async function (context, message) {
+module.exports = function (context, message) {
   context.bindings.data = []
   const entity = createEntityFromMessage(message)
   context.bindings.data.push(entity)
+  context.done()
 }
