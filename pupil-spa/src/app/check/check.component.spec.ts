@@ -24,6 +24,7 @@ describe('CheckComponent', () => {
   let storageService;
   let checkStateMock = null;
   let mockRouter;
+  let mockWarmupQuestionService;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -269,6 +270,7 @@ describe('CheckComponent', () => {
     let auditService: AuditService;
     let answerService: AnswerService;
     let answerInserted: Answer;
+    let warmupQuestionService: WarmupQuestionService;
 
     beforeEach(() => {
       // find the state for the first warmup question
@@ -365,6 +367,16 @@ describe('CheckComponent', () => {
       checkStateMock = state;
       component.ngOnInit();
       expect(component['state']).toBe(state);
+    });
+
+    it('force-user-interaction is added when refreshing during a question, with speech enabled', () => {
+      warmupQuestionService = fixture.debugElement.injector.get(WarmupQuestionService);
+      spyOn(warmupQuestionService, 'getConfig').and.returnValue({ questionReader: true });
+      const state = component['allowedStates'].indexOf('Q3');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['allowedStates']).toContain('force-user-interaction');
+      expect(component['state']).toBe(component['allowedStates'].indexOf('force-user-interaction'));
     });
 
     it('the answer is recorded as blank when refreshing during on a question', () => {
