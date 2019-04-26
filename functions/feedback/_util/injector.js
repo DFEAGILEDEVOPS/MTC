@@ -11,7 +11,7 @@ const azureStorageHelper = require('../../lib/azure-storage-helper')
 
 const feedbackQueue = 'pupil-feedback'
 let totalMessagesSent = 0
-let messagesToSend = 300000
+let messagesToSend = 100
 
 function createMessage () {
   return {
