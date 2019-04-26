@@ -4,7 +4,6 @@
 require('dotenv').config()
 const csv = require('fast-csv')
 const fs = require('fs')
-const poolService = require('../services/data-access/sql.pool.service')
 const sqlService = require('../services/data-access/sql.service')
 const { TYPES } = sqlService
 
@@ -133,9 +132,9 @@ async function main () {
 
 main()
   .then(() => {
-    poolService.drain()
+    sqlService.drainPool()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
+    sqlService.drainPool()
   })
