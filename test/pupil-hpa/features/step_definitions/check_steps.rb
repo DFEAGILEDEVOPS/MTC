@@ -132,7 +132,6 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   wait_until(60,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
   pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  p pupil_check
   wait_until(60,5){SqlDbHelper.get_check_result(pupil_check['id'])}
   check_result = SqlDbHelper.get_check_result(pupil_check['id'])
   check = JSON.parse(check_result['payload'])
