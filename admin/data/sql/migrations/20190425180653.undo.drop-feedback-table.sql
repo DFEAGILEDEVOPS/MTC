@@ -1,4 +1,4 @@
-create table pupilFeedback
+CREATE TABLE [mtc_admin].[pupilFeedback]
 (
     id                 int identity primary key,
     createdAt          datetimeoffset(3) default getutcdate() not null,
@@ -8,5 +8,5 @@ create table pupilFeedback
     satisfactionRating tinyint,
     comments           nvarchar(max),
     check_id           int
-    constraint FK_pupilFeedback_check_id references [check]
+    CONSTRAINT FK_pupilFeedback_check_id REFERENCES [mtc_admin].[check] (id)
 );
