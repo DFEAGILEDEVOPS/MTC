@@ -1,0 +1,1 @@
+CREATE NONCLUSTERED INDEX [idx_azure_recommended_pupil_school] ON [mtc_admin].[pupil] ([school_id]) INCLUDE ([createdAt], [dateOfBirth], [foreName], [gender], [isTestAccount], [job_id], [jwtSecret], [jwtToken], [lastName], [middleNames], [pin], [pinExpiresAt], [pupilAgeReason_id], [pupilStatus_id], [speechSynthesis], [updatedAt], [upn], [urlSlug], [version]) WITH (ONLINE = ON)
