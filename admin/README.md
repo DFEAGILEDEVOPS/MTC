@@ -116,11 +116,11 @@ We use postgrator to run database migrations.
 ### Parse school changes from CSV
 
 ```
-yarn parse-migrations-csv PATH_TO_CSV
+yarn parse-school-changes-csv PATH_TO_CSV
 ```
 e.g.
 ```
-yarn parse-migrations-csv /Users/jane/Downloads/03\ Weekly\ updates/MIgrations_20190404.csv
+yarn parse-school-changes-csv /Users/jane/Downloads/03\ Weekly\ updates/MIgrations_20190404.csv
 ```
 
 ## Live reloading on change

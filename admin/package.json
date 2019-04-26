@@ -18,7 +18,7 @@
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
-    "parse-migrations-csv": "node bin/parse-migrations-csv.js"
+    "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
   },
   "engines": {
     "node": ">= 8.11"
