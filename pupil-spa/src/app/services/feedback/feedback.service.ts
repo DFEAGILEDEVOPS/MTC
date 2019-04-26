@@ -29,12 +29,13 @@ export class FeedbackService {
     if (!storedFeedback || !accessToken) {
       return false;
     }
-    const inputType = storedFeedback.inputType.id;
-    const satisfactionRating = storedFeedback.satisfactionRating.id;
+    const inputType = storedFeedback.inputType.value;
+    const satisfactionRating = storedFeedback.satisfactionRating.value;
     const comments = storedFeedback.comments;
     const checkCode = storedFeedback.checkCode;
 
     const payload = {
+      version: 2,
       inputType,
       satisfactionRating,
       comments,
