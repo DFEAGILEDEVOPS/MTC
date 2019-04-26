@@ -12,7 +12,7 @@ const useragent = require('useragent')
 const R = require('ramda')
 
 const dateService = require('../services/date.service')
-const poolService = require('../services/data-access/sql.pool.service')
+const sqlService = require('../services/data-access/sql.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
 const psUtilService = require('../../functions/report-psychometrician/service/psychometrician-util.service')
 
@@ -91,9 +91,9 @@ async function main () {
 
 main()
   .then(() => {
-    poolService.drain()
+    sqlService.drainPool()
   })
   .catch(e => {
     console.warn(e)
-    poolService.drain()
+    sqlService.drainPool()
   })
