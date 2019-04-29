@@ -13,6 +13,14 @@ groupService.getGroups = async function (schoolId) {
 }
 
 /**
+ * Get groups with at least one pupil who isn't marked as not taking.
+ * @returns {Promise<Promise|*>}
+ */
+groupService.getGroupsWithPresentPupils = async function (schoolId) {
+  return groupDataService.sqlFindGroups(schoolId, true)
+}
+
+/**
  * Get groups and format them as an array.
  * @param schoolId
  * @returns {Promise<*>}

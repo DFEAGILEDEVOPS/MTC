@@ -76,7 +76,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   }
 
   try {
-    groups = await groupService.getGroups(req.user.schoolId)
+    groups = await groupService.getGroupsWithPresentPupils(req.user.schoolId)
   } catch (error) {
     return next(error)
   }
