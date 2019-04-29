@@ -26,6 +26,10 @@
 .access-arrangements-pupil {
   text-decoration: underline;
   width: pem(200px);
+  
+  a {
+	  white-space: nowrap;
+  }
 }
 
 .access-arrangements-list {
