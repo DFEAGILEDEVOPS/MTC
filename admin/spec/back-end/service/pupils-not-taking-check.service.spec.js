@@ -63,6 +63,20 @@ describe('Pupils are not taking the check. Service', () => {
     })
   })
 
+  describe('#getPupilsWithoutReasons', () => {
+    it('should return a list of pupils', async (done) => {
+      spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithoutReasons').and.returnValue(pupilsWithReasonsFormattedMock)
+      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
+      const pupils = await pupilNotTakingCheckService.getPupilsWithoutReasons()
+
+      expect(pupils[0].foreName).toBe('Sarah')
+      expect(pupils[0].lastName).toBe('Connor')
+      expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasons).toHaveBeenCalled()
+      expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
+      done()
+    })
+  })
+
   describe('#getPupilSlugs', () => {
     it('should return a slugUrl when reqBody is a string', () => {
       const reqBody = 'pupilSlug'

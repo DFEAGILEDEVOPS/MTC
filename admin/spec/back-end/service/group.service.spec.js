@@ -31,6 +31,19 @@ describe('group.service', () => {
     })
   })
 
+  describe('#getGroupsWithPresentPupils', () => {
+    beforeEach(() => {
+      spyOn(groupDataService, 'sqlFindGroups').and.returnValue(groupsMock)
+    })
+
+    it('should return groups', async (done) => {
+      const schoolId = 1
+      const groups = await groupService.getGroupsWithPresentPupils(schoolId)
+      expect(groups).toEqual(groupsMock)
+      done()
+    })
+  })
+
   describe('#getGroupsAsArray', () => {
     describe('happy path', () => {
       beforeEach(() => {
