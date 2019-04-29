@@ -181,15 +181,6 @@ class SqlDbHelper
     result.do
   end
 
-  def self.get_feedback(check_id)
-    sql = "SELECT * FROM [mtc_admin].[pupilFeedback] WHERE check_id = '#{check_id}'"
-    result = SQL_CLIENT.execute(sql)
-    chk_form_res = result.first
-    result.cancel
-    chk_form_res
-  end
-
-
   def self.create_check(updatedime, createdTime, pupil_id, is_live_check=true)
     sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, isLiveCheck) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{is_live_check}' )"
     result = SQL_CLIENT.execute(sql)

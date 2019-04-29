@@ -2,17 +2,17 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "feedbackMessage",
+      "name": "queueMessage",
       "type": "queueTrigger",
       "direction": "in",
       "queueName": "pupil-feedback",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     },
     {
-      "name": "pupilEventsTable",
       "type": "table",
       "direction": "out",
-      "tableName": "pupilEvent",
+      "name": "data",
+      "tableName": "pupilFeedback",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
