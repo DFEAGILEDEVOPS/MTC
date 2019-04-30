@@ -14,7 +14,7 @@ FETCH NEXT FROM cur INTO @tableName;
 
 WHILE @@fetch_status = 0
 BEGIN
-    SET @sql = 'DROP TRIGGER [mtc_admin].[' + @tableName + 'UpdatedAtTrigger]'
+    SET @sql = 'DROP TRIGGER IF EXISTS [mtc_admin].[' + @tableName + 'UpdatedAtTrigger]'
 
     EXEC(@sql)
 
