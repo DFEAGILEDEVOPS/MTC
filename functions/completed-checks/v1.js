@@ -27,6 +27,12 @@ const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 async function handleCompletedCheck (context, completedCheckMessage) {
   context.log('completed-check: message received', completedCheckMessage.checkCode)
 
+  if (Object.prototype.hasOwnProperty.call(completedCheckMessage, 'clientCheckStartedAt')) {
+    let error = new Error('`clientCheckStartedAt` should not be supplied in `completedCheckMessage`')
+    context.log.error(error.message)
+    throw error
+  }
+
   let checkData
   try {
     checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
