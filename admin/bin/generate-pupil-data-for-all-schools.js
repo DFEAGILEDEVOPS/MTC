@@ -11,39 +11,6 @@ const moment = require('moment')
 const sqlService = require('../services/data-access/sql.service')
 const pupilCountPerSchool = 40
 
-async function main () {
-  try {
-    const schools = await sqlService.query(`SELECT
-      id,
-      dfeNumber,
-      estabCode,
-      leaCode
-    from [mtc_admin].[school]`)
-
-    console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
-    let c = 1
-    for (const school of schools) {
-      await insertPupils(school, 40)
-      c += 1
-      if (c % 1000 === 0) {
-        console.log(`${c} schools`)
-      }
-    }
-  } catch (error) {
-    console.log(error.message)
-    throw error
-  }
-}
-
-main()
-  .then(() => {
-    sqlService.drainPool()
-  })
-  .catch(e => {
-    console.warn(e)
-    sqlService.drainPool()
-  })
-
 async function insertPupils (school, count) {
   const insert = `INSERT INTO [mtc_admin].[pupil] (
     dateOfBirth,
@@ -85,3 +52,37 @@ function genUPN (leaCode, estabCode, serial) {
     console.log(`Failed on: leaCode [${leaCode}] estab: [${estabCode}] serial: [${serial}]`)
   }
 }
+
+async function main () {
+  try {
+    await sqlService.initPool()
+    const schools = await sqlService.query(`SELECT
+      id,
+      dfeNumber,
+      estabCode,
+      leaCode
+    from [mtc_admin].[school]`)
+
+    console.log(`Generating ${pupilCountPerSchool} pupils each for ${schools.length} schools`)
+    let c = 1
+    for (const school of schools) {
+      await insertPupils(school, 40)
+      c += 1
+      if (c % 1000 === 0) {
+        console.log(`${c} schools`)
+      }
+    }
+  } catch (error) {
+    console.log(error.message)
+    throw error
+  }
+}
+
+main()
+  .then(() => {
+    sqlService.drainPool()
+  })
+  .catch(e => {
+    console.warn(e)
+    sqlService.drainPool()
+  })
