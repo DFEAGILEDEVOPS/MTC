@@ -17,7 +17,7 @@ groupService.getGroups = async function (schoolId) {
  * @returns {Promise<Promise|*>}
  */
 groupService.getGroupsWithPresentPupils = async function (schoolId) {
-  return groupDataService.sqlFindGroups(schoolId, true)
+  return groupDataService.sqlFindGroupsWithAtleastOnePresentPupil(schoolId)
 }
 
 /**
