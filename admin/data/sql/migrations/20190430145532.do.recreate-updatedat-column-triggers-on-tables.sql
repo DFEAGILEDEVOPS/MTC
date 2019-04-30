@@ -6,7 +6,7 @@ DECLARE cur CURSOR FOR
     FROM SYS.COLUMNS c
     JOIN SYS.TABLES t
         ON c.OBJECT_ID = t.OBJECT_ID
-    WHERE c.name LIKE '%updatedAt%'
+    WHERE c.name = 'updatedAt'
 
 OPEN cur
 
