@@ -24,4 +24,6 @@ END
 CLOSE cur
 DEALLOCATE cur
 
+GO
+
 DROP TRIGGER IF EXISTS [mtc_admin].[pupilFeedbackUpdatedAtTrigger]
