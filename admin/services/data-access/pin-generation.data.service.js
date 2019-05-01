@@ -3,6 +3,12 @@
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
+const generateTryItOutQuerySql = () => {
+  return `
+  SELECT * FROM .....
+  `
+}
+
 const serviceToExport = {
   /**
    *
@@ -11,12 +17,16 @@ const serviceToExport = {
    * @return {Promise<*>}
    */
   sqlFindEligiblePupilsBySchool: async (schoolId, isLiveCheck) => {
-    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
-    const sql = `SELECT 
-                  * 
-                FROM ${sqlService.adminSchema}.${view}
-                WHERE school_id=@schoolId                 
+    let sql
+    if (!isLiveCheck) {
+      sql = generateTryItOutQuerySql() + ` WHERE school_id=${schoolId}`
+    } else {
+      sql = `SELECT
+                  *
+                FROM mtc_admin.vewPupilsEligibleForLivePinGeneration
+                WHERE school_id=@schoolId
                 ORDER BY lastName asc, foreName asc, middleNames asc `
+    }
     const params = [
       {
         name: 'schoolId',
@@ -31,9 +41,9 @@ const serviceToExport = {
     const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins'
     const param = { name: 'schoolId', type: TYPES.Int, value: schoolId }
     const sql = `
-      SELECT 
+      SELECT
         *
-      FROM ${sqlService.adminSchema}.[${view}] 
+      FROM [mtc_admin].[${view}]
       WHERE school_id = @schoolId
       ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
       `
@@ -41,18 +51,24 @@ const serviceToExport = {
   },
 
   sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
-    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
-    const select = `SELECT * 
-                    FROM ${sqlService.adminSchema}.[${view}]`
+    let sql
     let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
+    if (!isLiveCheck) {
+      sql = generateTryItOutQuerySql()
+    } else {
+      sql = `SELECT
+                  *
+                FROM mtc_admin.vewPupilsEligibleForLivePinGeneration
+                WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
+    }
     const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
     params.push({
       name: 'schoolId',
       value: schoolId,
       type: TYPES.Int
     })
-    const sql = [ select, whereClause ].join(' ')
-    return sqlService.query(sql, params)
+    const query = [ sql, whereClause ].join(' ')
+    return sqlService.query(query, params)
   },
 
   /**
@@ -62,9 +78,9 @@ const serviceToExport = {
    * @param {[number]} pupilIds - pupils known to be doing a restart
    */
   sqlFindChecksForPupilsById: async (schoolId, checkIds, pupilIds) => {
-    const select = `SELECT c.* 
-                    FROM ${sqlService.adminSchema}.[check] c
-                      JOIN ${sqlService.adminSchema}.[pupil] p ON (c.pupil_id = p.id)`
+    const select = `SELECT c.*
+                    FROM [mtc_admin].[check] c
+                      JOIN [mtc_admin].[pupil] p ON (c.pupil_id = p.id)`
     const schoolParam = {
       name: 'schoolId',
       value: schoolId,
@@ -74,8 +90,8 @@ const serviceToExport = {
     const checkIdentifiers = checkIds.map((checkId, index) => `@checkId${index}`)
     const pupilParams = pupilIds.map((pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } })
     const pupilIdentifiers = pupilIds.map((pupilId, index) => `@pupilId${index}`)
-    const whereClause = `WHERE p.school_id = @schoolId 
-                         AND c.id IN (${checkIdentifiers.join(', ')}) 
+    const whereClause = `WHERE p.school_id = @schoolId
+                         AND c.id IN (${checkIdentifiers.join(', ')})
                          AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
     const sql = [select, whereClause].join('\n')
     return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
@@ -89,7 +105,7 @@ const serviceToExport = {
   updatePupilRestartsWithCheckInformation: async (updateData) => {
     const restartIdParams = updateData.map((data, index) => { return { name: `checkId${index}`, value: data.checkId, type: TYPES.Int } })
     const pupilRestartParams = updateData.map((data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } })
-    const updates = updateData.map((data, index) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
+    const updates = updateData.map((data, index) => `UPDATE [mtc_admin].[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
     return sqlService.modify(updates.join(';\n'), restartIdParams.concat(pupilRestartParams))
   },
 
@@ -132,7 +148,7 @@ const serviceToExport = {
     const view = 'vewPupilsWithActivePins'
     const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
     const sql = `SELECT *
-      FROM ${sqlService.adminSchema}.[${view}]
+      FROM [mtc_admin].[${view}]
       WHERE urlSlug = @urlSlug`
     return sqlService.query(sql, [param])
   }
