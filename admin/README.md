@@ -113,6 +113,16 @@ We use postgrator to run database migrations.
 
 `yarn migrate-sql` to migrate to the latest or `yarn migrate-sql 123` to migrate to a particular version
 
+### Parse school changes from CSV
+
+```
+yarn parse-school-changes-csv PATH_TO_CSV
+```
+e.g.
+```
+yarn parse-school-changes-csv /Users/jane/Downloads/03\ Weekly\ updates/MIgrations_20190404.csv
+```
+
 ## Live reloading on change
 
 In devDependencies, make sure you have npm-run-all:
