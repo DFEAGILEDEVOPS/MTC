@@ -6,7 +6,7 @@ DECLARE cur CURSOR FOR
     FROM SYS.COLUMNS c
     JOIN SYS.TABLES t
         ON c.OBJECT_ID = t.OBJECT_ID
-    WHERE c.name LIKE '%updatedAt%'
+    WHERE c.name = 'updatedAt'
 
 OPEN cur
 
@@ -16,7 +16,7 @@ WHILE @@fetch_status = 0
 BEGIN
     SET @sql = '
     CREATE TRIGGER [mtc_admin].[' + @tableName + 'UpdatedAtTrigger]
-    ON [mtc_admin].[pupil]
+    ON [mtc_admin].[' + @tableName + ']
     FOR UPDATE
     AS
     BEGIN
