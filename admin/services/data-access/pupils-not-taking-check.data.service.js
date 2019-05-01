@@ -36,10 +36,11 @@ const pupilsNotTakingCheckDataService = {
    */
   sqlFindPupilsWithoutReasons: async (dfeNumber) => {
     const sql = `
-      SELECT p.*, NULL as reason
+      SELECT p.*, NULL as reason, pg.group_id
       FROM ${sqlService.adminSchema}.[pupil] p 
       INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id
+      LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
       WHERE s.dfeNumber = @dfeNumber AND pa.id IS NULL
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
