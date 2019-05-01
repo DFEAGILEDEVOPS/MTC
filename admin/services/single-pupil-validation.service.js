@@ -30,7 +30,7 @@ const service = {
       lastName: pupilCsvData[ 0 ],
       middleNames: pupilCsvData[ 2 ],
       gender: pupilCsvData[ 4 ],
-      dateOfBirth: moment(pupilCsvData[ 3 ], 'DD/MM/YYYY').toDate()
+      dateOfBirth: moment.utc(pupilCsvData[ 3 ], 'DD/MM/YYYY').toDate()
     })
     const dob = pupilCsvData[ 3 ].split('/')
     const pupil = Object.assign({
