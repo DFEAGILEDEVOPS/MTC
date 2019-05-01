@@ -42,7 +42,7 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
   ON g.id = pg.group_id
   LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-  ON pa.pupil_id=pg.pupil_id
+  ON pa.pupil_id=pg.pupil_id AND pa.isDeleted=0
   WHERE pa.id IS NULL
   AND g.isDeleted=0
   AND g.school_id=@schoolId
