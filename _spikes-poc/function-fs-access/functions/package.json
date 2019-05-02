@@ -1,0 +1,11 @@
+{
+  "name": "functions",
+  "version": "0.0.1",
+  "description": "Spike to test function filesystem access",
+  "main": "index.js",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "fast-csv": "^2.5.0",
+    "fs-extra": "^7.0.1"
+  }
+}
