@@ -37,14 +37,14 @@ const serviceToExport = {
               AND school_id = ${schoolId}
                   -- Exclude pupils who already have an active familiarisation check
               AND p.id NOT IN (SELECT
-                  p.id
+                  p2.id
               FROM
-                [mtc_admin].[pupil] p
-                  LEFT JOIN [mtc_admin].[check] AS chk ON (p.id = chk.pupil_id)
-                  LEFT JOIN [mtc_admin].[checkStatus] AS chkStatus ON (chk.checkStatus_id = chkStatus.id)
+                  [mtc_admin].[pupil] p2
+                      LEFT JOIN [mtc_admin].[check] AS chk ON (p.id = chk.pupil_id)
+                      LEFT JOIN [mtc_admin].[checkStatus] AS chkStatus ON (chk.checkStatus_id = chkStatus.id)
               WHERE  chk.isLiveCheck = 0
                 AND    chkStatus.code IN ('NEW', 'STD', 'COL')
-                AND p.school_id = ${schoolId})
+                AND p2.school_id = p.school_id)
       `
     } else {
       sql = `SELECT
