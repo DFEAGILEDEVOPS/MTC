@@ -59,6 +59,7 @@
     "qrcode": "^1.0.0",
     "ramda": "^0.26.1",
     "random-number-csprng": "^1.0.2",
+    "redis": "^2.8.0",
     "serve-favicon": "^2.4.5",
     "tedious": "^3.0.1",
     "to-bool": "^0.0.1",

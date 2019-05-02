@@ -34,6 +34,10 @@ const sqlService = require('./services/data-access/sql.service')
 const app = express()
 setupLogging(app)
 
+// initialise redis cache service
+const cache = require('./services/data-access/cache.service')
+cache.init()
+
 /**
  * Sleep in ms
  * @param ms - milliseconds

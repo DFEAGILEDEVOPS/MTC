@@ -4,6 +4,8 @@ const moment = require('moment')
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const cache = require('./cache.service')
+const cacheKeyPrefix = 'CheckWindow'
 
 const table = '[checkWindow]'
 
@@ -14,6 +16,7 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   sqlFindOneById: async (id) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindOneById:${id}`)
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
     const params = [
       {
@@ -48,6 +51,7 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   sqlFindCurrentAndFutureWithFormCount: async (sortBy, sortDirection) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindCurrentAndFutureWithFormCount`)
     const currentTimestamp = moment.utc().toDate()
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
@@ -80,6 +84,7 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   sqlFindFutureWithFormCount: async (sortBy, sortDirection) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindFutureWithFormCount`)
     const currentTimestamp = moment.utc().toDate()
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
@@ -112,6 +117,7 @@ const checkWindowDataService = {
    * @returns {Promise<*>}
    */
   sqlFindCurrentAndFuture: async (sortBy, sortDirection) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindCurrentAndFuture`)
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
       case 'checkWindowName':
@@ -145,6 +151,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFindCurrent: async (sortBy, sortDirection) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindCurrent`)
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
       case 'checkWindowName':
@@ -176,6 +183,7 @@ const checkWindowDataService = {
    * @return {Promise<void>}
    */
   sqlFindOneCurrent: async () => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindOneCurrent`)
     const checkWindows = await checkWindowDataService.sqlFindCurrent(null, null)
     return R.head(checkWindows)
   },
@@ -186,6 +194,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFindPast: async (sortBy, sortDirection) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindPast`)
     const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
     FROM ${sqlService.adminSchema}.[checkWindow] WHERE isDeleted=0 AND checkEndDate < @currentTimestamp`
     const params = [
@@ -249,10 +258,11 @@ const checkWindowDataService = {
    * @return {Object}
    */
   sqlFindOneActiveCheckWindow: async (checkWindowId) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindOneActiveCheckWindow`)
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND id = @checkWindowId
-    AND @currentTimeStamp >= checkStartDate 
+    AND @currentTimeStamp >= checkStartDate
     AND @currentTimeStamp <= checkEndDate`
 
     const currentTimestamp = moment.utc().toDate()
@@ -291,7 +301,7 @@ const checkWindowDataService = {
         sortBy = 'name'
     }
     const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
-                FROM ${sqlService.adminSchema}.[checkWindow] 
+                FROM ${sqlService.adminSchema}.[checkWindow]
                 WHERE isDeleted=0
                 ORDER BY ${sortBy} ${sortDirection}`
     const params = []
@@ -304,6 +314,7 @@ const checkWindowDataService = {
    * @returns {Object}
    */
   sqlFindOneByUrlSlug: async (urlSlug) => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindOneByUrlSlug:${urlSlug}`)
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND urlSlug=@urlSlug`
     const params = [
       {
@@ -345,6 +356,7 @@ const checkWindowDataService = {
    * @return {Object}
    */
   sqlFindActiveCheckWindow: async () => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindActiveCheckWindow`)
     const sql = `SELECT TOP 1 *
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
@@ -358,6 +370,7 @@ const checkWindowDataService = {
    * @return {Object}
    */
   sqlFindLatestCheckWindow: async () => {
+    cache.increment(`${cacheKeyPrefix}:sqlFindLatestCheckWindow`)
     const sql = `SELECT TOP 1 *
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
