@@ -11,48 +11,12 @@ const serviceToExport = {
    * @return {Promise<*>}
    */
   sqlFindEligiblePupilsBySchool: async (schoolId, isLiveCheck) => {
-    let sql
-    if (!isLiveCheck) {
-      sql = ` SELECT
-                  p.id,
-                  p.foreName,
-                  p.middleNames,
-                  p.lastName,
-                  p.dateOfBirth,
-                  p.school_id,
-                  g.group_id,
-                  p.urlSlug
-              FROM
-                [mtc_admin].[pupil] p
-                  LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id and pa.isDeleted = 0)
-                  LEFT JOIN [mtc_admin].[attendanceCode] ac ON (pa.attendanceCode_id = ac.id )
-                  LEFT JOIN  [mtc_admin].[pupilGroup] g ON (g.pupil_id = p.id)
-                  INNER JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
-              WHERE
-                -- include all pupils except those who are marked as not taking check because they left school
-                (ac.id IS NULL OR ac.code <> 'LEFTT')
-              AND    ps.code IN ('UNALLOC',
-                                'ALLOC',
-                                'LOGGED_IN')
-              AND school_id = ${schoolId}
-                  -- Exclude pupils who already have an active familiarisation check
-              AND p.id NOT IN (SELECT
-                  p2.id
-              FROM
-                  [mtc_admin].[pupil] p2
-                      LEFT JOIN [mtc_admin].[check] AS chk ON (p.id = chk.pupil_id)
-                      LEFT JOIN [mtc_admin].[checkStatus] AS chkStatus ON (chk.checkStatus_id = chkStatus.id)
-              WHERE  chk.isLiveCheck = 0
-                AND    chkStatus.code IN ('NEW', 'STD', 'COL')
-                AND p2.school_id = p.school_id)
-      `
-    } else {
-      sql = `SELECT
+    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
+    const sql = `SELECT
                   *
-                FROM mtc_admin.vewPupilsEligibleForLivePinGeneration
+                FROM ${sqlService.adminSchema}.${view}
                 WHERE school_id=@schoolId
                 ORDER BY lastName asc, foreName asc, middleNames asc `
-    }
     const params = [
       {
         name: 'schoolId',
@@ -69,7 +33,7 @@ const serviceToExport = {
     const sql = `
       SELECT
         *
-      FROM [mtc_admin].[${view}]
+      FROM ${sqlService.adminSchema}.[${view}]
       WHERE school_id = @schoolId
       ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
       `
@@ -77,54 +41,17 @@ const serviceToExport = {
   },
 
   sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
-    let sql
+    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
+    const select = `SELECT *
+                    FROM ${sqlService.adminSchema}.[${view}]`
     let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
-    if (!isLiveCheck) {
-      sql = ` SELECT
-                  p.id,
-                  p.foreName,
-                  p.middleNames,
-                  p.lastName,
-                  p.dateOfBirth,
-                  p.school_id,
-                  g.group_id,
-                  p.urlSlug
-              FROM
-                [mtc_admin].[pupil] p
-                  LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id and pa.isDeleted = 0)
-                  LEFT JOIN [mtc_admin].[attendanceCode] ac ON (pa.attendanceCode_id = ac.id )
-                  LEFT JOIN  [mtc_admin].[pupilGroup] g ON (g.pupil_id = p.id)
-                  INNER JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
-              WHERE
-                -- include all pupils except those who are marked as not taking check because they left school
-                (ac.id IS NULL OR ac.code <> 'LEFTT')
-              AND    ps.code IN ('UNALLOC',
-                                'ALLOC',
-                                'LOGGED_IN')
-              AND school_id = ${schoolId}
-              AND p.id IN (${paramIdentifiers.join(', ')})
-                  -- Exclude pupils who already have an active familiarisation check
-              AND p.id NOT IN (SELECT
-                  p.id
-              FROM
-                [mtc_admin].[pupil] p
-                  LEFT JOIN [mtc_admin].[check] AS chk ON (p.id = chk.pupil_id)
-                  LEFT JOIN [mtc_admin].[checkStatus] AS chkStatus ON (chk.checkStatus_id = chkStatus.id)
-              WHERE  chk.isLiveCheck = 0
-                AND    chkStatus.code IN ('NEW', 'STD', 'COL')
-                AND p.school_id = ${schoolId})
-      `
-    } else {
-      sql = `SELECT
-                  *
-                FROM mtc_admin.vewPupilsEligibleForLivePinGeneration
-                WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
-    }
+    const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
     params.push({
       name: 'schoolId',
       value: schoolId,
       type: TYPES.Int
     })
+    const sql = [ select, whereClause ].join(' ')
     return sqlService.query(sql, params)
   },
 
@@ -136,8 +63,8 @@ const serviceToExport = {
    */
   sqlFindChecksForPupilsById: async (schoolId, checkIds, pupilIds) => {
     const select = `SELECT c.*
-                    FROM [mtc_admin].[check] c
-                      JOIN [mtc_admin].[pupil] p ON (c.pupil_id = p.id)`
+                    FROM ${sqlService.adminSchema}.[check] c
+                      JOIN ${sqlService.adminSchema}.[pupil] p ON (c.pupil_id = p.id)`
     const schoolParam = {
       name: 'schoolId',
       value: schoolId,
@@ -162,7 +89,7 @@ const serviceToExport = {
   updatePupilRestartsWithCheckInformation: async (updateData) => {
     const restartIdParams = updateData.map((data, index) => { return { name: `checkId${index}`, value: data.checkId, type: TYPES.Int } })
     const pupilRestartParams = updateData.map((data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } })
-    const updates = updateData.map((data, index) => `UPDATE [mtc_admin].[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
+    const updates = updateData.map((data, index) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
     return sqlService.modify(updates.join(';\n'), restartIdParams.concat(pupilRestartParams))
   },
 
@@ -205,7 +132,7 @@ const serviceToExport = {
     const view = 'vewPupilsWithActivePins'
     const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
     const sql = `SELECT *
-      FROM [mtc_admin].[${view}]
+      FROM ${sqlService.adminSchema}.[${view}]
       WHERE urlSlug = @urlSlug`
     return sqlService.query(sql, [param])
   }
