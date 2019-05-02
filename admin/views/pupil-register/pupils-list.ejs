@@ -22,6 +22,57 @@
             <p class="lede">
               This list is taken from your school's census. Review your list and add pupils, if required. If a pupil is not going to participate, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
             </p>
+
+          <p>
+            <details>
+              <summary><span class="summary">What does each status mean?</span></summary>
+
+              <div class="panel panel-border-narrow">
+                <ul class="panel-list">
+                  <li>
+                    <div><strong>Not started</strong></div>
+                    <div>This is the default status when a pupil has been added to the school’s register.</div>
+                    <div>
+                      This status will show when:
+                      <ul class="list list-bullet">
+                        <li>A PIN has yet to be generated for pupil to start the check</li>
+                        <li>A PIN has expired before use</li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li>
+                    <div><strong>PIN generated</strong></div>
+                    <div>A PIN has been generated for a pupil and has not expired or been used.</div>
+                  </li>
+                  <li>
+                    <div><strong>Logged in</strong></div>
+                    <div>A PIN has been used to login to the system, but the pupil has yet to start the check (clicked the check start button).</div>
+                  </li>
+                  <li>
+                    <div><strong>Check started</strong></div>
+                    <div>The start button on the main questions has been clicked by the pupil, but the check has not been completed.</div>
+                  </li>
+                  <li>
+                    <div><strong>Restart</strong></div>
+                    <div>A restart has been selected for a pupil. If Restart is removed the status returns to the pupil's previous state.</div>
+                  </li>
+                  <li>
+                    <div><strong>Not taking the check</strong></div>
+                    <div>A reason for "not taking the check" has been applied to the pupil. If removed the pupil returns to the previous state.</div>
+                  </li>
+                  <li>
+                    <div><strong>Incomplete</strong></div>
+                    <div>The pupil has started the check but the time allowed has lapsed without a record of submission.</div>
+                  </li>
+                  <li>
+                    <div><strong>Complete</strong></div>
+                    <div>Pupil has completed the check successfully.</div>
+                  </li>
+                </ul>
+              </div>
+            </details>
+          </p>
+
             <div class="button-wrapper">
                 <% if (isFeatureEnabled('pupilAdd') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                 <a class="button button-secondary" href="/pupil-register/pupil/add"> Add pupil </a>
