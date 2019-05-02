@@ -4,8 +4,8 @@ Then(/^I should see meta data stored in the DB$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   sleep(120)
   stored_check = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
-  expect(stored_check['updatedAt'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
-  expect(stored_check['createdAt'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
+  expect(stored_check['updatedAt'].strftime('%d-%m-%y %H')).to eql current_time.utc.strftime('%d-%m-%y %H')
+  expect(stored_check['createdAt'].strftime('%d-%m-%y %H')).to eql current_time.utc.strftime('%d-%m-%y %H')
   expect(stored_check['pupil_id']).to eql SqlDbHelper.pupil_details(@details_hash[:upn])['id']
   check_window_id = stored_check['checkWindow_id'].to_s
   SqlDbHelper.get_check_window(check_window_id)
@@ -15,7 +15,7 @@ Then(/^I should see meta data stored in the DB$/) do
   questions_expected = SqlDbHelper.get_form(1)['formData']
   q_data = JSON.parse(questions_expected.gsub("\n", "").gsub("        ", "").gsub("    ", ""))
   expect(q_data).to eql questions_recieved.map{|b| {'f1' => b['factor1'], 'f2' =>  b['factor2']}}
-  expect(stored_check['pupilLoginDate'].utc.strftime('%d-%m-%y %H:%M')).to eql current_time.strftime('%d-%m-%y %H:%M')
+  expect(stored_check['pupilLoginDate'].utc.strftime('%d-%m-%y %H')).to eql current_time.strftime('%d-%m-%y %H')
 end
 
 Given(/^I have failed to login$/) do
