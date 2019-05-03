@@ -1,5 +1,7 @@
-var Redis = require('ioredis')
+/* global Regex */
+const Redis = require('ioredis')
 const config = require('../config')
+const sqlService = require('./data-access/sql.service')
 
 let redisConfig = {
   port: config.Redis.Port,
@@ -17,7 +19,7 @@ const redis = new Redis(redisConfig)
 const redisCacheService = {}
 
 redisCacheService.affectedTables = {
-  'pupilRegister.getPupilRegister': ['checkStatus', 'group', 'pupil', 'pupilGroup', 'pupilStatus', 'pupilRestart']
+  'pupilRegister.getPupilRegister': ['checkstatus', 'group', 'pupil', 'pupilgroup', 'pupilstatus', 'pupilrestart']
 }
 
 redisCacheService.get = redisKey => {
@@ -45,6 +47,30 @@ redisCacheService.set = (redisKey, data) => {
       console.log(`Stored \`${redisKey}\` in Redis`)
       resolve()
     })
+  })
+}
+
+redisCacheService.dropAffectedCaches = sql => {
+  return new Promise((resolve, reject) => {
+    if (/^UPDATE|INSERT/.test(sql)) {
+      const tableRegex = new Regex(`${sqlService.adminSchema}.[([a-z]+)]`, 'ig')
+      const tables = sql.match(tableRegex)
+      if (tables) {
+        const stream = redis.scanStream({ match: `(_|-)(${tables.join('|')})` })
+        stream.on('data', keys => {
+          if (keys.length) {
+            const pipeline = redis.pipeline()
+            keys.forEach(key => {
+              pipeline.del(key)
+            })
+            pipeline.exec()
+          }
+        })
+        stream.on('end', resolve)
+      } else {
+        resolve()
+      }
+    }
   })
 }
 

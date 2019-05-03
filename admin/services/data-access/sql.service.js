@@ -280,6 +280,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
       const request = new mssql.Request(pool)
       addParamsToRequestSimple(params, request)
       result = await request.query(sql)
+      await redisCacheService.dropAffectedCaches(sql)
       if (redisKey) {
         await redisCacheService.set(redisKey, result)
       }
