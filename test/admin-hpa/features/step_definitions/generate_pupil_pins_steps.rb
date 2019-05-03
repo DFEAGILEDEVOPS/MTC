@@ -312,7 +312,6 @@ end
 
 Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
-  sleep(180)
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
   step 'I should be able to generate pins for all pupils in this group'
