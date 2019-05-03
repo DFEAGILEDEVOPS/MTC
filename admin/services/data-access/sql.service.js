@@ -8,6 +8,7 @@ const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
 const config = require('../../config')
+const redisCacheService = require('../redis-cache.service')
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -260,15 +261,29 @@ function addParamsToRequestSimple (params, request) {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = []) => {
+sqlService.query = async (sql, params = [], redisKey) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
+  if (redisKey && redisCacheService.affectedTables[redisKey]) {
+    redisKey = `${redisKey}_${redisCacheService.affectedTables[redisKey].join('-')}`
+  }
+
   const query = async () => {
-    const request = new mssql.Request(pool)
-    addParamsToRequestSimple(params, request)
-    const result = await request.query(sql)
+    let result = false
+    if (redisKey) {
+      let redisResult = await redisCacheService.get(redisKey)
+      result = JSON.parse(redisResult)
+    }
+    if (!result) {
+      const request = new mssql.Request(pool)
+      addParamsToRequestSimple(params, request)
+      result = await request.query(sql)
+      if (redisKey) {
+        await redisCacheService.set(redisKey, result)
+      }
+    }
     return sqlService.transformResult(result)
   }
 
