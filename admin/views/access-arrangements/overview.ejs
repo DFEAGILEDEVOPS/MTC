@@ -77,9 +77,16 @@
             <% pupils.forEach( (pupil) => { %>
             <tr>
                 <td class="<% if (availabilityData.canEditArrangements && !pupil.hasCompletedCheck && !pupil.notTakingCheck) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
-                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
-                                <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
-                            class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
+                    <div
+                        <%
+                        if (highlight && highlight.includes(pupil.urlSlug)) {
+                          let arrangementsLn = pupil.arrangements.length
+                          if (pupil.showDoB && arrangementsLn === 1) {
+                            arrangementsLn = 2
+                          }
+                          const VerticalBarStyle = `height:${230 - 35 * (7 - arrangementsLn)}px`
+                        %>
+                        class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <% if (!availabilityData.canEditArrangements || pupil.hasCompletedCheck || pupil.notTakingCheck) { %>

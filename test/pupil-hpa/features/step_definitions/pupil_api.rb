@@ -9,11 +9,11 @@ Given(/^I have generated a pin via the admin app$/) do
   find('.sticky-banner-wrapper #stickyConfirm').click
   @school_password = all('.pin-content span:nth-child(2)').last.text
   @pupil_pin = all('.pin-content span:nth-child(5)').last.text
+  AzureTableHelper.wait_for_prepared_check(@school_password,@pupil_pin)
 end
 
 Given(/^I make a request with valid credentials$/) do
   step 'I have generated a pin via the admin app'
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(@school_password, @pupil_pin).code == 200}
   @response = RequestHelper.auth(@school_password, @pupil_pin)
 end
 
