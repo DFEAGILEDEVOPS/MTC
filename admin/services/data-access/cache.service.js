@@ -22,8 +22,12 @@ service.remove = async (key) => {
   return client.delAsync(key)
 }
 
-service.set = async (key, value) => {
-  return client.setAsync(key, value)
+service.set = async (key, value, lifetimeInSeconds = 0) => {
+  if (lifetimeInSeconds === 0) {
+    return client.setAsync(key, value)
+  } else {
+    return client.setExAsync(key, value, lifetimeInSeconds)
+  }
 }
 
 service.get = async (key) => {
