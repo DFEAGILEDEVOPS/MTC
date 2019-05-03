@@ -2,7 +2,7 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "0 0 */3 * * *",
+      "schedule": "30 */2 * * * *",
       "name": "timer",
       "type": "timerTrigger",
       "direction": "in"
