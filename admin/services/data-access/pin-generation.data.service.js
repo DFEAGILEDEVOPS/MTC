@@ -11,11 +11,11 @@ const serviceToExport = {
    * @return {Promise<*>}
    */
   sqlFindEligiblePupilsBySchool: async (schoolId, isLiveCheck) => {
-    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
-    const sql = `SELECT 
-                  * 
+    const view = isLiveCheck === true ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
+    const sql = `SELECT
+                  *
                 FROM ${sqlService.adminSchema}.${view}
-                WHERE school_id=@schoolId                 
+                WHERE school_id=@schoolId
                 ORDER BY lastName asc, foreName asc, middleNames asc `
     const params = [
       {
@@ -31,9 +31,9 @@ const serviceToExport = {
     const view = isLiveCheck ? 'vewPupilsWithActiveLivePins' : 'vewPupilsWithActiveFamiliarisationPins'
     const param = { name: 'schoolId', type: TYPES.Int, value: schoolId }
     const sql = `
-      SELECT 
+      SELECT
         *
-      FROM ${sqlService.adminSchema}.[${view}] 
+      FROM ${sqlService.adminSchema}.[${view}]
       WHERE school_id = @schoolId
       ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
       `
@@ -41,8 +41,8 @@ const serviceToExport = {
   },
 
   sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
-    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
-    const select = `SELECT * 
+    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
+    const select = `SELECT *
                     FROM ${sqlService.adminSchema}.[${view}]`
     let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
     const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
@@ -62,7 +62,7 @@ const serviceToExport = {
    * @param {[number]} pupilIds - pupils known to be doing a restart
    */
   sqlFindChecksForPupilsById: async (schoolId, checkIds, pupilIds) => {
-    const select = `SELECT c.* 
+    const select = `SELECT c.*
                     FROM ${sqlService.adminSchema}.[check] c
                       JOIN ${sqlService.adminSchema}.[pupil] p ON (c.pupil_id = p.id)`
     const schoolParam = {
@@ -74,8 +74,8 @@ const serviceToExport = {
     const checkIdentifiers = checkIds.map((checkId, index) => `@checkId${index}`)
     const pupilParams = pupilIds.map((pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } })
     const pupilIdentifiers = pupilIds.map((pupilId, index) => `@pupilId${index}`)
-    const whereClause = `WHERE p.school_id = @schoolId 
-                         AND c.id IN (${checkIdentifiers.join(', ')}) 
+    const whereClause = `WHERE p.school_id = @schoolId
+                         AND c.id IN (${checkIdentifiers.join(', ')})
                          AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
     const sql = [select, whereClause].join('\n')
     return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
