@@ -19,7 +19,7 @@ service.init = () => {
 }
 
 service.remove = async (key) => {
-  return client.setAsync(key, null)
+  return client.delAsync(key)
 }
 
 service.set = async (key, value) => {
