@@ -145,12 +145,19 @@ const v1 = {
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
+    } catch (error) {
+      logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
+      throw error // unrecoverable - no work can be done.
+    }
+
+    try {
       const disk = await checkDisk(newTmpDir)
       logger(`Disk space size is ${disk.size} bytes`)
-      logger('Disk space free is ' + disk.free + ' bytes')
+      logger(`Disk space free is ${disk.free} bytes`)
     } catch (error) {
-      // don't panic
+      logger.error(`Failed to check disk space: ${error.message}`)
     }
+
 
     const fileName1 = await createLargeFile(newTmpDir, 'file1')
     logger(`File 1 created: ${fileName1}`)
