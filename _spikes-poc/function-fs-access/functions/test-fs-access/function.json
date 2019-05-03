@@ -2,7 +2,7 @@
   "disabled": false,
   "bindings": [
     {
-      "schedule": "30 */10 * * * *",
+      "schedule": "30 */30 * * * *",
       "name": "testFilesystemTimer",
       "type": "timerTrigger",
       "direction": "in"
