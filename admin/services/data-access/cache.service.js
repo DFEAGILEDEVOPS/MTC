@@ -26,7 +26,7 @@ service.set = async (key, value, lifetimeInSeconds = 0) => {
   if (lifetimeInSeconds === 0) {
     return client.setAsync(key, value)
   } else {
-    return client.setExAsync(key, value, lifetimeInSeconds)
+    return client.setAsync(key, value, 'EX', lifetimeInSeconds)
   }
 }
 

@@ -6,8 +6,13 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const cache = require('./cache.service')
 const cacheKeyPrefix = 'CheckWindow'
-
 const table = '[checkWindow]'
+const oneHourInSeconds = 3600
+const activeCheckWindowCacheKey = `${cacheKeyPrefix}:ActiveCheckWindowObject`
+
+const invalidateCheckWindowCache = async () => {
+  await cache.remove(activeCheckWindowCacheKey)
+}
 
 const checkWindowDataService = {
   /**
@@ -212,10 +217,14 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create(table, data)
+    const result = await sqlService.create(table, data)
+    await invalidateCheckWindowCache()
+    return result
   },
   sqlUpdate: async (data) => {
-    return sqlService.update('[checkWindow]', data)
+    const result = await sqlService.update('[checkWindow]', data)
+    await invalidateCheckWindowCache()
+    return result
   },
   sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
@@ -357,12 +366,16 @@ const checkWindowDataService = {
    */
   sqlFindActiveCheckWindow: async () => {
     cache.increment(`${cacheKeyPrefix}:sqlFindActiveCheckWindow`)
+    const cacheValue = await cache.getObject(activeCheckWindowCacheKey)
+    if (cacheValue) return cacheValue
     const sql = `SELECT TOP 1 *
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
     const result = await sqlService.query(sql)
-    return R.head(result)
+    const row = R.head(result)
+    cache.setObject(activeCheckWindowCacheKey, row, oneHourInSeconds)
+    return row
   },
 
   /**
