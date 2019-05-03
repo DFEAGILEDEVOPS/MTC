@@ -428,6 +428,8 @@ export class CheckComponent implements OnInit {
       this.storageService.removeItem(CheckComponent.forceUserInteractionKey);
     }
 
+    const { questionReader } = this.config;
+
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case
     // where the state is incremented.
@@ -454,11 +456,11 @@ export class CheckComponent implements OnInit {
       // console.log('refreshDetected(): calling changeState()');
       this.changeState(true);
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc) || CheckComponent.spokenWarmupQuestionRe.test(stateDesc)) {
-      this.changeState();
+      this.changeState(questionReader);
     } else {
       // trigger stateChange to move to the same state again
       this.state = this.getPreviousState();
-      this.changeState();
+      this.changeState(questionReader);
     }
   }
 
