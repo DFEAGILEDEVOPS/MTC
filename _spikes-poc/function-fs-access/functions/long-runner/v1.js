@@ -11,7 +11,7 @@ function delay (ms) {
 const v1 = {
   process: async function (loggerArg) {
     logger = loggerArg
-    const twoHoursInMs = 2 * 60 * 60 * 100
+    const twoHoursInMs = 2 * 60 * 60 * 1000
     logger('Commencing delay: 2 hours')
     await delay(twoHoursInMs - 10000)
     logger('Delay complete')
