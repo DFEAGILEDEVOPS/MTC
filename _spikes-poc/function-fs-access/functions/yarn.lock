@@ -114,6 +114,11 @@ buffer@^5.1.0:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
+check-disk-space@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/check-disk-space/-/check-disk-space-1.5.0.tgz#66647518e1d075186c0b3aa6c24983b1f6865474"
+  integrity sha512-Is5VP2B5eWjLxe22K2GJFr55zNrj2T+tTYQQ4ifXj23NULJWPgEyZPRM7yv0Vpg9HvCkvRC+OygfjZZqVrr2Ew==
+
 compress-commons@^1.2.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/compress-commons/-/compress-commons-1.2.2.tgz#524a9f10903f3a813389b0225d27c48bb751890f"

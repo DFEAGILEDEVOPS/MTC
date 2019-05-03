@@ -6,6 +6,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "archiver": "^3.0.0",
+    "check-disk-space": "^1.5.0",
     "fast-csv": "^2.5.0",
     "fs-extra": "^7.0.1"
   }

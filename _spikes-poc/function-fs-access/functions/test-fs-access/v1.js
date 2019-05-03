@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const archiver = require('archiver')
+const checkDisk = require('check-disk-space')
 
 let logger
 
@@ -144,6 +145,9 @@ const v1 = {
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
+      const disk = await checkDisk(newTmpDir)
+      logger('Disk space size is ' + disk.size + ' bytes')
+      logger('Disk space free is ' + disk.free + ' bytes')
     } catch (error) {
       // don't panic
     }
