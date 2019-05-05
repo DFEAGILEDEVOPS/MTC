@@ -17,7 +17,7 @@ const redis = new Redis(redisConfig)
 const redisCacheService = {}
 
 redisCacheService.affectedTables = {
-  'pupilRegister.getPupilRegister': ['checkstatus', 'group', 'pupil', 'pupilgroup', 'pupilstatus', 'pupilrestart']
+  'checkWindow.sqlFindActiveCheckWindow': ['checkWindow']
 }
 
 redisCacheService.get = redisKey => {
