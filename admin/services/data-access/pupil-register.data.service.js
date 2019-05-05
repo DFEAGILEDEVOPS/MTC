@@ -15,7 +15,7 @@ const service = {
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ]
 
-    return sqlService.query(sql, params, 'pupilRegister.getPupilRegister')
+    return sqlService.query(sql, params)
   },
 
   /**
