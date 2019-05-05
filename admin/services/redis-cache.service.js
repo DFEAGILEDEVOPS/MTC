@@ -1,7 +1,5 @@
-/* global Regex */
 const Redis = require('ioredis')
 const config = require('../config')
-const sqlService = require('./data-access/sql.service')
 
 let redisConfig = {
   port: config.Redis.Port,
@@ -53,14 +51,21 @@ redisCacheService.set = (redisKey, data) => {
 redisCacheService.dropAffectedCaches = sql => {
   return new Promise((resolve, reject) => {
     if (/^UPDATE|INSERT/.test(sql)) {
-      const tableRegex = new Regex(`${sqlService.adminSchema}.[([a-z]+)]`, 'ig')
-      const tables = sql.match(tableRegex)
-      if (tables) {
-        const stream = redis.scanStream({ match: `(_|-)(${tables.join('|')})` })
+      const tableRegex = new RegExp('\\.\\[([a-z]+)\\]', 'gi')
+      let match = false
+      let tables = []
+      while ((match = tableRegex.exec(sql)) !== null) {
+        tables.push(match[1])
+      }
+      if (tables.length) {
+        const stream = redis.scanStream()
         stream.on('data', keys => {
-          if (keys.length) {
+          const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
+          const matchedKeys = keys.filter(k => keyRegex.test(k))
+          if (matchedKeys.length) {
             const pipeline = redis.pipeline()
-            keys.forEach(key => {
+            matchedKeys.forEach(key => {
+              console.log(`Dropped \`${key}\` from Redis`)
               pipeline.del(key)
             })
             pipeline.exec()
@@ -70,6 +75,8 @@ redisCacheService.dropAffectedCaches = sql => {
       } else {
         resolve()
       }
+    } else {
+      resolve()
     }
   })
 }
