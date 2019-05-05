@@ -139,10 +139,13 @@ const convertMomentToJsDate = (m) => {
  * Useful for converting Data during UPDATES and INSERTS
  */
 const convertDateToMoment = (d) => {
-  if (!(d instanceof Date)) {
-    return d
+  if (
+    d instanceof Date ||
+    (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(d))
+  ) {
+    return moment.utc(d)
   }
-  return moment.utc(d)
+  return d
 }
 
 /**
@@ -340,6 +343,7 @@ sqlService.modify = async (sql, params = []) => {
   const modify = async () => {
     const request = new mssql.Request(pool)
     addParamsToRequest(params, request)
+    await redisCacheService.dropAffectedCaches(sql)
     return request.query(sql)
   }
 
