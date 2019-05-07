@@ -59,7 +59,7 @@
                     >
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
-                                <a class="bold-small name-text-wrap" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= `${p.fullName}` %></a>
+                                <a class="bold-small name-text-wrap" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
                                 <% } else { %>
                                 <span class="bold-small name-text-wrap"><%= p.fullName %></span>
                             <% } %>
