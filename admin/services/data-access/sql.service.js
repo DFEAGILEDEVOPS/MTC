@@ -269,8 +269,8 @@ sqlService.query = async (sql, params = [], redisKey) => {
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
-  if (redisKey && redisCacheService.affectedTables[redisKey]) {
-    redisKey = `${redisKey}_${redisCacheService.affectedTables[redisKey].join('-')}`
+  if (redisKey) {
+    redisKey = redisCacheService.getFullKey(redisKey)
   }
 
   const query = async () => {

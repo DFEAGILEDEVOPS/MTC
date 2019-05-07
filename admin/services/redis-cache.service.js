@@ -81,4 +81,21 @@ redisCacheService.dropAffectedCaches = sql => {
   })
 }
 
+redisCacheService.getFullKey = serviceKey => {
+  if (!serviceKey) {
+    return false
+  }
+  let affectedKey = serviceKey
+  const keyParts = serviceKey.split('.')
+  if (keyParts.length > 2) {
+    // the key includes an identifier e.g. school_id
+    affectedKey = `${keyParts[0]}.${keyParts[1]}`
+  }
+  const tables = redisCacheService.affectedTables[affectedKey]
+  if (tables) {
+    serviceKey = `${serviceKey}_${tables.join('-')}`
+  }
+  return serviceKey
+}
+
 module.exports = redisCacheService
