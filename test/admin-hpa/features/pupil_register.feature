@@ -9,6 +9,11 @@ Feature:
     When I am on the Pupil Register page
     Then I should see on Pupil register page that all the pupils who are registered are displayed and sorted by lastname
 
+  Scenario: Pupil register has a section explaining what each status means
+    Given I am logged in
+    And I am on the Pupil Register page
+    Then I should see a toggle that explains each status
+
   Scenario: Sorting Pupil list by Name
     Given I am logged in
     And I am on the Pupil Register page
