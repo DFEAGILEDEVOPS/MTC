@@ -28,6 +28,7 @@ const service = {
     SELECT TOP 1 *
     FROM [mtc_admin].[vewPupilRegister]
     WHERE lastCheckStatusCode = 'NTR'
+    AND pupilStatusCode = 'STARTED'
     AND school_id = @schoolId
     `
 
