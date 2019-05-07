@@ -17,7 +17,12 @@ const redis = new Redis(redisConfig)
 const redisCacheService = {}
 
 redisCacheService.affectedTables = {
-  'checkWindow.sqlFindActiveCheckWindow': ['checkWindow']
+  'checkWindow.sqlFindActiveCheckWindow': ['checkWindow'],
+  'schoolData.sqlFindOneById': ['sce', 'school']
+}
+
+redisCacheService.storedProceduresAffectedTables = {
+  'spUpsertSceSchools': ['sce']
 }
 
 redisCacheService.get = redisKey => {
@@ -50,31 +55,43 @@ redisCacheService.set = (redisKey, data) => {
 
 redisCacheService.dropAffectedCaches = sql => {
   return new Promise((resolve, reject) => {
-    if (/^UPDATE|INSERT/.test(sql)) {
+    let tables = []
+    if (/DELETE|INSERT|UPDATE/.test(sql)) {
       const tableRegex = new RegExp('\\.\\[([a-z]+)\\]', 'gi')
       let match = false
-      let tables = []
       while ((match = tableRegex.exec(sql)) !== null) {
         tables.push(match[1])
       }
-      if (tables.length) {
-        const stream = redis.scanStream()
-        stream.on('data', keys => {
-          const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
-          const matchedKeys = keys.filter(k => keyRegex.test(k))
-          if (matchedKeys.length) {
-            const pipeline = redis.pipeline()
-            matchedKeys.forEach(key => {
-              console.log(`Dropped \`${key}\` from Redis`)
-              pipeline.del(key)
-            })
-            pipeline.exec()
-          }
-        })
-        stream.on('end', resolve)
-      } else {
-        resolve()
+    }
+    if (/EXEC/.test(sql)) {
+      const spRegex = new RegExp('\\.\\[(sp[a-z]+)\\]', 'gi')
+      let match = false
+      let procedures = []
+      while ((match = spRegex.exec(sql)) !== null) {
+        procedures.push(match[1])
       }
+      procedures.forEach(p => {
+        const thisTables = redisCacheService.storedProceduresAffectedTables[p]
+        if (thisTables) {
+          tables = tables.concat(thisTables)
+        }
+      })
+    }
+    if (tables.length) {
+      const stream = redis.scanStream()
+      stream.on('data', keys => {
+        const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
+        const matchedKeys = keys.filter(k => keyRegex.test(k))
+        if (matchedKeys.length) {
+          const pipeline = redis.pipeline()
+          matchedKeys.forEach(key => {
+            console.log(`Dropped \`${key}\` from Redis`)
+            pipeline.del(key)
+          })
+          pipeline.exec()
+        }
+      })
+      stream.on('end', resolve)
     } else {
       resolve()
     }
