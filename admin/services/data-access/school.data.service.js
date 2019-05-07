@@ -23,7 +23,7 @@ const schoolDataService = {
           ON sce.school_id = school.id
         WHERE school.id = @id
       `
-    const rows = await sqlService.query(sql, [paramId])
+    const rows = await sqlService.query(sql, [paramId], `schoolData.sqlFindOneById.${id}`)
     return R.head(rows)
   },
 
