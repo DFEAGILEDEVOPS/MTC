@@ -1,0 +1,7 @@
+Deployment URL: https://devfunc-app-mtc.scm.azurewebsites.net/ZipDeployUI
+
+Navigate to the deployment URL and drag and drop the Zip file to upload it.
+
+Azure docs: https://docs.microsoft.com/en-us/azure/app-service/deploy-zip
+
+
