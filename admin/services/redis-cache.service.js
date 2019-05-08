@@ -116,4 +116,51 @@ redisCacheService.getFullKey = serviceKey => {
   return serviceKey
 }
 
+const findKeys = pattern => {
+  return new Promise((resolve, reject) => {
+    let foundKeys = []
+    const stream = redis.scanStream()
+    stream.on('data', keys => {
+      foundKeys = foundKeys.concat(keys.filter(key => pattern.test(key)))
+    })
+    stream.on('end', () => {
+      resolve(foundKeys)
+    })
+  })
+}
+
+redisCacheService.update = (key, updates, sqlService, sql, params) => {
+  // TODO: requiring sqlService here returns an empty object, so for now has to be passed through
+  return new Promise(async (resolve, reject) => {
+    const keys = await findKeys(new RegExp(`^${key}_`))
+    const foundKey = keys.length ? keys[0] : false
+    if (!foundKey) {
+      resolve(sqlService.modify(sql, params))
+    } else {
+      redis.get(foundKey, (err, result) => {
+        if (err || !result) {
+          resolve(sqlService.modify(sql, params))
+        } else {
+          result = JSON.parse(result)
+          console.log(result.recordset)
+          console.log(updates)
+          result.recordset = result.recordset.map(r => {
+            if (updates[r.id]) {
+              for (let prop in updates[r.id]) {
+                r[prop] = updates[r.id][prop]
+              }
+            }
+            return r
+          })
+          console.log(result.recordset)
+          redis.set(foundKey, JSON.stringify(result), () => {
+            // TODO: Send message to update in SQL server
+            resolve(true)
+          })
+        }
+      })
+    }
+  })
+}
+
 module.exports = redisCacheService
