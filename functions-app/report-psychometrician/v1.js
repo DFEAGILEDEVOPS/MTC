@@ -26,7 +26,7 @@ const v1 = {
         logger.error(`${functionName}: Error during processing: ${error.message}`, error)
         meta.errorCount += 1
       }
-    } while (checkProcessingService.hasWorkToDo() && meta.errorCount < maxAllowedErrors)
+    } while (await checkProcessingService.hasWorkToDo() && meta.errorCount < maxAllowedErrors)
     return meta
   }
 }
