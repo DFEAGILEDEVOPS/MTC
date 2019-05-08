@@ -4,6 +4,7 @@ const groupDataService = {}
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const redisCacheService = require('../redis-cache.service')
 
 /**
  * Get active groups (non-soft-deleted).
@@ -121,11 +122,12 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.modify(
-    `UPDATE ${sqlService.adminSchema}.[group] 
-    SET name=@name 
-    WHERE [id]=@id AND school_id=@schoolId`,
-    params)
+  const sql = `
+  UPDATE ${sqlService.adminSchema}.[group] 
+  SET name=@name 
+  WHERE [id]=@id AND school_id=@schoolId
+  `
+  return redisCacheService.update(`group.sqlFindGroups.${schoolId}`, { [id]: { name } }, sqlService, sql, params)
 }
 
 /**
