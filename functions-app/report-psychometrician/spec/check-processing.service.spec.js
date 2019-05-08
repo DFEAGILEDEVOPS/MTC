@@ -2,7 +2,7 @@
 
 /* global describe, it, fail, expect, spyOn, beforeAll */
 
-const contextMock = require('../../mock-context')
+const contextMock = require('./mocks/mock-context')
 
 describe('checkProcessingService', () => {
   let service, psychometricianReportDataService, psychometricianReportService, anomalyReportService
@@ -73,7 +73,7 @@ describe('checkProcessingService', () => {
       spyOn(psychometricianReportDataService, 'sqlFindUnprocessedStartedChecks').and.returnValue([])
       spyOn(contextMock, 'log')
       try {
-        await service.cachePsychometricanReportData(3, contextMock)
+        await service.cachePsychometricanReportData(3, contextMock.log)
         expect(contextMock.log).toHaveBeenCalled()
       } catch (error) {
         fail(error)
