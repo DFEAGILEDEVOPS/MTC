@@ -18,6 +18,7 @@ const redisCacheService = {}
 
 redisCacheService.affectedTables = {
   'checkWindow.sqlFindActiveCheckWindow': ['checkWindow'],
+  'group.sqlFindGroups': ['group', 'pupilGroup'],
   'schoolData.sqlFindOneById': ['sce', 'school']
 }
 

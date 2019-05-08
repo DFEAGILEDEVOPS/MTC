@@ -13,7 +13,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
   const sql = `
   SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
   FROM ${sqlService.adminSchema}.[group] g
-  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
+  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg 
   ON g.id = pg.group_id
   WHERE g.isDeleted=0
   AND g.school_id=@schoolId
@@ -26,7 +26,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.query(sql, params, `group.sqlFindGroups.${schoolId}`)
 }
 
 /**
