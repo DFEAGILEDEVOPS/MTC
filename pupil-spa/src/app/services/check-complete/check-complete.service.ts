@@ -76,7 +76,6 @@ export class CheckCompleteService {
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       this.onSuccess(startTime);
     } catch (error) {
-      console.log(error);
       this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
       if (error.statusCode === 403
         && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
