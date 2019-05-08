@@ -103,8 +103,8 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       it('happy path', async () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
-        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(groupsMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
@@ -113,8 +113,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
-        expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
-        expect(groupService.getGroups).toHaveBeenCalled()
+        expect(pupilsNotTakingCheckService.getPupilsWithoutReasons).toHaveBeenCalled()
+        expect(groupService.getGroupsWithPresentPupils).toHaveBeenCalled()
         expect(next).not.toHaveBeenCalled()
       })
 
@@ -135,10 +135,10 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      it('unhappy path - pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber fails', async () => {
+      it('unhappy path - pupilsNotTakingCheckService.getPupilsWithoutReasons fails', async () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(Promise.reject(new Error()))
-        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(Promise.reject(new Error()))
+        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(groupsMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
@@ -147,15 +147,15 @@ describe('pupils-not-taking-the-check controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
-        expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
-        expect(groupService.getGroups).not.toHaveBeenCalled()
+        expect(pupilsNotTakingCheckService.getPupilsWithoutReasons).toHaveBeenCalled()
+        expect(groupService.getGroupsWithPresentPupils).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })
 
       it('unhappy path - groupService.getGroups fails', async () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
-        spyOn(groupService, 'getGroups').and.returnValue(Promise.reject(new Error()))
+        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(Promise.reject(new Error()))
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
@@ -164,8 +164,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
-        expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
-        expect(groupService.getGroups).toHaveBeenCalled()
+        expect(pupilsNotTakingCheckService.getPupilsWithoutReasons).toHaveBeenCalled()
+        expect(groupService.getGroupsWithPresentPupils).toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })
     })
