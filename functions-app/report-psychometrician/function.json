@@ -1,5 +1,4 @@
 {
-  "disabled": false,
   "bindings": [
     {
       "schedule": "15 */10 * * * *",
