@@ -7,6 +7,7 @@ const R = require('ramda')
 
 /**
  * Get active groups (non-soft-deleted).
+ * @param schoolId
  * @returns {Promise<*>}
  */
 groupDataService.sqlFindGroups = async (schoolId) => {
@@ -16,6 +17,34 @@ groupDataService.sqlFindGroups = async (schoolId) => {
   LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
   ON g.id = pg.group_id
   WHERE g.isDeleted=0
+  AND g.school_id=@schoolId
+  GROUP BY g.id, g.name
+  ORDER BY name ASC`
+  const params = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Get active groups (non-soft-deleted), which have at least one present pupil.
+ * @param schoolId
+ * @returns {Promise<*>}
+ */
+groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
+  const sql = `
+  SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
+  FROM ${sqlService.adminSchema}.[group] g
+  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
+  ON g.id = pg.group_id
+  LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
+  ON pa.pupil_id=pg.pupil_id AND pa.isDeleted=0
+  WHERE pa.id IS NULL
+  AND g.isDeleted=0
   AND g.school_id=@schoolId
   GROUP BY g.id, g.name
   ORDER BY name ASC`

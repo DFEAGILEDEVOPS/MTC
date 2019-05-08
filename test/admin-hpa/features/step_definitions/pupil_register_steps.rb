@@ -72,3 +72,8 @@ Then(/^these pupils should be highlighted in red$/) do
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row).to have_incomplete_pupil
 end
+
+
+Then(/^I should see a toggle that explains each status$/) do
+  expect(pupil_register_page).to have_pupil_status_explanation
+end
