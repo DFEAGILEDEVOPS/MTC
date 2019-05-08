@@ -98,6 +98,28 @@ describe('CheckCompleteService', () => {
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
   });
+  it(`submit should call azure queue service service when sas token has expired and redirect to session expiry page`, async () => {
+    const addEntrySpy = spyOn(auditService, 'addEntry');
+    spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+    spyOn(appUsageService , 'store');
+    spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+    spyOn(storageService, 'setItem');
+    spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
+    const sasTokenExpiredError = {
+      statusCode: 403,
+      authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
+    };
+    spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(sasTokenExpiredError));
+    await checkCompleteService.submit(Date.now());
+    expect(addEntrySpy).toHaveBeenCalledTimes(2);
+    expect(appUsageService.store).toHaveBeenCalledTimes(1);
+    expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
+    expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
+    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(0);
+    expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/session-expired']);
+  });
   it('submit should return if the app is configured to run in practice mode', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
