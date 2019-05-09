@@ -1,5 +1,7 @@
 const Redis = require('ioredis')
 const config = require('../config')
+const azureQueueService = require('./azure-queue.service')
+const queueNameService = require('./queue-name-service')
 
 let redisConfig = {
   port: config.Redis.Port,
@@ -129,7 +131,7 @@ const findKeys = pattern => {
   })
 }
 
-redisCacheService.update = (key, updates, sqlService, sql, params) => {
+redisCacheService.update = (key, update, sqlService, sql, params) => {
   // TODO: requiring sqlService here returns an empty object, so for now has to be passed through
   return new Promise(async (resolve, reject) => {
     const keys = await findKeys(new RegExp(`^${key}_`))
@@ -142,19 +144,17 @@ redisCacheService.update = (key, updates, sqlService, sql, params) => {
           resolve(sqlService.modify(sql, params))
         } else {
           result = JSON.parse(result)
-          console.log(result.recordset)
-          console.log(updates)
           result.recordset = result.recordset.map(r => {
-            if (updates[r.id]) {
-              for (let prop in updates[r.id]) {
-                r[prop] = updates[r.id][prop]
+            if (update.data[r.id]) {
+              for (let prop in update.data[r.id]) {
+                r[prop] = update.data[r.id][prop]
               }
             }
             return r
           })
-          console.log(result.recordset)
-          redis.set(foundKey, JSON.stringify(result), () => {
-            // TODO: Send message to update in SQL server
+          redis.set(foundKey, JSON.stringify(result), async () => {
+            const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
+            await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [update] })
             resolve(true)
           })
         }
