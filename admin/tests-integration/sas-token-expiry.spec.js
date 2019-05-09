@@ -5,7 +5,6 @@ const azureStorage = require('azure-storage')
 const bluebird = require('bluebird')
 const moment = require('moment')
 
-// const azureQueueService = require('../services/azure-queue.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 
