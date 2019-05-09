@@ -102,6 +102,8 @@ const psychometricianReportService = {
    */
   process: async function process () {
     const dateGenerated = moment()
+    // Create a temporary directory to stage the report files in
+
     const psychometricianReport = await this.generatePsychometricianReport()
     const anomalyReport = await this.generateAnomalyReport()
     const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
