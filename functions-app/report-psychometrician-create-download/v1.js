@@ -3,14 +3,14 @@
 const psychometricianReportService = require('./service/psychometrician-report.service')
 
 const v1 = {
-  process: async function process (context) {
+  process: async function process (logger) {
     try {
-      await psychometricianReportService.process()
+      await psychometricianReportService.setLogger(logger).process()
       return {
         processCount: 1
       }
     } catch (error) {
-      context.log('ERROR: v1.proccess(): ' + error.message)
+      logger.error('ERROR: v1.proccess(): ' + error.message)
       throw error
     }
   }

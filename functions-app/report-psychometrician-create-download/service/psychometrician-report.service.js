@@ -4,12 +4,27 @@ const archiver = require('archiver')
 const csv = require('fast-csv')
 const moment = require('moment')
 const uuidv4 = require('uuid/v4')
+const os = require('os')
+const fs = require('fs-extra')
+const path = require('path')
+
+const base = require('../../lib/base')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
 
 const psychometricianReportUploadContainer = 'psychometricianreportupload'
 const psychometricianReportCode = 'PSR'
+const functionName = 'report-psychometrician'
+
+/**
+ * Create a unique directory in the system's temp dir
+ * @param prefix
+ * @return {*}
+ */
+async function createTmpDir (prefix) {
+  return fs.mkdtemp(`${os.tmpdir()}${path.sep}${prefix}`)
+}
 
 const psychometricianReportService = {
   /**
@@ -44,27 +59,14 @@ const psychometricianReportService = {
 
   /**
    * Return the CSV file as a string
-   * @return {Promise<void>}
+   * @return {Promise<string>}
    */
-  generatePsychometricianReport: async function generatePsychometricianReport () {
-    // Read data from the cache
-    const results = await psychometricianReportDataService.sqlFindAllPsychometricianReports()
-    const output = []
-    for (const obj of results) {
-      output.push(obj.jsonData)
-    }
-    const headers = this.producePsychometricianReportDataHeaders(results)
-
-    return new Promise((resolve, reject) => {
-      csv.writeToString(
-        output,
-        { headers: headers },
-        function (err, data) {
-          if (err) { return reject(err) }
-          resolve(data)
-        }
-      )
-    })
+  generatePsychometricianReport: async function generatePsychometricianReport (directory) {
+    const baseFilename = 'psychometrician-report.csv'
+    const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
+    await psychometricianReportDataService.setLogger(this.logger).streamPsychometricianReport(fileNameWithPath)
+    console.log('PS Report ', fileNameWithPath)
+    return fileNameWithPath
   },
 
   /**
@@ -102,19 +104,29 @@ const psychometricianReportService = {
    */
   process: async function process () {
     const dateGenerated = moment()
-    // Create a temporary directory to stage the report files in
 
-    const psychometricianReport = await this.generatePsychometricianReport()
+    // Create a temporary directory to stage the report files in
+    let newTmpDir
+
+    try {
+      newTmpDir = await createTmpDir(functionName + '-')
+      console.log('created new tmp dir ', newTmpDir)
+    } catch (error) {
+      logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
+      throw error // unrecoverable - no work can be done.
+    }
+
+    const psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
     const anomalyReport = await this.generateAnomalyReport()
-    const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
-    const uploadBlob = await this.uploadToBlobStorage(zipFile)
-    const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
-    await psychometricianReportDataService.sqlSaveFileUploadMeta(
-      uploadBlob.container,
-      uploadBlob.name,
-      uploadBlob.etag,
-      md5Buffer,
-      psychometricianReportCode)
+    // const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
+    // const uploadBlob = await this.uploadToBlobStorage(zipFile)
+    // const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
+    // await psychometricianReportDataService.sqlSaveFileUploadMeta(
+    //   uploadBlob.container,
+    //   uploadBlob.name,
+    //   uploadBlob.etag,
+    //   md5Buffer,
+    //   psychometricianReportCode)
   },
 
   /**
@@ -157,4 +169,4 @@ const psychometricianReportService = {
   }
 }
 
-module.exports = psychometricianReportService
+module.exports = Object.assign(base, psychometricianReportService)

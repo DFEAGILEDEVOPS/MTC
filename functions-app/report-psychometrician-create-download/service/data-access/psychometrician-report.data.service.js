@@ -2,8 +2,56 @@
 const sqlService = require('../../../lib/sql/sql.service')
 const R = require('ramda')
 const { TYPES } = sqlService
+const csv = require('fast-csv')
+const base = require('../../../lib/base')
+const fs = require('fs-extra')
 
 const psychometricianReportDataService = {
+  /**
+   *
+   */
+  streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath, logger) {
+    return new Promise(async resolve => {
+      const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
+      const csvStream = csv.createWriteStream({headers: true})
+      csvStream.pipe(stream)
+      const sql = 'SELECT check_id as checkId, jsonData from [mtc_admin].[psychometricianReportCache]'
+      const request = await sqlService.getRequest()
+
+      const recordSetFunc = () => {}
+
+      let rowCount = 0
+      const rowFunc = async (row) => {
+
+        try {
+          const data = JSON.parse(row.jsonData)
+          csvStream.write(data)
+          if (++rowCount % 15 === 0) {
+            request.pause()
+          }
+        } catch (error) {
+          if (error) {
+            logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
+          }
+        }
+      }
+
+      const errorFunc = (error) => {
+        logger.error('streamPsychometricianReport(): [onError]: error: ', error.message)
+      }
+
+      const doneFunc = () => {
+        csvStream.end()
+        stream.end()
+        resolve({
+          processCount: rowCount
+        })
+      }
+
+      await sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
+    })
+  },
+
   sqlFindAllPsychometricianReports: async function sqlFindAllPsychometricianReports () {
     const sql = 'SELECT * from [mtc_admin].[psychometricianReportCache]'
     const results = await sqlService.query(sql)
@@ -52,4 +100,4 @@ const psychometricianReportDataService = {
   }
 }
 
-module.exports = psychometricianReportDataService
+module.exports = Object.assign(base, psychometricianReportDataService)

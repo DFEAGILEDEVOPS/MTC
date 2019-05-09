@@ -253,6 +253,26 @@ sqlService.query = async function query (sql, params = []) {
 }
 
 /**
+ * Return a mssql.Request object
+ * @return {Promise<mssql.Request>}
+ */
+sqlService.getRequest = async function getRequest () {
+  await this.initPool()
+  return new mssql.Request(pool)
+}
+
+sqlService.streamQuery = async function streamQuery (recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request, params = [])  {
+  await this.initPool()
+  addParamsToRequestSimple(params, request)
+  request.stream = true
+  request.query(sql)
+  request.on('recordset', recordSetFunc)
+  request.on('row', rowFunc)
+  request.on('error', errorFunc)
+  request.on('done', doneFunc)
+}
+
+/**
  * Add parameters to an SQL request
  * @param {{name, value, type}[]} params - array of parameter objects
  * @param {{}} request -  mssql request
