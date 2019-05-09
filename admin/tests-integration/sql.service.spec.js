@@ -97,7 +97,7 @@ describe('sql.service:integration', () => {
       fail(err)
     }
     try {
-      expect(results.length).toBe(1)
+      expect(results.length).toBe(2)
       const row = results[0]
       expect(row.updatedAt).toBeDefined()
       const actualDateTime = moment(row.updatedAt)
