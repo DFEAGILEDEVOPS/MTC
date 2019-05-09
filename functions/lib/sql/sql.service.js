@@ -188,7 +188,9 @@ const sqlService = {
     TinyInt: mssql.TinyInt,
     UniqueIdentifier: mssql.UniqueIdentifier,
     VarChar: mssql.VarChar
-  }
+  },
+  // string to identify SQL updates from message queues (where Redis has been updated manually first)
+  DONT_DROP_REDIS: '/*DONT_DROP_REDIS*/'
 }
 
 sqlService.initPool = async () => {
@@ -247,7 +249,9 @@ sqlService.query = async function query (sql, params = []) {
     const request = new mssql.Request(pool)
     addParamsToRequestSimple(params, request)
     const result = await request.query(sql)
-    await redisCacheService.dropAffectedCaches(sql)
+    if (sql.indexOf(sqlService.DONT_DROP_REDIS) === -1) {
+      await redisCacheService.dropAffectedCaches(sql)
+    }
     return sqlService.transformResult(result)
   }
 
@@ -298,7 +302,9 @@ sqlService.modify = async function modify (sql, params = []) {
   const modify = async () => {
     const request = new mssql.Request(pool)
     addParamsToRequest(params, request)
-    await redisCacheService.dropAffectedCaches(sql)
+    if (sql.indexOf(sqlService.DONT_DROP_REDIS) === -1) {
+      await redisCacheService.dropAffectedCaches(sql)
+    }
     return request.query(sql)
   }
 

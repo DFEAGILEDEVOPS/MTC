@@ -2,7 +2,7 @@
 
 const process = require('process')
 const sqlService = require('../lib/sql/sql.service')
-const { TYPES } = sqlService
+const { DONT_DROP_REDIS, TYPES } = sqlService
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -43,7 +43,8 @@ module.exports = async function (context, sqlUpdateMessage) {
 
   if (queries.length) {
     try {
-      const res = await sqlService.modify(queries.join('; '), params)
+      const sql = DONT_DROP_REDIS + queries.join('; ')
+      const res = await sqlService.modify(sql, params)
       if (res.rowsModified === 0) {
         context.log(`sql-update: no rows modified. This may be a bad update`, queries, params)
       }
