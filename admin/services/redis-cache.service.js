@@ -150,8 +150,11 @@ redisCacheService.update = (key, changes, sqlService, sql, params) => {
                 r[prop] = changes.update[r.id][prop]
               }
             }
+            if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
+              return false
+            }
             return r
-          })
+          }).filter(r => r !== false)
           redis.set(foundKey, JSON.stringify(result), async () => {
             const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
             await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })

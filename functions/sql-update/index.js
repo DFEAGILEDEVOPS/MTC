@@ -8,6 +8,8 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const schema = `[mtc_admin]`
+
 module.exports = async function (context, sqlUpdateMessage) {
   context.log('sql-update: message received', sqlUpdateMessage)
 
@@ -17,31 +19,48 @@ module.exports = async function (context, sqlUpdateMessage) {
   let params = []
 
   messages.forEach((message, i) => {
-    const { table, update } = message
+    const { delete: deleteData, table, update } = message
     if (update) {
       for (let id in update) {
-        let thisQuery = `UPDATE [mtc_admin].[${table}] SET `
+        let thisQuery = `UPDATE ${schema}.[${table}] SET `
         for (let column in update[id]) {
           let paramValue = update[id][column]
+          const param = `update_${column}_${i}`
           params.push({
-            name: `${column}${i}`,
+            name: param,
             value: paramValue,
             type: /^\d+$/.test(paramValue) ? TYPES.Int : TYPES.NVarChar
           })
-          thisQuery += `${column}=@${column}${i} `
+          thisQuery += `${column}=@${param} `
         }
         params.push({
-          name: `id${i}`,
-          value: parseInt(id),
+          name: `update_ID_${i}`,
+          value: id,
           type: TYPES.Int
         })
-        thisQuery += `WHERE id=@id${i}`
+        thisQuery += `WHERE id=@update_ID_${i}`
         queries.push(thisQuery)
+      }
+    }
+    if (deleteData) {
+      const deleteParams = deleteData.map((id, i) => {
+        const param = `delete_ID_${i}`
+        params.push({
+          name: param,
+          value: id,
+          type: TYPES.Int
+        })
+        return param
+      })
+      if (deleteParams.length) {
+        queries.push(`DELETE FROM ${schema}.[${table}] WHERE id IN (@${deleteParams.join(',@')})`)
       }
     }
   })
 
   if (queries.length) {
+    console.log(queries)
+    console.log(params)
     try {
       const sql = DONT_DROP_REDIS + queries.join('; ')
       const res = await sqlService.modify(sql, params)
