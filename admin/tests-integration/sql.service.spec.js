@@ -69,7 +69,7 @@ describe('sql.service:integration', () => {
   })
 
   it('dates should be stored as UTC and preserve up to 3 milliseconds', async () => {
-    const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
+    const fullDateFormat = moment.now()
     const britishSummerTimeValue = moment(fullDateFormat)
     const updatedAtParam = {
       name: 'updatedAt',
@@ -102,9 +102,10 @@ describe('sql.service:integration', () => {
       expect(row.updatedAt).toBeDefined()
       const actualDateTime = moment(row.updatedAt)
       const utcOffset = moment.parseZone(actualDateTime).utcOffset()
-      expect(utcOffset).toBe(60)
-      expect(actualDateTime.milliseconds()).toBe(123)
-      expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString())
+      expect(utcOffset).toBe(0)
+      const duration = moment.duration(actualDateTime.diff(britishSummerTimeValue))
+      const diffInMilliseconds = duration.asMilliseconds()
+      expect(diffInMilliseconds).toBeLessThan(1000)
     } catch (err) {
       fail(err)
     }
@@ -160,7 +161,7 @@ describe('sql.service:integration', () => {
     expect(row).toBeDefined()
     expect(row['id']).toBe(4)
     expect(row['identifier']).toBe('teacher3')
-    expect(row['school_id']).toBe(18603)
+    expect(row['school_id']).toBe(4)
     expect(row['role_id']).toBe(3)
   })
 
@@ -255,7 +256,9 @@ describe('sql.service:integration', () => {
       // read the school back and check
       const school2 = await sql.findOneById('[school]', 1)
       expect(school2.pin).toBe(pin)
-      expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
+      const duration = moment.duration(school2.pinExpiresAt.diff(expiry))
+      const diffInMilliseconds = duration.asMilliseconds()
+      expect(diffInMilliseconds).toBeLessThan(1000)
     })
   })
 
