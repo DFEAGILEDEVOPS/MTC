@@ -120,13 +120,24 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
         spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(service, 'getPupils').and.returnValue(pupilsMock)
       })
 
-      it('should update group', async (done) => {
+      it('should update group (including pupils)', async (done) => {
+        const schoolId = 123
+        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.pupils = [2]
+        await service.update(1, thisGroupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalled()
+        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        done()
+      })
+
+      it('should update group (excluding pupils)', async (done) => {
         const schoolId = 123
         await service.update(1, groupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalledTimes(0)
         done()
       })
     })
