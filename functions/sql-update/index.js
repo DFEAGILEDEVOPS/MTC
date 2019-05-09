@@ -17,25 +17,27 @@ module.exports = async function (context, sqlUpdateMessage) {
   let params = []
 
   messages.forEach((message, i) => {
-    const { table, data } = message
-    for (let id in data) {
-      let thisQuery = `UPDATE [mtc_admin].[${table}] SET `
-      for (let column in data[id]) {
-        let paramValue = data[id][column]
+    const { table, update } = message
+    if (update) {
+      for (let id in update) {
+        let thisQuery = `UPDATE [mtc_admin].[${table}] SET `
+        for (let column in update[id]) {
+          let paramValue = update[id][column]
+          params.push({
+            name: `${column}${i}`,
+            value: paramValue,
+            type: /^\d+$/.test(paramValue) ? TYPES.Int : TYPES.NVarChar
+          })
+          thisQuery += `${column}=@${column}${i} `
+        }
         params.push({
-          name: `${column}${i}`,
-          value: paramValue,
-          type: /^\d+$/.test(paramValue) ? TYPES.Int : TYPES.NVarChar
+          name: `id${i}`,
+          value: parseInt(id),
+          type: TYPES.Int
         })
-        thisQuery += `${column}=@${column}${i} `
+        thisQuery += `WHERE id=@id${i}`
+        queries.push(thisQuery)
       }
-      params.push({
-        name: `id${i}`,
-        value: parseInt(id),
-        type: TYPES.Int
-      })
-      thisQuery += `WHERE id=@id${i}`
-      queries.push(thisQuery)
     }
   })
 

@@ -131,7 +131,7 @@ const findKeys = pattern => {
   })
 }
 
-redisCacheService.update = (key, update, sqlService, sql, params) => {
+redisCacheService.update = (key, changes, sqlService, sql, params) => {
   // TODO: requiring sqlService here returns an empty object, so for now has to be passed through
   return new Promise(async (resolve, reject) => {
     const keys = await findKeys(new RegExp(`^${key}_`))
@@ -145,16 +145,16 @@ redisCacheService.update = (key, update, sqlService, sql, params) => {
         } else {
           result = JSON.parse(result)
           result.recordset = result.recordset.map(r => {
-            if (update.data[r.id]) {
-              for (let prop in update.data[r.id]) {
-                r[prop] = update.data[r.id][prop]
+            if (changes.update && changes.update[r.id]) {
+              for (let prop in changes.update[r.id]) {
+                r[prop] = changes.update[r.id][prop]
               }
             }
             return r
           })
           redis.set(foundKey, JSON.stringify(result), async () => {
             const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
-            await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [update] })
+            await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
             resolve(true)
           })
         }
