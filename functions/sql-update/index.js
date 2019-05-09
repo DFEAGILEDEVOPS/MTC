@@ -2,6 +2,7 @@
 
 const process = require('process')
 const sqlService = require('../lib/sql/sql.service')
+const { TYPES } = sqlService
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -12,32 +13,40 @@ module.exports = async function (context, sqlUpdateMessage) {
 
   const { messages } = sqlUpdateMessage
 
-  const queries = []
+  let queries = []
+  let params = []
 
-  messages.forEach(message => {
+  messages.forEach((message, i) => {
     const { table, data } = message
     for (let id in data) {
-      let query = `UPDATE [mtc_admin].[${table}] SET `
+      let thisQuery = `UPDATE [mtc_admin].[${table}] SET `
       for (let column in data[id]) {
-        query += `${column}='${data[id][column]}' `
+        let paramValue = data[id][column]
+        params.push({
+          name: `${column}${i}`,
+          value: paramValue,
+          type: /^\d+$/.test(paramValue) ? TYPES.Int : TYPES.NVarChar
+        })
+        thisQuery += `${column}=@${column}${i} `
       }
-      query += `WHERE id=${id}`
-      queries.push(query)
+      params.push({
+        name: `id${i}`,
+        value: parseInt(id),
+        type: TYPES.Int
+      })
+      thisQuery += `WHERE id=@id${i}`
+      queries.push(thisQuery)
     }
   })
 
-  const queriesLn = queries.length
-
-  for (let i = 0; i < queriesLn; i++) {
-    const query = queries[i]
+  if (queries.length) {
     try {
-      const res = await sqlService.modify(query)
+      const res = await sqlService.modify(queries.join('; '), params)
       if (res.rowsModified === 0) {
-        context.log(`sql-update: no rows modified. This may be a bad update: "${query}"`)
+        context.log(`sql-update: no rows modified. This may be a bad update`, queries, params)
       }
     } catch (error) {
-      context.log(`sql-update: failed to update the SQL DB with "${query}": ${error.message}`)
-      throw error
+      context.log(`sql-update: failed to do updates: ${error.message}`, queries, params)
     }
   }
 }
