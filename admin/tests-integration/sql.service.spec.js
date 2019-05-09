@@ -68,7 +68,7 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  it('dates should be stored as UTC and preserve a less than 1000 millisecondsn difference', async () => {
+  it('dates should be stored as UTC and preserve a less than 1000 milliseconds difference', async () => {
     const fullDateFormat = moment.now()
     const britishSummerTimeValue = moment(fullDateFormat)
     const updatedAtParam = {
