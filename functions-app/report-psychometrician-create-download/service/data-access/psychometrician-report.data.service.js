@@ -13,7 +13,7 @@ const psychometricianReportDataService = {
   streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath, logger) {
     return new Promise(async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
-      const csvStream = csv.createWriteStream({headers: true})
+      const csvStream = csv.createWriteStream({ headers: true })
       csvStream.pipe(stream)
       const sql = 'SELECT check_id as checkId, jsonData from [mtc_admin].[psychometricianReportCache]'
       const request = await sqlService.getRequest()
@@ -22,7 +22,6 @@ const psychometricianReportDataService = {
 
       let rowCount = 0
       const rowFunc = async (row) => {
-
         try {
           const data = JSON.parse(row.jsonData)
           csvStream.write(data)

@@ -110,9 +110,9 @@ const psychometricianReportService = {
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
-      console.log('created new tmp dir ', newTmpDir)
+      this.logger.info('created new tmp dir ', newTmpDir)
     } catch (error) {
-      logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
+      this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
       throw error // unrecoverable - no work can be done.
     }
 
