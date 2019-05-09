@@ -30,6 +30,30 @@ const pupilsNotTakingCheckDataService = {
   },
 
   /**
+   * @param {number} dfeNumber
+   * @description returns all pupils with specified school that don't have a record of attendance
+   * @returns {Promise.<*>}
+   */
+  sqlFindPupilsWithoutReasons: async (dfeNumber) => {
+    const sql = `
+      SELECT p.*, NULL as reason, pg.group_id
+      FROM ${sqlService.adminSchema}.[pupil] p 
+      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
+      LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
+      LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
+      WHERE s.dfeNumber = @dfeNumber AND pa.id IS NULL
+      ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+    `
+    const params = [{
+      name: 'dfeNumber',
+      value: dfeNumber,
+      type: TYPES.Int
+    }]
+
+    return sqlService.query(sql, params)
+  },
+
+  /**
    * @param {Array} pupilIds
    * @description returns all pupils that are included in the list and have a record of attendance
    * @returns {Promise.<*>}

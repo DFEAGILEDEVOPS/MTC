@@ -27,6 +27,21 @@ describe('group.service', () => {
       const schoolId = 1
       const groups = await groupService.getGroups(schoolId)
       expect(groups).toEqual(groupsMock)
+      expect(groupDataService.sqlFindGroups).toHaveBeenCalled()
+      done()
+    })
+  })
+
+  describe('#getGroupsWithPresentPupils', () => {
+    beforeEach(() => {
+      spyOn(groupDataService, 'sqlFindGroupsWithAtleastOnePresentPupil').and.returnValue(groupsMock)
+    })
+
+    it('should return groups', async (done) => {
+      const schoolId = 1
+      const groups = await groupService.getGroupsWithPresentPupils(schoolId)
+      expect(groups).toEqual(groupsMock)
+      expect(groupDataService.sqlFindGroupsWithAtleastOnePresentPupil).toHaveBeenCalled()
       done()
     })
   })

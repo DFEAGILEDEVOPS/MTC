@@ -1,0 +1,11 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "schedule": "30 */2 * * * *",
+      "name": "timer",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ]
+}

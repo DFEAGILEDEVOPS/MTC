@@ -27,7 +27,7 @@ And(/^I should see a valid response$/) do
   pupil_details = SqlDbHelper.find_pupil_via_pin(@pupil_pin)
   expect(parsed_response['pupil']).to eql create_pupil_details_hash(pupil_details)
   expect(parsed_response['school']).to eql create_school_details_hash(pupil_details['school_id'])
-  expect(parsed_response['config']).to eql create_config_details_hash
+  # expect(parsed_response['config']).to eql create_config_details_hash
   expect(parsed_response['tokens']['checkStarted']['url']).to include '/check-started'
   expect(parsed_response['tokens']['checkStarted']['token']).to_not be_nil
   expect(parsed_response['tokens']['pupilPreferences']['url']).to include '/pupil-prefs'

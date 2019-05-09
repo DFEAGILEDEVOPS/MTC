@@ -9,6 +9,7 @@ class PupilRegisterPage < SitePrism::Page
   element :new_pupil_info_message, '.info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.info-message'
   element :edited_pupil, '.highlight-item'
+  element :pupil_status_explanation, '.summary'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
   section :pupil_list_column_heading, '#register-pupils thead tr' do
