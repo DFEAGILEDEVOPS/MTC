@@ -26,14 +26,6 @@ Given(/^I previously assigned a check form to a check window$/) do
   @first_window_name = @window_name
 end
 
-When(/^I have assigned the check form to another check window$/) do
-  manage_check_forms_page.available_checks.rows.first.checkbox.click
-  manage_check_forms_page.assign.click
-  @last_window_name = choose_check_window_page.assign_to_check_window.rows.last.title.text
-  choose_check_window_page.assign_to_check_window.rows.last.checkbox.click
-  choose_check_window_page.continue.click
-end
-
 Then(/^the check form should be displayed as being assigned to multiple check window$/) do
   wait_until{(manage_check_forms_page.available_checks.rows.first.assigned_to.text).eql? @first_window_name + ', ' + @last_window_name}
 end
