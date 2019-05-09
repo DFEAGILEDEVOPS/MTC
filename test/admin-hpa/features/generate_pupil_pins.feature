@@ -102,12 +102,11 @@ Feature: Generate Pupil PINs
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
 
-  @reset_all_pins @wip
+  @reset_all_pins
   Scenario: Multiple pins can be generated simultaneously
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
 
-  @wip
   Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
     Given I have generated a live pin for a pupil
     Then the pupil pin should be unique
@@ -143,7 +142,7 @@ Feature: Generate Pupil PINs
     Given I have generated pins for all pupils in a group
     Then I can no longer use this group to filter on the generate pins page
 
-  @reset_all_pins @remove_all_groups @pupil_not_taking_check @wip
+  @reset_all_pins @remove_all_groups @pupil_not_taking_check @manual
   Scenario: Groups reappear when their are available pupils for pin generation
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again

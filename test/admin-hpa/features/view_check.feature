@@ -26,9 +26,3 @@ Feature:
     Given I am viewing a check form that is unassigned to a check window
     When I choose to delete it
     Then it should be removed from the list of available checks
-
-  @wip
-  Scenario: Users can not delete a assigned check form
-    Given I am viewing a check form that is assigned to a check window
-    Then I should not be able to delete it
-
