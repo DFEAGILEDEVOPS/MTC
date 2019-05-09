@@ -24,7 +24,8 @@ Feature:
     Then I should not be allowed to do so
     And form assigned to 'Live check' check window display 'yes'
 
-  @upload_new_fam_form  Scenario: No fam forms can be assigned to a active check window
+  @upload_new_fam_form
+  Scenario: No fam forms can be assigned to a active check window
     When I attempt to assign a familiarisation form to a active check window
     Then I should not be allowed to do so
     And form assigned to 'Try it out' check window display 'yes'
