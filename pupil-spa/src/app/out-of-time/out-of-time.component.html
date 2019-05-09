@@ -1,14 +1,11 @@
 <app-page-modifications>
-    <app-header class="full-width"></app-header>
+    <app-header [forceFamiliarisationBar]="familiarisationCheck" class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
         <div class="grid-row">
             <div class="column-full" *ngIf="!familiarisationCheck">
                 <header class="page-header">
                     <h1 class="heading-xlarge aa-title-size" tabindex="0">Out of time</h1>
                 </header>
-                <p class="lede aa-lead-size" tabindex="0">
-                    You have done {{numCompleted}} out of {{numQuestions}} questions.
-                </p>
                 <p class="notice" tabindex="0">
                     <strong class="visually-hidden">Warning</strong>
                     <app-svg-warning></app-svg-warning>
@@ -23,6 +20,7 @@
                             <li>Go into 'Restarts' & select 'Did not complete' with the reason 'timed out'.</li>
                             <li>Select pupil.</li>
                             <li>Generate a new PIN for that pupil.</li>
+                            <li>Sign the pupil out and then back in.</li>
                         </ol>
                     </div>
                 </details>
@@ -34,9 +32,12 @@
             <header class="page-header">
               <h1 class="heading-xlarge aa-title-size" tabindex="0">Out of time</h1>
             </header>
-            <p class="lede aa-lead-size" tabindex="0">
-              You have done {{numCompleted}} out of {{numQuestions}} questions.
+            <p class="notice" tabindex="0">
+              <strong class="visually-hidden">Warning</strong>
+              <app-svg-warning></app-svg-warning>
+              <strong class="aa-copy-size">To try the check again, please sign out and sign in using your <br /> most recent 'Try it out' username and PIN</strong>
             </p>
+            <br />
             <a routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button" id="next-pupil-button">Sign out</a>
           </div>
         </div>

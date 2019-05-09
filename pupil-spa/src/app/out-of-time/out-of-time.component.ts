@@ -4,7 +4,6 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
-import { TimeoutStorageKey } from '../services/timer/timer.service';
 import { UserService } from '../services/user/user.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
@@ -16,8 +15,6 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
-  public numQuestions: number;
-  public numCompleted: number;
   private speechListenerEvent: any;
   public familiarisationCheck: boolean;
 
@@ -29,11 +26,6 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
               private speechService: SpeechService,
               private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
-    const timeoutData = this.storageService.getItem(TimeoutStorageKey);
-    if (timeoutData) {
-        this.numQuestions = timeoutData.numQuestions;
-        this.numCompleted = timeoutData.numCompleted;
-    }
     const config = this.questionService.getConfig();
     this.familiarisationCheck = config && config.practice;
     this.userService.logout();

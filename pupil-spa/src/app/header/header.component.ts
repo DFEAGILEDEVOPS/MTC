@@ -16,6 +16,7 @@ export class HeaderComponent implements OnInit {
   public isLoggedIn: boolean;
 
   @Input() public noFamiliarisationBar = false;
+  @Input() public forceFamiliarisationBar = false;
 
   config: Config;
   govukRoot = 'https://www.gov.uk';
@@ -32,8 +33,8 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.shouldShowFamiliarisationBar = !this.noFamiliarisationBar
-      && this.isLoggedIn
+    this.shouldShowFamiliarisationBar = this.forceFamiliarisationBar ||
+      !this.noFamiliarisationBar && this.isLoggedIn
       && this.config && this.config.practice;
   }
 
