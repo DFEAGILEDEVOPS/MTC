@@ -50,6 +50,7 @@ function sleep (ms) {
   try {
     logger.debug('Attempting to initialise the connection pool')
     await sqlService.initPool()
+    await sqlService.startupCacheTables()
   } catch (error) {
     logger.alert('Failed to connect to the database', error)
     // The initial probe connection was not able to connect: the DB is not available.  This will cause all

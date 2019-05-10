@@ -259,38 +259,6 @@ function addParamsToRequestSimple (params, request) {
 }
 
 /**
- * Get all pupil's statuses and add to provided results array
- * Has to be here (instead of redisCacheService) to avoid cyclic dependency
- * @param {string} results - Data array from `services/data-access` method
- * @param {string} pupilIDProperty - property which represents `pupil.id` in results
- * @param {string} statusProperty - property in results which uses status
- * @param {string} replaceWith - status type to set
- * @return {Object}
- */
-sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProperty = 'pupilStatus_id', replaceWith = 'id') => {
-  // TODO replace with getting from Redis
-  const sql = `
-  SELECT p.id, p.pupilStatus_id, ps.code AS longCode, psc.code AS shortCode 
-  FROM ${sqlService.adminSchema}.[pupil] p
-  LEFT JOIN ${sqlService.adminSchema}.[pupilStatus] ps ON ps.id=p.pupilStatus_id
-  LEFT JOIN ${sqlService.adminSchema}.[pupilStatusCode] psc ON psc.id=p.pupilStatus_id
-  `
-  const pupils = await sqlService.query(sql)
-  let pupilStatuses = {}
-  pupils.forEach(p => {
-    pupilStatuses[p.id] = {
-      id: p.pupilStatus_id,
-      longCode: p.longCode,
-      shortCode: p.shortCode
-    }
-  })
-  results.forEach(r => {
-    r[statusProperty] = pupilStatuses[r[pupilIDProperty].toString()][replaceWith]
-  })
-  return results
-}
-
-/**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
@@ -658,4 +626,68 @@ END CATCH
   `
   return sqlService.modify(wrappedSQL, params)
 }
+
+/* ------ Redis Cache methods ------ */
+
+/**
+ * Get all pupil's statuses and add to provided results array
+ * Has to be here (instead of redisCacheService) to avoid cyclic dependency
+ * @param {string} results - Data array from `services/data-access` method
+ * @param {string} pupilIDProperty - property which represents `pupil.id` in results
+ * @param {string} statusProperty - property in results which uses status
+ * @param {string} replaceWith - status type to set
+ * @return {Object}
+ */
+sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProperty = 'pupilStatus_id', replaceWith = 'id') => {
+  // TODO replace with getting from Redis
+  const sql = `
+  SELECT p.id, p.pupilStatus_id, ps.code AS longCode, psc.code AS shortCode 
+  FROM ${sqlService.adminSchema}.[pupil] p
+  LEFT JOIN ${sqlService.adminSchema}.[pupilStatus] ps ON ps.id=p.pupilStatus_id
+  LEFT JOIN ${sqlService.adminSchema}.[pupilStatusCode] psc ON psc.id=p.pupilStatus_id
+  `
+  const pupils = await sqlService.query(sql)
+  let pupilStatuses = {}
+  pupils.forEach(p => {
+    pupilStatuses[p.id] = {
+      id: p.pupilStatus_id,
+      longCode: p.longCode,
+      shortCode: p.shortCode
+    }
+  })
+  results.forEach(r => {
+    r[statusProperty] = pupilStatuses[r[pupilIDProperty].toString()][replaceWith]
+  })
+  return results
+}
+
+/**
+ * Cache a SQL Server table in redis
+ * Has to be here (instead of redisCacheService) to avoid cyclic dependency
+ * @param {string} table - The table to cache in Redis
+ * @return {Object}
+ */
+const cacheTableInRedis = async (table) => {
+  const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[${table}]`)
+  return redisCacheService.set(`${table}.table`, result)
+}
+
+/**
+ * Get all pupil's statuses and add to provided results array
+ * Has to be here (instead of redisCacheService) to avoid cyclic dependency
+ * @param {string} results - Data array from `services/data-access` method
+ * @param {string} pupilIDProperty - property which represents `pupil.id` in results
+ * @param {string} statusProperty - property in results which uses status
+ * @param {string} replaceWith - status type to set
+ * @return {Object}
+ */
+sqlService.startupCacheTables = async () => {
+  const tables = ['pupil', 'pupilStatus', 'pupilStatusCode']
+  const tablesLn = tables.length
+  for (let i = 0; i < tablesLn; i++) {
+    await cacheTableInRedis(tables[i])
+  }
+  console.log(`REDIS (startupCacheTables): cached \`${tables.join('`, `')}\``)
+}
+
 module.exports = sqlService
