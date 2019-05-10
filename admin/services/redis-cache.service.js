@@ -32,12 +32,12 @@ redisCacheService.get = redisKey => {
   return new Promise((resolve, reject) => {
     redis.get(redisKey, (err, result) => {
       if (err || !result) {
-        console.log(`Failed to retrieve \`${redisKey}\` from Redis`)
+        console.log(`REDIS (get): Failed to retrieve \`${redisKey}\``)
         if (err) {
-          console.log(`Error: ${err.message}`)
+          console.log(`REDIS (get): Error: ${err.message}`)
         }
       } else {
-        console.log(`Retrieved \`${redisKey}\` from Redis`)
+        console.log(`REDIS (get): Retrieved \`${redisKey}\``)
       }
       resolve(result)
     })
@@ -50,7 +50,7 @@ redisCacheService.set = (redisKey, data) => {
       data = JSON.stringify(data)
     }
     redis.set(redisKey, data, () => {
-      console.log(`Stored \`${redisKey}\` in Redis`)
+      console.log(`REDIS (set): Stored \`${redisKey}\``)
       resolve()
     })
   })
@@ -88,7 +88,7 @@ redisCacheService.dropAffectedCaches = sql => {
         if (matchedKeys.length) {
           const pipeline = redis.pipeline()
           matchedKeys.forEach(key => {
-            console.log(`Dropped \`${key}\` from Redis`)
+            console.log(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
             pipeline.del(key)
           })
           pipeline.exec()
@@ -155,8 +155,10 @@ redisCacheService.update = (key, changes) => {
             return r
           }).filter(r => r !== false)
           redis.set(foundKey, JSON.stringify(result), async () => {
+            console.log(`REDIS (update): Updated \`${key}\``)
             const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
             await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
+            console.log(`REDIS (update): Sent \`${key}\` update to \`sql-update\` message queue`)
             resolve(true)
           })
         }
