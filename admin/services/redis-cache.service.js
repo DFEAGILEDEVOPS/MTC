@@ -30,6 +30,33 @@ redisCacheService.storedProceduresAffectedTables = {
   'spUpsertSceSchools': ['sce']
 }
 
+/**
+ * Constructs a full Redis key in the format `serviceName.methodName_affectedTable1-affectedTable2`
+ * @param serviceKey - the prefix of the key in the format `serviceName.methodName`
+ * @returns {String}
+ */
+redisCacheService.getFullKey = serviceKey => {
+  if (!serviceKey) {
+    return false
+  }
+  let affectedKey = serviceKey
+  const keyParts = serviceKey.split('.')
+  if (keyParts.length > 2) {
+    // the key includes an identifier e.g. school_id
+    affectedKey = `${keyParts[0]}.${keyParts[1]}`
+  }
+  const tables = redisCacheService.affectedTables[affectedKey]
+  if (tables) {
+    serviceKey = `${serviceKey}_${tables.join('-')}`
+  }
+  return serviceKey
+}
+
+/**
+ * Returns the data from a Redis key entry
+ * @param redisKey - the full Redis key to get
+ * @returns {String}
+ */
 redisCacheService.get = redisKey => {
   return new Promise((resolve, reject) => {
     redis.get(redisKey, (err, result) => {
@@ -46,6 +73,12 @@ redisCacheService.get = redisKey => {
   })
 }
 
+/**
+ * Stores data for a Redis key
+ * @param redisKey - the full Redis key to set
+ * @param data - string data to insert
+ * @returns {Boolean}
+ */
 redisCacheService.set = (redisKey, data) => {
   return new Promise((resolve, reject) => {
     if (typeof data === 'object') {
@@ -53,11 +86,17 @@ redisCacheService.set = (redisKey, data) => {
     }
     redis.set(redisKey, data, () => {
       console.log(`REDIS (set): Stored \`${redisKey}\``)
-      resolve()
+      resolve(true)
     })
   })
 }
 
+/**
+ * Called by the sqlService when it performs queries.
+ * If a change query is detected, finds table names and drops any affected caches so they can be redone
+ * @param sql - The SQL query being executed
+ * @returns {Boolean}
+ */
 redisCacheService.dropAffectedCaches = sql => {
   return new Promise((resolve, reject) => {
     let tables = []
@@ -98,28 +137,16 @@ redisCacheService.dropAffectedCaches = sql => {
       })
       stream.on('end', resolve)
     } else {
-      resolve()
+      resolve(true)
     }
   })
 }
 
-redisCacheService.getFullKey = serviceKey => {
-  if (!serviceKey) {
-    return false
-  }
-  let affectedKey = serviceKey
-  const keyParts = serviceKey.split('.')
-  if (keyParts.length > 2) {
-    // the key includes an identifier e.g. school_id
-    affectedKey = `${keyParts[0]}.${keyParts[1]}`
-  }
-  const tables = redisCacheService.affectedTables[affectedKey]
-  if (tables) {
-    serviceKey = `${serviceKey}_${tables.join('-')}`
-  }
-  return serviceKey
-}
-
+/**
+ * Find a Redis key based on a Regex pattern
+ * @param pattern - regex pattern
+ * @returns {Array}
+ */
 const findKeys = pattern => {
   return new Promise((resolve, reject) => {
     let foundKeys = []
@@ -133,12 +160,19 @@ const findKeys = pattern => {
   })
 }
 
-redisCacheService.update = (key, changes) => {
+/**
+ * Manually updates data in Redis and then sends to the Azure `sql-update` queue,
+ * which will be performed in SQL Server by `/functions`
+ * @param serviceKey - the prefix of the key in the format `serviceName.methodName`
+ * @param changes - object with changes in the format { tableName: 'foo-bar', update: { 1: { foo: 'bar' } } }
+ * @returns {Boolean}
+ */
+redisCacheService.update = (serviceKey, changes) => {
   return new Promise(async (resolve, reject) => {
     if (!REDIS_CACHING) {
       resolve(false)
     } else {
-      const keys = await findKeys(new RegExp(`^${key}_`))
+      const keys = await findKeys(new RegExp(`^${serviceKey}_`))
       const foundKey = keys.length ? keys[0] : false
       if (!foundKey) {
         resolve(false)
@@ -160,10 +194,10 @@ redisCacheService.update = (key, changes) => {
               return r
             }).filter(r => r !== false)
             redis.set(foundKey, JSON.stringify(result), async () => {
-              console.log(`REDIS (update): Updated \`${key}\``)
+              console.log(`REDIS (update): Updated \`${foundKey}\``)
               const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
               await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
-              console.log(`REDIS (update): Sent \`${key}\` update to \`sql-update\` message queue`)
+              console.log(`REDIS (update): Sent \`${foundKey}\` update to \`sql-update\` message queue`)
               resolve(true)
             })
           }
