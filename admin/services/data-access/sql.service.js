@@ -259,6 +259,57 @@ function addParamsToRequestSimple (params, request) {
 }
 
 /**
+ * Get all pupil's statuses
+ * Has to be here (instead of pupilDataService) to avoid cyclic dependency
+ * @return {Object}
+ */
+const getAllPupilStatuses = async () => {
+  // TODO replace with getting from Redis
+  const sql = `
+  /*Don't do redisCacheService.addData*/
+  SELECT p.id, p.pupilStatus_id, ps.code AS longCode, psc.code AS shortCode 
+  FROM ${sqlService.adminSchema}.[pupil] p
+  LEFT JOIN ${sqlService.adminSchema}.[pupilStatus] ps ON ps.id=p.pupilStatus_id
+  LEFT JOIN ${sqlService.adminSchema}.[pupilStatusCode] psc ON psc.id=p.pupilStatus_id
+  `
+  const pupils = await sqlService.query(sql)
+  let result = {}
+  pupils.forEach(p => {
+    result[p.id] = {
+      statusID: p.pupilStatus_id,
+      longCode: p.longCode,
+      shortCode: p.shortCode
+    }
+  })
+  return result
+}
+
+/**
+ * Adds data from redis cache
+ * Has to be here (instead of redisCacheService) to avoid cyclic dependency
+ * @param result - sqlService.query result
+ * @param sql - original sql query
+ * @returns {Object}
+ */
+const addRedisData = async (result, sql) => {
+  const { recordset } = result
+  sql = sql.trim()
+  if (recordset && recordset.length && /^SELECT/.test(sql)) {
+    let pupilStatuses = false
+    if (/\.\[vewPupilRegister\]/.test(sql) || /\.\[pupil\]/.test(sql)) {
+      pupilStatuses = await getAllPupilStatuses()
+      if (/\.\[vewPupilRegister\]/.test(sql)) {
+        recordset.forEach(p => {
+          p.pupilStatusCode = pupilStatuses[p.pupilId].longCode
+        })
+      }
+    }
+    result.recordset = recordset
+  }
+  return result
+}
+
+/**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
