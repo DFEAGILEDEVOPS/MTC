@@ -47,6 +47,76 @@ describe('sql.service:integration', () => {
     }
   })
 
+  it('should not permit ALTER TABLE operation to mtc application user', async () => {
+    try {
+      await sql.query(`ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit`)
+      fail('ALTER TABLE operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit CREATE VIEW operation to mtc application user', async () => {
+    try {
+      await sql.query(`
+      CREATE VIEW [mtc_admin].[vewSettings]
+      AS SELECT * FROM [mtc_admin].settings
+      `)
+      fail('CREATE VIEW operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit ALTER VIEW operation to mtc application user', async () => {
+    try {
+      await sql.query(`
+      ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
+      AS SELECT * FROM [mtc_admin].settings
+      `)
+      fail('ALTER VIEW operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit DROP VIEW operation to mtc application user', async () => {
+    try {
+      await sql.query(`DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]`)
+      fail('DROP VIEW operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit CREATE TRIGGER operation to mtc application user', async () => {
+    try {
+      await sql.query(`
+      CREATE TRIGGER [mtc_admin].[settingsCreatedAtTrigger]
+        ON [mtc_admin].[settings] FOR UPDATE
+        AS
+        BEGIN
+          UPDATE [mtc_admin].[settings]
+          SET createdAt = GETUTCDATE()
+          FROM inserted
+          WHERE [settings].id = inserted.id
+        END
+      `)
+      fail('CREATE TRIGGER operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit DROP TRIGGER operation to mtc application user', async () => {
+    try {
+      await sql.query(`DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]`)
+      fail('DROP TRIGGER operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
   it('should transform the results arrays into a JSON array', async () => {
     await sql.query('SELECT * FROM Settings')
     const actual = await sql.query('SELECT * FROM Settings')
