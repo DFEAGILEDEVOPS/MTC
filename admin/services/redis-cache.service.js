@@ -131,17 +131,16 @@ const findKeys = pattern => {
   })
 }
 
-redisCacheService.update = (key, changes, sqlService, sql, params) => {
-  // TODO: requiring sqlService here returns an empty object, so for now has to be passed through
+redisCacheService.update = (key, changes) => {
   return new Promise(async (resolve, reject) => {
     const keys = await findKeys(new RegExp(`^${key}_`))
     const foundKey = keys.length ? keys[0] : false
     if (!foundKey) {
-      resolve(sqlService.modify(sql, params))
+      resolve(false)
     } else {
       redis.get(foundKey, (err, result) => {
         if (err || !result) {
-          resolve(sqlService.modify(sql, params))
+          resolve(false)
         } else {
           result = JSON.parse(result)
           result.recordset = result.recordset.map(r => {

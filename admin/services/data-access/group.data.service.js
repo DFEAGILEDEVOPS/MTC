@@ -128,7 +128,11 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
   WHERE [id]=@id AND school_id=@schoolId
   `
   const changes = { table: 'group', update: { [id]: { name } } }
-  return redisCacheService.update(`group.sqlFindGroups.${schoolId}`, changes, sqlService, sql, params)
+  const redisUpdate = await redisCacheService.update(`group.sqlFindGroups.${schoolId}`, changes)
+  if (!redisUpdate) {
+    return sqlService.modify(sql, params)
+  }
+  return true
 }
 
 /**
