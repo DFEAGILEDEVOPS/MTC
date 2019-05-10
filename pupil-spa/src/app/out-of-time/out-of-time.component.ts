@@ -28,9 +28,6 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.window = windowRefService.nativeWindow;
     const config = this.questionService.getConfig();
     this.familiarisationCheck = config && config.practice;
-    this.userService.logout();
-    this.questionService.reset();
-    this.warmupQuestionService.reset();
   }
 
   ngOnInit() {
@@ -55,6 +52,9 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
         true
       );
     }
+    this.userService.logout();
+    this.questionService.reset();
+    this.warmupQuestionService.reset();
   }
 
   ngOnDestroy(): void {
