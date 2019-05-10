@@ -3,14 +3,14 @@ const sqlService = require('../../../lib/sql/sql.service')
 const R = require('ramda')
 const { TYPES } = sqlService
 const csv = require('fast-csv')
-const base = require('../../../lib/base')
+const base = require('../../../lib/base') // provides logger
 const fs = require('fs-extra')
 
 const psychometricianReportDataService = {
   /**
    *
    */
-  streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath, logger) {
+  streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath) {
     return new Promise(async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.createWriteStream({ headers: true })
@@ -29,14 +29,12 @@ const psychometricianReportDataService = {
             request.pause()
           }
         } catch (error) {
-          if (error) {
-            logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
-          }
+          this.logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
         }
       }
 
       const errorFunc = (error) => {
-        logger.error('streamPsychometricianReport(): [onError]: error: ', error.message)
+        this.logger.error('streamPsychometricianReport(): [onError]: error: ', error.message)
       }
 
       const doneFunc = () => {
