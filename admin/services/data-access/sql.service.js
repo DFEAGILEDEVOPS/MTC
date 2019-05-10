@@ -259,54 +259,35 @@ function addParamsToRequestSimple (params, request) {
 }
 
 /**
- * Get all pupil's statuses
- * Has to be here (instead of pupilDataService) to avoid cyclic dependency
+ * Get all pupil's statuses and add to provided results array
+ * Has to be here (instead of redisCacheService) to avoid cyclic dependency
+ * @param {string} results - Data array from `services/data-access` method
+ * @param {string} pupilIDProperty - property which represents `pupil.id` in results
+ * @param {string} statusProperty - property in results which uses status
+ * @param {string} replaceWith - status type to set
  * @return {Object}
  */
-const getAllPupilStatuses = async () => {
+sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProperty = 'pupilStatus_id', replaceWith = 'id') => {
   // TODO replace with getting from Redis
   const sql = `
-  /*Don't do redisCacheService.addData*/
   SELECT p.id, p.pupilStatus_id, ps.code AS longCode, psc.code AS shortCode 
   FROM ${sqlService.adminSchema}.[pupil] p
   LEFT JOIN ${sqlService.adminSchema}.[pupilStatus] ps ON ps.id=p.pupilStatus_id
   LEFT JOIN ${sqlService.adminSchema}.[pupilStatusCode] psc ON psc.id=p.pupilStatus_id
   `
   const pupils = await sqlService.query(sql)
-  let result = {}
+  let pupilStatuses = {}
   pupils.forEach(p => {
-    result[p.id] = {
-      statusID: p.pupilStatus_id,
+    pupilStatuses[p.id] = {
+      id: p.pupilStatus_id,
       longCode: p.longCode,
       shortCode: p.shortCode
     }
   })
-  return result
-}
-
-/**
- * Adds data from redis cache
- * Has to be here (instead of redisCacheService) to avoid cyclic dependency
- * @param result - sqlService.query result
- * @param sql - original sql query
- * @returns {Object}
- */
-const addRedisData = async (result, sql) => {
-  const { recordset } = result
-  sql = sql.trim()
-  if (recordset && recordset.length && /^SELECT/.test(sql)) {
-    let pupilStatuses = false
-    if (/\.\[vewPupilRegister\]/.test(sql) || /\.\[pupil\]/.test(sql)) {
-      pupilStatuses = await getAllPupilStatuses()
-      if (/\.\[vewPupilRegister\]/.test(sql)) {
-        recordset.forEach(p => {
-          p.pupilStatusCode = pupilStatuses[p.pupilId].longCode
-        })
-      }
-    }
-    result.recordset = recordset
-  }
-  return result
+  results.forEach(r => {
+    r[statusProperty] = pupilStatuses[r[pupilIDProperty].toString()][replaceWith]
+  })
+  return results
 }
 
 /**
