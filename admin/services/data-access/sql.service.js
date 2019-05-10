@@ -10,6 +10,8 @@ const retry = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('../redis-cache.service')
 
+const { REDIS_CACHING } = config
+
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
   pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
@@ -269,7 +271,9 @@ sqlService.query = async (sql, params = [], redisKey) => {
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
-  if (redisKey) {
+  if (!REDIS_CACHING) {
+    redisKey = false
+  } else if (redisKey) {
     redisKey = redisCacheService.getFullKey(redisKey)
   }
 
@@ -343,7 +347,9 @@ sqlService.modify = async (sql, params = []) => {
   const modify = async () => {
     const request = new mssql.Request(pool)
     addParamsToRequest(params, request)
-    await redisCacheService.dropAffectedCaches(sql)
+    if (REDIS_CACHING) {
+      await redisCacheService.dropAffectedCaches(sql)
+    }
     return request.query(sql)
   }
 

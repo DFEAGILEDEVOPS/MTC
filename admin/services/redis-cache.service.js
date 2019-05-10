@@ -3,6 +3,8 @@ const config = require('../config')
 const azureQueueService = require('./azure-queue.service')
 const queueNameService = require('./queue-name-service')
 
+const { REDIS_CACHING } = config
+
 let redisConfig = {
   port: config.Redis.Port,
   host: config.Redis.Host
@@ -133,36 +135,40 @@ const findKeys = pattern => {
 
 redisCacheService.update = (key, changes) => {
   return new Promise(async (resolve, reject) => {
-    const keys = await findKeys(new RegExp(`^${key}_`))
-    const foundKey = keys.length ? keys[0] : false
-    if (!foundKey) {
+    if (!REDIS_CACHING) {
       resolve(false)
     } else {
-      redis.get(foundKey, (err, result) => {
-        if (err || !result) {
-          resolve(false)
-        } else {
-          result = JSON.parse(result)
-          result.recordset = result.recordset.map(r => {
-            if (changes.update && changes.update[r.id]) {
-              for (let prop in changes.update[r.id]) {
-                r[prop] = changes.update[r.id][prop]
+      const keys = await findKeys(new RegExp(`^${key}_`))
+      const foundKey = keys.length ? keys[0] : false
+      if (!foundKey) {
+        resolve(false)
+      } else {
+        redis.get(foundKey, (err, result) => {
+          if (err || !result) {
+            resolve(false)
+          } else {
+            result = JSON.parse(result)
+            result.recordset = result.recordset.map(r => {
+              if (changes.update && changes.update[r.id]) {
+                for (let prop in changes.update[r.id]) {
+                  r[prop] = changes.update[r.id][prop]
+                }
               }
-            }
-            if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
-              return false
-            }
-            return r
-          }).filter(r => r !== false)
-          redis.set(foundKey, JSON.stringify(result), async () => {
-            console.log(`REDIS (update): Updated \`${key}\``)
-            const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
-            await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
-            console.log(`REDIS (update): Sent \`${key}\` update to \`sql-update\` message queue`)
-            resolve(true)
-          })
-        }
-      })
+              if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
+                return false
+              }
+              return r
+            }).filter(r => r !== false)
+            redis.set(foundKey, JSON.stringify(result), async () => {
+              console.log(`REDIS (update): Updated \`${key}\``)
+              const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
+              await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
+              console.log(`REDIS (update): Sent \`${key}\` update to \`sql-update\` message queue`)
+              resolve(true)
+            })
+          }
+        })
+      }
     }
   })
 }
