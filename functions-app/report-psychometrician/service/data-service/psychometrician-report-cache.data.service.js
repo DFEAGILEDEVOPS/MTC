@@ -10,8 +10,7 @@ function getUnprocessedChecksSql (batchSize) {
       JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
       WHERE
         prc.check_id IS NULL
-      AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')
-      ORDER BY NEWID()`
+      AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')`
 }
 
 const psychometricianReportCacheDataService = {
