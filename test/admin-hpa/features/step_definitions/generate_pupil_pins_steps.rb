@@ -180,7 +180,8 @@ Given(/^I have generated pins for multiple pupils$/) do
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(name)).to have_pin}
+  view_and_custom_print_live_check_page.load
+  @pupil_names_arr.each {|name| expect(view_and_custom_print_live_check_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
@@ -333,7 +334,7 @@ end
 
 When(/^a pupil becomes available for pin generation again$/) do
   SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
-  # SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
+  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do

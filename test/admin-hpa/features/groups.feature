@@ -54,7 +54,6 @@ Feature:
       | ÓÒÔÕÖØŌŒÚÙÛÜŪŴÝŸŶ  |
       | þçðñß              |
 
-  @wip
   Scenario: List of pupils excludes pupils already assigned to another group
     Given I have added already added a pupil to another group
     When I want to create a new group
