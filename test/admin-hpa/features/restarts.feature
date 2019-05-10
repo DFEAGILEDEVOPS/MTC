@@ -78,7 +78,7 @@ Feature: Restarts
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
     And the pin should also be removed
 
-  @no_pin @remove_all_groups @bug @wip
+  @no_pin @remove_all_groups
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group
