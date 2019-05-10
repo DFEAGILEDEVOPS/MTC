@@ -77,7 +77,12 @@ export class CheckCompleteService {
       this.onSuccess(startTime);
     } catch (error) {
       this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
-      this.router.navigate(['/submission-failed']);
+      if (error.statusCode === 403
+        && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
+        this.router.navigate(['/session-expired']);
+      } else {
+        this.router.navigate(['/submission-failed']);
+      }
     }
   }
 

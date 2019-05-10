@@ -2,7 +2,7 @@ export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded
   'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
   'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' |
   'CheckSubmissionPending' | 'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' |
-  'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' |'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
+  'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'SessionExpired' | 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
   'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
   'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' | 'DuplicateAnswerError';
 
@@ -125,6 +125,12 @@ export class CheckSubmissionAPIFailed extends AuditEntry {
 export class CheckSubmissionFailed extends AuditEntry {
   constructor(data?: any) {
     super('CheckSubmissionFailed', new Date(), data);
+  }
+}
+
+export class SessionExpired extends AuditEntry {
+  constructor(data?: any) {
+    super('SessionExpired', new Date(), data);
   }
 }
 
