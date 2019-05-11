@@ -117,6 +117,27 @@ describe('sql.service:integration', () => {
     }
   })
 
+  it('should not permit CREATE PROCEDURE operation to mtc application user', async () => {
+    try {
+      await sql.query(`
+      CREATE PROCEDURE [mtc_admin].[spSettings]
+        AS SELECT * FROM [mtc_admin].settings
+      `)
+      fail('CREATE PROCEDURE operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it('should not permit DROP PROCEDURE operation to mtc application user', async () => {
+    try {
+      await sql.query(`DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]`)
+      fail('DROP PROCEDURE operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
   it('should transform the results arrays into a JSON array', async () => {
     await sql.query('SELECT * FROM Settings')
     const actual = await sql.query('SELECT * FROM Settings')
