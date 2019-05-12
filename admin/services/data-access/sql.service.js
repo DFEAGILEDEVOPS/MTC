@@ -143,7 +143,7 @@ const convertMomentToJsDate = (m) => {
 const convertDateToMoment = (d) => {
   if (
     d instanceof Date ||
-    (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(d))
+    (typeof d === 'string' && moment(d, moment.ISO_8601).isValid())
   ) {
     return moment.utc(d)
   }
