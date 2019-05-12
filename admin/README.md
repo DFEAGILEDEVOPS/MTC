@@ -142,8 +142,9 @@ after making changes ensure you do `docker-compose build` to rebuild from source
 
 `REDIS_CACHING` needs to be enabled in env vars
 
-`sqlService.query` can now take an optional third argument which is a Redis key in the format `dataServiceName.methodName`, which requires an entry in `redisCacheService.affectedTables` listing any affected tables. The result-set from this query will be saved in Redis against the supplied key (with affected tables appended).
+`sqlService.query` can now take an optional third argument which is a Redis key in the format `dataServiceName.methodName`, which requires an entry in `redisCacheService.affectedTables` listing any affected tables. The result-set from this query will be saved in Redis against the supplied key (with affected tables appended e.g. `dataServiceName.methodName_tableOne-tableTwo-tableThree`).
 
 If an `UPDATE`, `INSERT`, `DELETE` or `EXEC` query is detected which affects these tables, any relevant Redis cache entries will be dropped, so they can then be recreated the next time the service method is called.
+e.g. if the `affectedTables` entry contains `pupilGroup`, then the Redis key `dataServiceName.methodName_pupil-pupilGroup`would be dropped.
 
 Updates to an existing Redis cache can be done with `redisCacheService.update`. It will perform the supplied changes object on the Redis cache and then send it (with the affected table name) to the Azure `sql-update` message queue. Where it will then be consumed and applied in SQ server by a listener in `/functions`.
