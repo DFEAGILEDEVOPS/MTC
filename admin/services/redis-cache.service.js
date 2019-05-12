@@ -101,14 +101,14 @@ redisCacheService.dropAffectedCaches = sql => {
   return new Promise((resolve, reject) => {
     let tables = []
     if (/DELETE|INSERT|UPDATE/.test(sql)) {
-      const tableRegex = new RegExp('\\.\\[([a-z]+)\\]', 'gi')
+      const tableRegex = /\.\[([a-z]+)\]/gi
       let match = false
       while ((match = tableRegex.exec(sql)) !== null) {
         tables.push(match[1])
       }
     }
     if (/EXEC/.test(sql)) {
-      const spRegex = new RegExp('\\.\\[(sp[a-z]+)\\]', 'gi')
+      const spRegex = /\.\[(sp[a-z]+)\]/gi
       let match = false
       let procedures = []
       while ((match = spRegex.exec(sql)) !== null) {
