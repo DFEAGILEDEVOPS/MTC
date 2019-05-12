@@ -36,7 +36,7 @@ redisCacheService.storedProceduresAffectedTables = {
  * @returns {String}
  */
 redisCacheService.getFullKey = serviceKey => {
-  if (!serviceKey) {
+  if (!serviceKey || !REDIS_CACHING) {
     return false
   }
   let affectedKey = serviceKey
@@ -99,6 +99,9 @@ redisCacheService.set = (redisKey, data) => {
  */
 redisCacheService.dropAffectedCaches = sql => {
   return new Promise((resolve, reject) => {
+    if (!REDIS_CACHING) {
+      return resolve(true)
+    }
     let tables = []
     if (/DELETE|INSERT|UPDATE/.test(sql)) {
       const tableRegex = /\.\[([a-z]+)\]/gi
