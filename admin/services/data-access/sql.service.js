@@ -634,11 +634,10 @@ END CATCH
  * Has to be here (instead of redisCacheService) to avoid cyclic dependency
  * @param {string} results - Data array from `services/data-access` method
  * @param {string} pupilIDProperty - property which represents `pupil.id` in results
- * @param {string} statusProperty - property in results which uses status
- * @param {string} replaceWith - status type to set
+ * @param {Object} replaceWith - columns in results and the type of status to replace them with
  * @return {Object}
  */
-sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProperty = 'pupilStatus_id', replaceWith = 'id') => {
+sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWith = { pupilStatus_id: 'id' }) => {
   // TODO replace with getting from Redis
   const sql = `
   SELECT p.id, p.pupilStatus_id
@@ -650,24 +649,40 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProp
   pupils.forEach(p => {
     pupilStatuses[p.id] = p.pupilStatus_id
   })
-  let pupilStatusCodes
-  if (replaceWith !== 'id') {
-    let tableKey = 'table.pupilStatus'
-    if (replaceWith === 'shortCode') {
-      tableKey += 'Code'
-    }
-    const redisTable = await redisCacheService.get(tableKey)
-    pupilStatusCodes = {}
+
+  const replaceWithTypes = []
+  for (let col in replaceWith) {
+    replaceWithTypes.push(replaceWith[col])
+  }
+
+  let shortCodes, longCodes
+  if (replaceWithTypes.indexOf('shortCode') > -1) {
+    const redisTable = await redisCacheService.get('table.pupilStatusCode')
+    shortCodes = {}
     redisTable.forEach(r => {
-      pupilStatusCodes[r.id] = r.code
+      shortCodes[r.id] = r.code
     })
   }
+  if (replaceWithTypes.indexOf('longCode') > -1) {
+    const redisTable = await redisCacheService.get('table.pupilStatus')
+    longCodes = {}
+    redisTable.forEach(r => {
+      longCodes[r.id] = r.code
+    })
+  }
+
   results.forEach(r => {
-    let value = pupilStatuses[r[pupilIDProperty].toString()]
-    if (replaceWith !== 'id') {
-      value = pupilStatusCodes[value]
+    const statusID = pupilStatuses[r[pupilIDProperty].toString()]
+    for (let col in replaceWith) {
+      let type = replaceWith[col]
+      let value = statusID
+      if (type === 'shortCode') {
+        value = shortCodes[statusID]
+      } else if (type === 'longCode') {
+        value = longCodes[statusID]
+      }
+      r[col] = value
     }
-    r[statusProperty] = value
   })
   return results
 }

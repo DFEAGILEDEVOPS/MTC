@@ -16,7 +16,7 @@ const service = {
     ]
 
     const pupils = await sqlService.query(sql, params)
-    return sqlService.addPupilStatuses(pupils, 'pupilId', 'pupilStatusCode', 'longCode')
+    return sqlService.addPupilStatuses(pupils, 'pupilId', { pupilStatusCode: 'longCode' })
   },
 
   /**
