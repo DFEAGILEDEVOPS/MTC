@@ -248,7 +248,8 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
 
   sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
 
-  return sqlService.query(sql, params)
+  const pupils = await sqlService.query(sql, params)
+  return sqlService.addPupilStatuses(pupils)
 }
 
 /**
