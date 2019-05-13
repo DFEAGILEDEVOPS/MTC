@@ -641,22 +641,33 @@ END CATCH
 sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProperty = 'pupilStatus_id', replaceWith = 'id') => {
   // TODO replace with getting from Redis
   const sql = `
-  SELECT p.id, p.pupilStatus_id, ps.code AS longCode, psc.code AS shortCode 
+  SELECT p.id, p.pupilStatus_id
   FROM ${sqlService.adminSchema}.[pupil] p
-  LEFT JOIN ${sqlService.adminSchema}.[pupilStatus] ps ON ps.id=p.pupilStatus_id
-  LEFT JOIN ${sqlService.adminSchema}.[pupilStatusCode] psc ON psc.id=p.pupilStatus_id
   `
   const pupils = await sqlService.query(sql)
+
   let pupilStatuses = {}
   pupils.forEach(p => {
-    pupilStatuses[p.id] = {
-      id: p.pupilStatus_id,
-      longCode: p.longCode,
-      shortCode: p.shortCode
-    }
+    pupilStatuses[p.id] = p.pupilStatus_id
   })
+  let pupilStatusCodes
+  if (replaceWith !== 'id') {
+    let tableKey = 'table.pupilStatus'
+    if (replaceWith === 'shortCode') {
+      tableKey += 'Code'
+    }
+    const redisTable = await redisCacheService.get(tableKey)
+    pupilStatusCodes = {}
+    redisTable.forEach(r => {
+      pupilStatusCodes[r.id] = r.code
+    })
+  }
   results.forEach(r => {
-    r[statusProperty] = pupilStatuses[r[pupilIDProperty].toString()][replaceWith]
+    let value = pupilStatuses[r[pupilIDProperty].toString()]
+    if (replaceWith !== 'id') {
+      value = pupilStatusCodes[value]
+    }
+    r[statusProperty] = value
   })
   return results
 }
@@ -669,7 +680,7 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', statusProp
  */
 const cacheTableInRedis = async (table) => {
   const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[${table}]`)
-  return redisCacheService.set(`${table}.table`, result)
+  return redisCacheService.set(`table.${table}`, result)
 }
 
 /**
