@@ -26,7 +26,8 @@ const pupilsNotTakingCheckDataService = {
       type: TYPES.Int
     }]
 
-    return sqlService.query(sql, params)
+    const pupils = await sqlService.query(sql, params)
+    return sqlService.addPupilStatuses(pupils)
   },
 
   /**
