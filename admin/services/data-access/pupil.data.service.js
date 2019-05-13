@@ -25,7 +25,8 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
       WHERE s.dfeNumber = @dfeNumber
       ORDER BY lastName asc      
     `
-  return sqlService.query(sql, [paramDfeNumber])
+  const pupils = await sqlService.query(sql, [paramDfeNumber])
+  return sqlService.addPupilStatuses(pupils)
 }
 
 /**
@@ -90,7 +91,8 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
       WHERE urlSlug = @urlSlug
       AND school_id = @schoolId  
     `
-  const results = await sqlService.query(sql, params)
+  let results = await sqlService.query(sql, params)
+  results = await sqlService.addPupilStatuses(results)
   return R.head(results)
 }
 
@@ -115,7 +117,8 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
       WHERE p.urlSlug = @urlSlug
       AND p.school_id = @schoolId 
     `
-  const results = await sqlService.query(sql, params)
+  let results = await sqlService.query(sql, params)
+  results = await sqlService.addPupilStatuses(results)
   return R.head(results)
 }
 
@@ -131,7 +134,8 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, dfeNumber)
       WHERE p.urlSlug = @urlSlug  
       AND   s.dfeNumber = @dfeNumber
     `
-  const results = await sqlService.query(sql, [paramSlug, paramDfeNumber])
+  let results = await sqlService.query(sql, [paramSlug, paramDfeNumber])
+  results = await sqlService.addPupilStatuses(results)
   return R.head(results)
 }
 
@@ -195,7 +199,8 @@ pupilDataService.sqlFindOneById = async (id) => {
       FROM ${sqlService.adminSchema}.${table}
       WHERE id = @id    
     `
-  const results = await sqlService.query(sql, [param])
+  let results = await sqlService.query(sql, [param])
+  results = await sqlService.addPupilStatuses(results)
   return R.head(results)
 }
 
@@ -241,7 +246,8 @@ pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug
         ON pg.pupil_id = p.id 
       WHERE p.urlSlug = @urlSlug and school_id = @schoolId 
     `
-  const results = await sqlService.query(sql, [paramPupil, paramSchool])
+  let results = await sqlService.query(sql, [paramPupil, paramSchool])
+  results = await sqlService.addPupilStatuses(results, 'id', { pupilStatus_id: 'id', code: 'longCode' })
   return R.head(results)
 }
 
