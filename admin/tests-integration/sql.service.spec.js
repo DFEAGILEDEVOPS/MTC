@@ -14,84 +14,87 @@ describe('sql.service:integration', () => {
     await sql.initPool()
   })
 
-  it('should permit select query with no parameters', async () => {
-    let settingsRows = await sql.query('SELECT * FROM Settings')
-    expect(settingsRows).toBeDefined()
-    expect(settingsRows.length).toBe(1)
+  describe('should permit', () => {
+    it('select query with no parameters', async () => {
+      let settingsRows = await sql.query('SELECT * FROM Settings')
+      expect(settingsRows).toBeDefined()
+      expect(settingsRows.length).toBe(1)
+    })
+
+    it('select query with parameters', async () => {
+      let settingsRows
+      const id = { name: 'id', type: TYPES.Int, value: 1 }
+      settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
+      expect(settingsRows).toBeDefined()
+      expect(settingsRows.length).toBe(1)
+    })
   })
 
-  it('should permit select query with parameters', async () => {
-    let settingsRows
-    const id = { name: 'id', type: TYPES.Int, value: 1 }
-    settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
-    expect(settingsRows).toBeDefined()
-    expect(settingsRows.length).toBe(1)
-  })
+  describe('should not permit', () => {
+    it('delete operation to mtc application user', async () => {
+      try {
+        await sql.query('DELETE FROM Settings')
+        fail('DELETE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toContain('The DELETE permission was denied')
+      }
+    })
 
-  it('should not permit delete operation to mtc application user', async () => {
-    try {
-      await sql.query('DELETE FROM Settings')
-      fail('DELETE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toContain('The DELETE permission was denied')
-    }
-  })
+    it('TRUNCATE TABLE operation to mtc application user', async () => {
+      try {
+        await sql.query('TRUNCATE TABLE Settings')
+        fail('TRUNCATE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit TRUNCATE TABLE operation to mtc application user', async () => {
-    try {
-      await sql.query('TRUNCATE TABLE Settings')
-      fail('TRUNCATE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+    it('ALTER TABLE operation to mtc application user', async () => {
+      try {
+        await sql.query(`ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit`)
+        fail('ALTER TABLE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit ALTER TABLE operation to mtc application user', async () => {
-    try {
-      await sql.query(`ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit`)
-      fail('ALTER TABLE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
-
-  it('should not permit CREATE VIEW operation to mtc application user', async () => {
-    try {
-      await sql.query(`
+    it('CREATE VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`
       CREATE VIEW [mtc_admin].[vewSettings]
       AS SELECT * FROM [mtc_admin].settings
       `)
-      fail('CREATE VIEW operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+        fail('CREATE VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit ALTER VIEW operation to mtc application user', async () => {
-    try {
-      await sql.query(`
+    it('ALTER VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`
       ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
       AS SELECT * FROM [mtc_admin].settings
       `)
-      fail('ALTER VIEW operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+        fail('ALTER VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit DROP VIEW operation to mtc application user', async () => {
-    try {
-      await sql.query(`DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]`)
-      fail('DROP VIEW operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+    it('DROP VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]`)
+        fail('DROP VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit CREATE TRIGGER operation to mtc application user', async () => {
-    try {
-      await sql.query(`
+    it('CREATE TRIGGER operation to mtc application user', async () => {
+      try {
+        await sql.query(`
       CREATE TRIGGER [mtc_admin].[settingsCreatedAtTrigger]
         ON [mtc_admin].[settings] FOR UPDATE
         AS
@@ -102,40 +105,41 @@ describe('sql.service:integration', () => {
           WHERE [settings].id = inserted.id
         END
       `)
-      fail('CREATE TRIGGER operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+        fail('CREATE TRIGGER operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit DROP TRIGGER operation to mtc application user', async () => {
-    try {
-      await sql.query(`DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]`)
-      fail('DROP TRIGGER operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+    it('DROP TRIGGER operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]`)
+        fail('DROP TRIGGER operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit CREATE PROCEDURE operation to mtc application user', async () => {
-    try {
-      await sql.query(`
+    it('CREATE PROCEDURE operation to mtc application user', async () => {
+      try {
+        await sql.query(`
       CREATE PROCEDURE [mtc_admin].[spSettings]
         AS SELECT * FROM [mtc_admin].settings
       `)
-      fail('CREATE PROCEDURE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
-  })
+        fail('CREATE PROCEDURE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit DROP PROCEDURE operation to mtc application user', async () => {
-    try {
-      await sql.query(`DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]`)
-      fail('DROP PROCEDURE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
+    it('DROP PROCEDURE operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]`)
+        fail('DROP PROCEDURE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
   })
 
   it('should transform the results arrays into a JSON array', async () => {
