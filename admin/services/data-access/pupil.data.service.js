@@ -311,7 +311,8 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber, pinEnv) => {
   AND p.pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
-  return sqlService.query(sql, [paramDfeNumber])
+  const pupils = await sqlService.query(sql, [paramDfeNumber])
+  return sqlService.addPupilStatuses(pupils)
 }
 
 /**
@@ -337,7 +338,8 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
     'AND school_id = @schoolId'
   params.push({ name: 'schoolId', type: TYPES.Int, value: schoolId })
   const sql = [select, whereClause].join(' ')
-  return sqlService.query(sql, params)
+  const pupils = await sqlService.query(sql, params)
+  return sqlService.addPupilStatuses(pupils)
 }
 
 /**
@@ -364,7 +366,8 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   params.push({ name: 'schoolId', type: TYPES.Int, value: schoolId })
   const orderClause = 'ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
   const sql = [select, whereClause, orderClause].join(' ')
-  return sqlService.query(sql, params)
+  const pupils = await sqlService.query(sql, params)
+  return sqlService.addPupilStatuses(pupils)
 }
 
 /**
@@ -483,7 +486,8 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   AND ps.code = 'UNALLOC'
   ORDER BY ${sqlSort}
   `
-  return sqlService.query(sql, params)
+  const pupils = await sqlService.query(sql, params)
+  return sqlService.addPupilStatuses(pupils)
 }
 
 pupilDataService.sqlInsertMany = async (pupils) => {
