@@ -74,6 +74,7 @@ import { IdleModalComponent } from './modal/idle.modal.component';
 import { TimerService } from './services/timer/timer.service';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
 import { SvgClockComponent } from './svg/svg.clock.component';
+import { SessionExpiredComponent } from './session-expired/session-expired.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -88,6 +89,7 @@ const appRoutes: Routes = [
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
+  {path: 'session-expired', component: SessionExpiredComponent },
   {path: 'font-choice', component: AAFontsComponent },
   {path: 'colour-choice', component: AAColoursComponent },
   {path: 'access-settings', component: AASettingsComponent },
@@ -138,7 +140,8 @@ const appRoutes: Routes = [
     SvgArrowComponent,
     SvgGirlComponent,
     SvgClockComponent,
-    IdleModalComponent
+    IdleModalComponent,
+    SessionExpiredComponent
   ],
   imports: [
     RouterModule.forRoot(
