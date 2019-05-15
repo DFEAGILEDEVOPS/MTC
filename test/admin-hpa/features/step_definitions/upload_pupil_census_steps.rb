@@ -56,6 +56,14 @@ Then(/^I should see the completed status$/) do
   expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
   actual_message = upload_pupil_census_page.uploaded_file.status.text
   expect(actual_message.include?('Submitted')).to be_truthy, "Expected status: 'Submitted' to be included in Actual Message: #{actual_message}"
+  begin
+    wait_until(10){SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(3)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(4)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(5)}
+    status_id = SqlDbHelper.get_jobs.last['jobStatus_id']
+    expect(status_id.eql?(3)).to be_truthy, "Actual Status _id is : #{status_id}"
+  rescue
+    raise "Last pupil census status stuck with Status_id: #{SqlDbHelper.get_jobs.last['jobStatus_id']}"
+  end
+
 end
 
 Then(/^I should see the error status for the duplicate upn$/) do

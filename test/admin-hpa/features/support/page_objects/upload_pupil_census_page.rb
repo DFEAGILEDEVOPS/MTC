@@ -51,7 +51,17 @@ class UploadPupilCensusPage < SitePrism::Page
       csv_object << pupil_array1
       csv_object << pupil_array2 if !pupil_array2.nil?
     end
-    page.attach_file('csvPupilCensusFile', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"))
+
+    if !(SqlDbHelper.get_jobs.last.nil?)
+      begin
+        wait_until(10){SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(3)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(4)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(5)}
+        page.attach_file('csvPupilCensusFile', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"))
+      rescue
+        raise "Last pupil census status stuck with Status_id: #{SqlDbHelper.get_jobs.last['jobStatus_id']}"
+      end
+    else
+      page.attach_file('csvPupilCensusFile', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"))
+    end
   end
 
 
