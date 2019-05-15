@@ -119,6 +119,5 @@ async function main (options) {
 
 const options = commandLineArgs(optionDefinitions)
 main(options)
-  .then(() => {}  )
-  .catch (err => console.error(err))
-
+  .then(() => {})
+  .catch(err => console.error(err))
