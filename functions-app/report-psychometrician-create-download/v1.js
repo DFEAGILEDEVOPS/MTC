@@ -10,8 +10,7 @@ const v1 = {
         processCount: 1
       }
     } catch (error) {
-      logger.error('ERROR: v1.proccess(): ' + error.message)
-      throw error
+      logger.error('ERROR: v1.process(): ' + error.message)
     }
   }
 }

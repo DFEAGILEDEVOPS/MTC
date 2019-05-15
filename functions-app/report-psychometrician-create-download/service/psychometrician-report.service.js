@@ -1,6 +1,5 @@
 'use strict'
 
-const archiver = require('archiver')
 const csv = require('fast-csv')
 const moment = require('moment')
 const uuidv4 = require('uuid/v4')
@@ -9,6 +8,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const base = require('../../lib/base')
+const zipper = require('./zipper')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
@@ -28,23 +28,13 @@ async function createTmpDir (prefix) {
 
 const psychometricianReportService = {
   /**
-   * Creates a zip with the psychometricianReport and anomalyReport
-   * @param {String} psychometricianReport
-   * @param {String} anomalyReport
-   * @param {Moment} dateGenerated
-   * @return {Object}
+   * Delete a directory and its contents
+   * @param directoryPath
+   * @return {Promise<*>}
    */
-  generateZip: async function generateZip (psychometricianReport, anomalyReport, dateGenerated) {
-    const archive = archiver('zip')
-    // collect data from the zip stream since uploadBlobToStorage receives the entire blob
-    const zipStreamChunks = []
-    archive.on('data', (chunk) => {
-      zipStreamChunks.push(chunk)
-    })
-    archive.append(psychometricianReport, { name: `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
-    archive.append(anomalyReport, { name: `Anomaly Report ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
-    await archive.finalize()
-    return Buffer.concat(zipStreamChunks)
+  cleanup: async function cleanup (directoryPath) {
+    this.logger(`Cleanup is deleting staged directory: ${directoryPath}`)
+    return fs.remove(directoryPath)
   },
 
   /**
@@ -116,9 +106,20 @@ const psychometricianReportService = {
       throw error // unrecoverable - no work can be done.
     }
 
+    // This returns the full path + filename of the ps report
     const psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
     const anomalyReport = await this.generateAnomalyReport()
-    // const zipFile = await this.generateZip(psychometricianReport, anomalyReport, dateGenerated)
+
+    const psStat = await fs.stat(psychometricianReportFilename)
+    this.logger(`ps report generated: ${Math.round(psStat.size / 1024 / 1024)} MB`)
+
+    const zipfileName = 'report.zip'
+    const zipFileNameWithPath = await zipper.createZip(zipfileName, psychometricianReportFilename)
+
+    const zipStat = await fs.stat(zipFileNameWithPath)
+    this.logger(`Zip file is ${zipFileNameWithPath}`)
+    this.logger(`ZIP archive generated: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
+
     // const uploadBlob = await this.uploadToBlobStorage(zipFile)
     // const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
     // await psychometricianReportDataService.sqlSaveFileUploadMeta(
@@ -127,6 +128,8 @@ const psychometricianReportService = {
     //   uploadBlob.etag,
     //   md5Buffer,
     //   psychometricianReportCode)
+
+    await this.cleanup(newTmpDir)
   },
 
   /**
@@ -169,4 +172,4 @@ const psychometricianReportService = {
   }
 }
 
-module.exports = Object.assign(base, psychometricianReportService)
+module.exports = Object.assign(psychometricianReportService, base)
