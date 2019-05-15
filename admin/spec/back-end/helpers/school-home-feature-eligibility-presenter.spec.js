@@ -258,7 +258,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeTruthy()
       })
-      it('disallows results when live check period is active', async () => {
+      it('disallows access to results feature when live check period is active', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -271,9 +271,9 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
+        expect(pinGenerationEligibilityData.isResultFeatureAccessible).toBeFalsy()
       })
-      it('providing hdf is submitted it disallows results if attempted to be access before the opening time on the allowed day', async () => {
+      it('disallows access to results feature if attempted to be accessed before the opening Monday time on the allowed day', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -286,9 +286,9 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = checkWindowData.checkEndDate.day(8).set({ hour: 7 }) // next monday after checkEndDate
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
+        expect(pinGenerationEligibilityData.isResultFeatureAccessible).toBeFalsy()
       })
-      it('providing hdf is submitted it allows results when live check period is in the past', async () => {
+      it('allows access to results feature if live check period is in the past', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -301,37 +301,89 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeTruthy()
+        expect(pinGenerationEligibilityData.isResultFeatureAccessible).toBeTruthy()
       })
-      it('providing hdf is not submitted it disallows results before the second Monday after check end date', async () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(15, 'days'),
-          adminEndDate: moment.utc().add(2, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(12, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(8, 'days'),
-          checkStartDate: moment.utc().subtract(11, 'days'),
-          checkEndDate: moment.utc().subtract(8, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessibleForUnsubmittedHdfs).toBeFalsy()
+
+      describe('providing hdf is submitted', () => {
+        it('allows results after the first Monday from check end date', async () => {
+          const checkWindowData = {
+            id: 1,
+            adminStartDate: moment.utc().subtract(10, 'days'),
+            adminEndDate: moment.utc().add(2, 'days'),
+            familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
+            familiarisationCheckEndDate: moment.utc().subtract(5, 'days'),
+            checkStartDate: moment.utc().subtract(6, 'days'),
+            checkEndDate: moment.utc().subtract(5, 'days')
+          }
+          const allowedDateTime = moment.utc().set({ hour: 11 })
+          spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+          const isResultsPageAccessibleForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData, true)
+          expect(isResultsPageAccessibleForSubmittedHdfs).toBeTruthy()
+        })
+
+        it('disallows results before the first Monday from check end date', async () => {
+          const checkWindowData = {
+            id: 1,
+            adminStartDate: moment.utc().subtract(10, 'days'),
+            adminEndDate: moment.utc().add(1, 'days'),
+            familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
+            familiarisationCheckEndDate: moment.utc().subtract(3, 'days'),
+            checkStartDate: moment.utc().subtract(6, 'days'),
+            checkEndDate: moment.utc().subtract(1, 'days')
+          }
+          const allowedDateTime = moment.utc().set({ hour: 11 })
+          spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+          const isResultsPageAccessibleForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData, true)
+          expect(isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
+        })
       })
-      it('providing hdf is not submitted it allows results after the second Monday after check end date', async () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(25, 'days'),
-          adminEndDate: moment.utc().add(2, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(20, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(16, 'days'),
-          checkStartDate: moment.utc().subtract(18, 'days'),
-          checkEndDate: moment.utc().subtract(16, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessibleForUnsubmittedHdfs).toBeTruthy()
+
+      describe('providing hdf is not submitted', () => {
+        it('disallows results after the first Monday from check end date', async () => {
+          const checkWindowData = {
+            id: 1,
+            adminStartDate: moment.utc().subtract(10, 'days'),
+            adminEndDate: moment.utc().add(2, 'days'),
+            familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
+            familiarisationCheckEndDate: moment.utc().subtract(5, 'days'),
+            checkStartDate: moment.utc().subtract(6, 'days'),
+            checkEndDate: moment.utc().subtract(5, 'days')
+          }
+          const allowedDateTime = moment.utc().set({ hour: 11 })
+          spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+          const isResultsPageAccessibleForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData)
+          expect(isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
+        })
+        it('disallows results before the second Monday after check end date', async () => {
+          const checkWindowData = {
+            id: 1,
+            adminStartDate: moment.utc().subtract(15, 'days'),
+            adminEndDate: moment.utc().add(2, 'days'),
+            familiarisationCheckStartDate: moment.utc().subtract(12, 'days'),
+            familiarisationCheckEndDate: moment.utc().subtract(8, 'days'),
+            checkStartDate: moment.utc().subtract(11, 'days'),
+            checkEndDate: moment.utc().subtract(8, 'days')
+          }
+          const allowedDateTime = moment.utc().set({ hour: 11 })
+          spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+          const isResultsPageAccessibleForUnsubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(allowedDateTime, checkWindowData)
+          expect(isResultsPageAccessibleForUnsubmittedHdfs).toBeFalsy()
+        })
+        it('allows results after the second Monday after check end date', async () => {
+          const checkWindowData = {
+            id: 1,
+            adminStartDate: moment.utc().subtract(25, 'days'),
+            adminEndDate: moment.utc().add(2, 'days'),
+            familiarisationCheckStartDate: moment.utc().subtract(20, 'days'),
+            familiarisationCheckEndDate: moment.utc().subtract(16, 'days'),
+            checkStartDate: moment.utc().subtract(18, 'days'),
+            checkEndDate: moment.utc().subtract(16, 'days')
+          }
+          const allowedDateTime = moment.utc().set({ hour: 11 })
+          spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+          const isResultsPageAccessibleForUnsubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(allowedDateTime, checkWindowData)
+          expect(isResultsPageAccessibleForUnsubmittedHdfs).toBeTruthy()
+        })
       })
     })
     describe('when override is enabled', () => {

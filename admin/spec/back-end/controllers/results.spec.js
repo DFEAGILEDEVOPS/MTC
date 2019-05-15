@@ -131,7 +131,7 @@ describe('results controller:', () => {
       spyOn(resultService, 'getSchoolScore').and.returnValue({ score: 5.25 })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-      spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(true)
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(false)
       spyOn(schoolHomeFeatureEligibilityPresenter, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
       spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)

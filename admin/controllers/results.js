@@ -38,10 +38,10 @@ controller.getViewResultsPage = async (req, res, next) => {
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
 
   const isResultsPageAccessibleForSubmittedHdfs =
-    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow) && isHdfSubmitted
-  const resultsPageAccessibleForUnsubmittedHdfs =
-    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow) && !isHdfSubmitted
-  if (!isResultsPageAccessibleForSubmittedHdfs && !resultsPageAccessibleForUnsubmittedHdfs) {
+    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+  const isResultsPageAccessibleForUnsubmittedHdfs =
+    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+  if (!isResultsPageAccessibleForSubmittedHdfs && !isResultsPageAccessibleForUnsubmittedHdfs) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
     })

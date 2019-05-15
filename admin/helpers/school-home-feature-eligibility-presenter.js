@@ -72,8 +72,7 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
 
   // Results page data
   featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTimeForSubmittedHdfs)
-  featureEligibilityData.isResultsPageAccessibleForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindowData)
-  featureEligibilityData.isResultsPageAccessibleForUnsubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindowData)
+  featureEligibilityData.isResultFeatureAccessible = schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible(currentDate, checkWindowData)
 
   return featureEligibilityData
 }
@@ -199,25 +198,37 @@ schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkW
 }
 
 /**
- * Determine if results page is accessible
+ * Determine if results feature is accessible
  * @param currentDate
  * @param checkWindowData
  * @returns {Boolean}
  */
-schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs = (currentDate, checkWindowData) => {
+schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible = (currentDate, checkWindowData) => {
   const resultsPageEligibilityDateTimeForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForSubmittedHdfs(currentDate, checkWindowData.checkEndDate)
   return currentDate.isSameOrAfter(resultsPageEligibilityDateTimeForSubmittedHdfs)
 }
 
 /**
- * Determine if results page is accessible for unsubmitted hdfs
+ * Determine if results page is accessible while taking into account if the user has submitted the hdf
  * @param currentDate
  * @param checkWindowData
+ * @param isHdfSubmitted
  * @returns {Boolean}
  */
-schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs = (currentDate, checkWindowData) => {
+schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
+  return schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible(currentDate, checkWindowData) && isHdfSubmitted
+}
+
+/**
+ * Determine if results page is accessible providing the user did not submit the hdf
+ * @param currentDate
+ * @param checkWindowData
+ * @param isHdfSubmitted
+ * @returns {Boolean}
+ */
+schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
   const resultsPageEligibilityDateTimeForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForUnsubmittedHdfs(currentDate, checkWindowData.checkEndDate)
-  return currentDate.isSameOrAfter(resultsPageEligibilityDateTimeForSubmittedHdfs)
+  return currentDate.isSameOrAfter(resultsPageEligibilityDateTimeForSubmittedHdfs) && !isHdfSubmitted
 }
 
 module.exports = schoolHomeFeatureEligibilityPresenter
