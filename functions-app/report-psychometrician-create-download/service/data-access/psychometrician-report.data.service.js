@@ -27,6 +27,7 @@ const psychometricianReportDataService = {
           csvStream.write(data)
           if (++rowCount % 15 === 0) {
             request.pause()
+            request.resume()
           }
         } catch (error) {
           this.logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
