@@ -98,4 +98,4 @@ const psychometricianReportDataService = {
   }
 }
 
-module.exports = Object.assign(base, psychometricianReportDataService)
+module.exports = Object.assign(psychometricianReportDataService, base)
