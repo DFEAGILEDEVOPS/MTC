@@ -271,7 +271,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
+        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
       })
       it('disallows results if attempted to be access before the opening time on the allowed day', async () => {
         const checkWindowData = {
@@ -286,7 +286,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = checkWindowData.checkEndDate.day(8).set({ hour: 7 }) // next monday after checkEndDate
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
+        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
       })
       it('allows results when live check period is in the past', async () => {
         const checkWindowData = {
@@ -301,7 +301,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const allowedDateTime = moment.utc().set({ hour: 11 })
         spyOn(moment, 'tz').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeTruthy()
+        expect(pinGenerationEligibilityData.isResultsPageAccessibleForSubmittedHdfs).toBeTruthy()
       })
     })
     describe('when override is enabled', () => {

@@ -36,10 +36,12 @@ controller.getViewResultsPage = async (req, res, next) => {
     return next(error)
   }
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
-  const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
-  const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
-  schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
-  if (!isHdfSubmitted || !isResultsPageAccessible) {
+
+  const isResultsPageAccessibleForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow)
+  const resultsPageAccessibleForUnsubmittedHdfs = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow)
+  const isAvailableForSubmittedHdfs = isHdfSubmitted && isResultsPageAccessibleForSubmittedHdfs
+  const isAvailableForUnsubmittedHdfs = !isHdfSubmitted && resultsPageAccessibleForUnsubmittedHdfs
+  if (!isAvailableForSubmittedHdfs && !isAvailableForUnsubmittedHdfs) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
     })
@@ -50,6 +52,8 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
+  const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
+  schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
   return res.render('results/view-results', {
     pupilData,
     groups,
