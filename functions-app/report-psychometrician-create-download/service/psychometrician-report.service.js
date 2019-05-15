@@ -1,17 +1,16 @@
 'use strict'
 
 const csv = require('fast-csv')
-const moment = require('moment')
-const uuidv4 = require('uuid/v4')
-const os = require('os')
 const fs = require('fs-extra')
+const moment = require('moment')
+const os = require('os')
 const path = require('path')
-
-const base = require('../../lib/base')
-const zipper = require('./zipper')
+const uuidv4 = require('uuid/v4')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
+const base = require('../../lib/base')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
+const zipper = require('./zipper')
 
 const psychometricianReportUploadContainer = 'psychometricianreportupload'
 const psychometricianReportCode = 'PSR'
@@ -33,7 +32,7 @@ const psychometricianReportService = {
    * @return {Promise<*>}
    */
   cleanup: async function cleanup (directoryPath) {
-    this.logger(`Cleanup is deleting staged directory: ${directoryPath}`)
+    this.logger(`Cleanup is deleting staging directory: ${directoryPath}`)
     return fs.remove(directoryPath)
   },
 
@@ -55,7 +54,6 @@ const psychometricianReportService = {
     const baseFilename = 'psychometrician-report.csv'
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
     await psychometricianReportDataService.setLogger(this.logger).streamPsychometricianReport(fileNameWithPath)
-    console.log('PS Report ', fileNameWithPath)
     return fileNameWithPath
   },
 
@@ -88,37 +86,37 @@ const psychometricianReportService = {
 
   /**
    * Generate and upload the psychometrician and anomaly reports in Zip format to Azure Storage
-   * This is a lift and shift version: it needs to be updated
-   * TODO: handle volume data
    * @return {Promise<void>}
    */
   process: async function process () {
-    const dateGenerated = moment()
 
     // Create a temporary directory to stage the report files in
-    let newTmpDir
+    let newTmpDir, psychometricianReportFilename
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
-      this.logger.info('created new tmp dir ', newTmpDir)
+      this.logger.debug(`${functionName}: tmp directory created: ${newTmpDir}`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
       throw error // unrecoverable - no work can be done.
     }
 
     // This returns the full path + filename of the ps report
-    const psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
-    const anomalyReport = await this.generateAnomalyReport()
+    try {
+      psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
+    } catch (error) {
+      this.logger.error(`${functionName}: Failed to generate psychometrician report: ${error.message}`)
+      throw error
+    }
 
     const psStat = await fs.stat(psychometricianReportFilename)
-    this.logger(`ps report generated: ${Math.round(psStat.size / 1024 / 1024)} MB`)
+    this.logger.debug(`${functionName}: psychometrician report size: ${Math.round(psStat.size / 1024 / 1024)} MB`)
 
     const zipfileName = 'report.zip'
     const zipFileNameWithPath = await zipper.createZip(zipfileName, psychometricianReportFilename)
 
     const zipStat = await fs.stat(zipFileNameWithPath)
-    this.logger(`Zip file is ${zipFileNameWithPath}`)
-    this.logger(`ZIP archive generated: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
+    this.logger.debug(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 
     // const uploadBlob = await this.uploadToBlobStorage(zipFile)
     // const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
@@ -129,12 +127,17 @@ const psychometricianReportService = {
     //   md5Buffer,
     //   psychometricianReportCode)
 
-    await this.cleanup(newTmpDir)
+    try {
+      await this.cleanup(newTmpDir)
+    } catch (error) {
+      this.logger.error(`${functionName}: error in cleanup (ignored): ${error.message}`)
+    }
   },
 
   /**
    * Returns the CSV headers
    * @param {Array} results
+   * @deprecated
    * @returns {Array}
    */
   producePsychometricianReportDataHeaders: function producePsychometricianReportDataHeaders (results) {
