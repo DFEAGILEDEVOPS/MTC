@@ -2,6 +2,7 @@ const Redis = require('ioredis')
 const config = require('../config')
 const azureQueueService = require('./azure-queue.service')
 const queueNameService = require('./queue-name-service')
+const logger = require('./log.service').getLogger()
 
 const { REDIS_CACHING } = config
 
@@ -61,13 +62,13 @@ redisCacheService.get = redisKey => {
   return new Promise((resolve, reject) => {
     redis.get(redisKey, (err, result) => {
       if (err) {
-        console.log(`REDIS (get): Error: ${err.message}`)
+        logger.error(`REDIS (get): Error: ${err.message}`)
         reject(err)
       } else if (!result) {
-        console.log(`REDIS (get): \`${redisKey}\` is not set`)
+        logger.info(`REDIS (get): \`${redisKey}\` is not set`)
         resolve(false)
       } else {
-        console.log(`REDIS (get): Retrieved \`${redisKey}\``)
+        logger.info(`REDIS (get): Retrieved \`${redisKey}\``)
         resolve(result)
       }
     })
@@ -86,7 +87,7 @@ redisCacheService.set = (redisKey, data) => {
       data = JSON.stringify(data)
     }
     redis.set(redisKey, data, () => {
-      console.log(`REDIS (set): Stored \`${redisKey}\``)
+      logger.info(`REDIS (set): Stored \`${redisKey}\``)
       resolve(true)
     })
   })
@@ -133,7 +134,7 @@ redisCacheService.dropAffectedCaches = sql => {
         if (matchedKeys.length) {
           const pipeline = redis.pipeline()
           matchedKeys.forEach(key => {
-            console.log(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
+            logger.info(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
             pipeline.del(key)
           })
           pipeline.exec()
@@ -198,10 +199,10 @@ redisCacheService.update = (serviceKey, changes) => {
               return r
             }).filter(r => r !== false)
             redis.set(foundKey, JSON.stringify(result), async () => {
-              console.log(`REDIS (update): Updated \`${foundKey}\``)
+              logger.info(`REDIS (update): Updated \`${foundKey}\``)
               const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
               await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
-              console.log(`REDIS (update): Sent \`${foundKey}\` update to \`sql-update\` message queue`)
+              logger.info(`REDIS (update): Sent \`${foundKey}\` update to \`sql-update\` message queue`)
               resolve(true)
             })
           }
