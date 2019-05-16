@@ -7,6 +7,7 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const pupilDataService = require('./data-access/pupil.data.service')
 const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
+const queueNameService = require('./queue-name-service')
 const R = require('ramda')
 
 const pupilStatusService = {}
@@ -91,8 +92,12 @@ pupilStatusService.dispatchPupilStatusMessages = async (pupils) => {
     throw new Error('Invalid parameter: pupils')
   }
 
+  const pupilStatusQueueName = queueNameService.getName(
+    queueNameService.NAMES.PUPIL_STATUS
+  )
+
   const messages = pupils.map(({ id }) => ({ pupilId: id, checkCode: `pupilId-${id}` }))
-  await azureQueueService.addMessageAsync('pupil-status', { version: 2, messages })
+  await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages })
 }
 
 /**
