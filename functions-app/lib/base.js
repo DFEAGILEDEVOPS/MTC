@@ -3,6 +3,7 @@
 module.exports = {
   /**
    * context.log function when executed in Azure Functions
+   * logger should have methods: error, warn, info, verbose
    */
   logger: () => {},
   /**
