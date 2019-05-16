@@ -8,7 +8,7 @@ const moduleToExport = {
   createZip: function createZip (fileName, fileName1, fileName2) {
     return new Promise((resolve, reject) => {
       if (!fileName1) {
-        reject('Missing filename.  At least one file is required.')
+        reject(new Error('Missing filename.  At least one file is required.'))
       }
       const dirName = path.dirname(fileName1)
       const zipFileName = fileName
