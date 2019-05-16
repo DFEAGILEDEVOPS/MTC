@@ -14,37 +14,132 @@ describe('sql.service:integration', () => {
     await sql.initPool()
   })
 
-  it('should permit select query with no parameters', async () => {
-    let settingsRows = await sql.query('SELECT * FROM Settings')
-    expect(settingsRows).toBeDefined()
-    expect(settingsRows.length).toBe(1)
+  describe('should permit', () => {
+    it('select query with no parameters', async () => {
+      let settingsRows = await sql.query('SELECT * FROM Settings')
+      expect(settingsRows).toBeDefined()
+      expect(settingsRows.length).toBe(1)
+    })
+
+    it('select query with parameters', async () => {
+      let settingsRows
+      const id = { name: 'id', type: TYPES.Int, value: 1 }
+      settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
+      expect(settingsRows).toBeDefined()
+      expect(settingsRows.length).toBe(1)
+    })
   })
 
-  it('should permit select query with parameters', async () => {
-    let settingsRows
-    const id = { name: 'id', type: TYPES.Int, value: 1 }
-    settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
-    expect(settingsRows).toBeDefined()
-    expect(settingsRows.length).toBe(1)
-  })
+  describe('should not permit', () => {
+    it('delete operation to mtc application user', async () => {
+      try {
+        await sql.query('DELETE FROM Settings')
+        fail('DELETE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toContain('The DELETE permission was denied')
+      }
+    })
 
-  it('should not permit delete operation to mtc application user', async () => {
-    try {
-      await sql.query('DELETE FROM Settings')
-      fail('DELETE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toContain('The DELETE permission was denied')
-    }
-  })
+    it('TRUNCATE TABLE operation to mtc application user', async () => {
+      try {
+        await sql.query('TRUNCATE TABLE Settings')
+        fail('TRUNCATE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
 
-  it('should not permit TRUNCATE TABLE operation to mtc application user', async () => {
-    try {
-      await sql.query('TRUNCATE TABLE Settings')
-      fail('TRUNCATE operation should not have succeeded')
-    } catch (error) {
-      expect(error).toBeDefined()
-    }
+    it('ALTER TABLE operation to mtc application user', async () => {
+      try {
+        await sql.query(`ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit`)
+        fail('ALTER TABLE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('CREATE VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`
+      CREATE VIEW [mtc_admin].[vewSettings]
+      AS SELECT * FROM [mtc_admin].settings
+      `)
+        fail('CREATE VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('ALTER VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`
+      ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
+      AS SELECT * FROM [mtc_admin].settings
+      `)
+        fail('ALTER VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('DROP VIEW operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]`)
+        fail('DROP VIEW operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('CREATE TRIGGER operation to mtc application user', async () => {
+      try {
+        await sql.query(`
+      CREATE TRIGGER [mtc_admin].[settingsCreatedAtTrigger]
+        ON [mtc_admin].[settings] FOR UPDATE
+        AS
+        BEGIN
+          UPDATE [mtc_admin].[settings]
+          SET createdAt = GETUTCDATE()
+          FROM inserted
+          WHERE [settings].id = inserted.id
+        END
+      `)
+        fail('CREATE TRIGGER operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('DROP TRIGGER operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]`)
+        fail('DROP TRIGGER operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('CREATE PROCEDURE operation to mtc application user', async () => {
+      try {
+        await sql.query(`
+      CREATE PROCEDURE [mtc_admin].[spSettings]
+        AS SELECT * FROM [mtc_admin].settings
+      `)
+        fail('CREATE PROCEDURE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('DROP PROCEDURE operation to mtc application user', async () => {
+      try {
+        await sql.query(`DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]`)
+        fail('DROP PROCEDURE operation should not have succeeded')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
   })
 
   it('should transform the results arrays into a JSON array', async () => {
@@ -68,8 +163,8 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  it('dates should be stored as UTC and preserve up to 3 milliseconds', async () => {
-    const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
+  it('dates should be stored as UTC and preserve a less than 1000 milliseconds difference', async () => {
+    const fullDateFormat = moment.now()
     const britishSummerTimeValue = moment(fullDateFormat)
     const updatedAtParam = {
       name: 'updatedAt',
@@ -102,9 +197,10 @@ describe('sql.service:integration', () => {
       expect(row.updatedAt).toBeDefined()
       const actualDateTime = moment(row.updatedAt)
       const utcOffset = moment.parseZone(actualDateTime).utcOffset()
-      expect(utcOffset).toBe(60)
-      expect(actualDateTime.milliseconds()).toBe(123)
-      expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString())
+      expect(utcOffset).toBe(0)
+      const duration = moment.duration(actualDateTime.diff(britishSummerTimeValue))
+      const diffInMilliseconds = duration.asMilliseconds()
+      expect(diffInMilliseconds).toBeLessThan(1000)
     } catch (err) {
       fail(err)
     }
@@ -160,7 +256,7 @@ describe('sql.service:integration', () => {
     expect(row).toBeDefined()
     expect(row['id']).toBe(4)
     expect(row['identifier']).toBe('teacher3')
-    expect(row['school_id']).toBe(18603)
+    expect(row['school_id']).toBe(4)
     expect(row['role_id']).toBe(3)
   })
 
@@ -255,7 +351,9 @@ describe('sql.service:integration', () => {
       // read the school back and check
       const school2 = await sql.findOneById('[school]', 1)
       expect(school2.pin).toBe(pin)
-      expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
+      const duration = moment.duration(school2.pinExpiresAt.diff(expiry))
+      const diffInMilliseconds = duration.asMilliseconds()
+      expect(diffInMilliseconds).toBeLessThan(1000)
     })
   })
 
