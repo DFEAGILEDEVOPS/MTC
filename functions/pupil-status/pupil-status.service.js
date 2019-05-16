@@ -4,6 +4,7 @@ const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
+const redisCacheService = require('../../admin/services/redis-cache.service')
 
 async function recalculatePupilStatus (pupilId) {
   const currentData = await getCurrentPupilData(pupilId)
@@ -58,15 +59,42 @@ async function getCurrentPupilData (pupilId) {
   return R.head(res)
 }
 
+async function getPupilStatusID (targetStatusCode) {
+  const rows = await redisCacheService.get('table.pupilStatus')
+  if (!rows) {
+    const sql = `SELECT id FROM [mtc_admin].[pupilStatus] WHERE code = @code`
+    const params = [
+      { name: 'code', value: targetStatusCode, type: TYPES.NVarChar }
+    ]
+    const results = await sqlService.query(sql, params)
+    return results[0].id
+  } else {
+    return rows.find(r => r.code === targetStatusCode).id
+  }
+}
+
 async function changePupilState (pupilId, targetStatusCode) {
-  const sql = `UPDATE [mtc_admin].[pupil]
-               SET pupilStatus_id = (SELECT id from [mtc_admin].[pupilStatus] WHERE code = @code)
-               WHERE id = @pupilId`
-  const params = [
-    { name: 'code', value: targetStatusCode, type: TYPES.NVarChar },
-    { name: 'pupilId', value: pupilId, type: TYPES.Int }
-  ]
-  return sqlService.modify(sql, params)
+  const statusID = await getPupilStatusID(targetStatusCode)
+  const pupils = await redisCacheService.get('table.pupil')
+  if (pupils) {
+    const pupilsLn = pupils.length
+    for (let i = 0; i < pupilsLn; i++) {
+      if (pupils[i].id === pupilId) {
+        pupils[i].pupilStatus_id = statusID
+        break
+      }
+    }
+    return redisCacheService.set('table.pupil', pupils)
+  } else {
+    const sql = `UPDATE [mtc_admin].[pupil]
+                 SET pupilStatus_id = @statusID
+                 WHERE id = @pupilId`
+    const params = [
+      { name: 'statusID', value: statusID, type: TYPES.Int },
+      { name: 'pupilId', value: pupilId, type: TYPES.Int }
+    ]
+    return sqlService.modify(sql, params)
+  }
 }
 
 module.exports = {
