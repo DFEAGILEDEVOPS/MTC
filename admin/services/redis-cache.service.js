@@ -60,15 +60,16 @@ redisCacheService.getFullKey = serviceKey => {
 redisCacheService.get = redisKey => {
   return new Promise((resolve, reject) => {
     redis.get(redisKey, (err, result) => {
-      if (err || !result) {
-        console.log(`REDIS (get): Failed to retrieve \`${redisKey}\``)
-        if (err) {
-          console.log(`REDIS (get): Error: ${err.message}`)
-        }
+      if (err) {
+        console.log(`REDIS (get): Error: ${err.message}`)
+        reject(err)
+      } else if (!result) {
+        console.log(`REDIS (get): \`${redisKey}\` is not set`)
+        resolve(false)
       } else {
         console.log(`REDIS (get): Retrieved \`${redisKey}\``)
+        resolve(result)
       }
-      resolve(result)
     })
   })
 }

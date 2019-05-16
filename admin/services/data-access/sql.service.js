@@ -276,8 +276,10 @@ sqlService.query = async (sql, params = [], redisKey) => {
   const query = async () => {
     let result = false
     if (redisKey) {
-      let redisResult = await redisCacheService.get(redisKey)
-      result = JSON.parse(redisResult)
+      try {
+        let redisResult = await redisCacheService.get(redisKey)
+        result = JSON.parse(redisResult)
+      } catch (e) {}
     }
     if (!result) {
       const request = new mssql.Request(pool)
