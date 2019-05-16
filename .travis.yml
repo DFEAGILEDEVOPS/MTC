@@ -52,5 +52,6 @@ install:
 - docker restart mtc_funcs
 script:
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
+- cd ${TRAVIS_BUILD_DIR}/admin && yarn sql-integration-test
 after_script:
 - docker-compose -f docker-compose.yml -f docker-compose.functions.yml down
