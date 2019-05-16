@@ -3,7 +3,7 @@ const sqlService = require('../../../lib/sql/sql.service')
 const R = require('ramda')
 const { TYPES } = sqlService
 const csv = require('fast-csv')
-const base = require('../../../lib/base') // provides logger
+const base = require('../../../lib/logger') // provides logger
 const fs = require('fs-extra')
 
 const psychometricianReportDataService = {

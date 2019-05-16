@@ -8,7 +8,7 @@ const path = require('path')
 const uuidv4 = require('uuid/v4')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
-const base = require('../../lib/base')
+const base = require('../../lib/logger')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
 const zipper = require('./zip.service')
 

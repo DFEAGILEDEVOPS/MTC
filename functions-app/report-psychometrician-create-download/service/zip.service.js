@@ -1,6 +1,6 @@
 'use strict'
 const archiver = require('archiver')
-const base = require('../../lib/base')
+const base = require('../../lib/logger')
 const fs = require('fs-extra')
 const path = require('path')
 
