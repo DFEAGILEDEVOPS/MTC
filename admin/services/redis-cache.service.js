@@ -4,7 +4,7 @@ const azureQueueService = require('./azure-queue.service')
 const queueNameService = require('./queue-name-service')
 const logger = require('./log.service').getLogger()
 
-const { REDIS_CACHING } = config
+const { REDIS_CACHE_UPDATING, REDIS_CACHING } = config
 
 let redisConfig = {
   port: config.Redis.Port,
@@ -174,7 +174,7 @@ const findKeys = pattern => {
  */
 redisCacheService.update = (serviceKey, changes) => {
   return new Promise(async (resolve, reject) => {
-    if (!REDIS_CACHING) {
+    if (!REDIS_CACHING || !REDIS_CACHE_UPDATING) {
       resolve(false)
     } else {
       const keys = await findKeys(new RegExp(`^${serviceKey}_`))

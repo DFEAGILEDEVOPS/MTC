@@ -80,6 +80,7 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
 * REDIS_CACHING - Enables the caching of specified query results
+* REDIS_CACHE_UPDATING - Enables updating Redis caches directly and sending SQL updates to the Azure message queue
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
