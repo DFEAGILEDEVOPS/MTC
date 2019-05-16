@@ -102,7 +102,7 @@ Given(/^I have multiple pupils for restart$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
@@ -155,8 +155,8 @@ And(/^Pupil has taken a 2nd restart$/) do
 end
 
 And(/^Pupil has taken a 3rd check$/) do
-    step 'Pupil has taken a 2nd restart'
-    step 'Pupil has taken a 2nd check'
+  step 'Pupil has taken a 2nd restart'
+  step 'Pupil has taken a 2nd check'
 end
 
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do |restart_status|
@@ -196,23 +196,26 @@ end
 When(/^they become eligable for a restart$/) do
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
-    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+    pupil_firstname = pupil.split(',')[1].strip
+    pupil_firstname.split(' Date')[0].split(' ')[0] if pupil_firstname.include? 'Date'
     pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
     response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
   end
+  Timeout.timeout(60){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[0],@pupil_names_arr.first.split(',')[0])['pupilStatus_id'] == 5}
   step 'I am on the Restarts Page'
 end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
+  Timeout.timeout(30) {visit current_url until !restarts_page.group_filter.groups.empty?}
   restarts_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
@@ -262,7 +265,7 @@ Given(/^pupil logs in and completed the check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   begin
@@ -273,9 +276,9 @@ Given(/^pupil logs in and completed the check$/) do
     sleep(1)
     retry if (retries += 1) < 5
   end
-  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
   response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}"){sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
+  Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
 end
 
 And(/^I generate a pin for that pupil$/) do
