@@ -8,41 +8,18 @@ const dateService = require('../services/date.service')
 const schoolHomeFeatureEligibilityPresenter = {}
 
 /**
- * Determine the results earliest eligibility date when hdf has been submitted
- * @param currentDate
- * @param checkEndDate
- * @returns {Object} moment date object
- */
-schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForSubmittedHdfs = (currentDate, checkEndDate) => {
-  return checkEndDate.clone()
-    .add(1, 'weeks').isoWeekday('Monday')
-    // first converting the date to the local compared date before setting the opening hour
-    .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
-}
-
-/**
- * Determine the results earliest eligibility date when hdf has not been submitted
- * @param currentDate
- * @param checkEndDate
- * @returns {Object} moment date object
- */
-schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForUnsubmittedHdfs = (currentDate, checkEndDate) => {
-  return checkEndDate.clone()
-    .add(2, 'weeks').isoWeekday('Monday')
-    .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
-}
-
-/**
  * Fetch data for familiarisation and live pin generation eligibility
  * @param checkWindowData
+ * @param timezone
  * @returns {Object} Eligibility data including flags and relevant datetimes
  */
 schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const featureEligibilityData = {}
-  const resultsPageEligibilityDateTimeForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForSubmittedHdfs(currentDate, checkWindowData.checkEndDate)
+  const resultsPublishedDate = checkWindowData.checkEndDate.clone()
+    .add(1, 'weeks').isoWeekday('Monday')
+    .utcOffset(currentDate.utcOffset(), true)
+    .set({ hour: 8, minutes: 0, seconds: 0 })
 
   // Pin generation
   featureEligibilityData.familiarisationCheckStartDate = dateService.formatFullGdsDate(checkWindowData.familiarisationCheckStartDate)
@@ -50,6 +27,10 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
   featureEligibilityData.liveCheckStartDate = dateService.formatFullGdsDate(checkWindowData.checkStartDate)
   featureEligibilityData.liveCheckEndDate = dateService.formatFullGdsDate(checkWindowData.checkEndDate)
 
+  // Results
+  featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPublishedDate)
+
+  // TODO: logic related properties should get refactored into services
   featureEligibilityData.isFamiliarisationPinGenerationAllowed = schoolHomeFeatureEligibilityPresenter.isFamiliarisationPinGenerationAllowed(currentDate, checkWindowData)
   featureEligibilityData.isFamiliarisationInTheFuture = schoolHomeFeatureEligibilityPresenter.isFamiliarisationInTheFuture(currentDate, checkWindowData)
   featureEligibilityData.isWithinFamiliarisationUnavailableHours = schoolHomeFeatureEligibilityPresenter.isWithinFamiliarisationUnavailableHours(currentDate, checkWindowData)
@@ -69,10 +50,6 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
 
   // HDF
   featureEligibilityData.isHdfPageAccessible = schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible(currentDate, checkWindowData)
-
-  // Results page data
-  featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTimeForSubmittedHdfs)
-  featureEligibilityData.isResultFeatureAccessible = schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible(currentDate, checkWindowData)
 
   return featureEligibilityData
 }
@@ -195,40 +172,6 @@ schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible = (curr
  */
 schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkWindowData) => {
   return currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
-}
-
-/**
- * Determine if results feature is accessible
- * @param currentDate
- * @param checkWindowData
- * @returns {Boolean}
- */
-schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible = (currentDate, checkWindowData) => {
-  const resultsPageEligibilityDateTimeForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForSubmittedHdfs(currentDate, checkWindowData.checkEndDate)
-  return currentDate.isSameOrAfter(resultsPageEligibilityDateTimeForSubmittedHdfs)
-}
-
-/**
- * Determine if results page is accessible while taking into account if the user has submitted the hdf
- * @param currentDate
- * @param checkWindowData
- * @param isHdfSubmitted
- * @returns {Boolean}
- */
-schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
-  return schoolHomeFeatureEligibilityPresenter.isResultsFeatureAccessible(currentDate, checkWindowData) && isHdfSubmitted
-}
-
-/**
- * Determine if results page is accessible providing the user did not submit the hdf
- * @param currentDate
- * @param checkWindowData
- * @param isHdfSubmitted
- * @returns {Boolean}
- */
-schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
-  const resultsPageEligibilityDateTimeForSubmittedHdfs = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTimeForUnsubmittedHdfs(currentDate, checkWindowData.checkEndDate)
-  return currentDate.isSameOrAfter(resultsPageEligibilityDateTimeForSubmittedHdfs) && !isHdfSubmitted
 }
 
 module.exports = schoolHomeFeatureEligibilityPresenter

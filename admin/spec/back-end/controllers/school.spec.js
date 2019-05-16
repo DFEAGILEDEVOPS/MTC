@@ -9,6 +9,7 @@ const checkWindowV2Service = require('../../../services/check-window-v2.service'
 const pupilRegisterService = require('../../../services/pupil-register.service')
 const schoolController = require('../../../controllers/school')
 const schoolService = require('../../../services/school.service')
+const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const schoolMock = require('../mocks/school')
 
@@ -50,6 +51,7 @@ describe('school controller:', () => {
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         spyOn(pupilRegisterService, 'hasIncompleteChecks').and.returnValue(false)
+        spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
         const res = getRes()
         const req = getReq(goodReqParams)
         await schoolController.getSchoolLandingPage(req, res, next)
@@ -67,6 +69,7 @@ describe('school controller:', () => {
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(pupilRegisterService, 'hasIncompleteChecks').and.returnValue(false)
+        spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
         const res = getRes()
         const req = getReq(goodReqParams)
         await schoolController.getSchoolLandingPage(req, res, next)

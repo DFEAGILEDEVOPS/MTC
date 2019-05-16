@@ -1,4 +1,4 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const config = require('../config')
 const groupService = require('../services/group.service')
@@ -6,7 +6,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const resultService = require('../services/result.service')
 const resultPresenter = require('../helpers/result-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
-const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const resultPageAvailabilityService = require('../services/results-page-availability.service')
 
 const controller = {}
 
@@ -38,9 +38,11 @@ controller.getViewResultsPage = async (req, res, next) => {
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
 
   const isResultsPageAccessibleForSubmittedHdfs =
-    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+    resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+
   const isResultsPageAccessibleForUnsubmittedHdfs =
-    schoolHomeFeatureEligibilityPresenter.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+    resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+
   if (!isResultsPageAccessibleForSubmittedHdfs && !isResultsPageAccessibleForUnsubmittedHdfs) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
