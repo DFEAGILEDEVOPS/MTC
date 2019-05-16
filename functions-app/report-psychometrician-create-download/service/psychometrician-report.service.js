@@ -59,29 +59,13 @@ const psychometricianReportService = {
 
   /**
    * Return the CSV file as a string
-   * @return {Promise<void>}
+   * @return {Promise<string>}
    */
-  generateAnomalyReport: async function generateAnomalyReport () {
-    // Read data from the cache
-    const results = await psychometricianReportDataService.sqlFindAllAnomalyReports()
-    const output = []
-    for (const obj of results) {
-      output.push(obj.jsonData)
-    }
-
-    const headers = this.produceAnomalyReportDataHeaders()
-    output.unshift(headers)
-
-    return new Promise((resolve, reject) => {
-      csv.writeToString(
-        output,
-        { headers: false },
-        function (err, data) {
-          if (err) { return reject(err) }
-          resolve(data)
-        }
-      )
-    })
+  generateAnomalyReport: async function generateAnomalyReport (directory) {
+    const baseFilename = 'anomaly-report.csv'
+    const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
+    await psychometricianReportDataService.setLogger(this.logger).streamAnomalyReport(fileNameWithPath)
+    return fileNameWithPath
   },
 
   /**
@@ -90,7 +74,7 @@ const psychometricianReportService = {
    */
   process: async function process () {
     // Create a temporary directory to stage the report files in
-    let newTmpDir, psychometricianReportFilename
+    let newTmpDir, psychometricianReportFilename, anomalyReportFilename
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
@@ -111,9 +95,19 @@ const psychometricianReportService = {
     const psStat = await fs.stat(psychometricianReportFilename)
     this.logger.verbose(`${functionName}: psychometrician report size: ${Math.round(psStat.size / 1024 / 1024)} MB`)
 
-    const zipfileName = 'report.zip'
-    const zipFileNameWithPath = await zipper.createZip(zipfileName, psychometricianReportFilename)
+    // This returns the full path + filename of the anomaly report
+    try {
+      anomalyReportFilename = await this.generateAnomalyReport(newTmpDir)
+    } catch (error) {
+      this.logger.error(`${functionName}: Failed to generate anomaly report: ${error.message}`)
+      throw error
+    }
 
+    const arStat = await fs.stat(anomalyReportFilename)
+    this.logger.verbose(`${functionName}: anomaly report size: ${Math.round(arStat.size / 1024 / 1024)} MB`)
+
+    const zipfileName = 'report.zip'
+    const zipFileNameWithPath = await zipper.createZip(zipfileName, [psychometricianReportFilename, anomalyReportFilename])
     const zipStat = await fs.stat(zipFileNameWithPath)
     this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 

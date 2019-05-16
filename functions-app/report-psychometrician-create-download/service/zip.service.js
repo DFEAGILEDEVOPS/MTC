@@ -5,12 +5,22 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const moduleToExport = {
-  createZip: function createZip (fileName, fileName1, fileName2) {
+  /**
+   *
+   * @param fileName
+   * @param {Array} files
+   * @return {Promise}
+   */
+  createZip: function createZip (fileName, files) {
     return new Promise((resolve, reject) => {
-      if (!fileName1) {
-        reject(new Error('Missing filename.  At least one file is required.'))
+      if (!Array.isArray(files)) {
+        reject(new Error('files must be an array'))
       }
-      const dirName = path.dirname(fileName1)
+      if (!Array.length > 0) {
+        reject(new Error('There must be atr least one file to zip'))
+      }
+
+      const dirName = path.dirname(files[0])
       const zipFileName = fileName
       const zipFileNameWithPath = `${dirName}${path.sep}${zipFileName}`
       const loggerRef = this.logger
@@ -53,13 +63,10 @@ const moduleToExport = {
       archive.pipe(stream)
 
       // append files
-      this.logger(`Archiver: adding ${fileName1} `)
-      archive.file(fileName1, { name: path.basename(fileName1) })
-
-      if (fileName2) {
-        this.logger(`Archiver: adding ${fileName2} `)
-        archive.file(fileName2, { name: path.basename(fileName2) })
-      }
+      files.forEach(file => {
+        loggerRef(`Archiver: adding ${file}`)
+        archive.file(file, { name: path.basename(file) })
+      })
 
       archive.finalize()
     })

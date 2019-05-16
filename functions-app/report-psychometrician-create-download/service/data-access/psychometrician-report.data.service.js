@@ -1,6 +1,5 @@
 'use strict'
 const sqlService = require('../../../lib/sql/sql.service')
-const R = require('ramda')
 const { TYPES } = sqlService
 const csv = require('fast-csv')
 const base = require('../../../lib/logger') // provides logger
@@ -8,7 +7,7 @@ const fs = require('fs-extra')
 
 const psychometricianReportDataService = {
   /**
-   *
+   * Stream the psychometrician report to file
    */
   streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath) {
     return new Promise( async resolve => {
@@ -51,24 +50,50 @@ const psychometricianReportDataService = {
     })
   },
 
-  sqlFindAllPsychometricianReports: async function sqlFindAllPsychometricianReports () {
-    const sql = 'SELECT * from [mtc_admin].[psychometricianReportCache]'
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
-    })
-    return parsed
-  },
+  /**
+   * Stream the anomaly report to a file
+   * @param fileNameWithPath
+   * @return {Promise}
+   */
+  streamAnomalyReport: async function (fileNameWithPath) {
+    return new Promise( async resolve => {
+      const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
+      const csvStream = csv.createWriteStream({ headers: true })
+      csvStream.pipe(stream)
+      const sql = 'SELECT check_id as checkId, jsonData from [mtc_admin].[anomalyReportCache]'
+      const request = await sqlService.getRequest()
 
-  sqlFindAllAnomalyReports: async function sqlFindAllPsychometricianReports () {
-    const sql = 'SELECT * from [mtc_admin].[anomalyReportCache]'
-    const results = await sqlService.query(sql)
-    const parsed = results.map(x => {
-      const d = JSON.parse(x.jsonData)
-      return R.assoc('jsonData', d, x)
+      const recordSetFunc = () => {}
+
+      const rowFunc = (row) => {
+        try {
+          const data = JSON.parse(row.jsonData)
+          if (!csvStream.write(data)) {
+            // Will pause every until `drain` event is emitted
+            request.pause()
+            csvStream.once('drain', function () { request.resume() } )
+          }
+        } catch (error) {
+          this.logger.error(`streamAnomalyReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
+        }
+      }
+
+      const errorFunc = (error) => {
+        this.logger.error('streamAnomalyReport(): [onError]: error: ', error.message)
+      }
+
+      /**
+       * Called when the sql has finished
+       * @param data E.g. { output: {}, rowsAffected: [ 10000 ] }
+       */
+      const doneFunc = (data) => {
+        csvStream.end(function () {
+          resolve(data)
+        })
+      }
+
+      await sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
     })
-    return parsed
   },
 
   /**
