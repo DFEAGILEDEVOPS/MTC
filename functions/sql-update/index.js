@@ -8,8 +8,6 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
-const schema = `[mtc_admin]`
-
 module.exports = async function (context, sqlUpdateMessage) {
   context.log('sql-update: message received', sqlUpdateMessage)
 
@@ -22,7 +20,7 @@ module.exports = async function (context, sqlUpdateMessage) {
     const { delete: deleteData, table, update } = message
     if (update) {
       for (let id in update) {
-        let thisQuery = `UPDATE ${schema}.[${table}] SET `
+        let thisQuery = `UPDATE [mtc_admin].[${table}] SET `
         for (let column in update[id]) {
           let paramValue = update[id][column]
           const param = `update_${column}_${i}`
@@ -53,7 +51,7 @@ module.exports = async function (context, sqlUpdateMessage) {
         return param
       })
       if (deleteParams.length) {
-        queries.push(`DELETE FROM ${schema}.[${table}] WHERE id IN (@${deleteParams.join(',@')})`)
+        queries.push(`DELETE FROM [mtc_admin].[${table}] WHERE id IN (@${deleteParams.join(',@')})`)
       }
     }
   })
