@@ -47,7 +47,8 @@ end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   pupil_register_page.load
-  Timeout.timeout(120){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).result.text == status}
+  p @details_hash[:first_name]
+  Timeout.timeout(180){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).result.text == status}
 end
 
 Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
@@ -70,4 +71,9 @@ Then(/^these pupils should be highlighted in red$/) do
   expect(pupil_register_page).to have_incomplete_message
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row).to have_incomplete_pupil
+end
+
+
+Then(/^I should see a toggle that explains each status$/) do
+  expect(pupil_register_page).to have_pupil_status_explanation
 end

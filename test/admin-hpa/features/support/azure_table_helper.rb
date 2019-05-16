@@ -6,15 +6,13 @@ class AzureTableHelper
   end
 
   def self.wait_for_prepared_check(school_password, pin)
-    60.times do |i|
-      begin
-        sleep 2
-        a = get_row('preparedCheck', school_password, pin)
-        p a
-        break if a['RowKey'] == pin
-      rescue Azure::Core::Http::HTTPError => e
-        raise 'Check not prepared'
-      end
+    p school_password, pin
+    begin
+      retries ||= 0
+      sleep 2
+      a = get_row('preparedCheck', school_password, pin)
+    rescue Azure::Core::Http::HTTPError => e
+      retry if (retries += 1) < 120
     end
   end
 

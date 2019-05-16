@@ -132,7 +132,6 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   wait_until(60,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
   pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  p pupil_check
   wait_until(60,5){SqlDbHelper.get_check_result(pupil_check['id'])}
   check_result = SqlDbHelper.get_check_result(pupil_check['id'])
   check = JSON.parse(check_result['payload'])
@@ -185,7 +184,8 @@ end
 Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expected_score|
   ls_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_code = ls_pupil['checkCode']
-  wait_until(60, 5){SqlDbHelper.get_check(check_code)}
+  Timeout.timeout(180){sleep 5 until SqlDbHelper.get_check(check_code)['mark'] != nil}
   check = SqlDbHelper.get_check(check_code)
+  p check
   expect(check['mark']).to eql expected_score
 end

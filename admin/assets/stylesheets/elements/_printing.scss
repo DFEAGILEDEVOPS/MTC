@@ -3,7 +3,7 @@
   #content {
     padding-bottom: 0;
   }
-  .no-print{
+  .no-print, .no-print * {
     display: none;
   }
   .only-print {

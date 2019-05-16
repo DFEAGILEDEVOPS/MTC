@@ -46,11 +46,13 @@
 }
 
 // pupil listing - hide exceptionally large names that overflow
-.truncate {
+.name-text-wrap {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: pem(200px);
 }
 
 // pupil form

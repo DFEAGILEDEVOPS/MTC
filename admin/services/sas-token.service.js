@@ -12,7 +12,7 @@ const sasTokenService = {
   /**
    *
    * @param queueName
-   * @param {Moment} expiryTime
+   * @param {Moment} expiryDate
    * @param {Object} serviceImplementation
    * @return {{token: string, url: string}}
    */

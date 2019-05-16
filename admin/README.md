@@ -81,6 +81,7 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
 * REDIS_CACHING - Enables the caching of specified query results
 * REDIS_CACHE_UPDATING - Enables updating Redis caches directly and sending SQL updates to the Azure message queue
+* DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
@@ -114,6 +115,16 @@ Example usage can be found [here](./sql.usage.example.js)
 We use postgrator to run database migrations.
 
 `yarn migrate-sql` to migrate to the latest or `yarn migrate-sql 123` to migrate to a particular version
+
+### Parse school changes from CSV
+
+```
+yarn parse-school-changes-csv PATH_TO_CSV
+```
+e.g.
+```
+yarn parse-school-changes-csv /Users/jane/Downloads/03\ Weekly\ updates/MIgrations_20190404.csv
+```
 
 ## Live reloading on change
 
