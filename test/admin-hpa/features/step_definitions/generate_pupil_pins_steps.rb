@@ -257,7 +257,8 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
-  generate_pins_overview_page.wait_for_group_filter(5)
+  Timeout.timeout(30){visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
+  Timeout.timeout(30){visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
