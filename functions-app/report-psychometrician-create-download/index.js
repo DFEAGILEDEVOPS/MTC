@@ -8,16 +8,15 @@ const name = 'report-psychometrician-create-download'
 module.exports = async function (context, message) {
   const start = performance.now()
 
-  let meta
   try {
-    meta = await v1.process(context.log)
+    await v1.process(context.log)
   } catch (error) {
-    context.log.error(`${name}: ERROR: ${error.message}`)
+    context.log.error(`${name}: ERROR run failed: ${error.message}`)
     throw error
   }
 
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} processed ${meta.processCount} checks, run took ${durationInMilliseconds} ms`)
+  context.log(`${name}: ${timeStamp} run took ${Math.round(durationInMilliseconds) / 1000}) seconds`)
 }

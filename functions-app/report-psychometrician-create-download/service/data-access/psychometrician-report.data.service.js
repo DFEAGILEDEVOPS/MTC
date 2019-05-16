@@ -11,7 +11,7 @@ const psychometricianReportDataService = {
    *
    */
   streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath) {
-    return new Promise(async resolve => {
+    return new Promise( async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.createWriteStream({ headers: true })
       csvStream.pipe(stream)
@@ -20,14 +20,13 @@ const psychometricianReportDataService = {
 
       const recordSetFunc = () => {}
 
-      let rowCount = 0
-      const rowFunc = async (row) => {
+      const rowFunc = (row) => {
         try {
           const data = JSON.parse(row.jsonData)
-          csvStream.write(data)
-          if (++rowCount % 15 === 0) {
+          if (!csvStream.write(data)) {
+            // Will pause every until `drain` event is emitted
             request.pause()
-            request.resume()
+            csvStream.once('drain', function () { request.resume() } )
           }
         } catch (error) {
           this.logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
@@ -38,11 +37,13 @@ const psychometricianReportDataService = {
         this.logger.error('streamPsychometricianReport(): [onError]: error: ', error.message)
       }
 
-      const doneFunc = () => {
-        csvStream.end()
-        stream.end()
-        resolve({
-          processCount: rowCount
+      /**
+       * Called when the sql has finished
+       * @param data E.g. { output: {}, rowsAffected: [ 10000 ] }
+       */
+      const doneFunc = (data) => {
+        csvStream.end(function () {
+          resolve(data)
         })
       }
 

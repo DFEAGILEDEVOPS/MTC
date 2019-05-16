@@ -10,10 +10,10 @@ const uuidv4 = require('uuid/v4')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const base = require('../../lib/base')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
-const zipper = require('./zipper')
+const zipper = require('./zip.service')
 
 const psychometricianReportUploadContainer = 'psychometricianreportupload'
-const psychometricianReportCode = 'PSR'
+// const psychometricianReportCode = 'PSR'
 const functionName = 'report-psychometrician'
 
 /**
@@ -32,7 +32,7 @@ const psychometricianReportService = {
    * @return {Promise<*>}
    */
   cleanup: async function cleanup (directoryPath) {
-    this.logger(`Cleanup is deleting staging directory: ${directoryPath}`)
+    this.logger.verbose(`Cleanup is deleting staging directory: ${directoryPath}`)
     return fs.remove(directoryPath)
   },
 
@@ -89,13 +89,12 @@ const psychometricianReportService = {
    * @return {Promise<void>}
    */
   process: async function process () {
-
     // Create a temporary directory to stage the report files in
     let newTmpDir, psychometricianReportFilename
 
     try {
       newTmpDir = await createTmpDir(functionName + '-')
-      this.logger.debug(`${functionName}: tmp directory created: ${newTmpDir}`)
+      this.logger.info(`${functionName}: tmp directory created: ${newTmpDir}`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
       throw error // unrecoverable - no work can be done.
@@ -110,13 +109,13 @@ const psychometricianReportService = {
     }
 
     const psStat = await fs.stat(psychometricianReportFilename)
-    this.logger.debug(`${functionName}: psychometrician report size: ${Math.round(psStat.size / 1024 / 1024)} MB`)
+    this.logger.verbose(`${functionName}: psychometrician report size: ${Math.round(psStat.size / 1024 / 1024)} MB`)
 
     const zipfileName = 'report.zip'
     const zipFileNameWithPath = await zipper.createZip(zipfileName, psychometricianReportFilename)
 
     const zipStat = await fs.stat(zipFileNameWithPath)
-    this.logger.debug(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
+    this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 
     // const uploadBlob = await this.uploadToBlobStorage(zipFile)
     // const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
@@ -128,9 +127,9 @@ const psychometricianReportService = {
     //   psychometricianReportCode)
 
     try {
-      await this.cleanup(newTmpDir)
+      // await this.cleanup(newTmpDir)
     } catch (error) {
-      this.logger.error(`${functionName}: error in cleanup (ignored): ${error.message}`)
+      this.logger.warn(`${functionName}: error in cleanup (ignored): ${error.message}`)
     }
   },
 

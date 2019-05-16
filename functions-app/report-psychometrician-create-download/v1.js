@@ -6,9 +6,6 @@ const v1 = {
   process: async function process (logger) {
     try {
       await psychometricianReportService.setLogger(logger).process()
-      return {
-        processCount: 1
-      }
     } catch (error) {
       logger.error('ERROR: v1.process(): ' + error.message)
     }
