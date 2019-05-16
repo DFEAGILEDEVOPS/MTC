@@ -54,8 +54,8 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
-  const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
-  schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
+  const nationalScore = resultPresenter.formatScore(checkWindow.score)
+  schoolScore = resultPresenter.formatScore(schoolScoreRecord && schoolScoreRecord.score)
   return res.render('results/view-results', {
     pupilData,
     groups,

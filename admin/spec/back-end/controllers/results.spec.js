@@ -51,7 +51,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5)
+      spyOn(resultPresenter, 'formatScore').and.returnValue(5)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -62,7 +62,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
-      expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
+      expect(resultPresenter.formatScore).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
         groups: undefined,
@@ -83,7 +83,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace')
+      spyOn(resultPresenter, 'formatScore')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -94,7 +94,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
-      expect(resultPresenter.getScoreWithOneDecimalPlace).not.toHaveBeenCalled()
+      expect(resultPresenter.formatScore).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('availability/admin-window-unavailable', {
         isBeforeStartDate: false
       })
@@ -112,7 +112,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs')
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
+      spyOn(resultPresenter, 'formatScore').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -123,7 +123,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs).not.toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs).not.toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
-      expect(resultPresenter.getScoreWithOneDecimalPlace).not.toHaveBeenCalled()
+      expect(resultPresenter.formatScore).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(err)
     })
@@ -139,7 +139,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(false)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
+      spyOn(resultPresenter, 'formatScore').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -164,7 +164,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(false)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(true)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
+      spyOn(resultPresenter, 'formatScore').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -175,7 +175,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
-      expect(resultPresenter.getScoreWithOneDecimalPlace).toHaveBeenCalled()
+      expect(resultPresenter.formatScore).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
         groups: undefined,
@@ -196,7 +196,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForSubmittedHdfs').and.returnValue(false)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForUnsubmittedHdfs').and.returnValue(false)
       spyOn(resultPresenter, 'getResultsViewData')
-      spyOn(resultPresenter, 'getScoreWithOneDecimalPlace').and.returnValue(5.2)
+      spyOn(resultPresenter, 'formatScore').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()

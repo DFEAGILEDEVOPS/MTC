@@ -28,6 +28,6 @@ resultPresenter.getResultsViewData = (pupils) => {
  * @param {Number} score
  * @returns {Number}
  */
-resultPresenter.getScoreWithOneDecimalPlace = (score) => score && (Math.round(score * 10) / 10)
+resultPresenter.formatScore = (score) => score && (Math.round(score * 10) / 10)
 
 module.exports = resultPresenter
