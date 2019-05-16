@@ -59,3 +59,8 @@ Then(/^the sign in page should match design$/) do
   step 'I should see a page heading'
   step 'I should see instructions'
 end
+
+Given(/^I have logged in with (.*)$/) do |teacher|
+  sign_in_page.load
+  sign_in_page.login(teacher, 'password')
+end
