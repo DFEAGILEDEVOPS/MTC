@@ -46,7 +46,7 @@ const psychometricianReportDataService = {
         })
       }
 
-      await sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
+      sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
     })
   },
 
@@ -92,7 +92,7 @@ const psychometricianReportDataService = {
         })
       }
 
-      await sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
+      sqlService.streamQuery(recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request)
     })
   },
 

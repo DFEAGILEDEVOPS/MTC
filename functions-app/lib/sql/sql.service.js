@@ -261,8 +261,7 @@ sqlService.getRequest = async function getRequest () {
   return new mssql.Request(pool)
 }
 
-sqlService.streamQuery = async function streamQuery (recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request, params = []) {
-  await this.initPool()
+sqlService.streamQuery = function streamQuery (recordSetFunc, rowFunc, errorFunc, doneFunc, sql, request, params = []) {
   addParamsToRequestSimple(params, request)
   request.stream = true
   request.query(sql)
