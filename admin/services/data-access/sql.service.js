@@ -528,22 +528,9 @@ sqlService.generateUpdateStatement = async (table, data) => {
  */
 sqlService.create = async (tableName, data, dropRedisCaches = false) => {
   const preparedData = convertMomentToJsDate(data)
-  const {
-    sql,
-    params,
-    outputParams
-  } = await sqlService.generateInsertStatement(tableName, preparedData)
+  const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
   try {
-    const res = await sqlService.modify(sql, params, outputParams)
-
-    if (dropRedisCaches) {
-      try {
-        await redisCacheService.dropAffectedCaches(tableName)
-      } catch (error) {
-        logger.error('sqlService.create: Failed to execute redisCacheService.dropAffectedCaches', error)
-        throw error
-      }
-    }
+    const res = await sqlService.modify(sql, params, dropRedisCaches ? tableName : false)
 
     return res
   } catch (error) {
