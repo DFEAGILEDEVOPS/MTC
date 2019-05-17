@@ -6,8 +6,6 @@ let cache = {}
 const { mssql, poolPromise } = require('./pool-config')
 const dateService = require('./date.service')
 const retry = require('./retry-async')
-const redisCacheService = require('../../../admin/services/redis-cache.service')
-const { REDIS_CACHING } = require('../../config')
 let pool
 
 const retryConfig = {
@@ -250,9 +248,6 @@ sqlService.query = async function query (sql, params = []) {
     const request = new mssql.Request(pool)
     addParamsToRequestSimple(params, request)
     const result = await request.query(sql)
-    if (REDIS_CACHING && sql.indexOf(sqlService.DONT_DROP_REDIS) === -1) {
-      await redisCacheService.dropAffectedCaches(sql)
-    }
     return sqlService.transformResult(result)
   }
 
@@ -303,9 +298,6 @@ sqlService.modify = async function modify (sql, params = []) {
   const modify = async () => {
     const request = new mssql.Request(pool)
     addParamsToRequest(params, request)
-    if (REDIS_CACHING && sql.indexOf(sqlService.DONT_DROP_REDIS) === -1) {
-      await redisCacheService.dropAffectedCaches(sql)
-    }
     return request.query(sql)
   }
 
