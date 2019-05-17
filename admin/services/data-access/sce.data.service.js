@@ -85,7 +85,7 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone, countryCode) => {
       type: TYPES.Char
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.query(sql, params, false, 'sce')
 }
 
 /**
@@ -111,7 +111,7 @@ sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
   const exec = 'EXEC [mtc_admin].[spUpsertSceSchools] @tvp'
   const insertSql = insertHeader + inserts.join(',\n')
   const sql = [declareTable, schools.length ? insertSql : '', exec].join(';\n')
-  const res = await sqlService.query(sql, params)
+  const res = await sqlService.query(sql, params, false, 'sce')
   const upsertedIds = []
   res.forEach(row => {
     upsertedIds.push(row.id)
@@ -135,7 +135,7 @@ sceDataService.sqlDeleteSceSchool = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.query(sql, params, false, 'sce')
 }
 
 module.exports = sceDataService
