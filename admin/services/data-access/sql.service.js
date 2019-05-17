@@ -262,12 +262,28 @@ function addParamsToRequestSimple (params, request) {
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
+ * @param {string} redisKey - Redis key to cache resultset against
+ * @param {array|string} affectedTables - Tables affected, which should check and drop redis caches
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = [], redisKey) => {
+sqlService.query = async (sql, params = [], redisKey, affectedTables) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
+
+  if (affectedTables) {
+    /*
+      there shouldn't be any reason to do an update/insert/deete AND cache a result set,
+      but prevent trying to return a cache anyway, just in case
+    */
+    redisKey = false
+    try {
+      await redisCacheService.dropAffectedCaches(affectedTables)
+    } catch (error) {
+      logger.error('sqlService.query: Failed to execute redisCacheService.dropAffectedCaches', error)
+      throw error
+    }
+  }
 
   if (redisKey) {
     redisKey = redisCacheService.getFullKey(redisKey)
@@ -334,10 +350,10 @@ function addParamsToRequest (params, request) {
  * Modify data in SQL Server via mssql library.
  * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
  * @param {array} params - Array of parameters for SQL statement
- * @param {array} affectedTables - Tables affected, which should check and drop redis caches
+ * @param {array|string} affectedTables - Tables affected, which should check and drop redis caches
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = [], affectedTables = []) => {
+sqlService.modify = async (sql, params = [], affectedTables) => {
   logger.debug('sql.service.modify(): SQL: ' + sql)
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
@@ -370,7 +386,7 @@ sqlService.modify = async (sql, params = [], affectedTables = []) => {
     returnValue.insertIds = insertIds
   }
 
-  if (affectedTables.length) {
+  if (affectedTables) {
     try {
       await redisCacheService.dropAffectedCaches(affectedTables)
     } catch (error) {
