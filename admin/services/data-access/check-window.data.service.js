@@ -39,7 +39,7 @@ const checkWindowDataService = {
       }
     ]
     const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1 WHERE id=@id`
-    return sqlService.modify(sql, params)
+    return sqlService.modify(sql, params, [table])
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
@@ -203,10 +203,10 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create(table, data)
+    return sqlService.create(table, data, true)
   },
   sqlUpdate: async (data) => {
-    return sqlService.update('[checkWindow]', data)
+    return sqlService.update(table, data, true)
   },
   sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
@@ -234,12 +234,11 @@ const checkWindowDataService = {
     const inserts = []
     for (let index = 0; index < checkFormIds.length; index++) {
       const formId = checkFormIds[index]
-      inserts.push(sqlService.create('[checkFormWindow]',
-        {
-          checkForm_id: formId,
-          checkWindow_id: checkWindowId
-        }
-      ))
+      const params = {
+        checkForm_id: formId,
+        checkWindow_id: checkWindowId
+      }
+      inserts.push(sqlService.create('[checkFormWindow]', params, true))
     }
     return Promise.all(inserts)
   },
