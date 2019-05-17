@@ -67,7 +67,7 @@ const schoolDataService = {
    * @returns {Promise<*>}
    */
   sqlUpdate: async (update) => {
-    return sqlService.update(table, update)
+    return sqlService.update(table, update, true)
   },
 
   /**
