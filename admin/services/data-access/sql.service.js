@@ -334,9 +334,10 @@ function addParamsToRequest (params, request) {
  * Modify data in SQL Server via mssql library.
  * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
  * @param {array} params - Array of parameters for SQL statement
+ * @param {array} affectedTables - Tables affected, which should check and drop redis caches
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = []) => {
+sqlService.modify = async (sql, params = [], affectedTables = []) => {
   logger.debug('sql.service.modify(): SQL: ' + sql)
   logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
@@ -368,6 +369,16 @@ sqlService.modify = async (sql, params = []) => {
   } else if (insertIds.length > 1) {
     returnValue.insertIds = insertIds
   }
+
+  if (affectedTables.length) {
+    try {
+      await redisCacheService.dropAffectedCaches(affectedTables)
+    } catch (error) {
+      logger.error('sqlService.modify: Failed to execute redisCacheService.dropAffectedCaches', error)
+      throw error
+    }
+  }
+
   return returnValue
 }
 
@@ -496,9 +507,10 @@ sqlService.generateUpdateStatement = async (table, data) => {
  * Create a new record
  * @param {string} tableName
  * @param {object} data
+ * @param {boolean} dropRedisCaches
  * @return {Promise} - returns the number of rows modified (e.g. 1)
  */
-sqlService.create = async (tableName, data) => {
+sqlService.create = async (tableName, data, dropRedisCaches = false) => {
   const preparedData = convertMomentToJsDate(data)
   const {
     sql,
@@ -507,6 +519,16 @@ sqlService.create = async (tableName, data) => {
   } = await sqlService.generateInsertStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params, outputParams)
+
+    if (dropRedisCaches) {
+      try {
+        await redisCacheService.dropAffectedCaches(tableName)
+      } catch (error) {
+        logger.error('sqlService.create: Failed to execute redisCacheService.dropAffectedCaches', error)
+        throw error
+      }
+    }
+
     return res
   } catch (error) {
     logger.warn('sql.service: Failed to INSERT', error)
@@ -557,9 +579,10 @@ sqlService.updateDataTypeCache = async function () {
  * Returns { rowsModified: n } the number of rows modified.
  * @param tableName
  * @param data
+ * @param dropRedisCaches
  * @return {Promise<*>}
  */
-sqlService.update = async function (tableName, data) {
+sqlService.update = async function (tableName, data, dropRedisCaches = false) {
   if (!data.id) {
     throw new Error('`id` is required')
   }
@@ -571,6 +594,16 @@ sqlService.update = async function (tableName, data) {
   } = await sqlService.generateUpdateStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params)
+
+    if (dropRedisCaches) {
+      try {
+        await redisCacheService.dropAffectedCaches(tableName)
+      } catch (error) {
+        logger.error('sqlService.create: Failed to execute redisCacheService.dropAffectedCaches', error)
+        throw error
+      }
+    }
+
     return res
   } catch (error) {
     logger.warn('sql.service: Failed to UPDATE', error)
