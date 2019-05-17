@@ -52,7 +52,8 @@ const psychometricianReportService = {
   generatePsychometricianReport: async function generatePsychometricianReport (directory) {
     const baseFilename = `Pupil check data ${moment().format('YYYY-MM-DD HH.mm.ss')}.csv`
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
-    await psychometricianReportDataService.setLogger(this.logger).streamPsychometricianReport(fileNameWithPath)
+    const sql = 'SELECT check_id as checkId, jsonData from [mtc_admin].[psychometricianReportCache]'
+    await psychometricianReportDataService.setLogger(this.logger).streamReport(fileNameWithPath, sql)
     return fileNameWithPath
   },
 
@@ -63,7 +64,8 @@ const psychometricianReportService = {
   generateAnomalyReport: async function generateAnomalyReport (directory) {
     const baseFilename = `Anomaly report ${moment().format('YYYY-MM-DD HH.mm.ss')}.csv`
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
-    await psychometricianReportDataService.setLogger(this.logger).streamAnomalyReport(fileNameWithPath)
+    const sql = 'SELECT check_id as checkId, jsonData from [mtc_admin].[anomalyReportCache]'
+    await psychometricianReportDataService.setLogger(this.logger).streamReport(fileNameWithPath, sql)
     return fileNameWithPath
   },
 
