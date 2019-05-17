@@ -131,28 +131,6 @@ const psychometricianReportService = {
     } catch (error) {
       this.logger.warn(`${functionName}: error in cleanup (ignored): ${error.message}`)
     }
-  },
-
-  /**
-   * Returns the Anomaly CSV headers
-   * @param {Array} results
-   * @returns {Array}
-   */
-  produceAnomalyReportDataHeaders: function produceAnomalyReportDataHeaders () {
-    const reportHeaders = [
-      'Check Code',
-      'Date',
-      'Speech Synthesis',
-      'Mark',
-      'Device',
-      'Agent',
-      'Message',
-      'Tested value',
-      'Expected value',
-      'Question number'
-    ]
-
-    return reportHeaders
   }
 }
 

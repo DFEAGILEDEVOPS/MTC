@@ -52,18 +52,18 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
   const checkDate = anomalyReportService.getCheckDate(check)
 
-  const reportData = [
-    check.checkCode,
-    checkDate,
-    check.data.config.speechSynthesis,
-    `${check.mark} out of ${check.maxMark}`,
-    agent.device.toString().replace('0.0.0', ''),
-    agent.toString(),
-    message,
-    testedValue,
-    expectedValue,
-    questionNumber
-  ]
+  const reportData = {
+      'CheckCode': check.checkCode,
+      'Date': checkDate,
+      'Speech Synthesis': check.data.config.speechSynthesis,
+      'Mark': `${check.mark} out of ${check.maxMark}`,
+      'Device': agent .device.toString().replace('0.0.0', ''),
+      'Agent': agent.toString(),
+      'Message': message,
+      'Tested Value': testedValue,
+      'Expected Value': expectedValue,
+      'Question number': questionNumber
+  }
 
   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
 }
