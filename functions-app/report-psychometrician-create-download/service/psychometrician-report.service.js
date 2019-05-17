@@ -1,6 +1,5 @@
 'use strict'
 
-const csv = require('fast-csv')
 const fs = require('fs-extra')
 const moment = require('moment')
 const os = require('os')
@@ -13,7 +12,7 @@ const psychometricianReportDataService = require('./data-access/psychometrician-
 const zipper = require('./zip.service')
 
 const psychometricianReportUploadContainer = 'psychometricianreportupload'
-// const psychometricianReportCode = 'PSR'
+const psychometricianReportCode = 'PSR'
 const functionName = 'report-psychometrician'
 
 /**
@@ -41,9 +40,9 @@ const psychometricianReportService = {
    * @param uploadStream
    * @return {Promise<void>}
    */
-  uploadToBlobStorage: async function uploadToBlobStorage (data) {
+  uploadToBlobStorage: async function uploadToBlobStorage (localFilenameWithPath) {
     const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
-    return azureFileDataService.azureUploadFile(psychometricianReportUploadContainer, remoteFilename, data, data.length)
+    return azureFileDataService.azureUploadFromLocalFile(psychometricianReportUploadContainer, remoteFilename, localFilenameWithPath)
   },
 
   /**
@@ -51,7 +50,7 @@ const psychometricianReportService = {
    * @return {Promise<string>}
    */
   generatePsychometricianReport: async function generatePsychometricianReport (directory) {
-    const baseFilename = 'psychometrician-report.csv'
+    const baseFilename = `Pupil check data ${moment().format('YYYY-MM-DD HH.mm.ss')}.csv`
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
     await psychometricianReportDataService.setLogger(this.logger).streamPsychometricianReport(fileNameWithPath)
     return fileNameWithPath
@@ -62,7 +61,7 @@ const psychometricianReportService = {
    * @return {Promise<string>}
    */
   generateAnomalyReport: async function generateAnomalyReport (directory) {
-    const baseFilename = 'anomaly-report.csv'
+    const baseFilename = `Anomaly report ${moment().format('YYYY-MM-DD HH.mm.ss')}.csv`
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
     await psychometricianReportDataService.setLogger(this.logger).streamAnomalyReport(fileNameWithPath)
     return fileNameWithPath
@@ -106,43 +105,32 @@ const psychometricianReportService = {
     const arStat = await fs.stat(anomalyReportFilename)
     this.logger.verbose(`${functionName}: anomaly report size: ${Math.round(arStat.size / 1024 / 1024)} MB`)
 
-    const zipfileName = 'report.zip'
+    const zipfileName = `pupil-check-data-${moment().format('YYYY-MM-DD HHmm')}.zip`
     const zipFileNameWithPath = await zipper.createZip(zipfileName, [psychometricianReportFilename, anomalyReportFilename])
     const zipStat = await fs.stat(zipFileNameWithPath)
     this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 
-    // const uploadBlob = await this.uploadToBlobStorage(zipFile)
-    // const md5Buffer = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
-    // await psychometricianReportDataService.sqlSaveFileUploadMeta(
-    //   uploadBlob.container,
-    //   uploadBlob.name,
-    //   uploadBlob.etag,
-    //   md5Buffer,
-    //   psychometricianReportCode)
+    // Upload to Azure Storage
+    try {
+      const uploadBlob = await this.uploadToBlobStorage(zipFileNameWithPath)
+      this.logger(`${functionName}: uploaded '${zipfileName}' to '${psychometricianReportUploadContainer}' container`)
+      const md5 = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
+      await psychometricianReportDataService.sqlSaveFileUploadMeta(
+        uploadBlob.container,
+        uploadBlob.name,
+        uploadBlob.etag,
+        md5,
+        psychometricianReportCode)
+    } catch (error) {
+      this.logger.error(`Failed to upload to azure Storage: ${error.message}`)
+      throw error
+    }
 
     try {
-      // await this.cleanup(newTmpDir)
+      await this.cleanup(newTmpDir)
     } catch (error) {
       this.logger.warn(`${functionName}: error in cleanup (ignored): ${error.message}`)
     }
-  },
-
-  /**
-   * Returns the CSV headers
-   * @param {Array} results
-   * @deprecated
-   * @returns {Array}
-   */
-  producePsychometricianReportDataHeaders: function producePsychometricianReportDataHeaders (results) {
-    // If there are no checks, there will be an empty file
-    if (results.length === 0) return []
-    // Fetch the first completed check to store the keys as headers
-    const completedCheck = results.find(c => c.jsonData && c.jsonData.hasOwnProperty('Q1ID'))
-    if (completedCheck) {
-      return Object.keys(completedCheck.jsonData)
-    }
-    // Alternatively return the first check keys
-    return Object.keys(results[0].jsonData)
   },
 
   /**

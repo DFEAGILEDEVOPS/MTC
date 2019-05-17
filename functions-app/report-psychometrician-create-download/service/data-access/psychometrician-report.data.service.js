@@ -10,7 +10,7 @@ const psychometricianReportDataService = {
    * Stream the psychometrician report to file
    */
   streamPsychometricianReport: function streamPsychometricianReport (fileNameWithPath) {
-    return new Promise( async resolve => {
+    return new Promise(async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.createWriteStream({ headers: true })
       csvStream.pipe(stream)
@@ -25,7 +25,7 @@ const psychometricianReportDataService = {
           if (!csvStream.write(data)) {
             // Will pause every until `drain` event is emitted
             request.pause()
-            csvStream.once('drain', function () { request.resume() } )
+            csvStream.once('drain', function () { request.resume() })
           }
         } catch (error) {
           this.logger.error(`streamPsychometricianReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
@@ -56,7 +56,7 @@ const psychometricianReportDataService = {
    * @return {Promise}
    */
   streamAnomalyReport: async function (fileNameWithPath) {
-    return new Promise( async resolve => {
+    return new Promise(async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.createWriteStream({ headers: true })
       csvStream.pipe(stream)
@@ -71,7 +71,7 @@ const psychometricianReportDataService = {
           if (!csvStream.write(data)) {
             // Will pause every until `drain` event is emitted
             request.pause()
-            csvStream.once('drain', function () { request.resume() } )
+            csvStream.once('drain', function () { request.resume() })
           }
         } catch (error) {
           this.logger.error(`streamAnomalyReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
