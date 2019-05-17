@@ -114,13 +114,13 @@ const psychometricianReportService = {
 
     // Upload to Azure Storage
     try {
-      const uploadBlob = await this.uploadToBlobStorage(zipFileNameWithPath)
-      this.logger(`${functionName}: uploaded '${zipfileName}' to '${psychometricianReportUploadContainer}' container`)
-      const md5 = Buffer.from(uploadBlob.contentSettings.contentMD5, 'base64')
+      const uploadBlobResult = await this.uploadToBlobStorage(zipFileNameWithPath)
+      this.logger(`${functionName}: uploaded '${uploadBlobResult.name}' to '${psychometricianReportUploadContainer}' container`)
+      const md5 = Buffer.from(uploadBlobResult.contentSettings.contentMD5, 'base64')
       await psychometricianReportDataService.sqlSaveFileUploadMeta(
-        uploadBlob.container,
-        uploadBlob.name,
-        uploadBlob.etag,
+        uploadBlobResult.container,
+        uploadBlobResult.name,
+        uploadBlobResult.etag,
         md5,
         psychometricianReportCode)
     } catch (error) {

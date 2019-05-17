@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 
 const sqlService = require('../../../lib/sql/sql.service')
 const { TYPES } = sqlService
-const logger = require('../../../lib/logger')
+const base = require('../../../lib/logger')
 
 const psychometricianReportDataService = {
   /**
@@ -80,4 +80,4 @@ const psychometricianReportDataService = {
   }
 }
 
-module.exports = Object.assign(psychometricianReportDataService, logger)
+module.exports = Object.assign(psychometricianReportDataService, base)
