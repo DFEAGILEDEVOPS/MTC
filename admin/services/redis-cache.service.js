@@ -94,56 +94,36 @@ redisCacheService.set = (redisKey, data) => {
 }
 
 /**
- * Called by the sqlService when it performs queries.
- * If a change query is detected, finds table names and drops any affected caches so they can be redone
- * @param sql - The SQL query being executed
+ * Called by the sqlService when it performs update/delete/insert/exec queries.
+ * Drops any affected caches - based on supplied tables - so they can be re-queried
+ * @param tables - A single string table or array of tables
  * @returns {Boolean}
  */
-redisCacheService.dropAffectedCaches = sql => {
+redisCacheService.dropAffectedCaches = (tables = []) => {
   return new Promise((resolve, reject) => {
-    if (!REDIS_CACHING) {
+    if (!REDIS_CACHING || (Array.isArray(tables) && tables.length === 0)) {
       return resolve(true)
     }
-    let tables = []
-    if (/DELETE|INSERT|UPDATE/.test(sql)) {
-      const tableRegex = /\.\[([a-z]+)\]/gi
-      let match = false
-      while ((match = tableRegex.exec(sql)) !== null) {
-        tables.push(match[1])
-      }
+    if (typeof tables === 'string') {
+      tables = [tables]
     }
-    if (/EXEC/.test(sql)) {
-      const spRegex = /\.\[(sp[a-z]+)\]/gi
-      let match = false
-      let procedures = []
-      while ((match = spRegex.exec(sql)) !== null) {
-        procedures.push(match[1])
+    tables = tables.map(t => t.replace(/[^a-z]+/gi, ''))
+    const stream = redis.scanStream()
+    stream.on('data', keys => {
+      const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
+      const matchedKeys = keys.filter(k => keyRegex.test(k))
+      if (matchedKeys.length) {
+        const pipeline = redis.pipeline()
+        matchedKeys.forEach(key => {
+          logger.info(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
+          pipeline.del(key)
+        })
+        pipeline.exec()
       }
-      procedures.forEach(p => {
-        const thisTables = redisCacheService.storedProceduresAffectedTables[p]
-        if (thisTables) {
-          tables = tables.concat(thisTables)
-        }
-      })
-    }
-    if (tables.length) {
-      const stream = redis.scanStream()
-      stream.on('data', keys => {
-        const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
-        const matchedKeys = keys.filter(k => keyRegex.test(k))
-        if (matchedKeys.length) {
-          const pipeline = redis.pipeline()
-          matchedKeys.forEach(key => {
-            logger.info(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
-            pipeline.del(key)
-          })
-          pipeline.exec()
-        }
-      })
-      stream.on('end', resolve)
-    } else {
+    })
+    stream.on('end', () => {
       resolve(true)
-    }
+    })
   })
 }
 
