@@ -1,7 +1,7 @@
 {
   "name": "functions-app",
   "version": "0.0.1",
-  "description": "MTC Azure Functions App Service Plan",
+  "description": "MTC Azure Functions App Service Plan - for very long running functions",
   "main": "index.js",
   "license": "GPL-3.0",
   "scripts": {
