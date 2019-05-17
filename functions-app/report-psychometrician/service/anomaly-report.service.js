@@ -53,16 +53,16 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   const checkDate = anomalyReportService.getCheckDate(check)
 
   const reportData = {
-      'CheckCode': check.checkCode,
-      'Date': checkDate,
-      'Speech Synthesis': check.data.config.speechSynthesis,
-      'Mark': `${check.mark} out of ${check.maxMark}`,
-      'Device': agent .device.toString().replace('0.0.0', ''),
-      'Agent': agent.toString(),
-      'Message': message,
-      'Tested Value': testedValue,
-      'Expected Value': expectedValue,
-      'Question number': questionNumber
+    'CheckCode': check.checkCode,
+    'Date': checkDate,
+    'Speech Synthesis': check.data.config.speechSynthesis,
+    'Mark': `${check.mark} out of ${check.maxMark}`,
+    'Device': agent.device.toString().replace('0.0.0', ''),
+    'Agent': agent.toString(),
+    'Message': message,
+    'Tested Value': testedValue,
+    'Expected Value': expectedValue,
+    'Question number': questionNumber
   }
 
   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
