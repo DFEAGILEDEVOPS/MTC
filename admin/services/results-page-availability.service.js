@@ -16,31 +16,14 @@ resultPageAvailabilityService.isResultsFeatureAccessible = (currentDate, checkWi
 }
 
 /**
- * Determine if results page can be accessed based on results availability date and hdf submission
+ * Determine if results page can be accessed when hdf submission is incomplete
  * @param currentDate
  * @param checkWindowData
  * @param isHdfSubmitted
  * @returns {Boolean}
  */
 
-resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
-  const resultsAvailabilityDate = checkWindowData.checkEndDate.clone()
-    .add(1, 'weeks').isoWeekday('Monday')
-    .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
-
-  return currentDate.isSameOrAfter(resultsAvailabilityDate) && isHdfSubmitted
-}
-
-/**
- * Determine if results page can be accessed when hdf submission was skipped
- * @param currentDate
- * @param checkWindowData
- * @param isHdfSubmitted
- * @returns {Boolean}
- */
-
-resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
+resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs = (currentDate, checkWindowData, isHdfSubmitted = false) => {
   const resultsAvailabilityDateForSubmittedHdfs = checkWindowData.checkEndDate.clone()
     .add(2, 'weeks').isoWeekday('Monday')
     .utcOffset(currentDate.utcOffset(), true)

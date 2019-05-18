@@ -52,55 +52,7 @@ describe('results-page-availability.service', () => {
       expect(isResultsFeatureAccessible).toBeTruthy()
     })
   })
-  describe('isResultsPageAccessibleForSubmittedHdfs', () => {
-    describe('providing hdf is submitted', () => {
-      it('allows access to results page after the first Monday from check end date', () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(15, 'days'),
-          adminEndDate: moment.utc().add(2, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(10, 'days'),
-          checkStartDate: moment.utc().subtract(6, 'days'),
-          checkEndDate: moment.utc().subtract(10, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        const isResultsPageAccessibleForSubmittedHdfs = resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData, true)
-        expect(isResultsPageAccessibleForSubmittedHdfs).toBeTruthy()
-      })
-      it('disallows access to results page before the first Monday from check end date', () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(10, 'days'),
-          adminEndDate: moment.utc().add(1, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(3, 'days'),
-          checkStartDate: moment.utc().subtract(6, 'days'),
-          checkEndDate: moment.utc().subtract(1, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        const isResultsPageAccessibleForSubmittedHdfs = resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData, true)
-        expect(isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
-      })
-    })
-    describe('providing hdf is not submitted', () => {
-      it('disallows access to results page after the first Monday from check end date', () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(10, 'days'),
-          adminEndDate: moment.utc().add(2, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(5, 'days'),
-          checkStartDate: moment.utc().subtract(6, 'days'),
-          checkEndDate: moment.utc().subtract(5, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        const isResultsPageAccessibleForSubmittedHdfs = resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs(allowedDateTime, checkWindowData, false)
-        expect(isResultsPageAccessibleForSubmittedHdfs).toBeFalsy()
-      })
-    })
-  })
-  describe('isResultsPageAccessibleForUnsubmittedHdfs', () => {
+  describe('isResultsPageAccessibleForIncompleteHdfs', () => {
     describe('providing hdf is not submitted', () => {
       it('disallows results before the second Monday after check end date', () => {
         const checkWindowData = {
@@ -113,8 +65,8 @@ describe('results-page-availability.service', () => {
           checkEndDate: moment.utc().subtract(8, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        const isResultsPageAccessibleForUnsubmittedHdfs = resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs(allowedDateTime, checkWindowData, false)
-        expect(isResultsPageAccessibleForUnsubmittedHdfs).toBeFalsy()
+        const isResultsPageAccessibleForIncompleteHdfs = resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(allowedDateTime, checkWindowData, false)
+        expect(isResultsPageAccessibleForIncompleteHdfs).toBeFalsy()
       })
       it('allows results after the second Monday after check end date', () => {
         const checkWindowData = {
@@ -127,8 +79,8 @@ describe('results-page-availability.service', () => {
           checkEndDate: moment.utc().subtract(16, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        const isResultsPageAccessibleForUnsubmittedHdfs = resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs(allowedDateTime, checkWindowData, false)
-        expect(isResultsPageAccessibleForUnsubmittedHdfs).toBeTruthy()
+        const isResultsPageAccessibleForIncompleteHdfs = resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(allowedDateTime, checkWindowData, false)
+        expect(isResultsPageAccessibleForIncompleteHdfs).toBeTruthy()
       })
     })
   })

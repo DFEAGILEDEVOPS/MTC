@@ -37,17 +37,24 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
 
-  const isResultsPageAccessibleForSubmittedHdfs =
-    resultPageAvailabilityService.isResultsPageAccessibleForSubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+  const isResultsFeatureAccessible =
+    resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindow)
 
-  const isResultsPageAccessibleForUnsubmittedHdfs =
-    resultPageAvailabilityService.isResultsPageAccessibleForUnsubmittedHdfs(currentDate, checkWindow, isHdfSubmitted)
+  const isResultsPageAccessibleForIncompleteHdfs =
+    resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(currentDate, checkWindow, isHdfSubmitted)
 
-  if (!isResultsPageAccessibleForSubmittedHdfs && !isResultsPageAccessibleForUnsubmittedHdfs) {
+  if (!isResultsFeatureAccessible) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
     })
   }
+
+  if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
+    return res.render('results/view-incomplete-hdf', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
   if (!schoolScoreRecord) {
     return res.render('availability/admin-window-unavailable', {
       isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
