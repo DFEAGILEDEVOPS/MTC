@@ -27,10 +27,6 @@ redisCacheService.affectedTables = {
   'schoolData.sqlFindOneById': ['sce', 'school']
 }
 
-redisCacheService.storedProceduresAffectedTables = {
-  'spUpsertSceSchools': ['sce']
-}
-
 /**
  * Constructs a full Redis key in the format `serviceName.methodName_affectedTable1-affectedTable2`
  * @param serviceKey - the prefix of the key in the format `serviceName.methodName`
@@ -63,14 +59,14 @@ redisCacheService.get = redisKey => {
     redis.get(redisKey, (err, result) => {
       if (err) {
         logger.error(`REDIS (get): Error: ${err.message}`)
-        reject(err)
-      } else if (!result) {
-        logger.info(`REDIS (get): \`${redisKey}\` is not set`)
-        resolve(false)
-      } else {
-        logger.info(`REDIS (get): Retrieved \`${redisKey}\``)
-        resolve(result)
+        return reject(err)
       }
+      if (!result) {
+        logger.info(`REDIS (get): \`${redisKey}\` is not set`)
+        return resolve(false)
+      }
+      logger.info(`REDIS (get): Retrieved \`${redisKey}\``)
+      return resolve(result)
     })
   })
 }
@@ -109,7 +105,7 @@ redisCacheService.dropAffectedCaches = (tables = []) => {
     }
     tables = tables.map(t => t.replace(/[^a-z]+/gi, ''))
     const stream = redis.scanStream()
-    stream.on('data', keys => {
+    stream.on('data', async keys => {
       const keyRegex = new RegExp(`(_|-)(${tables.join('|')})`, 'i')
       const matchedKeys = keys.filter(k => keyRegex.test(k))
       if (matchedKeys.length) {
@@ -118,7 +114,11 @@ redisCacheService.dropAffectedCaches = (tables = []) => {
           logger.info(`REDIS (dropAffectedCaches): Dropped \`${key}\``)
           pipeline.del(key)
         })
-        pipeline.exec()
+        try {
+          await pipeline.exec()
+        } catch (e) {
+          reject(e)
+        }
       }
     })
     stream.on('end', () => {
@@ -155,40 +155,51 @@ const findKeys = pattern => {
 redisCacheService.update = (serviceKey, changes) => {
   return new Promise(async (resolve, reject) => {
     if (!REDIS_CACHING || !REDIS_CACHE_UPDATING) {
-      resolve(false)
-    } else {
-      const keys = await findKeys(new RegExp(`^${serviceKey}_`))
-      const foundKey = keys.length ? keys[0] : false
-      if (!foundKey) {
-        resolve(false)
-      } else {
-        redis.get(foundKey, (err, result) => {
-          if (err || !result) {
-            resolve(false)
-          } else {
-            result = JSON.parse(result)
-            result.recordset = result.recordset.map(r => {
-              if (changes.update && changes.update[r.id]) {
-                for (let prop in changes.update[r.id]) {
-                  r[prop] = changes.update[r.id][prop]
-                }
-              }
-              if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
-                return false
-              }
-              return r
-            }).filter(r => r !== false)
-            redis.set(foundKey, JSON.stringify(result), async () => {
-              logger.info(`REDIS (update): Updated \`${foundKey}\``)
-              const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
-              await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
-              logger.info(`REDIS (update): Sent \`${foundKey}\` update to \`sql-update\` message queue`)
-              resolve(true)
-            })
-          }
-        })
-      }
+      return resolve(false)
     }
+
+    let foundKey
+    try {
+      const keys = await findKeys(new RegExp(`^${serviceKey}_`))
+      foundKey = keys.length ? keys[0] : false
+    } catch (e) {
+      return reject(e)
+    }
+    if (!foundKey) {
+      return resolve(false)
+    }
+
+    redis.get(foundKey, (err, result) => {
+      if (err) {
+        return reject(err)
+      }
+      if (!result) {
+        return resolve(false)
+      }
+      result = JSON.parse(result)
+      result.recordset = result.recordset.map(r => {
+        if (changes.update && changes.update[r.id]) {
+          for (let prop in changes.update[r.id]) {
+            r[prop] = changes.update[r.id][prop]
+          }
+        }
+        if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
+          return false
+        }
+        return r
+      }).filter(r => r !== false)
+      redis.set(foundKey, JSON.stringify(result), async () => {
+        logger.info(`REDIS (update): Updated \`${foundKey}\``)
+        const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
+        try {
+          await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
+          logger.info(`REDIS (update): Sent \`${foundKey}\` update to \`sql-update\` message queue`)
+          resolve(true)
+        } catch (e) {
+          reject(e)
+        }
+      })
+    })
   })
 }
 
