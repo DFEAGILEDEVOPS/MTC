@@ -53,8 +53,6 @@ const v1 = {
     })
 
     if (queries.length) {
-      console.log(queries)
-      console.log(params)
       try {
         const sql = DONT_DROP_REDIS + queries.join('; ')
         const res = await sqlService.modify(sql, params)
