@@ -637,7 +637,7 @@ sqlService.buildParameterList = (ary, type) => {
   }
 }
 
-sqlService.modifyWithTransaction = async (sqlStatements, params) => {
+sqlService.modifyWithTransaction = async (sqlStatements, params, affectedTables) => {
   const wrappedSQL = `
   BEGIN TRY
   BEGIN TRANSACTION
@@ -668,6 +668,6 @@ BEGIN CATCH
                );
 END CATCH
   `
-  return sqlService.modify(wrappedSQL, params)
+  return sqlService.modify(wrappedSQL, params, affectedTables)
 }
 module.exports = sqlService
