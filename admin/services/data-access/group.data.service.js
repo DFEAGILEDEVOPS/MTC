@@ -202,7 +202,7 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
-  return sqlService.modifyWithTransaction(sql, params)
+  return sqlService.modifyWithTransaction(sql, params, ['group', 'pupilGroup'])
 }
 
 /**
@@ -257,7 +257,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   ]
   const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
   UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
-  return sqlService.modifyWithTransaction(sql, params)
+  return sqlService.modifyWithTransaction(sql, params, ['group', 'pupilGroup'])
 }
 
 /**
