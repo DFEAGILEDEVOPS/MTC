@@ -5,6 +5,7 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('../redis-cache.service')
+const logger = require('../log.service').getLogger()
 
 /**
  * Get active groups (non-soft-deleted).
@@ -164,6 +165,7 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
     }
     return true
   } catch (e) {
+    logger.error('groupDataService.sqlUpdate: Error executing redisCacheService.update', e)
     throw e
   }
 }
