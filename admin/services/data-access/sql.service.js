@@ -691,11 +691,16 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWit
  * Cache a SQL Server table in redis
  * Has to be here (instead of redisCacheService) to avoid cyclic dependency
  * @param {string} table - The table to cache in Redis
- * @return {Object}
+ * @return {Array}
  */
 const cacheTableInRedis = async (table) => {
   const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[${table}]`)
-  return redisCacheService.set(`table.${table}`, result)
+  try {
+    await redisCacheService.set(`table.${table}`, result)
+    return result
+  } catch (e) {
+    throw e
+  }
 }
 
 /**
