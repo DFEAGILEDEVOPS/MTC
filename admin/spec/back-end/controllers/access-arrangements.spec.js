@@ -46,7 +46,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      spyOn(pupilAccessArrangementsService, 'getPupils')
+      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
