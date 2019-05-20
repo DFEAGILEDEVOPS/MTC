@@ -156,8 +156,10 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
       FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
         INNER JOIN ${sqlService.adminSchema}.pupil p
           ON paa.pupil_id = p.id
+        INNER JOIN ${sqlService.adminSchema}.pupilStatusLink psl
+          ON psl.pupil_id = p.id
         INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
-         ON ps.id = p.pupilStatus_id
+         ON ps.id = ISNULL(psl.pupilStatus_id, 1)
         INNER JOIN ${sqlService.adminSchema}.school s
           ON p.school_id = s.id
         INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
@@ -200,8 +202,10 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
       FROM ${sqlService.adminSchema}.pupil p
       INNER JOIN ${sqlService.adminSchema}.school s
         ON p.school_id = s.id
+      INNER JOIN ${sqlService.adminSchema}.pupilStatusLink psl
+        ON psl.pupil_id = p.id
       INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
-         ON ps.id = p.pupilStatus_id
+       ON ps.id = ISNULL(psl.pupilStatus_id, 1)
       LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
         ON pa.pupil_id = p.id AND pa.isDeleted = 0
       LEFT JOIN (

@@ -43,7 +43,8 @@ async function getCurrentPupilsData (pupilIds) {
     CAST(ISNULL(pupilRestart.check_id, 0) AS BIT) as isRestartWithPinGenerated
   FROM
         [mtc_admin].[pupil] p
-        INNER JOIN [mtc_admin].[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
+        LEFT JOIN [mtc_admin].[pupilStatusLink] psl ON psl.pupil_id = p.id
+        INNER JOIN [mtc_admin].[pupilStatus] pstatus ON (ISNULL(psl.pupilStatus_id, 1) = pstatus.id)
         LEFT OUTER JOIN
         (
            SELECT *,
