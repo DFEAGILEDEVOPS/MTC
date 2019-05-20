@@ -39,6 +39,18 @@ controller.getOverview = async (req, res, next) => {
     return next(error)
   }
   const { hl } = req.query
+
+  // TODO: move to presenter
+  pupils.forEach(pupil => {
+    if (hl && hl.includes(pupil.urlSlug)) {
+      let arrangementsLn = pupil.arrangements.length
+      if (pupil.showDoB && arrangementsLn === 1) {
+        arrangementsLn = 2
+      }
+      pupil.verticalBarStyle = arrangementsLn > 1 ? `height:${235 - 35 * (7 - arrangementsLn)}px` : `height:0px`
+    }
+  })
+
   return res.render('access-arrangements/overview', {
     highlight: hl,
     messages: res.locals.messages,
