@@ -10,6 +10,8 @@ const retry = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('../redis-cache.service')
 
+const { REDIS_CACHING, REDIS_CACHE_UPDATING } = config
+
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
   pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
@@ -630,6 +632,26 @@ END CATCH
 /* ------ Redis Cache methods ------ */
 
 /**
+ * Try to load a table from Redis or fall back to SQL Server
+ * @param {string} tableName
+ * @return {Array}
+ */
+sqlService.loadTable = async tableName => {
+  let result
+  if (REDIS_CACHING && REDIS_CACHE_UPDATING) {
+    result = redisCacheService.get(`table.${tableName}`)
+    if (result) {
+      console.log(`Loaded ${tableName} from REDIS`)
+      return result
+    }
+    console.log(`Loaded ${tableName} from REDIS`)
+    return sqlService.cacheTableInRedis(tableName)
+  }
+  console.log(`Loaded ${tableName} from SQL Server`)
+  return sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[${tableName}]`)
+}
+
+/**
  * Get all pupil's statuses and add to provided results array
  * Has to be here (instead of redisCacheService) to avoid cyclic dependency
  * @param {string} results - Data array from `services/data-access` method
@@ -638,12 +660,13 @@ END CATCH
  * @return {Object}
  */
 sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWith = { pupilStatus_id: 'id' }) => {
-  // TODO replace with getting from Redis
-  const sql = `
-  SELECT p.id, p.pupilStatus_id
-  FROM ${sqlService.adminSchema}.[pupil] p
-  `
-  const pupils = await sqlService.query(sql)
+  let pupils
+  try {
+    pupils = await sqlService.loadTable('pupil')
+  } catch (e) {
+    logger.error('sqlService.addPupilStatuses: Reading pupil redis cache failed', e)
+    throw e
+  }
 
   let pupilStatuses = {}
   pupils.forEach(p => {
@@ -657,16 +680,28 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWit
 
   let shortCodes, longCodes
   if (replaceWithTypes.indexOf('shortCode') > -1) {
-    const redisTable = await redisCacheService.get('table.pupilStatusCode')
+    let pupilStatusCodeTable
+    try {
+      pupilStatusCodeTable = await sqlService.loadTable('pupilStatusCode')
+    } catch (e) {
+      logger.error('sqlService.addPupilStatuses: Reading pupilStatusCode redis cache failed', e)
+      throw e
+    }
     shortCodes = {}
-    redisTable.forEach(r => {
+    pupilStatusCodeTable.forEach(r => {
       shortCodes[r.id] = r.code
     })
   }
   if (replaceWithTypes.indexOf('longCode') > -1) {
-    const redisTable = await redisCacheService.get('table.pupilStatus')
+    let pupilStatusTable
+    try {
+      pupilStatusTable = await sqlService.loadTable('pupilStatus')
+    } catch (e) {
+      logger.error('sqlService.addPupilStatuses: Reading pupilStatus redis cache failed', e)
+      throw e
+    }
     longCodes = {}
-    redisTable.forEach(r => {
+    pupilStatusTable.forEach(r => {
       longCodes[r.id] = r.code
     })
   }
