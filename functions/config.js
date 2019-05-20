@@ -11,6 +11,7 @@ const getEnvironment = () => {
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   REDIS_CACHING: process.env.hasOwnProperty('REDIS_CACHING') ? toBool(process.env.REDIS_CACHING) : false,
+  REDIS_CACHE_UPDATING: process.env.hasOwnProperty('REDIS_CACHE_UPDATING') ? toBool(process.env.REDIS_CACHE_UPDATING) : false,
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',

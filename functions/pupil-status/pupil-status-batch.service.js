@@ -3,6 +3,9 @@
 const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
+const redisCacheService = require('../../admin/services/redis-cache.service')
+const adminSQLService = require('../../admin/services/data-access/sql.service')
+const { REDIS_CACHING, REDIS_CACHE_UPDATING } = require('../config')
 
 async function recalculatePupilStatus (context, pupilIds) {
   if (!Array.isArray(pupilIds)) {
@@ -82,7 +85,55 @@ function parseParams (params) {
  * Update a batch of pupils in one sql call
  * @param {[{pupilId: <number>, targetStatusCode: <string>}]} updates
  */
-function updatePupilStatuses (updates, context) {
+const updatePupilStatuses = async (updates, context) => {
+  let pupilTableRedis
+  let pupilStatusTableRedis
+  if (REDIS_CACHING && REDIS_CACHE_UPDATING) {
+    try {
+      pupilTableRedis = await redisCacheService.get('table.pupil')
+      pupilStatusTableRedis = await redisCacheService.get('table.pupilStatus')
+      if (!pupilTableRedis) {
+        pupilTableRedis = await adminSQLService.cacheTableInRedis('pupil')
+      }
+      if (!pupilStatusTableRedis) {
+        pupilStatusTableRedis = await adminSQLService.cacheTableInRedis('pupilStatus')
+      }
+    } catch (e) {
+      context.log.error('Reading pupil and pupilStatus redis caches in updatePupilStatuses failed')
+      context.log.error(e)
+      throw e
+    }
+  }
+
+  if (pupilTableRedis && pupilStatusTableRedis) {
+    const pupilStatusCodes = {}
+    pupilStatusTableRedis.forEach(e => {
+      pupilStatusCodes[e.code] = e.id
+    })
+
+    const updatesLn = updates.length
+    const pupilTableRedisLn = pupilTableRedis.length
+    for (let i = 0; i < updatesLn; i++) {
+      const update = updates[i]
+      for (let j = 0; j < pupilTableRedisLn; j++) {
+        const pupilStatusRow = pupilTableRedis[j]
+        if (update.pupilId === pupilStatusRow.id) {
+          pupilTableRedis[j].pupilStatus_id = pupilStatusCodes[update.targetStatusCode]
+          break
+        }
+      }
+    }
+
+    try {
+      await redisCacheService.set('table.pupil', pupilTableRedis)
+      context.log('pupil-status: pupil redis cache updated successfully')
+    } catch (e) {
+      context.log.error('pupil-status: setting pupil redis cache in updatePupilStatuses failed')
+      context.log.error(e)
+      throw e
+    }
+  }
+
   const sql = []
   const params = []
 
