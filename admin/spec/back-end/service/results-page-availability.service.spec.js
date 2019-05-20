@@ -60,9 +60,9 @@ describe('results-page-availability.service', () => {
           adminStartDate: moment.utc().subtract(15, 'days'),
           adminEndDate: moment.utc().add(2, 'days'),
           familiarisationCheckStartDate: moment.utc().subtract(12, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(8, 'days'),
+          familiarisationCheckEndDate: moment.utc().subtract(7, 'days'),
           checkStartDate: moment.utc().subtract(11, 'days'),
-          checkEndDate: moment.utc().subtract(8, 'days')
+          checkEndDate: moment.utc().subtract(7, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
         const isResultsPageAccessibleForIncompleteHdfs = resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(allowedDateTime, checkWindowData, false)
