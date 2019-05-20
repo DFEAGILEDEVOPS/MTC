@@ -51,6 +51,7 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
     return res.render('results/view-incomplete-hdf', {
+      resultsOpeningDate: resultPresenter.getResultsOpeningDate(checkWindow),
       breadcrumbs: req.breadcrumbs()
     })
   }

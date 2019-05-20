@@ -127,7 +127,7 @@ describe('results controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(err)
     })
-    it('renders unavailable page when hdf record for school is not found and current date is before second Monday after check end date', async () => {
+    it('renders incomplete hdf page when hdf record for school is not found and current date is before second Monday after check end date', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
@@ -138,6 +138,7 @@ describe('results controller:', () => {
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck')
       spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
+      spyOn(resultPresenter, 'getResultsOpeningDate').and.returnValue('24 July 2023')
       spyOn(resultPresenter, 'getResultsViewData')
       spyOn(resultPresenter, 'formatScore').and.returnValue(5.2)
       await controller.getViewResultsPage(req, res, next)
@@ -150,7 +151,8 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsFeatureAccessible).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', { breadcrumbs: undefined })
+      expect(resultPresenter.getResultsOpeningDate).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', { resultsOpeningDate: '24 July 2023', breadcrumbs: undefined })
     })
     it('renders results view page when hdf record for school is not found but datetime for unsubmitted hdfs has passed', async () => {
       const res = getRes()
