@@ -641,13 +641,10 @@ sqlService.loadTable = async tableName => {
   if (REDIS_CACHING && REDIS_CACHE_UPDATING) {
     result = redisCacheService.get(`table.${tableName}`)
     if (result) {
-      console.log(`Loaded ${tableName} from REDIS`)
       return result
     }
-    console.log(`Loaded ${tableName} from REDIS`)
     return sqlService.cacheTableInRedis(tableName)
   }
-  console.log(`Loaded ${tableName} from SQL Server`)
   return sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[${tableName}]`)
 }
 
@@ -753,7 +750,7 @@ sqlService.startupCacheTables = async () => {
   for (let i = 0; i < tablesLn; i++) {
     await cacheTableInRedis(tables[i])
   }
-  console.log(`REDIS (startupCacheTables): cached \`${tables.join('`, `')}\``)
+  logger.info(`REDIS (startupCacheTables): cached \`${tables.join('`, `')}\``)
 }
 
 module.exports = sqlService
