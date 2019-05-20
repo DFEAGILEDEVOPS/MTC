@@ -657,17 +657,17 @@ sqlService.loadTable = async tableName => {
  * @return {Object}
  */
 sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWith = { pupilStatus_id: 'id' }) => {
-  let pupils
+  let pupilStatusLink
   try {
-    pupils = await sqlService.loadTable('pupil')
+    pupilStatusLink = await sqlService.loadTable('pupilStatusLink')
   } catch (e) {
     logger.error('sqlService.addPupilStatuses: Reading pupil redis cache failed', e)
     throw e
   }
 
   let pupilStatuses = {}
-  pupils.forEach(p => {
-    pupilStatuses[p.id] = p.pupilStatus_id
+  pupilStatusLink.forEach(p => {
+    pupilStatuses[p.pupil_id] = p.pupilStatus_id
   })
 
   const replaceWithTypes = []
@@ -704,7 +704,7 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWit
   }
 
   results.forEach(r => {
-    const statusID = pupilStatuses[r[pupilIDProperty].toString()]
+    const statusID = pupilStatuses[r[pupilIDProperty].toString()] || 1
     for (let col in replaceWith) {
       let type = replaceWith[col]
       let value = statusID
@@ -745,7 +745,7 @@ const cacheTableInRedis = async (table) => {
  * @return {Object}
  */
 sqlService.startupCacheTables = async () => {
-  const tables = ['pupil', 'pupilStatus', 'pupilStatusCode']
+  const tables = ['pupilStatus', 'pupilStatusCode', 'pupilStatusLink']
   const tablesLn = tables.length
   for (let i = 0; i < tablesLn; i++) {
     await cacheTableInRedis(tables[i])
