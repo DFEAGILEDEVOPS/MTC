@@ -87,14 +87,14 @@ function parseParams (params) {
  * @param {[{pupilId: <number>, targetStatusCode: <string>}]} updates
  */
 const updatePupilStatuses = async (updates, context) => {
-  let pupilTableRedis
+  let pupilStatusLinkTableRedis
   let pupilStatusTableRedis
   if (REDIS_CACHING && REDIS_CACHE_UPDATING) {
     try {
-      pupilTableRedis = await redisCacheService.get('table.pupil')
+      pupilStatusLinkTableRedis = await redisCacheService.get('table.pupilStatusLink')
       pupilStatusTableRedis = await redisCacheService.get('table.pupilStatus')
-      if (!pupilTableRedis) {
-        pupilTableRedis = await adminSQLService.cacheTableInRedis('pupil')
+      if (!pupilStatusLinkTableRedis) {
+        pupilStatusLinkTableRedis = await adminSQLService.cacheTableInRedis('pupilStatusLink')
       }
       if (!pupilStatusTableRedis) {
         pupilStatusTableRedis = await adminSQLService.cacheTableInRedis('pupilStatus')
@@ -106,27 +106,40 @@ const updatePupilStatuses = async (updates, context) => {
     }
   }
 
-  if (pupilTableRedis && pupilStatusTableRedis) {
+  if (pupilStatusLinkTableRedis && pupilStatusTableRedis) {
     const pupilStatusCodes = {}
     pupilStatusTableRedis.forEach(e => {
       pupilStatusCodes[e.code] = e.id
     })
 
     const updatesLn = updates.length
-    const pupilTableRedisLn = pupilTableRedis.length
+    const pupilTableRedisLn = pupilStatusLinkTableRedis.length
     for (let i = 0; i < updatesLn; i++) {
       const update = updates[i]
+      let updated = false
       for (let j = 0; j < pupilTableRedisLn; j++) {
-        const pupilStatusRow = pupilTableRedis[j]
+        const pupilStatusRow = pupilStatusLinkTableRedis[j]
         if (update.pupilId === pupilStatusRow.id) {
-          pupilTableRedis[j].pupilStatus_id = pupilStatusCodes[update.targetStatusCode]
+          pupilStatusLinkTableRedis[j].pupilStatus_id = pupilStatusCodes[update.targetStatusCode]
+          updated = true
           break
         }
+      }
+      if (!updated) {
+        let newID = 1
+        if (pupilStatusLinkTableRedis.length) {
+          newID = Array.from(pupilStatusLinkTableRedis).pop().id + 1
+        }
+        pupilStatusLinkTableRedis.push({
+          id: newID,
+          pupil_id: update.pupilId,
+          pupilStatus_id: pupilStatusCodes[update.targetStatusCode]
+        })
       }
     }
 
     try {
-      await redisCacheService.set('table.pupil', pupilTableRedis)
+      await redisCacheService.set('table.pupilStatusLink', pupilStatusLinkTableRedis)
       context.log('pupil-status: pupil redis cache updated successfully')
     } catch (e) {
       context.log.error('pupil-status: setting pupil redis cache in updatePupilStatuses failed')
@@ -139,9 +152,20 @@ const updatePupilStatuses = async (updates, context) => {
   const params = []
 
   updates.forEach((o, i) => {
-    sql.push(`UPDATE [mtc_admin].[pupil]
-              SET pupilStatus_id = (SELECT id from [mtc_admin].[pupilStatus] WHERE code = @code${i})
-              WHERE id = @pupilId${i};`)
+    sql.push(`
+      IF EXISTS (SELECT * FROM mtc_admin.pupilStatusLink WHERE pupil_id=@pupilId${i})
+        UPDATE mtc_admin.pupilStatusLink
+        SET
+          pupilStatus_id = (SELECT id from mtc_admin.pupilStatus WHERE code=@code${i}),
+          updatedAt = GETUTCDATE()
+        WHERE pupil_id=@pupilId${i}
+      ELSE
+        INSERT INTO mtc_admin.pupilStatusLink (pupil_id, pupilStatus_id)
+        VALUES (
+          @pupilId${i},
+          (SELECT id from mtc_admin.pupilStatus WHERE code=@code${i})
+        )
+    `)
     params.push({ name: `code${i}`, value: o.targetStatusCode, type: TYPES.NVarChar })
     params.push({ name: `pupilId${i}`, value: o.pupilId, type: TYPES.Int })
   })
