@@ -11,5 +11,11 @@ CREATE TABLE [mtc_admin].[pupilStatusLink] (
       IGNORE_DUP_KEY = OFF,
       ALLOW_ROW_LOCKS = ON,
       ALLOW_PAGE_LOCKS = ON
-    )
+    ),
+  CONSTRAINT [FK_pupilStatusLink_pupilStatus_id_pupilStatus_id]
+    FOREIGN KEY (pupilStatus_id)
+    REFERENCES [mtc_admin].[pupilStatus] (id),
+  CONSTRAINT [FK_pupilStatusLink_pupil_id_pupil_id]
+    FOREIGN KEY (pupil_id)
+    REFERENCES [mtc_admin].[pupil] (id)
 )
