@@ -53,11 +53,11 @@ function checkSchools (rows) {
     } else {
       sqlService
         .query(`
-          SELECT COUNT(1) AS count FROM [mtc_admin].[school]
+          SELECT id FROM [mtc_admin].[school]
           WHERE dfeNumber IN (${oldDfeNumbers.join(',')})
         `)
         .then(result => {
-          resolve(result[0].count)
+          resolve(result)
         })
         .catch(reject)
     }
@@ -119,13 +119,14 @@ async function main () {
     const rows = await readCSV(csvPath)
     await sqlService.initPool()
     const schoolChanges = await checkSchools(rows)
-    if (schoolChanges === 0) {
+    if (!schoolChanges.length) {
       console.log('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
       process.exit(1)
     }
     await updateSchools(rows)
-    await redisCacheService.dropAffectedCaches('school')
-    console.log(`Updated ${schoolChanges} schools`)
+    const cachesToDrop = schoolChanges.map(r => `schoolData.sqlFindOneById.${r.id}`)
+    await redisCacheService.drop(cachesToDrop)
+    console.log(`Updated ${schoolChanges.length} schools`)
     process.exit(0)
   } catch (error) {
     throw error
