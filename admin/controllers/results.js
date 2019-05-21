@@ -37,8 +37,10 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
 
+  const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindow.checkEndDate)
+
   const isResultsFeatureAccessible =
-    resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindow)
+    resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
 
   const isResultsPageAccessibleForIncompleteHdfs =
     resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(currentDate, checkWindow, isHdfSubmitted)
@@ -51,7 +53,7 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
     return res.render('results/view-incomplete-hdf', {
-      resultsOpeningDate: resultPresenter.getResultsOpeningDate(checkWindow),
+      resultsOpeningDate: resultPresenter.formatResultsOpeningDate(resultsOpeningDay),
       breadcrumbs: req.breadcrumbs()
     })
   }
@@ -63,7 +65,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
   const nationalScore = resultPresenter.formatScore(checkWindow.score)
-  schoolScore = resultPresenter.formatScore(schoolScoreRecord && schoolScoreRecord.score)
+  schoolScore = resultPresenter.formatScore(schoolScoreRecord.score)
   return res.render('results/view-results', {
     pupilData,
     groups,

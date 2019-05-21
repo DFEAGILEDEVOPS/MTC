@@ -18,7 +18,8 @@ describe('results-page-availability.service', () => {
         checkEndDate: moment.utc().add(5, 'days')
       }
       const currentDate = moment.utc().set({ hour: 11 })
-      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindowData)
+      const resultsOpeningDate = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
+      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeFalsy()
     })
     it('disallows access to results feature if attempted to be accessed before the opening Monday time on the allowed day', () => {
@@ -34,7 +35,8 @@ describe('results-page-availability.service', () => {
       const currentDate = checkWindowData.checkEndDate
         .clone().add(1, 'weeks').isoWeekday('Monday')
         .set({ hour: 7, minutes: 0, seconds: 0 })
-      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindowData)
+      const resultsOpeningDate = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
+      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeFalsy()
     })
     it('allows access to results feature if live check period is in the past', () => {
@@ -48,7 +50,8 @@ describe('results-page-availability.service', () => {
         checkEndDate: moment.utc().subtract(10, 'days')
       }
       const currentDate = moment.utc().set({ hour: 11 })
-      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindowData)
+      const resultsOpeningDate = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
+      const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeTruthy()
     })
   })

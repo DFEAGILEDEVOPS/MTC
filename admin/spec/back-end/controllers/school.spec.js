@@ -47,7 +47,7 @@ describe('school controller:', () => {
 
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         spyOn(pupilRegisterService, 'hasIncompleteChecks').and.returnValue(false)

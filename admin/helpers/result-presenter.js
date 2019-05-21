@@ -33,14 +33,10 @@ resultPresenter.formatScore = (score) => score && (Math.round(score * 10) / 10)
 
 /**
  * Get results opening date in full GDS format
- * @param {Object} checkWindow
+ * @param {Object} resultsOpeningDate
  * @returns {String}
  */
-resultPresenter.getResultsOpeningDate = (checkWindow) => {
-  const resultsOpeningDate = checkWindow.checkEndDate.clone()
-    .add(1, 'weeks').isoWeekday('Monday')
-    .utcOffset(checkWindow.checkEndDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
+resultPresenter.formatResultsOpeningDate = (resultsOpeningDate) => {
   return dateService.formatFullGdsDate(resultsOpeningDate)
 }
 

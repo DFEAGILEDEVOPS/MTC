@@ -1,17 +1,27 @@
 const resultPageAvailabilityService = {}
 
 /**
- * Determine if results feature is accessible from school home page
- * @param currentDate
- * @param checkWindowData
- * @returns {Boolean}
+ * Determine results page opening date
+ * @param {Object} currentDate
+ * @param {Object} checkEndDate
+ * @returns {Object}
  */
 
-resultPageAvailabilityService.isResultsFeatureAccessible = (currentDate, checkWindowData) => {
-  const resultsAvailabilityDate = checkWindowData.checkEndDate.clone()
+resultPageAvailabilityService.getResultsOpeningDate = (currentDate, checkEndDate) => {
+  return checkEndDate.clone()
     .add(1, 'weeks').isoWeekday('Monday')
     .utcOffset(currentDate.utcOffset(), true)
     .set({ hour: 8, minutes: 0, seconds: 0 })
+}
+
+/**
+ * Determine if results feature is accessible from school home page
+ * @param {Object} currentDate
+ * @param {Object} resultsAvailabilityDate
+ * @returns {Boolean}
+ */
+
+resultPageAvailabilityService.isResultsFeatureAccessible = (currentDate, resultsAvailabilityDate) => {
   return currentDate.isSameOrAfter(resultsAvailabilityDate)
 }
 
