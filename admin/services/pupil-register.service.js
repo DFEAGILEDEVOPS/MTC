@@ -1,7 +1,5 @@
 'use strict'
 
-const R = require('ramda')
-
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
@@ -114,18 +112,7 @@ const pupilRegisterService = {
    */
   hasIncompleteChecks: async function (schoolId) {
     const result = await pupilRegisterDataService.getIncompleteChecks(schoolId)
-    const pupilRegister = result.map(d => {
-      return {
-        urlSlug: d.urlSlug,
-        outcome: pupilRegisterService.getProcessStatus(
-          d.pupilStatusCode,
-          d.lastCheckStatusCode,
-          d.pupilRestartId,
-          d.pupilRestartCheckId)
-      }
-    })
-    const incompletePupilChecks = pupilRegister.filter(p => p.outcome === 'Incomplete')
-    return R.has('urlSlug', R.head(incompletePupilChecks) || {})
+    return Array.isArray(result) && result.length > 0
   }
 }
 

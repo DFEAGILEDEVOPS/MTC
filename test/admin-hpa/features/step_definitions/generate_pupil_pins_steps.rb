@@ -180,7 +180,8 @@ Given(/^I have generated pins for multiple pupils$/) do
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(name)).to have_pin}
+  view_and_custom_print_live_check_page.load
+  @pupil_names_arr.each {|name| expect(view_and_custom_print_live_check_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
@@ -256,7 +257,8 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
-  generate_pins_overview_page.wait_for_group_filter(5)
+  Timeout.timeout(30){visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
+  Timeout.timeout(30){visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
@@ -333,7 +335,7 @@ end
 
 When(/^a pupil becomes available for pin generation again$/) do
   SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
-  # SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
+  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
