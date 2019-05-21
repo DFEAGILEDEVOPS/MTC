@@ -40,6 +40,7 @@ redisCacheService.get = async redisKey => {
     return result
   } catch (err) {
     logger.error(`REDIS (get): Error getting \`redisKey\`: ${err.message}`)
+    throw err
   }
 }
 
@@ -62,6 +63,7 @@ redisCacheService.set = async (redisKey, data) => {
     return true
   } catch (err) {
     logger.error(`REDIS (set): Error setting \`redisKey\`: ${err.message}`)
+    throw err
   }
 }
 
@@ -77,7 +79,6 @@ redisCacheService.drop = async (caches = []) => {
   if (typeof caches === 'string') {
     caches = [caches]
   }
-
   const pipeline = redis.pipeline()
   caches.forEach(c => {
     pipeline.del(c)
