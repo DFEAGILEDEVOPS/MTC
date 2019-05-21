@@ -6,6 +6,8 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('../redis-cache.service')
 const logger = require('../log.service').getLogger()
+const config = require('../../config')
+const { REDIS_CACHING } = config
 
 /**
  * Get active groups (non-soft-deleted).
@@ -161,7 +163,8 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
   try {
     const redisUpdate = await redisCacheService.update(`group.sqlFindGroups.${schoolId}`, changes)
     if (!redisUpdate) {
-      return sqlService.modify(sql, params, 'group')
+      await sqlService.modify(sql, params)
+      return redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
     }
     return true
   } catch (e) {
@@ -204,11 +207,21 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     })
   }
 
-  const sql = `
+  let sql = `
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
-  return sqlService.modifyWithTransaction(sql, params, ['group', 'pupilGroup'])
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
+  if (!REDIS_CACHING) {
+    return modifyResult
+  }
+  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  const groups = await sqlService.query(sql, params)
+  if (!groups || groups.length === 0) {
+    return modifyResult
+  }
+  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  return modifyResult
 }
 
 /**
@@ -261,9 +274,19 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+  let sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
   UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
-  return sqlService.modifyWithTransaction(sql, params, ['group', 'pupilGroup'])
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
+  if (!REDIS_CACHING) {
+    return modifyResult
+  }
+  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  const groups = await sqlService.query(sql, params)
+  if (!groups || groups.length === 0) {
+    return modifyResult
+  }
+  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  return modifyResult
 }
 
 /**
