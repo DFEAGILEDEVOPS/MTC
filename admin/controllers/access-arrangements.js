@@ -5,6 +5,7 @@ const pupilAccessArrangementsService = require('../services/pupil-access-arrange
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const accessArrangementsOverviewPresenter = require('../helpers/access-arrangements-overview-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -41,22 +42,14 @@ controller.getOverview = async (req, res, next) => {
   const { hl } = req.query
 
   // TODO: move to presenter
-  pupils.forEach(pupil => {
-    if (hl && hl.includes(pupil.urlSlug)) {
-      let arrangementsLn = pupil.arrangements.length
-      if (pupil.showDoB && arrangementsLn === 1) {
-        arrangementsLn = 2
-      }
-      pupil.verticalBarStyle = arrangementsLn > 1 ? `height:${235 - 35 * (7 - arrangementsLn)}px` : `height:0px`
-    }
-  })
+  const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
 
   return res.render('access-arrangements/overview', {
     highlight: hl,
     messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
-    pupils,
+    pupilsFormatted,
     availabilityData
   })
 }

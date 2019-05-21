@@ -64,7 +64,7 @@
         </form>
     </div>
     <div class="column-two-thirds">
-        <%if (pupils.length > 0) { %>
+        <%if (pupilsFormatted.length > 0) { %>
           <table id="submitted-pupil-access-arrangements" class="spacious">
             <thead>
             <tr>
@@ -74,11 +74,11 @@
             </tr>
             </thead>
             <tbody>
-            <% pupils.forEach((p) => { %>
+            <% pupilsFormatted.forEach((p) => { %>
               <tr>
                 <td class="
                 <% if (p.urlSlug === highlight) { %> highlight-item <% } %>
-                <% if (!availabilityData.canEditArrangements || p.hasCompletedCheck || p.notTakingCheck) { %> bold <% } %>
+                <% if (p.hasAAEditDisabled) { %> bold <% } %>
                 ">
                   <div
                     id="<%= p.urlSlug %>"
@@ -86,7 +86,7 @@
                     style="<%= p.verticalBarStyle %>"
                     <% } %>
                   >
-                    <% if (!availabilityData.canEditArrangements || p.hasCompletedCheck || p.notTakingCheck) { %>
+                    <% if (p.hasAAEditDisabled) { %>
                       <%= p.fullName %>
                     <% } else { %>
                       <a class="bold-small name-text-wrap"
