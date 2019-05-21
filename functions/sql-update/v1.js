@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlService = require('../lib/sql/sql.service')
-const { DONT_DROP_REDIS, TYPES } = sqlService
+const { TYPES } = sqlService
 
 const v1 = {
   process: async function process (context, message) {
@@ -54,7 +54,7 @@ const v1 = {
 
     if (queries.length) {
       try {
-        const sql = DONT_DROP_REDIS + queries.join('; ')
+        const sql = queries.join('; ')
         const res = await sqlService.modify(sql, params)
         if (res.rowsModified === 0) {
           context.log(`sql-update: no rows modified. This may be a bad update`, queries, params)

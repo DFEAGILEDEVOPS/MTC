@@ -187,9 +187,7 @@ const sqlService = {
     TinyInt: mssql.TinyInt,
     UniqueIdentifier: mssql.UniqueIdentifier,
     VarChar: mssql.VarChar
-  },
-  // string to identify SQL updates from message queues (where Redis has been updated manually first)
-  DONT_DROP_REDIS: '/*DONT_DROP_REDIS*/'
+  }
 }
 
 sqlService.initPool = async () => {
