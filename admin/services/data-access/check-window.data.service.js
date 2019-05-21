@@ -4,6 +4,7 @@ const moment = require('moment')
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const redisCacheService = require('../redis-cache.service')
 
 const table = '[checkWindow]'
 
@@ -39,7 +40,8 @@ const checkWindowDataService = {
       }
     ]
     const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1 WHERE id=@id`
-    return sqlService.modify(sql, params, [table])
+    await sqlService.modify(sql, params)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
@@ -203,10 +205,12 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create(table, data, true)
+    await sqlService.create(table, data)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   sqlUpdate: async (data) => {
-    return sqlService.update(table, data, true)
+    await sqlService.update(table, data)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
@@ -238,9 +242,10 @@ const checkWindowDataService = {
         checkForm_id: formId,
         checkWindow_id: checkWindowId
       }
-      inserts.push(sqlService.create('[checkFormWindow]', params, true))
+      inserts.push(sqlService.create('[checkFormWindow]', params))
     }
-    return Promise.all(inserts)
+    await Promise.all(inserts)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   /**
    * Find active check windows
