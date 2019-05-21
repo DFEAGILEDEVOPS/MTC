@@ -5,7 +5,6 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('../redis-cache.service')
-const logger = require('../log.service').getLogger()
 const config = require('../../config')
 const { REDIS_CACHING } = config
 
@@ -159,18 +158,9 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
   SET name=@name 
   WHERE [id]=@id AND school_id=@schoolId
   `
-  const changes = { table: 'group', update: { [id]: { name } } }
-  try {
-    const redisUpdate = await redisCacheService.update(`group.sqlFindGroups.${schoolId}`, changes)
-    if (!redisUpdate) {
-      await sqlService.modify(sql, params)
-      return redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
-    }
-    return true
-  } catch (e) {
-    logger.error('groupDataService.sqlUpdate: Error executing redisCacheService.update', e)
-    throw e
-  }
+
+  await sqlService.modify(sql, params)
+  return redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
 }
 
 /**

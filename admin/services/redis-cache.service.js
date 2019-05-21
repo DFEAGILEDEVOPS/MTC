@@ -1,10 +1,8 @@
 const Redis = require('ioredis')
 const config = require('../config')
-const azureQueueService = require('./azure-queue.service')
-const queueNameService = require('./queue-name-service')
 const logger = require('./log.service').getLogger()
 
-const { REDIS_CACHE_UPDATING, REDIS_CACHING } = config
+const { REDIS_CACHING } = config
 
 let redisConfig = {
   port: config.Redis.Port,
@@ -86,47 +84,6 @@ redisCacheService.drop = async (caches = []) => {
   await pipeline.exec()
   logger.info(`REDIS (drop): Dropped \`${caches.join('`, `')}\``)
   return true
-}
-
-/**
- * Manually updates data in Redis and then sends to the Azure `sql-update` queue,
- * which will be performed in SQL Server by `/functions`
- * @param serviceKey - the redis cache key in the format `serviceName.methodName`
- * @param changes - object with changes in the format { tableName: 'foo-bar', update: { 1: { foo: 'bar' } } }
- * @returns {Boolean}
- */
-redisCacheService.update = async (serviceKey, changes) => {
-  if (!REDIS_CACHING || !REDIS_CACHE_UPDATING) {
-    return false
-  }
-  let result
-  try {
-    result = await redis.get(serviceKey)
-  } catch (err) {
-    throw err
-  }
-  result = JSON.parse(result)
-  result.recordset = result.recordset.map(r => {
-    if (changes.update && changes.update[r.id]) {
-      for (let prop in changes.update[r.id]) {
-        r[prop] = changes.update[r.id][prop]
-      }
-    }
-    if (changes.delete && changes.delete.indexOf(r.id.toString()) > -1) {
-      return false
-    }
-    return r
-  }).filter(r => r !== false)
-  try {
-    await redis.set(serviceKey, JSON.stringify(result))
-    logger.info(`REDIS (update): Updated \`${serviceKey}\``)
-    const sqlUpdateQueueName = queueNameService.getName(queueNameService.NAMES.SQL_UPDATE)
-    await azureQueueService.addMessageAsync(sqlUpdateQueueName, { version: 2, messages: [changes] })
-    logger.info(`REDIS (update): Sent \`${serviceKey}\` update to \`sql-update\` message queue`)
-    return true
-  } catch (err) {
-    throw err
-  }
 }
 
 module.exports = redisCacheService
