@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const sceDataService = {}
+const redisCacheService = require('../redis-cache.service')
 
 /**
  * Find school urns and names
@@ -85,7 +86,8 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone, countryCode) => {
       type: TYPES.Char
     }
   ]
-  return sqlService.query(sql, params, false, 'sce')
+  await sqlService.query(sql, params)
+  return redisCacheService.drop(`schoolData.sqlFindOneById.${schoolId}`)
 }
 
 /**
@@ -111,7 +113,8 @@ sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
   const exec = 'EXEC [mtc_admin].[spUpsertSceSchools] @tvp'
   const insertSql = insertHeader + inserts.join(',\n')
   const sql = [declareTable, schools.length ? insertSql : '', exec].join(';\n')
-  const res = await sqlService.query(sql, params, false, 'sce')
+  const res = await sqlService.query(sql, params)
+  await redisCacheService.drop(schools.map(s => `schoolData.sqlFindOneById.${s.id}`))
   const upsertedIds = []
   res.forEach(row => {
     upsertedIds.push(row.id)
@@ -135,7 +138,8 @@ sceDataService.sqlDeleteSceSchool = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params, false, 'sce')
+  await sqlService.query(sql, params)
+  return redisCacheService.drop(`schoolData.sqlFindOneById.${schoolId}`)
 }
 
 module.exports = sceDataService
