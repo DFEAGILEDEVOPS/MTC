@@ -315,26 +315,6 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 }
 
 /**
- * Find pupils by ids and dfeNumber.
- * @param ids
- * @param dfeNumber
- * @returns {Promise<*>}
- */
-pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
-  const select = `
-      SELECT p.* 
-      FROM 
-      ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
-      `
-  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = 'WHERE p.id IN (' + paramIdentifiers.join(', ') + ')'
-  const andClause = 'AND s.dfeNumber = @dfeNumber'
-  params.push({ name: 'dfeNumber', value: dfeNumber, type: TYPES.Int })
-  const sql = [select, whereClause, andClause].join(' ')
-  return sqlService.query(sql, params)
-}
-
-/**
  * Batch update pupil pins for specific pin env (live/fam)
  * @param pupils
  * @param pinEnv
