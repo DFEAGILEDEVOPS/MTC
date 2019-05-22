@@ -17,7 +17,7 @@ const pupilRegisterService = {
    */
   getPupils: async (dfeNumber, schoolId, sortDirection) => {
     const groupsIndex = await groupService.getGroupsAsArray(schoolId)
-    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection)
+    const pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId, sortDirection)
 
     return Promise.all(pupils.map(async (p, i) => {
       const { foreName, lastName, middleNames, dateOfBirth, urlSlug } = p

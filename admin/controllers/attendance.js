@@ -21,7 +21,7 @@ const controller = {}
 
 controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(req.user.schoolId)
   const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
@@ -55,7 +55,7 @@ controller.getResults = async (req, res, next) => {
 controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(req.user.schoolId)
   const schoolData = await schoolDataService.sqlFindOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {

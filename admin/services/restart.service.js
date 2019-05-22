@@ -20,13 +20,13 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
  * Get pupils who are eligible for restart
- * @param dfeNumber
+ * @param schoolD
  * @returns {Array}
  */
-restartService.getPupils = async (dfeNumber) => {
-  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-  if (!school) throw new Error(`School [${dfeNumber}] not found`)
-  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, 'lastName', 'asc')
+restartService.getPupils = async (schoolD) => {
+  const school = await schoolDataService.sqlFindOneById(schoolD)
+  if (!school) throw new Error(`School [${schoolD}] not found`)
+  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolD, 'lastName', 'asc')
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   pupils = await bluebird.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
@@ -139,7 +139,7 @@ restartService.canRestart = async pupilId => {
  * @returns {Array}
  */
 restartService.getSubmittedRestarts = async schoolId => {
-  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(schoolId, 'lastName', 'asc')
+  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId, 'lastName', 'asc')
   if (!pupils || pupils.length === 0) return []
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation

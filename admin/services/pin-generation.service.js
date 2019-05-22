@@ -44,11 +44,11 @@ pinGenerationService.getPinExpiryTime = pinExpiryTime
 
 /**
  * Fetch pupils and filter required only pupil attributes
- * @param dfeNumber
+ * @param schoolID
  * @returns {Array}
  */
-pinGenerationService.getPupils = async (dfeNumber, pinEnv) => {
-  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
+pinGenerationService.getPupils = async (schoolID, pinEnv) => {
+  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolID)
   pupils = await Promise.all(
     pupils.map(async p => {
       const isValid = await pinGenerationService.isValid(p, pinEnv)

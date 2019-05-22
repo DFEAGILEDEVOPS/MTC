@@ -28,18 +28,18 @@ describe('restart.service', () => {
 
   describe('getPupils', () => {
     it('it should throw an error if school is not found', async () => {
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
       try {
-        await restartService.getPupils(schoolMock.dfeNumber)
+        await restartService.getPupils(schoolMock.id)
       } catch (error) {
-        expect(error.message).toBe('School [9991001] not found')
+        expect(error.message).toBe(`School [${schoolMock.id}] not found`)
       }
     })
     it('it should return a list of pupils', async () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([ pupil1, pupil2 ])
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolID').and.returnValue([ pupil1, pupil2 ])
       spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
       try {
@@ -157,7 +157,7 @@ describe('restart.service', () => {
     it('returns a list of pupils who have been submitted for a restart', async () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([ pupil1, pupil2 ])
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolID').and.returnValue([ pupil1, pupil2 ])
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(restartService, 'getStatus').and.returnValue('Remove restart')
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonDescById').and.returnValue('Did Not Complete')
@@ -165,7 +165,7 @@ describe('restart.service', () => {
       expect(result.length).toBe(2)
     })
     it('returns an empty list if no pupil has been submitted for a restart', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([])
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolID').and.returnValue([])
       const result = await restartService.getSubmittedRestarts(schoolMock.id)
       expect(result.length).toBe(0)
     })

@@ -57,14 +57,14 @@ pupilService.getPupilsByUrlSlug = async (slugs, schoolId) => {
 
 /**
  * Get pupils with full names in school.
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @returns {Array}
  */
-pupilService.getPupilsWithFullNames = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is not provided')
+pupilService.getPupilsWithFullNames = async (schoolID) => {
+  if (!schoolID) {
+    throw new Error('schoolID is not provided')
   }
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolID)
   return pupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug

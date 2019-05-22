@@ -10,22 +10,21 @@ const sqlService = require('./sql.service')
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by dfeNumber sorted by specific column.
- * @param dfeNumber
+ * Fetch all pupils for a school by schoolID sorted by specific column.
+ * @param schoolID
  * @returns {Promise<*>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+pupilDataService.sqlFindPupilsBySchoolID = async function (schoolID) {
+  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
 
   const sql = `
       SELECT p.*, g.group_id 
       FROM ${sqlService.adminSchema}.${table} p 
-      INNER JOIN school s ON s.id = p.school_id
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
-      WHERE s.dfeNumber = @dfeNumber
+      WHERE p.school_id = @schoolID
       ORDER BY lastName asc      
     `
-  return sqlService.query(sql, [paramDfeNumber])
+  return sqlService.query(sql, [paramSchoolID])
 }
 
 /**

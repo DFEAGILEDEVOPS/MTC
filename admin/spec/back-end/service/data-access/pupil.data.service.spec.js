@@ -8,14 +8,14 @@ const sqlService = require('../../../../services/data-access/sql.service')
 describe('pupil.data.service', () => {
   let service
 
-  describe('#sqlFindPupilsByDfeNumber', () => {
+  describe('#sqlFindPupilsBySchoolID', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
       service = require('../../../../services/data-access/pupil.data.service')
     })
 
     it('it makes the expected calls', async () => {
-      const res = await service.sqlFindPupilsByDfeNumber(12345678)
+      const res = await service.sqlFindPupilsBySchoolID(12345678)
       expect(sqlService.query).toHaveBeenCalled()
       expect(Array.isArray(res)).toBe(true)
     })
