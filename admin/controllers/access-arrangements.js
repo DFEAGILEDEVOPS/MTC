@@ -118,7 +118,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
       'pupilUrlSlug',
       'urlSlug'
     ], req.body)
-    pupil = await accessArrangementsService.submit(submittedData, req.user.School, req.user.id)
+    pupil = await accessArrangementsService.submit(submittedData, req.user.schoolId, req.user.id)
   } catch (error) {
     if (error.name === 'ValidationError') {
       const controllerMethod = !req.body.isEditView ? 'getSelectAccessArrangements' : 'getEditAccessArrangements'
@@ -188,13 +188,12 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
  * @returns {Promise.<void>}
  */
 controller.getDeleteAccessArrangements = async (req, res, next) => {
-  const dfeNumber = req.user.School
   let pupil
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
-    pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)
+    pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, req.user.schoolId)
   } catch (error) {
     return next(error)
   }

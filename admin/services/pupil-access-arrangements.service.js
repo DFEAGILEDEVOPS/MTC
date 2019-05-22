@@ -75,14 +75,14 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
 /**
  * Delete pupil's access arrangements
  * @param {String} urlSlug
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @returns {Object}
  */
-pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, dfeNumber) => {
+pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, schoolID) => {
   if (!urlSlug) {
     throw new Error('Pupil url slug is not provided')
   }
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolID)
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
   await preparedCheckSyncService.addMessages(urlSlug)
   return pupil

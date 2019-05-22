@@ -142,8 +142,8 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   }
   const pupilSlug = req.params.pupilId
   try {
-    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.School)
-    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
+    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId)
+    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.schoolId)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
 
     // Ask for this pupil to have their status updated

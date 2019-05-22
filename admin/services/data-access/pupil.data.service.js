@@ -74,19 +74,18 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
   return R.head(results)
 }
 
-pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, dfeNumber) {
+pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolID) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
 
   const sql = `
       SELECT TOP 1 
       p.*  
       FROM ${sqlService.adminSchema}.${table} p
-      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
       WHERE p.urlSlug = @urlSlug  
-      AND   s.dfeNumber = @dfeNumber
+      AND p.school_id = @schoolID
     `
-  const results = await sqlService.query(sql, [paramSlug, paramDfeNumber])
+  const results = await sqlService.query(sql, [paramSlug, paramSchoolID])
   return R.head(results)
 }
 
