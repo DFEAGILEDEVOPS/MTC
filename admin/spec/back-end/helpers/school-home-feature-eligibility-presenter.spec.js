@@ -227,7 +227,6 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeTruthy()
       })
-
       it('disallows hdf before live check period', async () => {
         const checkWindowData = {
           id: 1,
@@ -257,51 +256,6 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         spyOn(moment, 'utc').and.returnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeTruthy()
-      })
-      it('disallows results when live check period is active', async () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(3, 'days'),
-          adminEndDate: moment.utc().add(10, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(2, 'days'),
-          familiarisationCheckEndDate: moment.utc().add(5, 'days'),
-          checkStartDate: moment.utc().subtract(1, 'days'),
-          checkEndDate: moment.utc().add(5, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
-      })
-      it('disallows results if attempted to be access before the opening time on the allowed day', async () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(10, 'days'),
-          adminEndDate: moment.utc().subtract(1, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(3, 'days'),
-          checkStartDate: moment.utc().subtract(6, 'days'),
-          checkEndDate: moment.utc().subtract(3, 'days')
-        }
-        const allowedDateTime = checkWindowData.checkEndDate.day(8).set({ hour: 7 }) // next monday after checkEndDate
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeFalsy()
-      })
-      it('allows results when live check period is in the past', async () => {
-        const checkWindowData = {
-          id: 1,
-          adminStartDate: moment.utc().subtract(10, 'days'),
-          adminEndDate: moment.utc().subtract(2, 'days'),
-          familiarisationCheckStartDate: moment.utc().subtract(8, 'days'),
-          familiarisationCheckEndDate: moment.utc().subtract(5, 'days'),
-          checkStartDate: moment.utc().subtract(6, 'days'),
-          checkEndDate: moment.utc().subtract(5, 'days')
-        }
-        const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
-        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
-        expect(pinGenerationEligibilityData.isResultsPageAccessible).toBeTruthy()
       })
     })
     describe('when override is enabled', () => {
