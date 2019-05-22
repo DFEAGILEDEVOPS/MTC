@@ -8,11 +8,11 @@ const pupilAccessArrangementsService = {}
 
 /**
  * Returns pupils with associated access arrangements
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @returns {Array}
  */
-pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
-  const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(dfeNumber)
+pupilAccessArrangementsService.getPupils = async (schoolID) => {
+  const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(schoolID)
   const accessArrangementsHashmap = accessArrangementsData.reduce((acc, val) => {
     const current = R.clone(val)
     delete current.description
@@ -33,14 +33,14 @@ pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
 
 /**
  * Returns pupils with eligible for access arrangements
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @returns {Array}
  */
-pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is not provided')
+pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (schoolID) => {
+  if (!schoolID) {
+    throw new Error('schoolID is not provided')
   }
-  const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber(dfeNumber)
+  const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID(schoolID)
   return pupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug

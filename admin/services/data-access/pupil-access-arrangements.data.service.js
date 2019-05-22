@@ -135,14 +135,14 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
 
 /**
  * Find pupil ids with access arrangements based on DfE Number.
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @return {Promise<Array>}
  */
-pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (dfeNumber) => {
+pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (schoolID) => {
   const params = [
     {
-      name: 'dfeNumber',
-      value: dfeNumber,
+      name: 'schoolID',
+      value: schoolID,
       type: TYPES.Int
     }
   ]
@@ -158,8 +158,6 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
           ON paa.pupil_id = p.id
         INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
          ON ps.id = p.pupilStatus_id
-        INNER JOIN ${sqlService.adminSchema}.school s
-          ON p.school_id = s.id
         INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
           ON aa.id = paa.accessArrangements_id
         LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
@@ -170,7 +168,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
              WHERE isDeleted = 0
              AND check_id is NULL
            ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE s.dfeNumber = @dfeNumber
+      WHERE p.school_id = @schoolID
     ) p
     ORDER BY p.lastName
   `
@@ -179,14 +177,14 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
 
 /**
  * Find pupils eligible for access arrangements based on DfE Number.
- * @param {Number} dfeNumber
+ * @param {Number} schoolID
  * @return {Promise<Array>}
  */
-pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfeNumber) => {
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID = async (schoolID) => {
   const params = [
     {
-      name: 'dfeNumber',
-      value: dfeNumber,
+      name: 'schoolID',
+      value: schoolID,
       type: TYPES.Int
     }
   ]
@@ -198,8 +196,6 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
       CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
       CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
       FROM ${sqlService.adminSchema}.pupil p
-      INNER JOIN ${sqlService.adminSchema}.school s
-        ON p.school_id = s.id
       INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
          ON ps.id = p.pupilStatus_id
       LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
@@ -210,7 +206,7 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber = async (dfe
            WHERE isDeleted = 0
            AND check_id is NULL
          ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE s.dfeNumber = @dfeNumber
+      WHERE p.school_id = @schoolID
     ) p
     LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa
       ON paa.pupil_id = p.id

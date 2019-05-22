@@ -26,7 +26,7 @@ controller.getOverview = async (req, res, next) => {
   let checkWindowData
   let availabilityData
   try {
-    pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
+    pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
@@ -72,7 +72,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
