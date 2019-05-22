@@ -43,7 +43,7 @@ describe('pupil service', () => {
   })
 
   describe('#getPrintPupils', () => {
-    const dfeNumber = 9991999
+    const schoolID = 123
     const service = require('../../../services/pupil.service')
 
     it('throws an error if the dfeNumber is not supplied', async () => {
@@ -51,50 +51,50 @@ describe('pupil service', () => {
         await service.getPrintPupils()
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe(`dfeNumber is required`)
+        expect(error.message).toBe(`schoolID is required`)
       }
     })
 
     it('finds the pupils', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
-      await service.getPrintPupils(dfeNumber)
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      await service.getPrintPupils(schoolID)
       expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalled()
     })
 
     it('finds the school', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
-      await service.getPrintPupils(dfeNumber)
-      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      await service.getPrintPupils(schoolID)
+      expect(schoolDataService.sqlFindOneById).toHaveBeenCalled()
     })
 
     it('throws an error if the pupils are not found', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve(undefined))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       try {
-        await service.getPrintPupils(dfeNumber)
+        await service.getPrintPupils(schoolID)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe(`Pupils not found for ${dfeNumber}`)
+        expect(error.message).toBe(`Pupils not found for ${schoolID}`)
       }
     })
 
     it('throws an error if the school is not found', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
       try {
-        await service.getPrintPupils(dfeNumber)
+        await service.getPrintPupils(schoolID)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe(`School not found for ${dfeNumber}`)
+        expect(error.message).toBe(`School not found for ${schoolID}`)
       }
     })
 
     it('returns formatted objects', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
-      const pupils = await service.getPrintPupils(dfeNumber)
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      const pupils = await service.getPrintPupils(schoolID)
       const pupil = pupils[0]
       expect(pupil.fullName).toBe('Pupil One')
       expect(pupil.pupilPin).toBe(4466)

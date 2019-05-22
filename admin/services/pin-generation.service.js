@@ -155,7 +155,7 @@ pinGenerationService.updatePupilPins = async (
     if (error.number === 2601 && attemptsRemaining !== 0) {
       attemptsRemaining -= 1
       const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(
-        dfeNumber
+        schoolId
       )
       const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)

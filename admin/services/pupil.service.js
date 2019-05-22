@@ -28,15 +28,15 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  * @param dfeNumber
  * @return {Promise<void>}
  */
-pupilService.getPrintPupils = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error(`dfeNumber is required`)
+pupilService.getPrintPupils = async (schoolID) => {
+  if (!schoolID) {
+    throw new Error(`schoolID is required`)
   }
-  const p1 = pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
-  const p2 = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  const p1 = pupilDataService.sqlFindPupilsWithActivePins(schoolID)
+  const p2 = schoolDataService.sqlFindOneById(schoolID)
   const [pupils, school] = await Promise.all([p1, p2])
-  if (!pupils) { throw new Error(`Pupils not found for ${dfeNumber}`) }
-  if (!school) { throw new Error(`School not found for ${dfeNumber}`) }
+  if (!pupils) { throw new Error(`Pupils not found for ${schoolID}`) }
+  if (!school) { throw new Error(`School not found for ${schoolID}`) }
   return pupils.map(p => ({
     fullName: `${p.foreName} ${p.lastName}`,
     schoolPin: school.pin,
