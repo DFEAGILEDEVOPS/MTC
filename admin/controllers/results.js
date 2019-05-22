@@ -1,4 +1,4 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const config = require('../config')
 const groupService = require('../services/group.service')
@@ -6,7 +6,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const resultService = require('../services/result.service')
 const resultPresenter = require('../helpers/result-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
-const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const resultPageAvailabilityService = require('../services/results-page-availability.service')
 
 const controller = {}
 
@@ -36,20 +36,36 @@ controller.getViewResultsPage = async (req, res, next) => {
     return next(error)
   }
   const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
-  const isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindow)
-  const nationalScore = resultPresenter.getScoreWithOneDecimalPlace(checkWindow.score)
-  schoolScore = resultPresenter.getScoreWithOneDecimalPlace(schoolScoreRecord && schoolScoreRecord.score)
-  if (!isHdfSubmitted || !isResultsPageAccessible) {
+
+  const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindow.checkEndDate)
+
+  const isResultsFeatureAccessible =
+    resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
+
+  const isResultsPageAccessibleForIncompleteHdfs =
+    resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(currentDate, checkWindow, isHdfSubmitted)
+
+  if (!isResultsFeatureAccessible) {
     return res.render('results/view-unavailable-results', {
       breadcrumbs: req.breadcrumbs()
     })
   }
+
+  if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
+    return res.render('results/view-incomplete-hdf', {
+      resultsOpeningDate: resultPresenter.formatResultsOpeningDate(resultsOpeningDay),
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
   if (!schoolScoreRecord) {
     return res.render('availability/admin-window-unavailable', {
       isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
     })
   }
   const pupilData = resultPresenter.getResultsViewData(pupils)
+  const nationalScore = resultPresenter.formatScore(checkWindow.score)
+  schoolScore = resultPresenter.formatScore(schoolScoreRecord.score)
   return res.render('results/view-results', {
     pupilData,
     groups,
