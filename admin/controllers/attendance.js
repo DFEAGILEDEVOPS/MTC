@@ -235,7 +235,7 @@ controller.postConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await headteacherDeclarationService
-      .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+      .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }

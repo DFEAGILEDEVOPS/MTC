@@ -76,41 +76,41 @@ describe('headteacherDeclarationService', () => {
       fullName: 'Hubert J. Farnsworth',
       declaration: 'signed'
     }
-    const dfeNumber = 9991999
+    const schoolID = 123
     const userId = 777
 
     describe('when the school is found', () => {
       beforeEach(() => {
         spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
         spyOn(service, 'getEligibilityForSchool').and.returnValue(true)
       })
 
       it('calls getEligibilityForSchool', async () => {
-        await service.submitDeclaration(form, dfeNumber, userId)
+        await service.submitDeclaration(form, schoolID, userId)
         expect(service.getEligibilityForSchool).toHaveBeenCalled()
       })
 
       it('calls the headteacher data service', async () => {
-        await service.submitDeclaration(form, dfeNumber, userId)
+        await service.submitDeclaration(form, schoolID, userId)
         expect(headteacherDeclarationDataService.sqlCreate).toHaveBeenCalled()
       })
 
       it('adds a signedDate field to the form', async () => {
-        await service.submitDeclaration(form, dfeNumber, userId)
+        await service.submitDeclaration(form, schoolID, userId)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.signedDate).toBeTruthy()
       })
 
       it('adds the userId to the form', async () => {
-        await service.submitDeclaration(form, dfeNumber, userId)
+        await service.submitDeclaration(form, schoolID, userId)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.user_id).toBe(userId)
       })
 
       it('adds the dfeNumber to the form', async () => {
-        await service.submitDeclaration(form, dfeNumber, userId)
+        await service.submitDeclaration(form, schoolID, userId)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.school_id).toBe(schoolMock.id)
       })
@@ -119,12 +119,12 @@ describe('headteacherDeclarationService', () => {
     describe('when the school is not found', () => {
       it('throws an error', async () => {
         spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
         try {
-          await service.submitDeclaration(form, dfeNumber, userId)
+          await service.submitDeclaration(form, schoolID, userId)
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe(`school ${dfeNumber} not found`)
+          expect(error.message).toBe(`school ${schoolID} not found`)
         }
       })
     })
@@ -132,10 +132,10 @@ describe('headteacherDeclarationService', () => {
     describe('when not eligible', () => {
       it('throws an error', async () => {
         spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
         spyOn(service, 'getEligibilityForSchool').and.returnValue(false)
         try {
-          await service.submitDeclaration(form, dfeNumber, userId)
+          await service.submitDeclaration(form, schoolID, userId)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe(`Not eligible to submit declaration`)

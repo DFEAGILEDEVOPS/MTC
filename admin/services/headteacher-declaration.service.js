@@ -62,18 +62,18 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * Declare the results of the check, to be used by the Headteacher or equivalent role
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
- * @param {number} dfeNumber
+ * @param {number} schoolID
  * @param {number} userId
  * @param {number} schoolId
  * @param {object} checkEndDate
  * @param {string} timezone
  * @return {Promise<void>}
  */
-headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId, schoolId, checkEndDate, timezone) => {
-  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId, checkEndDate, timezone) => {
+  const school = await schoolDataService.sqlFindOneById(schoolId)
 
   if (!school) {
-    throw new Error(`school ${dfeNumber} not found`)
+    throw new Error(`school ${schoolId} not found`)
   }
 
   let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
