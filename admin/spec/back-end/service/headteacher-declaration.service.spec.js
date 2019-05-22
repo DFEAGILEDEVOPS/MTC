@@ -236,7 +236,7 @@ describe('headteacherDeclarationService', () => {
   })
 
   describe('findPupilsForSchool', () => {
-    const dfeNumber = 9991999
+    const schoolID = 123
     const service = require('../../../services/headteacher-declaration.service')
 
     it('throws an error when no schoolId is provided', async () => {
@@ -250,8 +250,8 @@ describe('headteacherDeclarationService', () => {
 
     it('finds the pupils using the dfeNumber', async () => {
       spyOn(headteacherDeclarationDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
-      const result = await service.findPupilsForSchool(dfeNumber)
-      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
+      const result = await service.findPupilsForSchool(schoolID)
+      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(schoolID)
       expect(result).toEqual('Mock pupils result')
     })
   })
