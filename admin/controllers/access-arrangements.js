@@ -41,7 +41,6 @@ controller.getOverview = async (req, res, next) => {
   }
   const { hl } = req.query
 
-  // TODO: move to presenter
   const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
 
   return res.render('access-arrangements/overview', {
