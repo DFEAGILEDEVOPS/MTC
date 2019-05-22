@@ -192,7 +192,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
@@ -250,8 +250,8 @@ controller.getDeclarationForm = async (req, res, next) => {
   let hdfEligibility
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
+    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId)
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,

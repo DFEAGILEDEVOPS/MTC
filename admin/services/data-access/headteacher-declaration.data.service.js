@@ -31,20 +31,20 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
 
 /**
  * Find the HDF for a given check
- * @param dfeNumber
+ * @param schoolID
  * @param checkWindowId
  * @return {Promise<object|undefined>}
  */
-headteacherDeclarationDataService.sqlFindHdfForCheck = async (dfeNumber, checkWindowId) => {
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolID, checkWindowId) => {
+  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
   const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindowId }
   const sql = `
   SELECT TOP 1
     *
-  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = s.id
-  WHERE h.checkWindow_id = @checkWindowId
-  AND s.dfeNumber = @dfeNumber`
-  const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])
+  FROM ${sqlService.adminSchema}.${table}
+  WHERE checkWindow_id = @checkWindowId
+  AND school_id = @schoolID`
+  const result = await sqlService.query(sql, [paramCheckWindow, paramSchoolID])
   // This will only return a single result as an object
   return R.head(result)
 }

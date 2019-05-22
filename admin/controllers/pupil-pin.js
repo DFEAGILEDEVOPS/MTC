@@ -32,7 +32,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -86,7 +86,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -190,7 +190,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -243,7 +243,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,

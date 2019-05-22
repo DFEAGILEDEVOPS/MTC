@@ -117,28 +117,28 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * Returns true if we are in a check window and the hdf has already been submitted
  * False if we are not in a check window
  * False if we are in a check window and it has not been submitted
- * @param dfeNumber
+ * @param schoolID
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) => {
+headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (schoolID) => {
   let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
   if (!checkWindow) {
     return false
   }
-  return headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindow.id)
+  return headteacherDeclarationService.isHdfSubmittedForCheck(schoolID, checkWindow.id)
 }
 
 /**
  * Returns true if the hdf has already been submitted for the given check
  * False if the hdf has not been submitted
- * @param dfeNumber
+ * @param schoolID
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCheck = async (dfeNumber, checkWindowId) => {
-  if (!dfeNumber || !checkWindowId) {
-    throw new Error('dfeNumber and checkWindowId are required')
+headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolID, checkWindowId) => {
+  if (!schoolID || !checkWindowId) {
+    throw new Error('schoolID and checkWindowId are required')
   }
-  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(dfeNumber, checkWindowId)
+  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(schoolID, checkWindowId)
   if (!hdf) {
     return false
   }

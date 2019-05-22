@@ -196,7 +196,7 @@ describe('headteacherDeclarationService', () => {
         await service.isHdfSubmittedForCheck(null, 1)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('dfeNumber and checkWindowId are required')
+        expect(error.message).toBe('schoolID and checkWindowId are required')
       }
     })
 
@@ -205,7 +205,7 @@ describe('headteacherDeclarationService', () => {
         await service.isHdfSubmittedForCheck(dfeNumber, null)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('dfeNumber and checkWindowId are required')
+        expect(error.message).toBe('schoolID and checkWindowId are required')
       }
     })
 

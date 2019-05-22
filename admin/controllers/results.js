@@ -31,7 +31,7 @@ controller.getViewResultsPage = async (req, res, next) => {
     pupils = await resultService.getPupilsWithResults(req.user.schoolId, checkWindow.id)
     schoolScoreRecord = await resultService.getSchoolScore(req.user.schoolId, checkWindow.id)
     groups = await groupService.getGroups(req.user.schoolId)
-    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId)
   } catch (error) {
     return next(error)
   }

@@ -29,7 +29,7 @@ controller.getOverview = async (req, res, next) => {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -73,7 +73,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,

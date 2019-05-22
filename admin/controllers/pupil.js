@@ -33,7 +33,7 @@ const getAddPupil = async (req, res, next, error = null) => {
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -89,7 +89,7 @@ const getAddMultiplePupils = async (req, res, next) => {
   const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
