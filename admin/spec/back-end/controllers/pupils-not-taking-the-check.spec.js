@@ -56,7 +56,6 @@ describe('pupils-not-taking-the-check controller:', () => {
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsFormattedMock)
         controller = require('../../../controllers/school').getPupilNotTakingCheck
       })
 
@@ -120,7 +119,6 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('unhappy path - attendanceCodeService.getAttendanceCodes fails', async () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue(Promise.reject(new Error()))
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
@@ -130,7 +128,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
-        expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).not.toHaveBeenCalled()
         expect(groupService.getGroups).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })
