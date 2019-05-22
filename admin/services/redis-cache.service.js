@@ -15,7 +15,13 @@ if (config.Redis.useTLS) {
   redisConfig.tls = { host: config.Redis.Host }
 }
 
-const redis = new Redis(redisConfig)
+let redis = false
+
+const redisConnect = () => {
+  if (!redis) {
+    redis = new Redis(redisConfig)
+  }
+}
 
 const redisCacheService = {}
 
@@ -28,6 +34,7 @@ redisCacheService.get = async redisKey => {
   if (!REDIS_CACHING) {
     return false
   }
+  redisConnect()
   try {
     const result = await redis.get(redisKey)
     if (!result) {
@@ -52,6 +59,7 @@ redisCacheService.set = async (redisKey, data) => {
   if (!REDIS_CACHING) {
     return false
   }
+  redisConnect()
   try {
     if (typeof data === 'object') {
       data = JSON.stringify(data)
@@ -74,6 +82,7 @@ redisCacheService.drop = async (caches = []) => {
   if (!REDIS_CACHING || (Array.isArray(caches) && caches.length === 0)) {
     return false
   }
+  redisConnect()
   if (typeof caches === 'string') {
     caches = [caches]
   }
