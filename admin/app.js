@@ -266,8 +266,7 @@ app.use((req, res, next) => {
 app.use(preventDuplicateFormSubmission)
 
 if (WEBSITE_OFFLINE) {
-  app.use('/', websiteOffline)
-  app.use('/', (req, res) => res.redirect('/'))
+  app.use('*', websiteOffline)
 } else {
   app.use('/', index)
   app.use('/test-developer', testDeveloper)
