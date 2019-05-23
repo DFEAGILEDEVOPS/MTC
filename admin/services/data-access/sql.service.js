@@ -8,6 +8,7 @@ const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
 const config = require('../../config')
+const redisCacheService = require('../redis-cache.service')
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -138,10 +139,13 @@ const convertMomentToJsDate = (m) => {
  * Useful for converting Data during UPDATES and INSERTS
  */
 const convertDateToMoment = (d) => {
-  if (!(d instanceof Date)) {
-    return d
+  if (
+    d instanceof Date ||
+    (typeof d === 'string' && moment(d, moment.ISO_8601).isValid())
+  ) {
+    return moment.utc(d)
   }
-  return moment.utc(d)
+  return d
 }
 
 /**
@@ -258,17 +262,30 @@ function addParamsToRequestSimple (params, request) {
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
+ * @param {string} redisKey - Redis key to cache resultset against
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = []) => {
+sqlService.query = async (sql, params = [], redisKey) => {
   logger.debug(`sql.service.query(): ${sql}`)
   logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const query = async () => {
-    const request = new mssql.Request(pool)
-    addParamsToRequestSimple(params, request)
-    const result = await request.query(sql)
+    let result = false
+    if (redisKey) {
+      try {
+        let redisResult = await redisCacheService.get(redisKey)
+        result = JSON.parse(redisResult)
+      } catch (e) {}
+    }
+    if (!result) {
+      const request = new mssql.Request(pool)
+      addParamsToRequestSimple(params, request)
+      result = await request.query(sql)
+      if (redisKey) {
+        await redisCacheService.set(redisKey, result)
+      }
+    }
     return sqlService.transformResult(result)
   }
 
@@ -348,6 +365,7 @@ sqlService.modify = async (sql, params = []) => {
   } else if (insertIds.length > 1) {
     returnValue.insertIds = insertIds
   }
+
   return returnValue
 }
 
@@ -480,14 +498,9 @@ sqlService.generateUpdateStatement = async (table, data) => {
  */
 sqlService.create = async (tableName, data) => {
   const preparedData = convertMomentToJsDate(data)
-  const {
-    sql,
-    params,
-    outputParams
-  } = await sqlService.generateInsertStatement(tableName, preparedData)
+  const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
   try {
-    const res = await sqlService.modify(sql, params, outputParams)
-    return res
+    return sqlService.modify(sql, params)
   } catch (error) {
     logger.warn('sql.service: Failed to INSERT', error)
     throw error
@@ -550,8 +563,7 @@ sqlService.update = async function (tableName, data) {
     params
   } = await sqlService.generateUpdateStatement(tableName, preparedData)
   try {
-    const res = await sqlService.modify(sql, params)
-    return res
+    return sqlService.modify(sql, params)
   } catch (error) {
     logger.warn('sql.service: Failed to UPDATE', error)
     throw error
