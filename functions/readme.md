@@ -51,3 +51,8 @@ From the `functions` directory, execute `func function new`.
 ## Installing package dependencies
 
 npm packages should be installed in the `functions` root folder, not in each function directory.
+
+## Environment Variables
+
+`REDIS_CACHING` - Enables dropping affected Redis caches during SQL updates
+
