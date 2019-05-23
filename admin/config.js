@@ -40,6 +40,7 @@ module.exports = {
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
+  WEBSITE_OFFLINE: process.env.hasOwnProperty('WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
