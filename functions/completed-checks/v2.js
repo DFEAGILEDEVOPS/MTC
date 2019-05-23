@@ -2,7 +2,7 @@
 
 const v1 = require('./v1')
 const compressionService = require('../lib/compression.service')
-const functionName = 'completed-check'
+const functionName = 'completed-checks:v2'
 
 function validate (message) {
   if (!message.hasOwnProperty('archive')) {

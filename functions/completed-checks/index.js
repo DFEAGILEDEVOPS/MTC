@@ -8,7 +8,7 @@ const v2 = require('./v2')
 module.exports = async function (context, completedCheckMessage) {
   const start = performance.now()
   const version = parseInt(completedCheckMessage.version, 10)
-
+  context.log.info(`${functionName}: version:${version} message received for checkCode ${completedCheckMessage.checkCode}`)
   try {
     switch (version) {
       case 1:

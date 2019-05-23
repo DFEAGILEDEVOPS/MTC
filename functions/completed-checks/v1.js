@@ -15,6 +15,8 @@ const schema = '[mtc_admin]'
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 
+const functionName = 'completed-checks:v1'
+
 const v1 = {
   process: async function (context, completedCheckMessage) {
     await handleCompletedCheck(context, completedCheckMessage)
@@ -25,18 +27,16 @@ const v1 = {
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 async function handleCompletedCheck (context, completedCheckMessage) {
-  context.log('completed-check: message received', completedCheckMessage.checkCode)
-
   let checkData
   try {
     checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
   } catch (error) {
-    context.log.error(error.message)
+    context.log.error(`${functionName}: ${error.message}`)
     throw error
   }
 
   if (!canCompleteCheck(checkData.checkStatusCode)) {
-    const errorMessage = `completed-check: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.checkStatusCode}`
+    const errorMessage = `${functionName}: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.checkStatusCode}`
     context.log.error(errorMessage)
     throw new Error(errorMessage)
   }
@@ -44,14 +44,14 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
   } catch (error) {
-    context.log.error(error.message)
+    context.log.error(`${functionName}: ${error.message}`)
     throw error
   }
 
   try {
     await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
   } catch (error) {
-    context.log.error(error.message)
+    context.log.error(`${functionName}: ${error.message}`)
     throw error
   }
 
@@ -62,7 +62,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
-      context.log.error(error.message)
+      context.log.verbose(`${functionName}: ${error.message}`)
       throw error
     }
   }
@@ -75,7 +75,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
       await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
     }
   } catch (error) {
-    context.log.error(error.message)
+    context.log.error(`${functionName}: ${error.message}`)
     throw error
   }
 
@@ -83,7 +83,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
   try {
     await markingService.mark(completedCheckMessage, checkData)
   } catch (error) {
-    context.log.error(error.message)
+    context.log.error(`${functionName}: ${error.message}`)
     throw error
   }
 
@@ -109,7 +109,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
 async function savePayloadToAdminDatabase (completedCheckMessage, checkData, logger) {
   // Don't process any checks more than once
   if (checkData.receivedByServerAt) {
-    const msg = `completed-check: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
+    const msg = `${functionName}: ERROR: payload re-submission is banned for check ${checkData.checkCode}`
     logger.error(msg)
     throw new Error(msg)
   }
@@ -119,16 +119,16 @@ async function savePayloadToAdminDatabase (completedCheckMessage, checkData, log
     try {
       const checkStartedAuditEvent = findAuditEvent(completedCheckMessage, 'CheckStarted')
       await sqlUpdateCheckStartedAt(checkData.id, moment(checkStartedAuditEvent.clientTimestamp))
-      logger(`completed-check: updated check start date from audit entry for checkCode: ${checkData.checkCode}`)
+      logger(`${functionName}: updated check start date from audit entry for checkCode: ${checkData.checkCode}`)
     } catch (error) {
-      logger.error(`completed-check: Failed to back-fill checkStarted event for checkCode: ${checkData.checkCode}: ${error.message}`)
+      logger.error(`${functionName}: Failed to back-fill checkStarted event for checkCode: ${checkData.checkCode}: ${error.message}`)
     }
   }
 
   try {
     await sqlInsertPayload(completedCheckMessage, checkData.id)
   } catch (error) {
-    logger.error(`completed-check: ERROR: savePayloadToAdminDatabase(): failed to insert for checkCode: ${completedCheckMessage.checkCode}`)
+    logger.error(`${functionName}: ERROR: savePayloadToAdminDatabase(): failed to insert for checkCode: ${completedCheckMessage.checkCode}`)
     throw error
   }
 }
@@ -187,10 +187,10 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   try {
     const res = await sqlService.modify(sql, params)
     if (res.rowsModified === 0) {
-      logger(`completed-check: updateAdminDatabaseForCheckStarted(): no rows modified.  This may be a bad checkCode ${checkCode}`)
+      logger(`${functionName}: updateAdminDatabaseForCheckStarted(): no rows modified.  This may be a bad checkCode ${checkCode}`)
     }
   } catch (error) {
-    logger(`completed-check: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode} : ${error.message}`)
+    logger(`${functionName}: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode} : ${error.message}`)
     throw error
   }
 }
@@ -203,11 +203,11 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
 function findAuditEvent (payload, auditEventType) {
   const logEntries = payload.audit.filter(logEntry => logEntry.type === auditEventType)
   if (!logEntries.length) {
-    throw new Error('No matching audit events found')
+    throw new Error(`${functionName}: No matching audit events found`)
   }
   const logEntry = logEntries[0]
   if (!logEntry.hasOwnProperty('clientTimestamp')) {
-    throw new Error('No `clientTimestamp` property found')
+    throw new Error(`${functionName}: No \`clientTimestamp\` property found`)
   }
   return logEntry
 }
@@ -220,7 +220,7 @@ function findAuditEvent (payload, auditEventType) {
  */
 async function sqlUpdateCheckStartedAt (checkId, clientTimestamp) {
   if (!moment.isMoment(clientTimestamp)) {
-    throw new Error('Invalid type for clientTimestamp')
+    throw new Error(`${functionName}: Invalid type for clientTimestamp`)
   }
 
   const sql = `UPDATE ${schema}.${checkTable}

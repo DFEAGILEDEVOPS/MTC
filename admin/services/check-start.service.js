@@ -310,6 +310,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
     // Pass the isLiveCheck config in to the SPA
     const pupilConfig = pupilConfigs[ o.pupil_id ]
     pupilConfig.practice = !o.check_isLiveCheck
+    pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
 
     const message = {
       checkCode: o.check_checkCode,
