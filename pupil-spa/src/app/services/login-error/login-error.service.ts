@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class LoginErrorService {
 
-  private errorMessageSource = new BehaviorSubject('default error message');
+  private errorMessageSource = new BehaviorSubject('');
   public currentErrorMessage = this.errorMessageSource.asObservable();
 
   constructor() {}
