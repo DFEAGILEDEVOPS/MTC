@@ -24,10 +24,11 @@ describe('LoginErrorService', () => {
     });
   }));
   it('changeMessage should provide the new value to the BehaviorSubject', () => {
-    loginErrorService.changeMessage('new message');
-    const newMessage = loginErrorService.currentErrorMessage;
-    newMessage.subscribe((m) => {
-      expect(m).toEqual('new message');
+    const newMessage = 'new message';
+    loginErrorService.changeMessage(newMessage);
+    const errorMessageObservable = loginErrorService.currentErrorMessage;
+    errorMessageObservable.subscribe((m) => {
+      expect(m).toEqual(newMessage);
     });
   });
 });
