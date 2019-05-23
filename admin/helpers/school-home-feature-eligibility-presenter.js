@@ -8,28 +8,18 @@ const dateService = require('../services/date.service')
 const schoolHomeFeatureEligibilityPresenter = {}
 
 /**
- * Determine the results eligibility date
- * @param currentDate
- * @param checkEndDate
- * @returns {Object} moment date object
- */
-schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime = (currentDate, checkEndDate) => {
-  return checkEndDate.clone()
-    .add(1, 'weeks').isoWeekday('Monday')
-    // first converting the date to the local compared date before setting the opening hour
-    .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
-}
-
-/**
  * Fetch data for familiarisation and live pin generation eligibility
  * @param checkWindowData
+ * @param timezone
  * @returns {Object} Eligibility data including flags and relevant datetimes
  */
 schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const featureEligibilityData = {}
-  const resultsPageEligibilityDateTime = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime(currentDate, checkWindowData.checkEndDate)
+  const resultsPublishedDate = checkWindowData.checkEndDate.clone()
+    .add(1, 'weeks').isoWeekday('Monday')
+    .utcOffset(currentDate.utcOffset(), true)
+    .set({ hour: 8, minutes: 0, seconds: 0 })
 
   // Pin generation
   featureEligibilityData.familiarisationCheckStartDate = dateService.formatFullGdsDate(checkWindowData.familiarisationCheckStartDate)
@@ -37,6 +27,10 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
   featureEligibilityData.liveCheckStartDate = dateService.formatFullGdsDate(checkWindowData.checkStartDate)
   featureEligibilityData.liveCheckEndDate = dateService.formatFullGdsDate(checkWindowData.checkEndDate)
 
+  // Results
+  featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPublishedDate)
+
+  // TODO: logic related properties should get refactored into services
   featureEligibilityData.isFamiliarisationPinGenerationAllowed = schoolHomeFeatureEligibilityPresenter.isFamiliarisationPinGenerationAllowed(currentDate, checkWindowData)
   featureEligibilityData.isFamiliarisationInTheFuture = schoolHomeFeatureEligibilityPresenter.isFamiliarisationInTheFuture(currentDate, checkWindowData)
   featureEligibilityData.isWithinFamiliarisationUnavailableHours = schoolHomeFeatureEligibilityPresenter.isWithinFamiliarisationUnavailableHours(currentDate, checkWindowData)
@@ -56,10 +50,6 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
 
   // HDF
   featureEligibilityData.isHdfPageAccessible = schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible(currentDate, checkWindowData)
-
-  // Results page data
-  featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPageEligibilityDateTime)
-  featureEligibilityData.isResultsPageAccessible = schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible(currentDate, checkWindowData)
 
   return featureEligibilityData
 }
@@ -182,17 +172,6 @@ schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible = (curr
  */
 schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkWindowData) => {
   return currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
-}
-
-/**
- * Determine if results page is accessible
- * @param currentDate
- * @param checkWindowData
- * @returns {Boolean}
- */
-schoolHomeFeatureEligibilityPresenter.isResultsPageAccessible = (currentDate, checkWindowData) => {
-  const resultsPageEligibilityDateTime = schoolHomeFeatureEligibilityPresenter.resultsPageEligibilityDateTime(currentDate, checkWindowData.checkEndDate)
-  return currentDate.isSameOrAfter(resultsPageEligibilityDateTime)
 }
 
 module.exports = schoolHomeFeatureEligibilityPresenter

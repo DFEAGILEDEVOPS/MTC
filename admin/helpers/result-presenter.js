@@ -1,5 +1,6 @@
 'use strict'
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
+const dateService = require('../services/date.service')
 
 const resultPresenter = {}
 
@@ -28,6 +29,15 @@ resultPresenter.getResultsViewData = (pupils) => {
  * @param {Number} score
  * @returns {Number}
  */
-resultPresenter.getScoreWithOneDecimalPlace = (score) => score && (Math.round(score * 10) / 10)
+resultPresenter.formatScore = (score) => score && (Math.round(score * 10) / 10)
+
+/**
+ * Get results opening date in full GDS format
+ * @param {Object} resultsOpeningDate
+ * @returns {String}
+ */
+resultPresenter.formatResultsOpeningDate = (resultsOpeningDate) => {
+  return dateService.formatFullGdsDate(resultsOpeningDate)
+}
 
 module.exports = resultPresenter
