@@ -93,7 +93,7 @@ async function handleCompletedCheck (context, completedCheckMessage) {
     PartitionKey: completedCheckMessage.checkCode,
     RowKey: uuid(),
     eventType: 'completed-check',
-    payload: JSON.stringify(completedCheckMessage),
+    payload: '<removed>',
     processedAt: moment().toDate()
   }
   context.bindings.pupilEventsTable.push(entity)
