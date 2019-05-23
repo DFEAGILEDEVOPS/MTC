@@ -17,6 +17,12 @@ describe('LoginErrorService', () => {
   it('should be created', inject([LoginErrorService], (service: LoginErrorService) => {
     expect(service).toBeTruthy();
   }));
+  it('should have default observable message value', inject([LoginErrorService], (service: LoginErrorService) => {
+    const currentMessage = loginErrorService.currentErrorMessage;
+    currentMessage.subscribe((m) => {
+      expect(m).toEqual('');
+    });
+  }));
   it('changeMessage should provide the new value to the BehaviorSubject', () => {
     loginErrorService.changeMessage('new message');
     const newMessage = loginErrorService.currentErrorMessage;
