@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { APP_CONFIG } from '../config/config.service';
 
 @Injectable()
 export class RouteService {
@@ -10,10 +9,6 @@ export class RouteService {
   }
 
   public setup(): void {
-    if (APP_CONFIG.websiteOffline) {
-      this.router.navigate(['/service-unavailable'])
-      return
-    }
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.history = [...this.history, event.url];
