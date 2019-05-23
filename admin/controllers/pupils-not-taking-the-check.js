@@ -26,7 +26,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   let hdfSubmitted
   try {
     // Get pupils for active school
-    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId)
@@ -171,7 +171,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   let pinGenerationEligibilityData
   let hdfSubmitted
   try {
-    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId)
