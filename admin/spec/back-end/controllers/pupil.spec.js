@@ -238,7 +238,7 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(schoolMock)
+        sandbox.mock(schoolDataService).expects('sqlFindOneById').resolves(schoolMock)
         controller = proxyquire('../../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService
         }).postAddMultiplePupils
@@ -313,7 +313,7 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(undefined)
+        sandbox.mock(schoolDataService).expects('sqlFindOneById').resolves(undefined)
         controller = proxyquire('../../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService
         }).postAddMultiplePupils

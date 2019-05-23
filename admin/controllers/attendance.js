@@ -22,7 +22,7 @@ const controller = {}
 controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const pupils = await pupilDataService.sqlFindPupilsBySchoolID(req.user.schoolId)
-  const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
+  const school = await schoolDataService.sqlFindOneById(req.user.schoolId)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const score = await scoreService.getScorePercentage(p.id)

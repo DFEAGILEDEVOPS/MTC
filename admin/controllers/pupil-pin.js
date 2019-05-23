@@ -93,7 +93,7 @@ const getGeneratePinsList = async (req, res, next) => {
         breadcrumbs: req.breadcrumbs()
       })
     }
-    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
@@ -147,7 +147,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
 
-    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
