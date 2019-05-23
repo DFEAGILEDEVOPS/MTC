@@ -51,6 +51,7 @@ import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
+import { LoginErrorService } from './services/login-error/login-error.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -75,6 +76,7 @@ import { TimerService } from './services/timer/timer.service';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
 import { SvgClockComponent } from './svg/svg.clock.component';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
+import { LoginFailureComponent } from './login-failure/login-failure.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -86,6 +88,7 @@ const appRoutes: Routes = [
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-in-fail', component: LoginFailureComponent},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
@@ -141,7 +144,8 @@ const appRoutes: Routes = [
     SvgGirlComponent,
     SvgClockComponent,
     IdleModalComponent,
-    SessionExpiredComponent
+    SessionExpiredComponent,
+    LoginFailureComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -186,6 +190,7 @@ const appRoutes: Routes = [
     AzureQueueService,
     RouteService,
     TimerService,
+    LoginErrorService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

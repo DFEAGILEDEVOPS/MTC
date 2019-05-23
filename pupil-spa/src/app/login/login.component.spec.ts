@@ -15,6 +15,7 @@ import { CheckStatusServiceMock } from '../services/check-status/check-status.se
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { LoginErrorService } from '../services/login-error/login-error.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -29,6 +30,7 @@ describe('LoginComponent', () => {
   let mockPupilPrefsService;
   let mockLoginModel;
   let hasUnfinishedCheckSpy;
+  let loginErrorService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -67,7 +69,8 @@ describe('LoginComponent', () => {
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        LoginErrorService
       ]
     });
     mockQuestionService = injector.get(QuestionService);
@@ -76,10 +79,12 @@ describe('LoginComponent', () => {
     mockLoginModel = injector.get(Login);
     mockCheckStatusService = injector.get(CheckStatusService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
+    loginErrorService = injector.get(LoginErrorService);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
     spyOn(mockRegisterInputService, 'initialise');
+    spyOn(loginErrorService, 'changeMessage');
     hasUnfinishedCheckSpy = spyOn(mockCheckStatusService, 'hasUnfinishedCheck');
     hasUnfinishedCheckSpy.and.returnValue(false);
   }));
@@ -158,28 +163,28 @@ describe('LoginComponent', () => {
 
   describe('should fail logging in when PIN(s) are invalid', () => {
     beforeEach(() => {
-      promiseHelper.reject({ error: 'login failed', status: 401 });
+      promiseHelper.reject({ message: 'login failed', status: 401 });
     });
 
-    it('redirects to an error page when the login is rejected', async () => {
+    it('redirects to login page when the school and pupil pin credentials are rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
+        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('login failed');
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
         expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
-        expect(component.connectionFailed).toBeFalsy();
       });
     });
   });
-  describe('should fail logging when there is no connection and set connectionFailed flag to true', () => {
+  describe('redirects to sign in fail page when there is no connection', () => {
     beforeEach(() => {
-      promiseHelper.reject({ error: 'login failed', status: 0 });
+      promiseHelper.reject({ message: 'no connection', status: 0 });
     });
 
     it('redirects to an error page when the connection fails', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
-        expect(component.connectionFailed).toBeTruthy();
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
+        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('no connection');
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail']);
         expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
       });
     });

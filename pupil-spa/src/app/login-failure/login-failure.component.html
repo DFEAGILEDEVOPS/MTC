@@ -1,0 +1,47 @@
+<app-page-modifications>
+  <app-header class="full-width"></app-header>
+  <main id="content" class="js-content" role="main">
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        <p class="aa-title-size" tabindex="0">
+          <span><h1>Sign in error</h1></span>
+        </p>
+        <div class="notice">
+          <strong class="visually-hidden">Warning</strong>
+          <app-svg-warning></app-svg-warning>
+          <strong class="aa-copy-size">
+            Please tell your teacher
+          </strong>
+        </div>
+        <br />
+        <details>
+          <summary><span class="summary aa-copy-size">Instructions for teacher</span></summary>
+          <div class="panel no-border">
+            <ol class="list list-number aa-copy-size">
+              <li>Copy all of the error text below. If this device does not have email enabled you will need to take a photo of the error message.</li>
+              <li>Contact the helpline and send them the copied text/attach the photo.
+                It is important to do this as it will be given to the website developers and help them to resolve future sign in issues.</li>
+              <div class="panel panel-border-wide aa-copy-size aa-contrast-border">
+                <div class="bold-small aa-copy-size">National curriculum assessments helpline</div>
+                <div>Telephone: 0300 303 3013</div>
+                <div>Email: assessments@education.gov.uk</div>
+                <div>Monday to Friday, 9am to 5pm</div>
+              </div>
+              <li>Sign the pupil in again. If this message appears, repeat the process.</li>
+            </ol>
+          </div>
+        </details>
+        <br />
+
+
+        <b>Error text:</b>
+        <br />
+        <div>{{errorMessage}}</div>
+        <br />
+        <a routerLink="/sign-in" class="button aa-button-size aa-contrast-button ultrawider" id="sign-in-button">
+          Sign in again
+        </a>
+      </div>
+    </div>
+  </main>
+</app-page-modifications>
