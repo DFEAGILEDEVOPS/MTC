@@ -46,6 +46,7 @@
     "helmet": "^3.9.0",
     "hsts": "^2.1.0",
     "iconv-lite": "^0.4.19",
+    "ioredis": "4.9.0",
     "jsonwebtoken": "^8.1.1",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.23",

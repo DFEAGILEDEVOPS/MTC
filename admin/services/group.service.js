@@ -77,7 +77,13 @@ groupService.update = async (id, group, schoolId) => {
     throw new Error('id, group.name and schoolId are required')
   }
   await groupDataService.sqlUpdate(id, group.name, schoolId)
-  return groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
+  let currentPupils = await groupService.getPupils(schoolId, id)
+  currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id).map(p => p.id)
+  if (currentPupils.sort().toString() !== group.pupils.sort().toString()) {
+    // only update pupils if list has changed
+    await groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
+  }
+  return true
 }
 
 /**
