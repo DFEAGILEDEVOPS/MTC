@@ -4,7 +4,7 @@ const v1 = require('./v1')
 const compressionService = require('../lib/compression.service')
 const functionName = 'completed-check'
 
-function validate(message) {
+function validate (message) {
   if (!message.hasOwnProperty('archive')) {
     throw new Error(`V2 Message is missing 'archive' property`)
   }
