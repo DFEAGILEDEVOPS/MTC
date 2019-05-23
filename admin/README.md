@@ -79,6 +79,8 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
+* REDIS_CACHING - Enables the caching of specified query results
+* REDIS_CACHE_UPDATING - Enables updating Redis caches directly and sending SQL updates to the Azure message queue
 * DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 * WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
 
@@ -148,3 +150,13 @@ The compose file in the root allows you to spin up a working environment with on
 `docker-compose up`
 
 after making changes ensure you do `docker-compose build` to rebuild from source.
+
+## Redis Caching
+
+`REDIS_CACHING` needs to be enabled in env vars
+
+`sqlService.query` can now take an optional third argument which is a Redis key in the format `dataServiceName.methodName`. The result-set from this query will be saved in Redis against the supplied key.
+
+In any service methods which updates tables which will affect these caches, `redisCacheService.drop('cacheName')` can be used to drop it for re-querying. It accepts a single string or an array of strings.
+
+Updates to an existing Redis cache can be done with `redisCacheService.update`. It will perform the supplied changes object on the Redis cache and then send it (with the affected table name) to the Azure `sql-update` message queue. Where it will then be consumed and applied in SQ server by a listener in `/functions`.
