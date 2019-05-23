@@ -64,63 +64,58 @@
         </form>
     </div>
     <div class="column-two-thirds">
-        <%if (pupils.length > 0) { %>
-        <table id="submitted-pupil-access-arrangements">
+        <%if (pupilsFormatted.length > 0) { %>
+          <table id="submitted-pupil-access-arrangements" class="spacious">
             <thead>
             <tr>
-                <th scope="col">Pupil</th>
-                <th scope="col">Arrangement</th>
-                <th scope="col"></th>
+              <th scope="col">Pupil</th>
+              <th scope="col">Arrangement</th>
+              <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <% pupils.forEach( (pupil) => { %>
-            <tr>
-                <td class="<% if (availabilityData.canEditArrangements && !pupil.hasCompletedCheck && !pupil.notTakingCheck) { %>access-arrangements-pupil<% } else { %>bold<% } %>">
-                    <div
-                        <%
-                        if (highlight && highlight.includes(pupil.urlSlug)) {
-                          let arrangementsLn = pupil.arrangements.length
-                          if (pupil.showDoB && arrangementsLn === 1) {
-                            arrangementsLn = 2
-                          }
-                          const VerticalBarStyle = `height:${230 - 35 * (7 - arrangementsLn)}px`
-                        %>
-                        class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
-                        <% } %>>
-                        <div id="<%= pupil.urlSlug %>">
-                            <% if (!availabilityData.canEditArrangements || pupil.hasCompletedCheck || pupil.notTakingCheck) { %>
-                            <%= pupil.fullName %>
-                            <% } else { %>
-                            <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
-                            <% } %>
-                            <% if (pupil.showDoB) { %>
-                            <div class="font-greyed-out font-xsmall">
-                                Date of birth: <%= pupil.dateOfBirth %>
-                            </div>
-                            <% } %>
-                        </div>
-                    </div>
+            <% pupilsFormatted.forEach((p) => { %>
+              <tr>
+                <td class="
+                <% if (p.urlSlug === highlight) { %> highlight-item <% } %>
+                <% if (p.hasAAEditDisabled) { %> bold <% } %>
+                ">
+                  <div
+                    id="<%= p.urlSlug %>"
+                  <% if (p.verticalBarStyle) { %> class="highlight-wrapper"
+                    style="<%= p.verticalBarStyle %>"
+                    <% } %>
+                  >
+                    <% if (p.hasAAEditDisabled) { %>
+                      <%= p.fullName %>
+                    <% } else { %>
+                      <a class="bold-small name-text-wrap"
+                         href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>"><%= p.fullName %></a>
+                    <% } %>
+                    <% if (p.showDoB) { %>
+                      <div class="font-greyed-out font-xsmall name-text-wrap">Date of birth: <%= p.dateOfBirth %></div>
+                    <% } %>
+                  </div>
                 </td>
                 <td class="access-arrangements-list">
-                    <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement) => { %>
+                  <% p.arrangements && p.arrangements.forEach((pupilAccessArrangement) => { %>
                     <div><%= pupilAccessArrangement %></div>
-                    <% }) %>
+                  <% }) %>
                 </td>
                 <td>
-                    <% if(pupil.hasCompletedCheck) { %>
-                        Completed Check
-                    <% } else if(pupil.notTakingCheck) { %>
-                        Not taking check
-                    <% } else if (availabilityData.canEditArrangements) { %>
-                        <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
-                    <% } %>
+                  <% if(p.hasCompletedCheck) { %>
+                    Completed Check
+                  <% } else if(p.notTakingCheck) { %>
+                    Not taking check
+                  <% } else if (availabilityData.canEditArrangements) { %>
+                    <a id="access-arrangements-remove-link" class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
+                  <% } %>
                 </td>
-            </tr>
+              </tr>
             <% }) %>
             </tbody>
-        </table>
-        <% } else { %>
+          </table>
+    <% } else { %>
         No pupils with access arrangements or modifications selected.
         <% } %>
     </div>
