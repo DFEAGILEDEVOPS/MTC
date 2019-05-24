@@ -1,6 +1,4 @@
-DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins];
-GO
-CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins] AS
+ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins] AS
   SELECT
          p.id,
          p.foreName,
@@ -19,20 +17,8 @@ CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins] AS
          INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
          INNER JOIN [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
          INNER JOIN [mtc_admin].[pin] pin ON (cp.pin_id = pin.id)
-         LEFT JOIN [mtc_admin].[pupilAttendance] paa ON paa.pupil_id = p.id
+         LEFT JOIN [mtc_admin].[pupilAttendance] paa ON paa.pupil_id = p.id AND paa.isDeleted = 0
   WHERE  cp.pinExpiresAt > GETUTCDATE()
     AND  chkStatus.code IN ('NEW', 'STD', 'COL')
     AND  chk.isLiveCheck = 0
-    AND (paa.id IS NULL OR paa.isDeleted = 1)
-  GROUP BY
-    p.id,
-    p.foreName,
-    p.lastName,
-    p.middleNames,
-    p.dateOfBirth,
-    p.urlSlug,
-    p.school_id,
-    pin.val,
-    cp.pinExpiresAt,
-    g.group_id;
-  
+    AND paa.id IS NULL;

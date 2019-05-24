@@ -1,6 +1,4 @@
-DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins];
-GO
-CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins] AS
+ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins] AS
   SELECT
          p.id,
          p.foreName,
