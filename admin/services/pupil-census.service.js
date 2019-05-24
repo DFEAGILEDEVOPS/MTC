@@ -2,13 +2,13 @@
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 
+const azureBlobDataService = require('./data-access/azure-blob.data.service')
+const fileValidator = require('../lib/validator/file-validator.js')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
-const fileValidator = require('../lib/validator/file-validator.js')
-const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const pupilCensusService = {}
 
