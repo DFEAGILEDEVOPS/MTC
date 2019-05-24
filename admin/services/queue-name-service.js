@@ -7,7 +7,8 @@ const NAMES = {
   PREPARE_CHECK: 'prepare-check',
   PUPIL_FEEDBACK: 'pupil-feedback',
   PUPIL_PREFS: 'pupil-prefs',
-  PUPIL_STATUS: 'pupil-status'
+  PUPIL_STATUS: 'pupil-status',
+  SQL_UPDATE: 'sql-update'
 }
 
 Object.freeze(NAMES)
