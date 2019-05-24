@@ -12,7 +12,6 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
-// const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
