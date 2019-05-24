@@ -47,7 +47,7 @@ const pupilsNotTakingCheckDataService = {
       FROM ${sqlService.adminSchema}.[pupil] p 
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      LEFT JOIN ${sqlService.adminSchema}.[check] c ON p.id = c.pupil_id
+      LEFT JOIN ${sqlService.adminSchema}.[check] c ON p.id = c.pupil_id AND c.isLiveCheck=1
       LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs ON cs.id = c.checkStatus_id
       WHERE
         p.school_id = @schoolId
