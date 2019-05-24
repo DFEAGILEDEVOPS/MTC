@@ -6,6 +6,7 @@ const sinon = require('sinon')
 const moment = require('moment')
 const schoolMock = require('../../mocks/school')
 const sqlService = require('../../../../services/data-access/sql.service')
+const redisCacheService = require('../../../../services/redis-cache.service')
 const responseMock = require('../../mocks/sql-modify-response')
 
 describe('school.data.service', () => {
@@ -50,6 +51,7 @@ describe('school.data.service', () => {
   describe('#sqlUpdate', () => {
     beforeEach(() => {
       spyOn(sqlService, 'update').and.returnValue(Promise.resolve(responseMock))
+      spyOn(redisCacheService, 'drop').and.returnValue(true)
       service = proxyquire('../../../../services/data-access/school.data.service', {
         './sql.service': sqlService
       })
