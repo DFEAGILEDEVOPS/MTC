@@ -22,10 +22,6 @@
   <app-root></app-root>
   <div id="global-app-error" class="app-error hidden"></div>
   <script>
-    if (window && window.process && window.process.type) {
-      var electron = '<scr' + 'ipt>require(__dirname + "/../../app.asar/lib/renderer");</scr' + 'ipt>';
-      $('body').append(electron);
-    }
     // Disable Zoom out in Safari on iOS and macOS (reverse pinch)
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
