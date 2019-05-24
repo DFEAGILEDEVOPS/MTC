@@ -9,7 +9,7 @@ import { LoginErrorService } from '../services/login-error/login-error.service';
 })
 export class LoginFailureComponent implements OnInit {
 
-  private errorMessage: string;
+  public errorMessage: string;
 
   constructor(
     private loginErrorService: LoginErrorService,
