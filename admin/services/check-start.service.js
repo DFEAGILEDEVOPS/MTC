@@ -4,23 +4,22 @@ const moment = require('moment-timezone')
 const R = require('ramda')
 const logger = require('./log.service').getLogger()
 
+const azureQueueService = require('../services/azure-queue.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkFormService = require('../services/check-form.service')
+const checkStateService = require('../services/check-state.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
+const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
-const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
-const azureQueueService = require('../services/azure-queue.service')
-
-const checkStateService = require('../services/check-state.service')
 
 const checkStartService = {}
 
@@ -28,6 +27,8 @@ const checkStartService = {}
  * Prepare a check for one or more pupils
  * This function will: * prepare a new check by writing an entry to the checkFormAllocation table
  *                     * place a message on the `prepare-check` queue for writing to `preparedCheck` table
+ *                     * Store the check config in the `checkConfig` table
+ *                     * request pupil-status changes by writing to the `pupil-status` queue
  * @param pupilIds
  * @param dfeNumber
  * @param schoolId
@@ -152,6 +153,23 @@ checkStartService.prepareCheck2 = async function (
   for (let batch of batches) {
     await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
   }
+
+  // Store the `config` section from the preparedCheckMessages into the DB
+  await this.storeCheckConfigs(prepareCheckQueueMessages)
+}
+
+
+checkStartService.storeCheckConfigs = async function (preparedChecks) {
+  if (!Array.isArray(preparedChecks)) {
+    throw new Error('`preparedChecks is not an array')
+  }
+  if (!preparedChecks.length) {
+    return
+  }
+  const config = preparedChecks.map(pcheck => {
+    return { checkCode: pcheck.checkCode, config: pcheck.config }
+  })
+  checkStartData
 }
 
 /**
