@@ -130,21 +130,6 @@ checkStartService.prepareCheck2 = async function (
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
 
-  /*   // Create and save JWT Tokens for all pupils
-  const pupilUpdates = []
-  for (let pupil of pupils) {
-    const token = await jwtService.createToken(
-      { id: pupil },
-      checkWindow.checkEndDate
-    )
-    pupilUpdates.push({
-      id: pupil.id,
-      jwtToken: token.token,
-      jwtSecret: token.jwtSecret
-    })
-  }
-  await pupilDataService.sqlUpdateTokensBatch(pupilUpdates) */
-
   // Prepare a bunch of messages ready to be inserted into the queue
   let prepareCheckQueueMessages
   try {
