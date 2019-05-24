@@ -9,6 +9,7 @@ const checkDataService = require('../services/data-access/check.data.service')
 const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkFormService = require('../services/check-form.service')
+const checkStartDataService = require('../services/data-access/check-start.data.service')
 const checkStateService = require('../services/check-state.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const config = require('../config')
@@ -155,11 +156,10 @@ checkStartService.prepareCheck2 = async function (
   }
 
   // Store the `config` section from the preparedCheckMessages into the DB
-  await this.storeCheckConfigs(prepareCheckQueueMessages)
+  await this.storeCheckConfigs(prepareCheckQueueMessages, newChecks)
 }
 
-
-checkStartService.storeCheckConfigs = async function (preparedChecks) {
+checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
   if (!Array.isArray(preparedChecks)) {
     throw new Error('`preparedChecks is not an array')
   }
@@ -167,9 +167,13 @@ checkStartService.storeCheckConfigs = async function (preparedChecks) {
     return
   }
   const config = preparedChecks.map(pcheck => {
-    return { checkCode: pcheck.checkCode, config: pcheck.config }
+    return {
+      checkCode: pcheck.checkCode,
+      config: pcheck.config,
+      checkId: newChecks.find(check => check.checkCode === pcheck.checkCode).id
+    }
   })
-  checkStartData
+  checkStartDataService.sqlStoreBatchConfigs(config)
 }
 
 /**
