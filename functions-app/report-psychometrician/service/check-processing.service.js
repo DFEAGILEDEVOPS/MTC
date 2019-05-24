@@ -9,11 +9,11 @@ const checkProcessingService = {}
 /**
  * Get checks ids that will be used to cache psychometrician report data
  * @param {Number} batchSize
- * @param {context} Function execution context
+ * @param {logger} Function execution logger
  * @returns {{processCount}}
  */
 
-checkProcessingService.cachePsychometricanReportData = async function (batchSize, context) {
+checkProcessingService.cachePsychometricanReportData = async function (batchSize, logger) {
   if (!batchSize) {
     throw new Error('Missing batchSize parameter')
   }
@@ -31,21 +31,25 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   if (batchIds.length > 0) {
     try {
       // Produce and cache the Psychometrician data
-      await psychometricianReportService.batchProduceCacheData(batchIds, context)
+      await psychometricianReportService.batchProduceCacheData(batchIds, logger)
 
       // Produce and cache the Anomaly report data
-      await anomalyReportService.batchProduceCacheData(batchIds, context)
+      await anomalyReportService.batchProduceCacheData(batchIds, logger)
     } catch (error) {
-      context.log.error('ERROR: checkProcessingService.cachePsychometricanReportData: ' + error.message)
+      logger.error('ERROR: checkProcessingService.cachePsychometricanReportData: ' + error.message)
       throw error
     }
   } else {
-    context.log('psychometrician-report: no work to do')
+    logger('psychometrician-report: no work to do')
   }
 
   return {
     processCount: batchIds.length
   }
+}
+
+checkProcessingService.hasWorkToDo = async function hasWorkToDo () {
+  return psychometricianReportDataService.hasUnprocessedChecks()
 }
 
 module.exports = checkProcessingService
