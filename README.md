@@ -52,7 +52,7 @@ The MTC solution consists of the following projects...
 
 - Pupil Check Application (`/pupil-spa/`) Angular SPA
 - Check Administration Application (`/admin/`) Express MVC application
-- Electron Container for Pupil Check Application (`/electron/`) Electron shell for Pupil Check Application (Obsolete)
+- Pupil Auth API (`/pupil-api/`) Typescript Express API Application
 
 See each projects readme for app specifics.
 
