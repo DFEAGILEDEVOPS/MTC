@@ -32,10 +32,32 @@ const azureUploadFile = async (container, remoteFilename, text, streamLength) =>
   return pr
 }
 
+const azureUploadFromLocalFile = async (container, remoteFilename, localFilename) => {
+  await new Promise((resolve, reject) => {
+    blobService.createContainerIfNotExists(container, null, (error) => {
+      if (error) reject(error)
+      resolve()
+    })
+  })
+  const pr = await new Promise((resolve, reject) => {
+    blobService.createBlockBlobFromLocalFile(container, remoteFilename, localFilename,
+      (error, result) => {
+        if (error) reject(error)
+        else return resolve(result)
+      }
+    )
+  })
+  return pr
+}
+
 const service = config.AZURE_STORAGE_CONNECTION_STRING ? {
-  azureUploadFile
+  azureUploadFile,
+  azureUploadFromLocalFile
 } : {
   azureUploadFile: () => {
+    return { name: 'test_error.csv' }
+  },
+  azureUploadFromLocalFile: () => {
     return { name: 'test_error.csv' }
   }
 }

@@ -2,6 +2,17 @@
 const sqlService = require('../../../lib/sql/sql.service')
 const { TYPES } = sqlService
 
+function getUnprocessedChecksSql (batchSize) {
+  const safeBatchSize = parseInt(batchSize, 10)
+  return `SELECT TOP ${safeBatchSize} chk.id
+      FROM [mtc_admin].[check] chk
+      LEFT JOIN [mtc_admin].psychometricianReportCache prc ON (chk.id = prc.check_id)
+      JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
+      WHERE
+        prc.check_id IS NULL
+      AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')`
+}
+
 const psychometricianReportCacheDataService = {
   /**
    * Batch insert multiple objects
@@ -49,19 +60,18 @@ const psychometricianReportCacheDataService = {
     if (!batchSize) {
       throw new Error('Missing argument: batchSize')
     }
-    const safeBatchSize = parseInt(batchSize, 10)
-
-    const sql = `SELECT TOP ${safeBatchSize} chk.id
-      FROM [mtc_admin].[check] chk
-      LEFT JOIN [mtc_admin].psychometricianReportCache prc ON (chk.id = prc.check_id)
-      JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-      WHERE
-        prc.check_id IS NULL
-      AND ((cs.code = 'CMP' AND chk.markedAt IS NOT NULL) OR cs.code = 'NTR')
-      ORDER BY NEWID()`
-
+    const sql = getUnprocessedChecksSql(batchSize)
     const results = await sqlService.query(sql)
     return results.map(r => r.id)
+  },
+
+  hasUnprocessedChecks: async function () {
+    const sql = getUnprocessedChecksSql(1)
+    const results = await sqlService.query(sql)
+    if (results && results.length) {
+      return true
+    }
+    return false
   }
 }
 

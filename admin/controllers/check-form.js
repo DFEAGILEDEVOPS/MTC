@@ -12,6 +12,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const dateService = require('../services/date.service')
 const logger = require('../services/log.service').getLogger()
 const testDeveloperReportService = require('../services/test-developer-report.service')
+const config = require('../config')
 
 /**
  * Display landing page for 'test developer' role.
@@ -473,7 +474,7 @@ const getDownloadPupilCheckData = async (req, res, next) => {
 
   if (psychometricianReport) {
     psychometricianReport.fileName = psychometricianReport.fileName.replace(/\.zip$/, '')
-    psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.createdAt)
+    psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.createdAt.tz(config.DEFAULT_TIMEZONE))
   }
 
   res.render('test-developer/download-pupil-check-data', {

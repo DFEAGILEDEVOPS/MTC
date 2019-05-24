@@ -12,10 +12,10 @@ const psychometricianReportService = {}
 /**
  *
  * @param batchIds - array of check IDs
- * @param context - function context
+ * @param logger - function logger
  * @return {Promise<void>}
  */
-psychometricianReportService.batchProduceCacheData = async function (batchIds, context) {
+psychometricianReportService.batchProduceCacheData = async function (batchIds, logger) {
   const checks = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
 
   if (!checks || !Array.isArray(checks) || !checks.length) {
@@ -51,7 +51,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds, c
   try {
     await psychometricianReportCacheDataService.sqlInsertMany(psReportData)
   } catch (error) {
-    context.log.error(`ERROR: psychometricianReportCacheDataService: failed to insert into db: ${error.message}`)
+    logger.error(`ERROR: psychometricianReportCacheDataService: failed to insert into db: ${error.message}`)
     throw error
   }
 }
