@@ -18,6 +18,7 @@ const schoolDataService = require('../../../services/data-access/school.data.ser
 const groupService = require('../../../services/group.service')
 const schoolMock = require('../mocks/school')
 const groupsMock = require('../mocks/groups')
+const generateSchoolPasswordMock = require('../mocks/pin-generation.service.generateSchoolPassword')
 
 describe('pupilPin controller:', () => {
   let next
@@ -164,7 +165,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(Object.assign({}, schoolMock)))
         })
         it('displays the generate pins list page', async () => {
           const res = getRes()
@@ -195,7 +196,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(Object.assign({}, schoolMock)))
         })
 
         it('displays the generate pins list page', async () => {
@@ -288,8 +289,8 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
+        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Object.assign({}, schoolMock))
+        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(Object.assign({}, generateSchoolPasswordMock))
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
 
@@ -356,8 +357,8 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
+        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Object.assign({}, schoolMock))
+        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(Object.assign({}, generateSchoolPasswordMock))
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
 
