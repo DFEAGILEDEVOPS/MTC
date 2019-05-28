@@ -20,6 +20,7 @@ const pinGenerationDataService = require('../../../services/data-access/pin-gene
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
+const schoolMock = require('../mocks/school')
 
 const checkFormMock = {
   id: 100,
@@ -43,8 +44,6 @@ const preparedCheckMock = {
 
 describe('check-start.service', () => {
   const service = checkStartService
-  const dfeNumber = 9991999
-  const schoolId = 42
 
   const mockPupils = [
     { id: 1 },
@@ -89,26 +88,28 @@ describe('check-start.service', () => {
 
     it('throws an error if the pupilIds are not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, true)
+        const school = Object.assign({}, schoolMock)
+        await checkStartService.prepareCheck2(undefined, school, true)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds is required')
       }
     })
 
-    it('throws an error if the schoolId is not provided', async () => {
+    it('throws an error if the school is not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, true)
+        await checkStartService.prepareCheck2(pupilIds, undefined, true)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('schoolId is required')
+        expect(error.message).toBe('school is required')
       }
     })
 
     it('throws an error if provided with pupilIds that are not a part of the school', async () => {
       try {
         spyOn(logger, 'error')
-        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true)
+        const school = Object.assign({}, schoolMock)
+        await checkStartService.prepareCheck2(pupilIdsHackAttempt, school, true)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Validation failed')
@@ -116,23 +117,27 @@ describe('check-start.service', () => {
     })
 
     it('calls getPupilsEligibleForPinGenerationById to find pupils', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      const school = Object.assign({}, schoolMock)
+      await checkStartService.prepareCheck2(pupilIds, school, true)
       expect(pinGenerationV2Service.getPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     it('calls initialisePupilCheck to randomly select a check form', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      const school = Object.assign({}, schoolMock)
+      await checkStartService.prepareCheck2(pupilIds, school, true)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      const school = Object.assign({}, schoolMock)
+      await checkStartService.prepareCheck2(pupilIds, school, true)
       expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      const school = Object.assign({}, schoolMock)
+      await checkStartService.prepareCheck2(pupilIds, school, true)
       // pupil status re-calc and prepare-check queues
       expect(azureQueueService.addMessageAsync).toHaveBeenCalledTimes(2)
     })
