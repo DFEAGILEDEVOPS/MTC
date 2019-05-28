@@ -38,16 +38,14 @@ const checkStartService = {}
  */
 checkStartService.prepareCheck2 = async function (
   pupilIds,
-  dfeNumber,
-  schoolId,
-  isLiveCheck,
-  schoolTimezone = null
+  school,
+  isLiveCheck
 ) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
   }
-  if (!schoolId) {
-    throw new Error('schoolId is required')
+  if (!school) {
+    throw new Error('school is required')
   }
 
   // Validate the incoming pupil list to ensure that the pupils are real ids:
@@ -55,7 +53,7 @@ checkStartService.prepareCheck2 = async function (
   // * that they are eligible for pin generation
   // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
   const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
-    schoolId,
+    school.id,
     pupilIds,
     isLiveCheck
   )
@@ -67,7 +65,7 @@ checkStartService.prepareCheck2 = async function (
   )
   if (difference.size > 0) {
     logger.error(
-      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
+      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${school.dfeNumber}]: `,
       difference
     )
     throw new Error('Validation failed')
@@ -96,8 +94,8 @@ checkStartService.prepareCheck2 = async function (
       allForms,
       usedFormIds,
       isLiveCheck,
-      schoolId,
-      schoolTimezone
+      school.id,
+      school.timezone
     )
     checks.push(c)
   }
@@ -108,13 +106,13 @@ checkStartService.prepareCheck2 = async function (
     : [res.insertId]
 
   const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
-    schoolId,
+    school.id,
     newCheckIds,
     pupilIds
   )
 
   await pinGenerationV2Service.checkAndUpdateRestarts(
-    schoolId,
+    school.id,
     pupils,
     newCheckIds
   )
@@ -136,7 +134,7 @@ checkStartService.prepareCheck2 = async function (
   try {
     prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
       newCheckIds,
-      schoolId
+      school
     )
   } catch (error) {
     logger.error('Unable to prepare check messages', error)
@@ -265,7 +263,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId) {
+checkStartService.prepareCheckQueueMessages = async function (checkIds, school) {
   if (!checkIds) {
     throw new Error('checkIds is not defined')
   }
@@ -306,7 +304,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
   const pupilIds = checks.map(check => check.pupil_id)
   let pupilConfigs
   try {
-    pupilConfigs = await configService.getBatchConfig(pupilIds, schoolId)
+    pupilConfigs = await configService.getBatchConfig(pupilIds, school.id)
   } catch (error) {
     logger.error('Error generating pupil configs', error)
     throw error
@@ -320,20 +318,19 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
 
     const message = {
       checkCode: o.check_checkCode,
-      schoolPin: o.school_pin,
+      schoolPin: school.pin,
       pupilPin: o.pupil_pin,
       pupil: {
         id: o.pupil_id,
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
-        checkCode: o.check_checkCode,
         check_id: o.check_check_id,
         pinExpiresAt: o.pupil_pinExpiresAt
       },
       school: {
-        id: o.school_id,
-        name: o.school_name
+        id: school.id,
+        name: school.name
       },
       tokens: {
         checkStarted: {

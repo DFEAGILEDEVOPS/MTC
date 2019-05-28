@@ -154,10 +154,11 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     const update = pinGenerationService.generateSchoolPassword(school)
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+      school.pin = update.pin
     }
 
     // depends on school pin being ready
-    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
+    await checkStartService.prepareCheck2(pupilsList, school, isLiveCheck)
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
