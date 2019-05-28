@@ -3,8 +3,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f1ef3308c8c407284322926f501d537)](https://www.codacy.com/app/js_4/MTC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DFEAGILEDEVOPS/MTC&amp;utm_campaign=Badge_Grade)
 [![CircleCI](https://circleci.com/gh/DFEAGILEDEVOPS/MTC.svg?style=svg)](https://circleci.com/gh/DFEAGILEDEVOPS/MTC)
 
-Nightly: [![Build status](https://agilefactory.visualstudio.com/MTC/_apis/build/status/Nightly)](https://agilefactory.visualstudio.com/MTC/_apis/build/status/Nightly)
-
 # Multiplication Tables Check (MTC) Project
 
 ## Project tooling requirements
@@ -52,7 +50,7 @@ The MTC solution consists of the following projects...
 
 - Pupil Check Application (`/pupil-spa/`) Angular SPA
 - Check Administration Application (`/admin/`) Express MVC application
-- Electron Container for Pupil Check Application (`/electron/`) Electron shell for Pupil Check Application (Obsolete)
+- Pupil Auth API (`/pupil-api/`) Typescript Express API Application
 
 See each projects readme for app specifics.
 
