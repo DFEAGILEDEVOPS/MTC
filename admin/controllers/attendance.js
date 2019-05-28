@@ -132,7 +132,8 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   if (!pupils) {
     throw new Error('No pupils found')
   }
-  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
+  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithProcessStatus(pupils)
+  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsSortedWithFlags
@@ -192,7 +193,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
@@ -258,7 +259,7 @@ controller.getDeclarationForm = async (req, res, next) => {
     if (submitted) {
       return res.redirect('/attendance/submitted')
     }
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -274,10 +275,11 @@ controller.getDeclarationForm = async (req, res, next) => {
 controller.postDeclarationForm = async (req, res, next) => {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
 
   let hdfEligibility
   try {
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate)
   } catch (error) {
     return next(error)
   }

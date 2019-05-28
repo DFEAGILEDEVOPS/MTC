@@ -13,6 +13,7 @@ const attendanceCodeService = require('../../../services/attendance.service')
 const hdfValidator = require('../../../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../../../lib/validator/hdf-confirm-validator')
 const ValidationError = require('../../../lib/validation-error')
+const hdfPresenter = require('../../../helpers/hdf-presenter')
 
 describe('attendance controller:', () => {
   let next
@@ -46,7 +47,7 @@ describe('attendance controller:', () => {
     it('renders the declaration form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
@@ -99,6 +100,7 @@ describe('attendance controller:', () => {
     it('redirects to the submit attendance page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
@@ -113,6 +115,7 @@ describe('attendance controller:', () => {
       const req = getReq(reqParams)
       const validationError = new ValidationError()
       validationError.addError('firstName', true)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(hdfValidator, 'validate').and.returnValue(validationError)
       spyOn(res, 'redirect')
@@ -133,6 +136,7 @@ describe('attendance controller:', () => {
     it('renders the pupil details list page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      spyOn(hdfPresenter, 'getPupilsWithProcessStatus').and.returnValue([])
       spyOn(headteacherDeclarationService, 'findPupilsForSchool').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getReviewPupilDetails(req, res)
@@ -198,7 +202,7 @@ describe('attendance controller:', () => {
     it('renders the confirm and submit page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'render').and.returnValue(null)
@@ -224,7 +228,7 @@ describe('attendance controller:', () => {
     it('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(false)
       spyOn(businessAvailabilityService, 'getAvailabilityData')
       spyOn(res, 'render')

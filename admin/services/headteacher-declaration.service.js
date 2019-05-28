@@ -1,8 +1,10 @@
 'use strict'
 
+const moment = require('moment-timezone')
+
+const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
@@ -18,7 +20,7 @@ headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
   if (!dfeNumber) {
     throw new Error('dfeNumber is required')
   }
-  return pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
+  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
 }
 
 /**
@@ -41,18 +43,22 @@ headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeN
 /**
  * Fetch pupils and return eligibility to generate HDF
  * @param dfeNumber
+ * @param checkEndDate
+ * @param timezone
  * @returns {Array}
  */
-headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
-  const pupils = await pupilDataService.sqlFindPupilsWithStatusByDfeNumber(dfeNumber)
-  // check the attendance codes for pupils that don't have the completed status
-  const ids = pupils.filter(p => p.code !== pupilStatusService.STATUS_CODES.COMPLETED).map(p => p.id)
-  if (ids.length === 0) {
-    return true
+headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber, checkEndDate, timezone) => {
+  if (!checkEndDate) {
+    throw new Error('Check end date missing or not found')
   }
-  const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
-  // check if all pupils that don't have the completed status, have an attendance reason
-  return pupilAttendance.length === ids.length
+  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
+  if (currentDate.isBefore(checkEndDate)) {
+    const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(dfeNumber)
+    return ineligiblePupilsCount === 0
+  } else {
+    const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(dfeNumber)
+    return ineligiblePupilsCount === 0
+  }
 }
 
 /**
