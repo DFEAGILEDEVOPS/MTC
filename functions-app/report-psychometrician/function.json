@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "schedule": "15 0 17 * * *",
+      "name": "psychometricianReport",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ const moment = require('moment')
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const redisCacheService = require('../redis-cache.service')
 
 const table = '[checkWindow]'
 
@@ -39,7 +40,8 @@ const checkWindowDataService = {
       }
     ]
     const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1 WHERE id=@id`
-    return sqlService.modify(sql, params)
+    await sqlService.modify(sql, params)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
@@ -203,10 +205,12 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create(table, data)
+    await sqlService.create(table, data)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   sqlUpdate: async (data) => {
-    return sqlService.update('[checkWindow]', data)
+    await sqlService.update(table, data)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
@@ -234,14 +238,14 @@ const checkWindowDataService = {
     const inserts = []
     for (let index = 0; index < checkFormIds.length; index++) {
       const formId = checkFormIds[index]
-      inserts.push(sqlService.create('[checkFormWindow]',
-        {
-          checkForm_id: formId,
-          checkWindow_id: checkWindowId
-        }
-      ))
+      const params = {
+        checkForm_id: formId,
+        checkWindow_id: checkWindowId
+      }
+      inserts.push(sqlService.create('[checkFormWindow]', params))
     }
-    return Promise.all(inserts)
+    await Promise.all(inserts)
+    return redisCacheService.drop('checkWindow.sqlFindActiveCheckWindow')
   },
   /**
    * Find active check windows
@@ -349,7 +353,7 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
-    const result = await sqlService.query(sql)
+    const result = await sqlService.query(sql, [], 'checkWindow.sqlFindActiveCheckWindow')
     return R.head(result)
   },
 

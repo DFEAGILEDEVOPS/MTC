@@ -4,6 +4,9 @@ const groupDataService = {}
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const redisCacheService = require('../redis-cache.service')
+const config = require('../../config')
+const { REDIS_CACHING } = config
 
 /**
  * Get active groups (non-soft-deleted).
@@ -14,7 +17,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
   const sql = `
   SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
   FROM ${sqlService.adminSchema}.[group] g
-  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
+  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg 
   ON g.id = pg.group_id
   WHERE g.isDeleted=0
   AND g.school_id=@schoolId
@@ -27,7 +30,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.query(sql, params, `group.sqlFindGroups.${schoolId}`)
 }
 
 /**
@@ -150,11 +153,14 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.modify(
-    `UPDATE ${sqlService.adminSchema}.[group] 
-    SET name=@name 
-    WHERE [id]=@id AND school_id=@schoolId`,
-    params)
+  const sql = `
+  UPDATE ${sqlService.adminSchema}.[group] 
+  SET name=@name 
+  WHERE [id]=@id AND school_id=@schoolId
+  `
+
+  await sqlService.modify(sql, params)
+  return redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
 }
 
 /**
@@ -191,11 +197,21 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     })
   }
 
-  const sql = `
+  let sql = `
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
-  return sqlService.modifyWithTransaction(sql, params)
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
+  if (!REDIS_CACHING) {
+    return modifyResult
+  }
+  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  const groups = await sqlService.query(sql, params)
+  if (!groups || groups.length === 0) {
+    return modifyResult
+  }
+  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  return modifyResult
 }
 
 /**
@@ -248,9 +264,19 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+  let sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
   UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
-  return sqlService.modifyWithTransaction(sql, params)
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
+  if (!REDIS_CACHING) {
+    return modifyResult
+  }
+  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  const groups = await sqlService.query(sql, params)
+  if (!groups || groups.length === 0) {
+    return modifyResult
+  }
+  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  return modifyResult
 }
 
 /**
