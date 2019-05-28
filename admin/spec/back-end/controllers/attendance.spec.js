@@ -46,7 +46,7 @@ describe('attendance controller:', () => {
     it('renders the declaration form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
