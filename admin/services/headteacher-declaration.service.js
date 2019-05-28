@@ -20,7 +20,7 @@ headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
   if (!dfeNumber) {
     throw new Error('dfeNumber is required')
   }
-  return pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
+  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
 }
 
 /**

@@ -132,7 +132,8 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   if (!pupils) {
     throw new Error('No pupils found')
   }
-  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
+  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithProcessStatus(pupils)
+  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsSortedWithFlags

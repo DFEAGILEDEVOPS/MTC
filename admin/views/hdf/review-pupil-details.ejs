@@ -47,8 +47,8 @@
                         </div>
                     </td>
                     <td>
-                        <% if (pupil.code === 'COMPLETED') { %>
-                        Completed
+                        <% if (pupil.status) { %>
+                        <%= pupil.status %>
                         <% } else { %>
                         <%= pupil.reason %>
                         <% } %>

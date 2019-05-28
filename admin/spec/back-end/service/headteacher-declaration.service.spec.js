@@ -249,9 +249,9 @@ describe('headteacherDeclarationService', () => {
     })
 
     it('finds the pupils using the dfeNumber', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
+      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
       const result = await service.findPupilsForSchool(dfeNumber)
-      expect(pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
+      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
       expect(result).toEqual('Mock pupils result')
     })
   })
