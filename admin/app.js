@@ -248,7 +248,8 @@ app.use(function (req, res, next) {
 const csrf = csurf()
 const csrfExcludedPaths = [
   '/auth', // disable CSRF for NCA tools
-  '/sign-in' // disable CSRF for login
+  '/sign-in', // disable CSRF for login
+  '/test-developer/view-pupil-payload'
 ]
 app.use(function (req, res, next) {
   if (csrfExcludedPaths.includes(req.url)) return next()

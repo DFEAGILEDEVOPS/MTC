@@ -7,10 +7,9 @@ const err = error;
     <h1 class="heading-xlarge">View pupil payload</h1>
 </header>
 
+<%- partial('partials/_session_expiry') %>
 
 <form action="/test-developer/view-pupil-payload" id="payloadForm" method="post" target="_blank" novalidate>
-    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-
     <div class="form-group <%= err.isError('checkCode') ? 'form-group-error' : '' %>">
         <label class="form-label-bold" for="checkCode">Check code
             <% if (err.isError('checkCode')) { %>
@@ -31,8 +30,3 @@ const err = error;
 <div class="back-to-top-container">
     <a href="#top"> Back to top </a>
 </div>
-<script>
-  $('#payloadForm').on('submit', function () {
-    window.location.reload(true)
-  });
-</script>

@@ -21,7 +21,7 @@ const controller = {
 
   postViewPayload: async function postViewPayload (req, res, next, error) {
     console.log('User ', req.user)
-    logger.info(`postViewPayload(): called for checkCode ${req.body.checkCode} by user ${req.user.UserName} (id ${req.user.id})`)
+    logger.info(`postViewPayload(): called for checkCode ${req.body.checkCode} by user '${req.user.UserName}' (id ${req.user.id})`)
     const payload = await payloadService.getPayload(req.body.checkCode)
     try {
       res.type('json')
