@@ -1,0 +1,38 @@
+<%
+const err = error;
+%>
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+
+<header class="page-header">
+    <h1 class="heading-xlarge">View pupil payload</h1>
+</header>
+
+
+<form action="/test-developer/view-pupil-payload" id="payloadForm" method="post" target="_blank" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
+    <div class="form-group <%= err.isError('checkCode') ? 'form-group-error' : '' %>">
+        <label class="form-label-bold" for="checkCode">Check code
+            <% if (err.isError('checkCode')) { %>
+                <span class="error-message"><%= err.get('checkCode') %></span>
+            <% } %>
+        </label>
+        <input type="text"
+               id="checkCode"
+               class="form-control <%= err.isError('checkCode') ? 'form-control-error' : '' %>"
+               name="checkCode"
+               value="<%= formData['checkCode'] %>"/>
+    </div>
+    <div class="form-buttons">
+        <input type="submit" class="button" value="View payload"/>
+        <a href="/test-developer/" class="button button-secondary">Cancel</a>
+    </div>
+</form>
+<div class="back-to-top-container">
+    <a href="#top"> Back to top </a>
+</div>
+<script>
+  $('#payloadForm').on('submit', function () {
+    window.location.reload(true)
+  });
+</script>
