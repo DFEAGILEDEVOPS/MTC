@@ -325,6 +325,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, school) 
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
+        checkCode: o.check_checkCode,
         check_id: o.check_check_id,
         pinExpiresAt: o.pupil_pinExpiresAt
       },
