@@ -675,20 +675,7 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWit
     replaceWithTypes.push(replaceWith[col])
   }
 
-  let shortCodes, longCodes
-  if (replaceWithTypes.indexOf('shortCode') > -1) {
-    let pupilStatusCodeTable
-    try {
-      pupilStatusCodeTable = await sqlService.loadTable('pupilStatusCode')
-    } catch (e) {
-      logger.error('sqlService.addPupilStatuses: Reading pupilStatusCode redis cache failed', e)
-      throw e
-    }
-    shortCodes = {}
-    pupilStatusCodeTable.forEach(r => {
-      shortCodes[r.id] = r.code
-    })
-  }
+  let longCodes
   if (replaceWithTypes.indexOf('longCode') > -1) {
     let pupilStatusTable
     try {
@@ -706,14 +693,7 @@ sqlService.addPupilStatuses = async (results, pupilIDProperty = 'id', replaceWit
   results.forEach(r => {
     const statusID = pupilStatuses[r[pupilIDProperty].toString()] || 1
     for (let col in replaceWith) {
-      let type = replaceWith[col]
-      let value = statusID
-      if (type === 'shortCode') {
-        value = shortCodes[statusID]
-      } else if (type === 'longCode') {
-        value = longCodes[statusID]
-      }
-      r[col] = value
+      r[col] = replaceWith[col] === 'longCode' ? longCodes[statusID] : statusID
     }
   })
   return results
@@ -745,7 +725,7 @@ const cacheTableInRedis = async (table) => {
  * @return {Object}
  */
 sqlService.startupCacheTables = async () => {
-  const tables = ['pupilStatus', 'pupilStatusCode', 'pupilStatusLink']
+  const tables = ['pupilStatus', 'pupilStatusLink']
   const tablesLn = tables.length
   for (let i = 0; i < tablesLn; i++) {
     await cacheTableInRedis(tables[i])
