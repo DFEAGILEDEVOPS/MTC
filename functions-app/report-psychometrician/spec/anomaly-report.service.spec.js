@@ -67,18 +67,18 @@ describe('anomaly-report.service', () => {
 
   describe('#produceReportData', () => {
     it('pushes a reported anomaly', async () => {
-      const reportData = [
-        '763AD270-278D-4221-886C-23FF7E5E5736',
-        'date',
-        false,
-        '9 out of 10',
-        'Other ',
-        'Other 0.0.0 / Other 0.0.0',
-        'message',
-        1,
-        2,
-        3
-      ]
+      const reportData = {
+        'CheckCode': '763AD270-278D-4221-886C-23FF7E5E5736',
+        'Date': 'date',
+        'Speech Synthesis': false,
+        'Mark': '9 out of 10',
+        'Device': 'Other ',
+        'Agent': 'Other 0.0.0 / Other 0.0.0',
+        'Message': 'message',
+        'Tested Value': 1,
+        'Expected Value': 2,
+        'Question number': 3
+      }
       service.reportedAnomalies = []
       spyOn(service, 'getCheckDate').and.returnValue('date')
       service.produceReportData(completedCheckMockOrig, 'message', 1, 2, 3)
