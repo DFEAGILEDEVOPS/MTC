@@ -21,6 +21,9 @@ const v2 = {
       context.log.warn(`${functionName}: large compressed message received bigger than 45Kb: size is ${completedCheckMessage.length} bytes`)
     }
     const decompressedString = compressionService.decompress(completedCheckMessage.archive)
+    if (!decompressedString) {
+      throw new Error(`${functionName}: ERROR checkCode ${completedCheckMessage.checkCode}: unable to decompress archive`)
+    }
     if (decompressedString.length > 45000) {
       context.log.warn(`${functionName}: large decompressed message received: size is ${decompressedString.length} bytes.`)
     }
