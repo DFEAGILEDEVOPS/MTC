@@ -12,7 +12,7 @@ async function process (context, pupilStatusMessage) {
   }
 
   try {
-    await pupilStatusService.recalculatePupilStatus(pupilStatusMessage.pupilId)
+    await pupilStatusService.recalculatePupilStatus(pupilStatusMessage.pupilId, context)
   } catch (error) {
     context.log.error(`pupil-status: Failed to recalculate pupil status for pupil ${pupilStatusMessage.pupilId}`)
     throw error

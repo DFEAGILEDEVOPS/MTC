@@ -4,14 +4,15 @@ const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
+const pupilStatusRedisService = require('./pupil-status-redis.service')
 
-async function recalculatePupilStatus (pupilId) {
+async function recalculatePupilStatus (pupilId, context) {
   const currentData = await getCurrentPupilData(pupilId)
   const currentStatusCode = currentData.pupilStatusCode
   const targetStatusCode = pupilStatusAnalysisService.analysePupilData(currentData)
 
   if (currentStatusCode !== targetStatusCode) {
-    await changePupilState(pupilId, targetStatusCode)
+    await changePupilState(pupilId, targetStatusCode, context)
     console.log(`pupil-status: State change transition for pupil ${pupilId} from ${currentStatusCode} to ${targetStatusCode}`)
   }
 }
@@ -58,10 +59,23 @@ async function getCurrentPupilData (pupilId) {
   return R.head(res)
 }
 
-async function changePupilState (pupilId, targetStatusCode) {
-  const sql = `UPDATE [mtc_admin].[pupil]
-               SET pupilStatus_id = (SELECT id from [mtc_admin].[pupilStatus] WHERE code = @code)
-               WHERE id = @pupilId`
+async function changePupilState (pupilId, targetStatusCode, context) {
+  await pupilStatusRedisService.updatePupilStatuses([{ pupilId, targetStatusCode }], context)
+
+  const sql = `
+    IF EXISTS (SELECT * FROM mtc_admin.pupilStatusLink WHERE pupil_id=@pupilId)
+      UPDATE mtc_admin.pupilStatusLink
+      SET
+        pupilStatus_id = (SELECT id from mtc_admin.pupilStatus WHERE code=@code),
+        updatedAt = GETUTCDATE()
+      WHERE pupil_id=@pupilId
+    ELSE
+      INSERT INTO mtc_admin.pupilStatusLink (pupil_id, pupilStatus_id)
+      VALUES (
+        @pupilId,
+        (SELECT id from mtc_admin.pupilStatus WHERE code=@code)
+      )
+  `
   const params = [
     { name: 'code', value: targetStatusCode, type: TYPES.NVarChar },
     { name: 'pupilId', value: pupilId, type: TYPES.Int }
