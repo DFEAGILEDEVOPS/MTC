@@ -52,6 +52,7 @@ import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
 import { LoginErrorService } from './services/login-error/login-error.service';
+import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -191,6 +192,7 @@ const appRoutes: Routes = [
     RouteService,
     TimerService,
     LoginErrorService,
+    LoginErrorDiagnosticsService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+
 import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
 import { Login } from './login.model';
@@ -16,6 +19,8 @@ import { CheckStatusService } from '../services/check-status/check-status.servic
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { LoginErrorService } from '../services/login-error/login-error.service';
+import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -31,6 +36,10 @@ describe('LoginComponent', () => {
   let mockLoginModel;
   let hasUnfinishedCheckSpy;
   let loginErrorService;
+  let loginErrorDiagnosticsService;
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
+  let windowRefService: WindowRefService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -58,7 +67,7 @@ describe('LoginComponent', () => {
 
     const injector = TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, HttpClientTestingModule],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Login, useValue: mockLoginModel },
@@ -70,7 +79,9 @@ describe('LoginComponent', () => {
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
-        LoginErrorService
+        LoginErrorService,
+        LoginErrorDiagnosticsService,
+        WindowRefService
       ]
     });
     mockQuestionService = injector.get(QuestionService);
@@ -80,6 +91,10 @@ describe('LoginComponent', () => {
     mockCheckStatusService = injector.get(CheckStatusService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
     loginErrorService = injector.get(LoginErrorService);
+    loginErrorDiagnosticsService = injector.get(LoginErrorDiagnosticsService);
+    httpClient = TestBed.get(HttpClient);
+    httpTestingController = TestBed.get(HttpTestingController);
+    windowRefService = injector.get(WindowRefService);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
@@ -182,10 +197,12 @@ describe('LoginComponent', () => {
 
     it('redirects to an error page when the connection fails', async () => {
       component.onSubmit('goodPin', 'goodPin');
+      spyOn(loginErrorDiagnosticsService, 'process');
       fixture.whenStable().then(() => {
         expect(loginErrorService.changeMessage).toHaveBeenCalledWith('no connection');
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail']);
         expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled();
+        expect(loginErrorDiagnosticsService.process).toHaveBeenCalled();
       });
     });
   });
