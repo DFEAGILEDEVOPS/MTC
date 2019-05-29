@@ -18,12 +18,10 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       pupil.lastName as pupil_lastName,
       pupil.dateOfBirth as pupil_dateOfBirth,
       pupil.jwtToken as pupil_jwtToken,
-      checkForm.id as checkForm_id,
-      checkForm.formData as checkForm_formData
+      chk.checkForm_id as checkForm_id
     FROM 
       ${sqlService.adminSchema}.[check] chk
       JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
-      JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (chk.checkForm_id = checkForm.id)
       JOIN ${sqlService.adminSchema}.[checkPin] cp on (chk.id = cp.check_id)
       JOIN ${sqlService.adminSchema}.[pin] pin ON (cp.pin_id = pin.id)
     `

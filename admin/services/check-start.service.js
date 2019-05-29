@@ -134,7 +134,8 @@ checkStartService.prepareCheck2 = async function (
   try {
     prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
       newCheckIds,
-      school
+      school,
+      allForms
     )
   } catch (error) {
     logger.error('Unable to prepare check messages', error)
@@ -263,7 +264,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkIds, school) {
+checkStartService.prepareCheckQueueMessages = async function (checkIds, school, allForms) {
   if (!checkIds) {
     throw new Error('checkIds is not defined')
   }
@@ -310,11 +311,18 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, school) 
     throw error
   }
 
+  let allFormsByID = {}
+  allForms.map(f => {
+    allFormsByID[f.id] = JSON.parse(f.formData)
+  })
+
   for (let o of checks) {
     // Pass the isLiveCheck config in to the SPA
     const pupilConfig = pupilConfigs[ o.pupil_id ]
     pupilConfig.practice = !o.check_isLiveCheck
     pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
+
+    const formData = allFormsByID[o.checkForm_id]
 
     const message = {
       checkCode: o.check_checkCode,
@@ -350,9 +358,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, school) 
           token: 'token-disabled' // o.pupil_jwtToken
         }
       },
-      questions: checkFormService.prepareQuestionData(
-        JSON.parse(o.checkForm_formData)
-      ),
+      questions: checkFormService.prepareQuestionData(formData),
       config: pupilConfig
     }
     if (o.check_isLiveCheck) {
