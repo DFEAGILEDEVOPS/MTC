@@ -19,85 +19,80 @@ const functionName = 'completed-checks:v1'
 
 const v1 = {
   process: async function (context, completedCheckMessage) {
-    await handleCompletedCheck(context, completedCheckMessage)
+    await this.handleCompletedCheck(context, completedCheckMessage)
+    // Default output is bound to the pupilEvents table (saved in table storage)
+    context.bindings.pupilEventsTable = []
+    const entity = {
+      PartitionKey: completedCheckMessage.checkCode,
+      RowKey: uuid(),
+      eventType: 'completed-check',
+      payload: completedCheckMessage,
+      processedAt: moment().toDate()
+    }
+    context.bindings.pupilEventsTable.push(entity)
+  },
+
+  handleCompletedCheck: async function handleCompletedCheck (context, completedCheckMessage) {
+    let checkData
+    try {
+      checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
+    } catch (error) {
+      context.log.error(`${functionName}: ${error.message}`)
+      throw error
+    }
+
+    if (!canCompleteCheck(checkData.checkStatusCode)) {
+      const errorMessage = `${functionName}: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.checkStatusCode}`
+      context.log.error(errorMessage)
+      throw new Error(errorMessage)
+    }
+
+    try {
+      await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
+    } catch (error) {
+      context.log.error(`${functionName}: ${error.message}`)
+      throw error
+    }
+
+    try {
+      await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
+    } catch (error) {
+      context.log.error(`${functionName}: ${error.message}`)
+      throw error
+    }
+
+    // Request a pupil status change
+    try {
+      if (checkData.isLiveCheck) {
+        const pupilStatusQueueName = 'pupil-status'
+        const message = { version: 1, pupilId: checkData.pupil_id, checkCode: completedCheckMessage.checkCode }
+        await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
+      }
+    } catch (error) {
+      context.log.error(`${functionName}: ${error.message}`)
+      throw error
+    }
+
+    // Populate check with marks and update answers table
+    try {
+      await markingService.mark(completedCheckMessage, checkData)
+    } catch (error) {
+      context.log.error(`${functionName}: ${error.message}`)
+      throw error
+    }
+
+    // Delete the row in the preparedCheck table - prevent pupils logging in again.
+    // This is a backup process in case the check-started message was not received.
+    try {
+      await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
+    } catch (error) {
+      context.log.verbose(`${functionName}: ${error.message}`)
+    }
   }
 }
 
 // Table Storage
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
-
-async function handleCompletedCheck (context, completedCheckMessage) {
-  let checkData
-  try {
-    checkData = await sqlUtil.sqlFindCheckWithFormDataByCheckCode(completedCheckMessage.checkCode)
-  } catch (error) {
-    context.log.error(`${functionName}: ${error.message}`)
-    throw error
-  }
-
-  if (!canCompleteCheck(checkData.checkStatusCode)) {
-    const errorMessage = `${functionName}: ERROR: check ${completedCheckMessage.checkCode} is not in a correct state to be completed. Current state is ${checkData.checkStatusCode}`
-    context.log.error(errorMessage)
-    throw new Error(errorMessage)
-  }
-
-  try {
-    await savePayloadToAdminDatabase(completedCheckMessage, checkData, context.log)
-  } catch (error) {
-    context.log.error(`${functionName}: ${error.message}`)
-    throw error
-  }
-
-  try {
-    await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
-  } catch (error) {
-    context.log.error(`${functionName}: ${error.message}`)
-    throw error
-  }
-
-  // Delete the row in the preparedCheck table - prevent pupils logging in again.
-  // This is a backup process in case the check-started message was not received.
-  try {
-    await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
-  } catch (error) {
-    // We can ignore "not found" errors in this function
-    if (error.type !== 'NOT_FOUND') {
-      context.log.verbose(`${functionName}: ${error.message}`)
-      throw error
-    }
-  }
-
-  // Request a pupil status change
-  try {
-    if (checkData.isLiveCheck) {
-      const pupilStatusQueueName = 'pupil-status'
-      const message = { version: 1, pupilId: checkData.pupil_id, checkCode: completedCheckMessage.checkCode }
-      await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
-    }
-  } catch (error) {
-    context.log.error(`${functionName}: ${error.message}`)
-    throw error
-  }
-
-  // Populate check with marks and update answers table
-  try {
-    await markingService.mark(completedCheckMessage, checkData)
-  } catch (error) {
-    context.log.error(`${functionName}: ${error.message}`)
-    throw error
-  }
-
-  // Default output is bound to the pupilEvents table (saved in table storage)
-  context.bindings.pupilEventsTable = []
-  const entity = {
-    PartitionKey: completedCheckMessage.checkCode,
-    RowKey: uuid(),
-    eventType: 'completed-check',
-    payload: '<removed>',
-    processedAt: moment().toDate()
-  }
-  context.bindings.pupilEventsTable.push(entity)
-}
 
 /**
  * High level function to save the payload into the admin db

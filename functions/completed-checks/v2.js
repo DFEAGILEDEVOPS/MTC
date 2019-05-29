@@ -1,5 +1,8 @@
 'use strict'
 
+const moment = require('moment')
+const uuid = require('uuid/v4')
+
 const v1 = require('./v1')
 const compressionService = require('../lib/compression.service')
 const functionName = 'completed-checks:v2'
@@ -23,7 +26,18 @@ const v2 = {
     }
     context.log.info(`${functionName}: decompressed message length: ${decompressedString.length} bytes`)
     const v1Message = JSON.parse(decompressedString)
-    await v1.process(context, v1Message)
+    await v1.handleCompletedCheck(context, v1Message)
+    // Default output is bound to the pupilEvents table (saved in table storage)
+    context.bindings.pupilEventsTable = []
+    const base64EncodedPayload = Buffer.from(JSON.stringify(completedCheckMessage)).toString('base64')
+    const entity = {
+      PartitionKey: completedCheckMessage.checkCode,
+      RowKey: uuid(),
+      eventType: 'completed-check',
+      payload: base64EncodedPayload,
+      processedAt: moment().toDate()
+    }
+    context.bindings.pupilEventsTable.push(entity)
   }
 }
 
