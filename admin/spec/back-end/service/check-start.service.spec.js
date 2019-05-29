@@ -52,6 +52,12 @@ describe('check-start.service', () => {
   ]
   const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
+  const allFormsMock = [{
+    id: 1,
+    name: 'MTC0100',
+    isDeleted: false,
+    formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11,"f2" : 2    }]'
+  }]
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockPreparedCheckQueueMessages = [
     { mock: 'message', checkCode: '1A' },
@@ -291,12 +297,12 @@ describe('check-start.service', () => {
       })
 
       it('makes a call to fetch the check form allocations from the db', async () => {
-        await checkStartService.prepareCheckQueueMessages([1], 1)
+        await checkStartService.prepareCheckQueueMessages([1], 1, allFormsMock)
         expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
       })
 
       it('prepares the question data', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        const res = await checkStartService.prepareCheckQueueMessages([1], 1, allFormsMock)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
@@ -308,7 +314,7 @@ describe('check-start.service', () => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
       })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        const res = await checkStartService.prepareCheckQueueMessages([1], 1, allFormsMock)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
         expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
       })
