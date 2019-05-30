@@ -30,23 +30,46 @@ const pupilsNotTakingCheckDataService = {
   },
 
   /**
-   * @param {number} dfeNumber
-   * @description returns all pupils with specified school that don't have a record of attendance
+   * @param {number} schoolId
+   * @description returns all pupils with specified school that don't have a
+   * record of attendance and haven't completed a check
    * @returns {Promise.<*>}
    */
-  sqlFindPupilsWithoutReasons: async (dfeNumber) => {
+  sqlFindPupilsWithoutReasons: async (schoolId) => {
     const sql = `
-      SELECT p.*, NULL as reason, pg.group_id
+      SELECT
+        p.foreName,
+        p.middleNames,
+        p.lastName,
+        p.dateOfBirth,
+        p.urlSlug,
+        pg.group_id
       FROM ${sqlService.adminSchema}.[pupil] p 
-      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      WHERE s.dfeNumber = @dfeNumber AND pa.id IS NULL
-      ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+      LEFT JOIN ${sqlService.adminSchema}.[check] c ON p.id = c.pupil_id AND c.isLiveCheck=1
+      LEFT JOIN ${sqlService.adminSchema}.[checkStatus] cs ON cs.id = c.checkStatus_id
+      LEFT JOIN ${sqlService.adminSchema}.[pupilRestart] pr ON pr.pupil_id = p.id AND pr.isDeleted=0 AND pr.check_id IS NULL
+      WHERE
+        p.school_id = @schoolId
+        AND pa.id IS NULL
+        AND (cs.code IS NULL OR pr.id IS NOT NULL)
+      GROUP BY
+        p.foreName,
+        p.middleNames,
+        p.lastName,
+        p.dateOfBirth,
+        p.urlSlug,
+        pg.group_id
+      ORDER BY
+        p.lastName ASC,
+        p.foreName ASC,
+        p.middleNames ASC,
+        p.dateOfBirth ASC
     `
     const params = [{
-      name: 'dfeNumber',
-      value: dfeNumber,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }]
 
