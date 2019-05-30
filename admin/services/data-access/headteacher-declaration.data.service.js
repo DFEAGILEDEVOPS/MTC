@@ -106,23 +106,24 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
 
 /**
  * Fetch all pupils for a school by dfeNumber with their status codes and attendance reasons
- * @param dfeNumber
+ * @param schoolId
  * @returns {Promise<*>}
  */
-headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (dfeNumber) {
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (schoolId) {
+  const paramDfeNumber = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
     SELECT
-       p.*,
+       p.foreName,
+       p.lastName,
+       p.middleNames,
+       p.dateOfBirth,
        ps.code AS pupilStatusCode,
        cs.code AS checkStatusCode,
        pg.group_id,
        ac.reason,
        ac.code as reasonCode
     FROM [mtc_admin].pupil p
-    INNER JOIN [mtc_admin].school s
-        ON s.id = p.school_id
     JOIN [mtc_admin].pupilStatus ps
         ON p.pupilStatus_id = ps.id
     LEFT JOIN [mtc_admin].[pupilAttendance] pa
@@ -138,7 +139,7 @@ headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = 
         WHERE isLiveCheck = 1
        ) lastCheck ON (lastCheck.pupil_id = p.id)
     LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-    WHERE s.dfeNumber = @dfeNumber
+    WHERE p.school_id = @schoolId
   `
   return sqlService.query(sql, [paramDfeNumber])
 }

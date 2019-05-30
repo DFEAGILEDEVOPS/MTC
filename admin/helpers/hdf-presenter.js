@@ -11,7 +11,7 @@ hdfPresenter.getCanViewResults = (resultsDate) => {
   return moment().utc().isAfter(resultsDate)
 }
 
-hdfPresenter.getPupilsWithProcessStatus = (pupils) => {
+hdfPresenter.getPupilsWithViewStatus = (pupils) => {
   return pupils.map(p => {
     switch (p.pupilStatusCode) {
       case 'STARTED':

@@ -13,14 +13,14 @@ const headteacherDeclarationService = {}
 
 /**
  * Find the pupils for the given dfe number
- * @param dfeNumber
+ * @param schoolId
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is required')
+headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
   }
-  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
+  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(schoolId)
 }
 
 /**

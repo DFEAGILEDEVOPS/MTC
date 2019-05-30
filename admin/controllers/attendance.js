@@ -128,11 +128,11 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
-  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.School)
+  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
   if (!pupils) {
     throw new Error('No pupils found')
   }
-  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithProcessStatus(pupils)
+  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithViewStatus(pupils)
   const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),

@@ -3,7 +3,7 @@
 const hdfPresenter = require('../../../helpers/hdf-presenter')
 
 describe('hdfPresenter', () => {
-  describe('getPupilsWithProcessStatus', () => {
+  describe('getPupilsWithViewStatus', () => {
     it('returns pupils with process status of either incomplete complete or empty', () => {
       const pupils = [
         {
@@ -27,7 +27,7 @@ describe('hdfPresenter', () => {
           checkStatusCode: ''
         }
       ]
-      const results = hdfPresenter.getPupilsWithProcessStatus(pupils)
+      const results = hdfPresenter.getPupilsWithViewStatus(pupils)
       expect(results[0].status).toEqual('Incomplete')
       expect(results[1].status).toEqual('Not taking the Check')
       expect(results[2].status).toEqual('Complete')

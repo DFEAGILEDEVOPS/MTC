@@ -136,7 +136,7 @@ describe('attendance controller:', () => {
     it('renders the pupil details list page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(hdfPresenter, 'getPupilsWithProcessStatus').and.returnValue([])
+      spyOn(hdfPresenter, 'getPupilsWithViewStatus').and.returnValue([])
       spyOn(headteacherDeclarationService, 'findPupilsForSchool').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getReviewPupilDetails(req, res)

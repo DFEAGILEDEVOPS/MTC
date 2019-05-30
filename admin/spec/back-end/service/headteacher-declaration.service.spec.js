@@ -239,12 +239,12 @@ describe('headteacherDeclarationService', () => {
     const dfeNumber = 9991999
     const service = require('../../../services/headteacher-declaration.service')
 
-    it('throws an error when no dfeNumber is provided', async () => {
+    it('throws an error when no schoolId is provided', async () => {
       try {
         await service.findPupilsForSchool(null)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('dfeNumber is required')
+        expect(error.message).toBe('schoolId is required')
       }
     })
 
