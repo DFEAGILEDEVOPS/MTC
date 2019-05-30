@@ -51,21 +51,20 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (dfeNumber, checkWi
 
 /**
  * Find count of pupils blocking hdf submission before check end date
- * @param dfeNumber
+ * @param schoolId
  * @return {Number}
  */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (dfeNumber) => {
+headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[school] s ON p.school_id = s.id
     JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
-    WHERE s.dfeNumber = @dfeNumber
+    WHERE p.school_id = @schoolId
     AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
   `
 
   const params = [
-    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
   ]
 
   const result = await sqlService.query(sql, params)
@@ -74,14 +73,13 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
 
 /**
  * Find count of pupils blocking hdf submission before check end date
- * @param dfeNumber
+ * @param schoolId
  * @return {Number}
  */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (dfeNumber) => {
+headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[school] s ON p.school_id = s.id
     JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
     LEFT JOIN (
         SELECT *,
@@ -90,14 +88,14 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
         WHERE isLiveCheck = 1
            ) lastCheck ON (lastCheck.pupil_id = p.id)
     LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-    WHERE s.dfeNumber = @dfeNumber
+    WHERE p.school_id = @schoolId
     AND (lastCheck.rank = 1 or lastCheck.rank IS NULL)
     AND (ps.code != 'STARTED' OR cs.code != 'NTR')
     AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED') 
   `
 
   const params = [
-    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
   ]
 
   const result = await sqlService.query(sql, params)

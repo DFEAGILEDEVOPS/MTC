@@ -42,19 +42,19 @@ headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeN
 
 /**
  * Fetch pupils and return eligibility to generate HDF
- * @param dfeNumber
+ * @param schoolId
  * @param checkEndDate
  * @param timezone
  * @returns {Array}
  */
-headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber, checkEndDate, timezone) => {
+headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
   if (!checkEndDate) {
     throw new Error('Check end date missing or not found')
   }
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
-    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(dfeNumber)
-    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(dfeNumber)
+    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
+    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
   return ineligiblePupilsCount === 0
 }
 

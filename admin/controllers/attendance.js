@@ -259,7 +259,7 @@ controller.getDeclarationForm = async (req, res, next) => {
     if (submitted) {
       return res.redirect('/attendance/submitted')
     }
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate, req.user.timezone)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }

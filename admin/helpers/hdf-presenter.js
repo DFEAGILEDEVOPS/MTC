@@ -11,6 +11,11 @@ hdfPresenter.getCanViewResults = (resultsDate) => {
   return moment().utc().isAfter(resultsDate)
 }
 
+/**
+ * Provides the hdf view with one of the following allowed statuses: Incomplete, NTTC and Complete
+ * @param {Array} pupils
+ * @returns {Promise<Array>}
+ */
 hdfPresenter.getPupilsWithViewStatus = (pupils) => {
   return pupils.map(p => {
     switch (p.pupilStatusCode) {
