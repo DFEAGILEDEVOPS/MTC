@@ -9,7 +9,7 @@ const moduleToExport = {
    * @return {*|string}
    */
   compress: function compress (string) {
-    return lzString.compress(string)
+    return lzString.compressToUTF16(string)
   },
 
   /**
@@ -18,7 +18,7 @@ const moduleToExport = {
    * @return {*|string|(string|null|undefined)}
    */
   decompress: function decompress (string) {
-    return lzString.decompress(string)
+    return lzString.decompressFromUTF16(string)
   }
 }
 

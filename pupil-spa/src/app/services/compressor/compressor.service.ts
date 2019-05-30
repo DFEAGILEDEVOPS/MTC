@@ -7,10 +7,10 @@ export class CompressorService {
   constructor() { }
 
   static compress(data: String): string {
-    return lzString.compress(data);
+    return lzString.compressToUTF16(data);
   }
 
   static decompress(archiveData: String): string {
-    return lzString.decompress(archiveData);
+    return lzString.decompressFromUTF16(archiveData);
   }
 }
