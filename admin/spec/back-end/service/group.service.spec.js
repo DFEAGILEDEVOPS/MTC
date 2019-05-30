@@ -148,9 +148,21 @@ describe('group.service', () => {
         done()
       })
 
-      it('should update group (excluding pupils)', async (done) => {
+      it('should update group (including pupils) when sent as an object', async (done) => {
         const schoolId = 123
-        await service.update(1, groupMock, schoolId)
+        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.pupils = { '2': 2 }
+        await service.update(1, thisGroupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalled()
+        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        done()
+      })
+
+      it('should update group (excluding pupils when they are the same)', async (done) => {
+        const schoolId = 123
+        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.pupils = [3]
+        await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalledTimes(0)
         done()
