@@ -59,7 +59,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
     JOIN [mtc_admin].[school] s ON p.school_id = s.id
-    LEFT JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
+    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
     WHERE s.dfeNumber = @dfeNumber
     AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
   `
@@ -82,7 +82,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
     JOIN [mtc_admin].[school] s ON p.school_id = s.id
-    LEFT JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
+    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
     LEFT JOIN (
         SELECT *,
             ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
@@ -123,7 +123,7 @@ headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = 
     FROM [mtc_admin].pupil p
     INNER JOIN [mtc_admin].school s
         ON s.id = p.school_id
-    LEFT JOIN [mtc_admin].pupilStatus ps
+    JOIN [mtc_admin].pupilStatus ps
         ON p.pupilStatus_id = ps.id
     LEFT JOIN [mtc_admin].[pupilAttendance] pa
         ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)

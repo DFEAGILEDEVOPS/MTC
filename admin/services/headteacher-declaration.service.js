@@ -52,13 +52,10 @@ headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber, checkE
     throw new Error('Check end date missing or not found')
   }
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-  if (currentDate.isBefore(checkEndDate)) {
-    const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(dfeNumber)
-    return ineligiblePupilsCount === 0
-  } else {
-    const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(dfeNumber)
-    return ineligiblePupilsCount === 0
-  }
+  const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
+    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(dfeNumber)
+    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(dfeNumber)
+  return ineligiblePupilsCount === 0
 }
 
 /**

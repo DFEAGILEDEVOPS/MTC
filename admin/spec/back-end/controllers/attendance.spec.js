@@ -47,7 +47,7 @@ describe('attendance controller:', () => {
     it('renders the declaration form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
@@ -100,7 +100,7 @@ describe('attendance controller:', () => {
     it('redirects to the submit attendance page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
@@ -115,7 +115,7 @@ describe('attendance controller:', () => {
       const req = getReq(reqParams)
       const validationError = new ValidationError()
       validationError.addError('firstName', true)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(hdfValidator, 'validate').and.returnValue(validationError)
       spyOn(res, 'redirect')
@@ -202,7 +202,7 @@ describe('attendance controller:', () => {
     it('renders the confirm and submit page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
       spyOn(res, 'render').and.returnValue(null)
@@ -228,7 +228,7 @@ describe('attendance controller:', () => {
     it('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: moment.utc() })
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
       spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(false)
       spyOn(businessAvailabilityService, 'getAvailabilityData')
       spyOn(res, 'render')
