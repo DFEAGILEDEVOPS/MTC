@@ -34,6 +34,7 @@ The following environment variables can be injected at start up...
 |`CHECK_SUBMISSION_MAX_ATTEMPTS`   |`integer`   |The max number of attempts in submitting the completed check   |
 |`SUBMISSION_PENDING_MIN_DISPLAY`   |`integer`   |The minimum amount of time in milliseconds that the completed check submission pending view should display for   |
 |`SUPPORT_NUMBER`   |`telephone number`   |The telephone number for helpdesk support   |
+|`WEBSITE_OFFLINE`   |`true / false`   |Disables the pupil spa and shows a downtime message   |
 
 ## Running unit tests
 
