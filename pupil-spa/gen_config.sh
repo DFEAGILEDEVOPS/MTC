@@ -12,6 +12,7 @@ pupilPrefsAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"3"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
 supportNumber=${SUPPORT_NUMBER:-"0300 303 3013"}
 gaCode=${GA_CODE:-"null"}
+websiteOffline=${WEBSITE_OFFLINE:-"false"}
 if [ $gaCode == "null" ]
 then
     gaCodeParsed="null"
@@ -39,6 +40,7 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
-  "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
+  "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed,
+  "websiteOffline": $websiteOffline
 }
 EOF
