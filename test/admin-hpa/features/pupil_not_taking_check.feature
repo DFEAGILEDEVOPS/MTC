@@ -148,3 +148,13 @@ Feature:
     Given I have a group of pupils
     Then the group filter should be opened by default
 
+  Scenario: Pupil should not appear in the list of pupil for not taking the check after completed check
+    Given I have single pupils for restart
+    When I want to add a reason for pupils not taking a check
+    Then I cannot see pupil in the list for pupil for not taking check
+
+  Scenario: Pupil will again appear in the list of pupil for not taking the check after restart is selected and before pin generated
+    Given I submitted pupils for Restart
+    When I want to add a reason for pupils not taking a check
+    Then I can see pupil in the list for pupil for not taking check
+

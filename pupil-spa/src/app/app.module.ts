@@ -51,6 +51,7 @@ import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
+import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -96,7 +97,8 @@ const appRoutes: Routes = [
   {path: 'out-of-time', component: OutOfTimeComponent },
   {path: 'contact', component: ContactComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
-  {path: 'privacy', component: PrivacyComponent }
+  {path: 'privacy', component: PrivacyComponent },
+  {path: 'service-unavailable', component: WebsiteOfflineComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -141,7 +143,8 @@ const appRoutes: Routes = [
     SvgGirlComponent,
     SvgClockComponent,
     IdleModalComponent,
-    SessionExpiredComponent
+    SessionExpiredComponent,
+    WebsiteOfflineComponent
   ],
   imports: [
     RouterModule.forRoot(
