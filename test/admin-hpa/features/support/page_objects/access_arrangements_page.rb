@@ -10,8 +10,8 @@ class AccessArrangementsPage < SitePrism::Page
   section :pupil_list, '#submitted-pupil-access-arrangements' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
-      element :highlighted_pupil, '.green-panel'
-      element :pupil_name, 'td:nth-of-type(1) a'
+      element :highlighted_pupil, '.highlight-item'
+      element :pupil_name, 'a.name-text-wrap'
       elements :access_arrangement_name, '.access-arrangements-list div'
       element :remove, 'td:nth-of-type(3) a'
     end
