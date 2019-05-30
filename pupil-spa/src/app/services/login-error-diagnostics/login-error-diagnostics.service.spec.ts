@@ -40,7 +40,7 @@ describe('LoginErrorDiagnosticsService', () => {
       await loginErrorDiagnosticsService.process(err);
       expect(loginErrorDiagnosticsService.canAccessURL).not.toHaveBeenCalled();
     });
-    it('should call changeMessage when api url refussed connection and internet connection is active', async () => {
+    it('should call changeMessage when api url refused connection and browser status is online', async () => {
       spyOn(loginErrorDiagnosticsService, 'canAccessURL').and.returnValue(false);
       spyOn(loginErrorService, 'changeMessage');
       const err = { status: 0 };
