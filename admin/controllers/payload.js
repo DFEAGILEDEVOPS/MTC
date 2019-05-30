@@ -21,7 +21,7 @@ const controller = {
     let response
     try {
       const payload = await payloadService.getPayload(req.body.checkCode.trim())
-        response = payload
+      response = payload
     } catch (error) {
       logger.error(error)
       response = { message: 'check not found' }
