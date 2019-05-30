@@ -67,13 +67,13 @@ const payloadService = {
    */
   getPayload: async function getPayload (checkCode) {
     if (!checkCode) {
-      throw new Error('checkCode missing')
+      throw new Error('Missing checkCode')
     }
 
     const p = await payloadDataService.sqlFindOneByCheckCode(checkCode)
 
     if (!p) {
-      throw new Error('checkCode missing')
+      throw new Error('Not found')
     }
 
     return this.addRelativeTimings(p)

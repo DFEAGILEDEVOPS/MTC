@@ -17,7 +17,10 @@ describe('payload.service', () => {
 
     it('adds relativeTimings', async () => {
       spyOn(service, 'addRelativeTimings')
-      spyOn(payloadDataService, 'sqlFindOneByCheckCode')
+      spyOn(payloadDataService, 'sqlFindOneByCheckCode').and.returnValue({
+        inputs: [],
+        audit: []
+      })
       await service.getPayload('abc-def')
       expect(service.addRelativeTimings).toHaveBeenCalled()
     })
