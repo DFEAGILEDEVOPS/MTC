@@ -22,13 +22,14 @@ export class LoginErrorDiagnosticsService {
     if (err.status !== 0) {
       return;
     }
+    const isBrowserStatusOnline = this.window.navigator.onLine;
+    if (!isBrowserStatusOnline) {
+      this.loginErrorService.changeMessage('Internet disconnected');
+      return;
+    }
     const canAccessAuthURL = await this.canAccessURL(APP_CONFIG.authURL);
     if (!canAccessAuthURL) {
       this.loginErrorService.changeMessage(`Connection refused to ${APP_CONFIG.authURL}`);
-    }
-    const hasActiveInternetConnection = this.window.navigator.onLine;
-    if (!hasActiveInternetConnection) {
-      this.loginErrorService.changeMessage('Internet disconnected');
     }
   }
 
