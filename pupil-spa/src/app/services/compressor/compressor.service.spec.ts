@@ -26,7 +26,7 @@ describe('CompressorService', () => {
 
   describe('Compressor.decompress', () => {
     it('returns a string',  () => {
-      const result = CompressorService.decompress('test');
+      const result = CompressorService.decompress(CompressorService.compress('test'));
       expect(typeof(result)).toBe('string');
     });
   });
