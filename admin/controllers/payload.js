@@ -1,17 +1,14 @@
 'use strict'
 
-const ValidationError = require('../lib/validation-error')
 const payloadService = require('../services/payload.service')
 const logger = require('../services/log.service').getLogger()
 
 const controller = {
-  getViewPayloadForm: async function (req, res, next, error) {
+  getViewPayloadForm: async function (req, res, next) {
     res.locals.pageTitle = 'View pupil payload'
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('test-developer/view-pupil-payload-form', {
-        formData: req.body,
-        error: error || new ValidationError(),
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
@@ -19,16 +16,18 @@ const controller = {
     }
   },
 
-  postViewPayload: async function postViewPayload (req, res, next, error) {
-    console.log('User ', req.user)
+  postViewPayload: async function postViewPayload (req, res, next) {
     logger.info(`postViewPayload(): called for checkCode ${req.body.checkCode} by user '${req.user.UserName}' (id ${req.user.id})`)
-    const payload = await payloadService.getPayload(req.body.checkCode)
+    let response
     try {
-      res.type('json')
-      res.send(JSON.stringify(payload, null, '    '))
+      const payload = await payloadService.getPayload(req.body.checkCode.trim())
+        response = payload
     } catch (error) {
-      next(error)
+      logger.error(error)
+      response = { message: 'check not found' }
     }
+    res.type('json')
+    res.send(JSON.stringify(response, null, '    '))
   }
 }
 

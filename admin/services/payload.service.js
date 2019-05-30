@@ -5,6 +5,11 @@ const R = require('ramda')
 const payloadDataService = require('./data-access/payload.data.service')
 
 const payloadService = {
+  /**
+   * Add relative timings to an array of objects that have 'clientTimestamp' property
+   * @param {{clientTimeStamp}[]} objects
+   * @return {Array}
+   */
   addRelativeTimingsToSection: function addRelativeTimingsToSection (objects) {
     let lastTime, current
     const output = [] // output array
@@ -45,16 +50,32 @@ const payloadService = {
     return output
   },
 
+  /**
+   * Return a copy of the data with updated 'inputs' and 'audit' arrays that have relativeTiming added
+   * @param check
+   * @return {f2|f1}
+   */
   addRelativeTimings: function addRelativeTimings (check) {
     const r1 = R.assoc('inputs', this.addRelativeTimingsToSection(check.inputs), check)
     return R.assoc('audit', this.addRelativeTimingsToSection(check.audit), r1)
   },
 
+  /**
+   * Gets the payload
+   * @param checkCode
+   * @return {Promise<{}>}
+   */
   getPayload: async function getPayload (checkCode) {
     if (!checkCode) {
-      throw new Error('Missing checkCode')
+      throw new Error('checkCode missing')
     }
+
     const p = await payloadDataService.sqlFindOneByCheckCode(checkCode)
+
+    if (!p) {
+      throw new Error('checkCode missing')
+    }
+
     return this.addRelativeTimings(p)
   }
 }
