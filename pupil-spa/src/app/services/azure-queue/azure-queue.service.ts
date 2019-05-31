@@ -29,7 +29,7 @@ export class AzureQueueService {
    */
   public initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
     const service = this.queueStorage
-      .createQueueServiceWithSas(url.replace(queueName, ''), token)
+      .createQueueServiceWithSas(`${window.location.origin}/queue`, token)
       .withFilter(
         new this.queueStorage.LinearRetryPolicyFilter(retryConfig.errorMaxAttempts, retryConfig.errorDelay)
       );
