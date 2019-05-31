@@ -18,6 +18,10 @@ const psychometricianReportService = {}
 psychometricianReportService.batchProduceCacheData = async function batchProduceCacheData (batchIds, logger) {
   const checks1 = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
 
+  if (!checks1 || !Array.isArray(checks1) || !checks1.length) {
+    throw new Error('batchProduceCacheData(): Failed to find any checks')
+  }
+
   // Ticket: 33198 (investigation) check for duplicates
   const checks = R.uniq(checks1)
   if (checks1.length !== checks.length) {
