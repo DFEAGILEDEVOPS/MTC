@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service';
@@ -28,7 +29,8 @@ export class AppComponent {
     protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
     protected windowRefService: WindowRefService,
     private meta: Meta,
-    private routeService: RouteService
+    private routeService: RouteService,
+    private router: Router
   ) {
     this.window = windowRefService.nativeWindow;
     if (APP_CONFIG.googleAnalyticsTrackingCode) {
@@ -49,5 +51,9 @@ export class AppComponent {
     }
     // start listening for route changes
     this.routeService.setup();
+
+    if (APP_CONFIG.websiteOffline) {
+      this.router.navigate(['/service-unavailable'])
+    }
   }
 }
