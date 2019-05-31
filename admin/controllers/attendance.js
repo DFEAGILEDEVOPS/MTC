@@ -193,7 +193,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate, req.user.timezone)
+    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
@@ -279,7 +279,7 @@ controller.postDeclarationForm = async (req, res, next) => {
 
   let hdfEligibility
   try {
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School, checkWindowData.checkEndDate, req.user.timezone)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
