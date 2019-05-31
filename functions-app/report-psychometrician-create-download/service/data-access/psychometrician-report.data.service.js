@@ -35,7 +35,7 @@ const psychometricianReportDataService = {
       }
 
       const errorFunc = (error) => {
-        this.logger.error('streamReport(): [onError]: error: ', error.message)
+        this.logger.error(`streamReport(): [onError]: error: ${error.message}`)
       }
 
       /**
