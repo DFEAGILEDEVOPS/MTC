@@ -93,7 +93,9 @@ const psychometricianReportService = {
       throw error
     }
 
+    const filesToZip = []
     const psStat = await fs.stat(psychometricianReportFilename)
+    filesToZip.push(psychometricianReportFilename)
     this.logger.verbose(`${functionName}: psychometrician report size: ${Math.round(psStat.size / 1024 / 1024)} MB`)
 
     // This returns the full path + filename of the anomaly report
@@ -104,11 +106,17 @@ const psychometricianReportService = {
       throw error
     }
 
-    const arStat = await fs.stat(anomalyReportFilename)
-    this.logger.verbose(`${functionName}: anomaly report size: ${Math.round(arStat.size / 1024 / 1024)} MB`)
+    try {
+      const arStat = await fs.stat(anomalyReportFilename)
+      this.logger.verbose(`${functionName}: anomaly report size: ${Math.round(arStat.size / 1024 / 1024)} MB`)
+      filesToZip.push(anomalyReportFilename)
+    } catch (error) {
+      // Anomaly report may not have been produced if there weren't any anomlies
+      this.logger.info(`${functionName}: failed to stat ${anomalyReportFilename}: ${error.message}`)
+    }
 
     const zipfileName = `pupil-check-data-${moment().format('YYYY-MM-DD HHmm')}.zip`
-    const zipFileNameWithPath = await zipper.createZip(zipfileName, [psychometricianReportFilename, anomalyReportFilename])
+    const zipFileNameWithPath = await zipper.createZip(zipfileName, filesToZip)
     const zipStat = await fs.stat(zipFileNameWithPath)
     this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 
