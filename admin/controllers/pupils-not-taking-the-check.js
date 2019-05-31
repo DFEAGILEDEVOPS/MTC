@@ -70,7 +70,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
       })
     }
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
-    pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasons(req.user.School)
+    pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasons(req.user.schoolId)
   } catch (error) {
     return next(error)
   }
