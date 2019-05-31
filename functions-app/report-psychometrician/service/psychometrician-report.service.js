@@ -15,8 +15,14 @@ const psychometricianReportService = {}
  * @param logger - function logger
  * @return {Promise<void>}
  */
-psychometricianReportService.batchProduceCacheData = async function (batchIds, logger) {
-  const checks = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
+psychometricianReportService.batchProduceCacheData = async function batchProduceCacheData (batchIds, logger) {
+  const checks1 = await psychometricianDataService.sqlFindCompletedChecksByIds(batchIds)
+
+  // Ticket: 33198 (investigation) check for duplicates
+  const checks = R.uniq(checks1)
+  if (checks1.length !== checks.length) {
+    logger.info(`psychometricianReportService.batchProduceCacheData: ${checks1.length - checks.length} duplicate checks found from \`sqlFindCompletedChecksByIds\``)
+  }
 
   if (!checks || !Array.isArray(checks) || !checks.length) {
     throw new Error('batchProduceCacheData(): Failed to find any checks')
