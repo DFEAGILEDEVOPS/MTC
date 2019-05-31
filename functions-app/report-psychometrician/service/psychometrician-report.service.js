@@ -22,7 +22,7 @@ psychometricianReportService.batchProduceCacheData = async function batchProduce
     throw new Error('batchProduceCacheData(): Failed to find any checks')
   }
 
-  // Ticket: 33198 (investigation) check for duplicates
+  // TODO: delete this block once the investigation is over
   const checks = R.uniq(checks1)
   if (checks1.length !== checks.length) {
     logger.info(`psychometricianReportService.batchProduceCacheData: ${checks1.length - checks.length} duplicate checks found from \`sqlFindCompletedChecksByIds\``)
