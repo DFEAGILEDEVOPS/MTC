@@ -116,6 +116,7 @@ headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = 
        p.lastName,
        p.middleNames,
        p.dateOfBirth,
+       p.urlSlug,
        ps.code AS pupilStatusCode,
        cs.code AS checkStatusCode,
        pg.group_id,
