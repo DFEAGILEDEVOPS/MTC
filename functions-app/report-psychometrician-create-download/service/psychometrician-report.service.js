@@ -111,7 +111,7 @@ const psychometricianReportService = {
       this.logger.verbose(`${functionName}: anomaly report size: ${Math.round(arStat.size / 1024 / 1024)} MB`)
       filesToZip.push(anomalyReportFilename)
     } catch (error) {
-      // Anomaly report may not have been produced if there weren't any anomlies
+      // Anomaly report may not have been produced if there weren't any anomalies
       this.logger.info(`${functionName}: failed to stat ${anomalyReportFilename}: ${error.message}`)
     }
 
