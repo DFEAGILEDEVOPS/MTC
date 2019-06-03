@@ -12,13 +12,14 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { queueNames } from '../azure-queue/queue-names';
 import { AppUsageService } from '../app-usage/app-usage.service';
+import { CompressorService } from '../compressor/compressor.service';
 
 /**
  * Declaration of check start service
  */
 @Injectable()
 export class CheckCompleteService {
-
+  public static readonly configStorageKey = 'config';
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
   submissionPendingViewMinDisplay;
@@ -55,6 +56,7 @@ export class CheckCompleteService {
    */
   public async submit(startTime): Promise<void> {
     this.appUsageService.store();
+    let message;
     const config = this.storageService.getItem('config');
     if (config.practice) {
       return this.onSuccess(startTime);
@@ -70,9 +72,19 @@ export class CheckCompleteService {
     const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
     excludedItems.forEach(i => delete payload[i]);
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-
+    const checkConfig = this.storageService.getItem(CheckCompleteService.configStorageKey);
+    if (checkConfig.compressCompletedCheck) {
+      message = {
+        version: 2,
+        checkCode: payload.checkCode,
+        archive: CompressorService.compress(JSON.stringify(payload))
+      };
+    } else {
+      message = payload;
+      message.version = 1;
+    }
     try {
-      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      await this.azureQueueService.addMessage(queueName, url, token, message, retryConfig);
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       this.onSuccess(startTime);
     } catch (error) {
