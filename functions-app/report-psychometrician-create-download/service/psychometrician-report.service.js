@@ -115,14 +115,14 @@ const psychometricianReportService = {
       this.logger.info(`${functionName}: failed to stat ${anomalyReportFilename}: ${error.message}`)
     }
 
-    const zipfileName = `pupil-check-data-${moment().format('YYYY-MM-DD HHmm')}.zip`
-    const zipFileNameWithPath = await zipper.createZip(zipfileName, filesToZip)
-    const zipStat = await fs.stat(zipFileNameWithPath)
+    const zipFilename = `pupil-check-data-${moment().format('YYYY-MM-DD HHmm')}.zip`
+    const zipFilenameWithPath = await zipper.createZip(zipFilename, filesToZip)
+    const zipStat = await fs.stat(zipFilenameWithPath)
     this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
 
     // Upload to Azure Storage
     try {
-      const uploadBlobResult = await this.uploadToBlobStorage(zipFileNameWithPath)
+      const uploadBlobResult = await this.uploadToBlobStorage(zipFilenameWithPath)
       this.logger(`${functionName}: uploaded '${uploadBlobResult.name}' to '${psychometricianReportUploadContainer}' container`)
       const md5 = Buffer.from(uploadBlobResult.contentSettings.contentMD5, 'base64')
       await psychometricianReportDataService.sqlSaveFileUploadMeta(
