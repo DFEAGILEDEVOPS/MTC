@@ -3,6 +3,10 @@
 # We label our stage as 'builder'
 FROM node:8-alpine as builder
 
+RUN apk update && \
+    apk upgrade && \
+    apk add git
+
 COPY package.json .
 COPY yarn.lock .
 COPY /tools /tools/

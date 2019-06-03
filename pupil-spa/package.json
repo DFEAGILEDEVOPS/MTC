@@ -33,6 +33,7 @@
     "applicationinsights-js": "^1.0.18",
     "bluebird": "^3.5.2",
     "core-js": "^2.5.3",
+    "lz-string": "https://github.com/pieroxy/lz-string#1.4.4",
     "ngx-logger": "^2.0.2",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.20"
