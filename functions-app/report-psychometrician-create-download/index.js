@@ -18,5 +18,5 @@ module.exports = async function (context, message) {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} run took ${Math.round(durationInMilliseconds) / 1000}) seconds`)
+  context.log(`${name}: ${timeStamp} run took ${Math.round(durationInMilliseconds) / 1000} seconds`)
 }
