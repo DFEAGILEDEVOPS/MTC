@@ -53,7 +53,7 @@ const psychometricianDataService = {
           LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND pr.isDeleted = 0)
           LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
           LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = chk.pupil_id AND pa.isDeleted = 0)
-          LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id)
+          LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id AND pa.isDeleted = 0)
           JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)`
     const where = sqlService.buildParameterList(batchIds, TYPES.Int)
     const sql = [select, 'WHERE chk.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
