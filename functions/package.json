@@ -14,6 +14,7 @@
     "device": "^0.3.9",
     "dotenv": "^7.0.0",
     "fast-csv": "^2.4.1",
+    "lz-string": "https://github.com/pieroxy/lz-string#1.4.4",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.2.2",
     "mssql": "^5.0.3",

@@ -9,6 +9,7 @@ const checkDataService = require('../../../services/data-access/check.data.servi
 const checkFormAllocationDataService = require('../../../services/data-access/check-form-allocation.data.service')
 const checkFormDataService = require('../../../services/data-access/check-form.data.service')
 const checkFormService = require('../../../services/check-form.service')
+const checkStartDataService = require('../../../services/data-access/check-start.data.service')
 const checkStartService = require('../../../services/check-start.service')
 const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
@@ -54,9 +55,14 @@ describe('check-start.service', () => {
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockPreparedCheckQueueMessages = [
-    { mock: 'message' },
-    { mock: 'message' },
-    { mock: 'message' }
+    { mock: 'message', checkCode: '1A' },
+    { mock: 'message', checkCode: '2A' },
+    { mock: 'message', checkCode: '3A' }
+  ]
+  const mockNewChecks = [
+    { id: 1, checkCode: '1A', pupil_id: 1 },
+    { id: 1, checkCode: '2A', pupil_id: 2 },
+    { id: 3, checkCode: '3A', pupil_id: 3 }
   ]
 
   describe('#preparecheck2', () => {
@@ -66,13 +72,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
-      spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(
-        Promise.resolve([
-          { id: 1, checkCode: '1A', pupil_id: 1 },
-          { id: 1, checkCode: '2A', pupil_id: 2 },
-          { id: 3, checkCode: '3A', pupil_id: 3 }
-        ])
-      )
+      spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessageAsync')
@@ -84,6 +84,7 @@ describe('check-start.service', () => {
           2: configService.getBaseConfig(),
           3: configService.getBaseConfig()
         })
+      spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -134,6 +135,12 @@ describe('check-start.service', () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       // pupil status re-calc and prepare-check queues
       expect(azureQueueService.addMessageAsync).toHaveBeenCalledTimes(2)
+    })
+
+    it('adds config to the database', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      // pupil status re-calc and prepare-check queues
+      expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
   })
 
