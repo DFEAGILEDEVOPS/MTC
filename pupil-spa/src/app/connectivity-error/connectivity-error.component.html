@@ -1,0 +1,57 @@
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <header class="page-header">
+        <h1 tabindex="0">Loading error</h1>
+      </header>
+      <br />
+      <div class="notice">
+        <strong class="visually-hidden">Warning</strong>
+        <app-svg-warning></app-svg-warning>
+        <strong>
+          Please tell your teacher
+        </strong>
+      </div>
+      <br />
+      <details>
+        <summary><span class="summary">Instructions for teacher</span></summary>
+        <div class="panel no-border">
+          <p>THERE IS A PROBLEM CONNECTING TO THIS SERVICE</p>
+          <p>Network administrators can apply restrictive internet settings to pupil devices so only selected trusted websites can be accessed.
+            These settings could prevent school devices from logging into the multiplication tables check pupil application.
+          </p>
+          <ol class="list list-number">
+            <li>
+              Please advise your schools internet network team to ensure the following are accessible or whitelisted:
+              <div>
+                *.windows.net - for data submission <br />
+                *.azurewebsites.net - for pupil authentication
+              </div>
+              <br />
+              <p>
+                If not already done so, your administrators should enable the TLS 1.2 protocol for internet browser and ensure secure browsing over HTTPS is permitted,
+                by default this takes place on port 443.
+              </p>
+            </li>
+            <br />
+            <li>If you need further assistance please contact out help desk.</li>
+            <div class="panel panel-border-wide">
+              <div class="bold-small">National curriculum assessments helpline</div>
+              <div>Telephone: 0300 303 3013</div>
+              <div>Email: assessments@education.gov.uk</div>
+              <div>Monday to Friday, 9am to 5pm</div>
+            </div>
+            <br />
+            <li>You may proceed to sign-in but pupils may not be able to sign-in and data from this device may not be collected.</li>
+            <br />
+          </ol>
+          <a routerLink="/sign-in" class="button ultrawider" id="sign-in-button">
+            Sign in
+          </a>
+        </div>
+      </details>
+    </div>
+  </div>
+</main>
+<app-footer></app-footer>

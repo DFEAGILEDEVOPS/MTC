@@ -51,9 +51,9 @@ import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
-import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
-
 import { CheckStatusService } from './services/check-status/check-status.service';
+import { ConnectivityService } from './services/connectivity-service/connectivity-service';
+
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
@@ -76,15 +76,20 @@ import { TimerService } from './services/timer/timer.service';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
 import { SvgClockComponent } from './svg/svg.clock.component';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
+import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
+import { ConnectivityCheckComponent } from './connectivity-check/connectivity-check.component';
+import { ConnectivityErrorComponent } from './connectivity-error/connectivity-error.component';
 
 declare var AzureStorage: IAzureStorage;
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
+  {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
-  {path: 'feedback-thanks', component: FeedbackThanksComponent},
+  {path: 'connectivity-check', component: ConnectivityCheckComponent},
+  {path: 'connectivity-error', component: ConnectivityErrorComponent},
+  {path: 'please-wait', component: LoginComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
@@ -144,7 +149,9 @@ const appRoutes: Routes = [
     SvgClockComponent,
     IdleModalComponent,
     SessionExpiredComponent,
-    WebsiteOfflineComponent
+    WebsiteOfflineComponent,
+    ConnectivityCheckComponent,
+    ConnectivityErrorComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -189,6 +196,7 @@ const appRoutes: Routes = [
     AzureQueueService,
     RouteService,
     TimerService,
+    ConnectivityService,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

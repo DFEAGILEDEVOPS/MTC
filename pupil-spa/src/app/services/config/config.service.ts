@@ -9,6 +9,7 @@ import 'rxjs/add/operator/catch';
 export class AppConfig {
   readonly applicationInsightsInstrumentationKey: string;
   readonly authURL: string;
+  readonly authPingURL: string;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
   readonly checkSubmissionApiErrorDelay: number;
@@ -16,12 +17,18 @@ export class AppConfig {
   readonly googleAnalyticsTrackingCode: string;
   readonly production: boolean;
   readonly submissionPendingViewMinDisplay: number;
+  readonly connectivityCheckViewMinDisplay: number;
   readonly supportNumber: string;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
   readonly pupilPrefsAPIErrorDelay: number;
   readonly pupilPrefsAPIErrorMaxAttempts: number;
   readonly websiteOffline: boolean;
+  readonly testPupilConnectionQueueName: string;
+  readonly testPupilConnectionQueueUrl: string;
+  readonly testPupilConnectionQueueToken: string;
+  readonly testPupilConnectionDelay: number;
+  readonly testPupilConnectionMaxAttempts: number;
 }
 
 /**

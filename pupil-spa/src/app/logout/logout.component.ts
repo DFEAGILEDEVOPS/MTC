@@ -19,7 +19,7 @@ export class LogoutComponent implements OnInit {
     this.userService.logout();
     this.questionService.reset();
     this.warmupQuestionService.reset();
-    this.router.navigate([ 'sign-in' ]);
+    this.router.navigate([ '' ]);
   }
 
   ngOnInit() {
