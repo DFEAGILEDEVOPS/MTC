@@ -16,11 +16,12 @@ const controller = {
     }
   },
 
-  postViewPayload: async function postViewPayload (req, res, next) {
-    logger.info(`postViewPayload(): called for checkCode ${req.body.checkCode} by user '${req.user.UserName}' (id ${req.user.id})`)
+  rawPupilPayload: async function rawPupilPayload (req, res, next) {
+    const checkCode = req.query.checkCode.trim()
+    logger.info(`rawPupilPayload(): called for checkCode ${checkCode} by user '${req.user.UserName}' (id ${req.user.id})`)
     let response
     try {
-      const payload = await payloadService.getPayload(req.body.checkCode.trim())
+      const payload = await payloadService.getPayload(checkCode)
       response = payload
     } catch (error) {
       logger.error(error)

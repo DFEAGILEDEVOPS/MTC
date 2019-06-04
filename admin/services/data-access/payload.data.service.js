@@ -4,6 +4,11 @@ const R = require('ramda')
 const sqlService = require('./sql.service')
 
 const payloadDataService = {
+  /**
+   * Retrieve a check payload.  Case insensitive.
+   * @param checkCode
+   * @return {Promise<any>}
+   */
   sqlFindOneByCheckCode: async function sqlFindOneByCheckCode (checkCode) {
     const sql = `select cr.payload 
                  from [mtc_admin].[check] chk 

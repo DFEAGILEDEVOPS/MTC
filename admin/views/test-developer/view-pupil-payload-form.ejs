@@ -7,7 +7,7 @@
 
 <%- partial('partials/_session_expiry') %>
 
-<form action="/test-developer/view-pupil-payload" id="payloadForm" method="post" target="_blank" novalidate>
+<form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" novalidate>
     <div class="form-group">
         <label class="form-label-bold" for="checkCode">Check code</label>
         <input type="text"
@@ -24,3 +24,12 @@
 <div class="back-to-top-container">
     <a href="#top"> Back to top </a>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#payloadForm').submit(function () {
+          setTimeout(function () {
+            $('#checkCode').val('')
+          })
+        })
+    })
+</script>
