@@ -64,16 +64,19 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * @param {object} form
  * @param {number} dfeNumber
  * @param {number} userId
+ * @param {number} schoolId
+ * @param {object} checkEndDate
+ * @param {string} timezone
  * @return {Promise<void>}
  */
-headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId) => {
+headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId, schoolId, checkEndDate, timezone) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
 
   if (!school) {
     throw new Error(`school ${dfeNumber} not found`)
   }
 
-  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(dfeNumber)
+  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
   if (!hdfEligibility) {
     throw new Error('Not eligible to submit declaration')
   }
