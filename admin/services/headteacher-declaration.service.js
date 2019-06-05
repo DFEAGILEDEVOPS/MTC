@@ -1,8 +1,10 @@
 'use strict'
 
+const moment = require('moment-timezone')
+
+const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
@@ -11,14 +13,14 @@ const headteacherDeclarationService = {}
 
 /**
  * Find the pupils for the given dfe number
- * @param dfeNumber
+ * @param schoolId
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilsForSchool = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is required')
+headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
   }
-  return pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons(dfeNumber)
+  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(schoolId)
 }
 
 /**
@@ -40,19 +42,20 @@ headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeN
 
 /**
  * Fetch pupils and return eligibility to generate HDF
- * @param dfeNumber
+ * @param schoolId
+ * @param checkEndDate
+ * @param timezone
  * @returns {Array}
  */
-headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
-  const pupils = await pupilDataService.sqlFindPupilsWithStatusByDfeNumber(dfeNumber)
-  // check the attendance codes for pupils that don't have the completed status
-  const ids = pupils.filter(p => p.code !== pupilStatusService.STATUS_CODES.COMPLETED).map(p => p.id)
-  if (ids.length === 0) {
-    return true
+headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
+  if (!checkEndDate) {
+    throw new Error('Check end date missing or not found')
   }
-  const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
-  // check if all pupils that don't have the completed status, have an attendance reason
-  return pupilAttendance.length === ids.length
+  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
+  const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
+    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
+    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
+  return ineligiblePupilsCount === 0
 }
 
 /**
@@ -61,16 +64,19 @@ headteacherDeclarationService.getEligibilityForSchool = async (dfeNumber) => {
  * @param {object} form
  * @param {number} dfeNumber
  * @param {number} userId
+ * @param {number} schoolId
+ * @param {object} checkEndDate
+ * @param {string} timezone
  * @return {Promise<void>}
  */
-headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId) => {
+headteacherDeclarationService.submitDeclaration = async (form, dfeNumber, userId, schoolId, checkEndDate, timezone) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
 
   if (!school) {
     throw new Error(`school ${dfeNumber} not found`)
   }
 
-  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(dfeNumber)
+  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
   if (!hdfEligibility) {
     throw new Error('Not eligible to submit declaration')
   }
