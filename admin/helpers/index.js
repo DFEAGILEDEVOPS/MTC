@@ -61,5 +61,5 @@ module.exports = async function (app) {
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
-  app.locals.guidancePdf = `${config.AssetPath}pdfs/mtc-administration-guidance-2019-03-27.pdf`
+  app.locals.guidancePdf = 'https://www.gov.uk/government/publications/multiplication-tables-check-administration-guidance'
 }
