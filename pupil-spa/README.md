@@ -28,8 +28,8 @@ The following environment variables can be injected at start up...
 |---|---|---|
 |`FEATURE_USE_HPA`   |`true|false`   |when `false` the SPA runs in legacy mode, and communicates directly with the admin app endpoints.  `true` will run in HPA mode, with a single endpoint for login and submission of data to various azure storage queues via HTTPS   |
 |`API_URL`   |`url`   |in HPA mode this should target the pupil API.  In legacy mode it should be the base URL of the admin app   |
-|`AUTH_URL`   |`url`   |Legacy mode only.  The full URL for pupil authentication   |
-|`AUTH_PING_URL`   |`url`   |Legacy mode only.  The full URL for attempting to ping pupil authentication endpoint  |
+|`AUTH_URL`   |`url`   | The full URL for pupil authentication   |
+|`AUTH_PING_URL`   |`url`   | The full URL for pinging pupil authentication |
 |`CHECK_STARTED_URL`   |`url`   |Legacy mode only.  The full URL for check start notification   |
 |`CHECK_SUBMISSION_URL`   |`url`   |Legacy mode only.  The full URL for check submission   |
 |`PRODUCTION`   |`true / false`   |Production or debug mode   |
