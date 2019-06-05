@@ -35,16 +35,16 @@ export class ConnectivityCheckComponent implements OnInit {
   async ngOnInit() {
     const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
     if (hasUnfinishedCheck) {
-      this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
+      return this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
     const startTime = Date.now();
     const connectivityCheckSucceeded = await this.connectivityService.connectivityCheckSucceeded();
     if (connectivityCheckSucceeded) {
       await this.displayMinTime(startTime);
-      this.router.navigate(['/sign-in']);
+      return this.router.navigate(['/sign-in']);
     } else {
       await this.displayMinTime(startTime);
-      this.router.navigate(['/connectivity-error']);
+      return this.router.navigate(['/connectivity-error']);
     }
   }
 
