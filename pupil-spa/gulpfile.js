@@ -10,3 +10,11 @@ gulp.task('setRuntimeConfigURL', () => {
       .pipe(gulp.dest('./src/app/services/config/'))
   }
 })
+
+gulp.task('setSecretEnvVars', () => {
+  require('dotenv').config()
+  gulp.src('src/public/config.json', { base: './' })
+    .pipe(replace('testPupilConnectionQueueUrlEnvValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_URL))
+    .pipe(replace('testPupilConnectionQueueTokenEnvValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_TOKEN))
+    .pipe(gulp.dest('./'))
+})
