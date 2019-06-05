@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { LoginErrorService } from '../services/login-error/login-error.service';
 
@@ -7,7 +7,7 @@ import { LoginErrorService } from '../services/login-error/login-error.service';
   templateUrl: './login-failure.component.html',
   styleUrls: ['./login-failure.component.scss']
 })
-export class LoginFailureComponent implements OnInit {
+export class LoginFailureComponent implements OnInit, AfterViewInit {
 
   public errorMessage: string;
 
@@ -17,6 +17,10 @@ export class LoginFailureComponent implements OnInit {
 
   ngOnInit() {
     this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
+  }
+
+  ngAfterViewInit() {
+    (window as any).GOVUK.details.addDetailsPolyfill();
   }
 
 }
