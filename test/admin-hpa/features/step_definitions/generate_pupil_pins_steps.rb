@@ -50,7 +50,12 @@ end
 
 Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
   pupils_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
-  expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
+  expect(pupils_from_page.join.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
+end
+
+Then(/^I can see pupil in the list for pupil for not taking check$/) do
+  pupils_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  expect(pupils_from_page.join.include?(@pupil_forename)).to be_truthy, "#{@pupil_forename} is not displayed in the list ... Expected - It Should"
 end
 
 When(/^I click on the Pupil heading$/) do

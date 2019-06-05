@@ -77,6 +77,7 @@ import { TimerService } from './services/timer/timer.service';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
 import { SvgClockComponent } from './svg/svg.clock.component';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
+import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
 
 declare var AzureStorage: IAzureStorage;
@@ -100,7 +101,8 @@ const appRoutes: Routes = [
   {path: 'out-of-time', component: OutOfTimeComponent },
   {path: 'contact', component: ContactComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
-  {path: 'privacy', component: PrivacyComponent }
+  {path: 'privacy', component: PrivacyComponent },
+  {path: 'service-unavailable', component: WebsiteOfflineComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -146,6 +148,7 @@ const appRoutes: Routes = [
     SvgClockComponent,
     IdleModalComponent,
     SessionExpiredComponent,
+    WebsiteOfflineComponent,
     LoginFailureComponent
   ],
   imports: [

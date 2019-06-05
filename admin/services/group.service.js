@@ -76,12 +76,19 @@ groupService.update = async (id, group, schoolId) => {
   if (!id || !group || !group.name || !schoolId) {
     throw new Error('id, group.name and schoolId are required')
   }
+  // The pupils come from the request and can be either an array of ids
+  // or an object of the form { 'id': id }, we need to make sure they
+  // are an array at this point for comparison.
+  let { pupils } = group
+  if (!(pupils instanceof Array)) {
+    pupils = Object.values(pupils)
+  }
   await groupDataService.sqlUpdate(id, group.name, schoolId)
   let currentPupils = await groupService.getPupils(schoolId, id)
-  currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id).map(p => p.id)
-  if (currentPupils.sort().toString() !== group.pupils.sort().toString()) {
+  currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id.toString()).map(p => p.id)
+  if (currentPupils.sort().toString() !== pupils.sort().toString()) {
     // only update pupils if list has changed
-    await groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
+    await groupDataService.sqlAssignPupilsToGroup(id, pupils)
   }
   return true
 }

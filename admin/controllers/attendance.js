@@ -128,11 +128,12 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
-  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.School)
+  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
   if (!pupils) {
     throw new Error('No pupils found')
   }
-  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
+  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithViewStatus(pupils)
+  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
   return res.render('hdf/review-pupil-details', {
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsSortedWithFlags
@@ -192,7 +193,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
@@ -232,7 +233,9 @@ controller.postConfirmSubmit = async (req, res, next) => {
   }
 
   try {
-    await headteacherDeclarationService.submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id)
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await headteacherDeclarationService
+      .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -258,7 +261,7 @@ controller.getDeclarationForm = async (req, res, next) => {
     if (submitted) {
       return res.redirect('/attendance/submitted')
     }
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -274,10 +277,11 @@ controller.getDeclarationForm = async (req, res, next) => {
 controller.postDeclarationForm = async (req, res, next) => {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
 
   let hdfEligibility
   try {
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.School)
+    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
