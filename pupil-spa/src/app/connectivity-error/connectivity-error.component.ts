@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConnectivityService } from '../services/connectivity-service/connectivity-service';
 
 @Component({
   selector: 'app-connectivity-error',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConnectivityErrorComponent implements OnInit {
 
-  constructor() { }
+  public serviceErrorMessage;
+
+  constructor(
+    private connectivityService: ConnectivityService
+  ) { }
 
   ngOnInit() {
+    this.connectivityService.currentConnectivityMessageSource.subscribe(message => this.serviceErrorMessage = message);
   }
-
 }

@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { first } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 import { APP_CONFIG } from '../config/config.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
+
+import { default as connectivityErrorMessages } from './connectivity-error-messages';
 
 @Injectable()
 export class ConnectivityService {
@@ -13,6 +16,10 @@ export class ConnectivityService {
   testPupilConnectionQueueToken;
   testPupilConnectionDelay;
   testPupilConnectionMaxAttempts;
+
+  private connectivityMessageSource = new BehaviorSubject('');
+  public currentConnectivityMessageSource = this.connectivityMessageSource.asObservable();
+  public errorMessages = [];
 
   constructor(
     private azureQueueService: AzureQueueService,
@@ -34,6 +41,9 @@ export class ConnectivityService {
 
   async connectivityCheckSucceeded() {
     const responses = await Promise.all([this.canAccessPupilAuthURL(), this.canAccessAzureStorageQueue()]);
+    if (this.errorMessages.length > 0) {
+      this.generateConnectivityErrorMessage();
+    }
     return responses.every(v => !!v);
   }
 
@@ -46,6 +56,7 @@ export class ConnectivityService {
           return resolve(true);
         })
         .catch(() => {
+          this.errorMessages.push(connectivityErrorMessages.pupilAuthError);
           return resolve(false);
         });
     });
@@ -64,8 +75,16 @@ export class ConnectivityService {
         {},
         retryConfig);
     } catch (err) {
+      this.errorMessages.push(connectivityErrorMessages.testQueueError);
       return false;
     }
     return true;
+  }
+
+  generateConnectivityErrorMessage() {
+    const message = this.errorMessages.length === 1
+      ? this.errorMessages[0]
+      : connectivityErrorMessages.combinedError;
+    this.connectivityMessageSource.next(message);
   }
 }

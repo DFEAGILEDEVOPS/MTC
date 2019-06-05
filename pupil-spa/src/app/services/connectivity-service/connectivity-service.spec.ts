@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { ConnectivityService } from './connectivity-service';
 import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
+import { default as connectivityErrorMessages } from './connectivity-error-messages';
 
 let connectivityService;
 
@@ -24,6 +25,7 @@ describe('ConnectivityService', () => {
     httpClient = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
     connectivityService = injector.get(ConnectivityService);
+    connectivityService.errorMessages = [];
   });
   it('should be created', inject([ConnectivityService], (service: ConnectivityService) => {
     expect(service).toBeTruthy();
@@ -52,6 +54,21 @@ describe('ConnectivityService', () => {
       spyOn(connectivityService, 'canAccessAzureStorageQueue').and.returnValue(true);
       const result = await connectivityService.connectivityCheckSucceeded();
       expect(result).toBeFalsy();
+    });
+    it('should call generateConnectivityErrorMessage when errorMessages array has been populated', async () => {
+      connectivityService.errorMessages.push(connectivityErrorMessages.pupilAuthError);
+      spyOn(connectivityService, 'canAccessPupilAuthURL').and.returnValue(false);
+      spyOn(connectivityService, 'canAccessAzureStorageQueue').and.returnValue(true);
+      spyOn(connectivityService, 'generateConnectivityErrorMessage');
+      await connectivityService.connectivityCheckSucceeded();
+      expect(connectivityService.generateConnectivityErrorMessage).toHaveBeenCalled();
+    });
+    it('should not call generateConnectivityErrorMessage when errorMessages array is empty', async () => {
+      spyOn(connectivityService, 'canAccessPupilAuthURL').and.returnValue(true);
+      spyOn(connectivityService, 'canAccessAzureStorageQueue').and.returnValue(true);
+      spyOn(connectivityService, 'generateConnectivityErrorMessage');
+      await connectivityService.connectivityCheckSucceeded();
+      expect(connectivityService.generateConnectivityErrorMessage).not.toHaveBeenCalled();
     });
   });
 });
