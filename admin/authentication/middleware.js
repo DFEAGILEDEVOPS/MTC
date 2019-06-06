@@ -13,7 +13,7 @@ function isAuthenticated (role) {
       if (role === undefined || (role !== undefined && userRole && role === userRole)) {
         return next()
       } else {
-        logger.debug(`could not authorise ${role} against userRole:${userRole}`)
+        logger.warn(`could not authorise ${role} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
         return res.redirect('/unauthorised')
       }
     }

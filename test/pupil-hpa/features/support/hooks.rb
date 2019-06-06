@@ -32,6 +32,11 @@ Before('@non_browserstack_compliant') do
   skip_this_scenario if Capybara.current_driver.to_s.include? 'bs'
 end
 
+Before('@admin_logout') do
+  visit ENV['ADMIN_BASE_URL']
+  page.click_link('Sign out') if page.has_link?('Sign out')
+end
+
 After('@window_date_time_reset') do
   SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
   SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)

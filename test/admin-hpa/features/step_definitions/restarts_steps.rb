@@ -210,7 +210,7 @@ When(/^they become eligable for a restart$/) do
     response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
     response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
   end
-  Timeout.timeout(60){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[0],@pupil_names_arr.first.split(',')[0])['pupilStatus_id'] == 5}
+  Timeout.timeout(300){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[1].strip,@pupil_names_arr.first.split(',')[0].strip)['pupilStatus_id'] == 5}
   step 'I am on the Restarts Page'
 end
 

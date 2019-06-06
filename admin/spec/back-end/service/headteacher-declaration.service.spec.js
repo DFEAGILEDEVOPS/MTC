@@ -2,6 +2,7 @@
 /* global describe it expect beforeEach spyOn fail */
 
 const R = require('ramda')
+const moment = require('moment')
 
 const headteacherDeclarationDataService = require('../../../services/data-access/headteacher-declaration.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
@@ -15,6 +16,56 @@ const hdfMock = require('../mocks/sql-hdf')
 const checkWindowMock = require('../mocks/check-window')
 
 describe('headteacherDeclarationService', () => {
+  describe('#getEligibilityForSchool', () => {
+    const dfeNumber = 123
+    describe('when check end date is in the future', () => {
+      it('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate')
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().add(5, 'days')
+        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate).toHaveBeenCalled()
+      })
+      it('should return true if no pupils blocking are detected', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').and.returnValue(0)
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().add(5, 'days')
+        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(result).toBeTruthy()
+      })
+      it('should return false if no pupils blocking are detected', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').and.returnValue(1)
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().add(5, 'days')
+        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(result).toBeFalsy()
+      })
+    })
+    describe('when check end date is in the past', () => {
+      it('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate')
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().subtract(5, 'days')
+        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate).toHaveBeenCalled()
+      })
+      it('should return true if no pupils blocking are detected', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').and.returnValue(0)
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().subtract(5, 'days')
+        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(result).toBeTruthy()
+      })
+      it('should return false if no pupils blocking are detected', async () => {
+        spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').and.returnValue(1)
+        const service = require('../../../services/headteacher-declaration.service')
+        const checkEndDate = moment.utc().subtract(5, 'days')
+        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        expect(result).toBeFalsy()
+      })
+    })
+  })
+
   describe('#submitDeclaration', () => {
     /**
      * @type headteacherDeclarationService
@@ -188,19 +239,19 @@ describe('headteacherDeclarationService', () => {
     const dfeNumber = 9991999
     const service = require('../../../services/headteacher-declaration.service')
 
-    it('throws an error when no dfeNumber is provided', async () => {
+    it('throws an error when no schoolId is provided', async () => {
       try {
         await service.findPupilsForSchool(null)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('dfeNumber is required')
+        expect(error.message).toBe('schoolId is required')
       }
     })
 
     it('finds the pupils using the dfeNumber', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
+      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
       const result = await service.findPupilsForSchool(dfeNumber)
-      expect(pupilDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
+      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(dfeNumber)
       expect(result).toEqual('Mock pupils result')
     })
   })
