@@ -47,11 +47,11 @@
                         </div>
                     </td>
                     <td>
-                        <% if (pupil.status) { %>
-                        <%= pupil.status %>
-                        <% } else { %>
+                      <% if (pupil.reasonCode) { %>
                         <%= pupil.reason %>
-                        <% } %>
+                      <% } else { %>
+                        <%= pupil.status %>
+                      <% } %>
                     </td>
                     <td>
                         <% if (pupil.reason) { %>
