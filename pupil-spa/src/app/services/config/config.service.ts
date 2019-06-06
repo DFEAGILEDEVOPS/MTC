@@ -6,7 +6,24 @@ import 'rxjs/add/operator/catch';
 /**
  * Declaration of config class
  */
-export class AppConfig {
+export interface IAppConfig {
+  applicationInsightsInstrumentationKey: string;
+  authURL: string;
+  checkStartAPIErrorDelay: number;
+  checkStartAPIErrorMaxAttempts: number;
+  checkSubmissionApiErrorDelay: number;
+  checkSubmissionAPIErrorMaxAttempts: number;
+  googleAnalyticsTrackingCode: string;
+  production: boolean;
+  submissionPendingViewMinDisplay: number;
+  supportNumber: string;
+  feedbackAPIErrorDelay: number;
+  feedbackAPIErrorMaxAttempts: number;
+  pupilPrefsAPIErrorDelay: number;
+  pupilPrefsAPIErrorMaxAttempts: number;
+}
+
+export class AppConfig implements IAppConfig {
   readonly applicationInsightsInstrumentationKey: string;
   readonly authURL: string;
   readonly checkStartAPIErrorDelay: number;
