@@ -82,6 +82,7 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * REDIS_CACHING - Enables the caching of specified query results
 * REDIS_CACHE_UPDATING - Enables updating Redis caches directly and sending SQL updates to the Azure message queue
 * DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
+* WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
