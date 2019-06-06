@@ -1,0 +1,43 @@
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <header class="page-header">
+        <h1 tabindex="0">Sign-in error</h1>
+      </header>
+      <br />
+      <div class="notice">
+        <strong class="visually-hidden">Warning</strong>
+        <app-svg-warning></app-svg-warning>
+        <strong>
+          Please tell your teacher
+        </strong>
+      </div>
+      <details>
+        <summary><span class="summary">Instructions for teacher</span></summary>
+        <div class="panel no-border">
+          <ol class="list list-number">
+            <li>Copy all of the error text below. If this device does not have email enabled, you will need to take a photo of the error message.</li>
+            <li>Contact the helpline and send them the copied text or photo. This is important because it helps our website developers resolve future sign-in issues.</li>
+            <div class="panel panel-border-wide">
+              <div class="bold-small">National curriculum assessments helpline</div>
+              <div>Telephone: 0300 303 3013</div>
+              <div>Email: assessments@education.gov.uk</div>
+              <div>Monday to Friday, 9am to 5pm</div>
+            </div>
+            <li>Sign the pupil in again. If this message appears, repeat the process.</li>
+          </ol>
+          <br />
+          <b>Error text:</b>
+          <br />
+          <div>{{errorMessage}}</div>
+        </div>
+      </details>
+      <br />
+      <a routerLink="/sign-in" class="button ultrawider" id="sign-in-button">
+        Sign in again
+      </a>
+    </div>
+  </div>
+</main>
+<app-footer></app-footer>
