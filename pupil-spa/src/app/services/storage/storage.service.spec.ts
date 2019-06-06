@@ -55,10 +55,21 @@ describe('StorageService', () => {
       }
     });
 
-    it('returns item when key provided and item exists', () => {
+    it('returns JSON item when key provided and item exists', () => {
       const key = 'answers';
       const value = { getItem: 'getItem_Value' };
       localStorage.setItem(key, JSON.stringify(value));
+
+      const data = service.getItem(key);
+
+      expect(data).toBeTruthy();
+      expect(data).toEqual(value);
+    });
+    
+    it('returns string item when key provided and item exists', () => {
+      const key = 'answers';
+      const value = 'foo-bar';
+      localStorage.setItem(key, value);
 
       const data = service.getItem(key);
 
@@ -125,9 +136,9 @@ describe('StorageService', () => {
       const keys = service.getKeys();
 
       expect(keys.length).toEqual(items.length);
-      expect(keys).toContain(keys[0]);
-      expect(keys).toContain(keys[1]);
-      expect(keys).toContain(keys[2]);
+      expect(keys).toContain(items[0].key);
+      expect(keys).toContain(items[1].key);
+      expect(keys).toContain(items[2].key);
     });
   });
 
@@ -136,11 +147,15 @@ describe('StorageService', () => {
       const items = [
         { key: 'item1', value: [1, 2, 3] },
         { key: 'item2', value: [4, 5, 6] },
-        { key: 'item3', value: [7, 8, 9] }
+        { key: 'item3', value: 'foo-bar' }
       ];
 
       items.forEach((item) => {
-        localStorage.setItem(item.key, JSON.stringify(item.value));
+        let { value } = item
+        if (value !== 'foo-bar') {
+          value = JSON.stringify(value)
+        }
+        localStorage.setItem(item.key, value);
       });
 
       const localStorageItems = service.getAllItems();
@@ -148,7 +163,7 @@ describe('StorageService', () => {
       expect(Object.keys(localStorageItems).length).toEqual(3);
       expect(localStorageItems[items[0].key]).toEqual([1, 2, 3]);
       expect(localStorageItems[items[1].key]).toEqual([4, 5, 6]);
-      expect(localStorageItems[items[2].key]).toEqual([7, 8, 9]);
+      expect(localStorageItems[items[2].key]).toEqual('foo-bar');
     });
   });
 });
