@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { LoginErrorService } from '../services/login-error/login-error.service';
+import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
 import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -20,8 +22,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public loginModel = new Login('', '');
   public loginSucceeded: boolean;
   public connectionFailed: boolean;
+  private errorMessage: string;
 
   constructor(
+    private loginErrorService: LoginErrorService,
+    private loginErrorDiagnosticsService: LoginErrorDiagnosticsService,
     private userService: UserService,
     private router: Router,
     private questionService: QuestionService,
@@ -37,6 +42,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
+    this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
   }
 
   ngAfterViewInit() {
@@ -80,15 +86,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.router.navigate(['sign-in-success']);
         }
       },
-      (err) => {
-        this.connectionFailed = err.status === 0;
-        this.loginSucceeded = false;
+      async (err) => {
         this.submitted = false;
-        this.router.navigate(['sign-in']);
+        this.loginErrorService.changeMessage(err.message);
+        if (err.status === 401) {
+          this.loginSucceeded = false;
+          this.router.navigate(['sign-in']);
+        } else {
+          await this.loginErrorDiagnosticsService.process(err);
+          this.router.navigate(['sign-in-fail']);
+        }
       })
       .catch(() => {
         this.loginSucceeded = false;
-        this.connectionFailed = false;
         this.submitted = false;
         this.router.navigate(['sign-in']);
       });
