@@ -52,6 +52,9 @@ After('@reset_hdf_submission') do
 end
 
 Before("@hdf") do
+  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.set_pupil_status(6, 1)
+
   step 'I have signed in with teacher4'
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
@@ -74,7 +77,6 @@ end
 After("@hdf") do
   SqlDbHelper.delete_pupils_not_taking_check
   SqlDbHelper.set_pupil_status(6, 1)
-
 end
 
 Before("@create_new_window") do

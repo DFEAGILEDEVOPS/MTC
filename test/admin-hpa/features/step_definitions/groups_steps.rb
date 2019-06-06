@@ -329,7 +329,7 @@ When(/^dob is displayed for the 2 pupil on group pupil list page$/) do
   group_pupils_page.load
   group_pupils_page.create_group.click
   pupil_rows = add_edit_groups_page.pupil_list.rows.find_all {|row| row.name.text.include?("#{@details_hash[:last_name]}")}
-  expect(pupil_rows[0].text.include?("Date of birth: #{@pupil1_dob.strftime("%e %b %Y")}")).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[0].text}"
+  expect(pupil_rows[0].text.include?("Date of birth: #{@pupil1_dob.strftime("%e %b %Y").strip}")).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[0].text}"
   expect(pupil_rows[1].text.include?("Date of birth: #{@pupil2_dob.strftime("%e %b %Y").strip}")).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[1].text}"
 end
 
