@@ -17,34 +17,28 @@
       <details>
         <summary><span class="summary">Instructions for teachers</span></summary>
         <div class="panel no-border">
-          <p>{{serviceErrorMessage}}</p>
-          <p>Network administrators can apply restrictive internet settings to pupil devices so only selected trusted websites can be accessed.
-            These settings could prevent school devices from logging into the multiplication tables check pupil application.
-          </p>
+          <p><b>{{serviceErrorMessage}}</b></p>
+          <p>You may proceed to sign in, but pupils may not be able to sign in and data from this device may not be collected.</p>
+          <p>To ensure the system is working correctly, please follow these steps:</p>
           <ol class="list list-number">
+            <li>Advise your school’s administrators to enable the school’s network and web browser configuration, to allow this website to communicate securely over the TLS 1.2 protocol.
+              This is typically enabled by default, but it may have been disabled by your network administrators.
+            </li>
             <li>
               Advise your school’s internet network team to ensure the following are accessible or whitelisted:
               <div>
                 *.windows.net - for data submission <br />
                 *.azurewebsites.net - for pupil authentication
               </div>
-              <br />
-              <p>
-                Advise your school’s administrators to enable the school’s network and web browser configuration, to allow this website to communicate securely over the TLS 1.2 protocol.
-                This is typically enabled by default, however it may have been disabled by your network administrators.
-              </p>
             </li>
             <br />
-            <li>If you need further assistance please contact our helpline</li>
-            <div class="panel panel-border-wide">
+            <li>If you need further assistance please contact our helpline:
               <div class="bold-small">National curriculum assessments helpline</div>
               <div>Telephone: 0300 303 3013</div>
               <div>Email: assessments@education.gov.uk</div>
               <div>Monday to Friday, 9am to 5pm</div>
-            </div>
-            <br />
-            <li>You may proceed to sign in, but pupils may not be able to sign in and data from this device may not be collected.</li>
-            <br />
+            </li>
+
           </ol>
           <a routerLink="/sign-in" class="button ultrawider" id="sign-in-button">
             Sign in
