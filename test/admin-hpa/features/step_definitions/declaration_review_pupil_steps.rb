@@ -35,7 +35,7 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
     pupil_detail = SqlDbHelper.get_pupil_with_no_attandance_code(school_id)
     fail if !(pupil_detail.nil?)
   rescue
-    sleep(1)
+    sleep(15)
     retry if (retries += 1) < 5
   end
 end
