@@ -61,13 +61,14 @@ export class AzureQueueService {
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage)
-      .catch(err => {
-        if (!APP_CONFIG.production) throw err
+    return queueService.createMessage(queueName, encodedMessage).catch(err => {
+      if (!APP_CONFIG.production) {
+        throw err;
+      }
 
-        const fallbackUrl = `${window.location.origin}/queue`
-        const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
-        return fallbackQueueService.createMessage(queueName, encodedMessage)
-      });
+      const fallbackUrl = `${window.location.origin}/queue`;
+      const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
+      return fallbackQueueService.createMessage(queueName, encodedMessage);
+    });
   }
 }
