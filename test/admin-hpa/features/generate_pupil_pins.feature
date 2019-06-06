@@ -118,6 +118,7 @@ Feature: Generate Pupil PINs
 
   Scenario: Pupil should not appear in the list of pupil for not taking the check after Live pin is generated
     Given I have generated a live pin for a pupil
+    And I can see the status for the pupil is 'PIN generated'
     When I want to add a reason for pupils not taking a check
     Then I cannot see pupil in the list for pupil for not taking check
 
