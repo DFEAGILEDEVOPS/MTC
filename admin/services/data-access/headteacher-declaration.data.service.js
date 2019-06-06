@@ -49,4 +49,98 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (dfeNumber, checkWi
   return R.head(result)
 }
 
+/**
+ * Find count of pupils blocking hdf submission before check end date
+ * @param schoolId
+ * @return {Number}
+ */
+headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
+  const sql = `
+    SELECT COUNT(p.id) as pupilsCount
+    FROM [mtc_admin].[pupil] p
+    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
+    WHERE p.school_id = @schoolId
+    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
+  `
+
+  const params = [
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
+
+  const result = await sqlService.query(sql, params)
+  return R.path(['pupilsCount'], R.head(result))
+}
+
+/**
+ * Find count of pupils blocking hdf submission before check end date
+ * @param schoolId
+ * @return {Number}
+ */
+headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
+  const sql = `
+    SELECT COUNT(p.id) as pupilsCount
+    FROM [mtc_admin].[pupil] p
+    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
+    LEFT JOIN (
+        SELECT *,
+            ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
+        FROM [mtc_admin].[check]
+        WHERE isLiveCheck = 1
+           ) lastCheck ON (lastCheck.pupil_id = p.id)
+    LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
+    WHERE p.school_id = @schoolId
+    AND (lastCheck.rank = 1 or lastCheck.rank IS NULL)
+    AND (ps.code != 'STARTED' OR cs.code != 'NTR')
+    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED') 
+  `
+
+  const params = [
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
+
+  const result = await sqlService.query(sql, params)
+  return R.path(['pupilsCount'], R.head(result))
+}
+
+/**
+ * Fetch all pupils for a school by dfeNumber with their status codes and attendance reasons
+ * @param schoolId
+ * @returns {Promise<*>}
+ */
+headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (schoolId) {
+  const paramDfeNumber = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+
+  const sql = `
+    SELECT
+       p.foreName,
+       p.lastName,
+       p.middleNames,
+       p.dateOfBirth,
+       p.urlSlug,
+       ps.code AS pupilStatusCode,
+       cs.code AS checkStatusCode,
+       pg.group_id,
+       ac.reason,
+       ac.code as reasonCode
+    FROM [mtc_admin].pupil p
+    JOIN [mtc_admin].pupilStatus ps
+        ON p.pupilStatus_id = ps.id
+    LEFT JOIN [mtc_admin].[pupilAttendance] pa
+        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+    LEFT JOIN [mtc_admin].[attendanceCode] ac
+        ON pa.attendanceCode_id = ac.id
+    LEFT JOIN [mtc_admin].[pupilGroup] pg
+        ON pg.pupil_id = p.id
+    LEFT JOIN (
+        SELECT *,
+            ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
+        FROM [mtc_admin].[check]
+        WHERE isLiveCheck = 1
+       ) lastCheck ON (lastCheck.pupil_id = p.id)
+    LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
+    WHERE p.school_id = @schoolId
+  `
+  return sqlService.query(sql, [paramDfeNumber])
+}
+
 module.exports = headteacherDeclarationDataService
