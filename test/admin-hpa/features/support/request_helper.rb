@@ -7,7 +7,7 @@ class RequestHelper
 
   def self.check_start_call(check_code, checkStartUrl, checkStartToken)
     ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
-    body_hash = {"checkCode": "#{check_code}", "clientCheckStartedAt": "#{ct}"}
+    body_hash = {"version": "1", "checkCode": "#{check_code}", "clientCheckStartedAt": "#{ct}"}
     body_json = JSON.generate(body_hash)
     base64_encoded_body_josn = Base64.encode64(body_json)
     check_start_body_xml = get_message_api_xml(base64_encoded_body_josn)
@@ -880,7 +880,8 @@ class RequestHelper
         "questions": "#{parsed_response_pupil_auth['questions']}",
         "school": "#{parsed_response_pupil_auth['schools']}",
         "tokens": "#{parsed_response_pupil_auth['tokens']}",
-        "checkCode": "#{parsed_response_pupil_auth['pupil']['checkCode']}"
+        "checkCode": "#{parsed_response_pupil_auth['pupil']['checkCode']}",
+        "version": "1"
     }
     body_json = JSON.generate(body_hash)
     base64_encoded_body_josn = Base64.encode64(body_json)
