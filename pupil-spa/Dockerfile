@@ -35,12 +35,14 @@ ARG runtime_config_url=/public/config.json
 
 ARG ga_code
 ARG appinsights_instrumentationkey
+ARG azure_acccount_name
 ENV API_URL=$api_url
 ENV AUTH_URL=$auth_url
 ENV CHECK_STARTED_URL=$check_started_url
 ENV CHECK_SUBMISSION_URL=$check_submission_url
 ENV GA_CODE=$ga_code
 ENV APPINSIGHTS_INSTRUMENTATIONKEY=$appinsights_instrumentationkey
+ENV AZURE_ACCOUNT_NAME=$azure_account_name
 ENV RUNTIME_CONFIG_URL=$runtime_config_url
 
 RUN $(npm bin)/gulp setRuntimeConfigURL
