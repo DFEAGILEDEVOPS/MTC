@@ -167,6 +167,15 @@ describe('group.service', () => {
         expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalledTimes(0)
         done()
       })
+
+      it('should trim whitespace from name', async (done) => {
+        const schoolId = 123
+        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.name = 'Test '
+        await service.update(1, thisGroupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalledWith(thisGroupMock.id, 'Test', schoolId)
+        done()
+      })
     })
 
     describe('unhappy path', () => {
@@ -223,6 +232,13 @@ describe('group.service', () => {
         const schoolId = 123
         const group = await service.create(groupMock.name, [6, 2, 3], schoolId)
         expect(group).toEqual(groupMock.id)
+        done()
+      })
+
+      it('should trim whitespace from name', async (done) => {
+        const schoolId = 123
+        await service.create('Test ', [6, 2, 3], schoolId)
+        expect(groupDataService.sqlCreate).toHaveBeenCalledWith({ name: 'Test', school_id: schoolId })
         done()
       })
     })
