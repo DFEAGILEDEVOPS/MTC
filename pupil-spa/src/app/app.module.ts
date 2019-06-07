@@ -51,6 +51,8 @@ import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { RouteService } from './services/route/route.service';
+import { LoginErrorService } from './services/login-error/login-error.service';
+import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { ConnectivityService } from './services/connectivity-service/connectivity-service';
 
@@ -77,6 +79,7 @@ import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
 import { SvgClockComponent } from './svg/svg.clock.component';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
+import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { ConnectivityCheckComponent } from './connectivity-check/connectivity-check.component';
 import { ConnectivityErrorComponent } from './connectivity-error/connectivity-error.component';
 
@@ -87,11 +90,12 @@ const appRoutes: Routes = [
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
+  {path: 'feedback-thanks', component: FeedbackThanksComponent},
   {path: 'connectivity-check', component: ConnectivityCheckComponent},
   {path: 'connectivity-error', component: ConnectivityErrorComponent},
-  {path: 'please-wait', component: LoginComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-in-fail', component: LoginFailureComponent},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
@@ -150,6 +154,7 @@ const appRoutes: Routes = [
     IdleModalComponent,
     SessionExpiredComponent,
     WebsiteOfflineComponent,
+    LoginFailureComponent,
     ConnectivityCheckComponent,
     ConnectivityErrorComponent
   ],
@@ -196,6 +201,8 @@ const appRoutes: Routes = [
     AzureQueueService,
     RouteService,
     TimerService,
+    LoginErrorService,
+    LoginErrorDiagnosticsService,
     ConnectivityService,
     {
       provide: QUEUE_STORAGE_TOKEN,

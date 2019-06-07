@@ -20,7 +20,12 @@ export class StorageService {
     if (!key) {
       throw new Error('key is required');
     }
-    return JSON.parse(localStorage.getItem(key));
+    let item = localStorage.getItem(key);
+    // try/catch as not all localstorage items are JSON, e.g. ai_session
+    try {
+      item = JSON.parse(item);
+    } catch (_) { }
+    return item;
   }
 
   removeItem(key: StorageKey): void {
@@ -40,7 +45,12 @@ export class StorageService {
 
   getAllItems(): any {
     return Object.keys(localStorage).reduce((obj, key) => {
-      obj[key] = JSON.parse(localStorage.getItem(key));
+      let item = localStorage.getItem(key);
+      // try/catch as not all localstorage items are JSON, e.g. ai_session
+      try {
+        item = JSON.parse(item);
+      } catch (_) { }
+      obj[key] = item;
       return obj;
     }, {});
   }
