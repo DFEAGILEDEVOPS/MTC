@@ -83,6 +83,9 @@ groupService.update = async (id, group, schoolId) => {
   if (!(pupils instanceof Array)) {
     pupils = Object.values(pupils)
   }
+  if (typeof group.name === 'string') {
+    group.name = group.name.trim()
+  }
   await groupDataService.sqlUpdate(id, group.name, schoolId)
   let currentPupils = await groupService.getPupils(schoolId, id)
   currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id.toString()).map(p => p.id)
@@ -103,6 +106,9 @@ groupService.update = async (id, group, schoolId) => {
 groupService.create = async (groupName, groupPupils, schoolId) => {
   if (!groupName || !schoolId) {
     throw new Error('groupName and schoolId are required')
+  }
+  if (typeof groupName === 'string') {
+    groupName = groupName.trim()
   }
   const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
   await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
