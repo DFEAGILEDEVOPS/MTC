@@ -24,7 +24,7 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: 5,
-        reason: null,
+        status: '',
         group_id: 1
       }])
     })
@@ -47,7 +47,32 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: '-',
-        reason: 'Absent',
+        status: 'Absent',
+        group_id: 1
+      }])
+    })
+    it('returns incomplete status if checkStatus is not received and pupil status is started', () => {
+      const dateOfBirth = moment.utc().subtract(7, 'year')
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: dateOfBirth,
+        mark: '',
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'NTR',
+        pupilStatusCode: 'STARTED'
+      }]
+      const pupilData = resultPresenter.getResultsViewData(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        fullName: 'lastName, foreName',
+        dateOfBirth: dateOfBirth,
+        score: '-',
+        status: 'Incomplete',
         group_id: 1
       }])
     })

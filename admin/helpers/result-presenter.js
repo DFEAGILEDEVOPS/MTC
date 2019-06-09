@@ -11,13 +11,17 @@ const resultPresenter = {}
 resultPresenter.getResultsViewData = (pupils) => {
   let pupilData = []
   pupils.forEach((p) => {
+    let status = ''
+    if (p.checkStatusCode === 'NTR' && p.pupilStatusCode === 'STARTED') {
+      status = 'Incomplete'
+    }
     pupilData.push({
       foreName: p.foreName,
       lastName: p.lastName,
       middleNames: p.middleNames,
       dateOfBirth: p.dateOfBirth,
-      score: p.reason ? '-' : p.mark,
-      reason: p.reason,
+      score: p.reason || status === 'Incomplete' ? '-' : p.mark,
+      status: p.reason || status,
       group_id: p.group_id
     })
   })

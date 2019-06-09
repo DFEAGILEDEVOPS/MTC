@@ -20,13 +20,17 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
     p.dateOfBirth,
     pg.group_id,
     latestPupilCheck.mark,
-    ac.reason
+    ac.reason,
+    ps.code AS pupilStatusCode,
+    cs.code AS checkStatusCode
     FROM ${sqlService.adminSchema}.pupil p
+    JOIN [mtc_admin].pupilStatus ps
+      ON p.pupilStatus_id = ps.id
     LEFT OUTER JOIN
-    (SELECT chk.pupil_id, chk.mark, ROW_NUMBER() OVER ( PARTITION BY chk.pupil_id ORDER BY chk.markedAt DESC ) as rank
+    (SELECT chk.pupil_id, chk.mark, chk.checkStatus_id, cs.code, ROW_NUMBER() OVER ( PARTITION BY chk.pupil_id ORDER BY chk.markedAt DESC ) as rank
       FROM ${sqlService.adminSchema}.[check] chk
       INNER JOIN ${sqlService.adminSchema}.checkStatus cs ON cs.id = chk.checkStatus_id
-      WHERE cs.code = 'CMP'
+      WHERE cs.code IN ('NTR', 'CMP')
       AND chk.checkWindow_id = @checkWindowId
     ) latestPupilCheck
       ON p.id = latestPupilCheck.pupil_id
@@ -35,7 +39,9 @@ resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
     LEFT JOIN ${sqlService.adminSchema}.attendanceCode ac
       ON pa.attendanceCode_id = ac.id
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
-      ON pg.pupil_id = p.id 
+      ON pg.pupil_id = p.id
+    LEFT JOIN [mtc_admin].[checkStatus] cs 
+      ON (latestPupilCheck.checkStatus_id = cs.id)
     WHERE (ac.code IS NULL OR ac.code NOT IN ('LEFTT', 'INCRG'))
     AND (latestPupilCheck.rank = 1 OR latestPupilCheck.rank IS NULL)
     AND p.school_id = @schoolId

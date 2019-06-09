@@ -23,13 +23,10 @@ controller.getViewResultsPage = async (req, res, next) => {
   let pupils
   let groups
   let checkWindow
-  let schoolScoreRecord
-  let schoolScore
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
     pupils = await resultService.getPupilsWithResults(req.user.schoolId, checkWindow.id)
-    schoolScoreRecord = await resultService.getSchoolScore(req.user.schoolId, checkWindow.id)
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
@@ -58,19 +55,10 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
 
-  if (!schoolScoreRecord) {
-    return res.render('availability/admin-window-unavailable', {
-      isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
-    })
-  }
   const pupilData = resultPresenter.getResultsViewData(pupils)
-  const nationalScore = resultPresenter.formatScore(checkWindow.score)
-  schoolScore = resultPresenter.formatScore(schoolScoreRecord.score)
   return res.render('results/view-results', {
     pupilData,
     groups,
-    schoolScore,
-    nationalScore,
     breadcrumbs: req.breadcrumbs()
   })
 }
