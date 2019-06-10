@@ -8,7 +8,7 @@
 
     <p class="lede" id="lead-paragraph">
       These results are for those who participated in the 2019 pilot.
-      Until verified, results are subject to review. All results are out <of></of> <%= %>.
+      Until verified, results are subject to review. All results are out <of></of> <%= maxMark %>.
   </p>
 
   <%- partial('partials/_groups_filter', { groups: groups }) %>
@@ -17,7 +17,7 @@
     <thead>
       <tr>
         <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-        <th scope="col"><a class="sortingLink">Score (<%= %>)<span class="sort-icon"></span></a></th>
+        <th scope="col"><a class="sortingLink">Score (<%= maxMark %>)<span class="sort-icon"></span></a></th>
         <th scope="col">&nbsp;</th>
       </tr>
     </thead>

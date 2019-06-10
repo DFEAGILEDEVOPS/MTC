@@ -58,6 +58,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
   return res.render('results/view-results', {
     pupilData,
+    maxMark: config.LINES_PER_CHECK_FORM,
     groups,
     breadcrumbs: req.breadcrumbs()
   })

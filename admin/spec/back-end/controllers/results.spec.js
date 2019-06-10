@@ -12,6 +12,8 @@ const resultPresenter = require('../../../helpers/result-presenter')
 const controller = require('../../../controllers/results')
 const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
 
+const config = require('../../../config')
+
 describe('results controller:', () => {
   let next
   beforeEach(() => {
@@ -63,6 +65,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
+        maxMark: config.LINES_PER_CHECK_FORM,
         groups: undefined,
         breadcrumbs: undefined
       })
@@ -146,6 +149,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
+        maxMark: config.LINES_PER_CHECK_FORM,
         groups: undefined,
         breadcrumbs: undefined
       })
@@ -200,6 +204,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
+        maxMark: config.LINES_PER_CHECK_FORM,
         groups: undefined,
         breadcrumbs: undefined
       })
