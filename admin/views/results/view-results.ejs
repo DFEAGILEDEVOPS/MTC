@@ -7,29 +7,8 @@
     <%- partial('partials/_session_expiry') %>
 
     <p class="lede" id="lead-paragraph">
-    Until verified, results are subject to review. All results are out of 25.
+    Until verified, results are subject to review. All results are out of <%= maxMark %>.
   </p>
-  <div class="master-detail text">
-      <details>
-        <summary><span class="summary">How are these averages calculated?</span></summary>
-          <div class="panel-no-border">
-            <ul class="panel-list">
-              <li>
-                <div><strong>School average</strong></div>
-                <div>
-                  <p>Is calculated by taking the mean average of pupils in your school who have taken the MTC.</p>
-                </div>
-              </li>
-              <li>
-                <div><strong>National average</strong></div>
-                <div>
-                  <p>Is calculated by taking the mean average of all pupils in England who have taken the MTC.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-      </details>
-    </div>
 
   <%- partial('partials/_groups_filter', { groups: groups }) %>
 

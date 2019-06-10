@@ -14,9 +14,11 @@ describe('resultPresenter', () => {
         dateOfBirth: dateOfBirth,
         mark: 5,
         reason: null,
-        group_id: 1
+        group_id: 1,
+        checkStatusCode: 'CMP',
+        pupilStatusCode: 'COMPLETED'
       }]
-      const pupilData = resultPresenter.getResultsViewData(pupils)
+      const { pupilData } = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
         foreName: 'foreName',
         lastName: 'lastName',
@@ -39,7 +41,7 @@ describe('resultPresenter', () => {
         reason: 'Absent',
         group_id: 1
       }]
-      const pupilData = resultPresenter.getResultsViewData(pupils)
+      const { pupilData } = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
         foreName: 'foreName',
         lastName: 'lastName',
@@ -51,7 +53,7 @@ describe('resultPresenter', () => {
         group_id: 1
       }])
     })
-    it('returns incomplete status if checkStatus is not received and pupil status is started', () => {
+    it('returns incomplete status if check status is not received and pupil status is started', () => {
       const dateOfBirth = moment.utc().subtract(7, 'year')
       const pupils = [{
         foreName: 'foreName',
@@ -64,7 +66,7 @@ describe('resultPresenter', () => {
         checkStatusCode: 'NTR',
         pupilStatusCode: 'STARTED'
       }]
-      const pupilData = resultPresenter.getResultsViewData(pupils)
+      const { pupilData } = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
         foreName: 'foreName',
         lastName: 'lastName',
@@ -73,6 +75,56 @@ describe('resultPresenter', () => {
         dateOfBirth: dateOfBirth,
         score: '-',
         status: 'Incomplete',
+        group_id: 1
+      }])
+    })
+    it('returns did not participate if pupil status code is unallocated and no check status code is provided', () => {
+      const dateOfBirth = moment.utc().subtract(7, 'year')
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: dateOfBirth,
+        mark: '',
+        reason: '',
+        group_id: 1,
+        checkStatusCode: null,
+        pupilStatusCode: 'UNALLOC'
+      }]
+      const { pupilData } = resultPresenter.getResultsViewData(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        fullName: 'lastName, foreName',
+        dateOfBirth: dateOfBirth,
+        score: '-',
+        status: 'Did not participate',
+        group_id: 1
+      }])
+    })
+    it('returns did not attempt the restart if pupil status code is unallocated and check status is CMP', () => {
+      const dateOfBirth = moment.utc().subtract(7, 'year')
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: dateOfBirth,
+        mark: '',
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'CMP',
+        pupilStatusCode: 'UNALLOC'
+      }]
+      const { pupilData } = resultPresenter.getResultsViewData(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        fullName: 'lastName, foreName',
+        dateOfBirth: dateOfBirth,
+        score: '-',
+        status: 'Did not attempt the restart',
         group_id: 1
       }])
     })

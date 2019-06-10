@@ -55,9 +55,10 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
 
-  const pupilData = resultPresenter.getResultsViewData(pupils)
+  const { pupilData, maxMark } = resultPresenter.getResultsViewData(pupils)
   return res.render('results/view-results', {
     pupilData,
+    maxMark,
     groups,
     breadcrumbs: req.breadcrumbs()
   })
