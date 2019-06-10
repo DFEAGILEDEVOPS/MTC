@@ -38,4 +38,27 @@ resultService.getSchoolScore = async (schoolId, checkWindowId) => {
   return schoolScore
 }
 
+/**
+ * Assign result status to each pupil when appropriate based on check and pupil status
+ * @param {Array} pupils
+ * @returns {Array} pupilsData
+ */
+resultService.assignResultStatuses = (pupils) => {
+  return pupils.map((p) => {
+    let statusInformation = ''
+    if (p.pupilStatusCode !== 'COMPLETED' && p.pupilStatusCode !== 'NOT_TAKING') {
+      statusInformation = 'Did not participate'
+    }
+    const restartCheckStatusCodes = ['NTR', 'EXP', 'CMP']
+    if (p.pupilStatusCode === 'UNALLOC' && restartCheckStatusCodes.includes(p.checkStatusCode)) {
+      statusInformation = 'Did not attempt the restart'
+    }
+    if (p.checkStatusCode === 'NTR' && p.pupilStatusCode === 'STARTED') {
+      statusInformation = 'Incomplete'
+    }
+    p.statusInformation = statusInformation
+    return p
+  })
+}
+
 module.exports = resultService

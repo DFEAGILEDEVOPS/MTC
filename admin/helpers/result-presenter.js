@@ -11,34 +11,17 @@ const resultPresenter = {}
 resultPresenter.getResultsViewData = (pupils) => {
   let pupilData = []
   pupils.forEach((p) => {
-    let statusInformation = ''
-    // if (p.pupilStatusCode !== 'COMPLETED' && p.pupilStatusCode !== 'NOT_TAKING' && !p.checkStatusCode) {
-    //   statusInformation = 'Did not participate'
-    // }
-    if (p.pupilStatusCode !== 'COMPLETED' && p.pupilStatusCode !== 'NOT_TAKING') {
-      statusInformation = 'Did not participate'
-    }
-    const restartCheckStatusCodes = ['NTR', 'EXP', 'CMP']
-    if (p.pupilStatusCode === 'UNALLOC' && restartCheckStatusCodes.includes(p.checkStatusCode)) {
-      statusInformation = 'Did not attempt the restart'
-    }
-    if (p.checkStatusCode === 'NTR' && p.pupilStatusCode === 'STARTED') {
-      statusInformation = 'Incomplete'
-    }
     pupilData.push({
       foreName: p.foreName,
       lastName: p.lastName,
       middleNames: p.middleNames,
       dateOfBirth: p.dateOfBirth,
-      score: p.reason || statusInformation.length > 0 ? '-' : p.mark,
-      status: p.reason || statusInformation,
+      score: p.reason || p.statusInformation.length > 0 ? '-' : p.mark,
+      status: p.reason || p.statusInformation,
       group_id: p.group_id
     })
   })
-  return {
-    pupilData: pupilIdentificationFlag.addIdentificationFlags(pupilData),
-    maxMark: pupils[0].maxMark
-  }
+  return pupilIdentificationFlag.addIdentificationFlags(pupilData)
 }
 
 /**
