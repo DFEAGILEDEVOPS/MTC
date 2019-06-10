@@ -272,7 +272,7 @@ describe('group.service', () => {
       it('should fail to create a group', async (done) => {
         try {
           const schoolId = 123
-          await service.create(groupMock, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId)
           fail('error not thrown')
         } catch (error) {
           expect(error.message).toBe('Failed to create group')
