@@ -150,7 +150,8 @@ checkStartService.prepareCheck2 = async function (
 
   // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
   // for Azure Queues of 64Kb
-  const batches = R.splitEvery(20, prepareCheckQueueMessages)
+  logger.info(`check start service: prepare check batch size is ${config.prepareCheckMessageBatchSize}`)
+  const batches = R.splitEvery(config.prepareCheckMessageBatchSize, prepareCheckQueueMessages)
   for (let batch of batches) {
     await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
   }
