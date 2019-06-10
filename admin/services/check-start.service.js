@@ -152,8 +152,12 @@ checkStartService.prepareCheck2 = async function (
   // for Azure Queues of 64Kb
   logger.info(`check start service: prepare check batch size is ${config.prepareCheckMessageBatchSize}`)
   const batches = R.splitEvery(config.prepareCheckMessageBatchSize, prepareCheckQueueMessages)
+  let batchCount = 1
+  let totalBatches = batches.length
   for (let batch of batches) {
+    logger.info(`check start service: sending batch ${batchCount} of ${totalBatches} for school ${schoolId}`)
     await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
+    batchCount += 1
   }
 
   // Store the `config` section from the preparedCheckMessages into the DB
