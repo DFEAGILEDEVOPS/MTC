@@ -34,7 +34,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
 }
 
 /**
- * Get active groups (non-soft-deleted), which have at least one present pupil.
+ * Get active groups (non-soft-deleted), which have at least one present pupil who haven't been allocated a check.
  * @param schoolId
  * @returns {Promise<*>}
  */
@@ -46,9 +46,14 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   ON g.id = pg.group_id
   LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
   ON pa.pupil_id=pg.pupil_id AND pa.isDeleted=0
+  LEFT JOIN ${sqlService.adminSchema}.pupil p
+    ON p.id = pg.pupil_id
+  LEFT JOIN ${sqlService.adminSchema}.pupilStatus ps
+    ON p.pupilStatus_id = ps.id
   WHERE pa.id IS NULL
-  AND g.isDeleted=0
-  AND g.school_id=@schoolId
+    AND g.isDeleted=0
+    AND g.school_id=@schoolId
+    AND ps.code = 'UNALLOC'
   GROUP BY g.id, g.name
   ORDER BY name ASC`
   const params = [

@@ -210,7 +210,7 @@ When(/^they become eligable for a restart$/) do
     response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
     response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
   end
-  Timeout.timeout(60){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[0],@pupil_names_arr.first.split(',')[0])['pupilStatus_id'] == 5}
+  Timeout.timeout(300){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[1].strip,@pupil_names_arr.first.split(',')[0].strip)['pupilStatus_id'] == 5}
   step 'I am on the Restarts Page'
 end
 
@@ -273,7 +273,7 @@ Given(/^pupil logs in and completed the check$/) do
     RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
     fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] != 4
   rescue
-    sleep(1)
+    sleep(15)
     retry if (retries += 1) < 5
   end
   Timeout.timeout(300, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}

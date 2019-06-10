@@ -9,9 +9,9 @@ details {
 
 li {
   margin-left: 20px;
+  list-style-position: outside;
 }
 
-.no-border {
-  border-left: 0;
-  padding-left: pem(20);
+.panel-border-wide {
+  margin-left: 20px;
 }
