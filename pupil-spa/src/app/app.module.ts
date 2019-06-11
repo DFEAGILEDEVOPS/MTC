@@ -55,6 +55,7 @@ import { LoginErrorService } from './services/login-error/login-error.service';
 import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { ConnectivityService } from './services/connectivity-service/connectivity-service';
+import { ConnectivityCheckGuard } from './connectivity-check.guard';
 
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
@@ -91,7 +92,7 @@ const appRoutes: Routes = [
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
-  {path: 'connectivity-check', component: ConnectivityCheckComponent},
+  {path: 'connectivity-check', component: ConnectivityCheckComponent, canActivate: [ConnectivityCheckGuard]},
   {path: 'connectivity-error', component: ConnectivityErrorComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
@@ -204,6 +205,7 @@ const appRoutes: Routes = [
     LoginErrorService,
     LoginErrorDiagnosticsService,
     ConnectivityService,
+    ConnectivityCheckGuard,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

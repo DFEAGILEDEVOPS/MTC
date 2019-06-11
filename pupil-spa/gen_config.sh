@@ -17,6 +17,7 @@ testPupilConnectionQueueUrl=${TEST_PUPIL_CONNECTION_QUEUE_URL:-"testPupilConnect
 testPupilConnectionQueueToken=${TEST_PUPIL_CONNECTION_QUEUE_TOKEN:-"testPupilConnectionQueueTokenValue"}
 testPupilConnectionDelay=${TEST_PUPIL_CONNECTION_ERROR_DELAY:-"3000"}
 testPupilConnectionMaxAttempts=${TEST_PUPIL_CONNECTION_MAX_ATTEMPTS:-"1"}
+overrideConnectivityCheck=${OVERRIDE_CONNECTIVITY_CHECK:-"true"}
 supportNumber=${SUPPORT_NUMBER:-"0300 303 3013"}
 gaCode=${GA_CODE:-"null"}
 websiteOffline=${WEBSITE_OFFLINE:-"false"}
@@ -55,6 +56,7 @@ cat <<EOF > config.json
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed,
-  "websiteOffline": $websiteOffline
+  "websiteOffline": $websiteOffline,
+  "overrideConnectivityCheck": $overrideConnectivityCheck
 }
 EOF
