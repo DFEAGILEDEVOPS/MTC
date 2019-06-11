@@ -88,29 +88,29 @@ describe('headteacherDeclarationService', () => {
       })
 
       it('calls getEligibilityForSchool', async () => {
-        await service.submitDeclaration(form, schoolID, userId)
+        await service.submitDeclaration(form, userId, schoolID)
         expect(service.getEligibilityForSchool).toHaveBeenCalled()
       })
 
       it('calls the headteacher data service', async () => {
-        await service.submitDeclaration(form, schoolID, userId)
+        await service.submitDeclaration(form, userId, schoolID)
         expect(headteacherDeclarationDataService.sqlCreate).toHaveBeenCalled()
       })
 
       it('adds a signedDate field to the form', async () => {
-        await service.submitDeclaration(form, schoolID, userId)
+        await service.submitDeclaration(form, userId, schoolID)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.signedDate).toBeTruthy()
       })
 
       it('adds the userId to the form', async () => {
-        await service.submitDeclaration(form, schoolID, userId)
+        await service.submitDeclaration(form, userId, schoolID)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.user_id).toBe(userId)
       })
 
       it('adds the dfeNumber to the form', async () => {
-        await service.submitDeclaration(form, schoolID, userId)
+        await service.submitDeclaration(form, userId, schoolID)
         const arg = headteacherDeclarationDataService.sqlCreate.calls.mostRecent().args[0]
         expect(arg.school_id).toBe(schoolMock.id)
       })
@@ -121,7 +121,7 @@ describe('headteacherDeclarationService', () => {
         spyOn(headteacherDeclarationDataService, 'sqlCreate').and.returnValue(Promise.resolve(sqlResponseMock))
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
         try {
-          await service.submitDeclaration(form, schoolID, userId)
+          await service.submitDeclaration(form, userId, schoolID)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe(`school ${schoolID} not found`)
@@ -135,7 +135,7 @@ describe('headteacherDeclarationService', () => {
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
         spyOn(service, 'getEligibilityForSchool').and.returnValue(false)
         try {
-          await service.submitDeclaration(form, schoolID, userId)
+          await service.submitDeclaration(form, userId, schoolID)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe(`Not eligible to submit declaration`)
