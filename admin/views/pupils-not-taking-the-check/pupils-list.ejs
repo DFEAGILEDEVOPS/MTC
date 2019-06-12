@@ -112,7 +112,7 @@
             }) %>
 </form>
 <script>
-  $(function () {
+  window.addEventListener('load', function() {
     window.GOVUK.tableSort.applySorting(window.document, 'pupilsList', {
       sortNullsLast: true,
       ignoredStrings: ['-']

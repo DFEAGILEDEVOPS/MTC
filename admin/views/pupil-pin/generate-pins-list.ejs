@@ -91,7 +91,7 @@
     </div>
 </div>
 <script>
-  $(function () {
+  window.addEventListener('load', function() {
     window.GOVUK.tableSort.applySorting(window.document, 'generatePins', {
       sortNullsLast: false,
       ignoredStrings: []
@@ -100,8 +100,10 @@
 </script>
 
 <script>
-    $('#pupilListForm').on('submit', function (event) {
+    window.addEventListener('load', function() {
+      $('#pupilListForm').on('submit', function (event) {
         $('#stickyConfirm').prop('disabled', true);
         return true;
-    });
+      });
+    })
 </script>

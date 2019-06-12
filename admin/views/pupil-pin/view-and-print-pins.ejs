@@ -115,8 +115,8 @@
 </div>
 
 <script>
- $(document).ready(function () {
-   $('#printPinsButton').click(function (event) {
+  window.addEventListener('load', function() {
+    $('#printPinsButton').click(function (event) {
      event.preventDefault()
      window.print();
    })

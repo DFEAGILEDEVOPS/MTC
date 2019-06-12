@@ -149,7 +149,7 @@
     </div>
 </div>
 <script>
-  $(function () {
+  window.addEventListener('load', function() {
     window.GOVUK.tableSort.applySorting(window.document, 'register-pupils', {
       sortNullsLast: true,
       ignoredStrings: ['-']
