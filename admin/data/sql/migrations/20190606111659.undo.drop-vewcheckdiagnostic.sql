@@ -1,4 +1,4 @@
-ALTER VIEW [mtc_admin].[vewCheckDiagnostic] AS
+CREATE VIEW [mtc_admin].[vewCheckDiagnostic] AS
 select c.id           as check_id,
        c.createdAt,
        c.pupil_id,
