@@ -149,7 +149,8 @@ describe('check-start.service', () => {
     })
 
     it('adds config to the database', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      const school = Object.assign({}, schoolMock)
+      await checkStartService.prepareCheck2(pupilIds, school, true)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
