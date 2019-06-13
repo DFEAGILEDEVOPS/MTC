@@ -44,7 +44,7 @@ services:
     - admin-app
     - pupil-api
   admin-tests:
-    build: ./test/admin
+    build: ./test/admin-hpa
     container_name: admin_tests
     depends_on:
     - sqldb
@@ -57,20 +57,4 @@ services:
     - admin-app
     environment:
       BASE_URL: "http://admin-app:3001"
-      SQL_SERVER: "sqldb"
-  pupil-tests:
-    build: ./test/pupil
-    container_name: pupil_tests
-    depends_on:
-    - pupil-app
-    - sqldb
-    - admin-app
-    links:
-    - pupil-app
-    - sqldb
-    volumes:
-    - ./test-output/pupil/screenshots:/usr/src/app/screenshots
-    - ./test-output/pupil/reports:/usr/src/app/reports
-    environment:
-      BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
