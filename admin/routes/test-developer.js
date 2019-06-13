@@ -5,6 +5,7 @@ const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
 const rolesConfig = require('../roles-config')
 const checkFormController = require('../controllers/check-form')
+const payloadController = require('../controllers/pupil-payload-viewer')
 
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
 router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
@@ -20,5 +21,7 @@ router.get('/unassign-forms/:checkWindowId', isAuthenticated(rolesConfig.ROLE_TE
 router.post('/unassign-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.unassignCheckFormFromWindow(req, res, next))
 router.get('/download-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getDownloadPupilCheckData(req, res, next))
 router.get('/file-download-pupil-check-data/:urlSlug', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getFileDownloadPupilCheckData(req, res, next))
+router.get('/view-pupil-payload', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => payloadController.getViewPayloadForm(req, res, next))
+router.get('/raw-pupil-payload', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => payloadController.rawPupilPayload(req, res, next))
 
 module.exports = router
