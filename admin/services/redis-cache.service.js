@@ -42,7 +42,7 @@ redisCacheService.get = async redisKey => {
       return false
     }
     logger.info(`REDIS (get): Retrieved \`${redisKey}\``)
-    return result
+    return JSON.parse(result)
   } catch (err) {
     logger.error(`REDIS (get): Error getting \`redisKey\`: ${err.message}`)
     throw err
