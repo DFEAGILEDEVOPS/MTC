@@ -9,8 +9,8 @@ const v2 = {
     // change the check status
     const checkData = await expireChecks(logger)
 
-    const checkIDs = checkData.map(e => e.checkId)
-    logger(`check-expiry: Updated ${checkData.length} checks' status to \`EXP\`: ${checkIDs.join(', ')}`)
+    const checkCodes = checkData.map(e => e.checkCode)
+    logger(`check-expiry: Updated ${checkData.length} checks' status to \`EXP\`:\n${checkCodes.join('\n')}`)
 
     // if we have just expired a restart check we need to also remove the pupilRestart.check_id
     // field as the check it refers to was never taken.
