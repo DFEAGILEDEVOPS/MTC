@@ -51,9 +51,6 @@ async function deleteExpiredChecks (logger) {
     logger.error(`expire-prepared-checks: ERROR: deleteExpiredChecks(): ${error.message}`)
   }
 
-  const checkCodes = entities.map(e => e.checkCode.toUpperCase())
-  logger(`expire-prepared-checks: Removed ${entities.length} checks from \`${preparedCheckTable}\`:\n${checkCodes.join('\n')}`)
-
   return {
     checksExpired: Array.isArray(entities) ? entities.length : 0
   }
