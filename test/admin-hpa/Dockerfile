@@ -51,4 +51,4 @@ COPY . .
 
 RUN bundle install
 
-CMD bundle exec rake features
+CMD echo 'Waiting 20 seconds for SQL migrations to finish' && sleep 20 && bundle exec rake features

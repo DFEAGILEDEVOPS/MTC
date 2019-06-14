@@ -12,7 +12,7 @@ docker-compose -f docker-compose.yml -f docker-compose.admin-test.yml up admin-t
 # capture test container exit codes
 ADMIN_RETURN_CODE=$(docker wait admin_tests)
 
-docker-compose -f docker-compose.yml -f docker-compose.admin-test.yml down
+#docker-compose -f docker-compose.yml -f docker-compose.admin-test.yml down
 
 echo "admin code: $ADMIN_RETURN_CODE"
 # return non-zero exit code if either container failed

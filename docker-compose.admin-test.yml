@@ -63,4 +63,4 @@ services:
     environment:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       BASE_URL: "http://admin-app:3001"
-      SQL_SERVER: "mtc_mssql"
+      SQL_SERVER: "sqldb"

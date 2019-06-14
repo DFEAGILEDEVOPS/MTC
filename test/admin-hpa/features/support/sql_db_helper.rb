@@ -10,7 +10,7 @@ class SqlDbHelper
                                        azure: azure_var
       )
     rescue TinyTds::Error => e
-      abort 'Test run failed due to - ' + e.to_s
+      abort "Test run failed due to - #{e.to_s}; SQL details: username=#{admin_user}, password=#{admin_password}, host=#{server}, port=#{port}, database=#{database}, azure=#{azure_var}"
     end
   end
 
