@@ -36,7 +36,7 @@ resultService.getPupilResultData = async (schoolId, checkWindowId, pupilRegister
     throw new Error('pupil data not found')
   }
   const pupilResultData = await resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
-  return pupilResultData.map(p => Object.assign(p, pupilRegisterData.find(pr => pr.id === p.id)))
+  return pupilRegisterData.map(p => Object.assign(p, pupilResultData.find(pr => pr.id === p.id)))
 }
 
 /**
