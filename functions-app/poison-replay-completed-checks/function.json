@@ -1,5 +1,11 @@
 {
-  "disabled": false,
+  "disabled": true,
   "bindings": [
+    {
+      "schedule": "0 30 14 20 12 *",
+      "name": "poisonReplayCompletedChecks",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
   ]
 }
