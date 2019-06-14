@@ -93,19 +93,6 @@ const azureStorageHelper = {
     })
 
     return azureBlobService
-  },
-
-  /**
-   * Add a message to an Azure Queue
-   * @param queueName
-   * @param messageData
-   * @return {Promise<*>}
-   */
-  addMessageToQueue: async function addMessageToQueue (queueName, messageData) {
-    const azureQueueService = this.getPromisifiedAzureQueueService()
-    const message = JSON.stringify(messageData)
-    const encodedMessage = Buffer.from(message).toString('base64')
-    return azureQueueService.createMessageAsync(queueName, encodedMessage)
   }
 }
 
