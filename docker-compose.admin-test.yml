@@ -8,9 +8,12 @@ services:
     environment:
       SQL_SERVER: "sqldb"
       MIGRATE: 1
+      REDIS_HOST: "redis"
     depends_on:
+    - redis
     - sqldb
     links:
+    - redis
     - sqldb
   pupil-api:
     build: ./pupil-api
