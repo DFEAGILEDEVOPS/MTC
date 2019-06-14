@@ -6,6 +6,8 @@ services:
     ports:
     - "3001:3001"
     environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_PUPIL_CENSUS_USER_PASSWORD: "${SQL_PUPIL_CENSUS_USER_PASSWORD}"
       SQL_SERVER: "sqldb"
       MIGRATE: 1
       REDIS_HOST: "redis"
@@ -59,7 +61,6 @@ services:
     - sqldb
     - admin-app
     environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       BASE_URL: "http://admin-app:3001"
       SQL_SERVER: "mtc_mssql"
-    env_file:
-      - admin/.env
