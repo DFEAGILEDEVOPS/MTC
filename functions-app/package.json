@@ -13,6 +13,7 @@
   "dependencies": {
     "archiver": "^3.0.0",
     "azure-storage": "^2.10.3",
+    "bluebird": "^3.5.5",
     "device": "^0.3.9",
     "dotenv": "^8.0.0",
     "fast-csv": "^2.5.0",
