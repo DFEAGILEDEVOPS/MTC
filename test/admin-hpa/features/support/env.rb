@@ -62,7 +62,7 @@ Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 
-database = ENV['SQL_DATABASE'] || 'mtc'
+database = ENV['SQL_DATABASE'] || 'master'
 server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
