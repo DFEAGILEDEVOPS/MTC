@@ -10,17 +10,18 @@ module.exports = async function (context, check) {
   let message
   if (check.version && check.version === '2') {
     version = 2
-    message =
+    context.log('decompressing v2 message')
+    message = compressionService.decompress(check.archive)
   } else {
     version = 1
+    message = check
   }
-  context.log(`processing v${version} message`)
   const id = uuid()
   const file = path.join('./', `v${version}`, `${id}.json`)
   context.log(`saving to ${file}`)
   try {
-    const string = JSON.stringify(check)
-    fs.writeFileSync(file, string)
+    const jsonString = JSON.stringify(message)
+    fs.writeFileSync(file, jsonString)
   } catch (error) {
     context.log(error)
   }
