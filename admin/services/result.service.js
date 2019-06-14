@@ -3,19 +3,40 @@ const resultDataService = require('../services/data-access/result.data.service')
 const resultService = {}
 
 /**
- * Find pupils with results based on school id
+ * Find pupil data excluding results relevant data
  * @param {Number} schoolId
  * @param {Number} checkWindowId
  * @returns {Object} requestData
  */
-resultService.getPupilsWithResults = async (schoolId, checkWindowId) => {
+resultService.getPupilRegisterData = async (schoolId, checkWindowId) => {
   if (!schoolId) {
     throw new Error('school id not found')
   }
   if (!checkWindowId) {
     throw new Error('check window id not found')
   }
-  return resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
+  return resultDataService.getPupilRegisterData(schoolId, checkWindowId)
+}
+
+/**
+ * Find pupils with results based on school id and merge with pupil register data
+ * @param {Number} schoolId
+ * @param {Number} checkWindowId
+ * @param {Array} pupilRegisterData
+ * @returns {Object} requestData
+ */
+resultService.getPupilResultData = async (schoolId, checkWindowId, pupilRegisterData) => {
+  if (!schoolId) {
+    throw new Error('school id not found')
+  }
+  if (!checkWindowId) {
+    throw new Error('check window id not found')
+  }
+  if (!pupilRegisterData || !Array.isArray(pupilRegisterData)) {
+    throw new Error('pupil data not found')
+  }
+  const pupilResultData = await resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
+  return pupilResultData.map(p => Object.assign(p, pupilRegisterData.find(pr => pr.id === p.id)))
 }
 
 /**
@@ -49,8 +70,7 @@ resultService.assignResultStatuses = (pupils) => {
     if (p.pupilStatusCode !== 'COMPLETED' && p.pupilStatusCode !== 'NOT_TAKING') {
       statusInformation = 'Did not participate'
     }
-    const restartCheckStatusCodes = ['NTR', 'EXP', 'CMP']
-    if (p.pupilStatusCode === 'UNALLOC' && restartCheckStatusCodes.includes(p.checkStatusCode)) {
+    if (p.pupilRestartId && !p.pupilRestartCheckId) {
       statusInformation = 'Did not attempt the restart'
     }
     if (p.checkStatusCode === 'NTR' && p.pupilStatusCode === 'STARTED') {
