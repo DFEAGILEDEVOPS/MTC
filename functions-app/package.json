@@ -8,7 +8,8 @@
     "start": "func host start --port 7072",
     "test": "yarn lint && yarn run nyc -r html jasmine **/*.spec.js */**/*.spec.js",
     "lint": "standard",
-    "pack": "funcpack pack ."
+    "pack": "funcpack pack .",
+    "install-bindings": "func extensions install"
   },
   "dependencies": {
     "archiver": "^3.0.0",
