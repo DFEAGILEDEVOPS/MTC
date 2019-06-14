@@ -32,12 +32,12 @@ const v2 = {
     await v1.handleCompletedCheck(context, v1Message)
     // Default output is bound to the pupilEvents table (saved in table storage)
     context.bindings.pupilEventsTable = []
-    const base64EncodedPayload = Buffer.from(JSON.stringify(completedCheckMessage)).toString('base64')
+    // const base64EncodedPayload = Buffer.from(JSON.stringify(completedCheckMessage)).toString('base64')
     const entity = {
       PartitionKey: completedCheckMessage.checkCode,
       RowKey: uuid(),
       eventType: 'completed-check',
-      payload: base64EncodedPayload,
+      payload: 'removed',
       processedAt: moment().toDate()
     }
     context.bindings.pupilEventsTable.push(entity)
