@@ -21,7 +21,7 @@ export interface IAppConfig {
   feedbackAPIErrorMaxAttempts: number;
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
-  overrideConnectivityCheck: boolean;
+  connectivityCheckEnabled: boolean;
 }
 
 export class AppConfig implements IAppConfig {
@@ -47,7 +47,7 @@ export class AppConfig implements IAppConfig {
   readonly testPupilConnectionQueueToken: string;
   readonly testPupilConnectionDelay: number;
   readonly testPupilConnectionMaxAttempts: number;
-  readonly overrideConnectivityCheck: boolean;
+  readonly connectivityCheckEnabled: boolean;
 }
 
 /**

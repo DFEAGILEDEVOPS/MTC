@@ -21,19 +21,19 @@ describe('ConnectivityCheckGuard', () => {
         { provide: Router, useValue: mockRouter }
       ]
     });
-    initialConnectivityCheckFlag = APP_CONFIG.overrideConnectivityCheck;
+    initialConnectivityCheckFlag = APP_CONFIG.connectivityCheckEnabled;
   });
 
   afterEach( () => {
-    (<IAppConfig>APP_CONFIG).overrideConnectivityCheck = initialConnectivityCheckFlag;
+    (<IAppConfig>APP_CONFIG).connectivityCheckEnabled = initialConnectivityCheckFlag;
   });
 
   it('should instantiate', inject([ConnectivityCheckGuard], (guard: ConnectivityCheckGuard) => {
     expect(guard).toBeTruthy();
   }));
-  describe('when the override connectivity check flag is disabled', () => {
+  describe('when the connectivity check enabled flag is enabled', () => {
     beforeEach(() => {
-      (<IAppConfig>APP_CONFIG).overrideConnectivityCheck = false;
+      (<IAppConfig>APP_CONFIG).connectivityCheckEnabled = true;
     });
     it('should redirect to connectivity check page', inject([ConnectivityCheckGuard], (guard: ConnectivityCheckGuard) => {
       const result = guard.canActivate();
@@ -42,9 +42,9 @@ describe('ConnectivityCheckGuard', () => {
     }));
   });
 
-  describe('when the override connectivity check flag is enabled', () => {
+  describe('when the connectivity check enabled flag is disabled', () => {
     beforeEach(() => {
-      (<IAppConfig>APP_CONFIG).overrideConnectivityCheck = true;
+      (<IAppConfig>APP_CONFIG).connectivityCheckEnabled = false;
     });
     it('should redirect to sign in page', inject([ConnectivityCheckGuard], (guard: ConnectivityCheckGuard) => {
       const result = guard.canActivate();
