@@ -23,13 +23,14 @@ services:
     ports:
     - "3003:3003"
     environment:
-      SQL_SERVER: "sqldb"
-      API_AUTH: "true"
-      API_CHECK_START: "true"
-      API_CHECK_SUBMIT: "true"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      CORS_WHITELIST: "http://pupil-app:80,http://localhost"
+      REDIS_HOST: "redis"
     depends_on:
+    - redis
     - sqldb
     links:
+    - redis
     - sqldb
   pupil-app:
     build:
