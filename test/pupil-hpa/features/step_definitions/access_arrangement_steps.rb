@@ -7,7 +7,7 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arran
   select_access_arrangements_page.auto_search_list[0].click
   access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
   select_access_arrangements_page.save.click
-  sleep(10)
+  sleep(15)
 
   step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
@@ -67,7 +67,7 @@ Given(/^I logged in with user with the access arrangement '(.+)'$/) do |access_a
   select_access_arrangements_page.auto_search_list[0].click
   access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
   select_access_arrangements_page.save.click
-  sleep(10)
+  sleep(15)
 
   step 'I login to the admin app with teacher1'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
