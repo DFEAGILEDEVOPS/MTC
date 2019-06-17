@@ -62,5 +62,7 @@ services:
     - admin-app
     environment:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
-      BASE_URL: "http://admin-app:3001"
+      ADMIN_BASE_URL: "http://admin-app:3001"
+      PUPIL_API_BASE_URL: "http://pupil-api:3003"
+      PUPIL_BASE_URL: "http://pupil-app:80"
       SQL_SERVER: "sqldb"
