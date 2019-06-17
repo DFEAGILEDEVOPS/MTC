@@ -49,6 +49,8 @@ WORKDIR /usr/src/app
 
 COPY . .
 
+RUN chmod +x wait-admin-app.sh
+
 RUN bundle install
 
-CMD echo 'Waiting 20 seconds for SQL migrations to finish' && sleep 20 && bundle exec rake features
+CMD ./wait-admin-app.sh && bundle exec rake features
