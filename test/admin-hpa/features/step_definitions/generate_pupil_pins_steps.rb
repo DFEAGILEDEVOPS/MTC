@@ -54,8 +54,7 @@ Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
 end
 
 Then(/^I can see pupil in the list for pupil for not taking check$/) do
-  pupils_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
-  expect(pupils_from_page.join.include?(@pupil_forename)).to be_truthy, "#{@pupil_forename} is not displayed in the list ... Expected - It Should"
+  Timeout.timeout(180){visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
 end
 
 When(/^I click on the Pupil heading$/) do
