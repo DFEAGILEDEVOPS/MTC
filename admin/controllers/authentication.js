@@ -34,7 +34,11 @@ const getSignIn = (req, res) => {
 }
 
 const postSignIn = (req, res) => {
-  switch (req.user.role) {
+  // Only id is available from local and NCA auth
+  const { displayName, id, role, timezone } = req.user
+  logger.info(`User ID ${id} (${displayName}) timezone is "${timezone}"`)
+
+  switch (role) {
     case 'TEACHER':
     case 'HEADTEACHER':
       return res.redirect(rolesConfig.HOME_TEACHER)

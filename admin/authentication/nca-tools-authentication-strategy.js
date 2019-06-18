@@ -4,6 +4,7 @@ const adminLogonEventDataService = require('../services/data-access/admin-logon-
 const ncaToolsUserService = require('../services/nca-tools-user.service')
 const certificateService = require('../services/certificate-store.service')
 const logger = require('../services/log.service').getLogger()
+const schoolDataService = require('../services/data-access/school.data.service')
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -42,10 +43,13 @@ module.exports = async function (req, done) {
     }
 
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
+    const school = await schoolDataService.sqlFindOneById(mtcUser.school_id)
+
     userData.role = mtcUser.mtcRole
     userData.schoolId = mtcUser.school_id
     userData.id = mtcUser.id
     userData.displayName = mtcUser.displayName
+    userData.timezone = school.timezone
     // auth success
     logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true
