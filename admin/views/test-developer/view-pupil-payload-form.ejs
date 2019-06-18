@@ -1,0 +1,35 @@
+
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+
+<header class="page-header">
+    <h1 class="heading-xlarge">View pupil payload</h1>
+</header>
+
+<%- partial('partials/_session_expiry') %>
+
+<form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" novalidate>
+    <div class="form-group">
+        <label class="form-label-bold" for="checkCode">Attempt ID</label>
+        <input type="text"
+               id="checkCode"
+               class="form-control"
+               name="checkCode"
+               value=""/>
+    </div>
+    <div class="form-buttons">
+        <input type="submit" class="button" value="View payload"/>
+        <a href="/test-developer/" class="button button-secondary">Cancel</a>
+    </div>
+</form>
+<div class="back-to-top-container">
+    <a href="#top"> Back to top </a>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#payloadForm').submit(function () {
+          setTimeout(function () {
+            $('#checkCode').val('')
+          })
+        })
+    })
+</script>

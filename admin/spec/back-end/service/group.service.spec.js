@@ -167,6 +167,15 @@ describe('group.service', () => {
         expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalledTimes(0)
         done()
       })
+
+      it('should trim whitespace from name', async (done) => {
+        const schoolId = 123
+        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.name = 'Test '
+        await service.update(1, thisGroupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalledWith(thisGroupMock.id, 'Test', schoolId)
+        done()
+      })
     })
 
     describe('unhappy path', () => {
@@ -225,6 +234,13 @@ describe('group.service', () => {
         expect(group).toEqual(groupMock.id)
         done()
       })
+
+      it('should trim whitespace from name', async (done) => {
+        const schoolId = 123
+        await service.create('Test ', [6, 2, 3], schoolId)
+        expect(groupDataService.sqlCreate).toHaveBeenCalledWith({ name: 'Test', school_id: schoolId })
+        done()
+      })
     })
 
     describe('unhappy path', () => {
@@ -256,7 +272,7 @@ describe('group.service', () => {
       it('should fail to create a group', async (done) => {
         try {
           const schoolId = 123
-          await service.create(groupMock, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId)
           fail('error not thrown')
         } catch (error) {
           expect(error.message).toBe('Failed to create group')

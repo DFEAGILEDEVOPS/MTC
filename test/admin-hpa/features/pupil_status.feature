@@ -36,6 +36,7 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'In Progress'
 
+  @pupil_not_taking_check
   Scenario: Pupil Status is Not Taking the Check when a pupil is not taking the check
     Given I have a pupil not taking the check
     When I am on the Pupil Register page
