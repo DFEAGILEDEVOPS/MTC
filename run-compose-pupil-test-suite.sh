@@ -6,7 +6,7 @@ source ./admin/.env
 export AZURE_STORAGE_CONNECTION_STRING SQL_PUPIL_CENSUS_USER_PASSWORD
 
 docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml build
-docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml up -d pupil-app
+docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml up -d pupil-app functions
 docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml up pupil-tests
 
 # capture test container exit codes
