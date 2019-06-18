@@ -18,7 +18,8 @@ module.exports = async function (context, completedCheckMessage) {
         await v2.process(context, completedCheckMessage)
         break
       default:
-        throw new Error(`${functionName}: unknown message version`)
+        // v1 messages did not have a version property
+        await v1.process(context, completedCheckMessage)
     }
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)

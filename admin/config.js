@@ -37,6 +37,7 @@ module.exports = {
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   PORT: process.env.PORT || '3001',
+  prepareCheckMessageBatchSize: process.env.hasOwnProperty('PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   PupilAppUseCompression: process.env.hasOwnProperty('PUPIL_APP_USE_COMPRESSION') ? toBool(process.env.PUPIL_APP_USE_COMPRESSION) : true,
   RESTART_MAX_ATTEMPTS: 2,

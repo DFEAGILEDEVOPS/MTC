@@ -26,7 +26,7 @@ const v1 = {
       PartitionKey: completedCheckMessage.checkCode,
       RowKey: uuid(),
       eventType: 'completed-check',
-      payload: completedCheckMessage,
+      payload: 'removed',
       processedAt: moment().toDate()
     }
     context.bindings.pupilEventsTable.push(entity)
