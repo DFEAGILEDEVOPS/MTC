@@ -5,6 +5,7 @@ const ncaToolsUserService = require('../services/nca-tools-user.service')
 const certificateService = require('../services/certificate-store.service')
 const logger = require('../services/log.service').getLogger()
 const schoolDataService = require('../services/data-access/school.data.service')
+const config = require('../config')
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -43,18 +44,24 @@ module.exports = async function (req, done) {
     }
 
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
-    const school = await schoolDataService.sqlFindOneById(mtcUser.school_id)
+
+    let school
+    if (mtcUser.school_id) {
+      school = await schoolDataService.sqlFindOneById(mtcUser.school_id)
+    }
 
     userData.role = mtcUser.mtcRole
     userData.schoolId = mtcUser.school_id
     userData.id = mtcUser.id
     userData.displayName = mtcUser.displayName
-    userData.timezone = school.timezone
+    userData.timezone = school ? school.timezone : config.DEFAULT_TIMEZONE
+
     // auth success
     logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true
     logonEvent.authProviderSessionToken = mtcUser.SessionToken
     await adminLogonEventDataService.sqlCreate(logonEvent)
+
     return done(null, userData)
   } catch (error) {
     // auth failed
