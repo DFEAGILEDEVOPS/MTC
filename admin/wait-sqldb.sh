@@ -1,8 +1,7 @@
 #!/bin/bash
+echo "Waiting for $SQL_SERVER:$SQL_PORT to be available..."
 
-echo "Waiting for $SQL_SERVER:1433 to be available..."
-
-until [["$(curl $SQL_SERVER:1433)" == *"Empty reply from server"*]]; do
+until [[ "$(curl -sS $SQL_SERVER:$SQL_PORT 2>/dev/stdout)" =~ "(52)" ]]; do
   printf '.'
   sleep 5
 done

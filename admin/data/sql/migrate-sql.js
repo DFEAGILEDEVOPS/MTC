@@ -48,7 +48,8 @@ const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
   driver: 'mssql',
   host: config.Sql.Server,
-  port: config.Sql.Port,
+  // Required for when SQL_PORT is passed in via docker-compose
+  port: parseInt(config.Sql.Port),
   database: config.Sql.Database,
   username: config.Sql.Migrator.Username,
   password: config.Sql.Migrator.Password,

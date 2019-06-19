@@ -9,6 +9,7 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       SQL_PUPIL_CENSUS_USER_PASSWORD: "${SQL_PUPIL_CENSUS_USER_PASSWORD}"
       SQL_SERVER: "sqldb"
+      SQL_PORT: "${SQL_PORT-1433}"
       MIGRATE: 1
       REDIS_HOST: "redis"
     depends_on:
@@ -22,8 +23,10 @@ services:
       context: ./functions
     container_name: mtc_functions
     depends_on:
+    - redis
     - sqldb
     links:
+    - redis
     - sqldb
     environment:
       ADMIN_BASE_URL: "http://admin-app:3001"
@@ -42,10 +45,8 @@ services:
       REDIS_HOST: "redis"
     depends_on:
     - redis
-    - sqldb
     links:
     - redis
-    - sqldb
   pupil-app:
     build:
       context: ./pupil-spa
