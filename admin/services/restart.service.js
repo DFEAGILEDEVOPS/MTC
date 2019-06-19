@@ -78,14 +78,17 @@ restartService.restart = async (
   if (!schoolId) {
     throw new Error('Missing parameter: `schoolId`')
   }
-  await pinService.expireMultiplePins(pupilsList, schoolId)
+  // After exceeding 20 items the request payload received contains object key-value pairs
+  // Detecting and converting them to strings is necessary as part of the processing
+  const processedPupilsIds = pupilsList.map(p => typeof p === 'object' ? Object.values(p)[0] : p)
+  await pinService.expireMultiplePins(processedPupilsIds, schoolId)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
-  const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
+  const canAllPupilsRestart = restartService.canAllPupilsRestart(processedPupilsIds)
   if (!canAllPupilsRestart) {
     throw new Error(`One of the pupils is not eligible for a restart`)
   }
   const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
-  await Promise.all(pupilsList.map(async pupilId => {
+  await Promise.all(processedPupilsIds.map(async pupilId => {
     const pupilRestartData = {
       pupil_id: pupilId,
       recordedByUser_id: userName,
@@ -97,7 +100,7 @@ restartService.restart = async (
     }
     return pupilRestartDataService.sqlCreate(pupilRestartData)
   }))
-  const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
+  const pupilInfo = await pupilDataService.sqlFindByIds(processedPupilsIds, schoolId)
   return pupilInfo.map(p => { return { urlSlug: p.urlSlug } })
 }
 
