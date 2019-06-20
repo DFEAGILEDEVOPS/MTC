@@ -1,6 +1,7 @@
 'use strict'
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const dateService = require('../services/date.service')
+const tableSorting = require('./table-sorting')
 
 const resultPresenter = {}
 
@@ -21,7 +22,7 @@ resultPresenter.getResultsViewData = (pupils) => {
       group_id: p.group_id
     })
   })
-  return pupilIdentificationFlag.addIdentificationFlags(pupilData)
+  return pupilIdentificationFlag.addIdentificationFlags(tableSorting.applySorting(pupilData, 'lastName'))
 }
 
 /**
