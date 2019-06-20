@@ -41,7 +41,7 @@ services:
     - "3003:3003"
     environment:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
-      CORS_WHITELIST: "http://pupil-app:80,http://localhost"
+      CORS_WHITELIST: "http://pupil-app"
       REDIS_HOST: "redis"
     depends_on:
     - redis
@@ -51,10 +51,8 @@ services:
     build:
       context: ./pupil-spa
       args:
-        api_url: http://pupil-api:3003
-        auth_url: http://pupil-api:3003/api/questions
-        check_started_url: http://pupil-api:3003/api/check-started
-        check_submission_url: http://pupil-api:3003/api/completed-check
+        APPINSIGHTS_INSTRUMENTATIONKEY: ${AZURE_STORAGE_CONNECTION_STRING}
+        AUTH_URL: http://pupil-api:3003/auth
     container_name: mtc_pupil_2
     ports:
     - "80:80"
@@ -64,6 +62,9 @@ services:
     links:
     - admin-app
     - pupil-api
+    environment:
+      APPINSIGHTS_INSTRUMENTATIONKEY: ${AZURE_STORAGE_CONNECTION_STRING}
+      AUTH_URL: http://pupil-api:3003/auth
   pupil-tests:
     build: ./test/pupil-hpa
     container_name: pupil_tests
