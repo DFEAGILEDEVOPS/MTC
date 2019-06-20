@@ -8,33 +8,19 @@ describe('result.service', () => {
   describe('getPupilRegisterData', () => {
     it('calls getPupilRegisterData data service method when school id and check window id are provided', async () => {
       spyOn(resultDataService, 'getPupilRegisterData')
-      const checkWindowId = 1
       const schoolId = 2
       try {
-        await resultService.getPupilRegisterData(schoolId, checkWindowId)
+        await resultService.getPupilRegisterData(schoolId)
       } catch (error) {
         fail()
       }
       expect(resultDataService.getPupilRegisterData).toHaveBeenCalled()
     })
-    it('throws an error if check window id is not provided', async () => {
-      spyOn(resultDataService, 'getPupilRegisterData')
-      const checkWindowId = undefined
-      const schoolId = 2
-      try {
-        await resultService.getPupilRegisterData(schoolId, checkWindowId)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('check window id not found')
-      }
-      expect(resultDataService.getPupilRegisterData).not.toHaveBeenCalled()
-    })
     it('throws an error if school id is not provided', async () => {
       spyOn(resultDataService, 'getPupilRegisterData')
-      const checkWindowId = 1
       const schoolId = undefined
       try {
-        await resultService.getPupilRegisterData(schoolId, checkWindowId)
+        await resultService.getPupilRegisterData(schoolId)
         fail()
       } catch (error) {
         expect(error.message).toBe('school id not found')

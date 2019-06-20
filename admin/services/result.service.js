@@ -5,17 +5,13 @@ const resultService = {}
 /**
  * Find pupil data excluding results relevant data
  * @param {Number} schoolId
- * @param {Number} checkWindowId
  * @returns {Object} requestData
  */
-resultService.getPupilRegisterData = async (schoolId, checkWindowId) => {
+resultService.getPupilRegisterData = async (schoolId) => {
   if (!schoolId) {
     throw new Error('school id not found')
   }
-  if (!checkWindowId) {
-    throw new Error('check window id not found')
-  }
-  return resultDataService.getPupilRegisterData(schoolId, checkWindowId)
+  return resultDataService.getPupilRegisterData(schoolId)
 }
 
 /**

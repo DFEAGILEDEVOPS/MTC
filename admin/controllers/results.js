@@ -27,7 +27,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    pupilRegisterData = await resultService.getPupilRegisterData(req.user.schoolId, checkWindow.id)
+    pupilRegisterData = await resultService.getPupilRegisterData(req.user.schoolId)
     pupilResultData = await resultService.getPupilResultData(req.user.schoolId, checkWindow.id, pupilRegisterData)
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)

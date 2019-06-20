@@ -8,10 +8,9 @@ const R = require('ramda')
 /**
  * Find pupil data excluding results relevant data
  * @param {Number} schoolId
- * @param {Number} checkWindowId
  * @returns {Promise<*>}
  */
-resultDataService.getPupilRegisterData = async (schoolId, checkWindowId) => {
+resultDataService.getPupilRegisterData = async (schoolId) => {
   const sql = `
     SELECT
         p.id,
@@ -50,8 +49,7 @@ resultDataService.getPupilRegisterData = async (schoolId, checkWindowId) => {
    `
 
   const params = [
-    { name: 'schoolId', value: schoolId, type: TYPES.Int },
-    { name: 'checkWindowId', value: checkWindowId, type: TYPES.Int }
+    { name: 'schoolId', value: schoolId, type: TYPES.Int }
   ]
 
   return sqlService.query(sql, params)
