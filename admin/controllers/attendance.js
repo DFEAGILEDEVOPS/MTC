@@ -21,6 +21,7 @@ const controller = {}
 
 controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
   const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
   const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
@@ -37,7 +38,9 @@ controller.getResults = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   pupilsFormatted = pupilsFormatted.filter((p) => p.hasScore)
 
-  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck() &&
+  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
+
+  if (hdfSubmitted &&
     (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
     return res.render('school/results', {
       breadcrumbs: req.breadcrumbs(),
@@ -251,14 +254,14 @@ controller.getDeclarationForm = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
     }
-    if (submitted) {
+    if (hdfSubmitted) {
       return res.redirect('/attendance/submitted')
     }
     hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
