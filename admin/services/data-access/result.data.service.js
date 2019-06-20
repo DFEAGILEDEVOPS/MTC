@@ -40,11 +40,12 @@ resultDataService.getPupilRegisterData = async (schoolId, checkWindowId) => {
          WHERE isDeleted = 0
         ) lastPupilRestart
         ON (p.id = lastPupilRestart.pupil_id)
-    LEFT JOIN [mtc_admin].[check] chk
-        ON lastPupilRestart.check_id = chk.id
-        AND chk.checkWindow_id = @checkWindowId
-        AND chk.isLiveCheck = 1
-    WHERE (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL)
+    LEFT JOIN [mtc_admin].pupilAttendance pa
+        ON (p.id = pa.pupil_id AND pa.isDeleted = 0)
+    LEFT JOIN [mtc_admin].attendanceCode ac
+        ON pa.attendanceCode_id = ac.id
+    WHERE (ac.code IS NULL OR ac.code NOT IN ('LEFTT', 'INCRG'))
+    AND (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL)
     AND p.school_id = @schoolId
     ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
    `
