@@ -69,6 +69,33 @@ async function changePupilState (pupilId, targetStatusCode) {
   return sqlService.modify(sql, params)
 }
 
+/**
+ * Filter for live checks and make a request for the pupil-status to be updated for multiple pupils on v2
+ * @param {Object} logger
+ * @param {String} logPrefix
+ * @param {[{checkId: <number>, pupilId: <number>, checkCode: <string>, isLiveCheck: <boolean>}]} checkData - must contain `checkId`, `pupilId`, `checkCode` and `isLiveCheck` props
+ * @return {Promise<*|Promise<*>>}
+ */
+async function updatePupilStatusForLiveChecksV2 (logger, logPrefix, checkData) {
+  logger.info(`${logPrefix}: updatePupilStatusV2(): got ${checkData.length} pupils`)
+  // Batch the async messages up for live checks only, to limit max concurrency
+  const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
+  checkData = null
+
+  batches.forEach(async (checks, batchNumber) => {
+    try {
+      await this.addMessageToQueue('pupil-status', {
+        version: 2,
+        messages: checks
+      })
+      logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
+    } catch (error) {
+      logger.error(`${logPrefix}: updatePupilStatusV2(): ERROR: ${error.message}`)
+    }
+  })
+}
+
 module.exports = {
-  recalculatePupilStatus
+  recalculatePupilStatus,
+  updatePupilStatusForLiveChecksV2
 }
