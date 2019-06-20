@@ -1,9 +1,11 @@
 'use strict'
 
-const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
+
+const azureStorageHelper = require('../lib/azure-storage-helper')
+const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 
 async function recalculatePupilStatus (pupilId) {
   const currentData = await getCurrentPupilData(pupilId)
@@ -84,7 +86,7 @@ async function updatePupilStatusForLiveChecksV2 (logger, logPrefix, checkData) {
 
   batches.forEach(async (checks, batchNumber) => {
     try {
-      await this.addMessageToQueue('pupil-status', {
+      await azureStorageHelper.addMessageToQueue('pupil-status', {
         version: 2,
         messages: checks
       })
