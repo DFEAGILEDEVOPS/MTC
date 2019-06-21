@@ -1,3 +1,6 @@
+const numericOnlyPattern = /^\d+$/
+const numericOnlyRegExp = new RegExp(numericOnlyPattern)
+
 const tableSorting = {
 
   /**
@@ -17,8 +20,6 @@ const tableSorting = {
   },
 
   isNumericValue: function (v) {
-    const numericOnlyPattern = /^\d+$/
-    const numericOnlyRegExp = new RegExp(numericOnlyPattern)
     return ((typeof v === 'string' && numericOnlyRegExp.test(v)) || typeof v === 'number')
   },
 
@@ -40,7 +41,7 @@ const tableSorting = {
     return asc ? a - b : b - a
   },
 
-  isNullString: function (v) {
+  isEmpty: function (v) {
     if ((v === undefined || v === null || v === '')) {
       return true
     }
