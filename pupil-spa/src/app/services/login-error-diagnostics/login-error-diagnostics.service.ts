@@ -27,9 +27,9 @@ export class LoginErrorDiagnosticsService {
       this.loginErrorService.changeMessage('Internet disconnected');
       return;
     }
-    const canAccessAuthURL = await this.canAccessURL(APP_CONFIG.authURL);
+    const canAccessAuthURL = await this.canAccessURL(APP_CONFIG.authPingURL);
     if (!canAccessAuthURL) {
-      this.loginErrorService.changeMessage(`Connection refused to ${APP_CONFIG.authURL}`);
+      this.loginErrorService.changeMessage(`Connection refused to ${APP_CONFIG.authPingURL}`);
     }
   }
 
@@ -42,7 +42,7 @@ export class LoginErrorDiagnosticsService {
           return resolve(true);
         })
         .catch(error => {
-          return resolve(error.status !== 0);
+          return resolve(false);
         });
     });
   }
