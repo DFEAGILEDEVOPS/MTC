@@ -3,36 +3,19 @@ const resultDataService = require('../services/data-access/result.data.service')
 const resultService = {}
 
 /**
- * Find pupil data excluding results relevant data
- * @param {Number} schoolId
- * @returns {Object} requestData
- */
-resultService.getPupilRegisterData = async (schoolId) => {
-  if (!schoolId) {
-    throw new Error('school id not found')
-  }
-  return resultDataService.getPupilRegisterData(schoolId)
-}
-
-/**
  * Find pupils with results based on school id and merge with pupil register data
  * @param {Number} schoolId
  * @param {Number} checkWindowId
- * @param {Array} pupilRegisterData
  * @returns {Object} requestData
  */
-resultService.getPupilResultData = async (schoolId, checkWindowId, pupilRegisterData) => {
+resultService.getPupilResultData = async (schoolId, checkWindowId) => {
   if (!schoolId) {
     throw new Error('school id not found')
   }
   if (!checkWindowId) {
     throw new Error('check window id not found')
   }
-  if (!pupilRegisterData || !Array.isArray(pupilRegisterData)) {
-    throw new Error('pupil data not found')
-  }
-  const pupilResultData = await resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
-  return pupilRegisterData.map(p => Object.assign(p, pupilResultData.find(pr => pr.id === p.id)))
+  return resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
 }
 
 /**

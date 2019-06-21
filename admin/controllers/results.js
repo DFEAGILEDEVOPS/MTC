@@ -20,15 +20,13 @@ const controller = {}
 controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
-  let pupilRegisterData
   let pupilResultData
   let groups
   let checkWindow
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    pupilRegisterData = await resultService.getPupilRegisterData(req.user.schoolId)
-    pupilResultData = await resultService.getPupilResultData(req.user.schoolId, checkWindow.id, pupilRegisterData)
+    pupilResultData = await resultService.getPupilResultData(req.user.schoolId, checkWindow && checkWindow.id)
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindow && checkWindow.id)
   } catch (error) {

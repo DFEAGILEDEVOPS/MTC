@@ -24,9 +24,9 @@ const tableSorting = {
   },
 
   getStringComparisonResult: function (a, b, asc) {
-    if (this.isNullString(a)) {
+    if (this.isEmpty(a)) {
       return 1
-    } else if (this.isNullString(b)) {
+    } else if (this.isEmpty(b)) {
       return -1
     } else if (a === b) {
       return 0

@@ -5,37 +5,13 @@ const resultDataService = require('../../../services/data-access/result.data.ser
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
-  describe('getPupilRegisterData', () => {
-    it('calls getPupilRegisterData data service method when school id and check window id are provided', async () => {
-      spyOn(resultDataService, 'getPupilRegisterData')
-      const schoolId = 2
-      try {
-        await resultService.getPupilRegisterData(schoolId)
-      } catch (error) {
-        fail()
-      }
-      expect(resultDataService.getPupilRegisterData).toHaveBeenCalled()
-    })
-    it('throws an error if school id is not provided', async () => {
-      spyOn(resultDataService, 'getPupilRegisterData')
-      const schoolId = undefined
-      try {
-        await resultService.getPupilRegisterData(schoolId)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('school id not found')
-      }
-      expect(resultDataService.getPupilRegisterData).not.toHaveBeenCalled()
-    })
-  })
   describe('getPupilResultData', () => {
     it('calls sqlFindResultsBySchool when school id and check window id are provided', async () => {
       spyOn(resultDataService, 'sqlFindResultsBySchool').and.returnValue([{}])
       const checkWindowId = 1
       const schoolId = 2
-      const pupilRegisterData = [{}]
       try {
-        await resultService.getPupilResultData(schoolId, checkWindowId, pupilRegisterData)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
       } catch (error) {
         fail()
       }
@@ -45,9 +21,8 @@ describe('result.service', () => {
       spyOn(resultDataService, 'sqlFindResultsBySchool')
       const checkWindowId = undefined
       const schoolId = 2
-      const pupilRegisterData = [{}]
       try {
-        await resultService.getPupilResultData(schoolId, checkWindowId, pupilRegisterData)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
         fail()
       } catch (error) {
         expect(error.message).toBe('check window id not found')
@@ -58,44 +33,13 @@ describe('result.service', () => {
       spyOn(resultDataService, 'sqlFindResultsBySchool')
       const checkWindowId = 1
       const schoolId = undefined
-      const pupilRegisterData = [{}]
       try {
-        await resultService.getPupilResultData(schoolId, checkWindowId, pupilRegisterData)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
         fail()
       } catch (error) {
         expect(error.message).toBe('school id not found')
       }
       expect(resultDataService.sqlFindResultsBySchool).not.toHaveBeenCalled()
-    })
-    it('throws an error if pupil data are not provided', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool')
-      const checkWindowId = 1
-      const schoolId = 1
-      const pupilRegisterData = undefined
-      try {
-        await resultService.getPupilResultData(schoolId, checkWindowId, pupilRegisterData)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('pupil data not found')
-      }
-      expect(resultDataService.sqlFindResultsBySchool).not.toHaveBeenCalled()
-    })
-    it('merges pupil data provided with result data based on id key', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool').and.returnValue([
-        { id: 1, foreName: 'foreName', lastName: 'lastName', mark: 1, checkStatusCode: 'CMP' }
-      ])
-      const checkWindowId = 1
-      const schoolId = 2
-      const pupilRegisterData = [{ id: 1, foreName: 'foreName', lastName: 'lastName', pupilStatusCode: 'COMPLETED' }]
-      let result
-      try {
-        result = await resultService.getPupilResultData(schoolId, checkWindowId, pupilRegisterData)
-      } catch (error) {
-        fail()
-      }
-      expect(result).toEqual([
-        { id: 1, foreName: 'foreName', lastName: 'lastName', pupilStatusCode: 'COMPLETED', checkStatusCode: 'CMP', mark: 1 }
-      ])
     })
   })
   describe('getSchoolScore', () => {
