@@ -9,6 +9,3 @@ IF EXISTS(
         ALTER TABLE [mtc_admin].[checkResult]
             DROP CONSTRAINT [checkResult_check_id_uindex]
     END
-
-
-
