@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW [mtc_admin].[vewPupilsResults]
+CREATE PROCEDURE mtc_admin.spGetPupilsResults @checkWindowId INTEGER = NULL, @schoolId INTEGER = NULL
 AS
     SELECT
         p.id,
@@ -6,14 +6,12 @@ AS
         p.middleNames,
         p.lastName,
         p.dateOfBirth,
-        p.school_id,
         g.id as group_id,
         ps.code as pupilStatusCode,
         lastPupilRestart.id as pupilRestartId,
         lastPupilRestart.check_id as pupilRestartCheckId,
         latestPupilCheck.mark,
         latestPupilCheck.maxMark,
-        latestPupilCheck.checkWindow_id,
         cs.code as checkStatusCode,
         ac.reason
     FROM [mtc_admin].[pupil] p
@@ -33,7 +31,7 @@ AS
          WHERE isDeleted = 0
         ) lastPupilRestart
         ON (p.id = lastPupilRestart.pupil_id)
-    LEFT OUTER JOIN
+    LEFT JOIN
         (SELECT
           chk.checkWindow_id,
           chk.pupil_id,
@@ -46,6 +44,7 @@ AS
           ON cs.id = chk.checkStatus_id
           AND cs.code IN ('NTR', 'CMP')
           AND chk.isLiveCheck = 1
+        WHERE chk.checkWindow_id = @checkWindowId
         ) latestPupilCheck
         ON p.id = latestPupilCheck.pupil_id
     LEFT JOIN [mtc_admin].[checkStatus] cs
@@ -57,3 +56,4 @@ AS
     WHERE (ac.code IS NULL OR ac.code NOT IN ('LEFTT', 'INCRG'))
     AND (lastPupilRestart.rank = 1 or lastPupilRestart.rank IS NULL)
     AND (latestPupilCheck.rank = 1 OR latestPupilCheck.rank IS NULL)
+    AND p.school_id = @schoolId

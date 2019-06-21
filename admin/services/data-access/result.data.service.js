@@ -13,23 +13,9 @@ const R = require('ramda')
  */
 resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
   const sql = `
-    SELECT * FROM [mtc_admin].[vewPupilsResults]
-    WHERE school_id = @schoolId
-    AND checkWindow_id = @checkWindowId
+    EXEC mtc_admin.spGetPupilsResults @checkWindowId = ${checkWindowId}, @schoolId = ${schoolId}
   `
-  const params = [
-    {
-      name: 'checkWindowId',
-      value: checkWindowId,
-      type: TYPES.Int
-    },
-    {
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    }
-  ]
-  return sqlService.query(sql, params)
+  return sqlService.query(sql)
 }
 
 /**
