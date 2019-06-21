@@ -1,11 +1,11 @@
 ### STAGE 1: Build ###
-FROM node:10.14.1 as builder
+FROM node:10.14.1
 
 SHELL ["/bin/bash", "-c"]
 
+RUN mkdir -p /func-app
 WORKDIR /func-app
 COPY . .
-RUN yarn install
 
 RUN apt-get update && \
     apt-get install libunwind8 && \
@@ -15,9 +15,8 @@ RUN apt-get update && \
     npm i -g azure-functions-core-tools@core --unsafe-perm true && \
     func extensions install
 
-### STAGE 2: functions runtime image ###
-FROM mcr.microsoft.com/azure-functions/node:2.0
+RUN yarn install
 
-ENV AzureWebJobsScriptRoot=/home/site/wwwroot
-ENV SQL_ENCRYPT=0
-COPY --from=builder /func-app /home/site/wwwroot
+RUN chmod +x wait-admin-app.sh
+
+CMD ./wait-admin-app.sh && yarn start

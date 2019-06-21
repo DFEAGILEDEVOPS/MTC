@@ -23,6 +23,7 @@ services:
   functions:
     build:
       context: ./functions
+      dockerfile: Dockerfile-testing
     container_name: mtc_functions
     depends_on:
     - redis
