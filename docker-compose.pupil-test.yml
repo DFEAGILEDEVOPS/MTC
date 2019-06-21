@@ -12,6 +12,7 @@ services:
       SQL_PORT: "${SQL_PORT-1433}"
       MIGRATE: 1
       REDIS_HOST: "redis"
+      WAIT_FOR_SQL_SERVER: "true"
     depends_on:
     - redis
     - sqldb

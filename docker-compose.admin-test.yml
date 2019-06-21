@@ -9,8 +9,10 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       SQL_PUPIL_CENSUS_USER_PASSWORD: "${SQL_PUPIL_CENSUS_USER_PASSWORD}"
       SQL_SERVER: "sqldb"
+      SQL_PORT: "${SQL_PORT-1433}"
       MIGRATE: 1
       REDIS_HOST: "redis"
+      WAIT_FOR_SQL_SERVER: "true"
     depends_on:
     - redis
     - sqldb
