@@ -1,4 +1,4 @@
--- Add an index if it does not exist
+-- Add the unique index if it does not exist
 IF NOT EXISTS(
         SELECT *
         FROM sys.indexes i
