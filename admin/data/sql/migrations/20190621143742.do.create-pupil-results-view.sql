@@ -1,4 +1,4 @@
-CREATE VIEW [mtc_admin].[vewPupilsResults]
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsResults]
 AS
     SELECT
         p.id,
