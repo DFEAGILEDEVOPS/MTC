@@ -6,7 +6,7 @@ FROM
     (
         SELECT
             *,
-            -- sort ASC so rank 1 will be first result
+            -- sort ASC so rank 1 will be first result received
             ROW_NUMBER() OVER (PARTITION BY check_id ORDER BY id ASC) as rank
         FROM
             mtc_admin.checkResult
