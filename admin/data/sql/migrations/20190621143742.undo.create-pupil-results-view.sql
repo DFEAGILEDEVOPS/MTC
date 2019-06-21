@@ -1,1 +1,1 @@
-DROP VIEW [mtc_admin].[vewPupilsResults]
+DROP VIEW IF EXISTS [mtc_admin].[vewPupilsResults]
