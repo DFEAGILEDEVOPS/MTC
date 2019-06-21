@@ -1,4 +1,4 @@
--- DROP an index if it does not exist
+-- DROP an index if it exists
 IF EXISTS(
         SELECT *
         FROM sys.indexes i
