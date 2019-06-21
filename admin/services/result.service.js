@@ -5,17 +5,13 @@ const resultService = {}
 /**
  * Find pupils with results based on school id and merge with pupil register data
  * @param {Number} schoolId
- * @param {Number} checkWindowId
  * @returns {Object} requestData
  */
-resultService.getPupilResultData = async (schoolId, checkWindowId) => {
+resultService.getPupilResultData = async (schoolId) => {
   if (!schoolId) {
     throw new Error('school id not found')
   }
-  if (!checkWindowId) {
-    throw new Error('check window id not found')
-  }
-  return resultDataService.sqlFindResultsBySchool(schoolId, checkWindowId)
+  return resultDataService.sqlFindResultsBySchool(schoolId)
 }
 
 /**
