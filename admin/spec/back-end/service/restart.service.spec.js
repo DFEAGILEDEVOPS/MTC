@@ -158,7 +158,6 @@ describe('restart.service', () => {
       expect(canAllPupilsRestartSpy.calls.first().args[0]).toEqual(processedPupilIds)
       expect(sqlFindByIdsSpy.calls.first().args[0]).toEqual(processedPupilIds)
     })
-
   })
 
   describe('canAllPupilsRestart', () => {
