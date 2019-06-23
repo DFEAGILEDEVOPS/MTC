@@ -79,11 +79,14 @@ async function changePupilState (pupilId, targetStatusCode) {
  * @return {Promise<*|Promise<*>>}
  */
 async function updatePupilStatusForLiveChecksV2 (logger, logPrefix, checkData) {
+  if (!checkData || !Array.isArray(checkData)) {
+    logger.error(`${logPrefix}: updatePupilStatusV2(): ERROR: check data provided must be an array`)
+    return
+  }
   logger.info(`${logPrefix}: updatePupilStatusV2(): got ${checkData.length} pupils`)
   // Batch the async messages up for live checks only, to limit max concurrency
   const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
   checkData = null
-
   batches.forEach(async (checks, batchNumber) => {
     try {
       await azureStorageHelper.addMessageToQueue('pupil-status', {
