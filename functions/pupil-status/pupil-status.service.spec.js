@@ -50,11 +50,13 @@ describe('pupil-status.service', () => {
     })
     it('should call logger error and return if check data parameter is undefined', async () => {
       spyOn(logger, 'error')
+      spyOn(azureStorageHelper, 'addMessageToQueue')
       try {
         await pupilStatusService.updatePupilStatusForLiveChecksV2(logger, logPrefix, undefined)
       } catch (err) {
         expect(err).not.toHaveBeenCalled()
       }
+      expect(azureStorageHelper.addMessageToQueue).not.toHaveBeenCalled()
       expect(logger.error).toHaveBeenCalledWith('logPrefix: updatePupilStatusV2(): ERROR: check data provided must be an array')
     })
   })
