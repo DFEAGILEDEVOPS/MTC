@@ -1,4 +1,4 @@
-CREATE PROCEDURE mtc_admin.spGetPupilsResults @checkWindowId INTEGER = NULL, @schoolId INTEGER = NULL
+CREATE OR ALTER PROCEDURE mtc_admin.spGetPupilsResults @checkWindowId INTEGER = NULL, @schoolId INTEGER = NULL
 AS
     SELECT
         p.id,

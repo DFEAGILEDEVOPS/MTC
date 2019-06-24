@@ -1,1 +1,1 @@
-DROP PROCEDURE mtc_admin.[spGetPupilsResults]
+DROP PROCEDURE IF EXISTS mtc_admin.[spGetPupilsResults]
