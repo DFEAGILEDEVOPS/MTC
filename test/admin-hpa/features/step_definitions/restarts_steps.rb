@@ -199,6 +199,7 @@ When(/^they become eligable for a restart$/) do
     pupil_firstname = pupil.split(',')[1].strip
     pupil_firstname.split(' Date')[0].split(' ')[0] if pupil_firstname.include? 'Date'
     pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    p pupil_detail
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
@@ -207,8 +208,11 @@ When(/^they become eligable for a restart$/) do
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+    p pupil_firstname + ' ' + pupil_lastname
     response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
     response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+    p response_check_start
+    p response_check_complete
   end
   Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[1].strip,@pupil_names_arr.first.split(',')[0].strip)['pupilStatus_id'] == 5}
   step 'I am on the Restarts Page'

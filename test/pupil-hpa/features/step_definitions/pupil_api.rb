@@ -23,7 +23,7 @@ end
 
 And(/^I should see a valid response$/) do
   parsed_response = JSON.parse(@response.body)
-  expect(parsed_response['questions'].size).to eql 10
+  expect(parsed_response['questions'].size).to eql 25
   pupil_details = SqlDbHelper.find_pupil_via_pin(@pupil_pin)
   expect(parsed_response['pupil']).to eql create_pupil_details_hash(pupil_details)
   expect(parsed_response['school']).to eql create_school_details_hash(pupil_details['school_id'])

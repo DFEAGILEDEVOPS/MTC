@@ -85,7 +85,7 @@ SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
 SQL_CLIENT.execute('SET ANSI_NULL_DFLT_ON ON').do
 SQL_CLIENT.execute('SET IMPLICIT_TRANSACTIONS OFF').do
 SQL_CLIENT.execute('SET ANSI_PADDING ON').do
-SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
+SQL_CLIENT.execute('SET QUOTED_IDENTIFIER OFF').do
 SQL_CLIENT.execute('SET TEXTSIZE 2147483647').do
 SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
@@ -111,3 +111,4 @@ AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_
 AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
 AzureBlobHelper.remove_old_containers
+SqlDbHelper.update_to_25_questions

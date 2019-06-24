@@ -436,4 +436,18 @@ class SqlDbHelper
     result.do
   end
 
+  def self.update_to_25_questions
+    p 'UPDATING TO 25 QUESTIONS'
+    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":2,\"f2\":5}]' WHERE name IN ('MTC0103', 'MTC0100')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.update_to_10_questions
+    p "UPDATING TO 10 QUESTIONS"
+    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\" : 2,\"f2\" : 5},{\"f1\" : 11,\"f2\" : 2},{\"f1\" : 5,\"f2\" : 10},{\"f1\" : 4,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 9},{\"f1\" : 2,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 3},{\"f1\" : 4,\"f2\" : 9},{\"f1\" : 6,\"f2\" : 5},{\"f1\" : 12,\"f2\" : 12}]' WHERE name IN ('MTC0103', 'MTC0100')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
 end
