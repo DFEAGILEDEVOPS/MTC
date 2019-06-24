@@ -204,5 +204,11 @@ describe('check-window-v2.service', () => {
       await checkWindowV2Service.getActiveCheckWindow()
       expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalled()
     })
+    it('shouldn\'t call checkWindowDataService sqlFindActiveCheckWindow method', async () => {
+      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow')
+      const checkWindow = await checkWindowV2Service.getActiveCheckWindow({ checkWindow: { foo: 'bar' } })
+      expect(checkWindowDataService.sqlFindActiveCheckWindow).not.toHaveBeenCalled()
+      expect(checkWindow).toEqual({ foo: 'bar' })
+    })
   })
 })
