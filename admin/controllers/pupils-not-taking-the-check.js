@@ -27,7 +27,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   try {
     // Get pupils for active school
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
   } catch (error) {
@@ -61,7 +61,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
@@ -172,7 +172,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   let hdfSubmitted
   try {
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
     return res.render('pupils-not-taking-the-check/select-pupils', {

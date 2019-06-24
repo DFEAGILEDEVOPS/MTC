@@ -25,7 +25,7 @@ const groupPupilsPage = async (req, res, next) => {
 
   try {
     groups = await groupService.getGroups(req.user.schoolId)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.groupsAvailable) {
@@ -62,7 +62,7 @@ const manageGroupPage = async (req, res, next) => {
   res.locals.pageTitle = 'Create group'
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.groupsAvailable) {
       return res.render('availability/section-unavailable', {
@@ -117,7 +117,7 @@ const addGroup = async (req, res, next) => {
   }
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
   } catch (error) {
     return next(error)
@@ -190,7 +190,7 @@ const editGroup = async (req, res, next) => {
   }
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
   } catch (error) {
     return next(error)
@@ -260,7 +260,7 @@ const removeGroup = async (req, res, next) => {
   }
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
     await groupDataService.sqlMarkGroupAsDeleted(req.params.groupId)
   } catch (error) {

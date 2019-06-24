@@ -27,7 +27,7 @@ controller.getOverview = async (req, res, next) => {
   let availabilityData
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
@@ -69,7 +69,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   let questionReaderReasons
   let pupils
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
@@ -102,7 +102,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
 controller.postSubmitAccessArrangements = async (req, res, next) => {
   let pupil
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
   } catch (error) {
     next(error)
@@ -144,7 +144,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   req.breadcrumbs('Edit pupils and access arrangements')
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
   } catch (error) {
     next(error)
@@ -191,7 +191,7 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   const dfeNumber = req.user.School
   let pupil
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
     pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)

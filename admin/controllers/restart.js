@@ -22,7 +22,7 @@ controller.getRestartOverview = async (req, res, next) => {
   let availabilityData
   try {
     restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
@@ -57,7 +57,7 @@ controller.getSelectRestartList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
       return res.render('availability/section-unavailable', {
@@ -91,7 +91,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
   } catch (error) {
     return next(error)
@@ -129,7 +129,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let pupilsRestarted
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupilsRestarted = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
@@ -155,7 +155,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   let pupil
   const pupilSlug = req.body && req.body.pupil
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
     pupil = await restartService.markDeleted(pupilSlug, req.user.id, req.user.schoolId)
   } catch (error) {

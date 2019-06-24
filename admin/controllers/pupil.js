@@ -32,7 +32,7 @@ const getAddPupil = async (req, res, next, error = null) => {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
@@ -88,7 +88,7 @@ const getAddMultiplePupils = async (req, res, next) => {
   const { csvErrorFile } = req.session
   const templateFile = 'assets/csv/mtc-pupil-details-template-sheet-1.csv'
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {

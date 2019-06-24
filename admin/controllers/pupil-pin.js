@@ -30,7 +30,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   let checkWindowData
   let availabilityData
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
@@ -85,7 +85,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
   let checkWindowData
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
@@ -144,7 +144,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   let school
   let checkWindowData
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
 
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
@@ -189,7 +189,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   let checkWindowData
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
@@ -242,7 +242,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   let checkWindowData
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {

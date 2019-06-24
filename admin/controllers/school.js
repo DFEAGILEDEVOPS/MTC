@@ -21,7 +21,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   try {
     // Fetch set of flags to determine pin generation allowance on UI
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
     const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)

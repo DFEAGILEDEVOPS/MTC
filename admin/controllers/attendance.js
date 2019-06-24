@@ -191,7 +191,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
@@ -233,7 +233,7 @@ controller.postConfirmSubmit = async (req, res, next) => {
   }
 
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     await headteacherDeclarationService
       .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
@@ -249,7 +249,7 @@ controller.getDeclarationForm = async (req, res, next) => {
 
   let hdfEligibility
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
     const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
     if (!availabilityData.hdfAvailable) {
@@ -277,7 +277,7 @@ controller.getDeclarationForm = async (req, res, next) => {
 controller.postDeclarationForm = async (req, res, next) => {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
-  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
 
   let hdfEligibility
   try {

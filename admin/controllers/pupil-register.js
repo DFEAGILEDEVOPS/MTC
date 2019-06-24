@@ -12,7 +12,7 @@ const listPupils = async (req, res, next) => {
   let availabilityData
   let pupilsFormatted = []
   try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow(req)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData)
     pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId)
   } catch (error) {
