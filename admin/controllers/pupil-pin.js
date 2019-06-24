@@ -149,7 +149,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
 
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
+      return next(Error(`School [${req.user.School}] not found`))
     }
     const update = pinGenerationService.generateSchoolPassword(school)
     if (update) {

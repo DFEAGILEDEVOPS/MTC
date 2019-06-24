@@ -31,8 +31,7 @@ const checkStartService = {}
  *                     * Store the check config in the `checkConfig` table
  *                     * request pupil-status changes by writing to the `pupil-status` queue
  * @param pupilIds
- * @param dfeNumber
- * @param schoolId
+ * @param school
  * @param isLiveCheck
  * @return {Promise<void>}
  */
@@ -48,12 +47,14 @@ checkStartService.prepareCheck2 = async function (
     throw new Error('school is required')
   }
 
+  const { dfeNumber, id, name, pin, timezone } = school
+
   // Validate the incoming pupil list to ensure that the pupils are real ids:
   // * that they belong to the user's school
   // * that they are eligible for pin generation
   // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
   const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
-    school.id,
+    id,
     pupilIds,
     isLiveCheck
   )
@@ -65,7 +66,7 @@ checkStartService.prepareCheck2 = async function (
   )
   if (difference.size > 0) {
     logger.error(
-      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${school.dfeNumber}]: `,
+      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
       difference
     )
     throw new Error('Validation failed')
@@ -94,8 +95,8 @@ checkStartService.prepareCheck2 = async function (
       allForms,
       usedFormIds,
       isLiveCheck,
-      school.id,
-      school.timezone
+      id,
+      timezone
     )
     checks.push(c)
   }
@@ -106,13 +107,13 @@ checkStartService.prepareCheck2 = async function (
     : [res.insertId]
 
   const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
-    school.id,
+    id,
     newCheckIds,
     pupilIds
   )
 
   await pinGenerationV2Service.checkAndUpdateRestarts(
-    school.id,
+    id,
     pupils,
     newCheckIds
   )
@@ -134,7 +135,7 @@ checkStartService.prepareCheck2 = async function (
   try {
     prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
       newCheckIds,
-      school,
+      { id, name, pin },
       allForms
     )
   } catch (error) {
@@ -261,7 +262,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * Query the DB and put the info into messages suitable for placing on the prepare-check queue
  * The message needs to contain everything the pupil needs to login and take the check
  * @param checkIds
- * @param {number} schoolId - DB PK - school.id
+ * @param {Object} school
  * @return {Promise<Array>}
  */
 checkStartService.prepareCheckQueueMessages = async function (checkIds, school, allForms) {
