@@ -91,7 +91,7 @@ async function updatePupilStatusForLiveChecksV2 (logger, logPrefix, checkData) {
     try {
       await azureStorageHelper.addMessageToQueue('pupil-status', {
         version: 2,
-        messages: checks
+        messages: R.map(i => R.pick(['pupilId', 'checkCode'], i), checks)
       })
       logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
     } catch (error) {
