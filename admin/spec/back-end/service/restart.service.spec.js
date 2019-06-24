@@ -138,26 +138,6 @@ describe('restart.service', () => {
       }
       expect(pupilRestartDataService.sqlCreate).toHaveBeenCalledTimes(0)
     })
-
-    it(`should expireMultiplePins, canAllPupilsRestart and sqlFindByIds with an array of numeric values when provided 
-    an array of mixed types between numbers and object containing numbers`, async () => {
-      const schoolId = 42
-      let pupilIds = []
-      let processedPupilIds = []
-      for (let i = 0; i <= 40; i++) {
-        pupilIds.push(i < 20 ? i : { i })
-        processedPupilIds.push(i)
-      }
-      const expireMultiplePinsSpy = spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
-      const canAllPupilsRestartSpy = spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
-      spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
-      spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ 'ok': 1, 'n': 1 })
-      const sqlFindByIdsSpy = spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([{ id: 1, urlSlug: 'anc-def' }])
-      await restartService.restart(pupilIds, 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
-      expect(expireMultiplePinsSpy.calls.first().args[0]).toEqual(processedPupilIds)
-      expect(canAllPupilsRestartSpy.calls.first().args[0]).toEqual(processedPupilIds)
-      expect(sqlFindByIdsSpy.calls.first().args[0]).toEqual(processedPupilIds)
-    })
   })
 
   describe('canAllPupilsRestart', () => {

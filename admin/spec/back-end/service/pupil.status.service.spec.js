@@ -13,7 +13,6 @@ const startedCheckMock = require('../mocks/check-started')
 const completedCheckMock = require('../mocks/completed-check')
 const pupilStatusCodeDataService = require('../../../services/data-access/pupil-status-code.data.service')
 const pupilAttendanceDataService = require('../../../services/data-access/pupil-attendance.data.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
 
 /* global describe, it, expect, spyOn */
 describe('pupil status service', () => {
@@ -163,21 +162,6 @@ describe('pupil status service', () => {
       spyOn(checkDataService, 'sqlFindLastCheckByPupilId').and.returnValue(newCheckMock)
       const result = await pupilStatusService.getStatus(pupil)
       expect(result).toBe('Completed')
-    })
-  })
-  describe('recalculateStatusByPupilIds', () => {
-    it('ensures/converts all pupil ids are numeric values before calling sqlFindByIds', async () => {
-      const sqlFindByIdsSpy = spyOn(pupilDataService, 'sqlFindByIds')
-      spyOn(pupilStatusService, 'dispatchPupilStatusMessages')
-      const schoolId = 2
-      let pupilIds = []
-      let processedPupilIds = []
-      for (let i = 0; i <= 40; i++) {
-        pupilIds.push(i < 20 ? i : { i })
-        processedPupilIds.push(i)
-      }
-      await pupilStatusService.recalculateStatusByPupilIds(pupilIds, schoolId)
-      expect(sqlFindByIdsSpy.calls.first().args[0]).toEqual(processedPupilIds)
     })
   })
 })

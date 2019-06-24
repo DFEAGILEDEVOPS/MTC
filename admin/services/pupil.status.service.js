@@ -117,14 +117,11 @@ pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) 
  * @param {number} schoolId - ID of school in school table
  */
 pupilStatusService.recalculateStatusByPupilIds = async (pupilIds, schoolId) => {
-  // After exceeding 20 items the request payload received contains object key-value pairs
-  // Detecting and converting them to strings is necessary as part of the processing
-  const processedPupilIds = pupilIds.map(p => typeof p === 'object' ? Object.values(p)[0] : p)
-  if (!(Array.isArray(processedPupilIds) && processedPupilIds.length > 0)) {
+  if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
     throw new Error('Invalid parameter: pupilIds')
   }
 
-  const pupils = await pupilDataService.sqlFindByIds(processedPupilIds, schoolId)
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
 
   await pupilStatusService.dispatchPupilStatusMessages(pupils)
 }
