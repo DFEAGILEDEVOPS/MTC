@@ -54,7 +54,7 @@ services:
     build:
       context: ./pupil-spa
       args:
-        APPINSIGHTS_INSTRUMENTATIONKEY: ${AZURE_STORAGE_CONNECTION_STRING}
+        APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
         AUTH_URL: http://pupil-api:3003/auth
     container_name: mtc_pupil_2
     ports:
@@ -66,7 +66,7 @@ services:
     - admin-app
     - pupil-api
     environment:
-      APPINSIGHTS_INSTRUMENTATIONKEY: ${AZURE_STORAGE_CONNECTION_STRING}
+      APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
       AUTH_URL: http://pupil-api:3003/auth
   pupil-tests:
     build: ./test/pupil-hpa
