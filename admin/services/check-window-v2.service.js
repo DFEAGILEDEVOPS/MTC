@@ -22,9 +22,13 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
 
 /**
  * Get active check window
+ * @param {Object} req
  * @return {Promise<Object>} Check window object
  */
-checkWindowV2Service.getActiveCheckWindow = async () => {
+checkWindowV2Service.getActiveCheckWindow = async req => {
+  if (req && req.checkWindow) {
+    return req.checkWindow
+  }
   return checkWindowDataService.sqlFindActiveCheckWindow()
 }
 

@@ -15,6 +15,7 @@ async function isAdminWindowAvailable (req, res, next) {
     // if there is no current active check window, default to the latest found
     if (!checkWindow) checkWindow = await checkWindowV2Service.getLatestCheckWindow()
     if (checkWindow && currentDate.isBetween(checkWindow.adminStartDate, checkWindow.adminEndDate)) {
+      req.checkWindow = checkWindow
       return next()
     }
     const isBeforeStartDate = checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
