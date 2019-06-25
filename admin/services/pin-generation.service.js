@@ -12,10 +12,15 @@ const pupilAttendanceService = require('../services/attendance.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const config = require('../config')
+const logger = require('./log.service').getLogger()
 
 const allowedWords = new Set(
   (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
 )
+
+const bannedWords = [
+  'dim'
+]
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 
@@ -185,6 +190,14 @@ pinGenerationService.generateSchoolPassword = school => {
   if (pinValidator.isActivePin(school.pin, school.pinExpiresAt)) {
     return undefined
   }
+
+  bannedWords.forEach(word => {
+    if (allowedWords.has(word)) {
+      allowedWords.delete(word)
+      logger.warn(`generateSchoolPassword: removed banned word '${word}' from word-list`)
+    }
+  })
+
   const wordsArray = Array.from(allowedWords)
   const firstRandomWord =
     wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]

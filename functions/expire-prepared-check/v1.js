@@ -25,7 +25,7 @@ const v1 = {
  */
 async function deleteExpiredChecks (logger) {
   const query = new azureStorage.TableQuery()
-    .top(500)
+    .top(1000)
     .where('pinExpiresAt le ?', new Date())
 
   let data
