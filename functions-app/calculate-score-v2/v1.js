@@ -1,12 +1,18 @@
 'use strict'
 
+const config = require('../config')
 const checkWindowDataService = require('./check-window.data.service')
 const schoolScoresDataService = require('./schools-scores.data.service')
 const schoolDataService = require('./school.data.service')
 const pupilResultsDiagnosticCache = require('./pupil-results-diagnostic-cache.data.service')
+const redisCacheService = require('../lib/redis-cache.service')
+
+let logger
 
 const v1 = {
   process: async function (context) {
+    logger = context.log
+    redisCacheService.setLogger(logger)
     await handleStoreSchoolsScores(context)
   }
 }
@@ -33,10 +39,13 @@ async function handleStoreSchoolsScores (context) {
 
   // Iterate for each school id and store data in sql cache table and redis
   schoolIds.forEach(async schoolId => {
-    const schoolResultData = await schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure(liveCheckWindow.id, schoolId)
-    const payload = JSON.stringify(schoolResultData)
-    await pupilResultsDiagnosticCache.sqlInsert(schoolId, payload)
-    // TODO: store in redis
+    try {
+      const result = await schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure(liveCheckWindow.id, schoolId)
+      await pupilResultsDiagnosticCache.sqlInsert(schoolId, result)
+      await redisCacheService.set(`result:${schoolId}`, result, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
+    } catch (error) {
+      context.log.error(`calculate-score-v2 v1: ${error}`)
+    }
   })
 }
 

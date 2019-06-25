@@ -3,21 +3,24 @@
 /* global describe expect spyOn fail it */
 const moment = require('moment')
 
+const config = require('../config')
 const schoolScoresDataService = require('./schools-scores.data.service')
 const checkWindowDataService = require('./check-window.data.service')
 const schoolDataService = require('./school.data.service')
 const pupilResultsDiagnosticCache = require('./pupil-results-diagnostic-cache.data.service')
+const redisCacheService = require('../lib/redis-cache.service')
 const v1 = require('./v1')
 const context = require('../mock-context')
 
 describe('calculate-score-v2: v1', () => {
   describe('process', () => {
-    it('executes score calculation store procedure', async () => {
+    it('executes get school scores store procedure and stores data in sql cache and redis cache', async () => {
       spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, checkEndDate: moment.utc().add(5, 'days') })
       spyOn(schoolDataService, 'sqlFindSchoolIds').and.returnValue([1, 2, 3, 4])
       spyOn(pupilResultsDiagnosticCache, 'sqlDelete')
       spyOn(schoolScoresDataService, 'sqlExecuteGetSchoolScoresStoreProcedure').and.returnValue({ id: 1 })
       spyOn(pupilResultsDiagnosticCache, 'sqlInsert')
+      spyOn(redisCacheService, 'set')
       try {
         await v1.process(context)
       } catch (error) {
@@ -27,7 +30,8 @@ describe('calculate-score-v2: v1', () => {
       expect(schoolDataService.sqlFindSchoolIds).toHaveBeenCalled()
       expect(pupilResultsDiagnosticCache.sqlDelete).toHaveBeenCalled()
       expect(schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure).toHaveBeenCalled()
-      expect(pupilResultsDiagnosticCache.sqlInsert).toHaveBeenCalledWith(1, '{"id":1}')
+      expect(pupilResultsDiagnosticCache.sqlInsert).toHaveBeenCalledWith(1, { id: 1 })
+      expect(redisCacheService.set).toHaveBeenCalledWith('result:1', { id: 1 }, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
     })
     it('returns before proceeding further if no check window is found', async () => {
       spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({})

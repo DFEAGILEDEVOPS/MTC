@@ -4,10 +4,11 @@ const { TYPES } = sqlService
 /**
  * Insert school result data into pupilResultsDiagnosticCache
  * @param {Number} schoolId
- * @param {String} payload
+ * @param {Object} rawPayload
  * @return {Promise<object>}
  */
-module.exports.sqlInsert = async (schoolId, payload) => {
+module.exports.sqlInsert = async (schoolId, rawPayload) => {
+  const payload = JSON.stringify(rawPayload)
   const sql = `
     INSERT INTO [mtc_admin].[pupilResultsDiagnosticCache] (school_id, payload)
         VALUES (@schoolId, @payload)
