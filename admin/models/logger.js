@@ -60,7 +60,7 @@ class Logger {
   }
 
   log (level, msg, exception) {
-    this.logger.log(level, msg, exception)
+    this.logger.log(level, msg + ' ', exception)
   }
 
   /**

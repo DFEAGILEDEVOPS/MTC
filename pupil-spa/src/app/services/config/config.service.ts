@@ -9,6 +9,7 @@ import 'rxjs/add/operator/catch';
 export interface IAppConfig {
   applicationInsightsInstrumentationKey: string;
   authURL: string;
+  authPingURL: string;
   checkStartAPIErrorDelay: number;
   checkStartAPIErrorMaxAttempts: number;
   checkSubmissionApiErrorDelay: number;
@@ -26,6 +27,7 @@ export interface IAppConfig {
 export class AppConfig implements IAppConfig {
   readonly applicationInsightsInstrumentationKey: string;
   readonly authURL: string;
+  readonly authPingURL: string;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
   readonly checkSubmissionApiErrorDelay: number;

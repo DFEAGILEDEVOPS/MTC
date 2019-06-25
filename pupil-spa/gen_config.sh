@@ -1,5 +1,6 @@
 #!/bin/bash
 authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
+authPingUrl=${AUTH_PING_URL:-"http://localhost:3003/ping"}
 production=${PRODUCTION:-"false"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}
 checkStartAPIErrorMaxAttempts=${CHECK_START_MAX_ATTEMPTS:-"3"}
@@ -30,6 +31,7 @@ fi
 cat <<EOF > config.json
 {
   "authURL": "$authUrl",
+  "authPingURL": "$authPingUrl",
   "production": $production,
   "checkStartAPIErrorDelay": $checkStartAPIErrorDelay,
   "checkStartAPIErrorMaxAttempts": $checkStartAPIErrorMaxAttempts,
