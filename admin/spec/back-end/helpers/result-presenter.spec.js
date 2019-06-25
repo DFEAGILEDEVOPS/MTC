@@ -14,7 +14,10 @@ describe('resultPresenter', () => {
         dateOfBirth: dateOfBirth,
         mark: 5,
         reason: null,
-        group_id: 1
+        group_id: 1,
+        checkStatusCode: 'CMP',
+        pupilStatusCode: 'COMPLETED',
+        statusInformation: ''
       }]
       const pupilData = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
@@ -24,7 +27,7 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: 5,
-        reason: null,
+        status: '',
         group_id: 1
       }])
     })
@@ -37,7 +40,8 @@ describe('resultPresenter', () => {
         dateOfBirth: dateOfBirth,
         mark: 5,
         reason: 'Absent',
-        group_id: 1
+        group_id: 1,
+        statusInformation: ''
       }]
       const pupilData = resultPresenter.getResultsViewData(pupils)
       expect(pupilData).toEqual([{
@@ -47,7 +51,7 @@ describe('resultPresenter', () => {
         fullName: 'lastName, foreName',
         dateOfBirth: dateOfBirth,
         score: '-',
-        reason: 'Absent',
+        status: 'Absent',
         group_id: 1
       }])
     })
