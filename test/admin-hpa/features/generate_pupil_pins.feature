@@ -165,3 +165,9 @@ Feature: Generate Pupil PINs
     And I am on the generate pupil pins page
     Then generated pin overview page for live check with some pin generated is displayed as per design
 
+  @wip @remove_all_groups
+  Scenario: Generate pins for 250 pupils
+    Given I want to generate pins for a group of 250 pupils
+    When I select all 250 pupils
+    Then I should be able to generate pins
+

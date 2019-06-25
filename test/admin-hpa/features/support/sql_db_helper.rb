@@ -436,4 +436,46 @@ class SqlDbHelper
     result.do
   end
 
+  def self.set_pupil_status_via_upn_list(upn_array)
+    sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=4 WHERE upn in ('#{upn_array.join("','")}')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_check_status_via_upn_list(upn_array)
+    pupil_ids = upn_array.map {|upn| pupil_details(upn)['id']}
+    sql = "UPDATE [mtc_admin].[check] set checkStatus_id=6 WHERE pupil_id in ('#{pupil_ids.join("','")}')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.count_all_restarts
+    sql = "SELECT COUNT(*) FROM [mtc_admin].[pupilRestart]"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
+  end
+
+  def self.count_unallocated_pupils(school_id)
+    sql = "SELECT COUNT(*) FROM [mtc_admin].[pupil] WHERE pupilStatus_id=1 and school_id=#{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
+  end
+
+  def self.create_group(group_name, school_id)
+    sql = "INSERT INTO [mtc_admin].[group] (name, isDeleted, createdAt, updatedAt, school_id) VALUES ('#{group_name}','#{false}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
+
+  def self.add_pupil_to_group(group_id, pupil_id)
+    sql = "INSERT INTO [mtc_admin].[pupilGroup] (group_id, pupil_id, createdAt, updatedAt) VALUES ('#{group_id}','#{pupil_id.to_s}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557')"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
 end

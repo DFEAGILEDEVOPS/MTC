@@ -297,7 +297,6 @@ And(/^the pin should also be removed$/) do
   expect(array_of_names).to_not include @details_hash[:first_name]
 end
 
-
 And(/^I should not see the pupil on the select pupils for restarts list$/) do
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
@@ -306,4 +305,32 @@ And(/^I should not see the pupil on the select pupils for restarts list$/) do
   else
     expect(restarts_page).to have_no_pupils
   end
+end
+
+Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_restarts|
+  @number_of_restarts = number_of_restarts + 1
+  step "I am logged in"
+  step "I am on the add multiple pupil page"
+  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@number_of_restarts,'restarts.csv')
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
+  generate_pins_overview_page.select_all_pupils.click
+  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
+  generate_pins_overview_page.sticky_banner.confirm.click
+  expect(current_url).to include '/view-and-print-live-pins'
+  SqlDbHelper.set_pupil_status_via_upn_list(@upn_list)
+  SqlDbHelper.set_check_status_via_upn_list(@upn_list)
+end
+
+Then(/^I can select all$/) do
+  restarts_page.load
+  restarts_page.select_pupil_to_restart_btn.click
+  pupil_names = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['foreName']}
+  @before_submission = SqlDbHelper.count_all_restarts
+  restarts_page.restarts_for_multiple_pupils_using_names(pupil_names)
+end
+
+And(/^I should see the pupils have a restart$/) do
+  after_submission = SqlDbHelper.count_all_restarts
+  expect(@before_submission + @number_of_restarts).to eql after_submission
 end
