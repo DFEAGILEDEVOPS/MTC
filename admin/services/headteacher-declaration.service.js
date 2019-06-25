@@ -118,14 +118,14 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * False if we are not in a check window
  * False if we are in a check window and it has not been submitted
  * @param dfeNumber
+ * @param checkWindowId
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) => {
-  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-  if (!checkWindow) {
+headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber, checkWindowId) => {
+  if (!checkWindowId) {
     return false
   }
-  return headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindow.id)
+  return headteacherDeclarationService.isHdfSubmittedForCheck(dfeNumber, checkWindowId)
 }
 
 /**
