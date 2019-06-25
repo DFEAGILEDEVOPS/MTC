@@ -10,7 +10,7 @@ const { TYPES } = sqlService
 module.exports.sqlInsert = async (schoolId, payload) => {
   const sql = `
     INSERT INTO [mtc_admin].[pupilResultsDiagnosticCache] (school_id, payload)
-        VALUES (@schoolId)
+        VALUES (@schoolId, @payload)
   `
   const params = [
     {
