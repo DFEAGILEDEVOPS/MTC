@@ -18,7 +18,7 @@ class AzureTableHelper
 
   def self.get_pupil_feedback(check_code)
     query = { :filter => "checkCode eq '#{check_code}'" }
-    Timeout.timeout(60){sleep 1 until !AZURE_TABLE_CLIENT.query_entities('pupilFeedback', query).empty?}
+    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until !AZURE_TABLE_CLIENT.query_entities('pupilFeedback', query).empty?}
     AZURE_TABLE_CLIENT.query_entities('pupilFeedback', query).first
   end
 

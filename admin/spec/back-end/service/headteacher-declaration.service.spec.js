@@ -174,14 +174,13 @@ describe('headteacherDeclarationService', () => {
     const service = require('../../../services/headteacher-declaration.service')
 
     it('calls isHdfSubmittedForCheck', async () => {
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
+      const checkWindowId = 1
       spyOn(service, 'isHdfSubmittedForCheck')
-      await service.isHdfSubmittedForCurrentCheck(dfeNumber)
-      expect(service.isHdfSubmittedForCheck).toHaveBeenCalledWith(dfeNumber, checkWindowMock.id)
+      await service.isHdfSubmittedForCurrentCheck(dfeNumber, checkWindowId)
+      expect(service.isHdfSubmittedForCheck).toHaveBeenCalledWith(dfeNumber, checkWindowId)
     })
 
-    it('returns false if there isnt an active check window', async () => {
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.resolve(undefined))
+    it('returns false if a check window id is not provided', async () => {
       const res = await service.isHdfSubmittedForCurrentCheck(dfeNumber)
       expect(res).toBeFalsy()
     })

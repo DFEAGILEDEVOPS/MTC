@@ -20,18 +20,15 @@ const controller = {}
 controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
-  let pupils
+  let pupilResultData
   let groups
   let checkWindow
-  let schoolScoreRecord
-  let schoolScore
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    pupils = await resultService.getPupilsWithResults(req.user.schoolId, checkWindow.id)
-    schoolScoreRecord = await resultService.getSchoolScore(req.user.schoolId, checkWindow.id)
+    pupilResultData = await resultService.getPupilResultData(req.user.schoolId, checkWindow && checkWindow.id)
     groups = await groupService.getGroups(req.user.schoolId)
-    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindow && checkWindow.id)
   } catch (error) {
     return next(error)
   }
@@ -57,20 +54,12 @@ controller.getViewResultsPage = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
-
-  if (!schoolScoreRecord) {
-    return res.render('availability/admin-window-unavailable', {
-      isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
-    })
-  }
-  const pupilData = resultPresenter.getResultsViewData(pupils)
-  const nationalScore = resultPresenter.formatScore(checkWindow.score)
-  schoolScore = resultPresenter.formatScore(schoolScoreRecord.score)
+  const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
+  const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
   return res.render('results/view-results', {
     pupilData,
+    maxMark: config.LINES_PER_CHECK_FORM,
     groups,
-    schoolScore,
-    nationalScore,
     breadcrumbs: req.breadcrumbs()
   })
 }
