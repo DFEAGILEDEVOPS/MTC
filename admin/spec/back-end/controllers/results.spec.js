@@ -201,7 +201,7 @@ describe('results controller:', () => {
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
       spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
+      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
       spyOn(resultPresenter, 'formatGeneratedAtValue')
