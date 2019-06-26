@@ -248,7 +248,6 @@ Then(/^I should be able to remove any access arrangements for the pupil from the
   select_access_arrangements_page.save.click
   select_access_arrangements_page.confirm_removal.click
   expect(access_arrangements_page.success_message.text).to eql "Access arrangements removed for #{@pupil_name}"
-  expect(access_arrangements_page).to have_no_pupils_message
 end
 
 
