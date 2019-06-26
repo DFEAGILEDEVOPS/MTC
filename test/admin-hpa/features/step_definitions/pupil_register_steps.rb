@@ -48,7 +48,7 @@ end
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   pupil_register_page.load
   p @details_hash[:first_name]
-  Timeout.timeout(180){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).result.text == status}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).result.text == status}
 end
 
 Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
