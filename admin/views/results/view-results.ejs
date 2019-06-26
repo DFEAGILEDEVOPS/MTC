@@ -10,10 +10,6 @@
       These results are for pupils who participated in the 2019 pilot.
       Until verified, these results are subject to review.
     </p>
-    </p>
-    <p class="font-medium">
-      These results have been generated at <%= generatedAt %> and are updated every 24 hours.
-    </p>
     <p class="font-medium">
       Each score is out of <%= maxMark %>.
     </p>
@@ -49,6 +45,12 @@
   </table>
   </div>
 </div>
+<div>
+  <span class="font-small font-greyed-out">
+    These results were generated on <%= generatedAt %>
+  </span>
+</div>
+
 <div class="back-to-top-container">
   <a href="#top">Back to top</a>
 </div>

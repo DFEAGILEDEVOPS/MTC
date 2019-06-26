@@ -46,8 +46,14 @@ controller.getViewResultsPage = async (req, res, next) => {
   const isResultsPageAccessibleForIncompleteHdfs =
     resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(currentDate, checkWindow, isHdfSubmitted)
 
-  if (!isResultsFeatureAccessible || !redisResult) {
+  if (!isResultsFeatureAccessible) {
     return res.render('results/view-unavailable-results', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
+  if (!redisResult) {
+    return res.render('results/view-results-not-found', {
       breadcrumbs: req.breadcrumbs()
     })
   }

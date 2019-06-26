@@ -49,7 +49,7 @@ resultPresenter.formatResultsOpeningDate = (resultsOpeningDate) => {
  * @returns {String}
  */
 resultPresenter.formatGeneratedAtValue = (generatedAt) => {
-  return dateService.formatFullGdsDate(moment(generatedAt))
+  return dateService.formatDateAndTime(moment(generatedAt))
 }
 
 module.exports = resultPresenter

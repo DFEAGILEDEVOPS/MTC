@@ -1,0 +1,16 @@
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge"><%= pageTitle %></h1>
+
+    <%- partial('partials/_session_expiry') %>
+
+    <p class="lede font-medium" id="lead-paragraph">
+      There are no results for your school today, try again tomorrow.
+    </p>
+    <p class="font-medium">
+      Results are processed overnight. Today's activity will appear in tomorrow's results.
+    </p>
+  </div>
+</div>
