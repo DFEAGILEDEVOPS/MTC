@@ -7,7 +7,7 @@ const { TYPES } = sqlService
  * @param {Number} schoolId
  * @return {Promise<object>}
  */
-module.exports.sqlExecuteGetSchoolScoresStoreProcedure = async (checkWindowId, schoolId) => {
+module.exports.sqlExecuteGetSchoolScores = async (checkWindowId, schoolId) => {
   const sql = `EXEC [mtc_admin].[spGetPupilsResults] @checkwindowId = @checkWindowId, @schoolId = @schoolId`
   const params = [
     {

@@ -15,11 +15,11 @@ const v1 = {
   process: async function (context) {
     logger = context.log
     redisCacheService.setLogger(logger)
-    await handleStoreSchoolsScores(context)
+    await calculateSchoolResults(context)
   }
 }
 
-async function handleStoreSchoolsScores (context) {
+async function calculateSchoolResults (context) {
   const liveCheckWindow = await checkWindowDataService.sqlFindCalculationPeriodCheckWindow()
 
   // Terminate execution if a check window is not within the calculation period
@@ -42,7 +42,7 @@ async function handleStoreSchoolsScores (context) {
   // Iterate for each school id and store data in sql cache table and redis
   schoolIds.forEach(async schoolId => {
     try {
-      const pupilResultData = await schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure(liveCheckWindow.id, schoolId)
+      const pupilResultData = await schoolScoresDataService.sqlExecuteGetSchoolScores(liveCheckWindow.id, schoolId)
       const generatedAt = moment.utc()
       const rawPayload = { generatedAt, pupilResultData }
       await pupilResultsDiagnosticCache.sqlInsert(schoolId, rawPayload)
