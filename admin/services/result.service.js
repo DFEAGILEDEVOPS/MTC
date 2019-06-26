@@ -14,9 +14,6 @@ resultService.getPupilResultData = async (schoolId) => {
   }
   const redisKey = `result:${schoolId}`
   const result = await redisCacheService.get(redisKey)
-  if (!result || typeof result !== 'string') {
-    throw new Error('redis result record not found or not in appropriate format')
-  }
   return JSON.parse(result)
 }
 

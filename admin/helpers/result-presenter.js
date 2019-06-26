@@ -1,4 +1,6 @@
 'use strict'
+const moment = require('moment')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const dateService = require('../services/date.service')
 const tableSorting = require('./table-sorting')
@@ -39,6 +41,15 @@ resultPresenter.formatScore = (score) => score && (Math.round(score * 10) / 10)
  */
 resultPresenter.formatResultsOpeningDate = (resultsOpeningDate) => {
   return dateService.formatFullGdsDate(resultsOpeningDate)
+}
+
+/**
+ * Get results generated datetime in full GDS format
+ * @param {String} generatedAt
+ * @returns {String}
+ */
+resultPresenter.formatGeneratedAtValue = (generatedAt) => {
+  return dateService.formatFullGdsDate(moment(generatedAt))
 }
 
 module.exports = resultPresenter

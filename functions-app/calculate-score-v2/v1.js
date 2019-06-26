@@ -1,5 +1,7 @@
 'use strict'
 
+const moment = require('moment')
+
 const config = require('../config')
 const checkWindowDataService = require('./check-window.data.service')
 const schoolScoresDataService = require('./schools-scores.data.service')
@@ -40,9 +42,11 @@ async function handleStoreSchoolsScores (context) {
   // Iterate for each school id and store data in sql cache table and redis
   schoolIds.forEach(async schoolId => {
     try {
-      const result = await schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure(liveCheckWindow.id, schoolId)
-      await pupilResultsDiagnosticCache.sqlInsert(schoolId, result)
-      await redisCacheService.set(`result:${schoolId}`, result, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
+      const pupilResultData = await schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure(liveCheckWindow.id, schoolId)
+      const generatedAt = moment.utc()
+      const rawPayload = { generatedAt, pupilResultData }
+      await pupilResultsDiagnosticCache.sqlInsert(schoolId, rawPayload)
+      await redisCacheService.set(`result:${schoolId}`, rawPayload, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
     } catch (error) {
       context.log.error(`calculate-score-v2 v1: ${error}`)
     }

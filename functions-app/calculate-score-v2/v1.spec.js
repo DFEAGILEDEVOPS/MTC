@@ -18,9 +18,9 @@ describe('calculate-score-v2: v1', () => {
       spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({ id: 1, complete: false, checkEndDate: moment.utc().add(5, 'days') })
       spyOn(schoolDataService, 'sqlFindSchoolIds').and.returnValue([1, 2, 3, 4])
       spyOn(pupilResultsDiagnosticCache, 'sqlDelete')
-      spyOn(schoolScoresDataService, 'sqlExecuteGetSchoolScoresStoreProcedure').and.returnValue({ id: 1 })
-      spyOn(pupilResultsDiagnosticCache, 'sqlInsert')
-      spyOn(redisCacheService, 'set')
+      spyOn(schoolScoresDataService, 'sqlExecuteGetSchoolScoresStoreProcedure').and.returnValue([{ id: 1 }])
+      const sqlInsertSpy = spyOn(pupilResultsDiagnosticCache, 'sqlInsert')
+      const redisSetSpy = spyOn(redisCacheService, 'set')
       try {
         await v1.process(context)
       } catch (error) {
@@ -30,8 +30,12 @@ describe('calculate-score-v2: v1', () => {
       expect(schoolDataService.sqlFindSchoolIds).toHaveBeenCalled()
       expect(pupilResultsDiagnosticCache.sqlDelete).toHaveBeenCalled()
       expect(schoolScoresDataService.sqlExecuteGetSchoolScoresStoreProcedure).toHaveBeenCalled()
-      expect(pupilResultsDiagnosticCache.sqlInsert).toHaveBeenCalledWith(1, { id: 1 })
-      expect(redisCacheService.set).toHaveBeenCalledWith('result:1', { id: 1 }, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
+      expect(sqlInsertSpy.calls.first().args[1].generatedAt).toBeDefined()
+      expect(sqlInsertSpy.calls.first().args[1].pupilResultData).toEqual([{ id: 1 }])
+      expect(redisSetSpy.calls.first().args[0]).toEqual('result:1')
+      expect(redisSetSpy.calls.first().args[1].generatedAt).toBeDefined()
+      expect(redisSetSpy.calls.first().args[1].pupilResultData).toEqual([{ id: 1 }])
+      expect(redisSetSpy.calls.first().args[2]).toEqual({ expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
     })
     it('returns before proceeding further if no check window is found', async () => {
       spyOn(checkWindowDataService, 'sqlFindCalculationPeriodCheckWindow').and.returnValue({})
