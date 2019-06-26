@@ -184,7 +184,7 @@ end
 Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expected_score|
   ls_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_code = ls_pupil['checkCode']
-  Timeout.timeout(180){sleep 5 until SqlDbHelper.get_check(check_code)['mark'] != nil}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 5 until SqlDbHelper.get_check(check_code)['mark'] != nil}
   check = SqlDbHelper.get_check(check_code)
   p check
   expect(check['mark']).to eql expected_score

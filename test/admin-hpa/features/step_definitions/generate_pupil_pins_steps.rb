@@ -54,7 +54,7 @@ Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
 end
 
 Then(/^I can see pupil in the list for pupil for not taking check$/) do
-  Timeout.timeout(180){visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
 end
 
 When(/^I click on the Pupil heading$/) do
@@ -251,7 +251,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  Timeout.timeout(20){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'])['pupilStatus_id'] == 6}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'])['pupilStatus_id'] == 6}
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -261,8 +261,8 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
-  Timeout.timeout(30){visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
-  Timeout.timeout(30){visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click

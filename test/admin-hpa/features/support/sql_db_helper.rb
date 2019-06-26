@@ -441,7 +441,7 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
-
+  
   def self.set_check_status_via_upn_list(upn_array)
     pupil_ids = upn_array.map {|upn| pupil_details(upn)['id']}
     sql = "UPDATE [mtc_admin].[check] set checkStatus_id=6 WHERE pupil_id in ('#{pupil_ids.join("','")}')"
@@ -471,11 +471,24 @@ class SqlDbHelper
     result.insert
   end
 
-
   def self.add_pupil_to_group(group_id, pupil_id)
     sql = "INSERT INTO [mtc_admin].[pupilGroup] (group_id, pupil_id, createdAt, updatedAt) VALUES ('#{group_id}','#{pupil_id.to_s}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557')"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
-
+  
+    
+  def self.update_to_25_questions
+    p 'UPDATING TO 25 QUESTIONS'
+    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":2,\"f2\":5}]' WHERE name IN ('MTC0103', 'MTC0100')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+  
+  def self.update_to_10_questions
+    p "UPDATING TO 10 QUESTIONS"
+    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\" : 2,\"f2\" : 5},{\"f1\" : 11,\"f2\" : 2},{\"f1\" : 5,\"f2\" : 10},{\"f1\" : 4,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 9},{\"f1\" : 2,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 3},{\"f1\" : 4,\"f2\" : 9},{\"f1\" : 6,\"f2\" : 5},{\"f1\" : 12,\"f2\" : 12}]' WHERE name IN ('MTC0103', 'MTC0100')"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
 end
