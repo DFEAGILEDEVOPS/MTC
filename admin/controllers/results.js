@@ -52,18 +52,19 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
 
-  if (!redisResult) {
-    return res.render('results/view-results-not-found', {
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
-
   if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
     return res.render('results/view-incomplete-hdf', {
       resultsOpeningDate: resultPresenter.formatResultsOpeningDate(resultsOpeningDay),
       breadcrumbs: req.breadcrumbs()
     })
   }
+
+  if (!redisResult) {
+    return res.render('results/view-results-not-found', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
   const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
   const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
   generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
