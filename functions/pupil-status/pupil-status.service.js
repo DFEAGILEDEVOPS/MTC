@@ -1,9 +1,11 @@
 'use strict'
 
-const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 const R = require('ramda')
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
+
+const azureStorageHelper = require('../lib/azure-storage-helper')
+const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 
 async function recalculatePupilStatus (pupilId) {
   const currentData = await getCurrentPupilData(pupilId)
@@ -69,6 +71,36 @@ async function changePupilState (pupilId, targetStatusCode) {
   return sqlService.modify(sql, params)
 }
 
+/**
+ * Filter for live checks and make a request for the pupil-status to be updated for multiple pupils on v2
+ * @param {Object} logger
+ * @param {String} logPrefix
+ * @param {[{checkId: <number>, pupilId: <number>, checkCode: <string>, isLiveCheck: <boolean>}]} checkData - must contain `checkId`, `pupilId`, `checkCode` and `isLiveCheck` props
+ * @return {Promise<*|Promise<*>>}
+ */
+async function updatePupilStatusForLiveChecksV2 (logger, logPrefix, checkData) {
+  if (!checkData || !Array.isArray(checkData)) {
+    logger.error(`${logPrefix}: updatePupilStatusV2(): ERROR: check data provided must be an array`)
+    return
+  }
+  logger.info(`${logPrefix}: updatePupilStatusV2(): got ${checkData.length} pupils`)
+  // Batch the async messages up for live checks only, to limit max concurrency
+  const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
+  checkData = null
+  batches.forEach(async (checks, batchNumber) => {
+    try {
+      await azureStorageHelper.addMessageToQueue('pupil-status', {
+        version: 2,
+        messages: R.map(i => R.pick(['pupilId', 'checkCode'], i), checks)
+      })
+      logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
+    } catch (error) {
+      logger.error(`${logPrefix}: updatePupilStatusV2(): ERROR: ${error.message}`)
+    }
+  })
+}
+
 module.exports = {
-  recalculatePupilStatus
+  recalculatePupilStatus,
+  updatePupilStatusForLiveChecksV2
 }
