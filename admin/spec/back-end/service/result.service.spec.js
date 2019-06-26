@@ -5,13 +5,13 @@ const resultDataService = require('../../../services/data-access/result.data.ser
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
-  describe('getPupilsWithResults', () => {
+  describe('getPupilResultData', () => {
     it('calls sqlFindResultsBySchool when school id and check window id are provided', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool')
+      spyOn(resultDataService, 'sqlFindResultsBySchool').and.returnValue([{}])
       const checkWindowId = 1
       const schoolId = 2
       try {
-        await resultService.getPupilsWithResults(schoolId, checkWindowId)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
       } catch (error) {
         fail()
       }
@@ -22,7 +22,7 @@ describe('result.service', () => {
       const checkWindowId = undefined
       const schoolId = 2
       try {
-        await resultService.getPupilsWithResults(schoolId, checkWindowId)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
         fail()
       } catch (error) {
         expect(error.message).toBe('check window id not found')
@@ -34,7 +34,7 @@ describe('result.service', () => {
       const checkWindowId = 1
       const schoolId = undefined
       try {
-        await resultService.getPupilsWithResults(schoolId, checkWindowId)
+        await resultService.getPupilResultData(schoolId, checkWindowId)
         fail()
       } catch (error) {
         expect(error.message).toBe('school id not found')
@@ -130,6 +130,90 @@ describe('result.service', () => {
       }
       expect(resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId).toHaveBeenCalled()
       expect(scoreRecord).toEqual({ id: 1 })
+    })
+  })
+  describe('assignResultStatuses', () => {
+    it('returns incomplete status if check status is not received and pupil status is started', () => {
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: null,
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'NTR',
+        pupilStatusCode: 'STARTED'
+      }]
+      const pupilData = resultService.assignResultStatuses(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: null,
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'NTR',
+        pupilStatusCode: 'STARTED',
+        statusInformation: 'Incomplete'
+      }])
+    })
+    it('returns did not participate if pupil status code is unallocated and no check status code is provided', () => {
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: null,
+        reason: '',
+        group_id: 1,
+        checkStatusCode: null,
+        pupilStatusCode: 'UNALLOC'
+      }]
+      const pupilData = resultService.assignResultStatuses(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: null,
+        reason: '',
+        group_id: 1,
+        checkStatusCode: null,
+        pupilStatusCode: 'UNALLOC',
+        statusInformation: 'Did not participate'
+      }])
+    })
+    it('returns did not attempt the restart if pupil status code is unallocated and check status is CMP', () => {
+      const pupils = [{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: '',
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'CMP',
+        pupilStatusCode: 'UNALLOC',
+        pupilRestartId: 1,
+        pupilRestartCheckId: null
+      }]
+      const pupilData = resultService.assignResultStatuses(pupils)
+      expect(pupilData).toEqual([{
+        foreName: 'foreName',
+        lastName: 'lastName',
+        middleNames: 'middleNames',
+        dateOfBirth: 'dateOfBirth',
+        mark: '',
+        reason: '',
+        group_id: 1,
+        checkStatusCode: 'CMP',
+        pupilStatusCode: 'UNALLOC',
+        pupilRestartId: 1,
+        pupilRestartCheckId: null,
+        statusInformation: 'Did not attempt the restart'
+      }])
     })
   })
 })

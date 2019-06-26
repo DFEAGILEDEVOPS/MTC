@@ -3,12 +3,12 @@ const resultDataService = require('../services/data-access/result.data.service')
 const resultService = {}
 
 /**
- * Find pupils with results based on school id
+ * Find pupils with results based on school id and merge with pupil register data
  * @param {Number} schoolId
  * @param {Number} checkWindowId
  * @returns {Object} requestData
  */
-resultService.getPupilsWithResults = async (schoolId, checkWindowId) => {
+resultService.getPupilResultData = async (schoolId, checkWindowId) => {
   if (!schoolId) {
     throw new Error('school id not found')
   }
@@ -36,6 +36,28 @@ resultService.getSchoolScore = async (schoolId, checkWindowId) => {
     return
   }
   return schoolScore
+}
+
+/**
+ * Assign result status to each pupil when appropriate based on check and pupil status
+ * @param {Array} pupils
+ * @returns {Array} pupilsData
+ */
+resultService.assignResultStatuses = (pupils) => {
+  return pupils.map((p) => {
+    let statusInformation = ''
+    if (p.pupilStatusCode !== 'COMPLETED' && p.pupilStatusCode !== 'NOT_TAKING') {
+      statusInformation = 'Did not participate'
+    }
+    if (p.pupilRestartId && !p.pupilRestartCheckId) {
+      statusInformation = 'Did not attempt the restart'
+    }
+    if (p.checkStatusCode === 'NTR' && p.pupilStatusCode === 'STARTED') {
+      statusInformation = 'Incomplete'
+    }
+    p.statusInformation = statusInformation
+    return p
+  })
 }
 
 module.exports = resultService

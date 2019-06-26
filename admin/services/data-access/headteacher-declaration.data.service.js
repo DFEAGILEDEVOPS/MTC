@@ -136,7 +136,7 @@ headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = 
             ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
         FROM [mtc_admin].[check]
         WHERE isLiveCheck = 1
-       ) lastCheck ON (lastCheck.pupil_id = p.id)
+       ) lastCheck ON (lastCheck.pupil_id = p.id AND lastCheck.rank = 1)
     LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
     WHERE p.school_id = @schoolId
   `
