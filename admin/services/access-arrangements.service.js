@@ -19,18 +19,18 @@ accessArrangementsService.getAccessArrangements = async () => {
 /**
  * Submit access arrangements for single pupil
  * @param {Object} submittedData
- * @param {Number} schoolID
+ * @param {Number} schoolId
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.submit = async (submittedData, schoolID, userId) => {
+accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
   const urlSlug = submittedData.pupilUrlSlug || submittedData.urlSlug
   const validationError = accessArrangementsValidator.validate(submittedData)
   if (validationError.hasError()) {
     throw validationError
   }
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolID)
-  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, schoolID, userId)
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
+  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, schoolId, userId)
   const displayData = await accessArrangementsService.save(processedData, pupil)
   await preparedCheckSyncService.addMessages(urlSlug)
   return displayData
