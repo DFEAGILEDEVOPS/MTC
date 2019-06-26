@@ -37,7 +37,6 @@ To stand up the tests, app and db containers run either `./run-compose-admin-tes
 
 Both of these scripts require the following values defined in `/admin/.env`:
 ```
-APPINSIGHTS_INSTRUMENTATIONKEY='foo-bar'
 AZURE_STORAGE_CONNECTION_STRING='foo-bar'
 SQL_PUPIL_CENSUS_USER_PASSWORD='foo-bar'
 ```

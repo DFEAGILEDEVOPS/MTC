@@ -3,7 +3,7 @@ set -e
 
 # would ideally use env_file in docker-compose.admin-test.yml, but it passes through the quotes around strings
 source ./admin/.env
-export APPINSIGHTS_INSTRUMENTATIONKEY AZURE_STORAGE_CONNECTION_STRING SQL_PUPIL_CENSUS_USER_PASSWORD
+export AZURE_STORAGE_CONNECTION_STRING SQL_PUPIL_CENSUS_USER_PASSWORD
 
 docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml build
 docker-compose -f docker-compose.yml -f docker-compose.pupil-test.yml up -d pupil-app functions
