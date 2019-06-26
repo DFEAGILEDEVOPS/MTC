@@ -36,4 +36,20 @@ class AddMultiplePupilPage < SitePrism::Page
     dob
   end
 
+  def create_and_upload_multiple_pupils(number,file_name)
+    @upn_list = []
+    CSV.open("data/#{file_name}", "wb") do |csv|
+      csv << ["Surname","Forename","Middle name(s)","Date of birth","Gender","UPN"]
+      number.to_i.times do
+        upn = UpnGenerator.generate
+        @upn_list << upn
+        csv << ["#{(0...8).map { (65 + rand(26)).chr }.join}","#{(0...8).map { (65 + rand(26)).chr }.join}", "","03/12/2008","f",upn]
+      end
+    end
+    page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/#{file_name}"))
+    save.click
+    File.delete("data/#{file_name}")
+    @upn_list
+  end
+
 end

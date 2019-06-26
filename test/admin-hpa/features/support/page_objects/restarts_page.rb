@@ -58,9 +58,17 @@ class RestartsPage < SitePrism::Page
 
   def restarts_for_pupil(name)
     pupil = find_pupil_row(name)
-    name = pupil.name.text
     pupil.checkbox.click
     reason_1.click
+    sticky_banner.confirm.click
+  end
+
+  def restarts_for_multiple_pupils_using_names(names_array)
+    reason_1.click
+    names_array.each do |name|
+      pupil = find_pupil_row(name)
+      pupil.checkbox.click
+    end
     sticky_banner.confirm.click
   end
 
