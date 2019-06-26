@@ -2,7 +2,7 @@
 
 const sqlService = require('../lib/sql/sql.service')
 const { TYPES } = sqlService
-const azureStorageHelper = require('../lib/azure-storage-helper')
+const pupilStatusService = require('../pupil-status/pupil-status.service')
 
 const v2 = {
   process: async function process (logger) {
@@ -14,7 +14,7 @@ const v2 = {
     await expireRestarts(checkData)
 
     // finally, update the pupil status
-    await azureStorageHelper.updatePupilStatusForLiveChecks(logger, 'check-expiry', checkData)
+    await pupilStatusService.updatePupilStatusForLiveChecksV2(logger, 'check-expiry', checkData)
 
     return {
       processCount: checkData.length
