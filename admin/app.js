@@ -303,10 +303,12 @@ app.use(function (err, req, res, next) {
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
+  const showError = req.app.get('env') === 'development' || req.user.role === 'HELPDESK'
+
   // render the error page
   // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.error = showError ? err : {}
   res.locals.errorId = errorId
   res.locals.errorCode = ''
   res.status(err.status || 500)
