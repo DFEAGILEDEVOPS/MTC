@@ -177,10 +177,15 @@ Then(/^school password should be generated from the specified pool of characters
 end
 
 Given(/^I have generated pins for multiple pupils$/) do
-  step "I am logged in"
-  step "I am on Generate pins Pupil List page"
-  @pupil_names_arr = generate_pins_overview_page.generate_pin_for_multiple_pupils(2)
+  step "I have logged in with teacher1"
+  step "I am on the add multiple pupil page"
+  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3,'pin_gen.csv')
+  generate_pins_overview_page.load
+  step 'I click Generate PINs button'
+  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['lastName']+', ' + SqlDbHelper.pupil_details(upn)['foreName']}
+  generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
   step "I am on the generate pupil pins page"
+
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
@@ -381,21 +386,24 @@ Then(/^I should see that I should not be able to generate a pin$/) do
   expect(school_landing_page).to have_generate_pupil_pin_disabled
 end
 
-Given(/^I want to generate pins for a group of (\d+) pupils$/) do |total_pins|
-  group_name = "multiple_pupil_group" + rand(2335234).to_s
-  SqlDbHelper.create_group(group_name,3)
+Given(/^I want to generate pins for a group of (\d+) pupils with (.+)$/) do |total_pins, teacher|
+  teacher_details = SqlDbHelper.find_teacher(teacher)
+  @group_name = "multiple_pupil_group" + rand(2335234).to_s
+  SqlDbHelper.create_group(@group_name,teacher_details['school_id'])
   @total_pins = total_pins.to_i
-  step "I have logged in with teacher2"
+  step "I have logged in with #{teacher}"
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@total_pins,'pin_gen.csv')
   pupil_ids = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['id']}
-  group_id = SqlDbHelper.find_group(group_name)['id']
+  group_id = SqlDbHelper.find_group(@group_name)['id']
   pupil_ids.each {|id| SqlDbHelper.add_pupil_to_group(group_id, id)}
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
 end
 
 When(/^I select all (\d+) pupils$/) do |arg|
+  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
   generate_pins_overview_page.select_all_pupils.click
   expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql @total_pins
   generate_pins_overview_page.sticky_banner.confirm.click
