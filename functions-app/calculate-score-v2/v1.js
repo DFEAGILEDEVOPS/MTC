@@ -23,7 +23,7 @@ async function calculateSchoolResults (context) {
 
   // Terminate execution if a check window is not within the calculation period
   if (!liveCheckWindow || !liveCheckWindow.id) {
-    context.log(`calculate-score-v2 v1: Live check window not found`)
+    context.log.error(`calculate-score-v2 v1: Live check window not found`)
     return
   }
 
@@ -31,7 +31,7 @@ async function calculateSchoolResults (context) {
 
   // Terminate execution if no school ids are found
   if (!schoolIds || !Array.isArray(schoolIds) || schoolIds.length === 0) {
-    context.log(`calculate-score-v2 v1: school ids not found`)
+    context.log.error(`calculate-score-v2 v1: school ids not found`)
     return
   }
 
@@ -39,17 +39,17 @@ async function calculateSchoolResults (context) {
   await pupilResultsDiagnosticCache.sqlDelete()
 
   // Iterate for each school id and store data in sql cache table and redis
-  schoolIds.forEach(async schoolId => {
+  for (let i = 0; i < schoolIds.length; i++) {
     try {
-      const pupilResultData = await schoolScoresDataService.sqlExecuteGetSchoolScores(liveCheckWindow.id, schoolId)
+      const pupilResultData = await schoolScoresDataService.sqlExecuteGetSchoolScores(liveCheckWindow.id, schoolIds[i])
       const generatedAt = moment.utc()
       const rawPayload = { generatedAt, pupilResultData }
-      await pupilResultsDiagnosticCache.sqlInsert(schoolId, rawPayload)
-      await redisCacheService.set(`result:${schoolId}`, rawPayload, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
+      await pupilResultsDiagnosticCache.sqlInsert(schoolIds[i], rawPayload)
+      await redisCacheService.set(`result:${schoolIds[i]}`, rawPayload, { expires: config.REDIS_RESULTS_EXPIRY_IN_SECONDS })
     } catch (error) {
       context.log.error(`calculate-score-v2 v1: ${error}`)
     }
-  })
+  }
 }
 
 module.exports = v1
