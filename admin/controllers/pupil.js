@@ -196,7 +196,9 @@ const getEditPupilById = async (req, res, next) => {
     const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
     pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
-      return next(new Error(`Pupil ${req.params.id} not found`))
+      let error = new Error(`Pupil ${req.params.id} not found`)
+      error.mtcInfo = 'Please return to the <a href="/pupil-register">pupil register</a> and select a valid pupil'
+      return next(error)
     }
 
     const pupilData = pupilAddService.formatPupilData(pupil)

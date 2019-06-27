@@ -305,6 +305,10 @@ app.use(function (err, req, res, next) {
 
   const showError = req.app.get('env') === 'development' || req.user.role === 'HELPDESK'
 
+  if (showError && err.hasOwnProperty('mtcInfo')) {
+    res.locals.mtcInfo = err.mtcInfo
+  }
+
   // render the error page
   // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'

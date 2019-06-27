@@ -4,4 +4,8 @@
 
 <h2>Error code: <%= errorCode %></h2>
 <p>ID: <%= errorId %></p>
+<% if (typeof mtcInfo !== 'undefined') { %>
+<h2>MTC Information</h2>
+<p><%- mtcInfo %></p>
+<% } %>
 <pre><%= error.stack %></pre>
