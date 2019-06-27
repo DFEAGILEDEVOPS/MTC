@@ -271,6 +271,30 @@ describe('restart controller:', () => {
         expect(logger.error).toHaveBeenCalledTimes(1)
       }
     })
+    it('ensures all pupil ids are numeric values before calling recalculateStatusByPupilIds and restart service methods', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      let pupilIds = []
+      let processedPupilIds = []
+      for (let i = 0; i <= 40; i++) {
+        pupilIds.push(i < 20 ? i : { i })
+        processedPupilIds.push(i)
+      }
+      req.body = {
+        pupil: pupilIds
+      }
+      const validationError = new ValidationError()
+      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
+      const restartServiceSpy = spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(res, 'redirect').and.returnValue(null)
+      const recalculateStatusByPupilIdsSpy = spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      expect(recalculateStatusByPupilIdsSpy.calls.first().args[0]).toEqual(processedPupilIds)
+      expect(restartServiceSpy.calls.first().args[0]).toEqual(processedPupilIds)
+    })
   })
 
   describe('postDeleteRestart route', () => {

@@ -377,7 +377,31 @@ And(/^the displayed school password is generated as per the requirement$/) do
   step 'school password should be generated from the specified pool of characters'
 end
 
-
 Then(/^I should see that I should not be able to generate a pin$/) do
   expect(school_landing_page).to have_generate_pupil_pin_disabled
+end
+
+Given(/^I want to generate pins for a group of (\d+) pupils$/) do |total_pins|
+  group_name = "multiple_pupil_group" + rand(2335234).to_s
+  SqlDbHelper.create_group(group_name,3)
+  @total_pins = total_pins.to_i
+  step "I have logged in with teacher2"
+  step "I am on the add multiple pupil page"
+  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@total_pins,'pin_gen.csv')
+  pupil_ids = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['id']}
+  group_id = SqlDbHelper.find_group(group_name)['id']
+  pupil_ids.each {|id| SqlDbHelper.add_pupil_to_group(group_id, id)}
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
+end
+
+When(/^I select all (\d+) pupils$/) do |arg|
+  generate_pins_overview_page.select_all_pupils.click
+  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql @total_pins
+  generate_pins_overview_page.sticky_banner.confirm.click
+end
+
+Then(/^I should be able to generate pins$/) do
+  expect(current_url).to include '/view-and-print-live-pins'
+  expect(generated_pins_page.pupil_list.rows.size).to eql @total_pins
 end
