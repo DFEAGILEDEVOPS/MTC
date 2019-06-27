@@ -5,7 +5,6 @@ const moment = require('moment')
 const config = require('../config')
 const checkWindowDataService = require('./check-window.data.service')
 const schoolScoresDataService = require('./schools-scores.data.service')
-const schoolDataService = require('./school.data.service')
 const pupilResultsDiagnosticCache = require('./pupil-results-diagnostic-cache.data.service')
 const redisCacheService = require('../lib/redis-cache.service')
 
@@ -28,7 +27,7 @@ async function calculateSchoolResults (context) {
     return
   }
 
-  const schoolIds = await schoolDataService.sqlFindSchoolIds()
+  const schoolIds = await schoolScoresDataService.sqlFindSchoolIds()
 
   // Terminate execution if no school ids are found
   if (!schoolIds || !Array.isArray(schoolIds) || schoolIds.length === 0) {
