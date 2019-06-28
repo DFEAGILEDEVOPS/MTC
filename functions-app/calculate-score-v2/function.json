@@ -1,0 +1,14 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "schedule": "0 0 1 * * *",
+      "name": "calculateScoreV2Timer",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ],
+  "tracing": {
+    "consoleLevel": "verbose"
+  }
+}
