@@ -160,3 +160,24 @@ after making changes ensure you do `docker-compose build` to rebuild from source
 In any service methods which updates tables which will affect these caches, `redisCacheService.drop('cacheName')` can be used to drop it for re-querying. It accepts a single string or an array of strings.
 
 Updates to an existing Redis cache can be done with `redisCacheService.update`. It will perform the supplied changes object on the Redis cache and then send it (with the affected table name) to the Azure `sql-update` message queue. Where it will then be consumed and applied in SQ server by a listener in `/functions`.
+
+## User Role Error Information
+
+When triggering an error in the controller, you can specify an optional `mtcInfo` object with properties for any roles you want to see a specific error message. For example:
+```
+const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
+if (!pupil) {
+  let error = new Error(`Pupil ${req.params.id} not found`)
+  error.mtcInfo = {
+    TEACHER: 'Please return to the <a href="/pupil-register">pupil register</a> and select a valid pupil'
+  }
+  return next(error)
+}
+```
+If the user's role matches one of the properties, they will see that message on the normal error message screen.
+
+The current role types are in `mtc_admin.role.title`:
+`SERVICE-MANAGER`
+`TEST-DEVELOPER`
+`TEACHER`
+`HELPDESK`
