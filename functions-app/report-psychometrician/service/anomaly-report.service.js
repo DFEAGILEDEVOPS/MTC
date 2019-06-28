@@ -96,7 +96,8 @@ anomalyReportService.detectWrongNumberOfAnswers = (check) => {
 
 anomalyReportService.detectPageRefresh = (check) => {
   let pageRefreshCount = 0
-  check.data.audit.forEach(entry => {
+  const audits = R.propOr([], ['data', 'audit'], check)
+  audits.forEach(entry => {
     if (entry.type === 'RefreshDetected') {
       pageRefreshCount += 1
     }
@@ -128,7 +129,8 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
   // should have been closed.
   const questions = check.data.questions
   questions.forEach(question => {
-    const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
+    const audits = R.propOr([], ['data', 'audit'], check)
+    const questionRenderedEvent = audits.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
       return anomalyReportService.produceReportData(check, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
     }
@@ -164,20 +166,22 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
 anomalyReportService.detectMissingAudits = (check) => {
   // We expect to see a QuestionRendered and a PauseRendered event for each Question
   const numberOfQuestions = check.data.questions.length
-  const questionRenderedAudits = check.data.audit.filter(audit => audit.type === 'QuestionRendered')
+  const audits = R.propOr([], ['data', 'audit'], check)
+  const questionRenderedAudits = audits.filter(audit => audit.type === 'QuestionRendered')
   const numberOfPractiseQuestions = 3
   if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
     anomalyReportService.produceReportData(check, 'Wrong number of QuestionRendered audits', questionRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
-  const pauseRenderedAudits = check.data.audit.filter(audit => audit.type === 'PauseRendered')
+  const pauseRenderedAudits = audits.filter(audit => audit.type === 'PauseRendered')
   if (pauseRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
     anomalyReportService.produceReportData(check, 'Wrong number of PauseRendered audits', pauseRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
   const detectMissingSingleAudit = function (auditType) {
     // Detect events that should occur only once
-    const audit = check.data.audit.find(audit => audit.type === auditType)
+    const audits = R.propOr([], ['data', 'audit'], check)
+    const audit = audits.find(audit => audit.type === auditType)
     if (!audit) {
       anomalyReportService.produceReportData(check, `Missing audit ${auditType}`)
     }
@@ -351,9 +355,15 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
   const audits = anomalyReportService.filterAllRealQuestionsAndPauseAudits(check)
   const config = check.data.config
   const head = R.head(audits)
+  if (!head) {
+    return
+  }
   const tail = R.tail(audits)
+  if (!tail) {
+    return
+  }
   if (head.type !== 'PauseRendered') {
-    throw new Error('First audit is NOT a pause')
+    return
   }
   // Add relative timings to each of the elements
   anomalyReportService.addRelativeTimings(audits)
@@ -377,7 +387,7 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
 }
 
 anomalyReportService.detectApplicationErrors = (check) => {
-  const audits = check.data.audit
+  const audits = R.propOr([], ['data', 'audit'], check)
   const appErrors = audits.filter(c => c.type === 'AppError')
   if (appErrors.length) {
     anomalyReportService.produceReportData(check, 'Check has Application Errors', appErrors.length, 0)
@@ -387,7 +397,8 @@ anomalyReportService.detectApplicationErrors = (check) => {
 anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   let hasCheckStarted = false
   const output = []
-  for (let audit of check.data.audit) {
+  const audits = R.propOr([], ['data', 'audit'], check)
+  for (let audit of audits) {
     if (audit.type === 'CheckStarted') {
       hasCheckStarted = true
     }
