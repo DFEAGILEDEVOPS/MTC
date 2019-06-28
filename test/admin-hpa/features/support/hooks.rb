@@ -189,3 +189,8 @@ After do |scenario|
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
+
+at_exit do
+  SqlDbHelper.update_to_10_questions
+end
+

@@ -60,7 +60,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   def generate_pin_for_multiple_pupils(number_of_pupils)
     has_generate_pin_btn? ? generate_pin_btn.click : generated_pin_overview.generate_additional_pins_btn.click
     pupils_with_no_pin = pupil_list.rows.select {|row| row.has_no_selected?}
-    pupils_with_no_pin = pupils_with_no_pin.reject {|row| row.name.text.include? 'áàâãäåāæéèêēëíìîïī' or row.name.text.include? 'ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ'}
+    pupils_with_no_pin = pupils_with_no_pin.reject{|row| row.name.text.scan(/[a-zA-Z0-9]+/).join(" ") != row.name.text.delete(',')}
     pupil_array = pupils_with_no_pin[0..number_of_pupils.to_i]
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}

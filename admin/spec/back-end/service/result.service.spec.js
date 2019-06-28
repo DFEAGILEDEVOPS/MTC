@@ -2,44 +2,31 @@
 /* global describe, it, expect spyOn fail */
 
 const resultDataService = require('../../../services/data-access/result.data.service')
+const redisCacheService = require('../../../services/redis-cache.service')
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
   describe('getPupilResultData', () => {
-    it('calls sqlFindResultsBySchool when school id and check window id are provided', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool').and.returnValue([{}])
-      const checkWindowId = 1
+    it('calls redisCacheService get when school id is provided', async () => {
+      spyOn(redisCacheService, 'get').and.returnValue('[{}]')
       const schoolId = 2
       try {
-        await resultService.getPupilResultData(schoolId, checkWindowId)
+        await resultService.getPupilResultData(schoolId)
       } catch (error) {
         fail()
       }
-      expect(resultDataService.sqlFindResultsBySchool).toHaveBeenCalled()
-    })
-    it('throws an error if check window id is not provided', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool')
-      const checkWindowId = undefined
-      const schoolId = 2
-      try {
-        await resultService.getPupilResultData(schoolId, checkWindowId)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('check window id not found')
-      }
-      expect(resultDataService.sqlFindResultsBySchool).not.toHaveBeenCalled()
+      expect(redisCacheService.get).toHaveBeenCalled()
     })
     it('throws an error if school id is not provided', async () => {
-      spyOn(resultDataService, 'sqlFindResultsBySchool')
-      const checkWindowId = 1
+      spyOn(redisCacheService, 'get')
       const schoolId = undefined
       try {
-        await resultService.getPupilResultData(schoolId, checkWindowId)
+        await resultService.getPupilResultData(schoolId)
         fail()
       } catch (error) {
         expect(error.message).toBe('school id not found')
       }
-      expect(resultDataService.sqlFindResultsBySchool).not.toHaveBeenCalled()
+      expect(redisCacheService.get).not.toHaveBeenCalled()
     })
   })
   describe('getSchoolScore', () => {

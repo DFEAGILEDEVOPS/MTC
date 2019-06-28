@@ -21,12 +21,16 @@ controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
   let pupilResultData
+  let generatedAt
+  let redisResult
   let groups
   let checkWindow
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    pupilResultData = await resultService.getPupilResultData(req.user.schoolId, checkWindow && checkWindow.id)
+    redisResult = await resultService.getPupilResultData(req.user.schoolId)
+    pupilResultData = redisResult && redisResult.pupilResultData
+    generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindow && checkWindow.id)
   } catch (error) {
@@ -54,10 +58,19 @@ controller.getViewResultsPage = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
+
+  if (!redisResult) {
+    return res.render('results/view-results-not-found', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
   const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
   const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
+  generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
   return res.render('results/view-results', {
     pupilData,
+    generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
     breadcrumbs: req.breadcrumbs()

@@ -57,5 +57,12 @@ module.exports = {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
-  Environment: getEnvironment()
+  Environment: getEnvironment(),
+  REDIS_RESULTS_EXPIRY_IN_SECONDS: process.env.hasOwnProperty('REDIS_RESULTS_EXPIRY_IN_SECONDS') ? parseInt(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, 10) : 172800,
+  Redis: {
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() !== 'Local-Dev'
+  }
 }
