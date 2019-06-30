@@ -28,8 +28,8 @@ const mssqlConfig = {
   password: sqlConfig.Application.Password,
   server: sqlConfig.Server,
   database: sqlConfig.Database,
-  connectionTimeout: sqlConfig.connectionTimeout || 30000,
-  requestTimeout: sqlConfig.requestTimeout || 15000,
+  connectionTimeout: parseInt(sqlConfig.connectionTimeout, 10),
+  requestTimeout: parseInt(sqlConfig.requestTimeout, 10),
   pool: {
     max: sqlConfig.Pooling.MaxCount || 5,
     min: sqlConfig.Pooling.MinCount || 0,
