@@ -3,6 +3,7 @@ require('dotenv').config()
 const os = require('os')
 const toBool = require('to-bool')
 const oneMinuteInMilliseconds = 60000
+const fiveMinutesInMilliseconds = oneMinuteInMilliseconds * 5
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -15,6 +16,8 @@ module.exports = {
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
+    requestTimeout: process.env.SQL_REQUEST_TIMEOUT || fiveMinutesInMilliseconds,
+    connectionTimeout: process.env.SQL_CONNECTION_TIMEOUT || oneMinuteInMilliseconds,
     Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
