@@ -5,7 +5,7 @@ const uuid = require('uuid/v4')
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 const accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
-const sqlUtils = require('../lib/sql-helper')
+const checkDataService = require('./check.data.service')
 const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-validator')
 
 const v1 = {}
@@ -13,7 +13,7 @@ const v1 = {}
 v1.process = async function process (context, preparedCheckSyncMessage) {
   const { checkCode } = preparedCheckSyncMessage
   context.log('prepared-check-sync: message received', checkCode)
-  const checkCodes = await sqlUtils.sqlFindActiveCheckCodesByCheckCode(checkCode)
+  const checkCodes = await checkDataService.sqlFindActiveCheckCodesByCheckCode(checkCode)
   for (let idx in checkCodes) {
     await v1.updatePreparedChecks(context, checkCodes[idx])
     context.log('prepared-check-sync: prepared check updated for check code:', checkCodes[idx])

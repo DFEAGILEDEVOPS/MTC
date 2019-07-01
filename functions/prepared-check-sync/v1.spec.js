@@ -24,11 +24,11 @@ const checkConfig = {
 }
 
 describe('prepared-check-sync: v1', () => {
-  let sqlUtils, v1, accessArrangementsSqlUtil
+  let checkDataService, v1, accessArrangementsSqlUtil
 
   beforeAll(() => {
     // sql-helper connects to the database as a side-effect of requiring it.
-    sqlUtils = require('../lib/sql-helper')
+    checkDataService = require('./check.data.service')
     v1 = require('./v1')
     accessArrangementsSqlUtil = require('./access-arrangements-sql-util')
   })
@@ -36,10 +36,10 @@ describe('prepared-check-sync: v1', () => {
   describe('process', () => {
     it('fetches all active checkCodes for a pupil and updates each preparedCheck', async () => {
       const message = { checkCode: 'abc-def-123', version: 1 }
-      spyOn(sqlUtils, 'sqlFindActiveCheckCodesByCheckCode').and.returnValue({ livePupilCheckCode: 'abc-def-123', tryOutPupilCheckCode: 'abc-def-234' })
+      spyOn(checkDataService, 'sqlFindActiveCheckCodesByCheckCode').and.returnValue({ livePupilCheckCode: 'abc-def-123', tryOutPupilCheckCode: 'abc-def-234' })
       spyOn(v1, 'updatePreparedChecks')
       await v1.process(context, message)
-      expect(sqlUtils.sqlFindActiveCheckCodesByCheckCode).toHaveBeenCalled()
+      expect(checkDataService.sqlFindActiveCheckCodesByCheckCode).toHaveBeenCalled()
       expect(v1.updatePreparedChecks).toHaveBeenCalledTimes(2)
     })
   })

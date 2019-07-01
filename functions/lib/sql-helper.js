@@ -50,48 +50,6 @@ module.exports.sqlFindCheckWithFormDataByCheckCode = async function (checkCode) 
 }
 
 /**
- * Find latest live and single try out checkCode for a particular pupil based on one of the pupil's checkCodes
- * @param checkCode
- * @return {Promise<Array>}
- */
-module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
-  const sql = `
-    SELECT
-       latestLivePupilCheck.checkCode AS livePupilCheckCode,
-       tryOutPupilCheck.checkCode AS tryOutPupilCheckCode
-    FROM [mtc_admin].[check] chk
-    LEFT JOIN (
-        SELECT
-            chk.checkCode,
-            chk.pupil_id,
-            ROW_NUMBER() OVER ( PARTITION BY chk.pupil_id ORDER BY chk.id DESC ) as rank
-        FROM [mtc_admin].[check] chk
-        WHERE chk.isLiveCheck = 1
-    ) latestLivePupilCheck
-        ON latestLivePupilCheck.pupil_id = ( SELECT DISTINCT pupil_id FROM mtc_admin.[check] WHERE chk.checkCode = @checkCode )
-    LEFT JOIN (
-        SELECT
-            chk.checkCode,
-            chk.pupil_id
-        FROM [mtc_admin].[check] chk
-        WHERE chk.isLiveCheck = 0
-    ) tryOutPupilCheck
-        ON tryOutPupilCheck.pupil_id = ( SELECT DISTINCT pupil_id FROM mtc_admin.[check] WHERE chk.checkCode = @checkCode )
-    WHERE (latestLivePupilCheck.rank = 1)
-  `
-
-  const params = [
-    {
-      name: 'checkCode',
-      value: checkCode,
-      type: TYPES.UniqueIdentifier
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  return Object.values(R.head(result))
-}
-
-/**
  * Update Check table with marking
  * @param {String} checkCode
  * @param {Number} mark
