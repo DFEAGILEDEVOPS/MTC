@@ -46,7 +46,7 @@ describe('results controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(resultService, 'getPupilResultData')
+      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupilResultData: [{}], generatedAt: 'generatedAt' })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
@@ -54,6 +54,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -63,8 +64,10 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsFeatureAccessible).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
+        generatedAt: undefined,
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: undefined,
         breadcrumbs: undefined
@@ -84,6 +87,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -94,6 +98,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).not.toHaveBeenCalled()
       expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(err)
     })
@@ -102,7 +107,7 @@ describe('results controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(resultService, 'getPupilResultData')
+      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupilResultData: [{}], generatedAt: 'generatedAt' })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck')
       spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
@@ -111,6 +116,7 @@ describe('results controller:', () => {
       spyOn(resultPresenter, 'formatResultsOpeningDate').and.returnValue('24 July 2023')
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -121,6 +127,7 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
       expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
       expect(resultPresenter.formatResultsOpeningDate).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', { resultsOpeningDate: '24 July 2023', breadcrumbs: undefined })
     })
@@ -129,7 +136,7 @@ describe('results controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(resultService, 'getPupilResultData')
+      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupilResultData: [{}], generatedAt: 'generatedAt' })
       spyOn(groupService, 'getGroups')
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
       spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
@@ -137,6 +144,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -147,8 +155,10 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
       expect(resultService.assignResultStatuses).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: undefined,
+        generatedAt: undefined,
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: undefined,
         breadcrumbs: undefined
@@ -167,6 +177,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -177,9 +188,43 @@ describe('results controller:', () => {
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { breadcrumbs: undefined })
     })
     it('renders results page if hdf has been submitted and opening day of results has just passed', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
+      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupilResultData: [{}], generatedAt: 'generatedAt' })
+      spyOn(groupService, 'getGroups')
+      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
+      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
+      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
+      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
+      spyOn(resultService, 'assignResultStatuses')
+      spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
+      await controller.getViewResultsPage(req, res, next)
+      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(resultService.getPupilResultData).toHaveBeenCalled()
+      expect(groupService.getGroups).toHaveBeenCalled()
+      expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
+      expect(resultPageAvailabilityService.isResultsFeatureAccessible).toHaveBeenCalled()
+      expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
+      expect(resultService.assignResultStatuses).toHaveBeenCalled()
+      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        pupilData: undefined,
+        generatedAt: undefined,
+        maxMark: config.LINES_PER_CHECK_FORM,
+        groups: undefined,
+        breadcrumbs: undefined
+      })
+    })
+    it('renders unavailable page when getPupilResultData does not return data', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
@@ -192,6 +237,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
       spyOn(resultService, 'assignResultStatuses')
       spyOn(resultPresenter, 'getResultsViewData')
+      spyOn(resultPresenter, 'formatGeneratedAtValue')
       await controller.getViewResultsPage(req, res, next)
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -200,14 +246,10 @@ describe('results controller:', () => {
       expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsFeatureAccessible).toHaveBeenCalled()
       expect(resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs).toHaveBeenCalled()
-      expect(resultService.assignResultStatuses).toHaveBeenCalled()
-      expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-results', {
-        pupilData: undefined,
-        maxMark: config.LINES_PER_CHECK_FORM,
-        groups: undefined,
-        breadcrumbs: undefined
-      })
+      expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
+      expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
+      expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { breadcrumbs: undefined })
     })
   })
 })

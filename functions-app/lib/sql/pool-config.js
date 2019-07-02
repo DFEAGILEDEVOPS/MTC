@@ -19,6 +19,12 @@ function validateSqlConfig (config) {
   if (!config.Database) {
     ex('Server')
   }
+  if (typeof config.requestTimeout !== 'number') {
+    throw new Error(`requestTimeout must be a number`)
+  }
+  if (typeof config.connectionTimeout !== 'number') {
+    throw new Error(`connectionTimeout must be a number`)
+  }
 }
 
 validateSqlConfig(sqlConfig)
@@ -28,8 +34,8 @@ const mssqlConfig = {
   password: sqlConfig.Application.Password,
   server: sqlConfig.Server,
   database: sqlConfig.Database,
-  connectionTimeout: sqlConfig.connectionTimeout || 30000,
-  requestTimeout: sqlConfig.requestTimeout || 15000,
+  connectionTimeout: sqlConfig.connectionTimeout,
+  requestTimeout: sqlConfig.requestTimeout,
   pool: {
     max: sqlConfig.Pooling.MaxCount || 5,
     min: sqlConfig.Pooling.MinCount || 0,

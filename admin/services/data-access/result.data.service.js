@@ -6,19 +6,6 @@ const TYPES = sqlService.TYPES
 const R = require('ramda')
 
 /**
- * Find pupils results data
- * @param {Number} schoolId
- * @param {Number} checkWindowId
- * @returns {Promise<*>}
- */
-resultDataService.sqlFindResultsBySchool = async (schoolId, checkWindowId) => {
-  const sql = `
-    EXEC mtc_admin.spGetPupilsResults @checkWindowId = ${checkWindowId}, @schoolId = ${schoolId}
-  `
-  return sqlService.query(sql)
-}
-
-/**
  * Find school score based on school id and check window id
  * @param {Number} schoolId
  * @param {Number} checkWindowId
