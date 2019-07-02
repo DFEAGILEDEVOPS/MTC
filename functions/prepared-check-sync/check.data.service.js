@@ -47,5 +47,5 @@ module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
     }
   ]
   const result = await sqlService.query(sql, params)
-  return Object.values(R.head(R.filter(c => !!c, result)))
+  return Object.values(R.filter(c => !!c, R.head(result)))
 }
