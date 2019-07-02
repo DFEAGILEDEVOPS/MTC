@@ -8,31 +8,35 @@ const { TYPES } = sqlService
  * @return {Promise<Array>}
  */
 module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
-  const sql = `
-    DECLARE @pupilId INT = ( SELECT pupil_id FROM mtc_admin.[check] chk WHERE chk.checkCode = '4386DD00-7E8B-4454-A5A5-4D19E852C275' )
+  const sql = `          
+    DECLARE @pupilId INT = ( SELECT pupil_id FROM [mtc_admin].[check] chk WHERE chk.checkCode = @checkCode )
 
     SELECT
        latestLivePupilCheck.checkCode AS livePupilCheckCode,
-       tryOutPupilCheck.checkCode AS tryOutPupilCheckCode
+       latestTryOutPupilCheck.checkCode AS tryOutPupilCheckCode
     FROM [mtc_admin].[check] chk
     LEFT JOIN (
         SELECT
             chk2.checkCode,
             chk2.pupil_id,
-            ROW_NUMBER() OVER ( PARTITION BY chk2.pupil_id ORDER BY chk2.id DESC ) as rank
+            ROW_NUMBER() OVER ( PARTITION BY chk2.pupil_id ORDER BY chk2.id DESC ) AS rank
         FROM [mtc_admin].[check] chk2
+        JOIN [mtc_admin].checkStatus cs
+        ON cs.id = chk2.checkStatus_id
         WHERE chk2.isLiveCheck = 1
+        AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
     ) latestLivePupilCheck
-        ON latestLivePupilCheck.pupil_id = @pupilId and latestLivePupilCheck.rank = 1
+        ON latestLivePupilCheck.pupil_id = @pupilId AND latestLivePupilCheck.rank = 1
     LEFT JOIN (
         SELECT
             chk3.checkCode,
-            chk3.pupil_id
+            chk3.pupil_id,
+            ROW_NUMBER() OVER ( PARTITION BY chk3.pupil_id ORDER BY chk3.id DESC ) AS rank
         FROM [mtc_admin].[check] chk3
         WHERE chk3.isLiveCheck = 0
-    ) tryOutPupilCheck
-        ON tryOutPupilCheck.pupil_id = @pupilId
-    GROUP BY latestLivePupilCheck.checkCode, tryOutPupilCheck.checkCode
+    ) latestTryOutPupilCheck
+        ON latestTryOutPupilCheck.pupil_id = @pupilId AND latestTryOutPupilCheck.rank = 1
+    GROUP BY latestLivePupilCheck.checkCode, latestTryOutPupilCheck.checkCode
   `
 
   const params = [
@@ -43,5 +47,5 @@ module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
     }
   ]
   const result = await sqlService.query(sql, params)
-  return Object.values(R.head(result))
+  return Object.values(R.head(R.filter(c => !!c, result)))
 }
