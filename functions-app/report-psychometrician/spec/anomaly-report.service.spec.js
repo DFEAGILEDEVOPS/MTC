@@ -7,6 +7,7 @@ const R = require('ramda')
 const psUtilService = require('../service/psychometrician-util.service')
 const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMockOrig = require('./mocks/check-form')
+const mockContext = require('./mocks/mock-context')
 
 describe('anomaly-report.service', () => {
   let service, psychometricianDataService, anomalyReportCacheDataService
@@ -106,7 +107,7 @@ describe('anomaly-report.service', () => {
 
     it('calls all detection methods', async () => {
       const check = 'checkMock'
-      service.detectAnomalies(check)
+      service.detectAnomalies(check, mockContext)
       expect(service.detectWrongNumberOfAnswers).toHaveBeenCalledWith(check)
       expect(service.detectAnswersCorrespondToQuestions).toHaveBeenCalledWith(check)
       expect(service.detectPageRefresh).toHaveBeenCalledWith(check)

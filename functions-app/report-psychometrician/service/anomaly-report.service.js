@@ -14,10 +14,10 @@ anomalyReportService.reportedAnomalies = []
 /**
  * Generate batched cached anomalies
  * @param {Number[]} batchIds - array of check IDs
- * @param context - function context
+ * @param logger - function context.log
  * @return {Array}
  */
-anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
+anomalyReportService.batchProduceCacheData = async (batchIds, logger) => {
   anomalyReportService.reportedAnomalies = []
 
   const checksWithForms = await psychometricianDataService.sqlFindChecksByIdsWithForms(batchIds)
@@ -27,7 +27,7 @@ anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
   }
 
   checksWithForms.forEach(checkWithForm => {
-    anomalyReportService.detectAnomalies(checkWithForm)
+    anomalyReportService.detectAnomalies(checkWithForm, logger)
   })
 
   if (anomalyReportService.reportedAnomalies.length > 0) {
@@ -68,22 +68,85 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
 }
 
-anomalyReportService.detectAnomalies = (check) => {
-  anomalyReportService.detectWrongNumberOfAnswers(check)
-  anomalyReportService.detectAnswersCorrespondToQuestions(check)
-  anomalyReportService.detectPageRefresh(check)
-  anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown(check)
-  anomalyReportService.detectMissingAudits(check)
-  anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax(check)
-  anomalyReportService.detectInputThatDoesNotCorrespondToAnswers(check)
-  anomalyReportService.detectQuestionsThatWereShownForTooLong(check)
-  anomalyReportService.detectInputsWithoutQuestionInformation(check)
-  anomalyReportService.detectApplicationErrors(check)
+anomalyReportService.detectAnomalies = (check, logger) => {
+  try {
+    anomalyReportService.detectWrongNumberOfAnswers(check)
+  } catch (error) {
+    logger.error(`Failed check 1: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectAnswersCorrespondToQuestions(check)
+  } catch (error) {
+    logger.error(`Failed check 2: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectPageRefresh(check)
+  } catch (error) {
+    logger.error(`Failed check 3: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown(check)
+  } catch (error) {
+    logger.error(`Failed check 4: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectMissingAudits(check)
+  } catch (error) {
+    logger.error(`Failed check 5: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax(check)
+  } catch (error) {
+    logger.error(`Failed check 6: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputThatDoesNotCorrespondToAnswers(check)
+  } catch (error) {
+    logger.error(`Failed check 7: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectQuestionsThatWereShownForTooLong(check)
+  } catch (error) {
+    logger.error(`Failed check 8: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputsWithoutQuestionInformation(check)
+  } catch (error) {
+    logger.error(`Failed check 9: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectApplicationErrors(check)
+  } catch (error) {
+    logger.error(`Failed check 10: ${check.checkCode} : ${error.message}`)
+  }
 
   // Navigator checks
-  anomalyReportService.detectLowBattery(check)
-  anomalyReportService.detectInsufficientVerticalHeight(check)
-  anomalyReportService.detectLowColourDisplays(check)
+  try {
+    anomalyReportService.detectLowBattery(check)
+  } catch (error) {
+    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInsufficientVerticalHeight(check)
+  } catch (error) {
+    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectLowColourDisplays(check)
+  } catch (error) {
+    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+  }
 }
 
 anomalyReportService.detectWrongNumberOfAnswers = (check) => {
