@@ -364,9 +364,6 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
     return
   }
   const tail = R.tail(audits)
-  if (!tail) {
-    return
-  }
   if (head.type !== 'PauseRendered') {
     return
   }
