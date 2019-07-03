@@ -96,7 +96,7 @@ anomalyReportService.detectWrongNumberOfAnswers = (check) => {
 
 anomalyReportService.detectPageRefresh = (check) => {
   let pageRefreshCount = 0
-  const audits = R.propOr([], ['data', 'audit'], check)
+  const audits = R.pathOr([], ['data', 'audit'], check)
   audits.forEach(entry => {
     if (entry.type === 'RefreshDetected') {
       pageRefreshCount += 1
@@ -129,7 +129,7 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
   // should have been closed.
   const questions = check.data.questions
   questions.forEach(question => {
-    const audits = R.propOr([], ['data', 'audit'], check)
+    const audits = R.pathOr([], ['data', 'audit'], check)
     const questionRenderedEvent = audits.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
       return anomalyReportService.produceReportData(check, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
@@ -166,7 +166,7 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
 anomalyReportService.detectMissingAudits = (check) => {
   // We expect to see a QuestionRendered and a PauseRendered event for each Question
   const numberOfQuestions = check.data.questions.length
-  const audits = R.propOr([], ['data', 'audit'], check)
+  const audits = R.pathOr([], ['data', 'audit'], check)
   const questionRenderedAudits = audits.filter(audit => audit.type === 'QuestionRendered')
   const numberOfPractiseQuestions = 3
   if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
@@ -180,7 +180,7 @@ anomalyReportService.detectMissingAudits = (check) => {
 
   const detectMissingSingleAudit = function (auditType) {
     // Detect events that should occur only once
-    const audits = R.propOr([], ['data', 'audit'], check)
+    const audits = R.pathOr([], ['data', 'audit'], check)
     const audit = audits.find(audit => audit.type === auditType)
     if (!audit) {
       anomalyReportService.produceReportData(check, `Missing audit ${auditType}`)
@@ -387,7 +387,7 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
 }
 
 anomalyReportService.detectApplicationErrors = (check) => {
-  const audits = R.propOr([], ['data', 'audit'], check)
+  const audits = R.pathOr([], ['data', 'audit'], check)
   const appErrors = audits.filter(c => c.type === 'AppError')
   if (appErrors.length) {
     anomalyReportService.produceReportData(check, 'Check has Application Errors', appErrors.length, 0)
@@ -397,7 +397,7 @@ anomalyReportService.detectApplicationErrors = (check) => {
 anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   let hasCheckStarted = false
   const output = []
-  const audits = R.propOr([], ['data', 'audit'], check)
+  const audits = R.pathOr([], ['data', 'audit'], check)
   for (let audit of audits) {
     if (audit.type === 'CheckStarted') {
       hasCheckStarted = true
