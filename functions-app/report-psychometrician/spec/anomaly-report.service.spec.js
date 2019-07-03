@@ -378,6 +378,13 @@ describe('anomaly-report.service', () => {
         service.detectMissingAudits(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(singleMandatoryAuditEvents.length)
       })
+
+      it('reports when the audit data structure is entirely missing', () => {
+        delete checkMock.data.audit
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+        expect(service.produceReportData).toHaveBeenCalledWith(checkMock, 'Data error: no audits found')
+      })
     })
 
     describe('#detectInputsWithoutQuestionInformation', () => {

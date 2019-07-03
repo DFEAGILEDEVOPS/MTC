@@ -167,6 +167,11 @@ anomalyReportService.detectMissingAudits = (check) => {
   // We expect to see a QuestionRendered and a PauseRendered event for each Question
   const numberOfQuestions = check.data.questions.length
   const audits = R.pathOr([], ['data', 'audit'], check)
+  if (audits.length === 0) {
+    // no audits at all?  How could this happen?
+    anomalyReportService.produceReportData(check, 'Data error: no audits found')
+    return
+  }
   const questionRenderedAudits = audits.filter(audit => audit.type === 'QuestionRendered')
   const numberOfPractiseQuestions = 3
   if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
