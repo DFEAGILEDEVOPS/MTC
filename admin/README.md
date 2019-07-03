@@ -79,7 +79,6 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
-* REDIS_CACHE_UPDATING - Enables updating Redis caches directly and sending SQL updates to the Azure message queue
 * DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 * WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
 

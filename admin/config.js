@@ -44,7 +44,6 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   WEBSITE_OFFLINE: process.env.hasOwnProperty('WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
-  REDIS_CACHE_UPDATING: process.env.hasOwnProperty('REDIS_CACHE_UPDATING') ? toBool(process.env.REDIS_CACHE_UPDATING) : false,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
