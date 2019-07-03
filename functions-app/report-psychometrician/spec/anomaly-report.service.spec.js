@@ -107,7 +107,7 @@ describe('anomaly-report.service', () => {
 
     it('calls all detection methods', async () => {
       const check = 'checkMock'
-      service.detectAnomalies(check, mockContext)
+      service.detectAnomalies(check, mockContext.log)
       expect(service.detectWrongNumberOfAnswers).toHaveBeenCalledWith(check)
       expect(service.detectAnswersCorrespondToQuestions).toHaveBeenCalledWith(check)
       expect(service.detectPageRefresh).toHaveBeenCalledWith(check)
