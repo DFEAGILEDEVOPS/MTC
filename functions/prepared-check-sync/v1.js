@@ -15,7 +15,12 @@ v1.process = async function process (context, preparedCheckSyncMessage) {
   context.log('prepared-check-sync: message received', checkCode)
   const checkCodes = await checkDataService.sqlFindActiveCheckCodesByCheckCode(checkCode)
   for (let idx in checkCodes) {
-    await v1.updatePreparedChecks(context, checkCodes[idx])
+    try {
+      await v1.updatePreparedChecks(context, checkCodes[idx])
+    } catch (err) {
+      context.log.error(`prepared-check-sync: ERROR: an error occurred while executing updatePreparedChecks for [${checkCodes[idx]}]: ${err}`)
+      throw err
+    }
     context.log('prepared-check-sync: prepared check updated for check code:', checkCodes[idx])
   }
   context.bindings.pupilEventsTable = []
