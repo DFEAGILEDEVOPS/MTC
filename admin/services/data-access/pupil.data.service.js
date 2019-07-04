@@ -257,7 +257,6 @@ pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   AND p.pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
-  console.log('TEST')
   return sqlService.query(sql, [paramSchoolID])
 }
 
