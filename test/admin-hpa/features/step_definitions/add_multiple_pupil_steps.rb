@@ -9,7 +9,7 @@ Then(/^I can see the landing page as per the design$/) do
   expect(add_multiple_pupil_page).to have_heading
   expect(@page.sub_heading.map {|message| message.text}).to include "Download template"
   expect(@page.sub_heading.map {|message| message.text}).to include "Upload file"
-  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV, 0.05KB)"
+  expect(@page.info_message.map {|message| message.text}).to include "Download the template\nPupil details template (CSV, 0.05KB)"
   expect(@page.info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
   expect(@page.info_message.map {|message| message.text}).to include "Add pupil details using the given format"
   expect(@page.info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
@@ -53,15 +53,13 @@ And(/^I should see a flash message for the multiple pupil upload$/) do
 end
 
 And(/^I can see the new pupil in the list$/) do
-  hightlighted_rows = pupil_register_page.pupil_list.pupil_row.find_all{|row| row.has_edited_pupil?}
-  hightlighted_row_list = hightlighted_rows.map{|x| x.names.text}
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
+  pupil_list = pupil_register_page.pupil_list.pupil_row.map{|x| x.names.text}
+  expect(pupil_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
+  expect(pupil_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
-  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
-  expect(add_multiple_pupil_page.error_message.text.include?('You need to fix the errors on this page before continuing. Download the file below with errors indicated. Correct the errors and upload the updated file. Pupil details file with errors (CSV, 0.2KB)')).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?("You need to fix the errors on this page before continuing.\nDownload the file below with errors indicated.\nCorrect the errors and upload the updated file.\nPupil details file with errors (CSV, 0.2KB)")).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
 end
 
 And(/^I can see link to download Error File$/) do

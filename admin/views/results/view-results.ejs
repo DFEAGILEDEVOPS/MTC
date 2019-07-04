@@ -7,45 +7,12 @@
     <%- partial('partials/_session_expiry') %>
 
     <p class="lede" id="lead-paragraph">
-    Until verified, results are subject to review. All results are out of 25.
-  </p>
-  <div>
-    <dl class="score-presenter">
-      <dd>
-        <h3>School Average</h3>
-        <div class="font-xlarge">
-          <%= schoolScore ? schoolScore : 'N/A' %>
-        </div>
-      </dd>
-      <dd>
-        <h3>National Average</h3>
-        <div class="font-xlarge">
-          <%= nationalScore ? nationalScore : 'N/A' %>
-        </div>
-      </dd>
-    </dl>
-  </div>
-  <div class="master-detail text">
-      <details>
-        <summary><span class="summary">How are these averages calculated?</span></summary>
-          <div class="panel-no-border">
-            <ul class="panel-list">
-              <li>
-                <div><strong>School average</strong></div>
-                <div>
-                  <p>Is calculated by taking the mean average of pupils in your school who have taken the MTC.</p>
-                </div>
-              </li>
-              <li>
-                <div><strong>National average</strong></div>
-                <div>
-                  <p>Is calculated by taking the mean average of all pupils in England who have taken the MTC.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-      </details>
-    </div>
+      These results are for pupils who participated in the 2019 pilot.
+      Until verified, these results are subject to review.
+    </p>
+    <p class="font-medium">
+      Each score is out of <%= maxMark %>.
+    </p>
 
   <%- partial('partials/_groups_filter', { groups: groups }) %>
 
@@ -53,7 +20,7 @@
     <thead>
       <tr>
         <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-        <th scope="col"><a class="sortingLink">Score<span class="sort-icon"></span></a></th>
+        <th scope="col"><a class="sortingLink score-col">Score (<%= maxMark %>)<span class="sort-icon"></span></a></th>
         <th scope="col">&nbsp;</th>
       </tr>
     </thead>
@@ -71,13 +38,19 @@
           <% } %>
         </td>
         <td><%= p.score %></td>
-        <td><%= p.reason %></td>
+        <td><%= p.status %></td>
       </tr>
       <% }) %>
     </tbody>
   </table>
   </div>
 </div>
+<div>
+  <span class="font-small font-greyed-out">
+    These results were generated on <%= generatedAt %>
+  </span>
+</div>
+
 <div class="back-to-top-container">
   <a href="#top">Back to top</a>
 </div>

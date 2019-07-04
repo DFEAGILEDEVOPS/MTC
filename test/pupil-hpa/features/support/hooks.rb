@@ -2,12 +2,6 @@ Before do
   page.current_window.resize_to(1270, 768)
 end
 
-# Before do
-#   today_date = Date.today
-#   check_end_date = today_date + 35
-#   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
-# end
-
 Before('@generate_live_pin') do
   step 'I have generated a live pin'
 end
@@ -59,4 +53,8 @@ After do |scenario|
     AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
+end
+
+at_exit do
+  SqlDbHelper.update_to_10_questions
 end

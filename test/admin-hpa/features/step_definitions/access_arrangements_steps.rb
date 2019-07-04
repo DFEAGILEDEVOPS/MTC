@@ -208,9 +208,8 @@ end
 Then(/^modal to remove access arrangements is displayed as per the design$/) do
   expect(access_arrangements_page.modal).to have_heading
   expect(access_arrangements_page.modal.heading.text).to eql 'Remove arrangements'
-
-  expect(access_arrangements_page.modal).to have_content
-  expect(access_arrangements_page.modal.content.text).to eql 'Are you sure you want to remove all access arrangements for this pupil?'
+  expect(access_arrangements_page.modal).to have_contents
+  expect(access_arrangements_page.modal.contents.text).to eql 'Are you sure you want to remove all access arrangements for this pupil?'
 
   expect(access_arrangements_page.modal).to have_cancel
   expect(access_arrangements_page.modal).to have_confirm
@@ -248,7 +247,6 @@ Then(/^I should be able to remove any access arrangements for the pupil from the
   select_access_arrangements_page.save.click
   select_access_arrangements_page.confirm_removal.click
   expect(access_arrangements_page.success_message.text).to eql "Access arrangements removed for #{@pupil_name}"
-  expect(access_arrangements_page).to have_no_pupils_message
 end
 
 

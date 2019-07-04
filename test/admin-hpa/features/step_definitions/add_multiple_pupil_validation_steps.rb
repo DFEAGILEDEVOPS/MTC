@@ -363,10 +363,9 @@ Then(/^I should see an error with the upload stating i need to use the single up
 end
 
 And(/^I can see the new pupils added to the list$/) do
-  hightlighted_rows = pupil_register_page.pupil_list.pupil_row.find_all {|row| row.has_edited_pupil?}
-  hightlighted_row_list = hightlighted_rows.map {|x| x.names.text}
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
+  pupil_list = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text}
+  expect(pupil_list).to include("#{@pupil_name}, #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
+  expect(pupil_list).to include("#{@pupil_name}, #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
 end
 
 

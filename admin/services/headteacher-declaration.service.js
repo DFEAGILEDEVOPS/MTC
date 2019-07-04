@@ -62,7 +62,7 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * Declare the results of the check, to be used by the Headteacher or equivalent role
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
- * @param {number} schoolID
+ * @param {number} schoolId
  * @param {number} userId
  * @param {number} schoolId
  * @param {object} checkEndDate
@@ -117,28 +117,29 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * Returns true if we are in a check window and the hdf has already been submitted
  * False if we are not in a check window
  * False if we are in a check window and it has not been submitted
- * @param schoolID
+ * @param schoolId
+ * @param checkWindowId
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (schoolID) => {
-  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-  if (!checkWindow) {
+headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (schoolId, checkWindowId) => {
+  if (!checkWindowId || !schoolId) {
     return false
   }
-  return headteacherDeclarationService.isHdfSubmittedForCheck(schoolID, checkWindow.id)
+  return headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowId)
 }
 
 /**
  * Returns true if the hdf has already been submitted for the given check
  * False if the hdf has not been submitted
- * @param schoolID
+ * @param schoolId
+ * @param checkWindowId
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolID, checkWindowId) => {
-  if (!schoolID || !checkWindowId) {
-    throw new Error('schoolID and checkWindowId are required')
+headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolId, checkWindowId) => {
+  if (!schoolId || !checkWindowId) {
+    throw new Error('schoolId and checkWindowId are required')
   }
-  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(schoolID, checkWindowId)
+  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(schoolId, checkWindowId)
   if (!hdf) {
     return false
   }

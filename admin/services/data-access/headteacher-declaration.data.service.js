@@ -31,12 +31,12 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
 
 /**
  * Find the HDF for a given check
- * @param schoolID
+ * @param schoolId
  * @param checkWindowId
  * @return {Promise<object|undefined>}
  */
-headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolID, checkWindowId) => {
-  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
+headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWindowId) => {
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindowId }
   const sql = `
   SELECT TOP 1
@@ -44,7 +44,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolID, checkWin
   FROM ${sqlService.adminSchema}.${table}
   WHERE checkWindow_id = @checkWindowId
   AND school_id = @schoolID`
-  const result = await sqlService.query(sql, [paramCheckWindow, paramSchoolID])
+  const result = await sqlService.query(sql, [paramCheckWindow, paramSchoolId])
   // This will only return a single result as an object
   return R.head(result)
 }
@@ -136,7 +136,7 @@ headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = 
             ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
         FROM [mtc_admin].[check]
         WHERE isLiveCheck = 1
-       ) lastCheck ON (lastCheck.pupil_id = p.id)
+       ) lastCheck ON (lastCheck.pupil_id = p.id AND lastCheck.rank = 1)
     LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
     WHERE p.school_id = @schoolId
   `
