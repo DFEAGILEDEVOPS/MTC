@@ -149,7 +149,7 @@ Feature: Generate Pupil PINs
     When a pupil becomes available for pin generation again
     Then I should be able to filter by groups on the generate pins page
 
-  @no_active_check_window
+  @redis @no_active_check_window
   Scenario: Generate Pin Overview page display error if there is no active check window
     Given I have signed in with teacher2
     And I am on the generate pupil pins page
