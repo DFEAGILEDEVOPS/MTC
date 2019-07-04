@@ -34,7 +34,7 @@ anomalyReportService.batchProduceCacheData = async (batchIds, logger) => {
     try {
       await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
     } catch (error) {
-      context.log.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
+      logger.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
       throw error
     }
   }
