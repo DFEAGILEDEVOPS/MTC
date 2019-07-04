@@ -58,13 +58,13 @@ const attendanceService = {
   /**
    * Delete a pupil attendance code
    * @param pupilSlug
-   * @param schoolID
+   * @param schoolId
    * @return {Promise<*>}
    */
-  unsetAttendanceCode: async (pupilSlug, schoolID) => {
-    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, schoolID)
+  unsetAttendanceCode: async (pupilSlug, schoolId) => {
+    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, schoolId)
     if (!pupil) {
-      throw new Error(`Pupil with id ${pupilSlug} and school ${schoolID} not found`)
+      throw new Error(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)
     }
     return pupilAttendanceDataService.sqlDeleteOneByPupilId(pupil.id)
   },

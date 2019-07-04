@@ -5,23 +5,23 @@ const { TYPES } = require('./sql.service')
 
 const pupilsNotTakingCheckDataService = {
 /**
- * @param {number} schoolID
+ * @param {number} schoolId
  * @description returns all pupils with specified school that have a record of attendance
  * @returns {Promise.<*>}
  */
-  sqlFindPupilsWithReasons: async (schoolID) => {
+  sqlFindPupilsWithReasons: async (schoolId) => {
     const sql = `
       SELECT p.*, ac.reason
       FROM ${sqlService.adminSchema}.[pupil] p 
         INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
         INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      WHERE p.school_id = @schoolID AND pa.isDeleted = 0
+      WHERE p.school_id = @schoolId AND pa.isDeleted = 0
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
 
     const params = [{
-      name: 'schoolID',
-      value: schoolID,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }]
 
@@ -29,11 +29,11 @@ const pupilsNotTakingCheckDataService = {
   },
 
   /**
-   * @param {number} schoolID
+   * @param {number} schoolId
    * @description returns all pupils with specified school that don't have a record of attendance
    * @returns {Promise.<*>}
    */
-  sqlFindPupilsWithoutReasons: async (schoolID) => {
+  sqlFindPupilsWithoutReasons: async (schoolId) => {
     const sql = `
       SELECT
         p.foreName,
@@ -45,12 +45,12 @@ const pupilsNotTakingCheckDataService = {
       FROM ${sqlService.adminSchema}.[pupil] p 
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      WHERE p.school_id = @schoolID AND pa.id IS NULL
+      WHERE p.school_id = @schoolId AND pa.id IS NULL
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{
-      name: 'schoolID',
-      value: schoolID,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }]
 

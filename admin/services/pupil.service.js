@@ -28,15 +28,15 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  * @param dfeNumber
  * @return {Promise<void>}
  */
-pupilService.getPrintPupils = async (schoolID) => {
-  if (!schoolID) {
-    throw new Error(`schoolID is required`)
+pupilService.getPrintPupils = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error(`schoolId is required`)
   }
-  const p1 = pupilDataService.sqlFindPupilsWithActivePins(schoolID)
-  const p2 = schoolDataService.sqlFindOneById(schoolID)
+  const p1 = pupilDataService.sqlFindPupilsWithActivePins(schoolId)
+  const p2 = schoolDataService.sqlFindOneById(schoolId)
   const [pupils, school] = await Promise.all([p1, p2])
-  if (!pupils) { throw new Error(`Pupils not found for ${schoolID}`) }
-  if (!school) { throw new Error(`School not found for ${schoolID}`) }
+  if (!pupils) { throw new Error(`Pupils not found for ${schoolId}`) }
+  if (!school) { throw new Error(`School not found for ${schoolId}`) }
   return pupils.map(p => ({
     fullName: `${p.foreName} ${p.lastName}`,
     schoolPin: school.pin,
@@ -57,14 +57,14 @@ pupilService.getPupilsByUrlSlug = async (slugs, schoolId) => {
 
 /**
  * Get pupils with full names in school.
- * @param {Number} schoolID
+ * @param {Number} schoolId
  * @returns {Array}
  */
-pupilService.getPupilsWithFullNames = async (schoolID) => {
-  if (!schoolID) {
-    throw new Error('schoolID is not provided')
+pupilService.getPupilsWithFullNames = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is not provided')
   }
-  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolID)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId)
   return pupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug

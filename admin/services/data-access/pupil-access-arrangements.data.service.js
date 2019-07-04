@@ -135,14 +135,14 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
 
 /**
  * Find pupil ids with access arrangements based on DfE Number.
- * @param {Number} schoolID
+ * @param {Number} schoolId
  * @return {Promise<Array>}
  */
-pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (schoolID) => {
+pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (schoolId) => {
   const params = [
     {
-      name: 'schoolID',
-      value: schoolID,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }
   ]
@@ -168,7 +168,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
              WHERE isDeleted = 0
              AND check_id is NULL
            ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE p.school_id = @schoolID
+      WHERE p.school_id = @schoolId
     ) p
     ORDER BY p.lastName
   `
@@ -177,14 +177,14 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
 
 /**
  * Find pupils eligible for access arrangements based on DfE Number.
- * @param {Number} schoolID
+ * @param {Number} schoolId
  * @return {Promise<Array>}
  */
-pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID = async (schoolID) => {
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID = async (schoolId) => {
   const params = [
     {
-      name: 'schoolID',
-      value: schoolID,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }
   ]
@@ -206,7 +206,7 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID = async (scho
            WHERE isDeleted = 0
            AND check_id is NULL
          ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE p.school_id = @schoolID
+      WHERE p.school_id = @schoolId
     ) p
     LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa
       ON paa.pupil_id = p.id

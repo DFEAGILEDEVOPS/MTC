@@ -11,12 +11,12 @@ const pinService = {}
 
 /**
  * Get pupils with active pins for a pin environment (live/fam)
- * @param schoolID
+ * @param schoolId
  * @param pinEnv
  * @returns {Promise<*>}
  */
-pinService.getPupilsWithActivePins = async (schoolID, pinEnv) => {
-  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(schoolID, pinEnv)
+pinService.getPupilsWithActivePins = async (schoolId, pinEnv) => {
+  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(schoolId, pinEnv)
   return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 

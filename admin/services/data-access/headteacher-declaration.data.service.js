@@ -43,7 +43,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
     *
   FROM ${sqlService.adminSchema}.${table}
   WHERE checkWindow_id = @checkWindowId
-  AND school_id = @schoolID`
+  AND school_id = @schoolId`
   const result = await sqlService.query(sql, [paramCheckWindow, paramSchoolId])
   // This will only return a single result as an object
   return R.head(result)

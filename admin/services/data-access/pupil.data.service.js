@@ -10,18 +10,18 @@ const sqlService = require('./sql.service')
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by schoolID sorted by specific column.
- * @param schoolID
+ * Fetch all pupils for a school by schoolId sorted by specific column.
+ * @param schoolId
  * @returns {Promise<*>}
  */
-pupilDataService.sqlFindPupilsBySchoolID = async function (schoolID) {
-  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
+pupilDataService.sqlFindPupilsBySchoolID = async function (schoolId) {
+  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT p.*, g.group_id 
       FROM ${sqlService.adminSchema}.${table} p 
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
-      WHERE p.school_id = @schoolID
+      WHERE p.school_id = @schoolId
       ORDER BY lastName asc      
     `
   return sqlService.query(sql, [paramSchoolID])
@@ -74,16 +74,16 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
   return R.head(results)
 }
 
-pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolID) {
+pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
+  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT TOP 1 
       p.*  
       FROM ${sqlService.adminSchema}.${table} p
       WHERE p.urlSlug = @urlSlug  
-      AND p.school_id = @schoolID
+      AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramSlug, paramSchoolID])
   return R.head(results)
@@ -239,20 +239,20 @@ pupilDataService.sqlCreate = async (data) => {
 /**
  * Find pupils for a school with pins that have not yet expired, for
  * a specific pin environment (live / fam)
- * @param schoolID
+ * @param schoolId
  * @param pinEnv
  * @return {Promise<*>}
  */
-pupilDataService.sqlFindPupilsWithActivePins = async (schoolID, pinEnv) => {
+pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   // TODO: use pinEnv to differentiate between live and familiarisation
-  const paramSchoolID = { name: 'schoolID', type: TYPES.Int, value: schoolID }
+  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
   SELECT p.*, g.group_id
   FROM ${sqlService.adminSchema}.${table} p
   LEFT JOIN  ${sqlService.adminSchema}.[pupilGroup] g
     ON g.pupil_id = p.id
   WHERE p.pin IS NOT NULL
-  AND p.school_id = @schoolID
+  AND p.school_id = @schoolId
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC

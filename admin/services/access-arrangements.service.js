@@ -40,11 +40,11 @@ accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
  * Prepares access arrangements data for submission to the database
  * @param {Object} requestData
  * @param {Object} pupil
- * @param {Number} schoolID
+ * @param {Number} schoolId
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.prepareData = async (requestData, pupil, schoolID, userId) => {
+accessArrangementsService.prepareData = async (requestData, pupil, schoolId, userId) => {
   const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
   const pupilAccessArrangements = R.clone(requestData)
   pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)

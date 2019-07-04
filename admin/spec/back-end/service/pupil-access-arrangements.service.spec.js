@@ -217,7 +217,7 @@ describe('pupilAccessArrangementsService', () => {
         await pupilAccessArrangementsService.getEligiblePupilsWithFullNames()
         fail()
       } catch (error) {
-        expect(error.message).toBe('schoolID is not provided')
+        expect(error.message).toBe('schoolId is not provided')
       }
       expect(pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID).not.toHaveBeenCalled()
     })
