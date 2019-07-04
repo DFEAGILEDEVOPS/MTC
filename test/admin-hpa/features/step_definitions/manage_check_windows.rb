@@ -57,8 +57,8 @@ Then (/^modal is displayed as per the design$/) do
   expect(manage_check_window_page.modal).to have_heading
   expect(manage_check_window_page.modal.heading.text).to eql 'Remove check window'
 
-  expect(manage_check_window_page.modal).to have_contents
-  expect(manage_check_window_page.modal.contents.text).to eql 'Are you sure you want to remove this?'
+  expect(manage_check_window_page.modal).to have_content
+  expect(manage_check_window_page.modal.content.text).to eql 'Are you sure you want to remove this?'
 
   expect(manage_check_window_page.modal).to have_cancel
   expect(manage_check_window_page.modal).to have_confirm
