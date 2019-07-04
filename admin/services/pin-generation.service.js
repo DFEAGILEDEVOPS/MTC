@@ -53,7 +53,7 @@ pinGenerationService.getPinExpiryTime = pinExpiryTime
  * @returns {Array}
  */
 pinGenerationService.getPupils = async (schoolId, pinEnv) => {
-  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId)
+  let pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
   pupils = await Promise.all(
     pupils.map(async p => {
       const isValid = await pinGenerationService.isValid(p, pinEnv)

@@ -64,7 +64,7 @@ pupilService.getPupilsWithFullNames = async (schoolId) => {
   if (!schoolId) {
     throw new Error('schoolId is not provided')
   }
-  const pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
   return pupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug

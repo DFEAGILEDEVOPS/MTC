@@ -119,7 +119,7 @@ describe('pupil service', () => {
         { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
         { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolID').and.returnValue(pupilMocks)
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue(pupilMocks)
       let pupils
       try {
         pupils = await pupilService.getPupilsWithFullNames(1234567)
@@ -132,14 +132,14 @@ describe('pupil service', () => {
       expect(pupils.length).toBe(2)
     })
     it('it throws an error when schoolId is not provided', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolID')
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
       try {
         await pupilService.getPupilsWithFullNames()
         fail()
       } catch (error) {
         expect(error.message).toBe('schoolId is not provided')
       }
-      expect(pupilDataService.sqlFindPupilsBySchoolID).not.toHaveBeenCalled()
+      expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
     })
   })
 })

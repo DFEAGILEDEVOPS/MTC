@@ -14,7 +14,7 @@ const sqlService = require('./sql.service')
  * @param schoolId
  * @returns {Promise<*>}
  */
-pupilDataService.sqlFindPupilsBySchoolID = async function (schoolId) {
+pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
   const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
