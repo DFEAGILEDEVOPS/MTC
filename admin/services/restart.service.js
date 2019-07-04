@@ -20,13 +20,13 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
  * Get pupils who are eligible for restart
- * @param schoolD
+ * @param schoolId
  * @returns {Array}
  */
-restartService.getPupils = async (schoolD) => {
-  const school = await schoolDataService.sqlFindOneById(schoolD)
-  if (!school) throw new Error(`School [${schoolD}] not found`)
-  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolD, 'lastName', 'asc')
+restartService.getPupils = async (schoolId) => {
+  const school = await schoolDataService.sqlFindOneById(schoolId)
+  if (!school) throw new Error(`School [${schoolId}] not found`)
+  let pupils = await pupilDataService.sqlFindPupilsBySchoolID(schoolId, 'lastName', 'asc')
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   pupils = await bluebird.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
