@@ -21,7 +21,7 @@ class ModSchoolsPage < SitePrism::Page
   end
 
   def find_school_row(school_record)
-    school_list.rows.find {|row| row.school_name.text.eql? "#{school_record['name']} URN: #{school_record['urn']}"}
+    school_list.rows.find {|row| row.school_name.text.eql? "#{school_record['name']}\nURN: #{school_record['urn']}"}
   end
 
   def remove_school(school_record)
