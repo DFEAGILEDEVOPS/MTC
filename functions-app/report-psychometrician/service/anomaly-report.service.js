@@ -139,13 +139,13 @@ anomalyReportService.detectAnomalies = (check, logger) => {
   try {
     anomalyReportService.detectInsufficientVerticalHeight(check)
   } catch (error) {
-    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+    logger.error(`Failed check 12: ${check.checkCode} : ${error.message}`)
   }
 
   try {
     anomalyReportService.detectLowColourDisplays(check)
   } catch (error) {
-    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+    logger.error(`Failed check 13: ${check.checkCode} : ${error.message}`)
   }
 }
 
