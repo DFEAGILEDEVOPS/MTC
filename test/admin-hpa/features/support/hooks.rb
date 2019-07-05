@@ -172,6 +172,23 @@ After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form")
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
 end
 
+Before("@redis") do
+  REDIS_CLIENT.keys.each do |key|
+    puts "current key is : #{key}"
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
+end
+
+After("@redis") do
+  REDIS_CLIENT.keys.each do |key|
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
+end
+
 
 After do |scenario|
   if scenario.failed?
