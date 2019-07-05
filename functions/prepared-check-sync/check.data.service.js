@@ -5,7 +5,7 @@ const { TYPES } = sqlService
 /**
  * Find latest live and single try out checkCode for a particular pupil based on one of the pupil's checkCodes
  * @param checkCode
- * @return {Promise<Array>}
+ * @return {Array} - List of active check codes (tryout and live) for a particular pupil
  */
 module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
   const sql = `          
@@ -53,5 +53,6 @@ module.exports.sqlFindActiveCheckCodesByCheckCode = async function (checkCode) {
     }
   ]
   const result = await sqlService.query(sql, params)
+  // Filter potential keys with null values (check codes) and return an array of check codes
   return Object.values(R.filter(c => !!c, R.head(result)))
 }
