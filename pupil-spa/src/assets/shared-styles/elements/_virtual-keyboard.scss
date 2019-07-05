@@ -68,7 +68,7 @@
     width: $button-preview-width !important;
     height: $button-height !important;
     max-height: $button-height !important;
-    max-width: $button-width !important;
+    max-width: $button-preview-width !important;
   }
 
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
