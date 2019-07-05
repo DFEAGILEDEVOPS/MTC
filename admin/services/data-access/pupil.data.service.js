@@ -15,7 +15,7 @@ const sqlService = require('./sql.service')
  * @returns {Promise<*>}
  */
 pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
-  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT p.*, g.group_id 
@@ -24,7 +24,7 @@ pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
       WHERE p.school_id = @schoolId
       ORDER BY lastName asc      
     `
-  return sqlService.query(sql, [paramSchoolID])
+  return sqlService.query(sql, [paramSchoolId])
 }
 
 /**
@@ -76,7 +76,7 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
 
 pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT TOP 1 
@@ -85,7 +85,7 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
       WHERE p.urlSlug = @urlSlug  
       AND p.school_id = @schoolId
     `
-  const results = await sqlService.query(sql, [paramSlug, paramSchoolID])
+  const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
   return R.head(results)
 }
 
@@ -245,7 +245,7 @@ pupilDataService.sqlCreate = async (data) => {
  */
 pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   // TODO: use pinEnv to differentiate between live and familiarisation
-  const paramSchoolID = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
   SELECT p.*, g.group_id
   FROM ${sqlService.adminSchema}.${table} p
@@ -257,7 +257,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   AND p.pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
-  return sqlService.query(sql, [paramSchoolID])
+  return sqlService.query(sql, [paramSchoolId])
 }
 
 /**
