@@ -180,7 +180,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
  * @param {Number} schoolId
  * @return {Promise<Array>}
  */
-pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID = async (schoolId) => {
+pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId = async (schoolId) => {
   const params = [
     {
       name: 'schoolId',

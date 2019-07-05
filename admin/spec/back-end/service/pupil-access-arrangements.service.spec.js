@@ -199,7 +199,7 @@ describe('pupilAccessArrangementsService', () => {
         { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
         { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolID').and.returnValue(pupilMocks)
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId').and.returnValue(pupilMocks)
       let pupils
       try {
         pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(1234567)
@@ -212,14 +212,14 @@ describe('pupilAccessArrangementsService', () => {
       expect(pupils.length).toBe(2)
     })
     it('it throws an error when dfeNumber is not provided', async () => {
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolID')
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId')
       try {
         await pupilAccessArrangementsService.getEligiblePupilsWithFullNames()
         fail()
       } catch (error) {
         expect(error.message).toBe('schoolId is not provided')
       }
-      expect(pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolID).not.toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId).not.toHaveBeenCalled()
     })
   })
 })
