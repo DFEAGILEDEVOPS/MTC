@@ -7,6 +7,7 @@ const R = require('ramda')
 const psUtilService = require('../service/psychometrician-util.service')
 const completedCheckMockOrig = require('./mocks/completed-check-with-results')
 const checkFormMockOrig = require('./mocks/check-form')
+const mockContext = require('./mocks/mock-context')
 
 describe('anomaly-report.service', () => {
   let service, psychometricianDataService, anomalyReportCacheDataService
@@ -106,7 +107,7 @@ describe('anomaly-report.service', () => {
 
     it('calls all detection methods', async () => {
       const check = 'checkMock'
-      service.detectAnomalies(check)
+      service.detectAnomalies(check, mockContext.log)
       expect(service.detectWrongNumberOfAnswers).toHaveBeenCalledWith(check)
       expect(service.detectAnswersCorrespondToQuestions).toHaveBeenCalledWith(check)
       expect(service.detectPageRefresh).toHaveBeenCalledWith(check)
@@ -377,6 +378,13 @@ describe('anomaly-report.service', () => {
         checkMock.data.audit = checkMock.data.audit.filter(({ type }) => !singleMandatoryAuditEvents.includes(type))
         service.detectMissingAudits(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(singleMandatoryAuditEvents.length)
+      })
+
+      it('reports when the audit data structure is entirely missing', () => {
+        delete checkMock.data.audit
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+        expect(service.produceReportData).toHaveBeenCalledWith(checkMock, 'Data error: no audits found')
       })
     })
 
