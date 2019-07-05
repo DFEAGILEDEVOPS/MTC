@@ -877,9 +877,9 @@ class RequestHelper
         "pupil": {
             "checkCode": "#{parsed_response_pupil_auth['pupil']['checkCode']}"
         },
-        "questions": "#{parsed_response_pupil_auth['questions']}",
-        "school": "#{parsed_response_pupil_auth['schools']}",
-        "tokens": "#{parsed_response_pupil_auth['tokens']}",
+        "questions": parsed_response_pupil_auth['questions'],
+        "school": parsed_response_pupil_auth['school'],
+        "tokens": parsed_response_pupil_auth['tokens'],
         "checkCode": "#{parsed_response_pupil_auth['pupil']['checkCode']}",
         "version": "1"
     }
