@@ -1,6 +1,6 @@
 @import "./aa-variables.scss";
 
-@mixin customsize($size, $button-width, $button-height, $button-number-size, $button-text-size, $answer-width, $answer-height) {
+@mixin customsize($size, $button-width, $button-preview-width, $button-height, $button-number-size, $button-text-size, $answer-width, $answer-height) {
 
   .copy-size-#{$size} .question-container {
     table {
@@ -36,7 +36,7 @@
     }
   }
 
-  .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button,
+  .numpad-button-#{$size}, .numpad-button-preview-#{$size}, .copy-size-#{$size} .numpad-button,
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
     position: relative;
     font-family: Arial, Segoe UI Symbol, sans-serif !important;
@@ -60,6 +60,17 @@
     max-width: $button-width !important;
   }
 
+  .numpad-button-preview-#{$size}, .copy-size-#{$size} .numpad-button {
+    @include button($grey-1);
+
+    font-size: $button-number-size !important;
+    line-height: $button-height !important;
+    width: $button-preview-width !important;
+    height: $button-height !important;
+    max-height: $button-height !important;
+    max-width: $button-width !important;
+  }
+
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
     @include button($grey-1);
 
@@ -76,6 +87,7 @@
 @include customsize(
   "xsmall",
   $aa-numpad-button-width-xsmall,
+  $aa-numpad-button-preview-width-xsmall,
   $aa-numpad-button-height-xsmall,
   $aa-numpad-button-number-size-xsmall,
   $aa-numpad-button-text-size-xsmall,
@@ -85,6 +97,7 @@
 @include customsize(
   "small",
   $aa-numpad-button-width-small,
+    $aa-numpad-button-preview-width-small,
   $aa-numpad-button-height-small,
   $aa-numpad-button-number-size-small,
   $aa-numpad-button-text-size-small,
@@ -94,6 +107,7 @@
 @include customsize(
   "regular",
   $aa-numpad-button-width-regular,
+    $aa-numpad-button-preview-width-regular,
   $aa-numpad-button-height-regular,
   $aa-numpad-button-number-size-regular,
   $aa-numpad-button-text-size-regular,
@@ -103,6 +117,7 @@
 @include customsize(
   "large",
   $aa-numpad-button-width-large,
+    $aa-numpad-button-preview-width-large,
   $aa-numpad-button-height-large,
   $aa-numpad-button-number-size-large,
   $aa-numpad-button-text-size-large,
@@ -112,6 +127,7 @@
 @include customsize(
   "xlarge",
   $aa-numpad-button-width-xlarge,
+    $aa-numpad-button-preview-width-xlarge,
   $aa-numpad-button-height-xlarge,
   $aa-numpad-button-number-size-xlarge,
   $aa-numpad-button-text-size-xlarge,
@@ -121,6 +137,7 @@
 @include customsize(
   "xxlarge",
   $aa-numpad-button-width-xxlarge,
+    $aa-numpad-button-preview-width-xxlarge,
   $aa-numpad-button-height-xxlarge,
   $aa-numpad-button-number-size-xxlarge,
   $aa-numpad-button-text-size-xxlarge,
