@@ -36,7 +36,7 @@ describe('prepared-check-sync: v1', () => {
   describe('process', () => {
     it('fetches all active checkCodes for a pupil and updates each preparedCheck', async () => {
       const message = { checkCode: 'abc-def-123', version: 1 }
-      spyOn(checkDataService, 'sqlFindActiveCheckCodesByCheckCode').and.returnValue({ livePupilCheckCode: 'abc-def-123', tryOutPupilCheckCode: 'abc-def-234' })
+      spyOn(checkDataService, 'sqlFindActiveCheckCodesByCheckCode').and.returnValue(['abc-def-123', 'abc-def-234'])
       spyOn(v1, 'updatePreparedChecks')
       await v1.process(context, message)
       expect(checkDataService.sqlFindActiveCheckCodesByCheckCode).toHaveBeenCalled()
