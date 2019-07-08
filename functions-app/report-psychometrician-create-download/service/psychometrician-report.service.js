@@ -134,7 +134,6 @@ const psychometricianReportService = {
         psychometricianReportCode)
     } catch (error) {
       this.logger.error(`Failed to upload to azure Storage: ${error.message}`)
-      throw error
     }
 
     try {
