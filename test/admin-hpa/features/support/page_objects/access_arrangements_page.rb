@@ -19,7 +19,7 @@ class AccessArrangementsPage < SitePrism::Page
 
   section :modal, '.modal-box.show' do
     element :heading, '#modal-title'
-    element :contents, '.modal-content p'
+    element :content, '.modal-content p'
     element :cancel, '.modal-cancel'
     element :confirm, '.modal-confirm'
 
