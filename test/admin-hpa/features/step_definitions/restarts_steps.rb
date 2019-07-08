@@ -218,14 +218,24 @@ When(/^they become eligable for a restart$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     p pupil_firstname + ' ' + pupil_lastname
-    response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
+
+    RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
+    begin
+      retries ||= 0
+      fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(pupil_id)['checkStatus_id'] != 4
+    rescue
+      sleep(15)
+      retry if (retries += 1) < 5
+    end
+
     response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+    Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(pupil_id)['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(pupil_id)['checkStatus_id'] == 3}
   end
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 5 until SqlDbHelper.pupil_details_using_names(@pupil_names_arr.first.split(',')[1].strip,@pupil_names_arr.first.split(',')[0].strip)['pupilStatus_id'] == 5}
   step 'I am on the Restarts Page'
 end
 
@@ -280,9 +290,11 @@ Given(/^pupil logs in and completed the check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+
   RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
   begin
     retries ||= 0
@@ -292,6 +304,7 @@ Given(/^pupil logs in and completed the check$/) do
     retry if (retries += 1) < 5
   end
   Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
+
   response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
   Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
 end
