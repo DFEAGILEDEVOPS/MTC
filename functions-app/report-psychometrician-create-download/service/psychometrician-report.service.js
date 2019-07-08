@@ -123,6 +123,7 @@ const psychometricianReportService = {
     // Upload to Azure Storage
     try {
       const uploadBlobResult = await this.uploadToBlobStorage(zipFilenameWithPath)
+      this.logger(`${functionName}: uploadToBlobStorage result: ${JSON.stringify(uploadBlobResult)}`)
       this.logger(`${functionName}: uploaded '${uploadBlobResult.name}' to '${psychometricianReportUploadContainer}' container`)
       const md5 = Buffer.from(uploadBlobResult.contentSettings.contentMD5, 'base64')
       await psychometricianReportDataService.sqlSaveFileUploadMeta(
