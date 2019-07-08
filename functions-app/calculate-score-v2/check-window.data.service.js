@@ -11,7 +11,9 @@ const checkWindowTable = '[checkWindow]'
 module.exports.sqlFindCalculationPeriodCheckWindow = async () => {
   const sql = `
   SELECT * from ${schema}.${checkWindowTable}
-  WHERE GETUTCDATE() BETWEEN checkStartDate AND adminEndDate`
+  WHERE GETUTCDATE() BETWEEN checkStartDate AND adminEndDate
+  AND isDeleted = 0
+  `
   const res = await sqlService.query(sql)
   return R.head(res)
 }
