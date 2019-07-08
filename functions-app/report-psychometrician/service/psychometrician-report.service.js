@@ -44,17 +44,21 @@ psychometricianReportService.batchProduceCacheData = async function batchProduce
   const psReportData = []
 
   for (let check of checks) {
-    const pupil = pupils.find(x => x.id === check.pupil_id)
-    const checkForm = checkForms.find(x => x.id === check.checkForm_id)
-    const school = schools.find(x => x.id === pupil.school_id)
-    // Fetch check ids based on pupil
-    const pupilChecks = checks.filter(c => c.pupil_id === pupil.id)
-    // Find check index from pupil's checks
-    check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
-    check.checkStatus = check.description
-    // Generate one line of the report
-    const data = psychometricianReportService.produceReportData(check, answers[check.id], pupil, checkForm, school)
-    psReportData.push({ check_id: check.id, jsonData: data })
+    try {
+      const pupil = pupils.find(x => x.id === check.pupil_id)
+      const checkForm = checkForms.find(x => x.id === check.checkForm_id)
+      const school = schools.find(x => x.id === pupil.school_id)
+      // Fetch check ids based on pupil
+      const pupilChecks = checks.filter(c => c.pupil_id === pupil.id)
+      // Find check index from pupil's checks
+      check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
+      check.checkStatus = check.description
+      // Generate one line of the report
+      const data = psychometricianReportService.produceReportData(check, answers[check.id], pupil, checkForm, school)
+      psReportData.push({ check_id: check.id, jsonData: data })
+    } catch (error) {
+      logger.error(`Failed to produce PS report data for check ${check.checkCode}.  ERROR: ${error.message}`, error)
+    }
   }
 
   // save the reports into the DB
