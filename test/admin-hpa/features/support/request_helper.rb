@@ -21,7 +21,7 @@ class RequestHelper
   end
 
   def self.get_message_api_xml(message)
-    builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+    builder = Nokogiri::XML::Builder.new do |xml|
       xml.QueueMessage {
         xml.MessageText "#{message}"
       }
