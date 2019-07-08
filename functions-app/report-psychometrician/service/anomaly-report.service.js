@@ -14,10 +14,10 @@ anomalyReportService.reportedAnomalies = []
 /**
  * Generate batched cached anomalies
  * @param {Number[]} batchIds - array of check IDs
- * @param context - function context
+ * @param logger - function context.log
  * @return {Array}
  */
-anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
+anomalyReportService.batchProduceCacheData = async (batchIds, logger) => {
   anomalyReportService.reportedAnomalies = []
 
   const checksWithForms = await psychometricianDataService.sqlFindChecksByIdsWithForms(batchIds)
@@ -27,14 +27,14 @@ anomalyReportService.batchProduceCacheData = async (batchIds, context) => {
   }
 
   checksWithForms.forEach(checkWithForm => {
-    anomalyReportService.detectAnomalies(checkWithForm)
+    anomalyReportService.detectAnomalies(checkWithForm, logger)
   })
 
   if (anomalyReportService.reportedAnomalies.length > 0) {
     try {
       await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
     } catch (error) {
-      context.log.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
+      logger.error('ERROR: anomalyReportService.batchProduceCacheData: ' + error.message)
       throw error
     }
   }
@@ -68,22 +68,85 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
 }
 
-anomalyReportService.detectAnomalies = (check) => {
-  anomalyReportService.detectWrongNumberOfAnswers(check)
-  anomalyReportService.detectAnswersCorrespondToQuestions(check)
-  anomalyReportService.detectPageRefresh(check)
-  anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown(check)
-  anomalyReportService.detectMissingAudits(check)
-  anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax(check)
-  anomalyReportService.detectInputThatDoesNotCorrespondToAnswers(check)
-  anomalyReportService.detectQuestionsThatWereShownForTooLong(check)
-  anomalyReportService.detectInputsWithoutQuestionInformation(check)
-  anomalyReportService.detectApplicationErrors(check)
+anomalyReportService.detectAnomalies = (check, logger) => {
+  try {
+    anomalyReportService.detectWrongNumberOfAnswers(check)
+  } catch (error) {
+    logger.error(`Failed check 1: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectAnswersCorrespondToQuestions(check)
+  } catch (error) {
+    logger.error(`Failed check 2: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectPageRefresh(check)
+  } catch (error) {
+    logger.error(`Failed check 3: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown(check)
+  } catch (error) {
+    logger.error(`Failed check 4: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectMissingAudits(check)
+  } catch (error) {
+    logger.error(`Failed check 5: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax(check)
+  } catch (error) {
+    logger.error(`Failed check 6: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputThatDoesNotCorrespondToAnswers(check)
+  } catch (error) {
+    logger.error(`Failed check 7: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectQuestionsThatWereShownForTooLong(check)
+  } catch (error) {
+    logger.error(`Failed check 8: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInputsWithoutQuestionInformation(check)
+  } catch (error) {
+    logger.error(`Failed check 9: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectApplicationErrors(check)
+  } catch (error) {
+    logger.error(`Failed check 10: ${check.checkCode} : ${error.message}`)
+  }
 
   // Navigator checks
-  anomalyReportService.detectLowBattery(check)
-  anomalyReportService.detectInsufficientVerticalHeight(check)
-  anomalyReportService.detectLowColourDisplays(check)
+  try {
+    anomalyReportService.detectLowBattery(check)
+  } catch (error) {
+    logger.error(`Failed check 11: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectInsufficientVerticalHeight(check)
+  } catch (error) {
+    logger.error(`Failed check 12: ${check.checkCode} : ${error.message}`)
+  }
+
+  try {
+    anomalyReportService.detectLowColourDisplays(check)
+  } catch (error) {
+    logger.error(`Failed check 13: ${check.checkCode} : ${error.message}`)
+  }
 }
 
 anomalyReportService.detectWrongNumberOfAnswers = (check) => {
@@ -96,7 +159,8 @@ anomalyReportService.detectWrongNumberOfAnswers = (check) => {
 
 anomalyReportService.detectPageRefresh = (check) => {
   let pageRefreshCount = 0
-  check.data.audit.forEach(entry => {
+  const audits = R.pathOr([], ['data', 'audit'], check)
+  audits.forEach(entry => {
     if (entry.type === 'RefreshDetected') {
       pageRefreshCount += 1
     }
@@ -128,7 +192,8 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
   // should have been closed.
   const questions = check.data.questions
   questions.forEach(question => {
-    const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
+    const audits = R.pathOr([], ['data', 'audit'], check)
+    const questionRenderedEvent = audits.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
       return anomalyReportService.produceReportData(check, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
     }
@@ -164,20 +229,27 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
 anomalyReportService.detectMissingAudits = (check) => {
   // We expect to see a QuestionRendered and a PauseRendered event for each Question
   const numberOfQuestions = check.data.questions.length
-  const questionRenderedAudits = check.data.audit.filter(audit => audit.type === 'QuestionRendered')
+  const audits = R.pathOr([], ['data', 'audit'], check)
+  if (audits.length === 0) {
+    // no audits at all?  How could this happen?
+    anomalyReportService.produceReportData(check, 'Data error: no audits found')
+    return
+  }
+  const questionRenderedAudits = audits.filter(audit => audit.type === 'QuestionRendered')
   const numberOfPractiseQuestions = 3
   if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
     anomalyReportService.produceReportData(check, 'Wrong number of QuestionRendered audits', questionRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
-  const pauseRenderedAudits = check.data.audit.filter(audit => audit.type === 'PauseRendered')
+  const pauseRenderedAudits = audits.filter(audit => audit.type === 'PauseRendered')
   if (pauseRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
     anomalyReportService.produceReportData(check, 'Wrong number of PauseRendered audits', pauseRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
   const detectMissingSingleAudit = function (auditType) {
     // Detect events that should occur only once
-    const audit = check.data.audit.find(audit => audit.type === auditType)
+    const audits = R.pathOr([], ['data', 'audit'], check)
+    const audit = audits.find(audit => audit.type === auditType)
     if (!audit) {
       anomalyReportService.produceReportData(check, `Missing audit ${auditType}`)
     }
@@ -351,9 +423,12 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
   const audits = anomalyReportService.filterAllRealQuestionsAndPauseAudits(check)
   const config = check.data.config
   const head = R.head(audits)
+  if (!head) {
+    return
+  }
   const tail = R.tail(audits)
   if (head.type !== 'PauseRendered') {
-    throw new Error('First audit is NOT a pause')
+    return
   }
   // Add relative timings to each of the elements
   anomalyReportService.addRelativeTimings(audits)
@@ -377,7 +452,7 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
 }
 
 anomalyReportService.detectApplicationErrors = (check) => {
-  const audits = check.data.audit
+  const audits = R.pathOr([], ['data', 'audit'], check)
   const appErrors = audits.filter(c => c.type === 'AppError')
   if (appErrors.length) {
     anomalyReportService.produceReportData(check, 'Check has Application Errors', appErrors.length, 0)
@@ -387,7 +462,8 @@ anomalyReportService.detectApplicationErrors = (check) => {
 anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   let hasCheckStarted = false
   const output = []
-  for (let audit of check.data.audit) {
+  const audits = R.pathOr([], ['data', 'audit'], check)
+  for (let audit of audits) {
     if (audit.type === 'CheckStarted') {
       hasCheckStarted = true
     }
