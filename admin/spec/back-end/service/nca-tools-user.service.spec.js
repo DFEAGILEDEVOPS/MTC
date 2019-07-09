@@ -1,6 +1,10 @@
 'use strict'
 
 /* global describe, it, spyOn, expect, fail, beforeEach */
+
+const mtcHelpdeskImpersonationErrorMessages = require('../../../lib/errors/mtc-helpdesk-impersonation')
+const MtcHelpdeskImpersonationError = require('../../../models/errors/mtc-helpdesk-impersonation.error')
+
 let ncaToolsUserService, schoolDataService, userDataService, roleService
 
 describe('nca-tools-user.service', () => {
@@ -21,17 +25,31 @@ describe('nca-tools-user.service', () => {
         done()
       }
     })
-    it('throws an error if assigned school does not exist', async (done) => {
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve())
-      const ncaDfeNumber = 999
+    it('throws an MtcHelpdeskImpersonation type error if ncaUser object does not have a defined School property', async () => {
       try {
-        await ncaToolsUserService.mapNcaUserToMtcUser({ School: ncaDfeNumber })
+        await ncaToolsUserService.mapNcaUserToMtcUser({ School: undefined })
         fail('expected error to be thrown')
       } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe(`Unknown School:${ncaDfeNumber}`)
-        done()
+        expect(error instanceof MtcHelpdeskImpersonationError).toBeTruthy()
+        expect(error.name).toBe('MtcHelpdeskImpersonationError')
+        expect(error.message).toEqual(mtcHelpdeskImpersonationErrorMessages.errorMessage)
+        expect(error.userMessage).toEqual(mtcHelpdeskImpersonationErrorMessages.userMessage)
       }
+    })
+
+    it('does not look up school if not provided', async () => {
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber')
+      spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
+      spyOn(userDataService, 'sqlUpdateSchool')
+      spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+      spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+      try {
+        await ncaToolsUserService.mapNcaUserToMtcUser({ School: undefined })
+        fail('expected error to be thrown')
+      } catch (error) {
+      }
+      expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
+      expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
     })
 
     it('creates a user entry if one does not exist', async (done) => {
@@ -108,17 +126,6 @@ describe('nca-tools-user.service', () => {
       expect(user).toBeDefined()
       expect(user.mtcRole).toBe('TEACHER')
       done()
-    })
-
-    it('does not look up school if not provided', async () => {
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber')
-      spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
-      spyOn(userDataService, 'sqlUpdateSchool')
-      spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
-      spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-      await ncaToolsUserService.mapNcaUserToMtcUser({ UserType: 'SchoolNom' })
-      expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
-      expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
     })
   })
 })

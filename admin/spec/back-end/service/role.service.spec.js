@@ -1,8 +1,10 @@
 'use strict'
 
-/* global describe it expect spyOn beforeEach */
+/* global describe it expect spyOn beforeEach fail */
 
 const roleService = require('../../../services/role.service')
+const mtcHelpdeskImpersonationErrorMessages = require('../../../lib/errors/mtc-helpdesk-impersonation')
+const MtcHelpdeskImpersonationError = require('../../../models/errors/mtc-helpdesk-impersonation.error')
 
 describe('role.service', () => {
   describe('mapNcaRoleToMtcRole', () => {
@@ -19,6 +21,17 @@ describe('role.service', () => {
 
     it('throws an exception if the ncaUserType does not map to a known role', () => {
       expect(function () { roleService.mapNcaRoleToMtcRole('Batman') }).toThrowError('Unknown ncaUserType Batman')
+    })
+    it('throws an MtcHelpdeskImpersonation type error if the school dfeNumber is not provided for the helpdesk user', () => {
+      try {
+        roleService.mapNcaRoleToMtcRole('AdminAA')
+        fail()
+      } catch (error) {
+        expect(error instanceof MtcHelpdeskImpersonationError).toBeTruthy()
+        expect(error.name).toBe('MtcHelpdeskImpersonationError')
+        expect(error.message).toEqual(mtcHelpdeskImpersonationErrorMessages.errorMessage)
+        expect(error.userMessage).toEqual(mtcHelpdeskImpersonationErrorMessages.userMessage)
+      }
     })
   })
 

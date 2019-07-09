@@ -3,6 +3,8 @@
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
+const MtcHelpdeskImpersonationError = require('../models/errors/mtc-helpdesk-impersonation.error')
+const mtcHelpdeskImpersonationErrorMessages = require('../lib/errors/mtc-helpdesk-impersonation')
 
 const service = {
   /**
@@ -18,9 +20,8 @@ const service = {
     let school
     if (ncaUser.School) {
       school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
-      if (!school) {
-        throw new Error(`Unknown School:${ncaUser.School}`)
-      }
+    } else {
+      throw new MtcHelpdeskImpersonationError(mtcHelpdeskImpersonationErrorMessages.errorMessage, mtcHelpdeskImpersonationErrorMessages.userMessage)
     }
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
