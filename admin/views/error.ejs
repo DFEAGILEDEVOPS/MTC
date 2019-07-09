@@ -4,7 +4,7 @@
 
 <h2>Error code: <%= errorCode %></h2>
 <p>ID: <%= errorId %></p>
-<% if (typeof mtcInfo !== 'undefined') { %>
-<p><%- mtcInfo %></p>
+<% if (!!userMessage) { %>
+<p><%= userMessage %></p>
 <% } %>
 <pre><%= error.stack %></pre>
