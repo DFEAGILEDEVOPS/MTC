@@ -3,6 +3,7 @@ require('dotenv').config()
 const os = require('os')
 const toBool = require('to-bool')
 const oneMinuteInMilliseconds = 60000
+const fiveMinutesInMilliseconds = oneMinuteInMilliseconds * 5
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -15,6 +16,8 @@ module.exports = {
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
+    requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || fiveMinutesInMilliseconds,
+    connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
     Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
@@ -57,5 +60,12 @@ module.exports = {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
-  Environment: getEnvironment()
+  Environment: getEnvironment(),
+  REDIS_RESULTS_EXPIRY_IN_SECONDS: process.env.hasOwnProperty('REDIS_RESULTS_EXPIRY_IN_SECONDS') ? parseInt(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, 10) : 172800,
+  Redis: {
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() !== 'Local-Dev'
+  }
 }

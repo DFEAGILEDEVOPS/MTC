@@ -21,6 +21,7 @@ require 'json'
 require 'base64'
 require 'nokogiri'
 require 'numbers_in_words'
+require 'redis'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
 require_relative '../../features/support/sql_db_helper'
@@ -108,4 +109,16 @@ AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
 AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
+
+
+redis_host = ENV['REDIS_HOST'] || 'localhost'
+redis_key = ENV['REDIS_KEY'] || ''
+redis_port =  ENV['REDIS_PORT'] || 6379
+
+if azure_test == 'true'
+  REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
+else
+  REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
+end
+
 

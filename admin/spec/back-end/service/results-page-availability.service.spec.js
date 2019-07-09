@@ -34,7 +34,7 @@ describe('results-page-availability.service', () => {
       }
       const currentDate = checkWindowData.checkEndDate
         .clone().add(1, 'weeks').isoWeekday('Monday')
-        .set({ hour: 7, minutes: 0, seconds: 0 })
+        .set({ hour: 5, minutes: 0, seconds: 0 })
       const resultsOpeningDate = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
       const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeFalsy()

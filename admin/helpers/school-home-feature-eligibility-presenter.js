@@ -19,7 +19,7 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
   const resultsPublishedDate = checkWindowData.checkEndDate.clone()
     .add(1, 'weeks').isoWeekday('Monday')
     .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 8, minutes: 0, seconds: 0 })
+    .set({ hour: 6, minutes: 0, seconds: 0 })
 
   // Pin generation
   featureEligibilityData.familiarisationCheckStartDate = dateService.formatFullGdsDate(checkWindowData.familiarisationCheckStartDate)

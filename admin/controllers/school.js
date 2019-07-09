@@ -25,7 +25,8 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
     const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
-    const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, checkWindowData.checkEndDate)
+    const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
+    const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
     return res.render('school/school-home', {
       breadcrumbs: [ { 'name': 'School Home' } ],
