@@ -294,6 +294,7 @@ Given(/^pupil logs in and completed the check$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=5 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 5}
 
   RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
   begin
