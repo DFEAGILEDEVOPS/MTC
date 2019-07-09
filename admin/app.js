@@ -303,10 +303,8 @@ app.use(function (err, req, res, next) {
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
-  const { role } = req.user
-
-  if (err.hasOwnProperty('mtcInfo') && err.mtcInfo.hasOwnProperty(role)) {
-    res.locals.mtcInfo = err.mtcInfo[role]
+  if (err.hasOwnProperty('mtcInfo')) {
+    res.locals.mtcInfo = err.mtcInfo
   }
 
   // render the error page
