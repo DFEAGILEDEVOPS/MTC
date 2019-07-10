@@ -1,8 +1,7 @@
 'use strict'
 
 const roleDataService = require('./data-access/role.data.service')
-const MtcHelpdeskImpersonationError = require('../models/errors/mtc-helpdesk-impersonation.error')
-const mtcHelpdeskImpersonationErrorMessages = require('../lib/errors/mtc-helpdesk-impersonation')
+const MtcSchoolMismatchError = require('../error-types/mtc-school-mismatch.error')
 
 const service = {
   /**
@@ -30,7 +29,7 @@ const service = {
 
     if (role === 'HELPDESK' && !school) {
       // There is no provision for helpdesk users to log on as themselves
-      throw new MtcHelpdeskImpersonationError(mtcHelpdeskImpersonationErrorMessages.errorMessage, mtcHelpdeskImpersonationErrorMessages.userMessage)
+      throw new MtcSchoolMismatchError('No school is found with the given dfe number')
     }
 
     if ((role === 'HELPDESK' || role === 'SERVICE-MANAGER') && school) {

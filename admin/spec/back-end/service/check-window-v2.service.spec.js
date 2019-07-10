@@ -6,8 +6,7 @@ const uuid = require('uuid/v4')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
-const MtcCheckWindowNotFoundError = require('../../../models/errors/mtc-check-window-not-found.error')
-const mtcCheckWindowNotFoundErrorMessages = require('../../../lib/errors/mtc-check-window-not-found')
+const MtcCheckWindowNotFoundError = require('../../../error-types/mtc-check-window-not-found.error')
 
 describe('check-window-v2.service', () => {
   describe('getCheckWindow', () => {
@@ -28,8 +27,8 @@ describe('check-window-v2.service', () => {
       } catch (error) {
         expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
         expect(error.name).toBe('MtcCheckWindowNotFound')
-        expect(error.message).toEqual(mtcCheckWindowNotFoundErrorMessages.errorMessage)
-        expect(error.userMessage).toEqual(mtcCheckWindowNotFoundErrorMessages.userMessage)
+        expect(error.message).toEqual('Check window url slug is not valid')
+        expect(error.userMessage).toEqual('Service manager must select a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
@@ -42,8 +41,8 @@ describe('check-window-v2.service', () => {
       } catch (error) {
         expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
         expect(error.name).toBe('MtcCheckWindowNotFound')
-        expect(error.message).toEqual(mtcCheckWindowNotFoundErrorMessages.errorMessage)
-        expect(error.userMessage).toEqual(mtcCheckWindowNotFoundErrorMessages.userMessage)
+        expect(error.message).toEqual('Check window url slug is not valid')
+        expect(error.userMessage).toEqual('Service manager must select a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })

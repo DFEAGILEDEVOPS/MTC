@@ -2,8 +2,7 @@
 
 /* global describe, it, spyOn, expect, fail, beforeEach */
 
-const mtcHelpdeskImpersonationErrorMessages = require('../../../lib/errors/mtc-helpdesk-impersonation')
-const MtcHelpdeskImpersonationError = require('../../../models/errors/mtc-helpdesk-impersonation.error')
+const MtcHelpdeskImpersonationError = require('../../../error-types/mtc-helpdesk-impersonation.error')
 
 let ncaToolsUserService, schoolDataService, userDataService, roleService
 
@@ -32,8 +31,8 @@ describe('nca-tools-user.service', () => {
       } catch (error) {
         expect(error instanceof MtcHelpdeskImpersonationError).toBeTruthy()
         expect(error.name).toBe('MtcHelpdeskImpersonationError')
-        expect(error.message).toEqual(mtcHelpdeskImpersonationErrorMessages.errorMessage)
-        expect(error.userMessage).toEqual(mtcHelpdeskImpersonationErrorMessages.userMessage)
+        expect(error.message).toEqual('No Dfe number provided by NCA tools')
+        expect(error.userMessage).toEqual('Helpdesk users must impersonate a school')
       }
     })
 

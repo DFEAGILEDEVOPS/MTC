@@ -3,8 +3,7 @@
 /* global describe it expect spyOn beforeEach fail */
 
 const roleService = require('../../../services/role.service')
-const mtcHelpdeskImpersonationErrorMessages = require('../../../lib/errors/mtc-helpdesk-impersonation')
-const MtcHelpdeskImpersonationError = require('../../../models/errors/mtc-helpdesk-impersonation.error')
+const MtcSchoolMismatchError = require('../../../error-types/mtc-school-mismatch.error')
 
 describe('role.service', () => {
   describe('mapNcaRoleToMtcRole', () => {
@@ -27,10 +26,10 @@ describe('role.service', () => {
         roleService.mapNcaRoleToMtcRole('AdminAA')
         fail()
       } catch (error) {
-        expect(error instanceof MtcHelpdeskImpersonationError).toBeTruthy()
-        expect(error.name).toBe('MtcHelpdeskImpersonationError')
-        expect(error.message).toEqual(mtcHelpdeskImpersonationErrorMessages.errorMessage)
-        expect(error.userMessage).toEqual(mtcHelpdeskImpersonationErrorMessages.userMessage)
+        expect(error instanceof MtcSchoolMismatchError).toBeTruthy()
+        expect(error.name).toBe('MtcSchoolMismatchError')
+        expect(error.message).toEqual('No school is found with the given dfe number')
+        expect(error.userMessage).toEqual('The school is not found in the MTC database')
       }
     })
   })

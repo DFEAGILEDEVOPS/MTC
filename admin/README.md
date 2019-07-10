@@ -163,13 +163,13 @@ Updates to an existing Redis cache can be done with `redisCacheService.update`. 
 
 ## Error Information
 
-When triggering an error, you can specify a dedicated error type that includes the actual error and a user friendly message as arguments.
+When triggering an error, you can specify a dedicated error type that includes the actual error message as an argument.
 
-These error types will need to be generated and extend from `mtcBaseError`. For example:
+These error types will need to extend from `mtcBaseError`. For example:
 ```
 checkWindowV2Service.getCheckWindow = async (urlSlug) => {
   if (!urlSlug || !validate(urlSlug)) {
-    throw new MtcCheckWindowNotFoundError(mtcCheckWindowNotFoundErrorMessages.errorMessage, mtcCheckWindowNotFoundErrorMessages.userMessage)
+    throw new MtcCheckWindowNotFoundError('Check window url slug is not valid')
   }
   return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
 }
