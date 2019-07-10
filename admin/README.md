@@ -163,12 +163,14 @@ Updates to an existing Redis cache can be done with `redisCacheService.update`. 
 
 ## Error Information
 
-When triggering an error in the controller, you can specify an optional `mtcInfo` message. For example:
+When triggering an error, you can specify a dedicated error type that includes the actual error and a user friendly message as arguments.
+
+These error types will need to be generated and extend from `mtcBaseError`. For example:
 ```
-const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
-if (!pupil) {
-  let error = new Error(`Pupil ${req.params.id} not found`)
-  error.mtcInfo = 'Please return to the <a href="/pupil-register">pupil register</a> and select a valid pupil'
-  return next(error)
+checkWindowV2Service.getCheckWindow = async (urlSlug) => {
+  if (!urlSlug || !validate(urlSlug)) {
+    throw new MtcCheckWindowNotFoundError(mtcCheckWindowNotFoundErrorMessages.errorMessage, mtcCheckWindowNotFoundErrorMessages.userMessage)
+  }
+  return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
 }
 ```
