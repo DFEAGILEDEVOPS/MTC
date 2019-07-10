@@ -68,6 +68,7 @@ services:
       AUTH_URL: http://pupil-api:3003/auth
   pupil-tests:
     build: ./test/pupil-hpa
+    shm_size: '2gb'
     container_name: pupil_tests
     depends_on:
     - pupil-app
@@ -82,5 +83,5 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       ADMIN_BASE_URL: "http://admin-app:3001"
       PUPIL_API_BASE_URL: "http://pupil-api:3003"
-      PUPIL_BASE_URL: "http://pupil-app:80"
+      PUPIL_BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"

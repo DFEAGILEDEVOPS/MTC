@@ -4,11 +4,11 @@ services:
     image: "mcr.microsoft.com/mssql/server:2017-CU10-ubuntu"
     container_name: mtc_mssql
     ports:
-    - "1433:1433"
+      - "1433:1433"
     environment:
-        SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
-        ACCEPT_EULA: "Y"
-        HOMEBREW_NO_ENV_FILTERING: 1
+      SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
+      ACCEPT_EULA: "Y"
+      HOMEBREW_NO_ENV_FILTERING: 1
   redis:
     image: "redis:3-alpine"
     container_name: mtc_redis

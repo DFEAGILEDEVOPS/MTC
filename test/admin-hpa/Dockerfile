@@ -53,4 +53,4 @@ RUN chmod +x wait-admin-app.sh
 
 RUN bundle install
 
-CMD ./wait-admin-app.sh && bundle exec rake features
+CMD ./wait-admin-app.sh && bundle exec rake features DOCKER=true

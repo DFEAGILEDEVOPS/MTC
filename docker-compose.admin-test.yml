@@ -33,7 +33,7 @@ services:
     depends_on:
     - sqldb
     links:
-    - sqldb   
+    - sqldb
   pupil-app:
     build:
       context: ./pupil-spa
@@ -53,7 +53,10 @@ services:
     - pupil-api
   admin-tests:
     build: ./test/admin-hpa
+    shm_size: '8gb'
     container_name: admin_tests
+    tty: true
+    stdin_open: true
     depends_on:
     - sqldb
     - admin-app
@@ -67,5 +70,23 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       ADMIN_BASE_URL: "http://admin-app:3001"
       PUPIL_API_BASE_URL: "http://pupil-api:3003"
-      PUPIL_BASE_URL: "http://pupil-app:80"
+      PUPIL_BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
+  functions:
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_SERVER: "sqldb"
+      ADMIN_BASE_URL: "http://admin-app:3001"
+    build: ./functions
+    container_name: mtc_funcs
+    ports:
+      - "8080:80"
+    depends_on:
+      - sqldb
+      - admin-app
+    links:
+      - sqldb
+
+
