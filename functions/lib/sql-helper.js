@@ -50,28 +50,6 @@ module.exports.sqlFindCheckWithFormDataByCheckCode = async function (checkCode) 
 }
 
 /**
- * Find all checks for a particular pupil based on one of the pupil's checkCodes
- * @param checkCode
- * @return {Promise<Array>}
- */
-module.exports.sqlFindChecksByCheckCode = async function (checkCode) {
-  const sql = `SELECT * from ${schema}.${checkTable}
-  WHERE pupil_id = (
-    SELECT pupil_id from ${schema}.${checkTable}
-    WHERE checkCode = @checkCode
-  )`
-
-  const params = [
-    {
-      name: 'checkCode',
-      value: checkCode,
-      type: TYPES.UniqueIdentifier
-    }
-  ]
-  return sqlService.query(sql, params)
-}
-
-/**
  * Update Check table with marking
  * @param {String} checkCode
  * @param {Number} mark
