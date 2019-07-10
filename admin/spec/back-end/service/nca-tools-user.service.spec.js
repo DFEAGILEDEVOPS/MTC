@@ -2,7 +2,7 @@
 
 /* global describe, it, spyOn, expect, fail, beforeEach */
 
-const MtcHelpdeskImpersonationError = require('../../../error-types/mtc-helpdesk-impersonation.error')
+const { MtcHelpdeskImpersonationError } = require('../../../error-types/mtc-error')
 
 let ncaToolsUserService, schoolDataService, userDataService, roleService
 

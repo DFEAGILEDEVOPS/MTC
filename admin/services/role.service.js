@@ -1,7 +1,7 @@
 'use strict'
 
 const roleDataService = require('./data-access/role.data.service')
-const MtcSchoolMismatchError = require('../error-types/mtc-school-mismatch.error')
+const { MtcSchoolMismatchError } = require('../error-types/mtc-error')
 
 const service = {
   /**

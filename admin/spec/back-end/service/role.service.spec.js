@@ -3,7 +3,7 @@
 /* global describe it expect spyOn beforeEach fail */
 
 const roleService = require('../../../services/role.service')
-const MtcSchoolMismatchError = require('../../../error-types/mtc-school-mismatch.error')
+const { MtcSchoolMismatchError } = require('../../../error-types/mtc-error')
 
 describe('role.service', () => {
   describe('mapNcaRoleToMtcRole', () => {

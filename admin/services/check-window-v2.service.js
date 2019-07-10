@@ -4,7 +4,7 @@ const moment = require('moment')
 const R = require('ramda')
 const validate = require('uuid-validate')
 
-const MtcCheckWindowNotFoundError = require('../error-types/mtc-check-window-not-found.error')
+const { MtcCheckWindowNotFoundError } = require('../error-types/mtc-error')
 const dateService = require('./date.service')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkWindowV2Service = {}
