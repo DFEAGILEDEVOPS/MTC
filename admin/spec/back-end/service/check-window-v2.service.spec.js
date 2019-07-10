@@ -28,7 +28,7 @@ describe('check-window-v2.service', () => {
         expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
         expect(error.name).toBe('MtcCheckWindowNotFound')
         expect(error.message).toEqual('Check window url slug is not valid')
-        expect(error.userMessage).toEqual('Service manager must select a valid check window')
+        expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
@@ -42,7 +42,7 @@ describe('check-window-v2.service', () => {
         expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
         expect(error.name).toBe('MtcCheckWindowNotFound')
         expect(error.message).toEqual('Check window url slug is not valid')
-        expect(error.userMessage).toEqual('Service manager must select a valid check window')
+        expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
