@@ -30,6 +30,7 @@ const mssqlConfig = {
   database: sqlConfig.Database,
   connectionTimeout: sqlConfig.connectionTimeout || 30000,
   requestTimeout: sqlConfig.requestTimeout || 15000,
+  port: sqlConfig.Port,
   pool: {
     max: sqlConfig.Pooling.MaxCount || 5,
     min: sqlConfig.Pooling.MinCount || 0,
