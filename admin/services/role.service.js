@@ -29,7 +29,7 @@ const service = {
 
     if (role === 'HELPDESK' && !school) {
       // There is no provision for helpdesk users to log on as themselves
-      throw new MtcSchoolMismatchError('No school is found with the given dfe number')
+      throw new MtcSchoolMismatchError('No school found with the given DfE number')
     }
 
     if ((role === 'HELPDESK' || role === 'SERVICE-MANAGER') && school) {
