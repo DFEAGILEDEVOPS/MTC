@@ -59,6 +59,8 @@ module.exports = {
     Port: sql.port,
     // DEPRECATED - misused across both request and connection timeouts
     Timeout: parseInt(process.env.SQL_TIMEOUT, 10) || thirtySecondsInMilliseconds,
+    requestTimeout: sql.requestTimeout,
+    connectionTimeout: sql.connectionTimeout,
     Encrypt: sql.options.encrypt,
     Application: {
       Name: sql.options.appName,
