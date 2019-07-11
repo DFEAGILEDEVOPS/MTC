@@ -85,9 +85,26 @@ const psychometricianReportService = {
       throw error // unrecoverable - no work can be done.
     }
 
+    try {
+      // check that the newTmpDir is really there
+      // this code is just for Azure :(
+      const stat = await fs.stat(newTmpDir)
+      if (!stat.isDirectory()) {
+        throw new Error(`Not a directory: ${newTmpDir}: stat: ${JSON.stringify(stat)}`)
+      }
+      this.logger(`tmp directory ${newTmpDir} confirmed`)
+    } catch (error) {
+      this.logger.error(`Stat failed: tmp directory creation failed: ${error.message}`)
+      throw error
+    }
+
+
+
     // This returns the full path + filename of the ps report
     try {
+      this.logger(`Generating psychometrician report...`)
       psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
+      this.logger(`Generating psychometrician report: done`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to generate psychometrician report: ${error.message}`)
       throw error
