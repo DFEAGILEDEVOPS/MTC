@@ -274,7 +274,7 @@ When(/^I choose to filter via group on the generate pins page$/) do
 end
 
 When(/^I choose to filter via group on the generate pins familiarisation page$/) do
-  sleep 60
+  sleep 20
   generate_pins_familiarisation_overview_page.load
   step 'I click Generate PINs button'
   @page = generate_pins_familiarisation_overview_page

@@ -6,11 +6,19 @@ services:
     ports:
     - "3001:3001"
     environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_PUPIL_CENSUS_USER_PASSWORD: "${SQL_PUPIL_CENSUS_USER_PASSWORD}"
       SQL_SERVER: "sqldb"
+      SQL_PORT: "${SQL_PORT-1433}"
       MIGRATE: 1
+      SEED: 1
+      REDIS_HOST: "redis"
+      WAIT_FOR_SQL_SERVER: "true"
     depends_on:
+    - redis
     - sqldb
     links:
+    - redis
     - sqldb
   pupil-api:
     build: ./pupil-api
@@ -25,7 +33,7 @@ services:
     depends_on:
     - sqldb
     links:
-    - sqldb   
+    - sqldb
   pupil-app:
     build:
       context: ./pupil-spa
@@ -44,8 +52,11 @@ services:
     - admin-app
     - pupil-api
   admin-tests:
-    build: ./test/admin
+    build: ./test/admin-hpa
+    shm_size: '8gb'
     container_name: admin_tests
+    tty: true
+    stdin_open: true
     depends_on:
     - sqldb
     - admin-app
@@ -56,21 +67,26 @@ services:
     - sqldb
     - admin-app
     environment:
-      BASE_URL: "http://admin-app:3001"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      ADMIN_BASE_URL: "http://admin-app:3001"
+      PUPIL_API_BASE_URL: "http://pupil-api:3003"
+      PUPIL_BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
-  pupil-tests:
-    build: ./test/pupil
-    container_name: pupil_tests
-    depends_on:
-    - pupil-app
-    - sqldb
-    - admin-app
-    links:
-    - pupil-app
-    - sqldb
-    volumes:
-    - ./test-output/pupil/screenshots:/usr/src/app/screenshots
-    - ./test-output/pupil/reports:/usr/src/app/reports
+  functions:
     environment:
-      BASE_URL: "http://pupil-app"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
       SQL_SERVER: "sqldb"
+      ADMIN_BASE_URL: "http://admin-app:3001"
+    build: ./functions
+    container_name: mtc_funcs
+    ports:
+      - "8080:80"
+    depends_on:
+      - sqldb
+      - admin-app
+    links:
+      - sqldb
+
+

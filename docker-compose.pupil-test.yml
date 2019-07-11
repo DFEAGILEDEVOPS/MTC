@@ -6,34 +6,55 @@ services:
     ports:
     - "3001:3001"
     environment:
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_PUPIL_CENSUS_USER_PASSWORD: "${SQL_PUPIL_CENSUS_USER_PASSWORD}"
       SQL_SERVER: "sqldb"
+      SQL_PORT: "${SQL_PORT-1433}"
       MIGRATE: 1
+      SEED: 1
+      REDIS_HOST: "redis"
+      WAIT_FOR_SQL_SERVER: "true"
     depends_on:
+    - redis
     - sqldb
     links:
+    - redis
     - sqldb
+  functions:
+    build:
+      context: ./functions
+      dockerfile: Dockerfile-testing
+    container_name: mtc_functions
+    depends_on:
+    - redis
+    - sqldb
+    links:
+    - redis
+    - sqldb
+    environment:
+      ADMIN_BASE_URL: "http://admin-app:3001"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
+      StorageAccount: "${AZURE_STORAGE_CONNECTION_STRING}"
+      SQL_SERVER: "sqldb"
   pupil-api:
     build: ./pupil-api
     container_name: mtc_pupil_api_2
     ports:
     - "3003:3003"
     environment:
-      SQL_SERVER: "sqldb"
-      API_AUTH: "true"
-      API_CHECK_START: "true"
-      API_CHECK_SUBMIT: "true"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      CORS_WHITELIST: "http://pupil-app"
+      REDIS_HOST: "redis"
     depends_on:
-    - sqldb
+    - redis
     links:
-    - sqldb
+    - redis
   pupil-app:
     build:
       context: ./pupil-spa
       args:
-        api_url: http://pupil-api:3003
-        auth_url: http://pupil-api:3003/api/questions
-        check_started_url: http://pupil-api:3003/api/check-started
-        check_submission_url: http://pupil-api:3003/api/completed-check
+        AUTH_URL: http://pupil-api:3003/auth
     container_name: mtc_pupil_2
     ports:
     - "80:80"
@@ -43,28 +64,15 @@ services:
     links:
     - admin-app
     - pupil-api
-  admin-tests:
-    build: ./test/admin
-    container_name: admin_tests
-    depends_on:
-    - sqldb
-    - admin-app
-    volumes:
-    - ./test-output/admin/screenshots:/usr/src/app/screenshots
-    - ./test-output/admin/reports:/usr/src/app/reports
-    links:
-    - sqldb
-    - admin-app
     environment:
-      BASE_URL: "http://admin-app:3001"
-      SQL_SERVER: "sqldb"
+      AUTH_URL: http://pupil-api:3003/auth
   pupil-tests:
-    build: ./test/pupil
-    container_name: pupil_tests_2
+    build: ./test/pupil-hpa
+    shm_size: '2gb'
+    container_name: pupil_tests
     depends_on:
     - pupil-app
     - sqldb
-    - admin-app
     links:
     - pupil-app
     - sqldb
@@ -72,5 +80,8 @@ services:
     - ./test-output/pupil/screenshots:/usr/src/app/screenshots
     - ./test-output/pupil/reports:/usr/src/app/reports
     environment:
-      BASE_URL: "http://pupil-app"
+      AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
+      ADMIN_BASE_URL: "http://admin-app:3001"
+      PUPIL_API_BASE_URL: "http://pupil-api:3003"
+      PUPIL_BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
