@@ -45,7 +45,9 @@ const pupilsNotTakingCheckDataService = {
       FROM ${sqlService.adminSchema}.[pupil] p 
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      WHERE p.school_id = @schoolId AND pa.id IS NULL
+      WHERE p.school_id = @schoolId
+      AND p.pupilStatus_id = 1
+      AND pa.id IS NULL
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{
