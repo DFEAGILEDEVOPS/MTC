@@ -20,7 +20,7 @@ const service = {
     if (ncaUser.School) {
       school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
     } else {
-      throw new MtcHelpdeskImpersonationError('No Dfe number provided by NCA tools')
+      throw new MtcHelpdeskImpersonationError('No DfE number provided by NCA tools')
     }
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
