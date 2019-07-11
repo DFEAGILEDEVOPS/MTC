@@ -28,7 +28,7 @@ describe('role.service', () => {
       } catch (error) {
         expect(error instanceof MtcSchoolMismatchError).toBeTruthy()
         expect(error.name).toBe('MtcSchoolMismatchError')
-        expect(error.message).toEqual('No school is found with the given dfe number')
+        expect(error.message).toEqual('No school found with the given DfE number')
         expect(error.userMessage).toEqual('The selected school is not registered in MTC')
       }
     })

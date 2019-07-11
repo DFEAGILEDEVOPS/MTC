@@ -31,7 +31,7 @@ describe('nca-tools-user.service', () => {
       } catch (error) {
         expect(error instanceof MtcHelpdeskImpersonationError).toBeTruthy()
         expect(error.name).toBe('MtcHelpdeskImpersonationError')
-        expect(error.message).toEqual('No Dfe number provided by NCA tools')
+        expect(error.message).toEqual('No DfE number provided by NCA tools')
         expect(error.userMessage).toEqual('Helpdesk users must impersonate a school')
       }
     })
