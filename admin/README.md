@@ -156,3 +156,17 @@ after making changes ensure you do `docker-compose build` to rebuild from source
 In any service methods which updates tables which will affect these caches, `redisCacheService.drop('cacheName')` can be used to drop it for re-querying. It accepts a single string or an array of strings.
 
 Updates to an existing Redis cache can be done with `redisCacheService.update`. It will perform the supplied changes object on the Redis cache and then send it (with the affected table name) to the Azure `sql-update` message queue. Where it will then be consumed and applied in SQ server by a listener in `/functions`.
+
+## Error Information
+
+When triggering an error, you can specify a dedicated error type that includes the actual error message as an argument.
+
+These error types will need to extend from `mtcBaseError`. For example:
+```
+checkWindowV2Service.getCheckWindow = async (urlSlug) => {
+  if (!urlSlug || !validate(urlSlug)) {
+    throw new MtcCheckWindowNotFoundError('Check window url slug is not valid')
+  }
+  return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
+}
+```

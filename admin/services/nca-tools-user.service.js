@@ -3,6 +3,7 @@
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
+const { MtcHelpdeskImpersonationError } = require('../error-types/mtc-error')
 
 const service = {
   /**
@@ -18,9 +19,8 @@ const service = {
     let school
     if (ncaUser.School) {
       school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
-      if (!school) {
-        throw new Error(`Unknown School:${ncaUser.School}`)
-      }
+    } else {
+      throw new MtcHelpdeskImpersonationError('No DfE number provided by NCA tools')
     }
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)

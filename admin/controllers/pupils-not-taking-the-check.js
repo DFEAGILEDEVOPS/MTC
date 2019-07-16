@@ -26,10 +26,10 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   let hdfSubmitted
   try {
     // Get pupils for active school
-    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
   } catch (error) {
     return next(error)
   }
@@ -62,7 +62,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -142,8 +142,8 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   }
   const pupilSlug = req.params.pupilId
   try {
-    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.School)
-    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
+    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId)
+    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.schoolId)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
 
     // Ask for this pupil to have their status updated
@@ -171,10 +171,10 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   let pinGenerationEligibilityData
   let hdfSubmitted
   try {
-    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
+    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
+    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,

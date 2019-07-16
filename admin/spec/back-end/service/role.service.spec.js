@@ -1,8 +1,9 @@
 'use strict'
 
-/* global describe it expect spyOn beforeEach */
+/* global describe it expect spyOn beforeEach fail */
 
 const roleService = require('../../../services/role.service')
+const { MtcSchoolMismatchError } = require('../../../error-types/mtc-error')
 
 describe('role.service', () => {
   describe('mapNcaRoleToMtcRole', () => {
@@ -19,6 +20,17 @@ describe('role.service', () => {
 
     it('throws an exception if the ncaUserType does not map to a known role', () => {
       expect(function () { roleService.mapNcaRoleToMtcRole('Batman') }).toThrowError('Unknown ncaUserType Batman')
+    })
+    it('throws an MtcHelpdeskImpersonation type error if the school dfeNumber is not provided for the helpdesk user', () => {
+      try {
+        roleService.mapNcaRoleToMtcRole('AdminAA')
+        fail()
+      } catch (error) {
+        expect(error instanceof MtcSchoolMismatchError).toBeTruthy()
+        expect(error.name).toBe('MtcSchoolMismatchError')
+        expect(error.message).toEqual('No school found with the given DfE number')
+        expect(error.userMessage).toEqual('The selected school is not registered in MTC')
+      }
     })
   })
 
