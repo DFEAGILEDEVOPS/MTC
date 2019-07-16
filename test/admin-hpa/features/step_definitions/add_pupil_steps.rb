@@ -538,3 +538,9 @@ Then(/^I should see an error with the reason field$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a reason"
   expect(@page.error_summary.reason.text).to include "Enter a reason"
 end
+
+
+And(/^I add a pupil with names beginning with Z$/) do
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as ZZZZZZZ"
+end
