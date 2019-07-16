@@ -164,7 +164,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
         })
         it('displays the generate pins list page', async () => {
           const res = getRes()
@@ -195,7 +195,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
         })
 
         it('displays the generate pins list page', async () => {
@@ -220,7 +220,7 @@ describe('pupilPin controller:', () => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'getAvailabilityData')
-          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
+          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
         })
 
         it('it throws an error', async () => {
@@ -288,7 +288,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -337,7 +337,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -356,7 +356,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -395,7 +395,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
+        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()

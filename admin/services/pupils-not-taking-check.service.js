@@ -1,7 +1,6 @@
 /** @namespace */
 
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
-const pupilDataService = require('./data-access/pupil.data.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 
 const pupilsNotTakingCheckService = {
@@ -27,16 +26,6 @@ const pupilsNotTakingCheckService = {
       }
     })
     return sortedPupilsList
-  },
-
-  /**
-   * Get pupils with and without reasons assigned.
-   * @param schoolId
-   * @returns {Promise<*>}
-   */
-  getPupilsWithReasonsForDfeNumber: async (schoolId) => {
-    const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId)
-    return pupilIdentificationFlag.addIdentificationFlags(pupils)
   },
 
   /**

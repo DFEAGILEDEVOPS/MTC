@@ -26,10 +26,10 @@ controller.getOverview = async (req, res, next) => {
   let checkWindowData
   let availabilityData
   try {
-    pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
+    pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -72,8 +72,8 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.School)
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -118,7 +118,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
       'pupilUrlSlug',
       'urlSlug'
     ], req.body)
-    pupil = await accessArrangementsService.submit(submittedData, req.user.School, req.user.id)
+    pupil = await accessArrangementsService.submit(submittedData, req.user.schoolId, req.user.id)
   } catch (error) {
     if (error.name === 'ValidationError') {
       const controllerMethod = !req.body.isEditView ? 'getSelectAccessArrangements' : 'getEditAccessArrangements'
@@ -188,13 +188,12 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
  * @returns {Promise.<void>}
  */
 controller.getDeleteAccessArrangements = async (req, res, next) => {
-  const dfeNumber = req.user.School
   let pupil
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
-    pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)
+    pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, req.user.schoolId)
   } catch (error) {
     return next(error)
   }

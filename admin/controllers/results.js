@@ -32,7 +32,7 @@ controller.getViewResultsPage = async (req, res, next) => {
     pupilResultData = redisResult && redisResult.pupilResultData
     generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
-    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindow && checkWindow.id)
+    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
   } catch (error) {
     return next(error)
   }
