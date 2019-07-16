@@ -111,9 +111,14 @@ AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
 
 
-redis_host = ENV['REDIS_HOST'] || 'localhost'
 redis_key = ENV['REDIS_KEY'] || ''
 redis_port =  ENV['REDIS_PORT'] || 6379
+
+if ENV['DOCKER'] == 'true'
+  redis_host = 'redis'
+else
+  redis_host = ENV['REDIS_HOST'] || 'localhost'
+end
 
 if azure_test == 'true'
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)

@@ -8,6 +8,7 @@ const v1 = {
       await psychometricianReportService.setLogger(logger).process()
     } catch (error) {
       logger.error('ERROR: v1.process(): ' + error.message)
+      throw error
     }
   }
 }

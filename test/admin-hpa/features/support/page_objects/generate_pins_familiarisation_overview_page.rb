@@ -43,7 +43,6 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     name = pupil.name.text
     pupil.checkbox.click
     sticky_banner.confirm.click
-    sleep(60)
     name
   end
 
@@ -54,7 +53,6 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}
     sticky_banner.confirm.click
-    sleep(60)
     pupil_names
   end
 

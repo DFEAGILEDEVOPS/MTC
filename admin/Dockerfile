@@ -14,4 +14,7 @@ RUN ./node_modules/.bin/gulp build
 RUN yarn global add pm2
 
 EXPOSE 3001
-CMD ["./docker-start.sh" ]
+
+RUN chmod +x wait-sqldb.sh
+
+CMD ./wait-sqldb.sh && ./docker-start.sh

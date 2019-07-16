@@ -1,6 +1,7 @@
 Before do
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
+  p Time.now
 end
 
 Before("@add_a_pupil") do
@@ -131,6 +132,12 @@ end
 
 Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
+  REDIS_CLIENT.keys.each do |key|
+    puts "current key is : #{key}"
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
 end
 
 Before("@remove_assigned_form") do
@@ -205,6 +212,7 @@ After do |scenario|
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
+  p Time.now
 end
 
 at_exit do
