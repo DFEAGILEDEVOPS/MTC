@@ -72,6 +72,7 @@ Before("@hdf") do
     sleep(1)
     retry if (retries += 1) < 5
   end
+  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "There are still pupil with Not started status") {sleep 1 until SqlDbHelper.get_pupil_with_no_attandance_code(school_id).nil?}
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
