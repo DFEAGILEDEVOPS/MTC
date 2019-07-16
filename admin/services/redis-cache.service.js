@@ -2,8 +2,6 @@ const Redis = require('ioredis')
 const config = require('../config')
 const logger = require('./log.service').getLogger()
 
-const { REDIS_CACHING } = config
-
 let redisConfig = {
   port: config.Redis.Port,
   host: config.Redis.Host
@@ -31,9 +29,6 @@ const redisCacheService = {}
  * @returns {String}
  */
 redisCacheService.get = async redisKey => {
-  if (!REDIS_CACHING) {
-    return false
-  }
   redisConnect()
   try {
     const result = await redis.get(redisKey)
@@ -56,9 +51,6 @@ redisCacheService.get = async redisKey => {
  * @returns {Boolean}
  */
 redisCacheService.set = async (redisKey, data) => {
-  if (!REDIS_CACHING) {
-    return false
-  }
   redisConnect()
   try {
     if (typeof data === 'object') {
@@ -79,7 +71,7 @@ redisCacheService.set = async (redisKey, data) => {
  * @returns {Boolean}
  */
 redisCacheService.drop = async (caches = []) => {
-  if (!REDIS_CACHING || (Array.isArray(caches) && caches.length === 0)) {
+  if (Array.isArray(caches) && caches.length === 0) {
     return false
   }
   redisConnect()
