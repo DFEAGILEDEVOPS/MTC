@@ -194,9 +194,6 @@
             "AUTH_URL": "[concat('https://', variables('authAppUrl'), '/auth')]"
           },
           {
-            "FEATURE_USE_HPA": "true"
-          },
-          {
             "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "false"
           },
           {
