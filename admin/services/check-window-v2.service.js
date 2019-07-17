@@ -4,6 +4,7 @@ const moment = require('moment')
 const R = require('ramda')
 const validate = require('uuid-validate')
 
+const { MtcCheckWindowNotFoundError } = require('../error-types/mtc-error')
 const dateService = require('./date.service')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkWindowV2Service = {}
@@ -15,7 +16,7 @@ const checkWindowV2Service = {}
  */
 checkWindowV2Service.getCheckWindow = async (urlSlug) => {
   if (!urlSlug || !validate(urlSlug)) {
-    throw new Error('Check window url slug is not valid')
+    throw new MtcCheckWindowNotFoundError('Check window url slug is not valid')
   }
   return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
 }

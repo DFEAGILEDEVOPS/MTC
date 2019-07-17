@@ -6,6 +6,7 @@ const uuid = require('uuid/v4')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
+const { MtcCheckWindowNotFoundError } = require('../../../error-types/mtc-error')
 
 describe('check-window-v2.service', () => {
   describe('getCheckWindow', () => {
@@ -18,24 +19,30 @@ describe('check-window-v2.service', () => {
       const result = await checkWindowV2Service.getCheckWindow(urlSlug)
       expect(result).toEqual({ name: 'Check window' })
     })
-    it('should throw an error if urlSlug is empty', async () => {
+    it('should throw an MtcCheckWindowNotFound error type if urlSlug is empty', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
       try {
         await checkWindowV2Service.getCheckWindow(undefined)
         fail()
       } catch (error) {
-        expect(error.message).toBe('Check window url slug is not valid')
+        expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
+        expect(error.name).toBe('MtcCheckWindowNotFound')
+        expect(error.message).toEqual('Check window url slug is not valid')
+        expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
-    it('should throw an error if urlSlug is invalid', async () => {
+    it('should throw an MtcCheckWindowNotFound error type if urlSlug is invalid', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
       urlSlug = urlSlug.substring(0, urlSlug.length - 1)
       try {
         await checkWindowV2Service.getCheckWindow(urlSlug)
         fail()
       } catch (error) {
-        expect(error.message).toBe('Check window url slug is not valid')
+        expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
+        expect(error.name).toBe('MtcCheckWindowNotFound')
+        expect(error.message).toEqual('Check window url slug is not valid')
+        expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })

@@ -1,7 +1,6 @@
 'use strict'
 /* global describe it expect spyOn */
 
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
 const pupilNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../../services/data-access/pupils-not-taking-check.data.service')
@@ -31,20 +30,6 @@ describe('Pupils are not taking the check. Service', () => {
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Absent')
       expect(afterSorting[3].reason).toEqual('-')
-      done()
-    })
-  })
-
-  describe('#getPupilsWithReasonsForDfeNumber', () => {
-    it('should return a list of pupils', async (done) => {
-      spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsFormattedMock)
-      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
-      const pupils = await pupilNotTakingCheckService.getPupilsWithReasonsForDfeNumber()
-
-      expect(pupils[0].foreName).toBe('Sarah')
-      expect(pupils[0].lastName).toBe('Connor')
-      expect(pupilDataService.sqlFindSortedPupilsWithAttendanceReasons).toHaveBeenCalled()
-      expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
       done()
     })
   })
