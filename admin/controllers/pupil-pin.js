@@ -32,7 +32,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -86,14 +86,14 @@ const getGeneratePinsList = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
     }
-    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
@@ -147,7 +147,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
 
-    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
@@ -190,7 +190,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -243,7 +243,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,

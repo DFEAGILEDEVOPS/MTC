@@ -8,11 +8,11 @@ const pupilAccessArrangementsService = {}
 
 /**
  * Returns pupils with associated access arrangements
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @returns {Array}
  */
-pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
-  const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(dfeNumber)
+pupilAccessArrangementsService.getPupils = async (schoolId) => {
+  const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(schoolId)
   const accessArrangementsHashmap = accessArrangementsData.reduce((acc, val) => {
     const current = R.clone(val)
     delete current.description
@@ -33,14 +33,14 @@ pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
 
 /**
  * Returns pupils with eligible for access arrangements
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @returns {Array}
  */
-pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (dfeNumber) => {
-  if (!dfeNumber) {
-    throw new Error('dfeNumber is not provided')
+pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is not provided')
   }
-  const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsByDfeNumber(dfeNumber)
+  const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId(schoolId)
   return pupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug
@@ -75,14 +75,14 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
 /**
  * Delete pupil's access arrangements
  * @param {String} urlSlug
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @returns {Object}
  */
-pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, dfeNumber) => {
+pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, schoolId) => {
   if (!urlSlug) {
     throw new Error('Pupil url slug is not provided')
   }
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
   await preparedCheckSyncService.addMessages(urlSlug)
   return pupil

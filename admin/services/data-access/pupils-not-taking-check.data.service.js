@@ -5,24 +5,23 @@ const { TYPES } = require('./sql.service')
 
 const pupilsNotTakingCheckDataService = {
 /**
- * @param {number} dfeNumber
+ * @param {number} schoolId
  * @description returns all pupils with specified school that have a record of attendance
  * @returns {Promise.<*>}
  */
-  sqlFindPupilsWithReasons: async (dfeNumber) => {
+  sqlFindPupilsWithReasons: async (schoolId) => {
     const sql = `
       SELECT p.*, ac.reason
       FROM ${sqlService.adminSchema}.[pupil] p 
-        INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
         INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
         INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      WHERE s.dfeNumber = @dfeNumber AND pa.isDeleted = 0
+      WHERE p.school_id = @schoolId AND pa.isDeleted = 0
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
 
     const params = [{
-      name: 'dfeNumber',
-      value: dfeNumber,
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }]
 
@@ -31,8 +30,7 @@ const pupilsNotTakingCheckDataService = {
 
   /**
    * @param {number} schoolId
-   * @description returns all pupils with specified school that don't have a
-   * record of attendance and haven't completed a check
+   * @description returns all pupils with specified school that don't have a record of attendance
    * @returns {Promise.<*>}
    */
   sqlFindPupilsWithoutReasons: async (schoolId) => {
@@ -44,24 +42,14 @@ const pupilsNotTakingCheckDataService = {
         p.dateOfBirth,
         p.urlSlug,
         pg.group_id
-      FROM ${sqlService.adminSchema}.[pupil] p 
+      FROM ${sqlService.adminSchema}.[pupil] p
+      JOIN ${sqlService.adminSchema}.pupilStatus ps ON ps.id = p.pupilStatus_id 
       LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      WHERE
-        p.school_id = @schoolId
-        AND p.pupilStatus_id = 1
-      GROUP BY
-        p.foreName,
-        p.middleNames,
-        p.lastName,
-        p.dateOfBirth,
-        p.urlSlug,
-        pg.group_id
-      ORDER BY
-        p.lastName ASC,
-        p.foreName ASC,
-        p.middleNames ASC,
-        p.dateOfBirth ASC
+      WHERE p.school_id = @schoolId
+      AND ps.code = 'UNALLOC'
+      AND pa.id IS NULL
+      ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{
       name: 'schoolId',
