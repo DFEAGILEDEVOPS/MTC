@@ -19,6 +19,7 @@
     "dotenv": "^8.0.0",
     "fast-csv": "^2.5.0",
     "fs-extra": "^7.0.1",
+    "ioredis": "^4.10.0",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.2.2",
     "mssql": "^5.1.0",

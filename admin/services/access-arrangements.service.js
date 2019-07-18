@@ -19,18 +19,18 @@ accessArrangementsService.getAccessArrangements = async () => {
 /**
  * Submit access arrangements for single pupil
  * @param {Object} submittedData
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
+accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
   const urlSlug = submittedData.pupilUrlSlug || submittedData.urlSlug
   const validationError = accessArrangementsValidator.validate(submittedData)
   if (validationError.hasError()) {
     throw validationError
   }
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
-  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, dfeNumber, userId)
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
+  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, schoolId, userId)
   const displayData = await accessArrangementsService.save(processedData, pupil)
   await preparedCheckSyncService.addMessages(urlSlug)
   return displayData
@@ -40,11 +40,11 @@ accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
  * Prepares access arrangements data for submission to the database
  * @param {Object} requestData
  * @param {Object} pupil
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.prepareData = async (requestData, pupil, dfeNumber, userId) => {
+accessArrangementsService.prepareData = async (requestData, pupil, schoolId, userId) => {
   const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
   const pupilAccessArrangements = R.clone(requestData)
   pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)

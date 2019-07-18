@@ -1,6 +1,6 @@
 {
   "name": "check-development-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
@@ -8,6 +8,8 @@
     "lint": "standard",
     "migrate-sql": "node ./data/sql/migrate-sql.js",
     "seed-sql": "node ./data/sql/seed-sql.js",
+    "migrate-sql": "node ./data/sql/migrate-sql.js",
+    "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
     "postinstall": "gulp build",
     "sasswatch": "gulp watch",
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",

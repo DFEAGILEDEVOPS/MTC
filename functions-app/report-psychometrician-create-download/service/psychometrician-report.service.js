@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const moment = require('moment')
 const os = require('os')
 const path = require('path')
+const R = require('ramda')
 const uuidv4 = require('uuid/v4')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
@@ -85,9 +86,24 @@ const psychometricianReportService = {
       throw error // unrecoverable - no work can be done.
     }
 
+    try {
+      // check that the newTmpDir is really there
+      // this code is just for Azure :(
+      const stat = await fs.stat(newTmpDir)
+      if (!stat.isDirectory()) {
+        throw new Error(`Not a directory: ${newTmpDir}: stat: ${JSON.stringify(stat)}`)
+      }
+      this.logger(`tmp directory confirmed: ${newTmpDir}`)
+    } catch (error) {
+      this.logger.error(`Stat failed: tmp directory creation failed: ${error.message}`)
+      throw error
+    }
+
     // This returns the full path + filename of the ps report
     try {
+      this.logger(`Generating psychometrician report...`)
       psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
+      this.logger(`Generating psychometrician report: done`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to generate psychometrician report: ${error.message}`)
       throw error
@@ -122,18 +138,22 @@ const psychometricianReportService = {
 
     // Upload to Azure Storage
     try {
-      const uploadBlobResult = await this.uploadToBlobStorage(zipFilenameWithPath)
-      this.logger(`${functionName}: uploaded '${uploadBlobResult.name}' to '${psychometricianReportUploadContainer}' container`)
-      const md5 = Buffer.from(uploadBlobResult.contentSettings.contentMD5, 'base64')
-      await psychometricianReportDataService.sqlSaveFileUploadMeta(
-        uploadBlobResult.container,
-        uploadBlobResult.name,
-        uploadBlobResult.etag,
-        md5,
-        psychometricianReportCode)
+      const blobProperties = await this.uploadToBlobStorage(zipFilenameWithPath)
+      this.logger(`${functionName}: uploaded '${blobProperties.name}' to '${psychometricianReportUploadContainer}' container`)
+      const base64MD5 = R.path(['contentSettings', 'contentMD5'], blobProperties)
+      if (base64MD5) {
+        const md5 = Buffer.from(base64MD5, 'base64')
+        await psychometricianReportDataService.sqlSaveFileUploadMeta(
+          blobProperties.container,
+          blobProperties.name,
+          blobProperties.etag,
+          md5,
+          psychometricianReportCode)
+      } else {
+        this.logger.error(`${functionName}: ERROR: unable to upload the blob details to the SQL DB.  Returned blobProperties was ${JSON.stringify(blobProperties)}`)
+      }
     } catch (error) {
       this.logger.error(`Failed to upload to azure Storage: ${error.message}`)
-      throw error
     }
 
     try {

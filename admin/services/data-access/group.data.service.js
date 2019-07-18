@@ -5,8 +5,6 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('../redis-cache.service')
-const config = require('../../config')
-const { REDIS_CACHING } = config
 
 /**
  * Get active groups (non-soft-deleted).
@@ -207,9 +205,7 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
-  if (!REDIS_CACHING) {
-    return modifyResult
-  }
+
   sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
   const groups = await sqlService.query(sql, params)
   if (!groups || groups.length === 0) {
@@ -272,9 +268,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   let sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
   UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
-  if (!REDIS_CACHING) {
-    return modifyResult
-  }
+
   sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
   const groups = await sqlService.query(sql, params)
   if (!groups || groups.length === 0) {

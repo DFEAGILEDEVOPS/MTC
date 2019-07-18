@@ -20,13 +20,7 @@ COPY . .
 
 RUN yarn run postinstall
 RUN yarn run sass
-ARG api_url=http://localhost:3001
-ARG auth_url=http://localhost:3001/api/questions
-# ARG auth_url=http://localhost:3003/auth
-ARG check_started_url=http://localhost:3001/api/check-started
-# ARG check_started_url=http://localhost:3004/submit
-ARG check_submission_url=http://localhost:3001/api/completed-check
-# ARG check_submission_url=http://localhost:3005/submit
+ARG AUTH_URL
 ARG runtime_config_url=/public/config.json
 
 ## The config will be loaded at runtime from this path / URL, but
@@ -34,14 +28,11 @@ ARG runtime_config_url=/public/config.json
 # URL too, as long as it's accessible through http
 
 ARG ga_code
-ARG appinsights_instrumentationkey
+ARG APPINSIGHTS_INSTRUMENTATIONKEY
 ARG azure_acccount_name
-ENV API_URL=$api_url
-ENV AUTH_URL=$auth_url
-ENV CHECK_STARTED_URL=$check_started_url
-ENV CHECK_SUBMISSION_URL=$check_submission_url
+ENV AUTH_URL=$AUTH_URL
 ENV GA_CODE=$ga_code
-ENV APPINSIGHTS_INSTRUMENTATIONKEY=$appinsights_instrumentationkey
+ENV APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY
 ENV AZURE_ACCOUNT_NAME=$azure_account_name
 ENV RUNTIME_CONFIG_URL=$runtime_config_url
 

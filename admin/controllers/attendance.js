@@ -21,8 +21,9 @@ const controller = {}
 
 controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
-  const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
+  const school = await schoolDataService.sqlFindOneById(req.user.schoolId)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const score = await scoreService.getScorePercentage(p.id)
@@ -37,7 +38,9 @@ controller.getResults = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   pupilsFormatted = pupilsFormatted.filter((p) => p.hasScore)
 
-  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck() &&
+  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
+
+  if (hdfSubmitted &&
     (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
     return res.render('school/results', {
       breadcrumbs: req.breadcrumbs(),
@@ -55,7 +58,7 @@ controller.getResults = async (req, res, next) => {
 controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
-  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
   const schoolData = await schoolDataService.sqlFindOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
@@ -192,7 +195,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
@@ -235,7 +238,7 @@ controller.postConfirmSubmit = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await headteacherDeclarationService
-      .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.School, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+      .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -250,15 +253,15 @@ controller.getDeclarationForm = async (req, res, next) => {
   let hdfEligibility
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
-    const submitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
+    const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
     }
-    if (submitted) {
+    if (hdfSubmitted) {
       return res.redirect('/attendance/submitted')
     }
     hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)

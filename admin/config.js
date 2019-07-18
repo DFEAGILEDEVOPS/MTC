@@ -44,8 +44,6 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   WEBSITE_OFFLINE: process.env.hasOwnProperty('WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
-  REDIS_CACHING: process.env.hasOwnProperty('REDIS_CACHING') ? toBool(process.env.REDIS_CACHING) : false,
-  REDIS_CACHE_UPDATING: process.env.hasOwnProperty('REDIS_CACHE_UPDATING') ? toBool(process.env.REDIS_CACHE_UPDATING) : false,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
@@ -59,6 +57,8 @@ module.exports = {
     Port: sql.port,
     // DEPRECATED - misused across both request and connection timeouts
     Timeout: parseInt(process.env.SQL_TIMEOUT, 10) || thirtySecondsInMilliseconds,
+    requestTimeout: sql.requestTimeout,
+    connectionTimeout: sql.connectionTimeout,
     Encrypt: sql.options.encrypt,
     Application: {
       Name: sql.options.appName,

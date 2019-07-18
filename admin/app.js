@@ -31,6 +31,7 @@ const uuidV4 = require('uuid/v4')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
+
 const app = express()
 setupLogging(app)
 
@@ -306,6 +307,7 @@ app.use(function (err, req, res, next) {
   // render the error page
   // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
+  res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}
   res.locals.errorId = errorId
   res.locals.errorCode = ''

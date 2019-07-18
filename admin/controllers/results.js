@@ -20,18 +20,19 @@ const controller = {}
 controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
-  let pupils
+  let pupilResultData
+  let generatedAt
+  let redisResult
   let groups
   let checkWindow
-  let schoolScoreRecord
-  let schoolScore
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    pupils = await resultService.getPupilsWithResults(req.user.schoolId, checkWindow.id)
-    schoolScoreRecord = await resultService.getSchoolScore(req.user.schoolId, checkWindow.id)
+    redisResult = await resultService.getPupilResultData(req.user.schoolId)
+    pupilResultData = redisResult && redisResult.pupilResultData
+    generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
-    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)
+    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
   } catch (error) {
     return next(error)
   }
@@ -58,19 +59,20 @@ controller.getViewResultsPage = async (req, res, next) => {
     })
   }
 
-  if (!schoolScoreRecord) {
-    return res.render('availability/admin-window-unavailable', {
-      isBeforeStartDate: checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
+  if (!redisResult) {
+    return res.render('results/view-results-not-found', {
+      breadcrumbs: req.breadcrumbs()
     })
   }
-  const pupilData = resultPresenter.getResultsViewData(pupils)
-  const nationalScore = resultPresenter.formatScore(checkWindow.score)
-  schoolScore = resultPresenter.formatScore(schoolScoreRecord.score)
+
+  const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
+  const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
+  generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
   return res.render('results/view-results', {
     pupilData,
+    generatedAt,
+    maxMark: config.LINES_PER_CHECK_FORM,
     groups,
-    schoolScore,
-    nationalScore,
     breadcrumbs: req.breadcrumbs()
   })
 }

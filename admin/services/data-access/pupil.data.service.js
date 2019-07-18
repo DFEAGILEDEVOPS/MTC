@@ -10,22 +10,21 @@ const sqlService = require('./sql.service')
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by dfeNumber sorted by specific column.
- * @param dfeNumber
+ * Fetch all pupils for a school by schoolId sorted by specific column.
+ * @param schoolId
  * @returns {Promise<*>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT p.*, g.group_id 
       FROM ${sqlService.adminSchema}.${table} p 
-      INNER JOIN school s ON s.id = p.school_id
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
-      WHERE s.dfeNumber = @dfeNumber
+      WHERE p.school_id = @schoolId
       ORDER BY lastName asc      
     `
-  return sqlService.query(sql, [paramDfeNumber])
+  return sqlService.query(sql, [paramSchoolId])
 }
 
 /**
@@ -75,19 +74,18 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
   return R.head(results)
 }
 
-pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, dfeNumber) {
+pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
       SELECT TOP 1 
       p.*  
       FROM ${sqlService.adminSchema}.${table} p
-      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
       WHERE p.urlSlug = @urlSlug  
-      AND   s.dfeNumber = @dfeNumber
+      AND p.school_id = @schoolId
     `
-  const results = await sqlService.query(sql, [paramSlug, paramDfeNumber])
+  const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
   return R.head(results)
 }
 
@@ -241,27 +239,25 @@ pupilDataService.sqlCreate = async (data) => {
 /**
  * Find pupils for a school with pins that have not yet expired, for
  * a specific pin environment (live / fam)
- * @param dfeNumber
+ * @param schoolId
  * @param pinEnv
  * @return {Promise<*>}
  */
-pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber, pinEnv) => {
+pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   // TODO: use pinEnv to differentiate between live and familiarisation
-  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
   SELECT p.*, g.group_id
   FROM ${sqlService.adminSchema}.${table} p
-  INNER JOIN ${sqlService.adminSchema}.[school] s
-    ON p.school_id = s.id
   LEFT JOIN  ${sqlService.adminSchema}.[pupilGroup] g
     ON g.pupil_id = p.id
   WHERE p.pin IS NOT NULL
-  AND s.dfeNumber = @dfeNumber
+  AND p.school_id = @schoolId
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
-  return sqlService.query(sql, [paramDfeNumber])
+  return sqlService.query(sql, [paramSchoolId])
 }
 
 /**
@@ -318,26 +314,6 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 }
 
 /**
- * Find pupils by ids and dfeNumber.
- * @param ids
- * @param dfeNumber
- * @returns {Promise<*>}
- */
-pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
-  const select = `
-      SELECT p.* 
-      FROM 
-      ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
-      `
-  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = 'WHERE p.id IN (' + paramIdentifiers.join(', ') + ')'
-  const andClause = 'AND s.dfeNumber = @dfeNumber'
-  params.push({ name: 'dfeNumber', value: dfeNumber, type: TYPES.Int })
-  const sql = [select, whereClause, andClause].join(' ')
-  return sqlService.query(sql, params)
-}
-
-/**
  * Batch update pupil pins for specific pin env (live/fam)
  * @param pupils
  * @param pinEnv
@@ -386,54 +362,6 @@ pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   })
   const sql = update.join('; \n')
   return sqlService.modify(sql, params)
-}
-
-/**
- * Find all pupils for a dfeNumber and provide the reason field: null if not present
- * @param {number} dfeNumber
- * @param {string} sortField
- * @param {string} sortDirection
- * @return {Promise<*>}
- */
-pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, sortField = 'name', sortDirection = 'ASC') => {
-  const safeSort = sortDirection.toUpperCase()
-  if (safeSort !== 'ASC' && safeSort !== 'DESC') {
-    throw new Error(`Invalid sortDirection: ${safeSort}`)
-  }
-
-  // Whitelist the sortFields so we can be sure of the SQL we are generating.
-  const allowedSortFields = ['name', 'reason']
-  if (R.indexOf(sortField, allowedSortFields) === -1) {
-    throw new Error(`Unsupported value for sortField: ${sortField}`)
-  }
-  let sqlSort
-  if (sortField === 'name') {
-    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}, p.middleNames ${sortDirection}, p.dateOfBirth ${sortDirection}`
-  } else if (sortField === 'reason') {
-    sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
-  }
-  const params = [
-    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
-  ]
-  // The order by clause is to sort nulls last
-  const sql = `
-  SELECT p.*, pg.group_id, ac.reason
-  FROM ${sqlService.adminSchema}.${table} p 
-    INNER JOIN ${sqlService.adminSchema}.[school] s
-      ON p.school_id = s.id
-    INNER JOIN ${sqlService.adminSchema}.[pupilStatus] ps
-      ON p.pupilStatus_id = ps.id
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa 
-      ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
-      ON pa.attendanceCode_id = ac.id 
-    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
-      ON pg.pupil_id = p.id 
-  WHERE s.dfeNumber = @dfeNumber
-  AND ps.code = 'UNALLOC'
-  ORDER BY ${sqlSort}
-  `
-  return sqlService.query(sql, params)
 }
 
 pupilDataService.sqlInsertMany = async (pupils) => {

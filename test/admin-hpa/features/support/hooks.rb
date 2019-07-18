@@ -1,6 +1,7 @@
 Before do
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
+  p Time.now
 end
 
 Before("@add_a_pupil") do
@@ -71,6 +72,7 @@ Before("@hdf") do
     sleep(1)
     retry if (retries += 1) < 5
   end
+  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "There are still pupil with Not started status") {sleep 1 until SqlDbHelper.get_pupil_with_no_attandance_code(school_id).nil?}
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
@@ -131,6 +133,12 @@ end
 
 Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
+  REDIS_CLIENT.keys.each do |key|
+    puts "current key is : #{key}"
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
 end
 
 Before("@remove_assigned_form") do
@@ -172,6 +180,23 @@ After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form")
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
 end
 
+Before("@redis") do
+  REDIS_CLIENT.keys.each do |key|
+    puts "current key is : #{key}"
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
+end
+
+After("@redis") do
+  REDIS_CLIENT.keys.each do |key|
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT. del key
+    end
+  end
+end
+
 
 After do |scenario|
   if scenario.failed?
@@ -188,4 +213,10 @@ After do |scenario|
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
+  p Time.now
 end
+
+at_exit do
+  SqlDbHelper.update_to_10_questions
+end
+

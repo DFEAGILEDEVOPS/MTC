@@ -24,7 +24,7 @@ controller.getRestartOverview = async (req, res, next) => {
     restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -58,7 +58,7 @@ controller.getSelectRestartList = async (req, res, next) => {
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.School, checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -89,6 +89,10 @@ controller.postSubmitRestartList = async (req, res, next) => {
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
+
+  // After exceeding 20 items the request payload received contains object key-value pairs
+  // Detecting and converting them to strings is necessary as part of the processing
+  const processedPupilsIds = pupilsList.map(p => typeof p === 'object' ? Object.values(p)[0] : p)
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -131,7 +135,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
-    pupilsRestarted = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
+    pupilsRestarted = await restartService.restart(processedPupilsIds, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
@@ -142,7 +146,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
 
   // Ask for these pupils to have their status updated
   try {
-    await pupilStatusService.recalculateStatusByPupilIds(pupilsList, req.user.schoolId)
+    await pupilStatusService.recalculateStatusByPupilIds(processedPupilsIds, req.user.schoolId)
   } catch (error) {
     logger.error('Failed to recalculate pupil status', error)
     throw error

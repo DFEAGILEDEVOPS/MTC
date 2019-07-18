@@ -32,7 +32,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = ''
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -58,7 +58,7 @@ describe('pin-generation.service', () => {
         pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -84,7 +84,7 @@ describe('pin-generation.service', () => {
         pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(3).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -111,7 +111,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = ''
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -140,7 +140,7 @@ describe('pin-generation.service', () => {
       it('who are flagged as not taking the check', async (done) => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
-        spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([pupil1])
+        spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([pupil1])
         spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
         spyOn(restartService, 'canRestart').and.returnValue(false)
         spyOn(pupilAttendanceService, 'hasAttendance').and.returnValue(true)
