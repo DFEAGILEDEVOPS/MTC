@@ -126,4 +126,5 @@ else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
 end
 
-
+# clear redis cache before run
+REDIS_CLIENT.flushall
