@@ -99,6 +99,7 @@ gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-gds-images', 'copy
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
+    .pipe(replace('/vendor/govuk-frontend/', `${config.AssetPath}vendor/govuk-frontend/`))
     .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
