@@ -24,7 +24,7 @@ describe 'Security API spec' do
       request_helper = RequestHelper.new
       response = request_helper.spa_home
       expect(response.code).to eql 200
-      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
+      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://*.msecnd.net:*; img-src 'self' data: https://www.google-analytics.com https://*.msecnd.net:*; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
       expect(response.headers['content-type']).to eql "text/html"
       expect(response.headers['server']).to eql 'nginx'
       expect(response.headers['strict-transport-security']).to eql "max-age=31536000;"
