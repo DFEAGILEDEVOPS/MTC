@@ -50,13 +50,17 @@ var CookieBanner = {
   }
 }
 
-document.getElementById('close-cookie-message').addEventListener('click', function (e) {
-  e.preventDefault()
-  var message = document.getElementById('global-cookie-message')
-  if (message) {
-    message.style.display = 'none'
-  }
-})
+var closeCookieMessage = document.getElementById('close-cookie-message')
+
+if (closeCookieMessage) {
+  closeCookieMessage.addEventListener('click', function (e) {
+    e.preventDefault()
+    var message = document.getElementById('global-cookie-message')
+    if (message) {
+      message.style.display = 'none'
+    }
+  })
+}
 
 // Add cookie message
 CookieBanner.addCookieMessage()
