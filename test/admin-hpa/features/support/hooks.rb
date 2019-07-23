@@ -99,10 +99,6 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
-Before("@reset_all_pins") do
-  SqlDbHelper.reset_all_pin_expiry_times
-end
-
 Before("@upload_new_live_form") do
   step 'I have signed in with test-developer'
   step 'I am on the Upload and View forms page v2'
