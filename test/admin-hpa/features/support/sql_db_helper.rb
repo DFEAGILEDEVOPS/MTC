@@ -46,17 +46,17 @@ class SqlDbHelper
     teacher_res
   end
 
-  def self.reset_all_pin_expiry_times
-    sql = "UPDATE [mtc_admin].[checkPin] set pinExpiresAt='2018-12-12 23:00:59.999 +00:00'"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
+  # def self.reset_all_pin_expiry_times
+  #   sql = "UPDATE [mtc_admin].[checkPin] set pinExpiresAt='2018-12-12 23:00:59.999 +00:00'"
+  #   result = SQL_CLIENT.execute(sql)
+  #   result.do
+  # end
 
-  def self.set_pupil_pin_expiry(forename, lastname, school_id, new_time)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
+  # def self.set_pupil_pin_expiry(forename, lastname, school_id, new_time)
+  #   sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+  #   result = SQL_CLIENT.execute(sql)
+  #   result.do
+  # end
 
   def self.find_school(school_id)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE id='#{school_id}'"
@@ -195,34 +195,6 @@ class SqlDbHelper
     chk_res = result.first
     result.cancel
     chk_res
-  end
-
-  def self.set_all_pupils_check_completed(school_id)
-    sql = "UPDATE [mtc_admin].[pupil]
-    SET pupilStatus_id = 5
-    WHERE school_id = #{school_id}"
-    result = SQL_CLIENT.execute(sql)
-    result.insert
-  end
-
-  def self.set_all_pupils_check_started(school_id)
-    sql = "UPDATE [mtc_admin].[pupil]
-    SET pupilStatus_id = 4
-    WHERE school_id = #{school_id}"
-    result = SQL_CLIENT.execute(sql)
-    result.insert
-  end
-
-  def self.set_all_pupils_attendance_reason(school_id, user_id, value)
-    sql = "DELETE FROM [mtc_admin].pupilAttendance
-    WHERE pupil_id IN (SELECT id from [mtc_admin].pupil WHERE school_id = #{school_id});
-    DECLARE @attendanceCode_id int
-    SET @attendanceCode_id = (SELECT TOP (1) id FROM [mtc_admin].attendanceCode WHERE reason = '#{value}')
-    INSERT INTO [mtc_admin].pupilAttendance (recordedBy_user_id, attendanceCode_id, pupil_id, isDeleted)
-    SELECT #{user_id}, @attendanceCode_id, id, 0 FROM [mtc_admin].pupil
-    WHERE school_id = #{school_id}"
-    result = SQL_CLIENT.execute(sql)
-    result.insert
   end
 
   def self.get_attendance_codes
@@ -441,7 +413,7 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
-  
+
   def self.set_check_status_via_upn_list(upn_array)
     pupil_ids = upn_array.map {|upn| pupil_details(upn)['id']}
     sql = "UPDATE [mtc_admin].[check] set checkStatus_id=6 WHERE pupil_id in ('#{pupil_ids.join("','")}')"
@@ -476,15 +448,15 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
-  
-    
+
+
   def self.update_to_25_questions
     p 'UPDATING TO 25 QUESTIONS'
     sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":2,\"f2\":5}]' WHERE name IN ('MTC0103', 'MTC0100')"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
-  
+
   def self.update_to_10_questions
     p "UPDATING TO 10 QUESTIONS"
     sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\" : 2,\"f2\" : 5},{\"f1\" : 11,\"f2\" : 2},{\"f1\" : 5,\"f2\" : 10},{\"f1\" : 4,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 9},{\"f1\" : 2,\"f2\" : 4},{\"f1\" : 3,\"f2\" : 3},{\"f1\" : 4,\"f2\" : 9},{\"f1\" : 6,\"f2\" : 5},{\"f1\" : 12,\"f2\" : 12}]' WHERE name IN ('MTC0103', 'MTC0100')"
