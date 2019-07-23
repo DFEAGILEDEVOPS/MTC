@@ -42,6 +42,7 @@ export class ConnectivityCheckComponent implements OnInit {
     try {
       connectivityCheckSucceeded = await this.connectivityService.connectivityCheckSucceeded();
     } catch (err) {
+      console.log(`pupil-spa: connectivityService.connectivityCheckSucceeded failed with error ${err.message}`);
     }
     if (connectivityCheckSucceeded) {
       await this.displayMinTime(startTime);
