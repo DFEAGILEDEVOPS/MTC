@@ -40,7 +40,12 @@ export class ConnectivityService {
   }
 
   async connectivityCheckSucceeded() {
-    const responses = await Promise.all([this.canAccessPupilAuthURL(), this.canAccessAzureStorageQueue()]);
+    let responses;
+    try {
+      responses = await Promise.all([this.canAccessPupilAuthURL(), this.canAccessAzureStorageQueue()]);
+    } catch (error) {
+      return false;
+    }
     if (this.errorMessages.length > 0) {
       this.generateConnectivityErrorMessage();
     }
