@@ -1,13 +1,19 @@
-window.GOVUKFrontend.CookieBanner = {
+
+'use strict'
+if (!window.MTCAdmin) {
+  window.MTCAdmin = {}
+}
+
+window.MTCAdmin.CookieBanner = {
   init: function (name, value, options) {
     if (typeof value !== 'undefined') {
       if (value === false || value === null) {
-        return window.GOVUKFrontend.CookieBanner.setCookie(name, '', { days: -1 })
+        return window.MTCAdmin.CookieBanner.setCookie(name, '', { days: -1 })
       } else {
-        return window.GOVUKFrontend.CookieBanner.setCookie(name, value, options)
+        return window.MTCAdmin.CookieBanner.setCookie(name, value, options)
       }
     } else {
-      return window.GOVUKFrontend.CookieBanner.getCookie(name)
+      return window.MTCAdmin.CookieBanner.getCookie(name)
     }
   },
   setCookie: function (name, value, options) {
@@ -41,10 +47,10 @@ window.GOVUKFrontend.CookieBanner = {
   },
   addCookieMessage: function () {
     var message = document.querySelector('.js-cookie-banner')
-    var hasCookieMessage = (message && window.GOVUKFrontend.CookieBanner.init('seen_cookie_message') === null)
+    var hasCookieMessage = (message && window.MTCAdmin.CookieBanner.init('seen_cookie_message') === null)
     if (hasCookieMessage) {
       message.style.display = 'block'
-      window.GOVUKFrontend.CookieBanner.init('seen_cookie_message', 'yes', { days: 28 })
+      window.MTCAdmin.CookieBanner.init('seen_cookie_message', 'yes', { days: 28 })
     }
   }
 }
@@ -62,4 +68,4 @@ if (closeCookieMessage) {
 }
 
 // Add cookie message
-window.GOVUKFrontend.CookieBanner.addCookieMessage()
+window.MTCAdmin.CookieBanner.addCookieMessage()
