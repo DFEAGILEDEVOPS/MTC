@@ -140,12 +140,6 @@ When(/^I click view all pins button$/) do
   generate_pins_overview_page.view_all_pins_btn.click
 end
 
-# When(/^I expired the pupil pin$/) do
-#   ct = Time.now - 4000
-#   new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-#   SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-# end
-
 Given(/^I have generated pin for all pupil$/) do
   step "I have signed in with teacher4"
   step "I am on Generate pins Pupil List page"
@@ -325,7 +319,18 @@ Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
-  step 'I should be able to generate pins for all pupils in this group'
+  view_and_custom_print_live_check_page.load
+  @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
+  generate_pins_overview_page.load
+  generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
+  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
+  generate_pins_overview_page.select_all_pupils.click
+  generate_pins_overview_page.sticky_banner.confirm.click
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @before_pin_gen + @pupil_group_array.size
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end
 
 Given(/^I have generated familiarisation pins for all pupils in a group$/) do
@@ -341,11 +346,6 @@ Then(/^I can no longer use this group to filter on the generate pins page$/) do
   expect(generate_pins_overview_page.group_filter).to have_no_closed_filter
   expect(generate_pins_overview_page.group_filter).to have_no_opened_filter
 end
-
-# When(/^a pupil becomes available for pin generation again$/) do
-#   # SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
-#   SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
-# end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
   generated_pins_page.load
@@ -392,6 +392,8 @@ Given(/^I want to generate pins for a group of (\d+) pupils with (.+)$/) do |tot
   SqlDbHelper.create_group(@group_name,teacher_details['school_id'])
   @total_pins = total_pins.to_i
   step "I have logged in with #{teacher}"
+  view_and_custom_print_live_check_page.load
+  @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@total_pins,'pin_gen.csv')
   pupil_ids = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['id']}
@@ -411,5 +413,5 @@ end
 
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-print-live-pins'
-  expect(generated_pins_page.pupil_list.rows.size).to eql @total_pins
+  expect(generated_pins_page.pupil_list.rows.size).to eql @total_pins + @before_pin_gen
 end

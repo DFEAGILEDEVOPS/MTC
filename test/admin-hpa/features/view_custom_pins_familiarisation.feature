@@ -1,4 +1,4 @@
-@view_custom_pins_familiarisation @generate_pupil_pins @reset_all_pins @reset_checks @deactivate_all_test_check_window
+@view_custom_pins_familiarisation @generate_pupil_pins @reset_checks @deactivate_all_test_check_window
 Feature: View custom pins familiarisation
 
   Scenario: Familiarisation view and custom print pin page is displayed as per design

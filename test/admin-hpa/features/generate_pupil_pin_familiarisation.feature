@@ -1,7 +1,6 @@
-@generate_pupil_pins_familiarisation @reset_all_pins @deactivate_all_test_check_window
+@generate_pupil_pins_familiarisation @deactivate_all_test_check_window
 Feature: Generate Pupil PINs Familiarisation
 
-  @reset_all_pins
   Scenario: Generate pupil pin familiarisation is rendered as per design
     Given I have signed in with teacher2
     When I navigate to generate pupil pins familiarisation page
@@ -83,7 +82,6 @@ Feature: Generate Pupil PINs Familiarisation
     And I am on the generate pupil pins familiarisation page
     Then familiarisation generated pin overview page is displayed as per design
 
-  @reset_all_pins
   Scenario: Cancel returns user to Familiarisation Generate Pupil Pin Landing page if there are no pupil with pins
     Given I have signed in with teacher3
     And I select a Pupil from familiarisation Generate Pin page
@@ -96,7 +94,6 @@ Feature: Generate Pupil PINs Familiarisation
     When I choose to cancel
     Then I should be taken to familiarisation pin overview page
 
-  @reset_all_pins
   Scenario: Familiarisation Pupil pins must be generated from the specified pool of characters
     Given I have generated a familiarisation pin for a pupil
     Then all pupil familiarisation pins should be generated from the specified pool of characters
