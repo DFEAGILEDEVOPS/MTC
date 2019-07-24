@@ -90,13 +90,6 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   step "I click Generate PINs button"
   @page = generate_pins_familiarisation_overview_page
   @pupil_name = generate_pins_familiarisation_overview_page.generate_pin_using_name(name)
-
-  # ct = Time.now
-  # new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  # SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-  # SqlDbHelper.set_school_pin_expiry('1001', new_time)
-
-  # step "I am on the generate pupil pins familiarisation page"
 end
 
 Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
