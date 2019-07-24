@@ -42,7 +42,7 @@ const configService = {
   /**
    * Generate the pupil config for a single pupil
    * @param {pupilId, schoolId, loadingTime, questionTime, checkTime, speechSynthesis, accessArrangementCodes, fontSizeCode, colourContrastCode} singlePupilConfigData
-   * @return {*|{numpadRemoval, audibleSounds, checkTime, colourContrastCode, inputAssistance, loadingTime, questionReader, colourContrast, fontSize, speechSynthesis, questionTime, nextBetweenQuestions}}
+   * @return {*|{numpadRemoval, audibleSounds, checkTime, colourContrastCode, inputAssistance, loadingTime, questionReader, colourContrast, fontSize, questionTime, nextBetweenQuestions}}
    */
   generateConfig: function generateConfig (singlePupilConfigData) {
     const config = this.getBaseConfig()
