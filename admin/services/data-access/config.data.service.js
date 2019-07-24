@@ -24,7 +24,6 @@ const configDataService = {
           st.checkTimeLimit as checkTime,
       
           -- pupil configs
-          p.speechSynthesis,
           STRING_AGG (aa.code, ',') as accessArrangementCodes,
           STRING_AGG (pfs.code, ',') as fontSizeCode,
           STRING_AGG (pcc.code, ',') as colourContrastCode
@@ -40,7 +39,7 @@ const configDataService = {
         WHERE
           p.id IN ( ${pupilParamNames.join(', ')} )
         AND s.id = @schoolId
-        GROUP BY p.id, s.id, p.speechSynthesis, st.loadingTimeLimit, st.questionTimeLimit, st.checkTimeLimit`
+        GROUP BY p.id, s.id, st.loadingTimeLimit, st.questionTimeLimit, st.checkTimeLimit`
 
     const params = [
       { name: 'schoolId', value: schoolId, type: TYPES.Int }

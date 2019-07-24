@@ -23,8 +23,7 @@ const configService = {
       numpadRemoval: false,
       practice: true,
       questionReader: false,
-      questionTime: undefined,
-      speechSynthesis: false
+      questionTime: undefined
     }
   },
 
@@ -51,7 +50,6 @@ const configService = {
     config.loadingTime = singlePupilConfigData.loadingTime
     config.questionTime = singlePupilConfigData.questionTime
     config.checkTime = singlePupilConfigData.checkTime
-    config.speechSynthesis = singlePupilConfigData.speechSynthesis
     const accessArrangementCodes = this.split(singlePupilConfigData.accessArrangementCodes)
 
     accessArrangementCodes.forEach(code => {
