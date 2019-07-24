@@ -46,18 +46,6 @@ class SqlDbHelper
     teacher_res
   end
 
-  # def self.reset_all_pin_expiry_times
-  #   sql = "UPDATE [mtc_admin].[checkPin] set pinExpiresAt='2018-12-12 23:00:59.999 +00:00'"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
-  # def self.set_pupil_pin_expiry(forename, lastname, school_id, new_time)
-  #   sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
   def self.find_school(school_id)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
