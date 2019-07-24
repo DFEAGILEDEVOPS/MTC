@@ -13,7 +13,9 @@ const config = require('./config')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
+  './node_modules/govuk-frontend/all.js',
   './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/gds-cookie-banner.js',
   './assets/javascripts/accessible-autocomplete.min.js',
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/util-checkbox.js',
@@ -64,6 +66,18 @@ gulp.task('copy-images', function () {
     .pipe(gulp.dest('public/images'))
 })
 
+gulp.task('copy-gds-images', function () {
+  gulp
+    .src(['./node_modules/govuk-frontend/assets/images/*'])
+    .pipe(gulp.dest('public/vendor/govuk-frontend/images'))
+})
+
+gulp.task('copy-gds-fonts', function () {
+  gulp
+    .src(['./node_modules/govuk-frontend/assets/fonts/*'])
+    .pipe(gulp.dest('public/vendor/govuk-frontend/fonts'))
+})
+
 gulp.task('copy-pdfs', function () {
   gulp
     .src(['./assets/pdfs/*'])
@@ -81,10 +95,11 @@ gulp.task('realclean', ['clean'], function () {
     .pipe(clean())
 })
 
-gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-pdfs', 'copy-csv-files'])
+gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-gds-images', 'copy-gds-fonts', 'copy-pdfs', 'copy-csv-files'])
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
+    .pipe(replace('/vendor/govuk-frontend/', `${config.AssetPath}vendor/govuk-frontend/`))
     .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
