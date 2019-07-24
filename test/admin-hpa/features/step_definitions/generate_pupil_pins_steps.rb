@@ -140,12 +140,6 @@ When(/^I click view all pins button$/) do
   generate_pins_overview_page.view_all_pins_btn.click
 end
 
-When(/^I expired the pupil pin$/) do
-  ct = Time.now - 4000
-  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-end
-
 Given(/^I have generated pin for all pupil$/) do
   step "I have signed in with teacher4"
   step "I am on Generate pins Pupil List page"
@@ -351,11 +345,6 @@ Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
   expect(generate_pins_overview_page.group_filter).to have_no_closed_filter
   expect(generate_pins_overview_page.group_filter).to have_no_opened_filter
-end
-
-When(/^a pupil becomes available for pin generation again$/) do
-  SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
-  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
