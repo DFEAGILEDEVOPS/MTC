@@ -207,8 +207,7 @@ module.exports = {
     } ],
     config: {
       questionTime: 5,
-      loadingTime: 2,
-      speechSynthesis: false
+      loadingTime: 2
     },
     inputs: [
       {
