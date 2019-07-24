@@ -1,7 +1,6 @@
-@generate_pupil_pins @reset_all_pins @reset_checks @deactivate_all_test_check_window
+@generate_pupil_pins @reset_checks @deactivate_all_test_check_window
 Feature: Generate Pupil PINs
 
-  @reset_all_pins
   Scenario: Generate Pins Landing page displays heading and info section
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
@@ -77,7 +76,6 @@ Feature: Generate Pupil PINs
     When I select all pupils for Generate pin
     Then the sticky banner should display the total pupil count on Generate Pin Page
 
-#  @reset_all_pins
   Scenario: Cancel returns user to Generate Pupil Pin Landing page if there are no pupil with pins
     Given I have signed in with teacher3
     And I am on Generate pins Pupil List page
@@ -97,12 +95,11 @@ Feature: Generate Pupil PINs
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
 
-  @reset_all_pins @bug_18993
+  @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
 
-  @reset_all_pins
   Scenario: Multiple pins can be generated simultaneously
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
@@ -143,7 +140,7 @@ Feature: Generate Pupil PINs
     Given I have generated pins for all pupils in a group
     Then I can no longer use this group to filter on the generate pins page
 
-  @reset_all_pins @remove_all_groups @pupil_not_taking_check @manual
+  @remove_all_groups @pupil_not_taking_check @manual
   Scenario: Groups reappear when their are available pupils for pin generation
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again
