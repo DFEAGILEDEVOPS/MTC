@@ -6,5 +6,5 @@
 # $4 is the SQL_DATABASE (database name)
 cd $BUILD_REPOSITORY_LOCALPATH
 cd admin
-npm install
+# npm install (install now needs to be explicitly called from VSO to ensure credentials are passed)
 SQL_ADMIN_USER=$1 SQL_ADMIN_USER_PASSWORD=$2 SQL_APP_USER_PASSWORD=$3 SQL_DATABASE=$4 SQL_AZURE_SCALE=S0 npm run migrate-sql
