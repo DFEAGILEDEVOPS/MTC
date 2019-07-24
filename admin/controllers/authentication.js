@@ -28,7 +28,7 @@ const getSignIn = (req, res) => {
     if (config.NCA_TOOLS_AUTH_URL) {
       res.redirect(config.NCA_TOOLS_AUTH_URL)
     } else {
-      res.render('sign-in')
+      res.render('sign-in', { layout: 'gds-layout' })
     }
   }
 }
