@@ -8,7 +8,7 @@
   background-position: 5px top;
   background-repeat: no-repeat;
   background-size: auto 20px;
-  border-left: 2px solid $department-for-education;
+  border-left: 2px solid govuk-organisation-colour("department-for-education");
   font-family: "Helvetica", "Arial";
   font-size: 13px;
   font-weight: normal;
@@ -37,7 +37,7 @@
 }
 
 .govuk-organisation-logo.home {
-  margin-top: $gutter-two-thirds;
+  margin-top: $govuk-gutter - ($govuk-gutter / 3);
 }
 
 //  Logo

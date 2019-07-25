@@ -73,7 +73,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_assign-forms.scss';
 @import 'elements/_hdf';
 @import 'elements/_gds-app-cookie-banner';
-@import 'elements/_sta-organisation-logo';
 
 // New GOVUK Frontend Toolkit
 
@@ -82,6 +81,7 @@ $govuk-images-path: '#{$govuk-assets-path}images/';
 $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 
 @import '../../node_modules/govuk-frontend/all';
+@import 'elements/_sta-organisation-logo';
 
 // Global
 
