@@ -4,7 +4,7 @@
 }
 
 .govuk-organisation-logo {
-  background-image: file-url('crests/org_crest_13px.png');
+  background-image: url('/images/org_crest_13px.png');
   background-position: 5px top;
   background-repeat: no-repeat;
   background-size: auto 20px;
@@ -16,7 +16,7 @@
   padding: 20px 0 0 6px;
 
   @include media(tablet) {
-    background-image: file-url('crests/org_crest_18px.png');
+    background-image: url('/images/org_crest_18px.png');
     background-position: 6px top;
     background-size: auto 25px;
     border-width: 2px;
@@ -26,7 +26,7 @@
   }
 
   @include media(desktop) {
-    background-image: file-url('crests/org_crest_27px.png');
+    background-image: url('/images/org_crest_27px.png');
     background-position: 6px top;
     background-size: auto 40px;
     border-width: 3px;
