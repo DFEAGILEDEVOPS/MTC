@@ -8,6 +8,7 @@ const R = require('ramda')
 const uuidv4 = require('uuid/v4')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
+const config = require('../../config')
 const base = require('../../lib/logger')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
 const zipper = require('./zip.service')
@@ -16,16 +17,38 @@ const psychometricianReportUploadContainer = 'psychometricianreportupload'
 const psychometricianReportCode = 'PSR'
 const functionName = 'report-psychometrician'
 
-/**
- * Create a unique directory in the system's temp dir
- * @param prefix
- * @return {*}
- */
-async function createTmpDir (prefix) {
-  return fs.mkdtemp(`${os.tmpdir()}${path.sep}${prefix}`)
-}
-
 const psychometricianReportService = {
+  /**
+   * Create a unique directory in the system's temp dir
+   * @param prefix
+   * @return {*}
+   */
+  createTmpDir: async function createTmpDir (prefix) {
+    let tmpDir
+    if (config.PsReportTemp) {
+      this.logger(`${functionName}: config.PsReportTemp is set: ${config.PsReportTemp}`)
+      try {
+        const dirStat = await fs.stat(config.PsReportTemp)
+        if (dirStat.isDirectory()) {
+          this.logger(`${functionName}: setting tmpDir to use ${config.PsReportTemp}`)
+          // The directory exists - we can use the config
+          tmpDir = config.PsReportTemp
+        } else {
+          this.logger(`${functionName}: ERROR: not a directory, using os.tmpdir() instead`)
+          tmpDir = os.tmpdir()
+        }
+      } catch (error) {
+        // the stat failed, fallback to os tmp dir
+        this.logger(`${functionName}: ERROR: stat failed, using os.tmpdir() instead: ${error}`)
+        tmpDir = os.tmpdir()
+      }
+    } else {
+      tmpDir = os.tmpdir()
+    }
+    this.logger(`${functionName}: setting tmpDir to ${tmpDir}`)
+    return fs.mkdtemp(`${tmpDir}${path.sep}${prefix}`)
+  },
+
   /**
    * Delete a directory and its contents
    * @param directoryPath
@@ -79,7 +102,7 @@ const psychometricianReportService = {
     let newTmpDir, psychometricianReportFilename, anomalyReportFilename
 
     try {
-      newTmpDir = await createTmpDir(functionName + '-')
+      newTmpDir = await this.createTmpDir('PS-REPORT-TEMP-')
       this.logger.info(`${functionName}: tmp directory created: ${newTmpDir}`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
