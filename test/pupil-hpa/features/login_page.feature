@@ -50,3 +50,9 @@ Feature: Login page
     Given I am logged in with a user who does not need speech synthesis
     Then I should see speech synthesis set to false in the local storage
 
+  @wip
+  Scenario: Connection test occurs before loading of the sign in page
+    Given I navigate to the pupil spa
+    Then I should see a loading page
+    And if successful should be taken to the sign in page
+
