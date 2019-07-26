@@ -33,7 +33,7 @@ module Helpers
   end
 
   def create_config_details_hash
-    {"questionTime"=>SqlDbHelper.get_settings['questionTimeLimit'].to_i, "loadingTime"=>SqlDbHelper.get_settings['loadingTimeLimit'].to_i, "checkTime"=>SqlDbHelper.get_settings['checkTimeLimit'].to_i, "speechSynthesis"=>false, "audibleSounds"=>false, "inputAssistance"=>false, "numpadRemoval"=>false, "fontSize"=>false, "colourContrast"=>false, "questionReader"=>false, "nextBetweenQuestions"=>false, "practice"=>false}
+    {"questionTime"=>SqlDbHelper.get_settings['questionTimeLimit'].to_i, "loadingTime"=>SqlDbHelper.get_settings['loadingTimeLimit'].to_i, "checkTime"=>SqlDbHelper.get_settings['checkTimeLimit'].to_i, "audibleSounds"=>false, "inputAssistance"=>false, "numpadRemoval"=>false, "fontSize"=>false, "colourContrast"=>false, "questionReader"=>false, "nextBetweenQuestions"=>false, "practice"=>false}
   end
 
   def time_to_nearest_hour(time)

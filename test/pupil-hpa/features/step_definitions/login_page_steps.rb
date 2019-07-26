@@ -92,14 +92,13 @@ Given(/^I am logged in with a user who needs speech synthesis$/) do
 end
 
 
-Then(/^I should see speech synthesis set to (.+) in the local storage$/) do |boolean|
-  expect(confirmation_page).to be_displayed
+Then(/^I should see question reader set to (.+) in the local storage$/) do |boolean|
   boolean = boolean == 'true' ? 'truthy' : 'falsey'
-  expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("config");'))['speechSynthesis']).to send("be_#{boolean}")
+  expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("config");'))['questionReader']).to send("be_#{boolean}")
 end
 
 
-Given(/^I am logged in with a user who does not need speech synthesis$/) do
+Given(/^I am logged in with a user who does not need question reader$/) do
   step 'I have logged in'
 end
 
