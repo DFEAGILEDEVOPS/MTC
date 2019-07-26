@@ -38,7 +38,6 @@ preparedCheckSchemaValidator.validateConfig = function (config) {
   const configProperties = [
     'questionTime',
     'loadingTime',
-    'speechSynthesis',
     'audibleSounds',
     'inputAssistance',
     'numpadRemoval',
