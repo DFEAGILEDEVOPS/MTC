@@ -55,7 +55,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_lists';
 @import 'elements/_labels';
 @import 'elements/_check-forms';
-@import 'elements/_sign-out';
 @import 'elements/_results';
 @import 'elements/_check-windows';
 @import 'elements/_sorting';
@@ -72,7 +71,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_custom_banners.scss';
 @import 'elements/_assign-forms.scss';
 @import 'elements/_hdf';
-@import 'elements/_gds-app-cookie-banner';
 
 // New GOVUK Frontend Toolkit
 
@@ -81,9 +79,11 @@ $govuk-images-path: '#{$govuk-assets-path}images/';
 $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 
 @import '../../node_modules/govuk-frontend/all';
+@import 'elements/_gds-app-cookie-banner';
 @import 'elements/_gds-app-related-items';
 @import 'elements/_gds-custom-fonts';
 @import 'elements/_gds-custom-links';
+@import 'elements/_sign-out';
 
 // Global
 
