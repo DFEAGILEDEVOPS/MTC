@@ -44,7 +44,7 @@
     "fast-csv": "^2.4.1",
     "feature-toggles": "^1.4.0",
     "fs-extra": "^7.0.1",
-    "govuk-frontend": "^2.13.0",
+    "govuk-frontend": "^3.0.0",
     "helmet": "^3.9.0",
     "hsts": "^2.1.0",
     "iconv-lite": "^0.4.19",
