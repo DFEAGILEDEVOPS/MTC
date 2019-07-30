@@ -2,6 +2,5 @@
 
 module.exports = {
   questionTime: 6,
-  loadingTime: 2,
-  speechSynthesiser: false
+  loadingTime: 2
 }

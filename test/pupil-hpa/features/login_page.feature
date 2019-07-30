@@ -40,13 +40,12 @@ Feature: Login page
     Given I have attempted to enter a school I do not attend upon login
     Then I should see a failed login message
 
-  @wip
-  Scenario: Speech synthesis is set to true when a pupil requiring it logs in
+  Scenario: Question Reader is set to true when a pupil requiring it logs in
     Given I logged in with user with access arrangement 'Question reader'
-    Then I should see speech synthesis set to true in the local storage
+    Then I should see question reader set to true in the local storage
 
-  @wip
-  Scenario: Speech synthesis is set to false when a pupil who doesn't require it logs in
-    Given I am logged in with a user who does not need speech synthesis
-    Then I should see speech synthesis set to false in the local storage
+  @generate_live_pin
+  Scenario: Question Reader is set to false when a pupil who doesn't require it logs in
+    Given I am logged in with a user who does not need question reader
+    Then I should see question reader set to false in the local storage
 

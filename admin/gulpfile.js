@@ -13,7 +13,7 @@ const config = require('./config')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
-  './node_modules/govuk-frontend/all.js',
+  './node_modules/govuk-frontend/govuk/all.js',
   './assets/javascripts/jquery-1.12.4.js',
   './assets/javascripts/gds-cookie-banner.js',
   './assets/javascripts/accessible-autocomplete.min.js',
@@ -68,13 +68,13 @@ gulp.task('copy-images', function () {
 
 gulp.task('copy-gds-images', function () {
   gulp
-    .src(['./node_modules/govuk-frontend/assets/images/*'])
+    .src(['./node_modules/govuk-frontend/govuk/assets/images/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/images'))
 })
 
 gulp.task('copy-gds-fonts', function () {
   gulp
-    .src(['./node_modules/govuk-frontend/assets/fonts/*'])
+    .src(['./node_modules/govuk-frontend/govuk/assets/fonts/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/fonts'))
 })
 
