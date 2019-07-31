@@ -93,6 +93,7 @@ end
 
 
 Then(/^I should see question reader set to (.+) in the local storage$/) do |boolean|
+  sleep 2
   boolean = boolean == 'true' ? 'truthy' : 'falsey'
   expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("config");'))['questionReader']).to send("be_#{boolean}")
 end
