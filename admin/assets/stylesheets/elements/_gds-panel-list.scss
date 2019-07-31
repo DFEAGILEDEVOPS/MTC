@@ -1,0 +1,13 @@
+.govuk-panel-list {
+  margin-top: 0;
+  padding-left: 0;
+
+  li, dt {
+    margin-bottom: 15px;
+
+    ul > li {
+      list-style-type: disc;
+      margin-bottom: 5px;
+    }
+  }
+}
