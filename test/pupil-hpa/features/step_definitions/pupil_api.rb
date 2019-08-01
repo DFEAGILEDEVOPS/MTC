@@ -3,7 +3,7 @@ Given(/^I have generated a pin via the admin app$/) do
   # page.click_link('Sign out') if page.has_link?('Sign out')
   find('#username').set 'teacher1'
   find('#password').set 'password'
-  find('input[value="Sign in"]').click
+  find('button[type="submit"]').click
   visit ENV['ADMIN_BASE_URL']+'/pupil-pin/generate-live-pins-list'
   all('tbody tr').first.find('input[type="checkbox"]').click
   find('.sticky-banner-wrapper #stickyConfirm').click

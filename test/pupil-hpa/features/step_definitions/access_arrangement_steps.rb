@@ -41,7 +41,7 @@ Then(/^I can see following access arrangement$/) do |table|
   i=0
   table.hashes.each do |hash|
     expected_access_arr_type = hash['access_arrangement_type']
-    expected_access_arr_type = "Input assistant Please enter the first and last name of the input assistant that will be helping you through the check First name of input assistant Last name of input assistant" if hash['access_arrangement_type'] == 'Input assistance'
+    expected_access_arr_type = "Input assistant\nPlease enter the first and last name of the input assistant that will be helping you through the check\n\nFirst name of input assistant\nLast name of input assistant" if hash['access_arrangement_type'] == 'Input assistance'
     actual_access_arr_type = access_arrangements_setting_page.access_arrangements_list[i].text
     i= i+1
     expect(actual_access_arr_type.eql?(expected_access_arr_type)).to be_truthy, "Expected: #{expected_access_arr_type}...but got Actual: #{actual_access_arr_type}"
