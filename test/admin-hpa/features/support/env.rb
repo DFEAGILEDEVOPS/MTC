@@ -13,7 +13,7 @@ require 'mongo'
 require 'csv'
 require 'fileutils'
 require 'date'
-require 'chromedriver-helper'
+require 'webdrivers'
 require 'waitutil'
 require 'tiny_tds'
 require 'httparty'
@@ -36,7 +36,8 @@ ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '300'
 
-Chromedriver.set_version '2.46'
+Webdrivers::Chromedriver.required_version = '75.0.3770.140'
+# Webdrivers.logger.level = :DEBUG
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
@@ -55,8 +56,13 @@ Capybara.register_driver :poltergeist do |app|
 end
 
 Capybara.register_driver :headless_chrome do |app|
-  args = ["--window-size=1280,1696", "--disable-infobars", "--disable-notifications", "--no-sandbox", "--headless", "--disable-gpu"]
-  Capybara::Selenium::Driver.new(app, {:browser => :chrome, :args => args})
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options.args << '--headless'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--allow-insecure-localhost'
+  browser_options.args << '--no-sandbox'
+  browser_options.args << '--window-size=1280,1696'
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")

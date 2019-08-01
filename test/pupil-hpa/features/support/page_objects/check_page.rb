@@ -60,7 +60,6 @@ class CheckPage < SitePrism::Page
   def enter_answer_via_numpad(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
-      wait_for_number_pad
       number_pad.send(NumbersInWords.in_words(number.to_i)).click
     end
   end
@@ -68,7 +67,6 @@ class CheckPage < SitePrism::Page
   def enter_answer_via_keyboard(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
-      wait_for_number_pad
       number_pad.one.send_keys("numpad#{number}".to_sym)
     end
   end
@@ -76,7 +74,6 @@ class CheckPage < SitePrism::Page
   def complete_check_with_correct_answers(number_of_questions, input_type, next_arrangement=nil)
     @array_of_answers = []
     number_of_questions.to_i.times do
-      wait_for_preload
       if (next_button.visible?)
         next_button.click
       end unless next_arrangement == nil
@@ -96,7 +93,6 @@ class CheckPage < SitePrism::Page
   def complete_check_with_wrong_answers(number_of_questions, input_type)
     @array_of_answers = []
     number_of_questions.to_i.times do
-      wait_for_preload
       wait_for_question(2)
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
@@ -115,7 +111,6 @@ class CheckPage < SitePrism::Page
   def complete_check_with_leading_zeros
     @array_of_answers = []
     10.times do
-      wait_for_preload
       wait_for_question(2)
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
@@ -136,7 +131,6 @@ class CheckPage < SitePrism::Page
 
   def complete_question(answer, input_type)
     array_of_answers = []
-    wait_for_preload
     wait_for_question(2)
     array_of_answers << answer
     answer_question_via(input_type, answer)
