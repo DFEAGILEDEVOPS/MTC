@@ -19,8 +19,8 @@ end
 Given(/^I have refreshed through the warm up questions$/) do
   step 'I am on the warm up check page'
   3.times do
-    check_page.wait_for_preload
-    check_page.wait_for_question(2)
+    check_page.has_preload?
+    check_page.has_question?
     visit current_url
   end
 end
