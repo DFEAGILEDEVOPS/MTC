@@ -1,0 +1,46 @@
+.govuk-organisation-container {
+  padding-top: 0;
+  padding-bottom: 25px;
+}
+
+.govuk-organisation-logo {
+  background-image: url('/images/org_crest_13px.png');
+  background-position: 5px top;
+  background-repeat: no-repeat;
+  background-size: auto 20px;
+  border-left: 2px solid govuk-organisation-colour("department-for-education");
+  font-family: "Helvetica", "Arial";
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 15px;
+  padding: 20px 0 0 6px;
+
+  @include media(tablet) {
+    background-image: url('/images/org_crest_18px.png');
+    background-position: 6px top;
+    background-size: auto 25px;
+    border-width: 2px;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 25px 0 0 7px;
+  }
+
+  @include media(desktop) {
+    background-image: url('/images/org_crest_27px.png');
+    background-position: 6px top;
+    background-size: auto 40px;
+    border-width: 3px;
+    font-size: 27px;
+    line-height: 30px;
+    padding: 40px 0 0 10px;
+  }
+}
+
+.govuk-organisation-logo.home {
+  margin-top: $govuk-gutter - ($govuk-gutter / 3);
+}
+
+//  Logo
+.govuk-logo-text {
+  padding-top: 5px;
+}
