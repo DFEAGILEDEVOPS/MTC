@@ -11,6 +11,7 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
+  PsReportTemp: process.env.hasOwnProperty('PS_REPORT_TEMP_ROOT') ? process.env.PS_REPORT_TEMP_ROOT : '',
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',

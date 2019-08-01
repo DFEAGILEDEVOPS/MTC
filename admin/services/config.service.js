@@ -23,8 +23,7 @@ const configService = {
       numpadRemoval: false,
       practice: true,
       questionReader: false,
-      questionTime: undefined,
-      speechSynthesis: false
+      questionTime: undefined
     }
   },
 
@@ -42,8 +41,8 @@ const configService = {
 
   /**
    * Generate the pupil config for a single pupil
-   * @param {pupilId, schoolId, loadingTime, questionTime, checkTime, speechSynthesis, accessArrangementCodes, fontSizeCode, colourContrastCode} singlePupilConfigData
-   * @return {*|{numpadRemoval, audibleSounds, checkTime, colourContrastCode, inputAssistance, loadingTime, questionReader, colourContrast, fontSize, speechSynthesis, questionTime, nextBetweenQuestions}}
+   * @param {pupilId, schoolId, loadingTime, questionTime, checkTime, accessArrangementCodes, fontSizeCode, colourContrastCode} singlePupilConfigData
+   * @return {*|{numpadRemoval, audibleSounds, checkTime, colourContrastCode, inputAssistance, loadingTime, questionReader, colourContrast, fontSize, questionTime, nextBetweenQuestions}}
    */
   generateConfig: function generateConfig (singlePupilConfigData) {
     const config = this.getBaseConfig()
@@ -51,7 +50,6 @@ const configService = {
     config.loadingTime = singlePupilConfigData.loadingTime
     config.questionTime = singlePupilConfigData.questionTime
     config.checkTime = singlePupilConfigData.checkTime
-    config.speechSynthesis = singlePupilConfigData.speechSynthesis
     const accessArrangementCodes = this.split(singlePupilConfigData.accessArrangementCodes)
 
     accessArrangementCodes.forEach(code => {

@@ -17,7 +17,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: '',
           fontSizeCode: null,
           colourContrastCode: null
@@ -34,26 +33,6 @@ describe('config service', () => {
       expect(config.numpadRemoval).toBeFalsy()
       expect(config.questionReader).toBeFalsy()
       expect(config.questionTime).toBe(2)
-      expect(config.speechSynthesis).toBeFalsy()
-    })
-
-    it('sets speechSynthesis correctly', async () => {
-      const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
-        [{
-          pupilId: pupilId,
-          schoolId: 18601,
-          loadingTime: 1,
-          questionTime: 2,
-          checkTime: 32,
-          speechSynthesis: true,
-          accessArrangementCodes: '',
-          fontSizeCode: null,
-          colourContrastCode: null
-        }])
-      const c = await configService.getBatchConfig([5], 18601)
-      const config = c[pupilId]
-      expect(config.speechSynthesis).toBe(true)
     })
 
     it('set audible sounds correctly', async () => {
@@ -65,7 +44,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'ATA',
           fontSizeCode: null,
           colourContrastCode: null
@@ -84,7 +62,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'ITA',
           fontSizeCode: null,
           colourContrastCode: null
@@ -103,7 +80,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'CCT',
           fontSizeCode: null,
           colourContrastCode: null
@@ -123,7 +99,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'FTS',
           fontSizeCode: null,
           colourContrastCode: null
@@ -143,7 +118,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'FTS',
           fontSizeCode: 'XLG',
           colourContrastCode: null
@@ -163,7 +137,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'NBQ',
           fontSizeCode: null,
           colourContrastCode: null
@@ -182,7 +155,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'QNR',
           fontSizeCode: null,
           colourContrastCode: null
@@ -201,7 +173,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'RON',
           fontSizeCode: null,
           colourContrastCode: null
@@ -221,7 +192,6 @@ describe('config service', () => {
           loadingTime: 1,
           questionTime: 2,
           checkTime: 32,
-          speechSynthesis: false,
           accessArrangementCodes: 'INVALID_CODE',
           fontSizeCode: null,
           colourContrastCode: null
@@ -239,7 +209,6 @@ describe('config service', () => {
           loadingTime: 5,
           questionTime: 7,
           checkTime: 64,
-          speechSynthesis: true,
           accessArrangementCodes: 'ATA,CCT,FTS,ITA,NBQ,QNR,RON',
           fontSizeCode: 'VSM',
           colourContrastCode: 'YOB'
@@ -258,7 +227,6 @@ describe('config service', () => {
       expect(config.numpadRemoval).toBe(true)
       expect(config.questionReader).toBe(true)
       expect(config.questionTime).toBe(7)
-      expect(config.speechSynthesis).toBe(true)
     })
   })
 
@@ -268,7 +236,6 @@ describe('config service', () => {
       loadingTime: 1,
       questionTime: 2,
       checkTime: 32,
-      speechSynthesis: false,
       accessArrangementCodes: 'CCT',
       fontSizeCode: null,
       colourContrastCode: null } ]

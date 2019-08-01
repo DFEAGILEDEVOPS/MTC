@@ -76,8 +76,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
 end
 
 Then(/^I can answer the question using their physical keyboard$/) do
-  check_page.wait_for_preload
-  check_page.wait_for_question
+  check_page.wait_until_question_visible
   @question = check_page.question.text
   values = @question.gsub('=', '').split('×').map {|n| n.strip}
   check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)

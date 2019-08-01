@@ -8,8 +8,5 @@ module.exports = {
   lastName: 'One',
   pin: 4466,
   dateOfBirth: moment('2000-12-31T00:00:00Z'),
-  urlSlug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722',
-  checkOptions: {
-    speechSynthesis: false
-  }
+  urlSlug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722'
 }
