@@ -1,11 +1,11 @@
 class SignInPage < SitePrism::Page
   set_url '/sign-in'
 
-  element :heading, '.heading-xlarge', text: 'Check Development Service'
-  element :instructions, 'p.lede', text: 'Sign-in to access the Check Development Service'
+  element :heading, '.govuk-heading-xl', text: 'Check Development Service'
+  element :instructions, 'p.govuk-body', text: 'Sign-in to access the Check Development Service'
   element :username_field, '#username'
   element :password_field, '#password'
-  element :sign_in, 'input[value="Sign in"]'
+  element :sign_in, 'button[type="submit"]'
   element :contact, "a[href='/contact']"
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
