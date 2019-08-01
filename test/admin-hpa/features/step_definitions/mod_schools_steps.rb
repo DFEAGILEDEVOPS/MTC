@@ -52,8 +52,8 @@ end
 
 
 Then(/^I should see a list of schools with the LEA code of (\d+)$/) do |code|
-  db_mod_schools = SqlDbHelper.get_mod_schools.map {|school| school['name'] + ' URN: ' + school['urn'].to_s}
-  expect(mod_schools_page.school_list.rows.map {|row| row.school_name.text}.sort).to eql db_mod_schools.sort
+  db_mod_schools = SqlDbHelper.get_mod_schools.map {|school| school['name'] + '\nURN: ' + school['urn'].to_s}
+  expect(mod_schools_page.school_list.rows.map {|row| row.school_name.text}.sort).to eql db_mod_schools.sort unless db_mod_schools.empty?
 end
 
 
