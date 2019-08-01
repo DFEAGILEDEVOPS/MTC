@@ -1,0 +1,52 @@
+table.govuk-spacious {
+  border-bottom: 1px solid govuk-colour("mid-grey");
+  border-collapse: collapse;
+  margin-bottom: $govuk-gutter *1.5;
+  margin-top: $govuk-gutter *1.5;
+  width: 100%;
+
+  tr {
+    border-bottom: 1px solid govuk-colour("mid-grey");
+  }
+
+  th, td {
+    display: table-cell;
+
+    &:first-child:not(.allow-wrap) {
+      white-space: nowrap;
+    }
+  }
+
+  th {
+    text-align: left;
+    padding-bottom: 10px;
+
+    a {
+      color: govuk-colour("black");
+      text-decoration: none;
+    }
+  }
+
+  td {
+    padding-bottom: $govuk-gutter-half;
+    padding-top: $govuk-gutter-half;
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
+table.govuk-spacious {
+  .govuk-button--secondary {
+    text-decoration: none;
+  }
+}
+
+table.govuk-spacious-two-column {
+  @extend table.govuk-spacious;
+}
+
+table.govuk-spacious.reduced-top-margin {
+  margin-top: pem(15px);
+}

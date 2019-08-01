@@ -67,16 +67,81 @@
           Add multiple pupils
         </button>
       </form>
+      <table id="register-pupils" class="govuk-table govuk-spacious">
+        <caption class="govuk-table__caption">Pupil register</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+              <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              <a class="no-underline sortingLink">Status<span class="sort-icon"><span>Sort by status</span></span></a>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        <% pupils.forEach((p) => { %>
+        <tr class="govuk-table__row">
+          <td scope="row"
+            <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell highlight-item"<% } %>
+            <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="govuk-table__cell warning-item"<% } %>
+            >
+            <div class="highlight-wrapper">
+              <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
+                <a class="govuk-link" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
+              <% } else { %>
+                <span class=""><%= p.fullName %></span>
+              <% } %>
+              <% if (p.showDoB) { %>
+                <div class="font-greyed-out font-xsmall">Date of birth: <%= p.dateOfBirth %></div>
+              <% } %>
+            </div>
+          </td>
+          <td class="govuk-table__cell"><%= p.group %></td>
+          <td class="govuk-table__cell"><%= p.outcome %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+      </table>
+      <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+          <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+        </svg>Back to top
+      </a>
+    </div>
+    <div class="govuk-grid-column-one-third" aria-label="sidebar">
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/group/pupils-list" target="_blank" rel="noopener noreferrer">Group pupils</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" target="_blank" rel="noopener noreferrer">Pupils not taking the check</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/access-arrangements/overview" target="_blank" rel="noopener noreferrer">Access arrangements</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
     </div>
   </div>
 </main>
 <script>
-  (function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'register-pupils', {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'register-pupils', {
       sortNullsLast: true,
       ignoredStrings: ['-']
     })
   })
 </script>
-
-
