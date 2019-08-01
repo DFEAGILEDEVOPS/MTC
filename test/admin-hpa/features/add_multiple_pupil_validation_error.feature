@@ -114,12 +114,14 @@ Feature: Add Multiple Pupil validation Error
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 10
     Then I should see an error with the upload stating i need to use the single upload function
 
+  @wip
   Scenario: 9 year old pupils can be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 9
     Then I should be taken to the Pupil register page
     And I should see a flash message for the multiple pupil upload
     And I can see the new pupils added to the list
 
+  @wip
   Scenario: 8 year old pupils can be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 8
     Then I should be taken to the Pupil register page
