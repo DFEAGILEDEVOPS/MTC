@@ -95,7 +95,7 @@
               <% } else { %>
                 <span class="govuk-!-font-weight-bold"><%= p.fullName %></span>
               <% } %>
-              <% if (!p.showDoB) { %>
+              <% if (p.showDoB) { %>
                 <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
               <% } %>
             </div>
