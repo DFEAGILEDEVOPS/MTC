@@ -250,6 +250,7 @@ const postEditPupil = async (req, res, next) => {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('pupil-register/edit-pupil', {
+      layout: 'gds-layout',
       school,
       formData: req.body,
       error: validationError,
