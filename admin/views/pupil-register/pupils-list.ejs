@@ -91,12 +91,12 @@
             >
             <div class="highlight-wrapper">
               <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
-                <a class="govuk-link" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
+                <a class="govuk-link govuk-!-font-weight-bold" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
               <% } else { %>
-                <span class=""><%= p.fullName %></span>
+                <span class="govuk-!-font-weight-bold"><%= p.fullName %></span>
               <% } %>
-              <% if (p.showDoB) { %>
-                <div class="font-greyed-out font-xsmall">Date of birth: <%= p.dateOfBirth %></div>
+              <% if (!p.showDoB) { %>
+                <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
               <% } %>
             </div>
           </td>

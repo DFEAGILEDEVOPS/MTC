@@ -83,6 +83,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import '../../node_modules/govuk-frontend/govuk/all';
 @import 'elements/_gds-app-related-items';
 @import 'elements/_gds-back-to-top';
+@import 'elements/_gds-custom-fonts.scss';
 @import 'elements/_gds-forms';
 @import 'elements/_gds-panel-list';
 @import 'elements/_gds-sorting';
