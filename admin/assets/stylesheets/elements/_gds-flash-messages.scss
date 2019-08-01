@@ -1,0 +1,83 @@
+// Flash message
+.govuk-info-message {
+  border: 5px solid govuk-colour("green");
+  padding: 1em;
+  margin-top: 40px;
+  color: govuk-colour("black");
+  font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("green");
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: govuk-colour("green");
+  }
+}
+
+.govuk-warning-message {
+  border: 5px solid govuk-colour("red");
+  padding: 1em;
+  margin-top: 40px;
+  color: govuk-colour("red");
+  font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("red");
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: govuk-colour("red");
+  }
+}
+
+// Green border to highlight table cell content
+.govuk-highlight-item {
+  display: flex;
+
+  &:before {
+    content: '';
+    border-left: 7px solid govuk-colour("green");
+    display: table-cell;
+    padding-left: 10px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+  }
+
+  .highlight-wrapper {
+    display: table-cell;
+  }
+}
+
+// Red border to display warning on table cell content
+.govuk-warning-item {
+  display: flex;
+
+  &:before {
+    content: '';
+    border-left: 7px solid govuk-colour("red");
+    display: table-cell;
+    padding-left: 10px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+  }
+
+  .govuk-highlight-wrapper {
+    display: table-cell;
+  }
+}
+
+.govuk-green-panel {
+  border-color: govuk-colour("green");
+  div:first-child {
+    margin-top: -15px;
+  }
+}

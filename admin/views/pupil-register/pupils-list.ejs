@@ -2,6 +2,17 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <% if (messages && messages.info && messages.info.length) { %>
+        <div class="govuk-info-message govuk-!-margin-bottom-7">
+          <%= messages.info %>
+        </div>
+      <% } %>
+      <% if (incompletePupils && incompletePupils.length > 0) { %>
+        <div class="govuk-warning-message govuk-!-margin-bottom-7">
+          <%= incompletePupils.length %> <%= incompletePupils.length > 1 ? 'pupils have' : 'pupil has'  %> an Incomplete status
+        </div>
+      <% } %>
+      <%- partial('partials/_readonly', {availabilityData}) %>
       <h1 class="govuk-heading-xl">Pupil register</h1>
       <%- partial('partials/_session_expiry') %>
       <p class="govuk-body">
@@ -86,10 +97,10 @@
         <% pupils.forEach((p) => { %>
         <tr class="govuk-table__row">
           <td scope="row"
-            <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell highlight-item"<% } %>
-            <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="govuk-table__cell warning-item"<% } %>
+            <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell govuk-highlight-item"<% } %>
+            <% if (Array.isArray(incompletePupils) && incompletePupils.some(i => i.urlSlug === p.urlSlug.toString())) { %> class="govuk-table__cell govuk-warning-item"<% } %>
             >
-            <div class="highlight-wrapper">
+            <div class="govuk-highlight-wrapper">
               <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
                 <a class="govuk-link govuk-!-font-weight-bold" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
               <% } else { %>
