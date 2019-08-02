@@ -54,7 +54,7 @@ describe('LogoutComponent', () => {
   });
 
   it('should navigate to the sign-in page', () => {
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
   });
 
 });
