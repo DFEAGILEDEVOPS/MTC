@@ -203,6 +203,7 @@ const getEditPupilById = async (req, res, next) => {
 
     const pupilData = pupilAddService.formatPupilData(pupil)
 
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/edit-pupil', {
       layout: 'gds-layout',
@@ -248,6 +249,7 @@ const postEditPupil = async (req, res, next) => {
 
   if (validationError.hasError()) {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('pupil-register/edit-pupil', {
       layout: 'gds-layout',
