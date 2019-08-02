@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Table sorting.
  */
@@ -8,7 +10,6 @@ if (!window.MTCAdmin) {
 
 /* global */
 (function () {
-  'use strict'
   window.MTCAdmin.tableSort = {
 
     getCellValue: function (tr, idx) {
