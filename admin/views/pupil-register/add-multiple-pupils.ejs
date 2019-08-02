@@ -63,8 +63,8 @@
             <form action="/pupil-register/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template" id="upload-form">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <% if (fileErrors && fileErrors.hasError()) { %>govuk-form-group--error<% } %>">
-                    <label class="govuk-label" for="file-upload-1">
-                        Upload a file
+                    <label class="govuk-label govuk-visually-hidden" for="file-upload-1">
+                        Upload file
                     </label>
                     <% if (fileErrors && fileErrors.hasError()) { %>
                         <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
