@@ -53,8 +53,10 @@ import { CheckCompleteService} from './services/check-complete/check-complete.se
 import { RouteService } from './services/route/route.service';
 import { LoginErrorService } from './services/login-error/login-error.service';
 import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
-
 import { CheckStatusService } from './services/check-status/check-status.service';
+import { ConnectivityService } from './services/connectivity-service/connectivity-service';
+import { ConnectivityCheckGuard } from './connectivity-check.guard';
+
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
@@ -79,15 +81,19 @@ import { SvgClockComponent } from './svg/svg.clock.component';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
+import { ConnectivityCheckComponent } from './connectivity-check/connectivity-check.component';
+import { ConnectivityErrorComponent } from './connectivity-error/connectivity-error.component';
 
 declare var AzureStorage: IAzureStorage;
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
+  {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
+  {path: 'connectivity-check', component: ConnectivityCheckComponent, canActivate: [ConnectivityCheckGuard]},
+  {path: 'connectivity-error', component: ConnectivityErrorComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-fail', component: LoginFailureComponent},
@@ -149,7 +155,9 @@ const appRoutes: Routes = [
     IdleModalComponent,
     SessionExpiredComponent,
     WebsiteOfflineComponent,
-    LoginFailureComponent
+    LoginFailureComponent,
+    ConnectivityCheckComponent,
+    ConnectivityErrorComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -196,6 +204,8 @@ const appRoutes: Routes = [
     TimerService,
     LoginErrorService,
     LoginErrorDiagnosticsService,
+    ConnectivityService,
+    ConnectivityCheckGuard,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue

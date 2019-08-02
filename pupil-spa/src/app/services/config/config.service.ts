@@ -22,6 +22,7 @@ export interface IAppConfig {
   feedbackAPIErrorMaxAttempts: number;
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
+  connectivityCheckEnabled: boolean;
 }
 
 export class AppConfig implements IAppConfig {
@@ -35,12 +36,19 @@ export class AppConfig implements IAppConfig {
   readonly googleAnalyticsTrackingCode: string;
   readonly production: boolean;
   readonly submissionPendingViewMinDisplay: number;
+  readonly connectivityCheckViewMinDisplay: number;
   readonly supportNumber: string;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
   readonly pupilPrefsAPIErrorDelay: number;
   readonly pupilPrefsAPIErrorMaxAttempts: number;
   readonly websiteOffline: boolean;
+  readonly testPupilConnectionQueueName: string;
+  readonly testPupilConnectionQueueUrl: string;
+  readonly testPupilConnectionQueueToken: string;
+  readonly testPupilConnectionDelay: number;
+  readonly testPupilConnectionMaxAttempts: number;
+  readonly connectivityCheckEnabled: boolean;
 }
 
 /**

@@ -203,3 +203,16 @@ When(/^I have generated a live pin$/) do
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end
+
+
+Given(/^I navigate to the pupil spa$/) do
+  visit ENV['PUPIL_BASE_URL']
+end
+
+Then(/^I should see a loading page$/) do
+  expect(connectivity_check_page).to be_displayed
+end
+
+And(/^if successful should be taken to the sign in page$/) do
+  Timeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
+end
