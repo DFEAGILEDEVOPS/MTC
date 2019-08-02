@@ -1,0 +1,13 @@
+.govuk-icon-download {
+  &:before {
+    content: " ";
+    background-image: url('/images/icon-file-download.png');
+    background-size: 21px 26px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 26px;
+    width: 30px;
+    top: 6px;
+    position: relative;
+  }
+}

@@ -1,0 +1,109 @@
+<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        <% if (hasError) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <% if (fileErrors && fileErrors.hasError()) { %>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                    <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+                        <% const errors = fileErrors.get(f) %>
+                        <% if (Array.isArray(errors)) { %>
+                            <%  errors.map(e => { %>
+                                <li><a href="#<%= f %>"><%= e %></a></li>
+                        <% }) } else { %>
+                            <li><a href="#<%= f %>"><%= errors %></a></li>
+                        <% } %>
+                    <% }) %>
+                    </ul>
+                </div>
+                <% } else { %>
+                <div class="govuk-error-summary__body">
+                    <p>Download the file below with errors indicated.<br>
+                        Correct the errors and upload the updated file.
+                    </p>
+                    <div class="govuk-icon-download pupils-template error-file-icon"></div>
+                    <div class="error-csv-link">
+                        <a class="govuk-link govuk-pupil-error-template" download='pupil-errors.csv' href="/pupil-register/pupil/download-error-csv">
+                            Pupil details file with errors (CSV, <%= csvErrorFileSize %>KB)
+                        </a>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        <% } %>
+            <h1 class="govuk-heading-xl">Add multiple pupils</h1>
+            <%- partial('partials/_session_expiry') %>
+
+            <h3 class="govuk-heading-m">Download template</h3>
+            <ol class="govuk-list govuk-list--number">
+                <li>Download the template
+                    <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+                        <a href="/csv/mtc-pupil-details-template-sheet-1.csv" class="govuk-link govuk-!-font-weight-bold govuk-icon-download">Pupil details template (CSV, <%= templateFileSize %>KB)</a>
+                    </div>
+                </li>
+                <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+                <li>Add pupil details using the given format</li>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>Enter date of birth in format dd/mm/yyyy</li>
+                    <li>Enter a gender as M or F</li>
+                </ul>
+                <li>Save as a CSV file on your computer</li>
+                <li>Select 'Choose file' button and navigate to the file on your computer</li>
+                <li>Choose the file to upload</li>
+                <li>Click 'Upload'</li>
+            </ol>
+
+            <h3 class="govuk-heading-m">Upload file</h3>
+            <form action="/pupil-register/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template" id="upload-form">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group <% if (fileErrors && fileErrors.hasError()) { %>govuk-form-group--error<% } %>">
+                    <label class="govuk-label" for="file-upload-1">
+                        Upload a file
+                    </label>
+                    <% if (fileErrors && fileErrors.hasError()) { %>
+                        <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+                            <% const errors = fileErrors.get(f) %>
+                            <% if (Array.isArray(errors)) { %>
+                                <%  errors.map((e,i) => { %>
+                    <span id="file-upload-<%= i %>-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> <%= e %>
+                    </span>
+                            <% }) } else { %>
+                    <span id="file-upload-1-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> <%= errors %>
+                    </span>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                    <input
+                        id="file-upload"
+                        name="csvTemplateFile"
+                        class="govuk-file-upload <% if (fileErrors && fileErrors.hasError()) { %> govuk-file-upload--error <% } %>"
+                        accept="text/csv"
+                        type="file"
+                        <% if (fileErrors && fileErrors.hasError()) { %> aria-describedby="file-upload-1-error" <% } %>
+                        aria-label="Choose a file to upload"
+                    >
+                    <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file." />
+                </div>
+                <button id="upload-form-submit" type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
+                    Upload
+                </button>
+                <button type="button" onclick="window.location.replace('/pupil-register/pupils-list')" class="govuk-button govuk-button--secondary govuk-form-button" data-module="govuk-button">
+                    Cancel
+                </button>
+            </form>
+            <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+            </a>
+        </div>
+    </div>
+</main>

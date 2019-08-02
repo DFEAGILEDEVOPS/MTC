@@ -1,0 +1,22 @@
+input.govuk-link {
+  display: block !important;
+  text-align: left;
+  text-decoration: underline;
+  color: $govuk-link-colour;
+  background: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+
+  &.govuk-remove-file {
+    padding-top: pem(10px);
+    font-size: medium;
+  }
+}
+
+.govuk-pupil-error-template {
+  display: block;
+  margin: -5px;
+}
+

@@ -101,7 +101,7 @@ const getAddMultiplePupils = async (req, res, next) => {
     csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('school/add-multiple-pupils', {
+    res.render('pupil-register/add-multiple-pupils', {
       layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       hasError,

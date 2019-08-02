@@ -10,6 +10,7 @@ if (formData.urlSlug) {
 %>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_session_expiry') %>
         <form action="<%= createOrSave %>" method="post" novalidate class="govuk-form-button">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -25,7 +26,7 @@ if (formData.urlSlug) {
                 <div class="govuk-form-group <%= err.isError('foreName') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="foreName">First name
                         <% if (err.isError('foreName')) { %>
-                        <span class="error-message"><%= err.get('foreName') %></span>
+                        <span class="govuk-error-message"><%= err.get('foreName') %></span>
                         <% } %>
                     </label>
                     <input type="text"
@@ -39,7 +40,7 @@ if (formData.urlSlug) {
                     <label class="govuk-label govuk-!-font-weight-bold" for="middleNames">Middle name(s)<span
                                 class="label-optional">(optional)</span>
                         <% if (err.isError('middleNames')) { %>
-                        <span class="error-message"><%= err.get('middleNames') %></span>
+                        <span class="govuk-error-message"><%= err.get('middleNames') %></span>
                         <% } %>
                     </label>
                     <input type="text"
@@ -52,7 +53,7 @@ if (formData.urlSlug) {
                 <div class="govuk-form-group <%= err.isError('lastName') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
                         <% if (err.isError('lastName')) { %>
-                        <span class="error-message"><%= err.get('lastName') %></span>
+                        <span class="govuk-error-message"><%= err.get('lastName') %></span>
                         <% } %>
                     </label>
                     <input type="text"
@@ -66,7 +67,7 @@ if (formData.urlSlug) {
                     <label class="govuk-label govuk-!-font-weight-bold" for="upn">Unique pupil number (UPN)
                         <% if (upnErrors) { %>
                         <% upnErrors.map(e => { %>
-                        <label class="error-message"><%= e %></label>
+                        <label class="govuk-error-message"><%= e %></label>
                         <% }) %>
                         <% } %>
                     </label>
@@ -187,7 +188,7 @@ if (formData.urlSlug) {
                     <fieldset class="govuk-fieldset" role="radiogroup">
                         <legend class="govuk-label govuk-!-font-weight-bold">Gender
                             <% if (err.isError('gender')) { %>
-                                <span class="error-message"><%= err.get('gender') %></span>
+                                <span class="govuk-error-message"><%= err.get('gender') %></span>
                             <% } %>
                         </legend>
                         <div class="govuk-radios">
