@@ -35,8 +35,8 @@ When(/^I have completed 2 checks$/) do
   @pupil_1 = @pupil_credentials
   step 'I have generated a live pin'
   @pupil_2 = @pupil_credentials
+  sign_in_page.load unless sign_in_page.displayed?
   [@pupil_1,@pupil_2].each do |login_details|
-    sign_in_page.load unless sign_in_page.displayed?
     p 'login credentials ' + login_details[:school_password]+ ', ' + login_details[:pin]
     sign_in_page.login(login_details[:school_password], login_details[:pin])
     sign_in_page.sign_in_button.click
@@ -52,12 +52,13 @@ When(/^I have completed 2 checks$/) do
     expect(complete_page).to have_heading
     @check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
     complete_page.sign_out.click
+    Timeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
   end
 end
 
 Then(/^the app counter should be set to (\d+)$/) do |count|
   db_payload = JSON.parse (SqlDbHelper.get_check_result(SqlDbHelper.get_check(@check_code)['id'])['payload'])
-  expect(db_payload['device']['appUsageCounter']).to eql count
+    expect(db_payload['device']['appUsageCounter']).to eql count
 end
 
 Given(/^I have refreshed a page during the check$/) do

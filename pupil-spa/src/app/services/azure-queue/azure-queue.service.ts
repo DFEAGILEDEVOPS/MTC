@@ -12,8 +12,6 @@ import { APP_CONFIG } from '../config/config.service';
  * Declaration of azure queue service
  */
 
-declare let AzureStorage;
-
 @Injectable()
 export class AzureQueueService {
 
