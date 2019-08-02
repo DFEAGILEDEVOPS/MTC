@@ -1,8 +1,8 @@
 <% if (isAuthenticated) { %>
 <div id="sign-out">
-    <a href="/sign-out" class="govuk-!-font-size-16">Sign out</a>
+    <a href="/sign-out" class="">Sign out</a>
 </div>
 <% if (typeof user != 'undefined') { %>
-<div class="signed-in-as govuk-!-font-size-16">Signed in as <%= user.displayName %></div>
+<div class="signed-in-as">Signed in as <%= user.displayName %></div>
 <% } %>
 <% } %>
