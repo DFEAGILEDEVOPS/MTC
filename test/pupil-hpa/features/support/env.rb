@@ -41,7 +41,7 @@ Capybara.configure do |config|
   config.ignore_hidden_elements = false
   config.visible_text_only = true
 end
-p ENV['DRIVER']
+Capybara.default_max_wait_time = 7
 
 Capybara.register_driver(:chrome) do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)
