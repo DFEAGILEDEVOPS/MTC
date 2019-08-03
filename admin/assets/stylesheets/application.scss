@@ -45,7 +45,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_phase-banner';
 @import 'elements/_headings';
 @import 'elements/_organization-logo';
-@import 'elements/_pupils';
 @import 'elements/_printing';
 @import 'elements/_top_navigation';
 @import 'elements/_electron';
@@ -91,8 +90,8 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-panel-list';
 @import 'elements/_gds-sorting';
 @import 'elements/_gds-tables';
+@import 'elements/_pupils';
 @import 'elements/_sta-organisation-logo';
-
 // Global
 
 .nowrap {

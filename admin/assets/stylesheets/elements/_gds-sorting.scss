@@ -3,18 +3,18 @@
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: pem(8) pem(5) 0 pem(5);
+  border-width: govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size) 0 govuk-em(5, $govuk-root-font-size);
   border-color: govuk-colour("black") transparent transparent transparent;
 }
 
 .sort.up {
-  border-width: 0 pem(5) pem(8) pem(5);
+  border-width: 0 govuk-em(5, $govuk-root-font-size) govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size);
   border-color: transparent transparent govuk-colour("black") transparent;
 }
 
 table.spacious {
   &.sorting {
-    font-size: pem(14);
+    font-size: govuk-em(14, $govuk-root-font-size);
   }
 }
 
@@ -22,10 +22,10 @@ table.govuk-spacious,
 table.govuk-spacious.sorting {
   a {
     span {
-      margin-left: pem(7);
+      margin-left: govuk-em(7, $govuk-root-font-size);
 
       span {
-        font-size: pem(12);
+        font-size: govuk-em(12, $govuk-root-font-size);
         display: none;
       }
     }
@@ -51,7 +51,7 @@ body.js-enabled .tick-all-checkboxes.all-hide {
 .sort-icon:after {
   content: '';
   border: 5px solid transparent;
-  right: pem(-10px);
+  right: govuk-em(-10px, $govuk-root-font-size);
   top: 45%;
   width: 0;
   height: 0;
@@ -68,9 +68,9 @@ body.js-enabled .tick-all-checkboxes.all-hide {
 }
 
 .sort-icon.asc:before {
-  border-width: 0 pem(5) pem(8) pem(5);
+  border-width: 0 govuk-em(5, $govuk-root-font-size) govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size);
   border-color: transparent transparent govuk-colour("black") transparent;
-  margin-top: pem(-4px);
+  margin-top: govuk-em(-4px, $govuk-root-font-size);
 }
 .sort-icon.asc:after {
   border-top-color: transparent;
@@ -78,9 +78,9 @@ body.js-enabled .tick-all-checkboxes.all-hide {
 }
 
 .sort-icon.desc:before {
-  border-width: pem(8) pem(5) 0 pem(5);
+  border-width: govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size) 0 govuk-em(5, $govuk-root-font-size);
   border-color: govuk-colour("black") transparent transparent transparent;
-  margin-top: pem(-4px);
+  margin-top: govuk-em(-4px, $govuk-root-font-size);
 }
 .sort-icon.desc:after {
   border-top-color: transparent;

@@ -48,5 +48,5 @@ table.govuk-spacious-two-column {
 }
 
 table.govuk-spacious.reduced-top-margin {
-  margin-top: pem(15px);
+  margin-top: govuk-em(15px, $govuk-root-font-size);
 }

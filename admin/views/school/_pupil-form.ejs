@@ -193,13 +193,27 @@ if (formData.urlSlug) {
                         </legend>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="gender-female" name="gender" type="radio" value="F">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-female"
+                                    name="gender"
+                                    type="radio"
+                                    value="F"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'F') { %>checked="checked"<% } %>
+                                >
                                 <label class="govuk-label govuk-radios__label" for="gender-female">
                                     Female
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="gender-male" name="gender" type="radio" value="M">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-male"
+                                    name="gender"
+                                    type="radio"
+                                    value="M"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'M') { %>checked="checked"<% } %>
+                                >
                                 <label class="govuk-label govuk-radios__label" for="gender-male">
                                     Male
                                 </label>
@@ -218,11 +232,13 @@ if (formData.urlSlug) {
         </form>
     </div>
 </div>
-<a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-    </svg>Back to top
-</a>
+<div class="govuk-back-to-top">
+    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+        </svg>Back to top
+    </a>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
