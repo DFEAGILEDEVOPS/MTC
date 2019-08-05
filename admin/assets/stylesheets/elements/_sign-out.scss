@@ -1,6 +1,9 @@
 // Sign-out
 
 #sign-out {
+  font-family: $govuk-font-family;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-size: medium;
   text-decoration: none;
   float: right;
@@ -9,6 +12,9 @@
 }
 
 .signed-in-as {
+  font-family: $govuk-font-family;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-size: medium;
   padding-top: 10px;
   padding-bottom: 15px;

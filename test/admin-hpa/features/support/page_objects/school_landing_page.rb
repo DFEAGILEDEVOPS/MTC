@@ -3,11 +3,11 @@ class SchoolLandingPage < SitePrism::Page
 
   element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
-  element :heading, '.heading-xlarge'
+  element :heading, '.govuk-heading-xl'
   element :pupil_register, 'a[href="/pupil-register/pupils-list"]'
-  element :pupil_register_text, 'span', text: 'Add, edit and review pupils'
+  element :pupil_register_text, '.govuk-body-m', text: 'Add, edit and review pupils'
   element :incomplete_banner, '.warning-banner', text: 'INCOMPLETE'
-  element :incomplete_banner_text, '.font-xsmall.font-greyed-out', text: 'There are pupils with an incomplete status in your register'
+  element :incomplete_banner_text, '.govuk-font-greyed-out', text: 'There are pupils with an incomplete status in your register'
   element :group_pupils, 'a[href="/group/pupils-list'
   element :group_pupils_text, 'p', text: 'Create groups'
   element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check/pupils-list"]'
@@ -25,16 +25,16 @@ class SchoolLandingPage < SitePrism::Page
   element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
   element :hdf_text, 'p', text: "Complete headteacher's declaration form once all pupils have a status of 'Completed' or a reason for not taking the check"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
-  element :results, '.disabled-link', text: 'Results'
+  element :results, '.govuk-disabled-link', text: 'Results'
   element :results_text, 'span', text: "View pupil results"
 
   element :teacher_name, '.signed-in-as'
-  section :phase_banner, PhaseBanner, '.phase-banner'
+  section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
 
-  element :related, '#content h3'
-  element :guidance, 'aside.support-column nav li a', text: 'Guidance'
+  element :related, '#subsection-title'
+  element :guidance, 'aside.app-related-items nav li a', text: 'Guidance'
 
 end
 
