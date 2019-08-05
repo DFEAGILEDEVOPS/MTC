@@ -8,7 +8,7 @@ $(function () {
   function startModal (e) {
     $('.modal-link').on('click', function (e) {
       if ($('#js-modal-confirmation-button').is('button')) {
-        $('#js-modal-confirmation-button').attr('onclick', `window.location.replace('${$(this)[0].href}')`)
+        $('#js-modal-confirmation-button').attr('onclick', 'window.location.replace(' + '\'' + $(this)[0].href + '\'' + ')')
       } else {
         $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
       }
