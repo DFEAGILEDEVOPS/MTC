@@ -158,7 +158,7 @@ if (formData.urlSlug) {
                                 </div>
                             </div>
                         </div>
-                        <div class="<%= formData['ageReason'] || err.isError('ageReason') ? '' : 'hide-age-content' %>">
+                        <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
                             <div class="govuk-inset-text">
                                 <div class="govuk-form-group <%= err.isError('ageReason') ? 'govuk-form-group--error' : '' %>">
                                     <label class="govuk-label govuk-!-width-three-quarters" for="ageReason">
