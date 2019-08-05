@@ -7,12 +7,18 @@
 $(function () {
   function startModal (e) {
     $('.modal-link').on('click', function (e) {
-      $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
+      if ($('#js-modal-confirmation-button').is('button')) {
+        $('#js-modal-confirmation-button').attr('onclick', `window.location.replace('${$(this)[0].href}')`)
+      } else {
+        $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
+      }
       toggleShowHideModal(e)
     })
     $('#js-modal-cancel-button').on('click', function (e) {
       toggleShowHideModal(e)
-      $('#js-modal-confirmation-button').attr('href', '')
+      if (!$('#js-modal-confirmation-button').is('button')) {
+        $('#js-modal-confirmation-button').attr('href', '')
+      }
     })
     $('#js-modal-overlay').on('click', function (e) {
       toggleShowHideModal(e)
