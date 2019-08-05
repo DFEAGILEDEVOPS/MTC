@@ -65,7 +65,7 @@ const getSignOut = (req, res) => {
 
 const getSignInFailure = (req, res) => {
   res.locals.pageTitle = 'Check Development App - Sign-in error'
-  res.render('sign-in-failure')
+  res.render('sign-in-failure', { layout: 'gds-layout' })
 }
 
 const postAuth = (req, res) => {

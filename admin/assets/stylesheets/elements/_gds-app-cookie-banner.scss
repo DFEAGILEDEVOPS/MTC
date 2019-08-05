@@ -1,5 +1,5 @@
 .app-cookie-banner {
-  font-family: "nta",Arial,sans-serif;
+  font-family: $govuk-font-family;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
@@ -16,7 +16,7 @@
 
 @media print {
   .app-cookie-banner {
-    font-family: sans-serif
+    font-family: $govuk-font-family;
   }
 }
 

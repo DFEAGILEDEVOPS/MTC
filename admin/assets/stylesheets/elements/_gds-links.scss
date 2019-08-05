@@ -1,3 +1,10 @@
+a.govuk-disabled-link {
+  pointer-events: none;
+  cursor: default;
+  color: govuk-colour("black");
+  text-decoration: none;
+}
+
 input.govuk-link {
   display: block !important;
   text-align: left;
