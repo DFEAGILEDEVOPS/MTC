@@ -63,7 +63,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_mtc-checkboxes';
 @import 'elements/_modal';
 @import 'elements/_restarts';
-@import 'elements/_groups';
 @import 'elements/_pupil-census';
 @import 'elements/_pupil-pin';
 @import 'elements/_access-arrangements';
@@ -87,6 +86,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-mtc-checkboxes';
 @import 'elements/_gds-sticky-confirmation-banner';
 @import 'elements/_gds-modal';
+@import 'elements/_groups';
 @import 'elements/_sign-out';
 @import 'elements/_sta-organisation-logo';
 

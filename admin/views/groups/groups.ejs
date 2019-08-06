@@ -54,7 +54,7 @@
                         <% } else { %>
                             <span class="govuk-body"><%= group.name %></span>
                         <% } %>
-                            <span class="govuk-font-size-16-no-line-height">(<%= group.pupilCount %> pupils)</span>
+                            <span class="group-pupil-count">(<%= group.pupilCount %> pupils)</span>
                         </td>
                         <td class="">
                             <% if (isFeatureEnabled('groupRemove')) { %>
