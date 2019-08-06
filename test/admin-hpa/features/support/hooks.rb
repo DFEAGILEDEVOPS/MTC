@@ -193,6 +193,12 @@ After("@redis") do
   end
 end
 
+After("@result") do
+  today_date = Date.today
+  check_end_date = today_date + 35
+  SqlDbHelper.update_check_window_check_end_date_for_development_check_window(check_end_date)
+end
+
 
 After do |scenario|
   if scenario.failed?
