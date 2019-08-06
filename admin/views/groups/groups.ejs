@@ -52,9 +52,9 @@
                         <% if (isFeatureEnabled('groupEdit')) { %>
                             <a name="group-<%= group.id %>" class="govuk-link govuk-!-font-weight-bold" href="/group/pupils-list/edit/<%= group.id %>" ><%= group.name %></a>
                         <% } else { %>
-                            <span><%= group.name %></span>
+                            <span class="govuk-body"><%= group.name %></span>
                         <% } %>
-                            <span class="govuk-!-font-size-16">(<%= group.pupilCount %> pupils)</span>
+                            <span class="govuk-font-size-16-no-line-height">(<%= group.pupilCount %> pupils)</span>
                         </td>
                         <td class="">
                             <% if (isFeatureEnabled('groupRemove')) { %>
