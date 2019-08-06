@@ -72,11 +72,11 @@
                             <% if (Array.isArray(errors)) { %>
                                 <%  errors.map((e,i) => { %>
                     <span id="file-upload-<%= i %>-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> <%= e %>
+                        <%= e %>
                     </span>
                             <% }) } else { %>
                     <span id="file-upload-1-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> <%= errors %>
+                        <%= errors %>
                     </span>
                             <% } %>
                         <% }) %>

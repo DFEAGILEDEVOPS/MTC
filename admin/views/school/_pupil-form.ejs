@@ -110,11 +110,11 @@ if (formData.urlSlug) {
                         </span>
                         <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
                         <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>
-                            <div class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> <%= err.get(dobErrors[0]) %></div>
+                            <div class="govuk-error-message"><%= err.get(dobErrors[0]) %></div>
                         <% } else { %>
                             <% dobErrors.map(f => { %>
                                 <% if (typeof err.get(f) !== 'boolean') { %>
-                                    <div class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> <%= err.get(f) %></div>
+                                    <div class="govuk-error-message"><%= err.get(f) %></div>
                                 <% } %>
                             <% }) %>
                         <% } %>
@@ -166,7 +166,7 @@ if (formData.urlSlug) {
                                     </label>
                                     <% if (err.isError('ageReason')) { %>
                                         <span id="age-reason-error" class="govuk-error-message">
-                                          <span class="govuk-visually-hidden">Error:</span> <%= err.get('ageReason') %>
+                                            <%= err.get('ageReason') %>
                                         </span>
                                     <% } %>
                                         <textarea
