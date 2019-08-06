@@ -24,7 +24,7 @@
             <h1 class="govuk-heading-xl">Group pupils</h1>
             <%- partial('partials/_session_expiry') %>
             <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
-            <form method="post" action="/group/pupils-list/<%= action %>" class="govuk-form-button">
+            <form id='group-pupil-form' method="post" action="/group/pupils-list/<%= action %>" class="govuk-form-button">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= typeof validation !== 'undefined' && validation.name ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold govuk-!-font-size-24" for="name">
@@ -94,7 +94,6 @@
                     <% }) %>
                     </tbody>
                 </table>
-            </form>
             <% if (group && group.id) { %><input type="hidden" name="groupId" value="<%= group.id %>" /><% } %>
             <%- partial('partials/_gds_sticky_confirmation_banner',
                     {
@@ -104,6 +103,7 @@
                         isSubmitDisabled: true
                     })
             %>
+            </form>
             <% } else { %>
             <div class="panel panel-border-wide">
                 <p>There are no pupils</p>
