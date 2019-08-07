@@ -12,12 +12,12 @@ class EditPupilPage < SitePrism::Page
   element :year, '#dob-year'
   element :female, '#gender-female'
   element :male, '#gender-male'
-  element :save_changes, 'input[value="Save"]'
-  element :back, 'a.button.button-secondary'
-  section :phase_banner, PhaseBanner, '.phase-banner'
-  section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
-  elements :error_messages, '.error-message'
-  section :reason, ReasonSection, ".form-label[for='ageReason']"
+  element :save_changes, '.govuk-button', text: 'Save'
+  element :back, '.govuk-button', text: 'Cancel'
+  section :phase_banner, PhaseBanner, '.govuk-phase-banner'
+  section :error_summary, ErrorSummary, "div[data-module='govuk-error-summary']"
+  elements :error_messages, '.govuk-error-message'
+  section :reason, ReasonSection, ".show-age-content"
 
   def enter_details(hash)
     first_name.set hash.fetch(:first_name, '')
