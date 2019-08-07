@@ -49,12 +49,14 @@
                 <% groups.forEach( group => { %>
                     <tr class="govuk-table__row">
                         <td scope="row" <% if (messages.groupId && messages.groupId.toString() === group.id.toString()) { %> class="govuk-highlight-item"<% } %>>
-                        <% if (isFeatureEnabled('groupEdit')) { %>
-                            <a name="group-<%= group.id %>" class="govuk-link govuk-!-font-weight-bold" href="/group/pupils-list/edit/<%= group.id %>" ><%= group.name %></a>
-                        <% } else { %>
-                            <span class="govuk-body"><%= group.name %></span>
-                        <% } %>
-                            <span class="group-pupil-count">(<%= group.pupilCount %> pupils)</span>
+                            <div class="govuk-highlight-wrapper">
+                            <% if (isFeatureEnabled('groupEdit')) { %>
+                                <a name="group-<%= group.id %>" class="govuk-link govuk-!-font-weight-bold" href="/group/pupils-list/edit/<%= group.id %>" ><%= group.name %></a>
+                            <% } else { %>
+                                <span class="govuk-body"><%= group.name %></span>
+                            <% } %>
+                                <span>(<%= group.pupilCount %> pupils)</span>
+                            </div>
                         </td>
                         <td class="">
                             <% if (isFeatureEnabled('groupRemove')) { %>
