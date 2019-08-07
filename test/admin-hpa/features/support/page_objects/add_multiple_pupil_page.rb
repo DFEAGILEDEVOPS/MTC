@@ -1,15 +1,15 @@
 class AddMultiplePupilPage < SitePrism::Page
   set_url '/school/pupil/add-batch-pupils'
 
-  element :heading, '.heading-xlarge'
-  elements :sub_heading, '.heading-medium'
-  elements :info_message, '.list-number li'
+  element :heading, '.govuk-heading-xl'
+  elements :sub_heading, '.govuk-heading-m'
+  elements :info_message, '.govuk-list li'
   element :pupil_upload_template, '.pupils-template a', text: 'Pupil details template'
   element :chose_file, '#file-upload'
-  element :save, 'input[value="Upload"]'
-  element :back, 'a.button.button-secondary'
-  element :error_message, 'div[aria-labelledby="error-summary-heading-1"]'
-  element :error_csv_file, '.error-summary .template-link'
+  element :save, '#upload-form-submit'
+  element :back, 'button', text: 'Cancel'
+  element :error_message,  "div[data-module='govuk-error-summary']"
+  element :error_csv_file, '.govuk-pupil-error-template'
   element :csrf, 'input[name="_csrf"]', visible: false
 
 
