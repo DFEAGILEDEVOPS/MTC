@@ -22,7 +22,7 @@
                 <div class="govuk-error-summary__body">
                     <p>See highlighted errors below.</p>
                     <ul class="govuk-list govuk-error-summary__list">
-                        <% if (validation && validation.name) { %>
+                        <% if (typeof validation !== 'undefined' && validation.name) { %>
                             <li><a href="#group-name"><%= validation.name %></a></li>
                         <% } %>
                     </ul>
@@ -41,6 +41,9 @@
                     <span id="event-name-hint" class="govuk-hint">
                         For example, Class 4A
                     </span>
+                    <% if (typeof validation !== 'undefined' && validation.name) { %>
+                        <span class="govuk-error-message"><%= validation.name %></span>
+                    <% } %>
                     <input
                            id="name"
                            name="name"
