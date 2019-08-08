@@ -1,0 +1,17 @@
+.app-back-to-top__icon {
+  display: inline-block;
+  width: .8em;
+  height: 1em;
+  margin-top: -5px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@media only screen and (max-width: 640px) {
+  .govuk-back-to-top {
+    margin-bottom: govuk-em(20px, $govuk-root-font-size);
+  }
+}
+
+
+

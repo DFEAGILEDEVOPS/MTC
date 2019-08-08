@@ -1,17 +1,4 @@
 // Pupils list
-.pupils-list div {
-  margin-left: $gutter-one-third;
-}
-
-.pupils-list label {
-  padding-bottom: 0;
-  padding-top: 0;
-  a {
-    display: inline;
-    left: 16em;
-    position: absolute;
-  }
-}
 
 .pupils-print-pins {
   font-size: .8em;
@@ -35,8 +22,8 @@
 }
 
 .pupil-name-container {
-  margin-bottom: pem(5px);
-  margin-top: pem(5px);
+  margin-bottom: govuk-em(5px, $govuk-root-font-size);
+  margin-top: govuk-em(5px, $govuk-root-font-size);
   position: relative;
 }
 
@@ -52,7 +39,7 @@
   text-overflow: ellipsis;
   white-space: pre-wrap;
   word-wrap: break-word;
-  max-width: pem(200px);
+  max-width: govuk-em(200px, $govuk-root-font-size);
 }
 
 // pupil form
@@ -60,14 +47,9 @@
   display: none;
 }
 
-.show-age-content {
-  margin-top: pem(70px);
-  width: pem(420px);
-}
-
 #ageReason {
-  margin-top: pem(10px);
-  width: pem(370px);
+  margin-top: govuk-em(10px, $govuk-root-font-size);
+  width: govuk-em(370px, $govuk-root-font-size);
 }
 
 .panel, .warning-panel, .panel-no-border {
@@ -112,8 +94,8 @@
 }
 
 .error-csv-link {
-  margin-top: pem(10px);
+  margin-top: govuk-em(10px, $govuk-root-font-size);
   display: inline-block;
-  padding-left: pem(10px);
-  padding-bottom: pem(10px);
+  padding-left: govuk-em(10px, $govuk-root-font-size);
+  padding-bottom: govuk-em(10px, $govuk-root-font-size);
 }

@@ -24,8 +24,8 @@
 
 .pupil-print-table {
   table, td, tr {
-    border-top: 1px dashed $black;
-    border-bottom: 1px dashed $black;
+    border-top: 1px dashed govuk-colour("black");
+    border-bottom: 1px dashed govuk-colour("black");
     text-align: center;
     vertical-align: middle;
     margin-bottom: -1px;
@@ -60,8 +60,8 @@
     &.line-checktype {
       vertical-align: middle;
       padding: 0;
-      border-left: 1px solid $black;
-      border-right: 1px solid $black;
+      border-left: 1px solid govuk-colour("black");
+      border-right: 1px solid govuk-colour("black");
 
       span {
         writing-mode: vertical-rl;
@@ -94,7 +94,7 @@
     margin: 0;
   }
   .dob {
-    color: $grey-1;
+    color: govuk-colour("dark-grey");
     margin-bottom: pem(-20px);
   }
   .information {

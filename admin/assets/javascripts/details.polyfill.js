@@ -9,6 +9,11 @@
 ;(function () {
   'use strict'
 
+  // Prevent using this polyfill on new toolkit pages as the functionality is already provided
+  if (document.getElementsByClassName('govuk-template').length === 1) {
+    return
+  }
+
   var NATIVE_DETAILS = typeof document.createElement('details').open === 'boolean'
 
   // Add event construct for modern browsers or IE

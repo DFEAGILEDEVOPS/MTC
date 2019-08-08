@@ -8,198 +8,240 @@ if (formData.urlSlug) {
     createOrSave = '/pupil-register/pupil/add';
 }
 %>
-
-<form action="<%= createOrSave %>" method="post" novalidate>
-    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-    <% if (formData.urlSlug) { %>
-    <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
-    <% } %>
-
-    <div class="form-group <%= err.isError('foreName') ? 'form-group-error' : '' %>">
-        <label class="form-label-bold" for="foreName">First name
-            <% if (err.isError('foreName')) { %>
-            <span class="error-message"><%= err.get('foreName') %></span>
-            <% } %>
-        </label>
-        <input type="text"
-               id="foreName"
-               class="form-control <%= err.isError('foreName') ? 'form-control-error' : '' %>"
-               name="foreName"
-               value="<%= formData['foreName'] %>"/>
-    </div>
-
-    <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
-        <label class="form-label-bold" for="middleNames">Middle name(s)<span
-                    class="label-optional">(optional)</span>
-            <% if (err.isError('middleNames')) { %>
-            <span class="error-message"><%= err.get('middleNames') %></span>
-            <% } %>
-        </label>
-        <input type="text"
-               id="middleNames"
-               class="form-control <%= err.isError('middleNames') ? 'form-control-error' : '' %>"
-               name="middleNames"
-               value="<%= formData['middleNames'] %>"/>
-    </div>
-
-    <div class="form-group <%= err.isError('lastName') ? 'form-group-error' : '' %>">
-        <label class="form-label-bold" for="lastName">Last name
-            <% if (err.isError('lastName')) { %>
-            <span class="error-message"><%= err.get('lastName') %></span>
-            <% } %>
-        </label>
-        <input type="text"
-               id="lastName"
-               class="form-control <%= err.isError('lastName') ? 'form-control-error' : '' %>"
-               name="lastName"
-               value="<%= formData['lastName'] %>"/>
-    </div>
-    <% const upnErrors = err.get('upn') %>
-    <div class="form-group <% if (upnErrors && upnErrors.length > 0) { %> form-group-error<% } %>">
-        <label class="form-label-bold" for="upn">Unique pupil number (UPN)
-            <% if (upnErrors) { %>
-            <% upnErrors.map(e => { %>
-            <label class="error-message"><%= e %></label>
-            <% }) %>
-            <% } %>
-        </label>
-        <input type="text"
-               id="upn"
-               class="form-control <%= err.isError('upn') ? 'form-control-error' : '' %>"
-               name="upn"
-               value="<%= formData['upn'] %>"/>
-
-        <div class="master-detail text">
-            <details>
-                <summary><span class="summary"> What is the UPN? </span></summary>
-                <div class="panel panel-border-narrow">
-                    <p>
-                        The unique pupil number (UPN) is a 13-character code that identifies each pupil in the
-                        local authority maintained school system.
-                    </p>
-                    <p>
-                        If your pupil does not have a UPN please follow the guidance on
-                        <a target="_blank" rel="noopener noreferrer"
-                           href="https://www.gov.uk/government/publications/unique-pupil-numbers">how to generate UPNs (link opens in a new window)</a>.
-                    </p>
-                </div>
-            </details>
-        </div>
-    </div>
-
-    <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
-         id="dob">
-        <fieldset aria-labelledby="date-of-birth">
-            <legend>
-                <span class="form-label-bold" id="date-of-birth">Date of birth</span>
-                <span class="form-hint">For example, 30 6 <%= pupilExampleYear %></span>
-                <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
-                <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>
-                  <div class="error-message"><%= err.get(dobErrors[0]) %></div>
-                <% } else { %>
-                  <% dobErrors.map(f => { %>
-                  <% if (typeof err.get(f) !== 'boolean') { %>
-                    <div class="error-message"><%= err.get(f) %></div>
-                  <% } %>
-                  <% }) %>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_session_expiry') %>
+        <form action="<%= createOrSave %>" method="post" novalidate class="govuk-form-button">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        <%= formData.urlSlug ? 'Edit pupil details' : 'Add pupil' %>
+                    </h1>
+                </legend>
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <% if (formData.urlSlug) { %>
+                <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
                 <% } %>
-            </legend>
-            <div class="form-date">
-                <div class="form-group form-group-day">
-                    <label class="form-label" for="dob-day">Day</label>
-                    <input class="form-control <%= err.isError('dob-day') ? 'form-control-error' : '' %>"
-                           id="dob-day"
-                           name="dob-day"
-                           type="number"
-                           min="0" max="31"
-                           value="<%= formData['dob-day'] %>"/>
-                </div>
-                <div class="form-group form-group-month">
-                    <label class="form-label" for="dob-month">Month</label>
-                    <input class="form-control <%= err.isError('dob-month') ? 'form-control-error' : '' %>"
-                           id="dob-month"
-                           name="dob-month"
-                           type="number"
-                           min="0"
-                           max="12"
-                           value="<%= formData['dob-month'] %>"/>
-                </div>
-                <div class="form-group form-group-year">
-                    <label class="form-label" for="dob-year">Year</label>
-                    <input class="form-control <%= err.isError('dob-year') ? 'form-control-error' : '' %>"
-                           id="dob-year" name="dob-year"
-                           type="number"
-                           min="0"
-                           max="<%= currentYear %>"
-                           value="<%= formData['dob-year'] %>">
-                </div>
-            </div>
-            <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
-              <div class="panel panel-border-wide">
-                <div class="<%= err.isError('ageReason') ? 'form-group-error' : '' %>">
-                  <div class="form-label" for='ageReason'><div>The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.</div>
-                    <% if (err.isError('ageReason')) { %>
-                    <span class="error-message"> <%= err.get('ageReason') %></span>
-                    <% } %>
-                    <textarea
-                      id="ageReason"
-                      name="ageReason"
-                      class="form-control form-control-3-4 age-reason-textarea <%= err.isError('ageReason') ? 'form-control-error' : '' %>"
-                      rows="3"
-                      maxlength="1000"><%= formData['ageReason'] && formData['ageReason'].trim() %></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </fieldset>
-    </div>
 
-    <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
-        <fieldset  role="radiogroup">
-            <legend class="form-label-bold">Gender
-                <% if (err.isError('gender')) { %>
-                <span class="error-message"><%= err.get('gender') %></span>
-                <% } %>
-            </legend>
-            <div class="multiple-choice">
-                <input id="gender-female"
-                       type="radio"
-                       role="radio"
-                       aria-checked="false"
-                       name="gender"
-                       value="F"
-                       <% if (formData['gender'] && formData['gender'].toUpperCase() === 'F') { %>checked="checked"
+                <div class="govuk-form-group <%= err.isError('foreName') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="foreName">First name
+                        <% if (err.isError('foreName')) { %>
+                        <span class="govuk-error-message"><%= err.get('foreName') %></span>
                         <% } %>
-                />
-                <label for="gender-female">Female</label>
-            </div>
+                    </label>
+                    <input type="text"
+                           id="foreName"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('foreName') ? 'govuk-input--error' : '' %>"
+                           name="foreName"
+                           value="<%= formData['foreName'] %>"/>
+                </div>
 
-            <div class="multiple-choice">
-                <input id="gender-male"
-                       type="radio"
-                       role="radio"
-                       aria-checked="false"
-                       name="gender"
-                       value="M"
-                       <% if (formData['gender'] && formData['gender'].toUpperCase() === 'M') { %>checked="checked"
+                <div class="govuk-form-group <%= err.isError('middleNames') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="middleNames">Middle name(s)<span
+                                class="label-optional">(optional)</span>
+                        <% if (err.isError('middleNames')) { %>
+                        <span class="govuk-error-message"><%= err.get('middleNames') %></span>
                         <% } %>
-                />
-                <label for="gender-male">Male</label>
-            </div>
-        </fieldset>
-    </div>
+                    </label>
+                    <input type="text"
+                           id="middleNames"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('middleNames') ? 'govuk-input--error' : '' %>"
+                           name="middleNames"
+                           value="<%= formData['middleNames'] %>"/>
+                </div>
 
-    <div class="form-buttons">
-        <input type="submit" class="button" value="<%= submitLabel %>"/>
-        <a href="/pupil-register/pupils-list" class="button button-secondary">Cancel</a>
+                <div class="govuk-form-group <%= err.isError('lastName') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
+                        <% if (err.isError('lastName')) { %>
+                        <span class="govuk-error-message"><%= err.get('lastName') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="lastName"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('lastName') ? 'govuk-input--error' : '' %>"
+                           name="lastName"
+                           value="<%= formData['lastName'] %>"/>
+                </div>
+                <% const upnErrors = err.get('upn') %>
+                <div class="govuk-form-group <% if (upnErrors && upnErrors.length > 0) { %> govuk-form-group--error<% } %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="upn">Unique pupil number (UPN)
+                        <% if (upnErrors) { %>
+                        <% upnErrors.map(e => { %>
+                        <label class="govuk-error-message"><%= e %></label>
+                        <% }) %>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="upn"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('upn') ? 'govuk-input--error' : '' %>"
+                           name="upn"
+                           value="<%= formData['upn'] %>"/>
+                </div>
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                          What is the UPN?
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p>
+                            The unique pupil number (UPN) is a 13-character code that identifies each pupil in the
+                            local authority maintained school system.
+                        </p>
+                        <p>
+                            If your pupil does not have a UPN please follow the guidance on
+                            <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+                               href="https://www.gov.uk/government/publications/unique-pupil-numbers">how to generate UPNs (link opens in a new window)</a>.
+                        </p>
+                    </div>
+                </details>
+
+
+
+
+                <div class="govuk-form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'govuk-form-group--error' : '' %>"
+                     id="dob">
+                    <fieldset class="govuk-fieldset" aria-describedby="date-of-birth" role="group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <span class="govuk-label govuk-!-font-weight-bold" id="date-of-birth">Date of birth</span>
+                        </legend>
+                        <span id="date-of-birth-hint" class="govuk-hint">
+                          For example, 30 6 <%= pupilExampleYear %>
+                        </span>
+                        <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
+                        <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>
+                            <div class="govuk-error-message"><%= err.get(dobErrors[0]) %></div>
+                        <% } else { %>
+                            <% dobErrors.map(f => { %>
+                                <% if (typeof err.get(f) !== 'boolean') { %>
+                                    <div class="govuk-error-message"><%= err.get(f) %></div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                        <div class="govuk-date-input" id="dob-group">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-day">Day</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 <%= err.isError('dob-day') ? 'govuk-input--error' : '' %>"
+                                           id="dob-day"
+                                           name="dob-day"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="31"
+                                           value="<%= formData['dob-day'] %>"/>
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-month">Month</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 <%= err.isError('dob-month') ? 'govuk-input--error' : '' %>"
+                                           id="dob-month"
+                                           name="dob-month"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="12"
+                                           value="<%= formData['dob-month'] %>"/>
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-year">Year</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 <%= err.isError('dob-year') ? 'govuk-input--error' : '' %>"
+                                           id="dob-year" name="dob-year"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="<%= currentYear %>"
+                                           value="<%= formData['dob-year'] %>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
+                            <div class="govuk-inset-text">
+                                <div class="govuk-form-group <%= err.isError('ageReason') ? 'govuk-form-group--error' : '' %>">
+                                    <label class="govuk-label govuk-!-width-three-quarters" for="ageReason">
+                                        The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.
+                                    </label>
+                                    <% if (err.isError('ageReason')) { %>
+                                        <span id="age-reason-error" class="govuk-error-message">
+                                            <%= err.get('ageReason') %>
+                                        </span>
+                                    <% } %>
+                                        <textarea
+                                                id="ageReason"
+                                                name="ageReason"
+                                                class="govuk-!-margin-bottom-0 <%= err.isError('ageReason')
+                                                        ? 'govuk-textarea govuk-textarea--error'
+                                                        : 'govuk-textarea' %>"
+                                                aria-describedby="ageReason-hint <%= err.isError('ageReason') ? 'exceeding-characters-error' : '' %>"
+                                                rows="3"
+                                                maxlength="1000"><%= formData['ageReason'] && formData['ageReason'].trim() %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('gender') ? 'govuk-form-group--error' : '' %>" id="gender">
+                    <fieldset class="govuk-fieldset" role="radiogroup">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Gender
+                            <% if (err.isError('gender')) { %>
+                                <span class="govuk-error-message"><%= err.get('gender') %></span>
+                            <% } %>
+                        </legend>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-female"
+                                    name="gender"
+                                    type="radio"
+                                    value="F"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'F') { %>checked="checked"<% } %>
+                                >
+                                <label class="govuk-label govuk-radios__label" for="gender-female">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-male"
+                                    name="gender"
+                                    type="radio"
+                                    value="M"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'M') { %>checked="checked"<% } %>
+                                >
+                                <label class="govuk-label govuk-radios__label" for="gender-male">
+                                    Male
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
+                    <%= submitLabel %>
+                </button>
+                <button type="button" onclick="window.location.replace('/pupil-register/pupils-list')" class="govuk-button govuk-button--secondary govuk-form-button" data-module="govuk-button">
+                    Cancel
+                </button>
+            </fieldset>
+        </form>
     </div>
-</form>
-<div class="back-to-top-container">
-    <a href="#top"> Back to top </a>
+</div>
+<div class="govuk-back-to-top">
+    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+        </svg>Back to top
+    </a>
 </div>
 
 <script>
-  $(function () {
-    window.GOVUK.pupilForm()
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.pupilForm()
   })
 </script>
