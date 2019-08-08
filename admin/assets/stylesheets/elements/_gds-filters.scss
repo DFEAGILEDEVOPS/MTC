@@ -1,0 +1,77 @@
+// Filters
+
+.filter-header {
+  background-color: govuk-color("light-grey");
+  cursor: pointer;
+  margin-top: govuk-em(15px, $govuk-root-font-size);
+  padding: govuk-em(8px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size) govuk-em(4px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size);
+}
+
+.filter-label {
+  display: block;
+  font-weight: bold;
+  position: relative;
+
+  &:after {
+    color: $grey-1;
+    content: "^";
+    font-weight: normal;
+    font-size: govuk-em(25px, $govuk-root-font-size);
+    position: absolute;
+    right: govuk-em(3px, $govuk-root-font-size);
+    top: govuk-em(-9px, $govuk-root-font-size);
+    transform: rotate(-180deg) scale(1.5,1);
+  }
+}
+
+.filter-label.active {
+  &:after {
+    transform: scale(1.5,1);
+    top: 0;
+  }
+}
+
+.filter-content {
+  background-color: govuk-color("light-grey");
+  padding: 0 govuk-em(10px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size);
+}
+
+#filterByGroup {
+  background-color: white;
+  padding: 10px;
+  margin: 0;
+
+  label {
+    padding-left: govuk-em(4px, $govuk-root-font-size);
+  }
+}
+
+.filter-name {
+  label {
+    background-color: govuk-color("dark-grey");
+    padding: govuk-em(5px, $govuk-root-font-size);
+    float: left;
+
+    img {
+      padding: govuk-em(4px, $govuk-root-font-size);
+      vertical-align: middle;
+    }
+  }
+
+  span {
+    display: block;
+    overflow: hidden;
+
+    input {
+      width: 100%;
+      padding-bottom: govuk-em(4px, $govuk-root-font-size);
+      margin-top: 0;
+    }
+  }
+}
+
+.filter-hidden-name,
+.filter-hidden-group {
+  display: none;
+  visibility: hidden;
+}

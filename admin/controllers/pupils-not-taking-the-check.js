@@ -34,6 +34,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
   return res.render('pupils-not-taking-the-check/select-pupils', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     pupilsList: pupils,
     highlight: [],
@@ -65,6 +66,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (availabilityData.hdfSubmitted) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -82,6 +84,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   }
 
   return res.render('pupils-not-taking-the-check/pupils-list', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     attendanceCodes,
     pupilsList,
@@ -176,6 +179,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     return res.render('pupils-not-taking-the-check/select-pupils', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
       messages: res.locals.messages,
