@@ -83,12 +83,12 @@
                                     <%= pupil.fullName %>
                                 </label>
                                 <% if (pupil.showDoB) { %>
-                                    <div class="font-greyed-out font-xsmall">
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
                                         Date of birth: <%= pupil.dateOfBirth %>
                                     </div>
                                 <% } %>
                             </td>
-                            <td class="align-right">
+                            <td>
                                 <div class="multiple-choice-mtc">
                                     <input id="pupil-<%= pupil.id %>"
                                            name="pupil[<%= pupil.id %>]"
