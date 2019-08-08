@@ -29,6 +29,7 @@ const listPupils = async (req, res, next) => {
   }
 
   res.render('pupil-register/pupils-list', {
+    layout: 'gds-layout',
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),

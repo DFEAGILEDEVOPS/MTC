@@ -41,6 +41,7 @@ const getAddPupil = async (req, res, next, error = null) => {
       })
     }
     res.render('pupil-register/add-pupil', {
+      layout: 'gds-layout',
       formData: req.body,
       error: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
@@ -100,7 +101,8 @@ const getAddMultiplePupils = async (req, res, next) => {
     csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
     req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('school/add-multiple-pupils', {
+    res.render('pupil-register/add-multiple-pupils', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       hasError,
       fileErrors,
@@ -201,8 +203,10 @@ const getEditPupilById = async (req, res, next) => {
 
     const pupilData = pupilAddService.formatPupilData(pupil)
 
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/edit-pupil', {
+      layout: 'gds-layout',
       formData: pupilData,
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
@@ -245,8 +249,10 @@ const postEditPupil = async (req, res, next) => {
 
   if (validationError.hasError()) {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
+    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('pupil-register/edit-pupil', {
+      layout: 'gds-layout',
       school,
       formData: req.body,
       error: validationError,

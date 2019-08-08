@@ -2,15 +2,15 @@ class PupilRegisterPage < SitePrism::Page
   set_url '/pupil-register/pupils-list'
 
   element :heading, '.heading-xlarge', text: 'Pupil Register'
-  element :add_pupil, 'a[href="/pupil-register/pupil/add"]'
-  element :add_multiple_pupil, 'a[href="/pupil-register/pupil/add-batch-pupils"]'
-  element :info_message, '.info-message', text: 'Changes to pupil details have been saved'
-  element :incomplete_message, '.warning-message'
-  element :new_pupil_info_message, '.info-message', text: '1 new pupil has been added'
-  element :add_multiple_pupil_info_message, '.info-message'
+  element :add_pupil, 'button', text: 'Add pupil'
+  element :add_multiple_pupil, 'button', text: 'Add multiple pupils'
+  element :info_message, '.govuk-info-message', text: 'Changes to pupil details have been saved'
+  element :incomplete_message, '.govuk-warning-message'
+  element :new_pupil_info_message, '.govuk-info-message', text: '1 new pupil has been added'
+  element :add_multiple_pupil_info_message, '.govuk-info-message'
   element :edited_pupil, '.highlight-item'
-  element :pupil_status_explanation, '.summary'
-  section :phase_banner, PhaseBanner, '.phase-banner'
+  element :pupil_status_explanation, '.govuk-details__summary-text'
+  section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
   section :pupil_list_column_heading, '#register-pupils thead tr' do
     element :name_heading, 'th:nth-child(1)'
@@ -21,8 +21,8 @@ class PupilRegisterPage < SitePrism::Page
   section :pupil_list, '#register-pupils' do
     sections :pupil_row, 'tbody tr' do
       element :names, 'td:nth-child(1)'
-      element :edited_pupil, '.highlight-item'
-      element :incomplete_pupil, '.warning-item'
+      element :edited_pupil, '.govuk-highlight-item'
+      element :incomplete_pupil, '.govuk-warning-item'
       element :group, 'td:nth-child(2)'
       element :result, 'td:nth-child(3)'
       element :edit_pupil_link, 'a'

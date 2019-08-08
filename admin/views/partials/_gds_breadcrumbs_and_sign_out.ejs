@@ -2,17 +2,17 @@
     <div class="govuk-grid-column-one-half">
         <div class="govuk-breadcrumbs">
             <ol class="govuk-breadcrumbs__list">
-                <% if (breadcrumbs && Array.isArray(breadcrumbs)) { %>
-                    <% breadcrumbs.forEach( (b) => { %>
-                        <% if (b && b.url) { %>
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a class="govuk-breadcrumbs__link" href="<%= b.url %>"><%= b.name %></a>
-                            </li>
-                        <% } else if (b && !b.url) { %>
-                            <li class="govuk-breadcrumbs__list-item" aria-current="page"><%= b.name %></li>
-                        <% } %>
-                    <% }) %>
-                <% } %>
+            <% if (breadcrumbs && Array.isArray(breadcrumbs)) { %>
+                <% breadcrumbs.forEach( (b) => { %>
+                    <% if (b && b.url) { %>
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a class="govuk-breadcrumbs__link" href="<%= b.url %>"><%= b.name %></a>
+                    </li>
+                    <% } else if (b && !b.url) { %>
+                        <li class="govuk-breadcrumbs__list-item" aria-current="page"><%= b.name %></li>
+                    <% } %>
+                <% }) %>
+            <% } %>
             </ol>
         </div>
     </div>
