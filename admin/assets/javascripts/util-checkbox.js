@@ -193,7 +193,7 @@ var stickyBanner = {
     if (stickyBannerEl.next(footerEl).length === 0) {
       // we're moving the banner outside of the form, so add a click handler
       // to submit it
-      var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $('#group-pupil-form')
+      var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $(document.forms && document.forms[0])
       $('#stickyConfirm').on('click touchstart', function () {
         form.submit()
       })
