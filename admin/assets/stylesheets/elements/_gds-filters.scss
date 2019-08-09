@@ -13,7 +13,7 @@
   position: relative;
 
   &:after {
-    color: $grey-1;
+    color: govuk-color("dark-grey");
     content: "^";
     font-weight: normal;
     font-size: govuk-em(25px, $govuk-root-font-size);
