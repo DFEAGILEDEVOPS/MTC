@@ -4,6 +4,7 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Select pupils not taking the check</h1>
             <%- partial('partials/_session_expiry') %>
+        <% if (pupilsList && pupilsList.length > 0) { %>
             <form method="post" action="/pupils-not-taking-the-check/save-pupils">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <% if (attendanceCodes && attendanceCodes.length > 1) { %>
@@ -32,7 +33,6 @@
                 <%- partial('partials/_attendance_code_reasons') %>
                 <h2 class="govuk-heading-m">2. Select pupils</h2>
                 <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
-                <% if (pupilsList && pupilsList.length > 0) { %>
                 <table id="pupilsList" class="govuk-table govuk-spacious">
                     <caption class="govuk-table__caption">Pupil register</caption>
                     <thead class="govuk-table__head">
@@ -82,27 +82,27 @@
                     <% }) %>
                     </tbody>
                 </table>
-                <% } else { %>
-                <div class="govuk-inset-text">
-                    No pupils found.
-                </div>
-                <% } %>
-                <div class="govuk-back-to-top">
-                    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-                        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                        </svg>Back to top
-                    </a>
-                </div>
-            <%- partial('partials/_sticky_confirmation_banner',
-                    {
-                        cancelLabel: 'Cancel',
-                        cancelLink: '/pupils-not-taking-the-check',
-                        submitLabel: 'Confirm',
-                        isSubmitDisabled: true
-                    })
-            %>
+                <%- partial('partials/_gds_sticky_confirmation_banner',
+                        {
+                            cancelLabel: 'Cancel',
+                            cancelLink: '/pupils-not-taking-the-check',
+                            submitLabel: 'Confirm',
+                            isSubmitDisabled: true
+                        })
+                %>
             </form>
+        <% } else { %>
+            <div class="govuk-inset-text">
+                No pupils found.
+            </div>
+        <% } %>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         </div>
     </div>
 </main>
