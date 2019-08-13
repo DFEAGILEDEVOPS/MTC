@@ -45,7 +45,7 @@
                                     <% if (p.hasAAEditDisabled) { %>
                                         <%= p.fullName %>
                                     <% } else { %>
-                                        <a class="govuk-link govuk-!-font-weight-bold govuk-!-font-size-16 name-text-wrap"
+                                        <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
                                             href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>"><%= p.fullName %></a>
                                         <% } %>
                                         <% if (p.showDoB) { %>
@@ -64,7 +64,7 @@
                                 <% } else if(p.notTakingCheck) { %>
                                     Not taking check
                                 <% } else if (availabilityData.canEditArrangements) { %>
-                                    <a class="govuk-link modal-link govuk-!-font-size-16" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
+                                    <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
                                 <% } %>
                                 </td>
                             </tr>
@@ -74,7 +74,13 @@
         <% } else { %>
             <p class="govuk-body">No pupils with access arrangements or modifications selected.</p>
         <% } %>
-
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">
