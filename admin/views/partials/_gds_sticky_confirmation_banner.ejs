@@ -9,9 +9,9 @@
                 <button id="stickyConfirm" data-prevent-double-click="true" class="govuk-button govuk-form-button govuk-!-margin-bottom-0" type="button" data-module="govuk-button">
                     <%= submitLabel %>
                 </button>
-                <button id="stickyCancel" type="button" onclick="window.location.replace('<%= cancelLink %>')" class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-bottom-0" data-module="govuk-button">
+                <a id="stickyCancel" href="<%= cancelLink %>" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
                     <%= cancelLabel %>
-                </button>
+                </a>
             </div>
         </div>
     </div>

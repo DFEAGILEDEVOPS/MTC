@@ -19,9 +19,9 @@
                 Select pupil and reason
             </button>
         <% } else { %>
-            <button type="button" onclick="window.location.replace('/pupils-not-taking-the-check/select-pupils')" class="govuk-button" data-module="govuk-button">
+            <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                 Select pupil and reason
-            </button>
+            </a>
         <% } %>
         <% if (pupilsList && pupilsList.length > 0) { %>
         <table id="pupilsList" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
