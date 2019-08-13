@@ -57,7 +57,7 @@
 }
 
 @include govuk-media-query($until: tablet) {
-  .sticky-banner-wrapper {
+  .govuk-sticky-banner-wrapper {
     padding-bottom: 5px;
   }
 }
