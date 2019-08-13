@@ -68,5 +68,27 @@
                 </a>
             </div>
         </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Access arrangements</a>
+                        </li>
+                        <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
+                            <li>
+                                <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Start the MTC - password and PINs</a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
 </main>
