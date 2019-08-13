@@ -28,9 +28,9 @@
                 Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
             </p>
         <% if (isFeatureEnabled('groupCreate')) { %>
-            <button type="button" onclick="window.location.replace('/group/pupils-list/add')" class="govuk-button" data-module="govuk-button">
+            <a href="/group/pupils-list/add" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                 Create new group
-            </button>
+            </a>
         <% } else { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
                 Create new group
