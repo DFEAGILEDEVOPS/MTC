@@ -215,7 +215,7 @@ Then(/^I can see add pupil page as per the design$/) do
   expect(@page).to have_female
   expect(@page).to have_male
   expect(@page).to have_what_is_upn
-  expect(@page.what_is_upn).to have_explanatory_text
+  expect(@page.what_is_upn.explanatory_text.map {|a| a.text}.join(' ')).to eql "The unique pupil number (UPN) is a 13-character code that identifies each pupil in the local authority maintained school system. If your pupil does not have a UPN please follow the guidance on how to generate UPNs (link opens in a new window)."
   expect(@page.what_is_upn).to have_more_details
 end
 
@@ -246,7 +246,7 @@ end
 
 Then(/^I should see a validation error for the day of the month$/) do
   expect(@page.error_summary.day.text).to eql 'Enter a valid day'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid day'
+  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid day"
 end
 
 When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
@@ -261,7 +261,7 @@ end
 
 Then(/^I should see a validation error for the month of the year$/) do
   expect(@page.error_summary.month.text).to eql 'Enter a valid month'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid month'
+  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid month"
 end
 
 When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
@@ -275,7 +275,7 @@ end
 
 Then(/^I should see a validation error for the year$/) do
   expect(@page.error_summary.year.text).to eql 'Enter a valid year'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid year'
+  expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid year"
 end
 
 When(/^I attempt to enter names that are more than (\d+) characters long$/) do |number|
@@ -308,8 +308,8 @@ When(/^I submit valid details with a already used UPN$/) do
 end
 
 Then(/^I should see an error stating more than (\d+) pupil with the same UPN$/) do |arg|
-  expect(@page.error_summary.upn.map{|error| error.text}).to eql ["Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."]
-  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql ["Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."]
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to include "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
 end
 
 When(/^I submit valid details with a UPN that has a incorrect check letter$/) do
@@ -325,7 +325,7 @@ end
 
 Then(/^I should see an error stating wrong check letter at character (\d+)$/) do |_x|
   expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. First character is not recognised. See guidance for instructions."
-  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to eql ["Enter a valid UPN. First character is not recognised. See guidance for instructions."]
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to include "Enter a valid UPN. First character is not recognised. See guidance for instructions."
 end
 
 When(/^I submit valid details with a UPN that has a invalid LA code$/) do
@@ -426,6 +426,7 @@ end
 
 Then(/^I should see validation error for the UPN field fo the following$/) do |table|
   table.hashes.each do |hash|
+    p hash['condition']
     case hash['condition']
       when 'wrong check letter'
         step 'I submit valid details with a UPN that has a incorrect check letter'
@@ -496,7 +497,7 @@ When(/^I submit the form with the pupil dob (\d+) years ago$/) do |years_old|
   @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @reason_text = "Reason for adding pupil #{@details_hash[:first_name]}"
-  @page.reason.text_area.set "Reason for adding pupil #{@details_hash[:first_name]}" if @page.reason.text_area.visible?
+  @page.reason.text_area.set "Reason for adding pupil #{@details_hash[:first_name]}" if @page.has_reason?
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)

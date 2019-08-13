@@ -38,8 +38,8 @@ describe('pupil-form', function () {
     beforeEach(function () {
       $('body').empty()
       initPupilFormElements()
-      window.GOVUK.pupilForm()
-      spyOn(window.GOVUK, 'determineAcademicYear').and.returnValue((new Date()).getFullYear())
+      window.MTCAdmin.pupilForm()
+      spyOn(window.MTCAdmin, 'determineAcademicYear').and.returnValue((new Date()).getFullYear())
     })
     it('should display the age content if the pupils input dob is within the academic year of aged 7', function () {
       var pupilAgeSevenYear = ((new Date()).getFullYear() - 7).toString()
@@ -112,14 +112,14 @@ describe('pupil-form', function () {
       const currentYear = (new Date()).getFullYear()
       const baseTime = new Date(currentYear, 7, 31)
       jasmine.clock().mockDate(baseTime)
-      const academicYear = window.GOVUK.determineAcademicYear()
+      const academicYear = window.MTCAdmin.determineAcademicYear()
       expect(academicYear).toBe(currentYear - 1)
     })
     it('should return current year if the current date is between the beginning of August and the last day of the year', function () {
       const currentYear = (new Date()).getFullYear()
       const baseTime = new Date(currentYear, 11, 31)
       jasmine.clock().mockDate(baseTime)
-      const academicYear = window.GOVUK.determineAcademicYear()
+      const academicYear = window.MTCAdmin.determineAcademicYear()
       expect(academicYear).toBe(currentYear)
     })
   })
@@ -127,13 +127,13 @@ describe('pupil-form', function () {
     it('should return true if the input date is within second day of September on the target year until the first day of September of the next year from the target year', function () {
       const currentYear = (new Date()).getFullYear()
       const inputDate = new Date(currentYear - 11, 11, 31)
-      const isWithinAcademicYear = window.GOVUK.isWithinAcademicYear(inputDate, currentYear, 11)
+      const isWithinAcademicYear = window.MTCAdmin.isWithinAcademicYear(inputDate, currentYear, 11)
       expect(isWithinAcademicYear).toBeTruthy()
     })
     it('should return false if the input date is not within second day of September on the target year until the first day of September of the next year from the target year', function () {
       const currentYear = (new Date()).getFullYear()
       const inputDate = new Date(currentYear - 11, 1, 1)
-      const isWithinAcademicYear = window.GOVUK.isWithinAcademicYear(inputDate, currentYear, 11)
+      const isWithinAcademicYear = window.MTCAdmin.isWithinAcademicYear(inputDate, currentYear, 11)
       expect(isWithinAcademicYear).toBeFalsy()
     })
   })
