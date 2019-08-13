@@ -189,22 +189,23 @@ var stickyBanner = {
    */
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
-    if (stickyBannerEl.next('#footer').length === 0) {
+    var footerEl = $('#govuk-footer').length === 0 ? $('#footer') : $('#govuk-footer')
+    if (stickyBannerEl.next(footerEl).length === 0) {
       // we're moving the banner outside of the form, so add a click handler
       // to submit it
-      var form = stickyBannerEl.closest('form')
+      var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $(document.forms && document.forms[0])
       $('#stickyConfirm').on('click touchstart', function () {
         form.submit()
       })
       // move the sticky banner to be a sibling of content and footer
       // so it can be full width
-      stickyBannerEl.insertBefore('#footer')
+      stickyBannerEl.insertBefore(footerEl)
     }
     var isIE = (navigator.userAgent.indexOf('MSIE') !== -1) || !!document.documentMode
     if (isIE) {
       // IE doesn't support position: sticky, so toggle fixed class instead
       var scroll = $(document).scrollTop()
-      var footerTop = $('#footer')[0].getBoundingClientRect().top + scroll
+      var footerTop = footerEl[0].getBoundingClientRect().top + scroll
       var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
       var windowBottom = $(window).height() + scroll
       if (windowBottom < stickyBannerTop) {

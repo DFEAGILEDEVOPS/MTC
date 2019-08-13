@@ -17,7 +17,7 @@ input.govuk-link {
   cursor: pointer;
 
   &.govuk-remove-file {
-    padding-top: pem(10px);
+    padding-top: govuk-em(10px, $govuk-root-font-size);
     font-size: medium;
   }
 }

@@ -115,7 +115,7 @@ When(/^I select (\d+) pupils$/) do |arg|
 end
 
 Then(/^the sticky banner count should reflect this$/) do
-  expect(add_edit_groups_page.sticky_banner.count.text.split(':').last.strip).to eql '2'
+  expect(add_edit_groups_page.sticky_banner.selected_count.text).to eql '2'
 end
 
 
@@ -125,7 +125,7 @@ When(/^I select all pupils$/) do
 end
 
 Then(/^the sticky banner count should reflect that all pupils have been selected$/) do
-  expect(add_edit_groups_page.sticky_banner.count.text.split(':').last.strip).to eql add_edit_groups_page.pupil_list.rows.count.to_s
+  expect(add_edit_groups_page.sticky_banner.selected_count.text).to eql add_edit_groups_page.pupil_list.rows.count.to_s
 end
 
 
