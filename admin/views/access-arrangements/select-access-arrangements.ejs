@@ -251,11 +251,11 @@
 <% } %>
 <% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>
 <script>
-  $(function () {
+  document.addEventListener('DOMContentLoaded', function() {
     <% if(!formData['isEditView']) { %>
     var getPupilUrlSlug = '<%= pupilUrlSlug %>'
-    window.GOVUK.autoComplete.createNameComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
+    window.MTCAdmin.autoComplete.createNameComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
     <% } %>
-    window.GOVUK.accessArrangements()
+    window.MTCAdmin.accessArrangements()
   })
 </script>

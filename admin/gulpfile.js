@@ -15,6 +15,7 @@ const config = require('./config')
 const jsBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
   './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/gds-autocomplete.js',
   './assets/javascripts/gds-cookie-banner.js',
   './assets/javascripts/gds-table-sorting.js',
   './assets/javascripts/accessible-autocomplete.min.js',
