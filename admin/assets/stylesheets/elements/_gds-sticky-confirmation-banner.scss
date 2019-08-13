@@ -46,14 +46,14 @@
   }
 
   @include govuk-media-query($until: tablet) {
-  .govuk-button--secondary {
-    margin: govuk-em(10px, $govuk-root-font-size) 0;
+    .govuk-button--secondary {
+      margin: govuk-em(10px, $govuk-root-font-size) 0;
+    }
   }
-}
 
-div {
-  padding: 5px;
-}
+  div {
+    padding: 5px;
+  }
 }
 
 @include govuk-media-query($until: tablet) {

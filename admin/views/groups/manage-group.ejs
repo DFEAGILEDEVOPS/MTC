@@ -1,71 +1,68 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-        <div class="info-message">
-            <a href="#anchor-<%= messages.name %>"><%= messages.info %></a>
-        </div>
-        <% } %>
-
-        <% if (messages && messages.error && messages.error.length) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                <%= messages.error %>
-            </h2>
-        </div>
-        <% } %>
-
-        <% if (typeof validation !== 'undefined') { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                You need to fix the errors on this page before continuing.
-            </h2>
-            <p>See highlighted errors below.</p>
-            <ul class="error-summary-list">
-                <% if (typeof validation !== 'undefined' && validation.name) { %>
-                <li><a href="#group-name"><%= validation.name %></a></li>
-                <% } %>
-            </ul>
-        </div>
-        <% } %>
-
-        <h1 class="heading-xlarge"><%= actionTitle %></h1>
-        <br>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
-        <form method="post" action="/group/pupils-list/<%= action %>">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group <%= typeof validation !== 'undefined' && validation.name ? 'form-group-error' : '' %>">
-                <label for="name" class="form-label-bold">
-                    <span class="bold-medium">1. Group name</span><a name="group-name"></a>
-                </label>
-                <span class="form-hint">For example, Class 4A</span>
-                <% if (typeof validation !== 'undefined' && validation.name) { %>
-                <span class="error-message"><%= validation.name %></span>
-                <% } %>
-
-                <input class="form-control <% if (typeof validation !== 'undefined' && validation.name) { %><%= validation.name ? 'form-control-error' : '' %><% } %>"
-                       id="name"
-                       name="name"
-                       type="text"
-                       value="<% if (group && group.name) { %><%= group.name %><% } %>"
-                       aria-required="true"
-                       aria-label="Group name.">
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <a href="#anchor-<%= messages.name %>"><%= messages.info %></a>
             </div>
-            <br>
-
-            <div class="group-pupils-list">
-                <div class="bold-medium">2. Select/deselect pupil(s) in group</div>
+            <% } %>
+        <% if (messages && messages.error && messages.error.length) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    <%= messages.error %>
+                </h2>
+            </div>
+        <% } %>
+        <% if (typeof validation !== 'undefined') { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% if (typeof validation !== 'undefined' && validation.name) { %>
+                            <li><a href="#group-name"><%= validation.name %></a></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+            <h1 class="govuk-heading-xl">Group pupils</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
+            <form id='group-pupil-form' method="post" action="/group/pupils-list/<%= action %>" class="govuk-form-button">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group <%= typeof validation !== 'undefined' && validation.name ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold govuk-!-font-size-24" for="name">
+                        <a name="group-name">1. Group name</a>
+                    </label>
+                    <span id="event-name-hint" class="govuk-hint">
+                        For example, Class 4A
+                    </span>
+                    <% if (typeof validation !== 'undefined' && validation.name) { %>
+                        <span class="govuk-error-message"><%= validation.name %></span>
+                    <% } %>
+                    <input
+                           id="name"
+                           name="name"
+                           type="text"
+                           class="govuk-input govuk-!-width-one-half <% if (typeof validation !== 'undefined' && validation.name) { %><%= validation.name ?  'govuk-input--error' : '' %><% } %>"
+                           value="<% if (group && group.name) { %><%= group.name %><% } %>"
+                           aria-required="true"
+                           aria-label="Group name."
+                    />
+                </div>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-font-size-24">2. Select or deselect pupils in group</p>
                 <% if (typeof validation !== 'undefined' && validation.pupils) { %>
-                <span class="error-message"><%= validation.pupils    %></span>
+                <span class="govuk-error-message"><%= validation.pupils %></span>
                 <% } %>
-                <table class="spacious reduced-top-margin" id="groupPupil" role="group">
-                    <thead>
-                        <tr>
-                            <th scope="col">Pupil</th>
+                <table id="groupPupil" class="govuk-table govuk-spacious" role="group">
+                    <caption class="govuk-table__caption">List of available pupils</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-full">Pupil</th>
                             <td>
                                 <div class="tick-all-checkboxes-wrapper">
                                     <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
@@ -79,19 +76,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% pupilsList.forEach( (pupil) => { %>
-                        <tr>
-                            <td>
-                                <label for="pupil-<%= pupil.id %>">
+                    <% pupilsList.forEach( (pupil) => { %>
+                        <tr class="govuk-table__row">
+                            <td scope="row">
+                                <label class="govuk-label" for="pupil-<%= pupil.id %>">
                                     <%= pupil.fullName %>
                                 </label>
                                 <% if (pupil.showDoB) { %>
-                                <div class="font-greyed-out font-xsmall">
-                                    Date of birth: <%= pupil.dateOfBirth %>
-                                </div>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                        Date of birth: <%= pupil.dateOfBirth %>
+                                    </div>
                                 <% } %>
                             </td>
-                            <td class="align-right">
+                            <td>
                                 <div class="multiple-choice-mtc">
                                     <input id="pupil-<%= pupil.id %>"
                                            name="pupil[<%= pupil.id %>]"
@@ -105,12 +102,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <% }) %>
+                    <% }) %>
                     </tbody>
                 </table>
-            </div>
             <% if (group && group.id) { %><input type="hidden" name="groupId" value="<%= group.id %>" /><% } %>
-            <%- partial('partials/_sticky_confirmation_banner',
+            <%- partial('partials/_gds_sticky_confirmation_banner',
                     {
                         cancelLabel: 'Cancel',
                         cancelLink: '/group/pupils-list',
@@ -118,15 +114,19 @@
                         isSubmitDisabled: true
                     })
             %>
-        </form>
-        <% } else { %>
-        <div class="panel panel-border-wide">
-            <p>There are no pupils</p>
-        </div>
-        <% } %>
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
+            </form>
+            <% } else { %>
+            <div class="panel panel-border-wide">
+                <p>There are no pupils</p>
+            </div>
+            <% } %>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         </div>
     </div>
-    <div class="column-one-third add-title-margin"></div>
-</div>
+</main>
