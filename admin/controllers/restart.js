@@ -27,6 +27,7 @@ controller.getRestartOverview = async (req, res, next) => {
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -39,6 +40,7 @@ controller.getRestartOverview = async (req, res, next) => {
     hl = hl.split(',').map(h => decodeURIComponent(h))
   }
   return res.render('restart/restart-overview', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     highlight: hl && new Set(hl),
     messages: res.locals.messages,
@@ -61,6 +63,7 @@ controller.getSelectRestartList = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.restartsAvailable) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -75,6 +78,7 @@ controller.getSelectRestartList = async (req, res, next) => {
     return next(error)
   }
   return res.render('restart/select-restart-list', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     pupils,
     reasons,
@@ -123,6 +127,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
       return next(error)
     }
     return res.render('restart/select-restart-list', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       pupils,
       reasons,
