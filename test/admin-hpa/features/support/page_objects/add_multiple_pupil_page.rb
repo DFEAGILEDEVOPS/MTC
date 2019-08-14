@@ -7,7 +7,7 @@ class AddMultiplePupilPage < SitePrism::Page
   element :pupil_upload_template, '.pupils-template a', text: 'Pupil details template'
   element :chose_file, '#file-upload'
   element :save, '#upload-form-submit'
-  element :back, 'button', text: 'Cancel'
+  element :back, 'a', text: 'Cancel'
   element :error_message,  "div[data-module='govuk-error-summary']"
   element :error_csv_file, '.govuk-pupil-error-template'
   element :csrf, 'input[name="_csrf"]', visible: false

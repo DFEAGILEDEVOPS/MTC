@@ -10,7 +10,7 @@ When(/^I have assigned the check form to a check window$/) do
   window.assign_form.click
   form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  expect(assign_form_to_window_page.sticky_banner.selected_count.text).to eql '1'
   assign_form_to_window_page.sticky_banner.confirm.click
 end
 
@@ -96,14 +96,14 @@ When(/^I have assigned the check form to multiple check windows$/) do
   window1.assign_form.click
   form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  expect(assign_form_to_window_page.sticky_banner.selected_count.text).to eql '1'
   assign_form_to_window_page.sticky_banner.confirm.click
   window2 = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text != @check_window_hash[:check_name]}
   @window_2_name = window2.name_of_window.text
   window2.assign_form.click
   form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  expect(assign_form_to_window_page.sticky_banner.selected_count.text).to eql '1'
   assign_form_to_window_page.sticky_banner.confirm.click
 end
 

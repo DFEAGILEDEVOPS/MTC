@@ -29,7 +29,7 @@ Then(/^I can assign live check forms to inactive window$/) do
   window.mtc_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(select_form_to_assign_page.sticky_banner.count.text).to eql 'Forms selected: 1'
+  expect(select_form_to_assign_page.sticky_banner.selected_count.text).to eql '1'
   select_form_to_assign_page.sticky_banner.confirm.click
   window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
   expect(window.mtc_check_link_text.text).to include '(1 form assigned)'
@@ -86,7 +86,7 @@ When(/^I attempt to assign a live form to a inactive check window$/) do
   window.mtc_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
-  expect(select_form_to_assign_page.sticky_banner.count.text).to eql 'Forms selected: 1'
+  expect(select_form_to_assign_page.sticky_banner.selected_count.text).to eql '1'
 end
 
 But(/^decide to cancel assigning$/) do

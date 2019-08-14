@@ -1,7 +1,7 @@
 class PupilReasonPage < SitePrism::Page
   set_url '/pupils-not-taking-the-check/select-pupils'
 
-  element :heading, '.heading-xlarge', text: 'Select pupils not taking the check'
+  element :heading, '.govuk-heading-xl', text: 'Select pupils not taking the check'
   element :select_reason_text, 'h2', '1. Select reason'
   elements :attendance_codes, 'input[id^=attendance-code-]'
   element :back_to_top, 'a', text: 'Back to top'
@@ -10,8 +10,8 @@ class PupilReasonPage < SitePrism::Page
   element :reason_coloumn, 'a', text: 'Reason'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
-  section :group_filter, GroupFilter, '.column-two-thirds'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
+  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'

@@ -276,7 +276,7 @@ var checkboxUtil = {
     * @param paramIds
     */
   tableRowVisibility: function (param, paramIds) {
-    var sel = '.spacious > tbody > tr'
+    var sel = document.getElementsByClassName('govuk-template').length === 1 ? '.govuk-spacious > tbody > tr' : '.spacious > tbody > tr'
     if (paramIds.length < 1 || paramIds[0].length < 1) {
       $(sel).removeClass('filter-hidden-group')
     } else {
