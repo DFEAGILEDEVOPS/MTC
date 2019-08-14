@@ -11,14 +11,13 @@ When(/^we are in (.*) week of check end date without submitted HDF$/) do|check_e
 
   case check_end_week
     when '1st'
-      SqlDbHelper.update_check_window_check_end_date_for_development_check_window(today_date)
+      SqlDbHelper.update_check_end_date(today_date)
     when '2nd'
       previous_to_previous_week_friday = today_date - 7
-      SqlDbHelper.update_check_window_check_end_date_for_development_check_window(previous_to_previous_week_friday)
+      SqlDbHelper.update_check_end_date(previous_to_previous_week_friday)
   end
 
   REDIS_CLIENT.keys.each do |key|
-    puts "current key is : #{key}"
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT. del key
     end

@@ -178,7 +178,6 @@ end
 
 Before("@redis") do
   REDIS_CLIENT.keys.each do |key|
-    puts "current key is : #{key}"
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT. del key
     end
@@ -196,7 +195,7 @@ end
 After("@result") do
   today_date = Date.today
   check_end_date = today_date + 35
-  SqlDbHelper.update_check_window_check_end_date_for_development_check_window(check_end_date)
+  SqlDbHelper.update_check_end_date(check_end_date)
 end
 
 
