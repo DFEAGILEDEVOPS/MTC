@@ -77,6 +77,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 
 @import '../../node_modules/govuk-frontend/govuk/all';
 @import 'elements/_access-arrangements';
+@import 'elements/_gds-accessible-autocomplete';
 @import 'elements/_gds-app-cookie-banner';
 @import 'elements/_gds-app-related-items';
 @import 'elements/_gds-back-to-top';
@@ -85,6 +86,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-flash-messages';
 @import 'elements/_gds-forms';
 @import 'elements/_gds-links';
+@import 'elements/_gds-lists';
 @import 'elements/_gds-modal';
 @import 'elements/_gds-mtc-checkboxes';
 @import 'elements/_gds-panel-list';
