@@ -130,7 +130,6 @@ end
 Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
   REDIS_CLIENT.keys.each do |key|
-    puts "current key is : #{key}"
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT. del key
     end
