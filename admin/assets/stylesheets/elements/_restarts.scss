@@ -23,7 +23,7 @@
 input[type=radio]:checked ~ .hide {
   display: block;
   position: relative;
-  margin-top: govuk-em(60px, $govuk-root-font-size);
+  margin-top: govuk-em(25px, $govuk-root-font-size);
   margin-left: govuk-em(-35px, $govuk-root-font-size);
   .form-group {
     margin-bottom: govuk-em(-10px, $govuk-root-font-size);

@@ -3,7 +3,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Select pupils not taking the check</h1>
-            <%- partial('partials/_session_expiry') %>
+            <%- partial('partials/_gds_session_expiry') %>
         <% if (pupilsList && pupilsList.length > 0) { %>
             <form method="post" action="/pupils-not-taking-the-check/save-pupils">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
