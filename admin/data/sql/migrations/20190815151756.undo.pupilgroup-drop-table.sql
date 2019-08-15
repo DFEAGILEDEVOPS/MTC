@@ -6,6 +6,7 @@ create table mtc_admin.pupilGroup
     createdAt datetimeoffset(3) default getutcdate() not null,
     updatedAt datetimeoffset(3) default getutcdate() not null
 )
+GO
 
 CREATE TRIGGER [mtc_admin].[pupilGroupUpdatedAtTrigger]
     ON [mtc_admin].[pupilGroup]
