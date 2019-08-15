@@ -134,7 +134,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
         spyOn(service, 'getPupils').and.returnValue(pupilsMock)
       })
 
@@ -182,7 +182,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
       it('should return an error if schoolId is missing', async (done) => {
@@ -201,7 +201,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.reject(new Error('Failed to update group')))
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
       it('should not update group', async (done) => {
@@ -225,7 +225,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
       it('should create group', async (done) => {
@@ -247,7 +247,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
       it('should return an error if groupName or schoolId are missing', async (done) => {
@@ -266,7 +266,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.reject(new Error('Failed to create group')))
-        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
       it('should fail to create a group', async (done) => {
