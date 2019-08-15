@@ -1,18 +1,18 @@
 class SelectAccessArrangementsPage < SitePrism::Page
   set_url '/access-arrangements/select-access-arrangements?'
 
-  element :heading, '.heading-xlarge', text: 'Select access arrangement for pupil'
+  element :heading, '.govuk-heading-xl', text: 'Select access arrangement for pupil'
   element :edit_heading, '.heading-xlarge', text: 'Edit access arrangement for pupil'
-  element :pupil_name, '.column-two-thirds .panel.panel-border-wide p'
+  element :pupil_name, '.govuk-grid-column-two-thirds .govuk-inset-text p'
   element :search_pupil, '#pupil-autocomplete-container'
   elements :auto_search_list, '#pupil-autocomplete-container__listbox li'
-  element :drop_down, '#details-content-0'
+  element :drop_down, '.govuk-details__text'
   element :save, '#save-access-arrangement'
   element :cancel, 'a[href="/access-arrangements/overview"]', text: 'Cancel'
   element :back_to_top, 'a[href="#top"]'
   section :access_arrangements, '#accessArrangementsList' do
     sections :row, 'li' do
-      element :arrangement_name, '.font-small label'
+      element :arrangement_name, 'div[class="govuk-!-font-size-16"] .govuk-label'
       element :checkbox, '.multiple-choice-mtc'
       sections :question_reader_reason, '.show-checkbox-content .multiple-choice' do
         element :question_reader_reason_radio , 'input'
@@ -23,12 +23,13 @@ class SelectAccessArrangementsPage < SitePrism::Page
   element :confirm_removal, '#js-modal-confirmation-button'
   element :cancel_removal, '#js-modal-cancel-button'
 
-  element :input_assistance_info, '.show-checkbox-content .form-label'
+  element :input_assistance_info, '.show-checkbox-content .govuk-label'
   element :input_assistance_reason, '#inputAssistanceInformation'
-  element :input_assistance_notice, '.notice'
+  element :next_button_reason, '#nextButtonInformation'
+  element :input_assistance_notice, '.govuk-warning-text'
 
-  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
-    element :error_heading, '#error-summary-heading-1', text: 'You need to fix the errors on this page before continuing'
+  section :error_summary, 'div[aria-labelledby="error-summary-title"]' do
+    element :error_heading, '#error-summary-title', text: 'You need to fix the errors on this page before continuing'
     element :error_info, 'p', text: 'See highlighted errors below'
     element :error_text, 'ul li a'
   end
