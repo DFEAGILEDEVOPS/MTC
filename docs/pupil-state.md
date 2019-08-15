@@ -7,4 +7,4 @@ references when related events occur.  For example - when a pin is generated for
 
 - pin generation.  creates a new check
 - restart. creates a new restart
--
+- non-attendance recorded.  creates a reason for not taking the check
