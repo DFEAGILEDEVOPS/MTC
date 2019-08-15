@@ -132,7 +132,7 @@
                     </thead>
                     <tbody>
                     <% pupils.forEach((pupil) => { %>
-                        <tr class="govuk-table__row">
+                        <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %> group-id-<%= pupil.group_id %>"<% } %>>
                             <td scope="row">
                                 <label class="govuk-label" for="pupil-<%= pupil.id %>">
                                     <%= pupil.fullName %>
