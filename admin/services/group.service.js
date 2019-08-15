@@ -89,7 +89,7 @@ groupService.update = async (id, group, schoolId) => {
   currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id.toString()).map(p => p.id)
   if (currentPupils.sort().toString() !== pupils.sort().toString()) {
     // only update pupils if list has changed
-    await groupDataService.sqlAssignPupilsToGroup(id, pupils)
+    await groupDataService.sqlModifyGroupMembers(id, pupils)
   }
   return true
 }
@@ -107,7 +107,7 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
   }
   groupName = groupName.trim()
   const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
-  await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
+  await groupDataService.sqlModifyGroupMembers(newGroup.insertId, groupPupils)
   return newGroup.insertId
 }
 

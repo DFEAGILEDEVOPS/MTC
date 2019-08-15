@@ -144,7 +144,7 @@ describe('group.service', () => {
         thisGroupMock.pupils = [2]
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
         done()
       })
 
@@ -154,7 +154,7 @@ describe('group.service', () => {
         thisGroupMock.pupils = { '2': 2 }
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
         done()
       })
 
@@ -164,7 +164,7 @@ describe('group.service', () => {
         thisGroupMock.pupils = [3]
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalledTimes(0)
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledTimes(0)
         done()
       })
 

@@ -172,7 +172,7 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
  * @param pupilIds
  * @returns {Promise<boolean>}
  */
-groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
+groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds) => {
   if (pupilIds.length < 1) {
     return false
   }
@@ -187,7 +187,9 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
   params.push(groupIdParam)
 
-  let sql = `  UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause});`
+  // reset group members to none, then re-apply set
+  let sql = `UPDATE mtc_admin.pupil SET group_id = NULL WHERE group_id = @groupId;
+     UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
   sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
