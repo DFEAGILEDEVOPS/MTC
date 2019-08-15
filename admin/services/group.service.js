@@ -41,14 +41,14 @@ groupService.getGroupsAsArray = async function (schoolId) {
 /**
  * Get pupils filtered by schoolId and groupId.
  * @param schoolId required.  the school context
- * @param groupIdToExclude optionally exclude a single group from the returned set
+ * @param groupIdToInclude optionally exclude a single group from the returned set
  * @returns {Promise<*>}
  */
-groupService.getPupils = async function (schoolId, groupIdToExclude) {
+groupService.getPupils = async function (schoolId, groupIdToInclude) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  const pupils = await groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
+  const pupils = await groupDataService.sqlFindPupilsInNoGroupAndOrSpecificGroup(schoolId, groupIdToInclude)
   return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 
