@@ -206,7 +206,12 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
  * @param groupId
  * @returns {Promise<*>}
  */
-groupDataService.sqlFindPupilsInNoGroupAndOrSpecificGroup = async (schoolId, groupId) => {
+groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupId) => {
+  /*
+  The name of this function was 'sqlFindPupils'. Rather ambigious and is trying to do too many things.
+  It is only used in one place - groupService.getPupils().
+  The name has been updated to sqlFindPupilsInNoGroupOrSpecificGroup inline with its single purpose.
+  */
   let params = [
     {
       name: 'schoolId',
@@ -214,10 +219,6 @@ groupDataService.sqlFindPupilsInNoGroupAndOrSpecificGroup = async (schoolId, gro
       type: TYPES.Int
     }
   ]
-  /*
-  The name of this function is ambigious and its trying to do too many things.
-  It is only used in one place - groupService.getPupils()
-  */
   let sql = `SELECT *
   FROM [mtc_admin].[pupil]
   WHERE school_id=@schoolId

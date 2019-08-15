@@ -76,7 +76,7 @@ describe('group.service', () => {
 
   describe('#getPupils', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindPupils').and.returnValue(pupilsMock)
+      spyOn(groupDataService, 'sqlFindPupilsInNoGroupOrSpecificGroup').and.returnValue(pupilsMock)
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.returnValue(pupilsMock)
     })
 
