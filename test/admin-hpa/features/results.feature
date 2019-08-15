@@ -1,31 +1,20 @@
-@wip @results
+@results
 Feature: Results tests
   As a headteacher
   I need to see individual scores of pupils
   so i can assess the overall performance of my school
 
+  @result @redis
+  Scenario: Viewing result Page in the first week of check end date and hdf is not submitted
+    Given multiple pupil has completed the check
+    When we are in 1st week of check end date without submitted HDF
+    And we are on Result page
+    Then Result page for no submitted hdf is displayed as per the design
 
-  Scenario: Results page shows empty when there are no results
-    Given there are no answers in database
-    When I am on the results page
-    Then I see an empty results page
-
-  Scenario: View results
-    Given I have populated some results in database
-    When I am on the results page
-    Then I see the pupil results
-    And I should see the download csv option
-
-  Scenario: Users can logout from results page
-    Given I am on the results page
-    When I decide to logout from results page
-    Then I am taken back to the login page
-
-  @manual
-  Scenario: Verify the downloaded csv is in the right format
-    Given I have populated some results in database
-    When I click the download csv for the first result
-    Then I should see that csv is downloaded
-    And the csv file is in the right format
-
+  @manual @wip
+  Scenario: Viewing result Page in the second week of check end date and hdf is not submitted
+    Given multiple pupil has completed the check
+    When we are in 2nd week of check end date without submitted HDF
+    And we are on Result page
+    Then Result page is displayed as per the design
 

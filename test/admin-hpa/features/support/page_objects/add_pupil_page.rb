@@ -13,7 +13,7 @@ class AddPupilPage < SitePrism::Page
   element :female, '#gender-female'
   element :male, '#gender-male'
   element :add_pupil, 'button', text: 'Add pupil'
-  element :back, 'button', text: 'Cancel'
+  element :back, 'a', text: 'Cancel'
   element :csrf, 'input[name="_csrf"]', visible: false
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
   elements :error_messages, '.govuk-error-message'

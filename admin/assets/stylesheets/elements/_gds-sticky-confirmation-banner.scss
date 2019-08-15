@@ -1,0 +1,73 @@
+.govuk-sticky-banner-wrapper {
+  background-color: rgba(217, 236, 226, 1);
+  display: none;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  width: 100%;
+  z-index: 999;
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0;
+  left: 0;
+
+  &.show {
+    display: block;
+  }
+
+  &.fixed {
+    position: fixed;
+    bottom: 0;
+  }
+
+  #content {
+    padding: 0;
+
+    .govuk-grid-row {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .first-half {
+    font-size: 16px;
+  }
+
+  .govuk-grid-row {
+    margin: 0 -7px;
+  }
+
+  .first-half {
+    text-align: left;
+  }
+
+  .govuk-button--secondary {
+    margin-left: govuk-em(15px, $govuk-root-font-size);
+  }
+
+  @include govuk-media-query($until: tablet) {
+    .govuk-button--secondary {
+      margin: govuk-em(10px, $govuk-root-font-size) 0;
+    }
+  }
+
+  div {
+    padding: 5px;
+  }
+}
+
+@include govuk-media-query($until: tablet) {
+  .govuk-sticky-banner-wrapper {
+    padding-bottom: 5px;
+  }
+}
+
+.sticky-banner {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+#totalPupilsSelected {
+  font-weight: bold;
+}

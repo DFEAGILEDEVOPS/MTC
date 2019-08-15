@@ -1,105 +1,103 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-        <div class="info-message">
-            <a href="#group-<%= messages.groupId %>"><%= messages.info %></a>
-        </div>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <a href="#group-<%= messages.groupId %>"><%= messages.info %></a>
+            </div>
         <% } %>
 
         <% if (messages && messages.deleted && messages.deleted.length) { %>
-        <div class="info-message">
-            <%= messages.deleted %>
-        </div>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <%= messages.deleted %>
+            </div>
         <% } %>
 
         <% if (messages && messages.error && messages.error.length) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                <%= messages.error %>
-            </h2>
-        </div>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    <%= messages.error %>
+                </h2>
+            </div>
         <% } %>
 
-        <h1 class="heading-xlarge">Group pupils</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede" id="lead-paragraph">
-          Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
-        </p>
-
-        <div class="button-wrapper">
-            <% if (isFeatureEnabled('groupCreate')) { %>
-            <a class="button button-primary" href="/group/pupils-list/add">Create new group</a>
-            <% } else { %>
-            <a class="button button-secondary disabled-link" href="#">Create new group</a>
-            <% } %>
-        </div>
-
+            <h1 class="govuk-heading-xl">Group pupils</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
+            </p>
+        <% if (isFeatureEnabled('groupCreate')) { %>
+            <a href="/group/pupils-list/add" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Create new group
+            </a>
+        <% } else { %>
+            <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                Create new group
+            </button>
+        <% } %>
         <% if (Array.isArray(groups) && groups.length > 0) { %>
-        <div class="group">
-            <table class="spacious" id="groupList" role="group">
-                <thead>
-                    <tr>
-                        <th scope="col">Groups</th>
-                        <td> </td>
+            <table id="groupList" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                <caption class="govuk-table__caption"></caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-full">Groups</th>
+                        <th scope="col" class="govuk-table__header"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <% groups.forEach( group => { %>
-                    <tr>
-                        <td<% if (messages.groupId && messages.groupId.toString() === group.id.toString()) { %> class="highlight-item"<% } %>>
-                            <a name="group-<%= group.id %>"></a>
-                            <strong>
-                                <% if (isFeatureEnabled('groupEdit')) { %>
-                                    <a href="/group/pupils-list/edit/<%= group.id %>"><%= group.name %></a>
-                                <% } else { %>
-                                    <span><%= group.name %></span>
-                                <% } %>
-                            </strong>
-                            <span class="font-xsmall">(<%= group.pupilCount %> pupils)</span>
-                        </td>
-                        <td class="align-right">
-                            <% if (isFeatureEnabled('groupRemove')) { %>
-                            <a href="/group/pupils-list/delete/<%= group.id %>" class="modal-link font-small" id="js-modal-link">Remove</a>
+                <tbody class="govuk-table__body">
+                <% groups.forEach( group => { %>
+                    <tr class="govuk-table__row">
+                        <td scope="row" <% if (messages.groupId && messages.groupId.toString() === group.id.toString()) { %> class="govuk-highlight-item"<% } %>>
+                            <div class="govuk-highlight-wrapper">
+                            <% if (isFeatureEnabled('groupEdit')) { %>
+                                <a name="group-<%= group.id %>" class="govuk-link govuk-!-font-weight-bold" href="/group/pupils-list/edit/<%= group.id %>" ><%= group.name %></a>
                             <% } else { %>
-                            <span class="font-greyed-out font-small">Remove</span>
+                                <span class="govuk-body"><%= group.name %></span>
+                            <% } %>
+                                <span>(<%= group.pupilCount %> pupils)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <% if (isFeatureEnabled('groupRemove')) { %>
+                                <a href="/group/pupils-list/delete/<%= group.id %>" class="govuk-link modal-link font-small" id="js-modal-link">Remove</a>
+                            <% } else { %>
+                                <span class="govuk-font-greyed-out govuk-!-font-size-16">Remove</span>
                             <% } %>
                         </td>
                     </tr>
-                    <% }) %>
+                <% }) %>
                 </tbody>
             </table>
-        </div>
-        <% } else { %>
-        <div class="top-padding-30">No groups available.</div>
+            <% } else { %>
+            <div>No groups available.</div>
         <% } %>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/pupil-register/pupils-list" rel="noopener noreferrer">Pupil register</a>
+                        </li>
+                    <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
+                        <li>
+                            <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Start the MTC - password and PINs</a>
+                        </li>
+                    <% } %>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                    <li>
-                        <a href="/pupil-register/pupils-list">Pupil register</a>
-                    </li>
-                    <li>
-                        <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                        <a href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
-                        <% } %>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
-<%- partial('partials/_modal_box', {
+</main>
+<%- partial('partials/_gds_modal_box', {
     modalTitle: 'Remove group',
     modalText: 'Are you sure you want to remove this?',
     modalConfirmationLabel: 'Yes',
