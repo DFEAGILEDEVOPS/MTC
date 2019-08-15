@@ -201,7 +201,6 @@ When(/^I submit the form with the name fields set as (.*)$/) do |value|
 end
 
 Then(/^I should be taken to the add pupil page$/) do
-  binding.pry
   expect(add_pupil_page).to be_displayed
 end
 

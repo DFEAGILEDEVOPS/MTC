@@ -1,0 +1,189 @@
+// Radio buttons & checkboxes (new implementation uses 'div' rather than 'label')
+
+.multiple-choice-mtc {
+  display: block;
+  float: right;
+  clear: left;
+  position: relative;
+
+  padding: 0 5px;
+  margin-bottom: $govuk-gutter / 3;
+  top: -11px;
+
+  @include govuk-media-query($until: tablet) {
+    float: right;
+  }
+
+  // Absolutely position inputs within div, to allow text to wrap
+  input {
+    position: absolute;
+    cursor: pointer;
+    left: -15px;
+    top: 0;
+    width: 38px;
+    height: 38px;
+    z-index: 1;
+    margin: 0;
+    zoom: 1;
+    filter: alpha(opacity=0);
+    opacity: 0;
+  }
+
+  div {
+    cursor: pointer;
+    padding: 8px 0 9px 12px;
+    display: block;
+
+    // remove 300ms pause on mobile
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+
+    @include govuk-media-query($until: tablet) {
+      float: left;
+      padding-top: 7px;
+      padding-bottom: 7px;
+    }
+  }
+
+  [type=checkbox] + div::before {
+    content: "";
+    border: 2px solid;
+    background: transparent;
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  [type=checkbox] + div::after {
+    content: "";
+    border: solid;
+    border-width: 0 0 5px 5px;
+    background: transparent;
+    border-top-color: transparent;
+    width: 17px;
+    height: 7px;
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    -moz-transform: rotate(-45deg); // Firefox 15 compatibility
+    -o-transform: rotate(-45deg); // Opera 12.0 compatibility
+    -webkit-transform: rotate(-45deg); // Safari 8 compatibility
+    -ms-transform: rotate(-45deg); // IE9 compatibility
+    transform: rotate(-45deg);
+    zoom: 1;
+    filter: alpha(opacity=0);
+    opacity: 0;
+  }
+
+  // Focused state
+  [type=checkbox]:focus + div::before {
+    @include box-shadow(0 0 0 3px govuk-colour("yellow"));
+  }
+
+  // Selected state
+  input:checked + div::after {
+    zoom: 1;
+    filter: alpha(opacity=1);
+    opacity: 1;
+  }
+
+  // Disabled state
+  input:disabled {
+    cursor: default;
+  }
+
+  input:disabled + div {
+    zoom: 1;
+    filter: alpha(opacity=0.5);
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &:last-child,
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+#tickAllCheckboxes {
+  left: 15px;
+}
+
+.tick-all-boxes-nojs {
+  display: table-cell;
+  visibility: visible;
+  margin-left: .5em;
+}
+
+.js-enabled .tick-all-boxes-nojs {
+  display: none;
+  visibility: hidden;
+}
+
+.tick-all-checkboxes-wrapper {
+  display: flex;
+  justify-content: flex-end;
+
+  .multiple-choice-mtc {
+    display: none;
+    visibility: hidden;
+  }
+
+  @include govuk-media-query($from: desktop) {
+    .multiple-choice-mtc {
+      display: inline-block;
+      visibility: visible;
+
+      div {
+        padding-left: $govuk-gutter * 1.5;
+      }
+    }
+  }
+}
+
+body .tick-all-checkboxes {
+  display: none;
+  visibility: hidden;
+}
+
+body.js-enabled .tick-all-checkboxes {
+  display: table-cell;
+  visibility: visible;
+  white-space: nowrap;
+}
+
+// To sit multiple choice inputs next to each other, use .inline on parent
+.inline .multiple-choice-mtc {
+  clear: none;
+
+  @include govuk-media-query($until: tablet) {
+    margin-bottom: 0;
+    margin-right: $govuk-gutter;
+  }
+}
+
+// Checkbox list
+
+ul.checkbox-list {
+  margin-top: govuk-em(15px, $govuk-root-font-size);
+  margin-left: govuk-em(-35px, $govuk-root-font-size);
+  li:first-child {
+    border-top: 1px solid govuk-colour("mid-grey");
+  }
+  li {
+    padding-bottom: govuk-em(15px, $govuk-root-font-size);
+    padding-top: govuk-em(15px, $govuk-root-font-size);
+    border-bottom: 1px solid govuk-colour("mid-grey");
+    .multiple-choice-mtc input {
+      top: -20px;
+    }
+    .multiple-choice-mtc [type=checkbox]+div::before {
+      top: -20px;
+    }
+    .multiple-choice-mtc [type=checkbox]+div::after {
+      top: -10px;
+    }
+  }
+}

@@ -130,7 +130,6 @@ end
 Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
   REDIS_CLIENT.keys.each do |key|
-    puts "current key is : #{key}"
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT. del key
     end
@@ -178,7 +177,6 @@ end
 
 Before("@redis") do
   REDIS_CLIENT.keys.each do |key|
-    puts "current key is : #{key}"
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT. del key
     end
@@ -193,10 +191,19 @@ After("@redis") do
   end
 end
 
+After("@result") do
+  today_date = Date.today
+  check_end_date = today_date + 35
+  SqlDbHelper.update_check_end_date(check_end_date)
+end
+
 
 After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
+    width = page.execute_script("return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);")
+    height = page.execute_script("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);")
+    page.current_window.resize_to(width, height)
     embed("data:image/png;base64,#{Capybara.current_session.driver.browser.screenshot_as(:base64)}", 'image/png', 'Failure')
     name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
     page.save_screenshot("screenshots/#{name}")

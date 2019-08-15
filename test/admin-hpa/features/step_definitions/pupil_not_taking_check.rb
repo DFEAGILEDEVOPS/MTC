@@ -269,7 +269,11 @@ Then(/^I should see a message stating there are no pupils not taking the check$/
 end
 
 Then(/^I should not see a sticky banner$/) do
-  expect(pupil_reason_page.sticky_banner).to_not be_visible
+  if (current_url.include? 'pupils-not-taking-the-check') || (current_url.include? 'group')
+    expect(pupil_reason_page.sticky_banner).to_not be_visible
+  else
+    expect(select_form_to_assign_page.sticky_banner).to_not be_visible
+  end
 end
 
 When(/^I select multiple pupils with the (.+) reason$/) do |reason|
@@ -281,7 +285,7 @@ When(/^I select multiple pupils with the (.+) reason$/) do |reason|
 end
 
 Then(/^the sticky banner should display the pupil count$/) do
-  expect(@page.sticky_banner.count.text).to eql "Pupils selected: " + @pupil_names.size.to_s
+  expect(@page.sticky_banner.selected_count.text).to eql @pupil_names.size.to_s
 end
 
 Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
@@ -298,7 +302,7 @@ end
 
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
-  pupil_reason_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
+  pupil_reason_page.group_filter.closed_filter.click unless pupil_reason_page.group_filter.has_opened_filter?
   group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
