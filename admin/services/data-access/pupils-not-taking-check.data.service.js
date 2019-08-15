@@ -12,9 +12,9 @@ const pupilsNotTakingCheckDataService = {
   sqlFindPupilsWithReasons: async (schoolId) => {
     const sql = `
       SELECT p.*, ac.reason
-      FROM ${sqlService.adminSchema}.[pupil] p 
-        INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
-        INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
+      FROM [mtc_admin].[pupil] p
+        INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
+        INNER JOIN [mtc_admin].[attendanceCode] ac ON pa.attendanceCode_id = ac.id
       WHERE p.school_id = @schoolId AND pa.isDeleted = 0
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
@@ -35,21 +35,19 @@ const pupilsNotTakingCheckDataService = {
    */
   sqlFindPupilsWithoutReasons: async (schoolId) => {
     const sql = `
-      SELECT
-        p.foreName,
-        p.middleNames,
-        p.lastName,
-        p.dateOfBirth,
-        p.urlSlug,
-        pg.group_id
-      FROM ${sqlService.adminSchema}.[pupil] p
-      JOIN ${sqlService.adminSchema}.pupilStatus ps ON ps.id = p.pupilStatus_id 
-      LEFT JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
-      LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON p.id = pg.pupil_id
-      WHERE p.school_id = @schoolId
-      AND ps.code = 'UNALLOC'
-      AND pa.id IS NULL
-      ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+    SELECT
+    p.foreName,
+    p.middleNames,
+    p.lastName,
+    p.dateOfBirth,
+    p.urlSlug
+  FROM [mtc_admin].[pupil] p
+  JOIN [mtc_admin].pupilStatus ps ON ps.id = p.pupilStatus_id
+  LEFT JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
+  WHERE p.school_id = @schoolId
+  AND ps.code = 'UNALLOC'
+  AND pa.id IS NULL
+  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{
       name: 'schoolId',
@@ -68,9 +66,9 @@ const pupilsNotTakingCheckDataService = {
   sqlFindPupilsWithReasonByIds: async (pupilIds) => {
     const select = `
       SELECT p.id, ac.reason
-      FROM ${sqlService.adminSchema}.[pupil] p 
-        INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
-        INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
+      FROM [mtc_admin].[pupil] p
+        INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
+        INNER JOIN [mtc_admin].[attendanceCode] ac ON pa.attendanceCode_id = ac.id
       `
 
     const where = sqlService.buildParameterList(pupilIds, TYPES.Int)

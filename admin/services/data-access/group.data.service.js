@@ -40,7 +40,7 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   const sql = `
   SELECT g.id, g.name, COUNT(p.pupil_id) as pupilCount
   FROM [mtc_admin].[group] g
-  LEFT JOIN [mtc_admin].pupilGroup p
+  LEFT JOIN [mtc_admin].pupil p
   ON g.id = p.group_id
   LEFT JOIN [mtc_admin].pupilAttendance pa
   ON pa.pupil_id=p.id AND pa.isDeleted=0
