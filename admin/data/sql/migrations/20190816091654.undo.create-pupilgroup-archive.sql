@@ -1,0 +1,1 @@
+DROP TABLE mtc_admin.z_pupilGroup_archive
