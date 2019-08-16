@@ -1,261 +1,256 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<% if (error.hasError()) { %>
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <% if (error.hasError()) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            You need to fix the errors on this page before continuing.
+          </h2>
+          <div class="govuk-error-summary__body">
             <p>See highlighted errors below.</p>
-            <ul class="error-summary-list">
-                <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'nextButtonInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
-                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                <% }); %>
-            </ul>
-        </div>
-    </div>
-</div>
-<% } %>
-
-<div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
-  <form id="submitAccessArrangements" method="post" action="/access-arrangements/submit" autocomplete="off">
-    <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-    <div class="column-two-thirds">
-      <h1 class="heading-xlarge" id="heading-xlarge"><%= pageTitle %></h1>
-      <%- partial('partials/_session_expiry') %>
-      <br/>
-      <% if(!formData['isEditView']) { %>
-      <div id="selectAccessArrangementsPupil"
-           class="form group <%= error.isError('pupil-autocomplete-container') ? 'form-group-error' : '' %>">
-        <h2>1. Search for pupil name</h2>
-        <div id="pupilFormControl" class="form-control-1-2">
-          <span class="error-message"><%= error.get('pupil-autocomplete-container') %></span>
-          <select name="pupilUrlSlug" id="pupil-autocomplete-container">
-            <option value="">Select a pupil</option>
-            <% pupils.map(p => { %>
-            <option
-              value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
+            <ul class="govuk-list govuk-error-summary__list">
+            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'nextButtonInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+              <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
             <% }) %>
-          </select>
-        </div>
-      </div>
-      <% } else { %>
-      <div class="panel panel-border-wide">
-        <p>
-          For <%= formData['lastName'] %>, <%= formData['foreName'] %>
-        </p>
-      </div>
-      <% } %>
-      <div class="extra-space">
-      </div>
-      <div class="form-group <%= error.isError('accessArrangementsList') ? 'form-group-error' : '' %>">
-        <h2>2. Select access arrangement(s)</h2>
-        <span class="error-message"><%= error.get('accessArrangementsList') %></span>
-        <ul class="checkbox-list " id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
-          <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
-          <li>
-            <div class="font-small">
-              <label for="accessArrangements-<%= index %>">
-                <%= accessArrangement.description %>
-              </label>
-            </div>
-            <div class="multiple-choice-mtc">
-              <input id="accessArrangements-<%= index %>"
-                     name="accessArrangements[<%= index %>]"
-                     type="checkbox"
-                     value="<%= accessArrangement.code %>"
-                     aria-label="Tick accessArrangement <%= accessArrangement.description %>."
-                     aria-checked="false"
-                     role="checkbox"
-                <%= formData['accessArrangements'] && formData['accessArrangements'].includes(accessArrangement.code) && 'checked' %>
-              >
-              <div></div>
-            </div>
-            <% if (accessArrangement.code === 'ITA') { %>
-            <div class="hide-checkbox-content">
-              <div class="panel panel-border-wide">
-                <div class="form-group <%= error.isError('inputAssistanceInformation') ? 'form-group-error' : '' %>">
-                  <div class="form-label" for='inputAssistanceInformation'>Please explain why the pupil needs this
-                    arrangement
-                  </div>
-                  <% if (error.isError('inputAssistanceInformation')) { %>
-                  <span class="error-message"> <%= error.get('inputAssistanceInformation') %></span>
-                  <% } %>
-                  <textarea
-                    id="inputAssistanceInformation"
-                    name="inputAssistanceInformation"
-                    class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'form-control-error' : '' %>"
-                    rows="3"
-                    maxlength="1000"><%= formData['inputAssistanceInformation'] && formData['inputAssistanceInformation'].trim() %></textarea>
-                </div>
-              </div>
-              <br/>
-              <div class="notice">
-                <i class="icon icon-important small">
-                  <span class="visually-hidden">Warning</span>
-                </i>
-                <strong class="bold-xsmall">
-                  Name of input assistant will need to be provided during the pupil's multiplication tables check
-                </strong>
-              </div>
-            </div>
-            <% } %>
-            <% if (accessArrangement.code === 'NBQ') { %>
-              <div class="hide-checkbox-content">
-                <div class="panel panel-border-wide">
-                  <div class="form-group <%= error.isError('nextButtonInformation') ? 'form-group-error' : '' %>">
-                    <div class="form-label" for='nextButtonInformation'>Please explain why the pupil needs this
-                      arrangement
-                    </div>
-                    <% if (error.isError('nextButtonInformation')) { %>
-                    <span class="error-message"> <%= error.get('nextButtonInformation') %></span>
-                    <% } %>
-                    <textarea
-                      id="nextButtonInformation"
-                      name="nextButtonInformation"
-                      class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('nextButtonInformation') ? 'form-control-error' : '' %>"
-                      rows="3"
-                      maxlength="1000"><%= formData['nextButtonInformation'] && formData['nextButtonInformation'].trim() %></textarea>
-                  </div>
-                </div>
-              </div>
-              <% } %>
-            <% if (accessArrangement.code === 'QNR') { %>
-            <div class="hide-checkbox-content">
-              <div class="form-group <%= error.isError('questionReaderReasonsList') ? 'form-group-error' : '' %>"
-                   id="questionReaderReasonsList">
-                <span class="error-message"> <%= error.get('questionReaderReasonsList') %></span>
-                <% if (error.get('questionReaderReasonsList')) { %>
-                <br/>
-                <% } %>
-                <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
-                <div class="multiple-choice">
-                  <input
-                    id="questionReaderReason-<%= index %>"
-                    type="radio" name="questionReaderReason"
-                    class='question-reader-reason'
-                    value="<%= questionReaderReason.code %>"
-                    <%= formData['questionReaderReason'] && formData['questionReaderReason'].includes(questionReaderReason.code) && 'checked' %>
-                  >
-                  <label for="example-contact-by-email"><%= questionReaderReason.description %></label>
-                </div>
-                <% if (questionReaderReason.code === 'OTH') { %>
-                <div class="panel panel-border-wide js-hidden">
-                  <div
-                    class="form-group <%= error.isError('questionReaderOtherInformation') ? 'form-group-error' : '' %>">
-                    <div class="form-label" for='questionReaderOtherInformation'>Please explain why the pupil needs this
-                      arrangement
-                    </div>
-                    <% if (error.isError('questionReaderOtherInformation')) { %>
-                    <span class="error-message"> <%= error.get('questionReaderOtherInformation') %></span>
-                    <% } %>
-                    <textarea
-                      id="questionReaderOtherInformation"
-                      name="questionReaderOtherInformation"
-                      class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('questionReaderOtherInformation') ? 'form-control-error' : '' %>"
-                      rows="3"
-                      maxlength="1000"><%= formData['questionReaderOtherInformation'] %></textarea>
-                  </div>
-                </div>
-                <br/>
-                <% } %>
-                <% }) %>
-              </div>
-            </div>
-            <% } %>
-          </li>
-          <% }) %>
-        </ul>
-      </div>
-      <br/>
-      <div class="master-detail text">
-        <details>
-          <summary><span class="summary">What do these access arrangements mean?</span></summary>
-          <br/>
-          <div class="panel panel-border-narrow">
-            <ul class="panel-list">
-              <li>
-                <div><strong>Audible time alert</strong></div>
-                <div>A beep that sounds two seconds before the end of each question, and at the end of each question.
-                </div>
-              </li>
-              <li>
-                <div><strong>Colour contrast</strong></div>
-                <div>Change the font and background colours.</div>
-              </li>
-              <li>
-                <div><strong>Font size</strong></div>
-                <div>Increase or decrease the size of the font and number pad on the screen.</div>
-              </li>
-              <li>
-                <div><strong>Input assistance</strong></div>
-                <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be
-                  used when a pupil is physically:
-                  <ul class="list list-bullet">
-                    <li>unable to enter their own answers</li>
-                    <li>able to input but inputting causes physical discomfort</li>
-                    <li>able to input but inputs very slowly</li>
-                    <li>able to input but finds inputting very difficult</li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div><strong>'Next' button between questions</strong></div>
-                <div>Instead of a 3-second pause between questions, the pupil can press a ‘Next’ button when they are
-                  ready for a new question.
-                  There is a 30-minute time limit to complete the check
-                </div>
-              </li>
-              <li>
-                <div><strong>Question reader</strong></div>
-                <div>The screen reader will read out all text displayed on screen in the MTC.
-                  This includes instructions and questions. Please note, the MTC does not support third-party screen
-                  readers.
-                  All pupils requiring this functionality will need to use the in-built screen reader due to
-                  compatibility with the timed function.
-                </div>
-              </li>
-              <li>
-                <div><strong>Remove on-screen number pad</strong></div>
-                <div>Only the question and answer box will show on screen.</div>
-              </li>
             </ul>
           </div>
-        </details>
-      </div>
-      <br/>
-      <div class="form-buttons">
-        <input type="submit" id="save-access-arrangement" class="button" value="Save"/>
-        <a href="/access-arrangements/overview" class="button button-secondary">Cancel</a>
-      </div>
-      <br/>
-
-      <div class="back-to-top-container">
-        <a href="#top">Back to top</a>
-      </div>
+        </div>
+      <% } %>
+        <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+        <%- partial('partials/_gds_session_expiry') %>
+        <form id="submitAccessArrangements" method="post" action="/access-arrangements/submit" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+          <% if(!formData['isEditView']) { %>
+            <div id="selectAccessArrangementsPupil"
+                 class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
+                <h2 class="govuk-heading-l">1. Search for pupil name</h2>
+                <div id="pupilFormControl" class="govuk-!-width-one-half">
+                    <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
+                    <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
+                        <option value="">Select a pupil</option>
+                        <% pupils.map(p => { %>
+                            <option
+                                    value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <% } else { %>
+                <div class="govuk-inset-text">
+                    <p class="govuk-body">
+                        For <%= formData['lastName'] %>, <%= formData['foreName'] %>
+                    </p>
+                </div>
+            <% } %>
+            <h2 class="govuk-heading-l">2. Select access arrangements</h2>
+            <div class="govuk-form-group <%= error.isError('accessArrangementsList') ? 'govuk-form-group--error' : '' %>">
+                <span class="govuk-error-message"><%= error.get('accessArrangementsList') %></span>
+                <ul class="govuk-list checkbox-list govuk-!-margin-left-0 govuk-!-margin-bottom-9" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                    <li>
+                        <div class="govuk-!-font-size-16">
+                            <label class="govuk-label" for="accessArrangements-<%= index %>">
+                                <%= accessArrangement.description %>
+                            </label>
+                        </div>
+                        <div class="multiple-choice-mtc">
+                            <input id="accessArrangements-<%= index %>"
+                                   name="accessArrangements[<%= index %>]"
+                                   class="govuk-checkboxes__input"
+                                   type="checkbox"
+                                   value="<%= accessArrangement.code %>"
+                                   aria-label="Tick accessArrangement <%= accessArrangement.description %>."
+                                   aria-checked="false"
+                                   role="checkbox"
+                                    <%= formData['accessArrangements'] && formData['accessArrangements'].includes(accessArrangement.code) && 'checked' %>
+                            >
+                            <div></div>
+                        </div>
+                        <% if (accessArrangement.code === 'ITA') { %>
+                            <div class="hide-checkbox-content">
+                                <div class="govuk-inset-text">
+                                    <div class="govuk-form-group <%= error.isError('inputAssistanceInformation') ? 'govuk-form-group--error' : '' %>">
+                                        <label class="govuk-label" for='inputAssistanceInformation'>Please explain why the pupil needs this
+                                            arrangement
+                                        </label>
+                                        <% if (error.isError('inputAssistanceInformation')) { %>
+                                            <span class="govuk-error-message"> <%= error.get('inputAssistanceInformation') %></span>
+                                        <% } %>
+                                        <textarea
+                                                id="inputAssistanceInformation"
+                                                name="inputAssistanceInformation"
+                                                class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'govuk-textarea--error' : '' %>"
+                                                rows="3"
+                                                maxlength="1000"><%= formData['inputAssistanceInformation'] && formData['inputAssistanceInformation'].trim() %></textarea>
+                                    </div>
+                                </div>
+                                <div class="govuk-warning-text">
+                                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                    <strong class="govuk-warning-text__text">
+                                        <span class="govuk-warning-text__assistive">Warning</span>
+                                        Name of input assistant will need to be provided during the pupil's multiplication tables check
+                                    </strong>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (accessArrangement.code === 'NBQ') { %>
+                            <div class="hide-checkbox-content">
+                                <div class="govuk-inset-text">
+                                    <div class="govuk-form-group <%= error.isError('nextButtonInformation') ? 'govuk-form-group--error' : '' %>">
+                                        <label class="govuk-label" for='nextButtonInformation'>Please explain why the pupil needs this
+                                            arrangement
+                                        </label>
+                                        <% if (error.isError('nextButtonInformation')) { %>
+                                            <span class="govuk-error-message"> <%= error.get('nextButtonInformation') %></span>
+                                        <% } %>
+                                        <textarea
+                                                id="nextButtonInformation"
+                                                name="nextButtonInformation"
+                                                class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('nextButtonInformation') ? 'govuk-textarea--error' : '' %>"
+                                                rows="3"
+                                                maxlength="1000"><%= formData['nextButtonInformation'] && formData['nextButtonInformation'].trim() %></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (accessArrangement.code === 'QNR') { %>
+                            <div class="hide-checkbox-content">
+                                <div class="govuk-form-group <%= error.isError('questionReaderReasonsList') ? 'govuk-form-group--error' : '' %>"
+                                     id="questionReaderReasonsList">
+                                    <span class="govuk-error-message"> <%= error.get('questionReaderReasonsList') %></span>
+                                    <% if (error.get('questionReaderReasonsList')) { %>
+                                        <br/>
+                                    <% } %>
+                                    <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
+                                        <div class="multiple-choice">
+                                            <input
+                                                    id="questionReaderReason-<%= index %>"
+                                                    type="radio" name="questionReaderReason"
+                                                    class='govuk-radios__input question-reader-reason'
+                                                    value="<%= questionReaderReason.code %>"
+                                                    <%= formData['questionReaderReason'] && formData['questionReaderReason'].includes(questionReaderReason.code) && 'checked' %>
+                                            >
+                                            <label class="govuk-label" for="questionReaderReason-<%= index %>"><%= questionReaderReason.description %></label>
+                                        </div>
+                                        <% if (questionReaderReason.code === 'OTH') { %>
+                                        <div class="govuk-inset-text govuk-visually-hidden">
+                                            <div class="govuk-form-group <%= error.isError('questionReaderOtherInformation') ? 'govuk-form-group--error' : '' %>">
+                                                <label class="govuk-label" for='questionReaderOtherInformation'>Please explain why the pupil needs this
+                                                    arrangement
+                                                </label>
+                                                <% if (error.isError('questionReaderOtherInformation')) { %>
+                                                    <span class="govuk-error-message"> <%= error.get('questionReaderOtherInformation') %></span>
+                                                <% } %>
+                                                    <textarea
+                                                            id="questionReaderOtherInformation"
+                                                            name="questionReaderOtherInformation"
+                                                            class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('questionReaderOtherInformation') ? 'govuk-textarea--error' : '' %>"
+                                                            rows="3"
+                                                            maxlength="1000"><%= formData['questionReaderOtherInformation'] %></textarea>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What do these access arrangements mean?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <dl class="govuk-panel-list">
+                        <dt>
+                            <div><strong>Audible time alert</strong></div>
+                            <div>A beep that sounds two seconds before the end of each question, and at the end of each question.
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Colour contrast</strong></div>
+                            <div>Change the font and background colours.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Font size</strong></div>
+                            <div>Increase or decrease the size of the font and number pad on the screen.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Input assistance</strong></div>
+                            <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be
+                                used when a pupil is physically:
+                                <ul class="govuk-list govuk-list--bullet">
+                                    <li>unable to enter their own answers</li>
+                                    <li>able to input but inputting causes physical discomfort</li>
+                                    <li>able to input but inputs very slowly</li>
+                                    <li>able to input but finds inputting very difficult</li>
+                                </ul>
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>'Next' button between questions</strong></div>
+                            <div>Instead of a 3-second pause between questions, the pupil can press a ‘Next’ button when they are
+                                ready for a new question.
+                                There is a 30-minute time limit to complete the check
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Question reader</strong></div>
+                            <div>The screen reader will read out all text displayed on screen in the MTC.
+                                This includes instructions and questions. Please note, the MTC does not support third-party screen
+                                readers.
+                                All pupils requiring this functionality will need to use the in-built screen reader due to
+                                compatibility with the timed function.
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Remove on-screen number pad</strong></div>
+                            <div>Only the question and answer box will show on screen.</div>
+                        </dt>
+                    </dl>
+                </div>
+            </details>
+            <button type="submit" id="save-access-arrangement" class="govuk-button govuk-!-margin-right-2">Save</button>
+            <a href="/access-arrangements/overview" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Cancel
+            </a>
+        <% if(formData['isEditView']) { %>
+            <input type="hidden" id="isEditView" name="isEditView" value="true"/>
+            <input type="hidden" id="urlSlug" name="urlSlug" value=<%= formData['pupilUrlSlug'] || formData['urlSlug'] %>/>
+        <% } %>
+        </form>
+        <div class="govuk-back-to-top">
+          <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+              <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                  <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+              </svg>Back to top
+          </a>
+        </div>
     </div>
-    <% if(formData['isEditView']) { %>
-    <input type="hidden" id="isEditView" name="isEditView" value="true"/>
-    <input type="hidden" id="urlSlug" name="urlSlug" value=<%= formData['pupilUrlSlug'] || formData['urlSlug'] %>/>
-    <% } %>
-  </form>
-</div>
+  </div>
+</main>
 <% if(formData['isEditView']) { %>
-  <%- partial('partials/_modal_box', {
-    modalTitle: 'Remove arrangements',
-    modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
-    modalConfirmationLabel: 'Yes',
-    modalConfirmationUrl: '#',
-    modalCancelLabel: 'No',
-    modalCancelUrl: '/access-arrangements/select-access-arrangements/' + formData['pupilUrlSlug']
-  }) %>
+    <%- partial('partials/_gds_modal_box', {
+        modalTitle: 'Remove arrangements',
+        modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
+        modalConfirmationLabel: 'Yes',
+        modalConfirmationUrl: '#',
+        modalCancelLabel: 'No',
+        modalCancelUrl: '/access-arrangements/select-access-arrangements/' + formData['pupilUrlSlug']
+    }) %>
 <% } %>
 <% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>
 <script>
-  $(function () {
-    <% if(!formData['isEditView']) { %>
+  document.addEventListener('DOMContentLoaded', function() {
+      <% if(!formData['isEditView']) { %>
     var getPupilUrlSlug = '<%= pupilUrlSlug %>'
-    window.GOVUK.autoComplete.createNameComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
-    <% } %>
-    window.GOVUK.accessArrangements()
+    window.MTCAdmin.autoComplete.createNameComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
+      <% } %>
+    window.MTCAdmin.accessArrangements()
   })
 </script>

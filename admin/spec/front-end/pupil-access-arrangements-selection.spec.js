@@ -55,7 +55,7 @@ function initAAElements () {
   ]
 
   const $inputAssistanceTextArea = `<div class="hide-checkbox-content">
-            <div class="panel panel-border-wide">
+            <div class="govuk-inset-text">
                 <div class="form-group">
                     <div class="form-label">Please explain why the pupil needs this arrangement</div>
                     <textarea id="inputAssistanceInformation" name="inputAssistanceInformation"
@@ -74,7 +74,7 @@ function initAAElements () {
             </div>
         </div>`
 
-  const $questionReaderOtherTextArea = `<div class="panel panel-border-wide js-hidden">
+  const $questionReaderOtherTextArea = `<div class="govuk-inset-text govuk-visually-hidden">
               <div class="form-group">
                 <div class="form-label">Please explain why the pupil needs this arrangement</div>
                     <textarea id="questionReaderOtherInformation" name="questionReaderOtherInformation"
@@ -149,7 +149,7 @@ describe('pupil-access-arrangements-selection', function () {
     beforeEach(function () {
       $('body').empty()
       initAAElements()
-      window.GOVUK.accessArrangements()
+      window.MTCAdmin.accessArrangements()
     })
 
     it('should find hide-checkbox-content class and change it to show-checkbox-content once the checkbox is checked', function () {
@@ -160,13 +160,13 @@ describe('pupil-access-arrangements-selection', function () {
       expect($($(el).closest('li').find('.show-checkbox-content')[0]).length).toBe(1)
     })
 
-    it('should remove js-hidden class to reveal textarea once the last radio button is checked', function () {
+    it('should remove govuk-visually-hidden class to reveal textarea once the last radio button is checked', function () {
       const el = $('.checkbox-list').find('input:checkbox')[5]
       $(el).trigger('click')
       const otherRadioButton = $($($(el).closest('li')).children()[2]).find('input:radio')[3]
-      expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeTruthy()
+      expect($(otherRadioButton).parent().siblings('.govuk-inset-text').hasClass('govuk-visually-hidden')).toBeTruthy()
       $(otherRadioButton).trigger('click')
-      expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeFalsy()
+      expect($(otherRadioButton).parent().siblings('.govuk-inset-text').hasClass('govuk-visually-hidden')).toBeFalsy()
       $(otherRadioButton).trigger('click')
       $(el).trigger('click')
     })
@@ -196,7 +196,7 @@ describe('pupil-access-arrangements-selection', function () {
     const el = $('.checkbox-list').find('input:checkbox')[3]
     el.checked = true
     // Fire method as if page reload occurred
-    window.GOVUK.accessArrangements()
+    window.MTCAdmin.accessArrangements()
     expect($(el).closest('li').find('.show-checkbox-content').length).toBe(1)
     expect($(el).closest('li').find('.hide-checkbox-content').length).toBe(0)
     el.checked = false

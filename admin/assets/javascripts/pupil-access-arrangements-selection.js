@@ -1,13 +1,15 @@
+'use strict'
+
+if (!window.MTCAdmin) {
+  window.MTCAdmin = {}
+}
+
 /**
  * Pupil access arrangements selection
  */
 /* global $ */
-$(function () {
-  'use strict'
-  if (!window.GOVUK) {
-    window.GOVUK = {}
-  }
-  window.GOVUK.accessArrangements = function () {
+(function () {
+  window.MTCAdmin.accessArrangements = function () {
     var accessArrangementsList = ('#accessArrangementsList')
     var questionReaderOtherInformation = $('#questionReaderOtherInformation')
     // Reveal hidden content if the checkbox or radio button appears selected on page load
@@ -24,7 +26,7 @@ $(function () {
       $($('input[value=NBQ]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
     }
     if ($('input[value=OTH]').is(':checked')) {
-      $($('input[value=OTH]').parent().siblings('.panel')).removeClass('js-hidden')
+      $($('input[value=OTH]').parent().siblings('.govuk-inset-text')).removeClass('govuk-visually-hidden')
     }
     // Reveal hidden content when appropriate checkbox is checked
     $(accessArrangementsList).find('input:checkbox').click(function (i) {
@@ -43,22 +45,22 @@ $(function () {
         $(el).closest('li').find('.show-checkbox-content').removeClass('show-checkbox-content')
         $('.question-reader-reason').prop('checked', false)
         questionReaderOtherInformation.val('')
-        questionReaderOtherInformation.parents('.panel').addClass('js-hidden')
+        questionReaderOtherInformation.parents('.govuk-inset-text').addClass('govuk-visually-hidden')
       }
     })
     // Reveal/Hide hidden content when appropriate radio button is selected/deselected
     $(accessArrangementsList).find('input:radio').change(function (i) {
       var el = i.currentTarget
       if (el.checked && el.value === 'OTH') {
-        $($(el).parent().siblings('.panel')).removeClass('js-hidden')
+        $($(el).parent().siblings('.govuk-inset-text')).removeClass('govuk-visually-hidden')
       }
       if (el.checked && el.value !== 'OTH') {
-        $($(el).parent().siblings('.panel')).addClass('js-hidden')
+        $($(el).parent().siblings('.govuk-inset-text')).addClass('govuk-visually-hidden')
         questionReaderOtherInformation.val('')
       }
     })
     // Add/Remove red border to autocomplete input container
-    if ($('#selectAccessArrangementsPupil').hasClass('form-group-error')) {
+    if ($('#selectAccessArrangementsPupil').hasClass('govuk-form-group--error')) {
       $('#pupil-autocomplete-container').css('border', '4px solid #b10e1e')
     } else {
       $('#pupil-autocomplete-container').css('border', '2px solid')
@@ -95,4 +97,4 @@ $(function () {
       window.location.replace(deleteUrl)
     })
   }
-})
+})()
