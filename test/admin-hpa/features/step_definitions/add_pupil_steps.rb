@@ -330,9 +330,7 @@ end
 
 When(/^I submit valid details with a UPN that has a invalid LA code$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate
-  @upn[1..3]= '000'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'A000201100221', day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -346,9 +344,7 @@ end
 
 When(/^I submit valid details with a UPN that has a alpha character between characters 5\-12$/) do
   today_date = Date.today
-  @upn = UpnGenerator.generate
-  @upn[6]= 'A'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'J80511A100122', day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page

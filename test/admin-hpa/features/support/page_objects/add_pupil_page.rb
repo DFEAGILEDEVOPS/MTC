@@ -27,6 +27,7 @@ class AddPupilPage < SitePrism::Page
   end
 
   def enter_details(hash)
+    p hash.fetch(:upn, '')
     first_name.set hash.fetch(:first_name, '')
     middle_name.set hash.fetch(:middle_name, '')
     last_name.set hash.fetch(:last_name, '')
