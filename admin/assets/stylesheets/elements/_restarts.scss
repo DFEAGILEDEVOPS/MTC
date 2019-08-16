@@ -45,7 +45,7 @@ input[type=radio]:checked ~ .hide {
   text-decoration: underline;
   cursor: pointer;
   font-size: 19px;
-  color: $govuk-link-colour
+  color: $govuk-link-colour;
 }
 
 .link-button:visited {
