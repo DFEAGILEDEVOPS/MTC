@@ -7,30 +7,26 @@
   display: block;
   position: relative;
   .form-group {
-    margin-bottom: pem(-10px);
+    margin-bottom: govuk-em(-10px, $govuk-root-font-size);
   }
 }
 
 .access-arrangements-textarea {
-  width: pem(460px);
+  width: govuk-em(460px, $govuk-root-font-size);
 }
 
 .extra-space {
-  margin-top: pem(40px);
+  margin-top: govuk-em(40px, $govuk-root-font-size);
 }
 
 #submitted-pupil-access-arrangements td {
   vertical-align: baseline;
 }
 
-#access-arrangements-remove-link {
-  text-decoration: underline;
-}
-
 .access-arrangements-list {
-  width: pem(230px);
-  line-height: pem(30px);
+  width: govuk-em(230px, $govuk-root-font-size);
+  line-height: govuk-em(30px, $govuk-root-font-size);
   > div {
-    width: pem(235px);
+    width: govuk-em(235px, $govuk-root-font-size);
   }
 }
