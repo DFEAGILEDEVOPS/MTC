@@ -250,15 +250,14 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
       type: TYPES.Int
     }
   ]
-  let sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
-  DELETE [mtc_admin].[group] WHERE id=@groupId`
-  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
-  sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
+  let sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
   const groups = await sqlService.query(sql, params)
-  if (!groups || groups.length === 0) {
-    return modifyResult
-  }
+
+  sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
+  DELETE [mtc_admin].[group] WHERE id=@groupId`
+
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
   await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
   return modifyResult
 }
