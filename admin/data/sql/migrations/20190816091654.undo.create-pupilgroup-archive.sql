@@ -1,1 +1,1 @@
-DROP TABLE mtc_admin.z_pupilGroup_archive
+DROP TABLE IF EXISTS mtc_admin.z_pupilGroup_archive

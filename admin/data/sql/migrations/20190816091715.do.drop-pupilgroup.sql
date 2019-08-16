@@ -1,1 +1,1 @@
-DROP TABLE mtc_admin.pupilGroup
+DROP TABLE IF EXISTS mtc_admin.pupilGroup

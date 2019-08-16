@@ -8,7 +8,7 @@ ALTER VIEW [mtc_admin].[vewPupilsEligibleForRestart] AS
     p.dateOfBirth,
     p.urlSlug,
     p.school_id,
-    P.group_id,
+    p.group_id,
     count(*) as totalCheckCount
   FROM
     [mtc_admin].[pupil] p

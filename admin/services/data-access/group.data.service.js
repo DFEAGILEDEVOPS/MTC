@@ -17,8 +17,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
   FROM [mtc_admin].[group] g
   LEFT OUTER JOIN [mtc_admin].[pupil] p
   ON g.id = p.group_id
-  WHERE g.isDeleted=0
-  AND g.school_id=@schoolId
+  WHERE g.school_id=@schoolId
   GROUP BY g.id, g.name
   ORDER BY name ASC`
   const params = [
@@ -49,7 +48,6 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   LEFT JOIN [mtc_admin].pupilStatus ps
     ON p.pupilStatus_id = ps.id
   WHERE pa.id IS NULL
-    AND g.isDeleted=0
     AND g.school_id=@schoolId
     AND ps.code = 'UNALLOC'
   GROUP BY g.id, g.name
@@ -101,8 +99,7 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
 groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
   const sql = `SELECT id, [name]
     FROM [mtc_admin].[group]
-    WHERE isDeleted=0
-    AND school_id=@schoolId
+    WHERE school_id=@schoolId
     AND name=@groupName`
 
   const params = [
@@ -254,7 +251,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
     }
   ]
   let sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
-  UPDATE [mtc_admin].[group] SET isDeleted=1 WHERE id=@groupId`
+  DELETE [mtc_admin].[group] WHERE id=@groupId`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
   sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
@@ -289,7 +286,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
     type: TYPES.Int
   })
 
-  const whereClause = `WHERE g.isDeleted = 0 AND g.school_id=@schoolId AND p.id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
+  const whereClause = `WHERE g.school_id=@schoolId AND p.id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
   const sql = [sqlInit, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
@@ -304,7 +301,7 @@ groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
 
   const sql = `SELECT * FROM mtc_admin.[group] g
   INNER JOIN mtc_admin.pupil p ON g.id = p.group_id
-  WHERE p.id = @pupilId AND g.isDeleted = 0`
+  WHERE p.id = @pupilId`
 
   const params = [
     {
