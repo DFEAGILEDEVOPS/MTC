@@ -17,8 +17,6 @@ AS
     FROM [mtc_admin].[pupil] p
     JOIN [mtc_admin].[pupilStatus] ps
         ON (p.pupilStatus_id = ps.id)
-    LEFT JOIN [mtc_admin].[group] g
-        ON (p.group_id = g.id)
     LEFT JOIN
         (SELECT
             pr.id,
