@@ -48,12 +48,14 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   if (!isResultsFeatureAccessible) {
     return res.render('results/view-unavailable-results', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs()
     })
   }
 
   if (!isHdfSubmitted && !isResultsPageAccessibleForIncompleteHdfs) {
     return res.render('results/view-incomplete-hdf', {
+      layout: 'gds-layout',
       resultsOpeningDate: resultPresenter.formatResultsOpeningDate(resultsOpeningDay),
       breadcrumbs: req.breadcrumbs()
     })
@@ -61,6 +63,7 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   if (!redisResult) {
     return res.render('results/view-results-not-found', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs()
     })
   }
@@ -69,6 +72,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
   generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
   return res.render('results/view-results', {
+    layout: 'gds-layout',
     pupilData,
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,

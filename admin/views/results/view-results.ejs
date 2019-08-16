@@ -1,65 +1,17 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-  <div class="column-two-thirds">
-  <h1 class="heading-xlarge"><%= pageTitle %></h1>
-
-    <%- partial('partials/_session_expiry') %>
-
-    <p class="lede" id="lead-paragraph">
-      These results are for pupils who participated in the 2019 pilot.
-      Until verified, these results are subject to review.
-    </p>
-    <p class="font-medium">
-      Each score is out of <%= maxMark %>.
-    </p>
-
-  <%- partial('partials/_groups_filter', { groups: groups }) %>
-
-  <table class="spacious" id="resultsList" role="listbox" aria-label="Results list.">
-    <thead>
-      <tr>
-        <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-        <th scope="col"><a class="sortingLink score-col">Score (<%= maxMark %>)<span class="sort-icon"></span></a></th>
-        <th scope="col">&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% pupilData.forEach((p, i) => { %>
-      <tr<% if (p.group_id) { %> class="group-id-<%= p.group_id %>"<% } %>>
-        <td>
-          <span id="pupil-<%= i %>">
-            <%= p.fullName %>
-          </span>
-          <% if (p.showDoB) { %>
-          <div class="font-greyed-out font-xsmall">
-            Date of birth: <%= p.dateOfBirth %>
-          </div>
-          <% } %>
-        </td>
-        <td><%= p.score %></td>
-        <td><%= p.status %></td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <p class="govuk-body govuk-!-font-size-24">
+        These results are for pupils who participated in the 2019 pilot.
+        Until verified, these results are subject to review.
+      </p>
+      <p class="govuk-body">
+        Each score is out of <%= maxMark %>.
+      </p>
+      <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
+    </div>
   </div>
-</div>
-<div>
-  <span class="font-small font-greyed-out">
-    These results were generated on <%= generatedAt %>
-  </span>
-</div>
-
-<div class="back-to-top-container">
-  <a href="#top">Back to top</a>
-</div>
-
-<script>
-  $(function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'resultsList', {
-      sortNullsLast: false,
-      ignoredStrings: []
-    })
-  })
-</script>
+</main>
