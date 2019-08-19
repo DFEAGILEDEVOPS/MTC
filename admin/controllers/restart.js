@@ -96,6 +96,8 @@ controller.postSubmitRestartList = async (req, res, next) => {
 
   // After exceeding 20 items the request payload received contains object key-value pairs
   // Detecting and converting them to strings is necessary as part of the processing
+  // This only works if the HTML form element is called: `name[]` rather than `name[530]` as with
+  // the latter you will get an object when a single pupil is selected.
   const processedPupilsIds = pupilsList.map(p => typeof p === 'object' ? Object.values(p)[0] : p)
 
   try {
