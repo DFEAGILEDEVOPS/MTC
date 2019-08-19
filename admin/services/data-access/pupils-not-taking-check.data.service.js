@@ -40,7 +40,8 @@ const pupilsNotTakingCheckDataService = {
     p.middleNames,
     p.lastName,
     p.dateOfBirth,
-    p.urlSlug
+    p.urlSlug,
+    p.group_id
   FROM [mtc_admin].[pupil] p
   JOIN [mtc_admin].pupilStatus ps ON ps.id = p.pupilStatus_id
   LEFT JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
