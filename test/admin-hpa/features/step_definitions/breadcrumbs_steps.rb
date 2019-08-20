@@ -1,12 +1,12 @@
 Then(/^I should see the breadcrumb as "([^"]*)"$/) do |breadcrumb|
   @breadcrumb = breadcrumb
-  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n")) if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check')
-  expect(profile_page.breadcrumb.text).to eq(@breadcrumb) unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check')
+  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n")) if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts')
+  expect(profile_page.breadcrumb.text).to eq(@breadcrumb) unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts')
 end
 
 And(/^I click the Home link on breadcrumb$/) do
-  profile_page.home_v2.click if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check')
-  profile_page.home.click unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check')
+  profile_page.home_v2.click if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts')
+  profile_page.home.click unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts')
 end
 
 Then(/^I should be taken to the admin page$/) do
