@@ -234,10 +234,10 @@ class SqlDbHelper
     group = find_group(group_name)
     group_id = group['id']
     @array_of_pupil_group = []
-    sql = "SELECT * FROM [mtc_admin].[pupilGroup] WHERE group_id = #{group_id}"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE group_id = #{group_id}"
     result = SQL_CLIENT.execute(sql)
     @array_of_pupil_group = result.each {|row| row.map}
-    @array_of_pupil_group.map {|row| row['pupil_id']}
+    @array_of_pupil_group.map {|row| row['id']}
   end
 
   def self.pupils_assigned_to_group(pupil_ids_array)
@@ -291,10 +291,10 @@ class SqlDbHelper
     pupil_pin_res
   end
 
-  def self.delete_all_from_pupil_group
-    sql = "DELETE FROM [mtc_admin].[pupilGroup]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
+  def self.remove_all_pupil_from_group
+      sql = "UPDATE [mtc_admin].[pupil] SET group_id = null"
+      result = SQL_CLIENT.execute(sql)
+      result.do
   end
 
   def self.delete_all_from_group
@@ -432,13 +432,13 @@ class SqlDbHelper
   end
 
   def self.create_group(group_name, school_id)
-    sql = "INSERT INTO [mtc_admin].[group] (name, isDeleted, createdAt, updatedAt, school_id) VALUES ('#{group_name}','#{false}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"
+    sql = "INSERT INTO [mtc_admin].[group] (name, createdAt, updatedAt, school_id) VALUES ('#{group_name}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
 
   def self.add_pupil_to_group(group_id, pupil_id)
-    sql = "INSERT INTO [mtc_admin].[pupilGroup] (group_id, pupil_id, createdAt, updatedAt) VALUES ('#{group_id}','#{pupil_id.to_s}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557')"
+    sql = "UPDATE [mtc_admin].[pupil] set group_id = #{group_id} where id = #{pupil_id}"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end

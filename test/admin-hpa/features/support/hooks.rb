@@ -117,7 +117,7 @@ Before("@upload_new_fam_form") do
 end
 
 Before("@remove_all_groups") do
-  SqlDbHelper.delete_all_from_pupil_group
+  SqlDbHelper.remove_all_pupil_from_group
   SqlDbHelper.delete_all_from_group
 end
 
