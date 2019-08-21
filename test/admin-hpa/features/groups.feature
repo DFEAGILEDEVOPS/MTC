@@ -103,7 +103,6 @@ Feature:
   Scenario: Groups can be removed
     Given I have created a group
     Then I should be able to remove the group
-    And the group should be soft deleted from the db
 
   Scenario: Removing a group can be cancelled
     Given I have created a group
