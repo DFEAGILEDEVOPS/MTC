@@ -12,6 +12,58 @@
         Each score is out of <%= maxMark %>.
       </p>
       <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
+      <table id="resultsList" class="govuk-table govuk-spacious" role="listbox" aria-label="Results list.">
+        <caption class="govuk-table__caption">Pupil results</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+              <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              <a class="no-underline sortingLink">Score (<%= maxMark %>)<span class="sort-icon"><span>Sort by score</span></span></a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+        <% pupilData.forEach(pupil => { %>
+          <tr class="govuk-table__row <% if (pupil.group_id) { %> group-id-<%= pupil.group_id %><% } %>">
+            <td scope="row">
+              <label class="govuk-label" for="pupil-<%= pupil.urlSlug %>">
+                <%= pupil.fullName %>
+              </label>
+              <% if (pupil.showDoB) { %>
+                <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                  Date of birth: <%= pupil.dateOfBirth %>
+                </div>
+              <% } %>
+            </td>
+            <td scope="row" ><%= pupil.score %></td>
+            <td scope="row" ><%= pupil.status %></td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+      <div class="govuk-font-greyed-out govuk-!-font-size-16 govuk-!-margin-bottom-9">
+        These results were generated on <%= generatedAt %>
+      </div>
+      <div class="govuk-back-to-top">
+        <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+          <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+          </svg>Back to top
+        </a>
+      </div>
     </div>
   </div>
 </main>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'resultsList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
