@@ -1,35 +1,35 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row" id="select-pupils-restart" aria-describedby="heading-xlarge">
-    <form method="post" action="/restart/submit-restart-list" autocomplete="off">
-        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-        <div class="column-two-thirds">
-            <% if (error.hasError()) { %>
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-                <p>See highlighted errors below.</p>
-                <ul class="error-summary-list">
-                    <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
-                    <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                    <% }); %>
-                </ul>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row" id="pupils-not-taking-checks">
+        <div class="govuk-grid-column-two-thirds">
+        <% if (error.hasError()) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p class="govuk-body">See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
+                            <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                        <% }); %>
+                    </ul>
+                </div>
             </div>
-            <% } %>
-
-            <h1 class="heading-xlarge" id="heading-xlarge">Select pupils for restart</h1>
-
-            <%- partial('partials/_session_expiry') %>
-
-            <br />
-            <h2>1. Select reason for restart</h2>
-            <div class="form-group">
-                <ul class="list single-column-list">
-                    <% reasons.forEach( (reason, index) => { %>
-                    <li>
-                        <div class="multiple-choice">
-                            <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
-                                            (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
+        <% } %>
+            <h1 class="govuk-heading-xl">Select pupils for restart</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <h2 class="govuk-heading-l">1. Select reason for restart</h2>
+            <form method="post" action="/restart/submit-restart-list" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group">
+                    <div class="govuk-radios govuk-!-margin-top-6">
+                     <% reasons.forEach( (reason, index) => { %>
+                        <div class="govuk-radios__item govuk-!-margin-top-6">
+                        <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
+                                (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
                             <input id="restart-reason-<%= index %>"
+                                   class="govuk-radios__input"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
@@ -37,8 +37,9 @@
                                    value="<%= reason.code %>"
                                    checked
                             >
-                            <% } else { %>
+                        <% } else { %>
                             <input id="restart-reason-<%= index %>"
+                                   class="govuk-radios__input"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
@@ -46,135 +47,139 @@
                                    value="<%= reason.code %>"
                             >
                             <% } %>
-                            <label for="restart-reason-<%= index %>"><%= reason.description %></label>
+                            <label class="govuk-label govuk-radios__label" for="restart-reason-<%= index %>">
+                                <%= reason.description %>
+                            </label>
                             <% if (reason.code === 'DNC' || reason.code === 'CLD') { %>
-                            <% const errorType = reason.code === 'DNC' ? 'didNotCompleteInfo': 'classDisruptionInfo' %>
-                            <div class="hide">
-                                <div class="panel panel-border-wide">
-                                    <div class="form-group <%= error.isError(errorType) ? 'form-group-error' : '' %>">
-                                        <div class="form-label" for=<%= errorType %>>Please specify:</div>
-                                        <% if (error.isError(errorType)) { %>
-                                        <span class="error-message"> <%= error.get(errorType) %></span>
-                                        <% } %>
-                                        <textarea
-                                                class="form-control form-control-3-4 restart-reason-info <%= error.isError(errorType) ? 'form-control-error' : '' %>"
-                                                name=<%= errorType %>
-                                                id= <%= errorType %>
-                                                rows="1"
-                                                maxlength="100"></textarea>
+                                <% const errorType = reason.code === 'DNC' ? 'didNotCompleteInfo': 'classDisruptionInfo' %>
+                                <div class="hide">
+                                    <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
+                                        <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">
+                                            <label class="govuk-label" for=<%= errorType %>>Please specify:</label>
+                                            <% if (error.isError(errorType)) { %>
+                                                <span class="govuk-error-message"> <%= error.get(errorType) %></span>
+                                            <% } %>
+                                            <textarea
+                                                    class="govuk-textarea govuk-!-width-three-quarters govuk-!-margin-bottom-0 restart-reason-info <%= error.isError(errorType) ? 'govuk-textarea--error' : '' %>"
+                                                    name=<%= errorType %>
+                                                    id= <%= errorType %>
+                                                    rows="1"
+                                                    maxlength="100"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <% } %>
                         </div>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
-
-            <div class="form-group">
-                <div class="form-label" for="restartFurtherInfo">
-                    If necessary, please provide further information:
+                     <% }) %>
+                    </div>
                 </div>
-                <textarea class="form-control form-control-3-4" name="restartFurtherInfo" id="restartFurtherInfo" rows="5" maxlength="1000"></textarea>
-            </div>
-
-            <div class="master-detail text">
-                <details>
-                    <summary><span class="summary"> What do these reasons mean? </span></summary>
-                    <div class="panel panel-border-narrow">
-                        <ul class="panel-list">
-                            <li>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="restartFurtherInfo">
+                        If necessary, please provide further information:
+                    </label>
+                    <textarea class="govuk-textarea govuk-!-width-three-quarters"
+                              name="restartFurtherInfo"
+                              id="restartFurtherInfo"
+                              rows="5"
+                              maxlength="1000"></textarea>
+                </div>
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary govuk-!-margin-top-5">
+                            <span class="govuk-details__summary-text">
+                                What do these reasons mean?
+                            </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <dl class="govuk-panel-list">
+                            <dt>
                                 <div><strong>Loss of internet</strong></div>
                                 <div>Internet connections failed during the check and the data couldn't be recovered.</div>
-                            </li>
-                            <li>
+                            </dt>
+                            <dt>
                                 <div><strong>IT Issues</strong></div>
                                 <div>There was an issue with the device the pupil was using. For example, faulty equipment or power loss.</div>
-                            </li>
-                            <li>
+                            </dt>
+                            <dt>
                                 <div><strong>Classroom disruption</strong></div>
                                 <div>Pupils were unable to continue the check due to disruptions. For example, fire alarm, illness during the check or high level behavioural disruption.</div>
-                            </li>
-                            <li>
+                            </dt>
+                            <dt>
                                 <div><strong>Did not complete</strong></div>
                                 <div>Pupil did not complete the check. For example, pupil accidentally closed the check window.</div>
-                            </li>
-                        </ul>
+                            </dt>
+                        </dl>
                     </div>
                 </details>
-            </div>
-
-            <h2 class="top-padding-30">2. Select Pupils</h2>
-
-            <%- partial('partials/_groups_filter', { groups: groups }) %>
-
-            <% if (pupils && pupils.length > 0) { %>
-            <table class="spacious reduced-top-margin" id="pupilsRestartList" role="listbox" aria-label="Select pupils.">
-                <thead>
-                <tr>
-                    <th scope="col">
-                        <a class="bold-small">Pupil</a>
-                    </th>
-                    <th scope="col">
-                        <div class="tick-all-checkboxes-wrapper">
-                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
-                            <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
-                            <div class="multiple-choice-mtc">
-                                <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
-                                <div></div>
-                            </div>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                    <% pupils.forEach( (pupil, index) => { %>
-                    <tr<% if (pupil && pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
-                        <td class="font-small">
-                            <label for="pupil-<%= pupil.id %>">
-                                <%= pupil.fullName %>
-                            </label>
-                            <% if (pupil.showDoB) { %>
-                            <div class="font-greyed-out font-xsmall">
-                                Date of birth: <%= pupil.dateOfBirth %>
-                            </div>
-                            <% } %>
-                        </td>
-                        <td>
-                            <div class="multiple-choice-mtc">
-                                <input id="pupil-<%= pupil.id %>"
-                                       name="pupil[]"
-                                       type="checkbox"
-                                       value="<%= pupil.id %>"
-                                       aria-label="Tick pupil <%= pupil.fullName %>."
-                                       aria-checked="false"
-                                       role="checkbox">
-                                <div></div>
-                            </div>
-                        </td>
-                    </tr>
+                <h2 class="govuk-heading-l">2. Select Pupils</h2>
+                <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
+                <% if (pupils && pupils.length > 0) { %>
+                <table id="pupilsRestartList" class="govuk-table govuk-spacious" role="listbox" aria-label="Select pupils.">
+                    <caption class="govuk-table__caption">List of available pupils for restart</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-full">Pupil</th>
+                            <td>
+                                <div class="tick-all-checkboxes-wrapper">
+                                    <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                                    <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                                    <div class="multiple-choice-mtc">
+                                        <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% pupils.forEach((pupil) => { %>
+                        <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %> group-id-<%= pupil.group_id %><% } %>">
+                            <td scope="row">
+                                <label class="govuk-label" for="pupil-<%= pupil.id %>">
+                                    <%= pupil.fullName %>
+                                </label>
+                                <% if (pupil.showDoB) { %>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                        Date of birth: <%= pupil.dateOfBirth %>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="multiple-choice-mtc">
+                                    <input id="pupil-<%= pupil.id %>"
+                                           name="pupil[]"
+                                           type="checkbox"
+                                           value="<%= pupil.id %>"
+                                           aria-label="Tick pupil <%= pupil.fullName %>."
+                                           aria-checked="false"
+                                           role="checkbox">
+                                    <div></div>
+                                </div>
+                            </td>
+                        </tr>
                     <% }) %>
-                </tbody>
-            </table>
-            <% } else { %>
-            <br class="clearfix" />
-            <p>No pupils found.</p>
-            <% } %>
-
-            <br class="clearfix"/>
-
-            <div class="back-to-top-container">
-                <a href="#top">Back to top</a>
-            </div>
+                    </tbody>
+                </table>
+                <% } else { %>
+                <div class="govuk-inset-text">
+                    No pupils found.
+                </div>
+                <% } %>
+                <div class="govuk-back-to-top">
+                    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                        </svg>Back to top
+                    </a>
+                </div>
+            </form>
         </div>
-        <%- partial('partials/_sticky_confirmation_banner',
-            {
-                cancelLabel: 'Cancel',
-                cancelLink: '/restart/overview',
-                submitLabel: 'Confirm',
-                isSubmitDisabled: true
-            })
-        %>
-    </form>
-</div>
+    </div>
+</main>
+<%- partial('partials/_gds_sticky_confirmation_banner',
+        {
+            cancelLabel: 'Cancel',
+            cancelLink: '/restart/overview',
+            submitLabel: 'Confirm',
+            isSubmitDisabled: true
+        })
+%>
