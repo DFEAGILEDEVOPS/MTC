@@ -1,19 +1,19 @@
 #select-pupils-restart {
   .panel.panel-border-wide {
-    padding: 0 pem(10px);
+    padding: 0 govuk-em(10px, $govuk-root-font-size);
   }
 }
 .restart-pupil-name {
-  max-width: pem(150px);
-  min-width: pem(135px);
+  max-width: govuk-em(150px, $govuk-root-font-size);
+  min-width: govuk-em(135px, $govuk-root-font-size);
 }
 .restart-reason {
-  max-width: pem(150px);
-   min-width: pem(135px);
+  max-width: govuk-em(150px, $govuk-root-font-size);
+   min-width: govuk-em(135px, $govuk-root-font-size);
  }
 .restart-status {
-  max-width: pem(150px);
-  min-width: pem(135px);
+  max-width: govuk-em(150px, $govuk-root-font-size);
+  min-width: govuk-em(135px, $govuk-root-font-size);
 }
 
 .hide {
@@ -23,19 +23,19 @@
 input[type=radio]:checked ~ .hide {
   display: block;
   position: relative;
-  margin-top: pem(60px);
-  margin-left: pem(-35px);
+  margin-top: govuk-em(25px, $govuk-root-font-size);
+  margin-left: govuk-em(-35px, $govuk-root-font-size);
   .form-group {
-    margin-bottom: pem(-10px);
+    margin-bottom: govuk-em(-10px, $govuk-root-font-size);
   }
 }
 
 .restart-reason-info {
-  min-width:pem(380px);
+  min-width: govuk-em(380px, $govuk-root-font-size);
 }
 
 #classDisruptionInfo {
-  margin-bottom: pem(20px);
+  margin-bottom: govuk-em(20px, $govuk-root-font-size);
 }
 
 .link-button {
@@ -45,17 +45,17 @@ input[type=radio]:checked ~ .hide {
   text-decoration: underline;
   cursor: pointer;
   font-size: 19px;
-  color: $link-colour;
+  color: $govuk-link-colour;
 }
 
 .link-button:visited {
-  color: $link-visited-colour;
+  color: $govuk-link-visited-colour;
 }
 
 .link-button:hover {
-  color: $link-hover-colour;
+  color: $govuk-link-hover-colour;
 }
 
 .link-button:active {
-  color: $link-hover-colour;
+  color: $govuk-link-hover-colour;
 }

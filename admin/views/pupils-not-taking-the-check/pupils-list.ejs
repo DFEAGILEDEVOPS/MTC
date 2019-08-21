@@ -3,7 +3,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Select pupils not taking the check</h1>
-            <%- partial('partials/_session_expiry') %>
+            <%- partial('partials/_gds_session_expiry') %>
         <% if (pupilsList && pupilsList.length > 0) { %>
             <form method="post" action="/pupils-not-taking-the-check/save-pupils">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -45,7 +45,7 @@
                                     <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
                                     <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
                                     <div class="multiple-choice-mtc">
-                                        <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                        <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox" aria-label="Select all pupils.">
                                         <div></div>
                                     </div>
                                 </div>
@@ -70,6 +70,7 @@
                                     <input id="pupil-<%= pupil.urlSlug %>"
                                            name="pupil"
                                            type="checkbox"
+                                           class="govuk-checkboxes__input"
                                            value="<%= pupil.urlSlug %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"

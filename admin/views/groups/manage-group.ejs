@@ -68,7 +68,7 @@
                                     <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
                                     <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
                                     <div class="multiple-choice-mtc">
-                                        <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                        <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox" aria-label="Select all pupils.">
                                         <div></div>
                                     </div>
                                 </div>
@@ -93,6 +93,7 @@
                                     <input id="pupil-<%= pupil.id %>"
                                            name="pupil[<%= pupil.id %>]"
                                            type="checkbox"
+                                           class="govuk-checkboxes__input"
                                            value="<%= pupil.id %>"
                                            aria-label="Tick pupil <%= pupil.fullName %>."
                                            aria-checked="false"
@@ -116,8 +117,8 @@
             %>
             </form>
             <% } else { %>
-            <div class="panel panel-border-wide">
-                <p>There are no pupils</p>
+            <div class="govuk-inset-text">
+                There are no pupils.
             </div>
             <% } %>
             <div class="govuk-back-to-top">
