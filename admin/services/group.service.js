@@ -41,14 +41,14 @@ groupService.getGroupsAsArray = async function (schoolId) {
 /**
  * Get pupils filtered by schoolId and groupId.
  * @param schoolId required.  the school context
- * @param groupIdToExclude optionally exclude a single group from the returned set
+ * @param groupIdToInclude optionally include a single group from the returned set
  * @returns {Promise<*>}
  */
-groupService.getPupils = async function (schoolId, groupIdToExclude) {
+groupService.getPupils = async function (schoolId, groupIdToInclude) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  const pupils = await groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
+  const pupils = await groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup(schoolId, groupIdToInclude)
   return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 
@@ -89,7 +89,7 @@ groupService.update = async (id, group, schoolId) => {
   currentPupils = currentPupils.filter(p => p.group_id && p.group_id.toString() === id.toString()).map(p => p.id)
   if (currentPupils.sort().toString() !== pupils.sort().toString()) {
     // only update pupils if list has changed
-    await groupDataService.sqlAssignPupilsToGroup(id, pupils)
+    await groupDataService.sqlModifyGroupMembers(id, pupils)
   }
   return true
 }
@@ -107,7 +107,7 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
   }
   groupName = groupName.trim()
   const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
-  await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
+  await groupDataService.sqlModifyGroupMembers(newGroup.insertId, groupPupils)
   return newGroup.insertId
 }
 
