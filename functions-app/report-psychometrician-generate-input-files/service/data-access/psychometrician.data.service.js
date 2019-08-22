@@ -1,10 +1,13 @@
 'use strict'
 const csv = require('fast-csv')
 const fs = require('fs-extra')
+const R = require('ramda')
+
 
 const sqlService = require('../../../lib/sql/sql.service')
 // const { TYPES } = sqlService
 const base = require('../../../lib/logger')
+const dateService = require('../date.service')
 
 const psychometricianDataService = {
   /**
@@ -18,13 +21,24 @@ const psychometricianDataService = {
       const csvStream = csv.createWriteStream({ headers: true })
       csvStream.pipe(stream)
       const request = await sqlService.getRequest()
+      let rowCount = 0
 
       const recordSetFunc = () => {}
 
       const rowFunc = (row) => {
-        console.log('row is being written', row)
+        const transformations = {
+          checkCreatedAt: dateService.formatIso8601,
+          markedAt: dateService.formatIso8601,
+          pupilLoginDate: dateService.formatIso8601,
+          checkReceivedByServerAt: dateService.formatIso8601,
+          checkStartedAt: dateService.formatIso8601,
+          dateOfBirth: dateService.formatUKDate,
+          isLiveCheck: v => v ? 1 : 0
+        }
         try {
-          if (!csvStream.write(row)) {
+          if ( ++rowCount % 5000 === 0) this.logger.info(`${rowCount} records streamed to disk`)
+          const data = R.evolve(transformations, row)
+          if (!csvStream.write(data)) {
             // Will pause every until `drain` event is emitted
             request.pause()
             csvStream.once('drain', function () { request.resume() })
