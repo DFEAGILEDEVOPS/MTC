@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path')
+
 const base = require('../../lib/logger')
 const config = require('../../config')
 const mtcFsUtils = require('../../lib/mtc-fs-utils')
@@ -101,7 +103,7 @@ const dataService = {
     }
 
     // Dump the main file
-    const file = await this.generateCheckDataForPsychometricianReport(newTmpDir)
+    await this.generateCheckDataForPsychometricianReport(newTmpDir)
   }
 }
 

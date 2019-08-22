@@ -12,7 +12,6 @@ const dayDateAndYearFormat = 'dddd D MMMM YYYY'
 const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const iso8601WithMsPrecisionWithoutTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSS'
-const filenameFriendly = 'YYYY-MM-DD-HHmm'
 
 const dateService = {
   formatYear: function (date) {

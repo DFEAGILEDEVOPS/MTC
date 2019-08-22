@@ -3,7 +3,6 @@ const csv = require('fast-csv')
 const fs = require('fs-extra')
 const R = require('ramda')
 
-
 const sqlService = require('../../../lib/sql/sql.service')
 // const { TYPES } = sqlService
 const base = require('../../../lib/logger')
@@ -36,7 +35,7 @@ const psychometricianDataService = {
           isLiveCheck: v => v ? 1 : 0
         }
         try {
-          if ( ++rowCount % 5000 === 0) this.logger.info(`${rowCount} records streamed to disk`)
+          if (++rowCount % 5000 === 0) this.logger.info(`${rowCount} records streamed to disk`)
           const data = R.evolve(transformations, row)
           if (!csvStream.write(data)) {
             // Will pause every until `drain` event is emitted
