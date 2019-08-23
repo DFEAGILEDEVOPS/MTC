@@ -43,12 +43,12 @@ const psychometricianDataService = {
             csvStream.once('drain', function () { request.resume() })
           }
         } catch (error) {
-          this.logger.error(`streamReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
+          console.error(`streamReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
         }
       }
 
       const errorFunc = (error) => {
-        this.logger.error(`streamReport(): [onError]: error: ${error.message}`)
+        console.error(`streamReport(): [onError]: error: ${error.message}`)
       }
 
       /**
@@ -57,6 +57,7 @@ const psychometricianDataService = {
        */
       const doneFunc = (data) => {
         csvStream.end(function () {
+          console.log('streamReport(): file complete')
           resolve(data)
         })
       }

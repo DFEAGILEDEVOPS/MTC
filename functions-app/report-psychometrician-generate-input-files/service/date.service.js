@@ -60,11 +60,11 @@ const dateService = {
 
   checkAndFormat: function (date, format) {
     if (!(date instanceof Date || moment.isMoment(date))) {
-      throw new Error(`Invalid date type: ${date}`)
+      return ''
     }
     const m = moment(date)
     if (!m.isValid()) {
-      throw new Error(`Invalid date: ${date}`)
+      return 'invalid'
     }
     return m.format(format)
   }

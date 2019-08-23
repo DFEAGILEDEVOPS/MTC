@@ -74,12 +74,13 @@ const dataService = {
                           JOIN      [mtc_admin].[pupil] p ON (chk.pupil_id = p.id)
                           JOIN      [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
                           JOIN      [mtc_admin].[school] s ON (p.school_id = s.id)
-                          LEFT JOIN [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
+                          JOIN      [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
                           LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = chk.pupil_id AND pa.isDeleted = 0)
                           LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id AND pa.isDeleted = 0)
                           LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND pr.isDeleted = 0)
                           LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
-                 WHERE chk.isLiveCheck = 1`
+                 WHERE chk.isLiveCheck = 1
+                   AND cs.code = 'CMP'`
     await psychometricianDataService.setLogger(this.logger).streamReport(fileNameWithPath, sql)
     return fileNameWithPath
   },
@@ -103,7 +104,8 @@ const dataService = {
     }
 
     // Dump the main file
-    await this.generateCheckDataForPsychometricianReport(newTmpDir)
+    const file = await this.generateCheckDataForPsychometricianReport(newTmpDir)
+    console.log(`data file dumped: ${file}`)
   }
 }
 
