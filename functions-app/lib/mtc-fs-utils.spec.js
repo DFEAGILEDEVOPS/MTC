@@ -80,8 +80,8 @@ describe('mtc-fs-utils', () => {
         await sut.validateDirectory('/usr/sbin')
         fail()
       } catch (error) {
-        expect(error.message).toMatch(/^EPERM: operation not permitted/)
-        expect(error.code).toBe('EPERM')
+        expect(error.message).toMatch(/operation not permitted/)
+        expect(error.code).toMatch(/^(EPERM|EACCES)/)
       }
     })
 
