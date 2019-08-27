@@ -5,7 +5,7 @@
 Map the restart record to the last check taken, rather than wait for the next check to be created.  This gives a clear indication of checks that are void, due to a restart.
 Analysis session on restarts required to inform decisions
 
-### Pupil Login function
+### pupil-login function
 - updates check table directly with logged in time
 - submits pupil-status update message to queue
 
@@ -13,13 +13,13 @@ Should not influence pupil status, but should serve as a support element to ackn
 illustrates the issue of combining the pupils current status with check status.
 record in separate append only storage table for support use.  this will relieve pressure on pupil status situation.
 
-### Check started function
+### check-started function
 
 implement version construct as per other functions
 Q: restarts depend on a check-started being received - is this brittle?
 Q: how could we record check-started in a non status related way? separate db / microservice?
 
-### Complete check function
+### completed-checks function
 
 does way too much.
 persist straight off the queue into table storage? - partitionKey: school id(uuid) rowKey: checkCode
@@ -35,3 +35,7 @@ redis & cosmos table API support TTL on rows.  This would be a much cleaner impl
 ### check-expiry function
 
 potential query optimisation to have better way to flag the expiry of the restart.
+
+### census-import
+
+move to functions-app as long running, and upload file direct to BLOB storage which triggers function.
