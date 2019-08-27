@@ -1,4 +1,9 @@
-# Decision log for 2020 architecture changes
+# Design proposals for 2020 architecture
+
+### Restarts
+
+Map the restart record to the last check taken, rather than wait for the next check to be created.  This gives a clear indication of checks that are void, due to a restart.
+Analysis session on restarts required to inform decisions
 
 ### Pupil Login function
 - updates check table directly with logged in time
@@ -22,3 +27,11 @@ extract marking to separate service.  consider where it stores marks to avoid to
 consider redis for transient status lookups
 should we have a bit flag on the check table, that we can set when check received.  this would be a low cost solution to maintaining 'checks not received yet' for teachers.
 expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait
+
+### expire-prepared-checks function
+
+redis & cosmos table API support TTL on rows.  This would be a much cleaner implementation.
+
+### check-expiry function
+
+potential query optimisation to have better way to flag the expiry of the restart.
