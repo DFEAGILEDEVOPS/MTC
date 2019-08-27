@@ -1,5 +1,20 @@
 # Design proposals for 2020 architecture
 
+### Next steps
+
+#### Analysis day 27th Aug 2019
+- Establish 'pupil state' design.
+  - Add columns to pupil table?
+  - have separate pupil state table?
+  - eliminate pupil status function and infer state from pupil state
+- Restarts
+  - attach to pupil table directly
+  - pupil restart table serves as a log/audit trail
+  - bind to check on creation?
+  - create check as part of restart procedure?
+  - invalidate entire restart & check at end of day if not used?
+  - is this OK with UX/business?
+
 ### Restarts
 
 Map the restart record to the last check taken, rather than wait for the next check to be created.  This gives a clear indication of checks that are void, due to a restart.
