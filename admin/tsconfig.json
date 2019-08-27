@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "./dist",
+    "lib": ["es2015"],
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "es2016"
+  },
+  "include": ["./"],
+  "exclude": [
+    "./.nyc_output",
+    "./.vscode",
+    "./assets",
+    "./bin",
+    "./coverage",
+    "./data",
+    "./dist",
+    "./public",
+    "./spec",
+    "./tests-integration",
+    "./views",
+    "./karma.conf.js",
+    "./newrelic.js",
+    "./run-jasmine.js",
+    "./wallaby.conf.js"
+  ]
+}
