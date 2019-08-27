@@ -241,7 +241,7 @@ end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !restarts_page.group_filter.groups.empty?}
-  restarts_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
+  restarts_page.group_filter.closed_filter.click unless restarts_page.group_filter.has_opened_filter?
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   filtered_pupils = restarts_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)

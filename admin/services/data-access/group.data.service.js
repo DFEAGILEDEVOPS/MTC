@@ -13,12 +13,11 @@ const redisCacheService = require('../redis-cache.service')
  */
 groupDataService.sqlFindGroups = async (schoolId) => {
   const sql = `
-  SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
-  FROM ${sqlService.adminSchema}.[group] g
-  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg 
-  ON g.id = pg.group_id
-  WHERE g.isDeleted=0
-  AND g.school_id=@schoolId
+  SELECT g.id, g.name, COUNT(p.id) as pupilCount
+  FROM [mtc_admin].[group] g
+  LEFT OUTER JOIN [mtc_admin].[pupil] p
+  ON g.id = p.group_id
+  WHERE g.school_id=@schoolId
   GROUP BY g.id, g.name
   ORDER BY name ASC`
   const params = [
@@ -38,18 +37,15 @@ groupDataService.sqlFindGroups = async (schoolId) => {
  */
 groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   const sql = `
-  SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
-  FROM ${sqlService.adminSchema}.[group] g
-  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
-  ON g.id = pg.group_id
-  LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-  ON pa.pupil_id=pg.pupil_id AND pa.isDeleted=0
-  LEFT JOIN ${sqlService.adminSchema}.pupil p
-    ON p.id = pg.pupil_id
-  LEFT JOIN ${sqlService.adminSchema}.pupilStatus ps
-    ON p.pupilStatus_id = ps.id
+  SELECT 
+         g.id, 
+         g.name, 
+         COUNT(p.id) as pupilCount
+  FROM [mtc_admin].[group] g
+  LEFT JOIN [mtc_admin].pupil p ON (g.id = p.group_id)
+  LEFT JOIN [mtc_admin].pupilAttendance pa ON (pa.pupil_id=p.id AND pa.isDeleted=0)
+  LEFT JOIN [mtc_admin].pupilStatus ps ON (p.pupilStatus_id = ps.id)
   WHERE pa.id IS NULL
-    AND g.isDeleted=0
     AND g.school_id=@schoolId
     AND ps.code = 'UNALLOC'
   GROUP BY g.id, g.name
@@ -71,8 +67,8 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
  * @returns {Promise<void>}
  */
 groupDataService.sqlFindOneById = async (groupId, schoolId) => {
-  const sql = `SELECT id, [name] 
-    FROM ${sqlService.adminSchema}.[group]
+  const sql = `SELECT id, [name]
+    FROM [mtc_admin].[group]
     WHERE id=@groupId AND school_id=@schoolId`
 
   const params = [
@@ -99,10 +95,9 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
  * @returns {Promise<void>}
  */
 groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
-  const sql = `SELECT id, [name] 
-    FROM ${sqlService.adminSchema}.[group]
-    WHERE isDeleted=0
-    AND school_id=@schoolId
+  const sql = `SELECT id, [name]
+    FROM [mtc_admin].[group]
+    WHERE school_id=@schoolId
     AND name=@groupName`
 
   const params = [
@@ -157,8 +152,8 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
     }
   ]
   const sql = `
-  UPDATE ${sqlService.adminSchema}.[group] 
-  SET name=@name 
+  UPDATE [mtc_admin].[group]
+  SET name=@name
   WHERE [id]=@id AND school_id=@schoolId
   `
 
@@ -172,41 +167,27 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
  * @param pupilIds
  * @returns {Promise<boolean>}
  */
-groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
+groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds) => {
   if (pupilIds.length < 1) {
     return false
   }
-  const params = [
+  const groupIdParam =
     {
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
     }
-  ]
-  const insertSql = []
   const pupilIdValues = Object.values(pupilIds)
-  for (let index = 0; index < pupilIdValues.length; index++) {
-    const pupilId = pupilIdValues[index]
-    insertSql.push(`(@pg${index},@pp${index})`)
-    params.push({
-      name: `pg${index}`,
-      value: groupId,
-      type: TYPES.Int
-    })
-    params.push({
-      name: `pp${index}`,
-      value: pupilId,
-      type: TYPES.Int
-    })
-  }
+  const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdValues, TYPES.Int)
+  const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
+  params.push(groupIdParam)
 
-  let sql = `
-    DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
-    INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
-    VALUES ${insertSql.join(',')};`
+  // reset group members to none, then re-apply set
+  let sql = `UPDATE mtc_admin.pupil SET group_id = NULL WHERE group_id = @groupId;
+     UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
-  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
   const groups = await sqlService.query(sql, params)
   if (!groups || groups.length === 0) {
     return modifyResult
@@ -217,12 +198,17 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
 
 /**
  * Get pupils filtered by schoolId and/or groupId.
- * and grouped by group_id.
+ * Returns all pupils in a particular school with either no grouping or a particular group.
  * @param schoolId
  * @param groupId
  * @returns {Promise<*>}
  */
-groupDataService.sqlFindPupils = async (schoolId, groupId) => {
+groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupId) => {
+  /*
+  The name of this function was 'sqlFindPupils'. Rather ambigious and is trying to do too many things.
+  It is only used in one place - groupService.getPupils().
+  The name has been updated to sqlFindPupilsInNoGroupOrSpecificGroup inline with its single purpose.
+  */
   let params = [
     {
       name: 'schoolId',
@@ -230,13 +216,10 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
       type: TYPES.Int
     }
   ]
-
-  let sql = `SELECT p.*, g.[group_id]
-    FROM ${sqlService.adminSchema}.[pupil] p 
-    LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g 
-      ON p.id = g.pupil_id 
-    WHERE p.school_id=@schoolId 
-    AND (g.group_id IS NULL`
+  let sql = `SELECT *
+  FROM [mtc_admin].[pupil]
+  WHERE school_id=@schoolId
+  AND (group_id IS NULL`
 
   if (groupId) {
     params.push({
@@ -244,7 +227,7 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
       value: groupId,
       type: TYPES.Int
     })
-    sql += ` OR g.group_id=@groupId`
+    sql += ` OR group_id=@groupId`
   }
 
   sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
@@ -265,15 +248,14 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
       type: TYPES.Int
     }
   ]
-  let sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
-  UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
-  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
-  sql = `SELECT school_id FROM ${sqlService.adminSchema}.[group] WHERE id=@groupId`
+  let sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
   const groups = await sqlService.query(sql, params)
-  if (!groups || groups.length === 0) {
-    return modifyResult
-  }
+
+  sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
+  DELETE [mtc_admin].[group] WHERE id=@groupId`
+
+  const modifyResult = await sqlService.modifyWithTransaction(sql, params)
   await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
   return modifyResult
 }
@@ -287,13 +269,13 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
 groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   if (!schoolId || !pupilIds || pupilIds.length < 1) return false
 
-  const ids = pupilIds.map(p => p.id)
+  const pupilIdentifiers = pupilIds.map(p => p.id)
 
-  let sqlInit = `SELECT DISTINCT p.group_id as id, g.name 
-    FROM ${sqlService.adminSchema}.[pupilGroup] p 
-    JOIN ${sqlService.adminSchema}.[group] g
+  let sqlInit = `SELECT DISTINCT p.group_id as id, g.name
+    FROM [mtc_admin].[pupil] p
+    INNER JOIN [mtc_admin].[group] g
       ON g.id = p.group_id `
-  let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
+  let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdentifiers, TYPES.Int)
 
   params.push({
     name: 'schoolId',
@@ -301,7 +283,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
     type: TYPES.Int
   })
 
-  const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
+  const whereClause = `WHERE g.school_id=@schoolId AND p.id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
   const sql = [sqlInit, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
@@ -315,8 +297,8 @@ groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
   if (!pupilId) return false
 
   const sql = `SELECT * FROM mtc_admin.[group] g
-  INNER JOIN mtc_admin.pupilGroup pg ON g.id = pg.group_id
-  WHERE pg.pupil_id = @pupilId AND g.isDeleted = 0`
+  INNER JOIN mtc_admin.pupil p ON g.id = p.group_id
+  WHERE p.id = @pupilId`
 
   const params = [
     {

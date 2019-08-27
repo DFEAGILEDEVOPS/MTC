@@ -61,7 +61,6 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_sticky-confirmation-banner';
 @import 'elements/_mtc-checkboxes';
 @import 'elements/_modal';
-@import 'elements/_restarts';
 @import 'elements/_pupil-census';
 @import 'elements/_pupil-pin';
 @import 'elements/_accessible-autocomplete';
@@ -96,6 +95,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-tables';
 @import 'elements/_groups';
 @import 'elements/_pupils';
+@import 'elements/_restarts';
 @import 'elements/_sign-out';
 @import 'elements/_sta-organisation-logo';
 
