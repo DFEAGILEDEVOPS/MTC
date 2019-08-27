@@ -18,11 +18,10 @@ pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
-      SELECT p.*, g.group_id 
-      FROM ${sqlService.adminSchema}.${table} p 
-      LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
-      WHERE p.school_id = @schoolId
-      ORDER BY lastName asc      
+  SELECT *
+  FROM [mtc_admin].[pupil] p
+  WHERE p.school_id = @schoolId
+  ORDER BY lastName asc
     `
   return sqlService.query(sql, [paramSchoolId])
 }
@@ -39,11 +38,11 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
     { name: 'schoolId', type: TYPES.Int, value: schoolId }
   ]
   const sql = `
-      SELECT TOP 1 
-      *  
-      FROM ${sqlService.adminSchema}.${table}
+      SELECT TOP 1
+      *
+      FROM [mtc_admin].[pupil]
       WHERE urlSlug = @urlSlug
-      AND school_id = @schoolId  
+      AND school_id = @schoolId
     `
   const results = await sqlService.query(sql, params)
   return R.head(results)
@@ -61,14 +60,14 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
     { name: 'schoolId', type: TYPES.Int, value: schoolId }
   ]
   const sql = `
-      SELECT TOP 1 
+      SELECT TOP 1
       p.*,
       pag.reason AS ageReason
-      FROM ${sqlService.adminSchema}.${table} p
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAgeReason] pag
+      FROM [mtc_admin].[pupil] p
+      LEFT OUTER JOIN [mtc_admin].[pupilAgeReason] pag
         ON p.id = pag.pupil_id
       WHERE p.urlSlug = @urlSlug
-      AND p.school_id = @schoolId 
+      AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, params)
   return R.head(results)
@@ -79,10 +78,10 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
 
   const sql = `
-      SELECT TOP 1 
-      p.*  
-      FROM ${sqlService.adminSchema}.${table} p
-      WHERE p.urlSlug = @urlSlug  
+      SELECT TOP 1
+      p.*
+      FROM [mtc_admin].[pupil] p
+      WHERE p.urlSlug = @urlSlug
       AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
@@ -97,10 +96,10 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
 pupilDataService.sqlFindOneByUpn = async (upn = '') => {
   const param = { name: 'upn', type: TYPES.NVarChar, value: upn.trim().toUpperCase() }
   const sql = `
-      SELECT TOP 1 
-        *    
-      FROM ${sqlService.adminSchema}.${table}
-      WHERE upn = @upn    
+      SELECT TOP 1
+        *
+      FROM [mtc_admin].[pupil]
+      WHERE upn = @upn
     `
   const results = await sqlService.query(sql, [param])
   return R.head(results)
@@ -126,11 +125,11 @@ pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn, schoolId) => {
     }
   ]
   const sql = `
-      SELECT TOP 1 
-      *    
-      FROM ${sqlService.adminSchema}.${table}
+      SELECT TOP 1
+      *
+      FROM [mtc_admin].[pupil]
       WHERE upn = @upn
-      AND school_id = @schoolId   
+      AND school_id = @schoolId
     `
   const results = await sqlService.query(sql, params)
   return R.head(results)
@@ -144,10 +143,10 @@ pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn, schoolId) => {
 pupilDataService.sqlFindOneById = async (id) => {
   const param = { name: 'id', type: TYPES.Int, value: id }
   const sql = `
-      SELECT TOP 1 
-        *    
-      FROM ${sqlService.adminSchema}.${table}
-      WHERE id = @id    
+      SELECT TOP 1
+        *
+      FROM [mtc_admin].[pupil]
+      WHERE id = @id
     `
   const results = await sqlService.query(sql, [param])
   return R.head(results)
@@ -163,10 +162,10 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
   const paramPupil = { name: 'id', type: TYPES.Int, value: id }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
-      SELECT TOP 1 
-        *    
-      FROM ${sqlService.adminSchema}.${table}
-      WHERE id = @id and school_id = @schoolId   
+      SELECT TOP 1
+        *
+      FROM [mtc_admin].[pupil]
+      WHERE id = @id and school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
   return R.head(results)
@@ -182,18 +181,16 @@ pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug
   const paramPupil = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
-      SELECT TOP 1 
-      p.*, ps.code, pg.group_id, ac.reason, ac.code as reasonCode
-      FROM ${sqlService.adminSchema}.${table} p
-      LEFT JOIN pupilStatus ps
-        ON p.pupilStatus_id = ps.id
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa
-        ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac
-        ON pa.attendanceCode_id = ac.id 
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg
-        ON pg.pupil_id = p.id 
-      WHERE p.urlSlug = @urlSlug and school_id = @schoolId 
+  SELECT TOP 1
+  p.*, ps.code, ac.reason, ac.code as reasonCode
+  FROM [mtc_admin].[pupil] p
+  LEFT JOIN pupilStatus ps
+    ON p.pupilStatus_id = ps.id
+  LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa
+    ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
+  LEFT OUTER JOIN [mtc_admin].[attendanceCode] ac
+    ON pa.attendanceCode_id = ac.id
+  WHERE p.urlSlug = @urlSlug and school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
   return R.head(results)
@@ -209,10 +206,10 @@ pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
   const paramPupilPin = { name: 'pin', type: TYPES.NVarChar, value: pin }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
-      SELECT TOP 1 
-        *    
-      FROM ${sqlService.adminSchema}.${table}
-      WHERE pin = @pin and school_id = @schoolId   
+      SELECT TOP 1
+        *
+      FROM [mtc_admin].[pupil]
+      WHERE pin = @pin and school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramPupilPin, paramSchool])
   return R.head(results)
@@ -247,10 +244,8 @@ pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
   // TODO: use pinEnv to differentiate between live and familiarisation
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
-  SELECT p.*, g.group_id
-  FROM ${sqlService.adminSchema}.${table} p
-  LEFT JOIN  ${sqlService.adminSchema}.[pupilGroup] g
-    ON g.pupil_id = p.id
+  SELECT p.*
+  FROM [mtc_admin].[pupil] p
   WHERE p.pin IS NOT NULL
   AND p.school_id = @schoolId
   AND p.pinExpiresAt IS NOT NULL
@@ -276,7 +271,7 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
 
   const select = `
   SELECT *
-  FROM ${sqlService.adminSchema}.${table}
+  FROM [mtc_admin].[pupil]
   `
   const { params, paramIdentifiers } = sqlService.buildParameterList(slugs, TYPES.UniqueIdentifier)
   const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')' +
@@ -302,7 +297,7 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 
   const select = `
   SELECT *
-  FROM ${sqlService.adminSchema}.${table}
+  FROM [mtc_admin].[pupil]
   `
   const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')' +
@@ -324,7 +319,7 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils, pinEnv = 'live') => {
   const params = []
   const update = []
   pupils.forEach((p, i) => {
-    update.push(`UPDATE ${sqlService.adminSchema}.${table}
+    update.push(`UPDATE [mtc_admin].[pupil]
     SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i}
     WHERE id = @id${i}`)
     params.push({
@@ -355,7 +350,7 @@ pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   const params = []
   const update = []
   pupils.forEach((pupil, i) => {
-    update.push(`UPDATE ${sqlService.adminSchema}.${table} SET jwtToken = @jwtToken${i}, jwtSecret = @jwtSecret${i} WHERE id = @id${i}`)
+    update.push(`UPDATE [mtc_admin].[pupil] SET jwtToken = @jwtToken${i}, jwtSecret = @jwtSecret${i} WHERE id = @id${i}`)
     params.push({ name: `jwtToken${i}`, value: pupil.jwtToken, type: TYPES.NVarChar })
     params.push({ name: `jwtSecret${i}`, value: pupil.jwtSecret, type: TYPES.NVarChar })
     params.push({ name: `id${i}`, value: pupil.id, type: TYPES.Int })
@@ -367,7 +362,7 @@ pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
 pupilDataService.sqlInsertMany = async (pupils) => {
   const insertSql = `
   DECLARE @output TABLE (id int);
-  INSERT INTO ${sqlService.adminSchema}.${table} 
+  INSERT INTO [mtc_admin].[pupil]
   (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth)
   OUTPUT inserted.ID INTO @output
   VALUES
