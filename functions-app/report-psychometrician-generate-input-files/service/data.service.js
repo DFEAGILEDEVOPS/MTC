@@ -105,7 +105,8 @@ const dataService = {
 
     // Dump the main file
     const file = await this.generateCheckDataForPsychometricianReport(newTmpDir)
-    console.log(`data file dumped: ${file}`)
+    this.logger.info(`${functionName}: data dumped to ${file}`)
+    return file
   }
 }
 

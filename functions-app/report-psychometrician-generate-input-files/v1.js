@@ -1,12 +1,20 @@
 'use strict'
 
+const moment = require('moment')
+
 const dataService = require('./service/data.service')
+const dateService = require('./service/date.service')
 
 const v1 = {
   process: async function process (logger) {
     try {
-      console.log('do some work')
+      const startDate = moment()
+      const startTs = dateService.formatIso8601(startDate)
+      logger.info(`v1: starting work: ${startTs}`)
       await dataService.setLogger(logger).dumpFiles()
+      const endDate = moment()
+      const endTs = dateService.formatIso8601(endDate)
+      logger.info(`v1: completed work: ${endTs}`)
     } catch (error) {
       logger.error('ERROR: v1.process(): ' + error.message)
       throw error
