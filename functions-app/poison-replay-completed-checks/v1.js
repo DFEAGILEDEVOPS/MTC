@@ -51,7 +51,7 @@ const v1 = {
         throw error
       }
 
-      for (let message of messages.result) {
+      for (const message of messages.result) {
         try {
           await replayMessage(message)
           meta.processCount += 1
