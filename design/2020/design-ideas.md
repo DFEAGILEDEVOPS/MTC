@@ -41,7 +41,35 @@ persist straight off the queue into table storage? - partitionKey: school id(uui
 extract marking to separate service.  consider where it stores marks to avoid too many sql connections
 consider redis for transient status lookups
 should we have a bit flag on the check table, that we can set when check received.  this would be a low cost solution to maintaining 'checks not received yet' for teachers.
-expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait
+expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait.
+
+#### revised journey
+
+- check receiver function:
+  - message is received from the complete-check queue
+  - properties are validated against v2 schema
+  - message is decompressed to reveal JSON payload
+  - school id is extracted to provide partition and row keys of schoolid and check code respectively.
+  - record is inserted into receivedCheck table
+    - partitionKey: schoolid
+    - rowKey: checkCode
+    - checkData: decompressed archive property value
+    - dateReceived: current UTC datetime
+  - sql.mtc_admin.check.receivedByServerAt is updated to current UTC datetime
+    - if update fails or check is not found this information is recorded in sqlUpdateError column of receivedCheck record
+    - the execution timeout of the function must take into consideration the potential for waits on the sql insert
+- check validator function:
+  - insertion of entry into receivedCheck triggers input binding
+  - properties of JSON payload are checked to ensure schema is correct
+  - message is dispatched to unmarked-check queue via output binding
+- check marker function:
+  - message is received from unmarked-check queue
+  - properties are validated against V1 schema (schoolid and checkCode)
+  - receivedCheck entry is retrieved
+  - check is marked
+  - score is recorded in mark column
+  - row is updated in receivedCheck table
+  - if marking fails, error details are stored in markError column and row is updated
 
 ### expire-prepared-checks function
 
