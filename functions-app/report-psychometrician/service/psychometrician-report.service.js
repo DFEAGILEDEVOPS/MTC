@@ -102,7 +102,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     RestartReason: psUtilService.getRestartReasonNumber(check.restartCode),
     RestartNumber: check.restartCount,
     ReasonNotTakingCheck: psUtilService.getAttendanceReasonNumber(check.attendanceCode),
-    PupilStatus: psUtilService.getPupilStatus(check),
+    PupilStatus: psUtilService.getPupilStatus(check.attendanceCode, check.code),
 
     DeviceType: type,
     DeviceTypeModel: model,
@@ -160,6 +160,120 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       psData[p(idx) + 'ReaderEnd'] = psUtilService.getReaderEndTime(idx + 1, audits)
     })
   }
+  return psData
+}
+
+/**
+ * Generate the ps report from csv file - takes a row as input
+ * @param {Object} data - a single row from the input file
+ * @return {Object}
+ */
+psychometricianReportService.produceReportDataV2 = function (data) {
+  const payload = JSON.parse(R.prop('checkPayload', data))
+  const config = R.propOr({}, 'config', payload)
+  const userAgent = R.pathOr('unknown', ['device', 'navigator', 'userAgent'], payload)
+
+  const deviceOptions = R.path(['device'], payload)
+  const { type: deviceType, model: deviceModel } = psUtilService.getDeviceTypeAndModel(userAgent)
+  const startTimeString = R.prop('checkStartedAt', data)
+  const startTime = startTimeString && moment(startTimeString)
+  const endTimeString = psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', { data: payload })
+  const endTime = endTimeString && moment(endTimeString)
+
+  const psData = {
+    DOB: R.prop('dateOfBirth', data),
+    Gender: R.prop('gender', data),
+    PupilId: R.prop('upn', data),
+    Forename: R.prop('foreName', data),
+    Surname: R.prop('lastName', data),
+
+    FormMark: R.prop('mark', data),
+    QDisplayTime: R.propOr('n/a', 'questionTime', config),
+    PauseLength: R.propOr('n/a', 'loadingTime', config),
+    AccessArr: psUtilService.getAccessArrangements(config),
+    RestartReason: psUtilService.getRestartReasonNumber(R.prop('restartCode', data)),
+    RestartNumber: R.prop('restartCount', data),
+    ReasonNotTakingCheck: psUtilService.getAttendanceReasonNumber(R.prop('attendanceCode', data)),
+    PupilStatus: psUtilService.getPupilStatus(R.prop('attendanceCode', data), R.prop('checkStatus', data)),
+
+    DeviceType: deviceType,
+    DeviceTypeModel: deviceModel,
+    DeviceId: psUtilService.getDeviceId(deviceOptions),
+    BrowserType: psUtilService.getBrowser(userAgent),
+
+    'School Name': R.prop('schoolName', data),
+    Estab: R.prop('schoolEstabCode', data),
+    'School URN': R.propOr('', 'schoolUrn', data),
+    'LA Num': R.prop('schoolLeaCode', data),
+
+    AttemptId: R.prop('checkCode', data),
+    'Form ID': R.prop('checkFormName', data),
+    TestDate: dateService.reverseFormatNoSeparator(moment(R.prop('pupilLoginDate', data))),
+
+    // TimeStart should be when the user clicked the Start button.
+    TimeStart: startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
+    // TimeComplete should be when the user presses Enter or the question Times out on the last question.
+    // We log this as CheckComplete in the audit log
+    TimeComplete: endTime ? dateService.formatTimeWithSeconds(moment(endTime)) : '',
+    TimeTaken: psUtilService.getTimeDiff(startTime, endTime)
+  }
+
+  // // Add information for each question asked
+  const p = (num) => `Q${num}`
+  let markedAnswers, markAnswersString
+
+
+  const markedAnswersString = R.prop('markedAnswers', data)
+  if (!markedAnswersString) {
+    console.error(`Missing markedAnswers data: ${data.checkCode}`)
+    return psData
+  }
+
+  try {
+    markedAnswers = JSON.parse(markedAnswersString)
+  } catch (error) {
+    console.error(`Error parsing markedAnswers: ${data.checkCode} : ${error}`)
+    return psData
+  }
+
+  if (!(markedAnswers && markedAnswers.answer && Array.isArray(markedAnswers.answer))) {
+    console.error(`PS Report: missing markedAnswers: ${data.checkCode}`)
+    return psData
+  }
+
+  if (!payload || !Object.keys(payload).length > 0) {
+    console.error(`PS Report: missing payload: ${data.checkCode}`)
+    return psData
+  }
+
+
+  markedAnswers.answer.forEach(answer => {
+    const q = answer.questionNumber
+    const inputs = R.filter(
+      i => i.sequenceNumber === answer.questionNumber &&
+          i.question === `${answer.factor1}x${answer.factor2}`,
+      R.propOr([], 'inputs', payload))
+    const audits = R.propOr([], 'audit', payload)
+    psData[p(q) + 'ID'] = answer.factor1 + ' x ' + answer.factor2
+    psData[p(q) + 'Response'] = answer.response
+    psData[p(q) + 'InputMethods'] = psUtilService.getInputMethod(inputs)
+    psData[p(q) + 'K'] = psUtilService.getUserInput(inputs)
+    psData[p(q) + 'Sco'] = answer.isCorrect ? 1 : 0
+    psData[p(q) + 'ResponseTime'] = psUtilService.getResponseTime(inputs, answer.response)
+    psData[p(q) + 'TimeOut'] = psUtilService.getTimeoutFlag(answer.response, inputs)
+    psData[p(q) + 'TimeOutResponse'] = psUtilService.getTimeoutWithNoResponseFlag(inputs, { answer: answer.response })
+    psData[p(q) + 'TimeOutSco'] = psUtilService.getTimeoutWithCorrectAnswer(inputs, { answer: answer.response, isCorrect: answer.isCorrect })
+    const tLoad = psUtilService.getLoadTime(q, audits)
+    psData[p(q) + 'tLoad'] = tLoad
+    const tFirstKey = psUtilService.getFirstInputTime(inputs, answer.response)
+    psData[p(q) + 'tFirstKey'] = tFirstKey
+    const tLastKey = psUtilService.getLastAnswerInputTime(inputs, { answer: answer.response })
+    psData[p(q) + 'tLastKey'] = tLastKey
+    psData[p(q) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad) // seconds
+    psData[p(q) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
+    psData[p(q) + 'ReaderStart'] = psUtilService.getReaderStartTime(q, audits)
+    psData[p(q) + 'ReaderEnd'] = psUtilService.getReaderEndTime(q, audits)
+  })
   return psData
 }
 
