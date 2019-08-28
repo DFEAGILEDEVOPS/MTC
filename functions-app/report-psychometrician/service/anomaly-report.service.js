@@ -53,13 +53,13 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
   const checkDate = anomalyReportService.getCheckDate(check)
 
   const reportData = {
-    'CheckCode': check.checkCode,
-    'Date': checkDate,
+    CheckCode: check.checkCode,
+    Date: checkDate,
     'Speech Synthesis': check.data.config.speechSynthesis,
-    'Mark': `${check.mark} out of ${check.maxMark}`,
-    'Device': agent.device.toString().replace('0.0.0', ''),
-    'Agent': agent.toString(),
-    'Message': message,
+    Mark: `${check.mark} out of ${check.maxMark}`,
+    Device: agent.device.toString().replace('0.0.0', ''),
+    Agent: agent.toString(),
+    Message: message,
     'Tested Value': testedValue,
     'Expected Value': expectedValue,
     'Question number': questionNumber
@@ -397,7 +397,7 @@ anomalyReportService.getCheckDate = (check) => {
 
 anomalyReportService.addRelativeTimings = (elems) => {
   let lastTime, current
-  for (let elem of elems) {
+  for (const elem of elems) {
     if (!elem) {
       continue
     }
@@ -440,7 +440,7 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
   // pause event.
   let questionNumber
 
-  for (let audit of tail) {
+  for (const audit of tail) {
     if (audit.type === 'QuestionRendered') {
       questionNumber = R.path(['data', 'sequenceNumber'], audit)
     }
@@ -463,7 +463,7 @@ anomalyReportService.filterAllRealQuestionsAndPauseAudits = (check) => {
   let hasCheckStarted = false
   const output = []
   const audits = R.pathOr([], ['data', 'audit'], check)
-  for (let audit of audits) {
+  for (const audit of audits) {
     if (audit.type === 'CheckStarted') {
       hasCheckStarted = true
     }

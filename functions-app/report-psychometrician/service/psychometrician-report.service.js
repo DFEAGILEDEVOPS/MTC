@@ -43,7 +43,7 @@ psychometricianReportService.batchProduceCacheData = async function batchProduce
 
   const psReportData = []
 
-  for (let check of checks) {
+  for (const check of checks) {
     try {
       const pupil = pupils.find(x => x.id === check.pupil_id)
       const checkForm = checkForms.find(x => x.id === check.checkForm_id)
@@ -89,42 +89,42 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   const startTime = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check) || check.startedAt
 
   const psData = {
-    'DOB': dateService.formatUKDate(pupil.dateOfBirth),
-    'Gender': pupil.gender,
-    'PupilId': pupil.upn,
-    'Forename': pupil.foreName,
-    'Surname': pupil.lastName,
+    DOB: dateService.formatUKDate(pupil.dateOfBirth),
+    Gender: pupil.gender,
+    PupilId: pupil.upn,
+    Forename: pupil.foreName,
+    Surname: pupil.lastName,
 
-    'FormMark': psUtilService.getMark(check),
-    'QDisplayTime': R.pathOr('', ['questionTime'], config),
-    'PauseLength': R.pathOr('', ['loadingTime'], config),
-    'AccessArr': psUtilService.getAccessArrangements(config),
-    'RestartReason': psUtilService.getRestartReasonNumber(check.restartCode),
-    'RestartNumber': check.restartCount,
-    'ReasonNotTakingCheck': psUtilService.getAttendanceReasonNumber(check.attendanceCode),
-    'PupilStatus': psUtilService.getPupilStatus(check),
+    FormMark: psUtilService.getMark(check),
+    QDisplayTime: R.pathOr('', ['questionTime'], config),
+    PauseLength: R.pathOr('', ['loadingTime'], config),
+    AccessArr: psUtilService.getAccessArrangements(config),
+    RestartReason: psUtilService.getRestartReasonNumber(check.restartCode),
+    RestartNumber: check.restartCount,
+    ReasonNotTakingCheck: psUtilService.getAttendanceReasonNumber(check.attendanceCode),
+    PupilStatus: psUtilService.getPupilStatus(check),
 
-    'DeviceType': type,
-    'DeviceTypeModel': model,
-    'DeviceId': psUtilService.getDeviceId(deviceOptions),
-    'BrowserType': psUtilService.getBrowser(userAgent),
+    DeviceType: type,
+    DeviceTypeModel: model,
+    DeviceId: psUtilService.getDeviceId(deviceOptions),
+    BrowserType: psUtilService.getBrowser(userAgent),
 
     'School Name': school.name,
-    'Estab': school.estabCode,
+    Estab: school.estabCode,
     'School URN': school.urn || '',
     'LA Num': school.leaCode,
 
-    'AttemptId': check.checkCode,
+    AttemptId: check.checkCode,
     'Form ID': checkForm.name,
-    'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
+    TestDate: dateService.reverseFormatNoSeparator(check.pupilLoginDate),
 
     // TimeStart should be when the user clicked the Start button.
-    'TimeStart': startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
+    TimeStart: startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
-    'TimeComplete': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))),
+    TimeComplete: dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
-    'TimeTaken': psUtilService.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', check)
+    TimeTaken: psUtilService.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', check)
   }
 
   // Add information for each question asked

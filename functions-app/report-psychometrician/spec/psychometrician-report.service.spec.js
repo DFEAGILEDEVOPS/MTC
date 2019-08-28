@@ -21,7 +21,7 @@ describe('psychometricians-report.service', () => {
     checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
       spyOn(psychometricianDataService, 'sqlFindCompletedChecksByIds').and.returnValue([
-        { id: 9, pupil_id: 1, checkForm_id: 2, description: 'Completed', payload: { 'data': { 'access_token': 'access_token' } } },
+        { id: 9, pupil_id: 1, checkForm_id: 2, description: 'Completed', payload: { data: { access_token: 'access_token' } } },
         { id: 10, pupil_id: 2, checkForm_id: 3, description: 'Started' },
         { id: 11, pupil_id: 3, checkForm_id: 4 }
       ])
