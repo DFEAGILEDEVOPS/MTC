@@ -11,7 +11,7 @@ const mtcFsUtils = {
   /**
    * Work out if we can use the supplied path as a writeable directory.  If not, use os.tmpdir
    * @param {String} path - the directory we want to write to
-   * @return {Promise<(() => string)|*>}
+   * @return {Promise<string|*>}
    */
   getDirectoryOrFallback: async function getDirectoryOrFallback (dir) {
     if (!dir) return os.tmpdir()
