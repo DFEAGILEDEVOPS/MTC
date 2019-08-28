@@ -33,7 +33,7 @@ const psychometricianDataService = {
    * @return {Promise<Array>}
    */
   sqlFindCompletedChecksByIds: async function sqlFindCompletedChecksByIds (batchIds) {
-    let select = `
+    const select = `
       SELECT
       chk.*,
       cr.payload,
@@ -138,7 +138,7 @@ const psychometricianDataService = {
    * @return {Promise<Array>}
    */
   sqlFindChecksByIdsWithForms: async function sqlFindChecksByIdsWithForms (batchIds) {
-    let select = `
+    const select = `
       SELECT
              chk.*,
              f.formData,
