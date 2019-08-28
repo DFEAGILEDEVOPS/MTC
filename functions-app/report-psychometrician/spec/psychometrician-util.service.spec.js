@@ -72,7 +72,7 @@ describe('psychometrician-util.service', () => {
 
     it('returns "error" if the clientTimestamp is missing', () => {
       completedCheckMock.data.audit.push({
-        'type': 'CheckCompleteMissingTS'
+        type: 'CheckCompleteMissingTS'
       })
       const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheckMock)
       expect(ts).toBe('error')
@@ -150,19 +150,19 @@ describe('psychometrician-util.service', () => {
         })
         it('uses the timestamp of the touchstart event', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output[ 0 ].clientTimestamp).toBe('2018-03-07T10:53:45.981Z')
+          expect(output[0].clientTimestamp).toBe('2018-03-07T10:53:45.981Z')
         })
         it('sets the event type to "touch"', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output[ 0 ].eventType).toBe('touch')
+          expect(output[0].eventType).toBe('touch')
         })
         it('sets the input correctly', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output[ 0 ].input).toBe('8')
+          expect(output[0].input).toBe('8')
         })
         it('sets the question correctly', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output[ 0 ].question).toBe(1)
+          expect(output[0].question).toBe(1)
         })
       })
 
@@ -173,19 +173,19 @@ describe('psychometrician-util.service', () => {
         })
         it('uses the timestamp of the mousedown event', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
-          expect(output[ 0 ].clientTimestamp).toBe('2018-02-26T09:40:04.264Z')
+          expect(output[0].clientTimestamp).toBe('2018-02-26T09:40:04.264Z')
         })
         it('sets the event type to "click"', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
-          expect(output[ 0 ].eventType).toBe('click')
+          expect(output[0].eventType).toBe('click')
         })
         it('sets the input correctly', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
-          expect(output[ 0 ].input).toBe('8')
+          expect(output[0].input).toBe('8')
         })
         it('sets the question correctly', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
-          expect(output[ 0 ].question).toBe(1)
+          expect(output[0].question).toBe(1)
         })
       })
 
@@ -196,19 +196,19 @@ describe('psychometrician-util.service', () => {
         })
         it('has an event type of "keydown"', () => {
           const output = service.cleanUpInputEvents(simpleKey)
-          expect(output[ 0 ].eventType).toBe('keydown')
+          expect(output[0].eventType).toBe('keydown')
         })
         it('has the input correct', () => {
           const output = service.cleanUpInputEvents(simpleKey)
-          expect(output[ 0 ].input).toBe('1')
+          expect(output[0].input).toBe('1')
         })
         it('has the question correct', () => {
           const output = service.cleanUpInputEvents(simpleKey)
-          expect(output[ 0 ].question).toBe(11)
+          expect(output[0].question).toBe(11)
         })
         it('has the date and time correct', () => {
           const output = service.cleanUpInputEvents(simpleKey)
-          expect(output[ 0 ].clientTimestamp).toBe('2018-02-26T09:41:03.686Z')
+          expect(output[0].clientTimestamp).toBe('2018-02-26T09:41:03.686Z')
         })
       })
     })
@@ -330,8 +330,8 @@ describe('psychometrician-util.service', () => {
         {
           input: '',
           eventType: 'touchstart',
-          'clientTimestamp': '2018-03-01T09:45:42.715Z',
-          'question': 12
+          clientTimestamp: '2018-03-01T09:45:42.715Z',
+          question: 12
         },
         {
           input: '',
@@ -597,25 +597,25 @@ describe('psychometrician-util.service', () => {
     describe('prod-issue-1 : unbalanced clicks and header events', () => {
       const input = [
         {
-          'input': 'left click',
-          'eventType': 'mousedown',
-          'clientTimestamp': '2018-06-28T08:51:15.591Z',
-          'question': '4x9',
-          'sequenceNumber': 17
+          input: 'left click',
+          eventType: 'mousedown',
+          clientTimestamp: '2018-06-28T08:51:15.591Z',
+          question: '4x9',
+          sequenceNumber: 17
         },
         {
-          'input': '2',
-          'eventType': 'click',
-          'clientTimestamp': '2018-06-28T08:51:15.683Z',
-          'question': '4x9',
-          'sequenceNumber': 17
+          input: '2',
+          eventType: 'click',
+          clientTimestamp: '2018-06-28T08:51:15.683Z',
+          question: '4x9',
+          sequenceNumber: 17
         },
         {
-          'input': '5',
-          'eventType': 'click',
-          'clientTimestamp': '2018-06-28T08:51:15.688Z',
-          'question': '4x9',
-          'sequenceNumber': 17
+          input: '5',
+          eventType: 'click',
+          clientTimestamp: '2018-06-28T08:51:15.688Z',
+          question: '4x9',
+          sequenceNumber: 17
         }
       ]
 
@@ -686,9 +686,9 @@ describe('psychometrician-util.service', () => {
     it('it ignores the last input if the last input is the user pressing enter on the virtual keypad', () => {
       const input = [...mouseInput]
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': 'Enter'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: 'Enter'
       })
       const res = service.getLastAnswerInputTime(input, '2')
       expect(res).toBe('2017-10-13T09:06:55.234Z')
@@ -841,9 +841,9 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last mouse-click entry', () => {
       const input = [...mouseInput]
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': 'Enter'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: 'Enter'
       })
       const res = service.getTimeoutFlag('25', input)
       expect(res).toBe(0)
@@ -852,9 +852,9 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry', () => {
       const input = [...touchInput]
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': 'Enter'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: 'Enter'
       })
       const res = service.getTimeoutFlag('10', input)
       expect(res).toBe(0)
@@ -863,61 +863,61 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry, but with trailing input', () => {
       const input = [...touchInput]
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': 'Enter'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: 'Enter'
       })
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:45.001Z',
-        'eventType': 'touchstart',
-        'input': ''
+        clientTimestamp: '2017-10-17T18:20:45.001Z',
+        eventType: 'touchstart',
+        input: ''
       })
       const res = service.getTimeoutFlag('10', input)
       expect(res).toBe(0)
     })
 
     it('returns 1 - indicating a timeout - if the only input is the Enter key', () => {
-      const input = [ {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.558Z',
-        'eventType': 'keydown',
-        'input': '0'
+      const input = [{
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.558Z',
+        eventType: 'keydown',
+        input: '0'
       },
       {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.678Z',
-        'eventType': 'keydown',
-        'input': 'Enter'
-      } ]
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.678Z',
+        eventType: 'keydown',
+        input: 'Enter'
+      }]
       const res = service.getTimeoutFlag('', input)
       expect(res).toBe(1)
     })
 
     it('returns 1 - indicating a timeout - if the only input is non-numeric', () => {
-      const input = [ {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.558Z',
-        'eventType': 'keydown',
-        'input': '0'
+      const input = [{
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.558Z',
+        eventType: 'keydown',
+        input: '0'
       },
       {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.678Z',
-        'eventType': 'keydown',
-        'input': 'a'
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.678Z',
+        eventType: 'keydown',
+        input: 'a'
       },
       {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.558Z',
-        'eventType': 'keydown',
-        'input': '0'
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.558Z',
+        eventType: 'keydown',
+        input: '0'
       },
       {
-        'question': 1,
-        'clientTimestamp': '2017-10-17T18:20:44.678Z',
-        'eventType': 'keydown',
-        'input': 'a'
-      } ]
+        question: 1,
+        clientTimestamp: '2017-10-17T18:20:44.678Z',
+        eventType: 'keydown',
+        input: 'a'
+      }]
       const res = service.getTimeoutFlag('', input)
       expect(res).toBe(1)
     })
@@ -932,9 +932,9 @@ describe('psychometrician-util.service', () => {
     it('returns an empty string if there was not a timeout', () => {
       const input = [...touchInput]
       input.push({
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': 'Enter'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: 'Enter'
       })
       const markedAnswerMock = { answer: '10' }
       const res = service.getTimeoutWithNoResponseFlag(input, markedAnswerMock)
@@ -948,9 +948,9 @@ describe('psychometrician-util.service', () => {
 
     it('returns 1 (timeout with a response) when there is a timeout with an answer', () => {
       const res = service.getTimeoutWithNoResponseFlag([{
-        'clientTimestamp': '2017-10-17T18:20:44.999Z',
-        'eventType': 'click',
-        'input': '1'
+        clientTimestamp: '2017-10-17T18:20:44.999Z',
+        eventType: 'click',
+        input: '1'
       }], { answer: '1' })
       expect(res).toBe(1)
     })
@@ -1205,9 +1205,9 @@ describe('psychometrician-util.service', () => {
     it('returns QuestionReadingStarted', () => {
       const audits = [
         {
-          'type': 'QuestionReadingStarted',
-          'clientTimestamp': '2019-02-14T08:59:52.905Z',
-          'data': { 'sequenceNumber': 3 }
+          type: 'QuestionReadingStarted',
+          clientTimestamp: '2019-02-14T08:59:52.905Z',
+          data: { sequenceNumber: 3 }
         }
       ]
       const time = service.getReaderStartTime(3, audits)
@@ -1225,9 +1225,9 @@ describe('psychometrician-util.service', () => {
     it('returns QuestionReadingEnded', () => {
       const audits = [
         {
-          'type': 'QuestionReadingEnded',
-          'clientTimestamp': '2019-02-14T08:59:54.110Z',
-          'data': { 'sequenceNumber': 3 }
+          type: 'QuestionReadingEnded',
+          clientTimestamp: '2019-02-14T08:59:54.110Z',
+          data: { sequenceNumber: 3 }
         }
       ]
       const time = service.getReaderEndTime(3, audits)

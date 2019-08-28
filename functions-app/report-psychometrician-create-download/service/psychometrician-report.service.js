@@ -2,53 +2,24 @@
 
 const fs = require('fs-extra')
 const moment = require('moment')
-const os = require('os')
+
 const path = require('path')
 const R = require('ramda')
 const uuidv4 = require('uuid/v4')
 
 const azureFileDataService = require('./data-access/azure-file.data.service')
-const config = require('../../config')
+
 const base = require('../../lib/logger')
+const config = require('../../config')
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
 const zipper = require('./zip.service')
+const mtcFsUtils = require('../../lib/mtc-fs-utils')
 
 const psychometricianReportUploadContainer = 'psychometricianreportupload'
 const psychometricianReportCode = 'PSR'
 const functionName = 'report-psychometrician'
 
 const psychometricianReportService = {
-  /**
-   * Create a unique directory in the system's temp dir
-   * @param prefix
-   * @return {*}
-   */
-  createTmpDir: async function createTmpDir (prefix) {
-    let tmpDir
-    if (config.PsReportTemp) {
-      this.logger(`${functionName}: config.PsReportTemp is set: ${config.PsReportTemp}`)
-      try {
-        const dirStat = await fs.stat(config.PsReportTemp)
-        if (dirStat.isDirectory()) {
-          this.logger(`${functionName}: setting tmpDir to use ${config.PsReportTemp}`)
-          // The directory exists - we can use the config
-          tmpDir = config.PsReportTemp
-        } else {
-          this.logger(`${functionName}: ERROR: not a directory, using os.tmpdir() instead`)
-          tmpDir = os.tmpdir()
-        }
-      } catch (error) {
-        // the stat failed, fallback to os tmp dir
-        this.logger(`${functionName}: ERROR: stat failed, using os.tmpdir() instead: ${error}`)
-        tmpDir = os.tmpdir()
-      }
-    } else {
-      tmpDir = os.tmpdir()
-    }
-    this.logger(`${functionName}: setting tmpDir to ${tmpDir}`)
-    return fs.mkdtemp(`${tmpDir}${path.sep}${prefix}`)
-  },
-
   /**
    * Delete a directory and its contents
    * @param directoryPath
@@ -102,25 +73,14 @@ const psychometricianReportService = {
     let newTmpDir, psychometricianReportFilename, anomalyReportFilename
 
     try {
-      newTmpDir = await this.createTmpDir('PS-REPORT-TEMP-')
+      newTmpDir = await mtcFsUtils.createTmpDir('PS-REPORT-TEMP-', config.PsReportTemp)
       this.logger.info(`${functionName}: tmp directory created: ${newTmpDir}`)
     } catch (error) {
       this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
       throw error // unrecoverable - no work can be done.
     }
 
-    try {
-      // check that the newTmpDir is really there
-      // this code is just for Azure :(
-      const stat = await fs.stat(newTmpDir)
-      if (!stat.isDirectory()) {
-        throw new Error(`Not a directory: ${newTmpDir}: stat: ${JSON.stringify(stat)}`)
-      }
-      this.logger(`tmp directory confirmed: ${newTmpDir}`)
-    } catch (error) {
-      this.logger.error(`Stat failed: tmp directory creation failed: ${error.message}`)
-      throw error
-    }
+    await mtcFsUtils.validateDirectory(newTmpDir)
 
     // This returns the full path + filename of the ps report
     try {
