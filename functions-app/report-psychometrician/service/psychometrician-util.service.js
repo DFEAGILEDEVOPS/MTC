@@ -56,7 +56,7 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
   const touchCount = inputEvents.filter(event => R.propEq('eventType', 'touchstart', event)).length
   const mouseCount = inputEvents.filter(event => R.propEq('eventType', 'mousedown', event)).length
 
-  for (let event of inputEvents) {
+  for (const event of inputEvents) {
     if (event === null || event === undefined) {
       continue
     }
@@ -239,7 +239,7 @@ psUtilService.filterInputsToAnswerKeys = function (inputs) {
   const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
   let answer = ''
   const output = []
-  for (let event of normalisedInputs) {
+  for (const event of normalisedInputs) {
     if (event.input.match(/^[0-9]$/)) {
       answer += event.input
       output.push(event)

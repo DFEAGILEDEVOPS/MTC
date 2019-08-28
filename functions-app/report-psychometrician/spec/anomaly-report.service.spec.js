@@ -69,13 +69,13 @@ describe('anomaly-report.service', () => {
   describe('#produceReportData', () => {
     it('pushes a reported anomaly', async () => {
       const reportData = {
-        'CheckCode': '763AD270-278D-4221-886C-23FF7E5E5736',
-        'Date': 'date',
+        CheckCode: '763AD270-278D-4221-886C-23FF7E5E5736',
+        Date: 'date',
         'Speech Synthesis': false,
-        'Mark': '9 out of 10',
-        'Device': 'Other ',
-        'Agent': 'Other 0.0.0 / Other 0.0.0',
-        'Message': 'message',
+        Mark: '9 out of 10',
+        Device: 'Other ',
+        Agent: 'Other 0.0.0 / Other 0.0.0',
+        Message: 'message',
         'Tested Value': 1,
         'Expected Value': 2,
         'Question number': 3
@@ -146,7 +146,7 @@ describe('anomaly-report.service', () => {
 
     describe('#detectPageRefresh', () => {
       it('does not report an anomaly when check has no refreshes', () => {
-        checkMock.data.audit = [ { type: 'CheckSubmissionPending' } ]
+        checkMock.data.audit = [{ type: 'CheckSubmissionPending' }]
         service.detectPageRefresh(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(0)
       })
@@ -236,13 +236,13 @@ describe('anomaly-report.service', () => {
 
     describe('#detectApplicationErrors', () => {
       it('does not report an anomaly when check has no application errors', () => {
-        checkMock.data.audit = [ { type: 'QuestionRendered' } ]
+        checkMock.data.audit = [{ type: 'QuestionRendered' }]
         service.detectApplicationErrors(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(0)
       })
 
       it('reports anomaly when check has application errors', () => {
-        checkMock.data.audit = [ { type: 'AppError' } ]
+        checkMock.data.audit = [{ type: 'AppError' }]
         service.detectApplicationErrors(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })
@@ -273,7 +273,7 @@ describe('anomaly-report.service', () => {
             data: { sequenceNumber: 2 }
           }
         ]
-        checkMock.data.questions = [ { order: 1, factor1: 1, factor2: 1 }, { order: 2, factor1: 2, factor2: 2 } ]
+        checkMock.data.questions = [{ order: 1, factor1: 1, factor2: 1 }, { order: 2, factor1: 2, factor2: 2 }]
       })
 
       it('does not report an anomaly when there are no inputs before or after the question was shown', () => {
@@ -353,14 +353,14 @@ describe('anomaly-report.service', () => {
 
       it('reports an anomaly when there are missing QuestionRendered audits', () => {
         const firstIdx = checkMock.data.audit.findIndex(({ type }) => type === 'QuestionRendered')
-        checkMock.data.audit = [ ...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1) ]
+        checkMock.data.audit = [...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1)]
         service.detectMissingAudits(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })
 
       it('reports an anomaly when there are missing PauseRendered audits', () => {
         const firstIdx = checkMock.data.audit.findIndex(({ type }) => type === 'PauseRendered')
-        checkMock.data.audit = [ ...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1) ]
+        checkMock.data.audit = [...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1)]
         service.detectMissingAudits(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })
@@ -454,7 +454,7 @@ describe('anomaly-report.service', () => {
       })
 
       it('reports an anomaly when there are inputs that do not correspond to answers', () => {
-        checkMock.data.answers = [ { factor1: 4, factor2: 4, answer: '16' } ]
+        checkMock.data.answers = [{ factor1: 4, factor2: 4, answer: '16' }]
         spyOn(service, 'filterInputsForQuestion')
         spyOn(service, 'reconstructAnswerFromInputs').and.returnValue('15')
         service.detectInputThatDoesNotCorrespondToAnswers(checkMock)
@@ -477,7 +477,7 @@ describe('anomaly-report.service', () => {
           ...checkMock,
           formData: checkFormMockOrig.formData
         }
-        checkMockWithForm.data.answers = [ ...checkMockWithForm.data.answers, { factor1: 0, factor2: 0 } ]
+        checkMockWithForm.data.answers = [...checkMockWithForm.data.answers, { factor1: 0, factor2: 0 }]
         service.detectAnswersCorrespondToQuestions(checkMockWithForm)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })

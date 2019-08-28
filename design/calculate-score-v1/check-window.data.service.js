@@ -1,4 +1,4 @@
-const sqlService = require('../lib/sql/sql.service')
+const sqlService = require('../../functions/lib/sql/sql.service')
 const { TYPES } = sqlService
 const R = require('ramda')
 
