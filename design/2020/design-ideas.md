@@ -1,8 +1,8 @@
 # Design proposals for 2020 architecture
 
-### Next steps
+## Next steps
 
-#### Analysis day 27th Aug 2019
+### Analysis day 27th Aug 2019
 - Establish 'pupil state' design.
   - Add columns to pupil table?
   - have separate pupil state table?
@@ -15,12 +15,12 @@
   - invalidate entire restart & check at end of day if not used?
   - is this OK with UX/business?
 
-### Restarts
+## Restarts
 
 Map the restart record to the last check taken, rather than wait for the next check to be created.  This gives a clear indication of checks that are void, due to a restart.
 Analysis session on restarts required to inform decisions
 
-### pupil-login function
+## pupil-login function
 - updates check table directly with logged in time
 - submits pupil-status update message to queue
 
@@ -28,13 +28,13 @@ Should not influence pupil status, but should serve as a support element to ackn
 illustrates the issue of combining the pupils current status with check status.
 record in separate append only storage table for support use.  this will relieve pressure on pupil status situation.
 
-### check-started function
+## check-started function
 
 implement version construct as per other functions
 Q: restarts depend on a check-started being received - is this brittle?
 Q: how could we record check-started in a non status related way? separate db / microservice?
 
-### completed-checks function
+## completed-checks function
 
 does way too much.
 persist straight off the queue into table storage? - partitionKey: school id(uuid) rowKey: checkCode
@@ -42,13 +42,39 @@ extract marking to separate service.  consider where it stores marks to avoid to
 consider redis for transient status lookups
 should we have a bit flag on the check table, that we can set when check received.  this would be a low cost solution to maintaining 'checks not received yet' for teachers.
 expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait.
+how do we deal with multiple processing of a complete check?
 
-table storage has a max property length of 32KB, making it unsuitable.
-Cosmos Table API has a max property length of 64KB, making it unsuitable.
-Cosmos SQL API is a key-value JSON object store, making it suitable for the complete check.  The SQL API is the only one that function triggers support.
-A 'basic' container in Cosmos SQL API has a 10GB storage capacity with a throughput of 400 request units per second, costing $0.033 USD per hour.
+### storage options for received checks
 
-#### revised journey
+Table storage & Cosmos Table API cannot be used due to 32KB & 64KB property limits respectively.
+
+
+#### Cosmos SQL API
+- Key/Value JSON store
+- supports function bindings
+- cost: TBC
+- scale: TBC
+- 'basic' container has a 10GB storage capacity and throughput of 400 request units per second, costing $0.033 USD per hour.
+- supports multiple indexes
+- 👎🏼 hard upper limit based on configured scale
+
+#### BLOB Storage
+- container per school, named by school UUID
+- check persisted as `{checkCode}.json`
+- cheap
+- 👎🏼 no function bindings
+- 👎🏼 complicated pricing (storage size, I/O rates, storage term)
+ - 👎🏼 'dumb' container / no query functionality other than school UUID & checkCode
+
+#### SQL Server
+- managing schema / migrations
+- effectively stores JSON as a blob
+- 👎🏼 potentially expensive
+- 👎🏼 no function bindings
+- 👎🏼 hard upper limit based on configured scale
+
+
+### revised journey
 
 - check receiver function:
   - message is received from the complete-check queue
@@ -77,14 +103,14 @@ A 'basic' container in Cosmos SQL API has a 10GB storage capacity with a through
   - row is updated in receivedCheck table
   - if marking fails, error details are stored in markError column and row is updated
 
-### expire-prepared-checks function
+## expire-prepared-checks function
 
 redis & cosmos table API support TTL on rows.  This would be a much cleaner implementation.
 
-### check-expiry function
+## check-expiry function
 
 potential query optimisation to have better way to flag the expiry of the restart.
 
-### census-import
+## census-import
 
 move to functions-app as long running, and upload file direct to BLOB storage which triggers function.
