@@ -1,19 +1,18 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <h1 class="heading-xlarge"><%= pageTitle %></h1>
-
-    <%- partial('partials/_session_expiry') %>
-
-    <p class="lede font-medium" id="lead-paragraph">
-      We are aware that there is a problem that means your school’s results are not available yet.
-    </p>
-    <p class="font-medium">
-      We are trying to resolve this issue as quickly as possible. Try again tomorrow.
-    </p>
-    <p class="font-medium">
-      Please accept our apologies for any inconvenience caused.
-    </p>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <p class="govuk-body">
+        We are aware that there is a problem that means your school’s results are not available yet.
+      </p>
+      <p class="govuk-body">
+        We are trying to resolve this issue as quickly as possible. Try again tomorrow.
+      </p>
+      <p class="govuk-body">
+        Please accept our apologies for any inconvenience caused.
+      </p>
+    </div>
   </div>
-</div>
+</main>

@@ -18,7 +18,7 @@ resultPresenter.getResultsViewData = (pupils) => {
       foreName: p.foreName,
       lastName: p.lastName,
       middleNames: p.middleNames,
-      dateOfBirth: p.dateOfBirth,
+      dateOfBirth: p.dateOfBirth && moment.utc(p.dateOfBirth),
       score: p.reason || p.statusInformation.length > 0 ? '-' : p.mark,
       status: p.reason || p.statusInformation,
       group_id: p.group_id
