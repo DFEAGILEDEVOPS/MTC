@@ -43,21 +43,26 @@ consider redis for transient status lookups
 should we have a bit flag on the check table, that we can set when check received.  this would be a low cost solution to maintaining 'checks not received yet' for teachers.
 expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait.
 
+table storage has a max property length of 32KB, making it unsuitable.
+Cosmos Table API has a max property length of 64KB, making it unsuitable.
+Cosmos SQL API is a key-value JSON object store, making it suitable for the complete check.  The SQL API is the only one that function triggers support.
+
 #### revised journey
 
 - check receiver function:
   - message is received from the complete-check queue
   - properties are validated against v2 schema
   - message is decompressed to reveal JSON payload
-  - school id is extracted to provide partition and row keys of schoolid and check code respectively.
-  - record is inserted into receivedCheck table
-    - partitionKey: schoolid
-    - rowKey: checkCode
-    - checkData: decompressed archive property value
+  - school UUID is extracted to provide partition key
+  - checkCode is extracted to provide row key
+  - record is inserted into receivedCheck table (cosmos-sql / cosmos-mongo / sqlAzure)
+    - partition key: schoolUUID
+    - record primary key: checkCode
+    - checkData: (sqlAzure only) decompressed archive property value.  cosmos supports JSON objects natively.
     - dateReceived: current UTC datetime
   - sql.mtc_admin.check.receivedByServerAt is updated to current UTC datetime
     - if update fails or check is not found this information is recorded in sqlUpdateError column of receivedCheck record
-    - the execution timeout of the function must take into consideration the potential for waits on the sql insert
+    - the execution timeout of the function must take into consideration the potential for waits on the storage operations
 - check validator function:
   - insertion of entry into receivedCheck triggers input binding
   - properties of JSON payload are checked to ensure schema is correct
