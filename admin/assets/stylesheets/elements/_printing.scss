@@ -1,10 +1,14 @@
 // needs to be refactored for re-usability
 @media print {
+  .govuk-template {
+    background-color: govuk-colour('white');
+  }
   #content {
     padding-bottom: 0;
   }
   .no-print, .no-print * {
     display: none;
+    background-color: govuk-colour('white');
   }
   .only-print {
     display: block !important;
