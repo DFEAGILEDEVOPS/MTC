@@ -1,117 +1,104 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<div class="grid-row">
-    <div class="column-two-thirds">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (error) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                <%= error %>
-            </h2>
-            <p>National curriculum assessments helpline<br>
-                <%= helplineNumber %>
-            </p>
-        </div>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    <%= error %>
+                </h2>
+                <p>National curriculum assessments helpline<br>
+                    <%= helplineNumber %>
+                </p>
+            </div>
         <% } %>
-        <header class="page-header">
-            <h1 class="heading-xlarge"><%= pinEnv === 'live' ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs' %></h1>
-        </header>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede">
-          Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>.<br />
-          The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:<br />
-          <a target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a><br />
-          <br>These expire at 4pm daily.
-
-        </p>
-    </div>
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                    <li>
-                        <a href="/group/pupils-list" >Group pupils</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div class="panel panel-border-wide">
-            <p>
-                Select <a href="/access-arrangements/overview">access arrangements</a> for pupils who need it before generating PINs
+            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs' %></h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>.<br />
+                The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:<br />
+                <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
+                <div>These expire at 4pm daily.</div>
             </p>
-        </div>
-
-        <p>
-        <details>
-          <summary><span class="summary">Instructions</span></summary>
-
-          <div class="panel panel-border-narrow">
-            <ol class="list list-number">
-              <li>Press 'Generate PINs' button.</li>
-              <li>Select which pupils you are generating pins for.</li>
-              <li>Distribute pupil PINs and school password to your pupils.</li>
-            </ol>
-          </div>
-        </details>
-        </p>
-
-        <% if(pupils && pupils.length > 0) { %>
-          <table id="generatePins" role="listbox" aria-label="Select pupils.">
-              <thead>
-              <tr>
-                  <th scope="col">
-                    Generated PINs
-                  </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                  <td>
-                      <label>
-                          PINs have been generated for <% if(pupils.length == 1) { %>
-                              1 pupil
-                          <% } else { %>
-                              <%= pupils.length %> pupils
-                          <% } %>
-                      </label>
-                      <div class="font-greyed-out font-xsmall">
-                          Expires 4pm today
-                      </div>
-                      <div class="generate-additional-pins">
-                          <form action="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins" name="generate-pins-list">
-                              <% if (error) { %>
-                                  <input type="submit" class="button" disabled value="View all pins"/>
-                              <% } else { %>
-                                  <input type="submit" class="button" value="View all pins"/>
-                              <% } %>
-                          </form>
-                          <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate additional PINs</a>
-                      </div>
-                  </td>
-              </tr>
-              </tbody>
-          </table>
-        <% } else { %>
-            <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
-                <div class="form-group">
-                    <div class="form-buttons">
+            <div class="govuk-inset-text">
+                Select <a class="govuk-link" href="/access-arrangements/overview">access arrangements</a> for pupils who need it before generating PINs
+            </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                          Instructions
+                        </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <ol class="govuk-list govuk-list--number">
+                        <li>Press 'Generate PINs' button.</li>
+                        <li>Select which pupils you are generating pins for.</li>
+                        <li>Distribute pupil PINs and school password to your pupils.</li>
+                    </ol>
+                </div>
+            </details>
+            <% if(pupils && pupils.length > 0) { %>
+                <table id="generatePins" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Generated PINs</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <td scope="row">
+                                <label class="govuk-label">
+                                    PINs have been generated for <% if(pupils.length == 1) { %>
+                                        1 pupil
+                                    <% } else { %>
+                                        <%= pupils.length %> pupils
+                                    <% } %>
+                                </label>
+                                <div class="govuk-!-font-size-14 govuk-font-greyed-out">
+                                    Expires 4pm today
+                                </div>
+                                <div class="generate-additional-pins">
+                                    <form action="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins" name="generate-pins-list">
+                                        <% if (error) { %>
+                                            <input class="govuk-button" type="submit" disabled value="View all pins"/>
+                                        <% } else { %>
+                                            <input class="govuk-button" type="submit" value="View all pins"/>
+                                        <% } %>
+                                    </form>
+                                    <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate additional PINs</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
+                    <div class="govuk-form-group">
                         <% if (error) { %>
-                        <input type="submit" class="button" disabled value="Generate PINs"/>
+                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" disabled value="Generate PINs"/>
                         <% } else { %>
-                        <input type="submit" class="button" value="Generate PINs"/>
+                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" value="Generate PINs"/>
                         <% } %>
                     </div>
-                </div>
-            </form>
-        <% } %>
+                </form>
+            <% } %>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-</div>
+</main>
