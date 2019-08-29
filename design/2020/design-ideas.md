@@ -46,6 +46,7 @@ expiry flag would help with distinction on whether some havent been received in 
 table storage has a max property length of 32KB, making it unsuitable.
 Cosmos Table API has a max property length of 64KB, making it unsuitable.
 Cosmos SQL API is a key-value JSON object store, making it suitable for the complete check.  The SQL API is the only one that function triggers support.
+A 'basic' container in Cosmos SQL API has a 10GB storage capacity with a throughput of 400 request units per second, costing $0.033 USD per hour.
 
 #### revised journey
 
