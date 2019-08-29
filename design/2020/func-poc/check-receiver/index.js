@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 
-module.exports = async function (context, completedCheck) {
+module.exports = (context, completedCheck) => {
   context.bindings.receivedCheckTable = []
   const entity = {
     PartitionKey: completedCheck.schoolUUID,
@@ -11,4 +11,5 @@ module.exports = async function (context, completedCheck) {
     receivedAt: moment().toDate()
   }
   context.bindings.receivedCheckTable.push(entity)
+  context.done()
 }
