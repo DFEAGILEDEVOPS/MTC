@@ -18,11 +18,11 @@
 </div>
 
 <% if (typeof submitPrint !== 'undefined') { %>
-    <script>
-      $('#stickyConfirm').click(function (event) {
+<script>
+    document.querySelector('#stickyConfirm').addEventListener('click', function(event) {
         event.preventDefault();
         window.MTCAdmin.printPopup.hideUncheckedPupils('.pupil-print-table');
         window.print();
-      });
-    </script>
+    })
+</script>
 <% } %>
