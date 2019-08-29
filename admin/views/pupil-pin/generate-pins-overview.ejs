@@ -38,7 +38,7 @@
                 </div>
             </details>
             <% if(pupils && pupils.length > 0) { %>
-                <table id="generatePins" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                <table id="generatePins" role="listbox" aria-label="Select pupils." class="govuk-table govuk-!-margin-bottom-9">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Generated PINs</th>
@@ -60,9 +60,9 @@
                                 <div class="generate-additional-pins">
                                     <form action="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins" name="generate-pins-list">
                                         <% if (error) { %>
-                                            <input class="govuk-button" type="submit" disabled value="View all pins"/>
+                                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" disabled value="View all pins"/>
                                         <% } else { %>
-                                            <input class="govuk-button" type="submit" value="View all pins"/>
+                                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" value="View all pins"/>
                                         <% } %>
                                     </form>
                                     <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate additional PINs</a>
