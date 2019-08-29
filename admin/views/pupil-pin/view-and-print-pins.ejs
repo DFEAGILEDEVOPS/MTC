@@ -1,124 +1,121 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <%- partial('partials/_print_pupils', {
-  pupils: pupils,
-  date: date,
-  qrDataURL: qrDataURL,
-  school: school,
-  url: url
+    pupils: pupils,
+    date: date,
+    qrDataURL: qrDataURL,
+    school: school,
+    url: url
 }) %>
-
-<div class="grid-row no-print">
-    <div class="column-two-thirds">
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-        <div class="info-message">
-            <%= messages.info %>
-        </div>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <%= messages.info %>
+            </div>
         <% } %>
+        <% if (error) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    <%= error %>
+                </h2>
+                <p>National curriculum assessments helpline<br>
+                    <%= helplineNumber %>
+                </p>
+            </div>
+        <% } %>
+            <h1 class="govuk-heading-xl">View and print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Personal identification numbers (PINs) have been generated for selected pupils. These expire at 4pm daily.<br/>
+                <% if (pupils && pupils.length > 0) { %>
+                    You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
+                <% } %>
+            </p>
 
         <% if (error) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                <%= error %>
-            </h2>
-            <p>National curriculum assessments helpline<br>
-                <%= helplineNumber %>
-            </p>
-        </div>
+            <a class="govuk-button govuk-button--disabled govuk-!-margin-bottom-0" disabled >Print PINs</a>
+        <% } else { %>
+            <a id="printPinsButton" class="govuk-button govuk-!-margin-bottom-0">Print PINs</a>
         <% } %>
-        <h1 class="heading-xlarge">View and print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede">
-            Personal identification numbers (PINs) have been generated for selected pupils. These expire at 4pm daily.<br/>
-            <% if (pupils && pupils.length > 0) { %>
-            You can <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
-            <% } %>
-        </p>
-
-        <div class="form-buttons">
-            <% if (error) { %>
-            <a class="button button-primary" disabled >Print PINs</a>
-            <% } else { %>
-            <a id="printPinsButton" class="button button-primary">Print PINs</a>
-            <% } %>
-            <a class="button button-secondary" href="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins">View all active PINs</a>
-        </div>
-
+            <a class="govuk-button govuk-button--secondary" href="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins">View all active PINs</a>
         <% if (pupils && pupils.length > 0) { %>
-        <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
-            <thead>
-            <tr>
-                <th scope="col">
-                    Pupil
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <% pupils.forEach( (pupil) => { %>
-            <tr>
-                <td>
-                    <label for="pupil-<%= pupil.id %>">
-                        <strong><%= pupil.fullName %></strong>
-                        <% if (pupil.group) { %>
-                          (<%= pupil.group %>)
-                        <% } %>
-                    </label>
-                    <% if (pupil.showDoB) { %>
-                    <div class="font-greyed-out font-xsmall">
-                        Date of birth: <%= pupil.dateOfBirth %>
-                    </div>
-                    <% } %>
-                    <div>
-                      <div class="pin-content">
-                          <span class="label">School Password: </span>
-                          <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
-                          <span class="separator"></span>
-                          <span class="label">PIN: </span>
-                          <span class="information">
-                              <%= pupil.pin %>
-                          </span>
-                      </div>
-                    </div>
-                </td>
-            </tr>
-            <% }) %>
-            </tbody>
-        </table>
-
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
-        </div>
-
+            <table id="generatePins" class="govuk-table govuk-spacious" role="listbox" aria-label="Select pupils.">
+                <caption class="govuk-table__caption">Generated pupil PINs</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col">
+                            Pupil
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% pupils.forEach( (pupil) => { %>
+                    <tr class="govuk-table__row" >
+                        <td scope="row">
+                            <label class="govuk-label" for="pupil-<%= pupil.id %>">
+                                <strong><%= pupil.fullName %></strong>
+                                <% if (pupil.group) { %>
+                                    (<%= pupil.group %>)
+                                <% } %>
+                            </label>
+                            <% if (pupil.showDoB) { %>
+                                <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                    Date of birth: <%= pupil.dateOfBirth %>
+                                </div>
+                            <% } %>
+                            <div>
+                                <div class="pin-content">
+                                    <span class="label">School Password: </span>
+                                    <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
+                                    <span class="separator"></span>
+                                    <span class="label">PIN: </span>
+                                    <span class="information">
+                                      <%= pupil.pin %>
+                                  </span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         <% } %>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/restart/overview" rel="noopener noreferrer">Restarts</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                    <li>
-                        <a href="/group/pupils-list">Group pupils</a>
-                    </li>
-                    <li>
-                        <a href="/restart/overview">Restarts</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
-
+</main>
 <script>
- $(document).ready(function () {
-   $('#printPinsButton').click(function (event) {
-     event.preventDefault()
-     window.print();
-   })
- })
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelector('#printPinsButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    window.print();
+  })
+})
 </script>
