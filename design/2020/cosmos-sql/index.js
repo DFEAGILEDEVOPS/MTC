@@ -17,7 +17,7 @@ async function createDatabase () {
   const { database } = await client.databases.createIfNotExists({
     id: config.database.id
   })
-  console.dir(database)
+  console.log(`connected to ${database.id} db`)
 }
 
 /**
@@ -30,16 +30,16 @@ async function createContainer () {
       { id: config.container.id, partitionKey },
       { offerThroughput: 400 }
     )
-  console.dir(container)
+  console.log(`container ${container.id} exists`)
 }
 
 async function persistCheck (check) {
-  const { createdCheck } = await client
+  const response = await client
     .database(config.database.id)
     .container(config.container.id)
     .items.create(check)
-  console.dir(createdCheck)
-  return createdCheck
+  console.dir(response)
+  return response
 }
 
 async function queryCheck (checkCode) {
@@ -77,18 +77,11 @@ function exit (message) {
   process.stdin.on('data', process.exit.bind(process, 0))
 }
 
-const newCheck = {
-  checkCode: uuid(),
-  schoolUUID: uuid(),
-  data: {
-    foo: 'bar'
-  }
-}
-
 const getLargeCheck = () => {
   const copy = JSON.parse(JSON.stringify(largeCheck))
   copy.schoolUUID = uuid()
   copy.checkCode = uuid()
+  copy.createdAt = new Date()
   return copy
 }
 

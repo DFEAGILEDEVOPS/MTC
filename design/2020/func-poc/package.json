@@ -1,0 +1,13 @@
+{
+  "name": "func-poc",
+  "version": "1.0.0",
+  "scripts": {
+    "prestart": "func extensions install",
+    "start": "func start"
+  },
+  "description": "",
+  "dependencies": {
+    "lz-string": "^1.4.4",
+    "moment": "^2.24.0"
+  }
+}

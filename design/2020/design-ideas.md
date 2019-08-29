@@ -46,8 +46,14 @@ how do we deal with multiple processing of a complete check?
 
 ### storage options for received checks
 
-Table storage & Cosmos Table API cannot be used due to 32KB & 64KB property limits respectively.
+Preference is to store the message as-is in an immutable state. CheckCode and SchoolUUID will be top level properties to use as composite key.
+Compressed 'large' complete check is ~24KB
 
+#### Table Storage (classic)
+- max property length of 32KB
+- high performance
+- low cost
+- partition and row key fit well with school ID & check code
 
 #### Cosmos SQL API
 - Key/Value JSON store
