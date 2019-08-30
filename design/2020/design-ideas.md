@@ -28,6 +28,41 @@ Should not influence pupil status, but should serve as a support element to ackn
 illustrates the issue of combining the pupils current status with check status.
 record in separate append only storage table for support use.  this will relieve pressure on pupil status situation.
 
+## check-validator function & queue
+
+triggered by a new message on the check-validation service bus queue.
+Hydrates and validates an entry in the receivedCheck table.
+Records 'validatedAt' in UTC against the entry on completion.
+Submits a check-marking message onto the queue after recording validation datetime.
+Records a 'validationError' against the entry on failure.
+
+### check-validation queue properties (currently service bus)
+- Max size: 1GB (to be reviewed)
+- TTL: 14 days
+- Lock duration: 5 minutes
+- Duplicate detection: enabled
+- Duplicate detection window: 1 day
+- Dead lettering on expiration: true
+- Sessions/FIFO: false
+- Partitioning: false
+
+## check marking function & queue
+
+triggered by a new message on the check-marking service bus queue.
+Hydrates and marks an entry in the receivedCheck table.
+records 'mark' against the entry on completion.
+Further actions to be defined, but will include signalling that check is ready for PS report and MI.
+
+### check-marking queue properties
+- Max size: 1GB (to be reviewed)
+- TTL: 14 days
+- Lock duration: 5 minutes
+- Duplicate detection: enabled
+- Duplicate detection window: 1 day
+- Dead lettering on expiration: true
+- Sessions/FIFO: false
+- Partitioning: false
+
 ## check-started function
 
 implement version construct as per other functions

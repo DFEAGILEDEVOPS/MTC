@@ -2,11 +2,11 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "myQueueItem",
-      "type": "queueTrigger",
+      "name": "checkToValidate",
+      "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "js-queue-items",
-      "connection": ""
+      "queueName": "check-validation",
+      "connection": "ServiceBusConnection"
     }
   ]
 }

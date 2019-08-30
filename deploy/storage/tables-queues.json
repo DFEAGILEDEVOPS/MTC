@@ -2,7 +2,6 @@
   "queues": [
     "check-complete",
     "check-started",
-    "check-validation",
     "prepare-check",
     "prepared-check-delete",
     "prepared-check-sync",
@@ -11,6 +10,10 @@
     "pupil-prefs",
     "pupil-status",
     "test-pupil-connection"
+  ],
+  "service-bus-queues": [
+    "check-marking",
+    "check-validation"
   ],
   "tables": [
     "receivedCheck",
