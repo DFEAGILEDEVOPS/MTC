@@ -82,6 +82,7 @@ describe('attendance controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('availability/section-unavailable', (
         {
+          layout: 'gds-layout',
           title: "Headteacher's declaration form",
           breadcrumbs: undefined
         })
@@ -235,6 +236,7 @@ describe('attendance controller:', () => {
       await controller.getConfirmSubmit(req, res, next)
       expect(res.render).toHaveBeenCalledWith('hdf/declaration-form', (
         {
+          layout: 'gds-layout',
           hdfEligibility: false,
           formData: {},
           error: new ValidationError(),
