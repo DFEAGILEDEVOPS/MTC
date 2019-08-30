@@ -26,14 +26,14 @@
                 Access to this section will then become available.
             </p>
         <% } else { %>
-            <p class="govuk-body">
-                Confirm all pupils taking the check completed it according to <a href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
+            <p class="govuk-body govuk-!-font-size-24">
+                Confirm all pupils taking the check completed it according to <a class="govuk-link" href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
                 In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
             </p>
             <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= error.isError('firstName') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="firstName">First name
+                    <label class="govuk-label govuk-!-font-weight-bold" for="firstName">First name
                         <% if (error.isError('firstName')) { %>
                             <span class="govuk-error-message"><%= error.get('firstName') %></span>
                         <% } %>
@@ -46,7 +46,7 @@
                     />
                 </div>
                 <div class="govuk-form-group <%= error.isError('lastName') ? 'form-group-error' : '' %>">
-                    <label class="govuk-label" for="lastName">Last name
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
                         <% if (error.isError('lastName')) { %>
                             <span class="govuk-error-message"><%= error.get('lastName') %></span>
                         <% } %>
@@ -57,55 +57,54 @@
                            name="lastName"
                            value="<%= formData['lastName'] %>"
                     />
-
-                    <div class="govuk-form-group" id="headteacher">
-                        <fieldset class="govuk-fieldset" role="radiogroup">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">Are you the headteacher?</legend>
-                            <div class="multiple-choice">
-                                <input id="isheadteacher-yes"
-                                       class="govuk-radios__input"
-                                       type="radio"
-                                       role="radio"
-                                       name="isHeadteacher"
-                                       value="Y"
-                                <% if (!formData['isHeadteacher'] || formData['isHeadteacher'].toUpperCase() === 'Y') { %>
-                                       checked="checked"
+                </div>
+                <div class="govuk-form-group govuk-!-margin-top-5" id="headteacher">
+                    <fieldset class="govuk-fieldset" role="radiogroup">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Are you the headteacher?</legend>
+                        <div class="multiple-choice">
+                            <input id="isheadteacher-yes"
+                                   class="govuk-radios__input"
+                                   type="radio"
+                                   role="radio"
+                                   name="isHeadteacher"
+                                   value="Y"
+                            <% if (!formData['isHeadteacher'] || formData['isHeadteacher'].toUpperCase() === 'Y') { %>
+                                   checked="checked"
+                                    <% } %>
+                            />
+                            <label class="govuk-label" for="isheadteacher-yes">Yes</label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input id="isheadteacher-no"
+                                   class="govuk-radios__input"
+                                   type="radio"
+                                   role="radio"
+                                   name="isHeadteacher"
+                                   value="N"
+                            <% if (formData['isHeadteacher'] && formData['isHeadteacher'].toUpperCase() === 'N') { %>
+                                   checked="checked"
+                                    <% } %>
+                            />
+                            <label class="govuk-label" for="isheadteacher-no">No</label>
+                            <div class="hide">
+                                <div class="govuk-inset-text">
+                                    <div class="govuk-form-group <%= error.isError('jobTitle') ? 'govuk-form-group--error' : '' %>">
+                                        <div class="govuk-label" for="jobTitle">Job title</div>
+                                        <span class="govuk-hint">For example, Deputy headteacher</span>
+                                        <% if (error.isError('jobTitle')) { %>
+                                            <span class="govuk-error-message"> <%= error.get('jobTitle') %></span>
                                         <% } %>
-                                />
-                                <label class="govuk-label" for="isheadteacher-yes">Yes</label>
-                            </div>
-                            <div class="multiple-choice">
-                                <input id="isheadteacher-no"
-                                       class="govuk-radios__input"
-                                       type="radio"
-                                       role="radio"
-                                       name="isHeadteacher"
-                                       value="N"
-                                <% if (formData['isHeadteacher'] && formData['isHeadteacher'].toUpperCase() === 'N') { %>
-                                       checked="checked"
-                                        <% } %>
-                                />
-                                <label class="govuk-label" for="isheadteacher-no">No</label>
-                                <div class="hide">
-                                    <div class="govuk-inset-text">
-                                        <div class="govuk-form-group <%= error.isError('jobTitle') ? 'govuk-form-group--error' : '' %>">
-                                            <div class="govuk-label" for="jobTitle">Job title</div>
-                                            <span class="govuk-hint">For example, Deputy headteacher</span>
-                                            <% if (error.isError('jobTitle')) { %>
-                                                <span class="govuk-error-message"> <%= error.get('jobTitle') %></span>
-                                            <% } %>
-                                            <textarea
-                                                    class="govuk-textarea govuk-!-width-three-quarters <%= error.isError('jobTitle') ? 'govuk-input--error' : '' %>"
-                                                    name="jobTitle"
-                                                    id="jobTitle"
-                                                    rows="1"
-                                                    maxlength="128"><%= formData['jobTitle'] %></textarea>
-                                        </div>
+                                        <textarea
+                                                class="govuk-textarea govuk-!-width-three-quarters <%= error.isError('jobTitle') ? 'govuk-input--error' : '' %>"
+                                                name="jobTitle"
+                                                id="jobTitle"
+                                                rows="1"
+                                                maxlength="128"><%= formData['jobTitle'] %></textarea>
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
+                        </div>
+                    </fieldset>
                 </div>
                 <input class="govuk-button" type="submit" value="Continue">
             </form>
