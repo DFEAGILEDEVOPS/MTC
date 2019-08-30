@@ -9,6 +9,7 @@
   "dependencies": {
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
+    "perf_hooks": "^0.0.1",
     "uuid": "^3.3.3"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "name": "checkToValidate",
+      "queueName": "check-validation",
+      "connection": "ServiceBusConnection"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkMarkingQueue",
+      "queueName": "check-marking",
+      "connection": "ServiceBusConnection"
+
+    }
+  ]
+}
