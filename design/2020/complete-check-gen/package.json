@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "prestart": "func extensions install",
-    "start": "func start"
+    "start": "func start --p 3006"
   },
   "description": "",
   "dependencies": {

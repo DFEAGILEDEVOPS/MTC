@@ -7,9 +7,15 @@ const moment = require('moment')
 const v3 = {
   process: async function (context, receivedCheck) {
     // persist to receivedCheck table
-    receivedCheck.checkReceivedAt = moment().toDate()
+    const entity = {
+      checkReceivedAt: moment().toDate(),
+      partitionKey: receivedCheck.schoolUUID,
+      rowKey: receivedCheck.checkCode,
+      archive: receivedCheck.archive,
+      messageVersion: receivedCheck.version
+    }
     context.bindings.receivedCheckTable = []
-    context.bindings.receivedCheckTable.push(receivedCheck)
+    context.bindings.receivedCheckTable.push(entity)
     // put message on validation queue
     const message = {
       checkCode: receivedCheck.checkCode,
