@@ -66,6 +66,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        layout: 'gds-layout',
         pupilData: undefined,
         generatedAt: undefined,
         maxMark: config.LINES_PER_CHECK_FORM,
@@ -129,7 +130,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
       expect(resultPresenter.formatResultsOpeningDate).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', { resultsOpeningDate: '24 July 2023', breadcrumbs: undefined })
+      expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', { layout: 'gds-layout', resultsOpeningDate: '24 July 2023', breadcrumbs: undefined })
     })
     it('renders results view page when hdf record for school is not found but datetime for unsubmitted hdfs has passed', async () => {
       const res = getRes()
@@ -157,6 +158,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        layout: 'gds-layout',
         pupilData: undefined,
         generatedAt: undefined,
         maxMark: config.LINES_PER_CHECK_FORM,
@@ -189,7 +191,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { breadcrumbs: undefined })
+      expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { layout: 'gds-layout', breadcrumbs: undefined })
     })
     it('renders results page if hdf has been submitted and opening day of results has just passed', async () => {
       const res = getRes()
@@ -217,6 +219,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
+        layout: 'gds-layout',
         pupilData: undefined,
         generatedAt: undefined,
         maxMark: config.LINES_PER_CHECK_FORM,
@@ -249,7 +252,7 @@ describe('results controller:', () => {
       expect(resultPresenter.getResultsViewData).not.toHaveBeenCalled()
       expect(resultService.assignResultStatuses).not.toHaveBeenCalled()
       expect(resultPresenter.formatGeneratedAtValue).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { breadcrumbs: undefined })
+      expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { layout: 'gds-layout', breadcrumbs: undefined })
     })
   })
 })

@@ -11,7 +11,7 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  PsReportTemp: process.env.hasOwnProperty('PS_REPORT_TEMP_ROOT') ? process.env.PS_REPORT_TEMP_ROOT : '',
+  PsReportTemp: {}.hasOwnProperty.call(process.env, 'PS_REPORT_TEMP_ROOT') ? process.env.PS_REPORT_TEMP_ROOT : '',
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
@@ -19,7 +19,7 @@ module.exports = {
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || fiveMinutesInMilliseconds,
     connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
-    Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
+    Encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
@@ -32,7 +32,7 @@ module.exports = {
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
@@ -62,7 +62,7 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  REDIS_RESULTS_EXPIRY_IN_SECONDS: process.env.hasOwnProperty('REDIS_RESULTS_EXPIRY_IN_SECONDS') ? parseInt(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, 10) : 172800,
+  REDIS_RESULTS_EXPIRY_IN_SECONDS: {}.hasOwnProperty.call(process.env, 'REDIS_RESULTS_EXPIRY_IN_SECONDS') ? parseInt(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, 10) : 172800,
   Redis: {
     Host: process.env.REDIS_HOST || 'localhost',
     Port: process.env.REDIS_PORT || 6379,
