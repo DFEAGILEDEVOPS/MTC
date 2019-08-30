@@ -2,14 +2,36 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
+    "noImplicitAny": false,
     "outDir": "./dist",
-    "lib": ["es2015"],
     "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es2016"
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "types/*"
+      ]
+    }
   },
-  "include": ["./"],
-  "exclude": [
+  "include": [
+    "authentication",
+    "availability",
+    "config",
+    "controllers",
+    "error-types",
+    "helpers",
+    "lib/**/*",
+    "models",
+    "routes",
+    "services/**/*",
+    "app.js",
+    "config.js",
+    "server.js"
+  ],
+/*   "exclude": [
     "./.nyc_output",
     "./.vscode",
     "./assets",
@@ -25,5 +47,5 @@
     "./newrelic.js",
     "./run-jasmine.js",
     "./wallaby.conf.js"
-  ]
+  ] */
 }
