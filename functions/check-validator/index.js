@@ -3,17 +3,14 @@
 const { performance } = require('perf_hooks')
 const functionName = 'check-validator'
 const v1 = require('./v1')
-const sleepDuration = 10000
 
 module.exports = async (context, checkToValidate) => {
   /*
-    check receiver has 2 output bindings - the check-validation queue and the receivedCheck table
-    sometimes this function can receive the message before the receivedCheck entry is updated.
-    Therefore we must sleep for a short duration to allow the insert to complete.
+    check receiver has 2 output bindings - the check-validation queue and the receivedCheck table.
+    this function receives the message before the receivedCheck entry is updated and the filter binding
+    for the receivedCheck lookup fails first time.
+    TODO experiment with azure storage library for lookup
   */
-  context.log(`sleeping for ${sleepDuration}ms to allow receivedCheck to persist`)
-  // await sleep(sleepDuration)
-  context.log(`awake now, processing validation...`)
   const start = performance.now()
   const version = parseInt(checkToValidate.version, 10)
   context.log.info(`${functionName}: version:${version} message received for checkCode ${checkToValidate.checkCode}`)
@@ -28,8 +25,4 @@ module.exports = async (context, checkToValidate) => {
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
-}
-
-function sleep (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
