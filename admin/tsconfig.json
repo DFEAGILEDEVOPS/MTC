@@ -18,20 +18,24 @@
   },
   "include": [
     "authentication",
+    "availability"
+  ],
+/*   "include": [
+    "authentication",
     "availability",
     "config",
     "controllers",
     "error-types",
     "helpers",
-    "lib/**/*",
+    "lib",
     "models",
     "routes",
-    "services/**/*",
+    "services",
     "app.js",
     "config.js",
     "server.js"
-  ],
-/*   "exclude": [
+  ], */
+  /*   "exclude": [
     "./.nyc_output",
     "./.vscode",
     "./assets",
