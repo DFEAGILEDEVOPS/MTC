@@ -3,6 +3,15 @@
   "bindings": [
     {
       "direction": "in",
+      "type": "table",
+      "name": "receivedCheckTable",
+      "tableName": "receivedCheck",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING",
+      "filter": "(PartitionKey eq '{schoolUUID}') and (RowKey eq '{checkCode}')",
+      "take": "1"
+    },
+    {
+      "direction": "in",
       "type": "serviceBusTrigger",
       "name": "checkToValidate",
       "queueName": "check-validation",
@@ -14,13 +23,6 @@
       "name": "checkMarkingQueue",
       "queueName": "check-marking",
       "connection": "ServiceBusConnection"
-    },
-    {
-      "direction": "out",
-      "type": "table",
-      "name": "receivedCheckTable",
-      "tableName": "receivedCheck",
-      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }

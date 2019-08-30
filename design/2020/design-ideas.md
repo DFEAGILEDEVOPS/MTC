@@ -32,6 +32,7 @@ record in separate append only storage table for support use.  this will relieve
 
 triggered by a new message on the check-validation service bus queue.
 Hydrates and validates an entry in the receivedCheck table.
+uses complete-check schema to validate check has same top level properties
 Records 'validatedAt' in UTC against the entry on completion.
 Submits a check-marking message onto the queue after recording validation datetime.
 Records a 'validationError' against the entry on failure.

@@ -9,9 +9,8 @@ module.exports = (context, req) => {
   const message = JSON.parse(JSON.stringify(checkMessage))
   message.checkCode = uuid()
   message.schoolUUID = uuid()
-  context.log(`compressing message ${largeCompleteCheck.checkCode}`)
-  const archive = lz.compress(largeCompleteCheck)
-  context.log(`archive is ${archive}`)
+  context.log(`compressing message ${largeCompleteCheck.checkCode} school ${largeCompleteCheck.schoolUUID}`)
+  const archive = lz.compressToUTF16(JSON.stringify(largeCompleteCheck))
   message.archive = archive
   context.bindings.completeCheckQueue = [ message ]
   context.done()

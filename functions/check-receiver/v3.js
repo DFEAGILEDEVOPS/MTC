@@ -19,7 +19,8 @@ const v3 = {
     // put message on validation queue
     const message = {
       checkCode: receivedCheck.checkCode,
-      schoolUUID: receivedCheck.schoolUUID
+      schoolUUID: receivedCheck.schoolUUID,
+      version: 1
     }
     context.bindings.checkValidationQueue = [message]
   }
