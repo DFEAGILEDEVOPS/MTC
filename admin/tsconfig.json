@@ -17,11 +17,9 @@
     }
   },
   "include": [
-    "authentication",
-    "availability"
+    "."
   ],
-/*   "include": [
-    "authentication",
+  "exclude": [
     "availability",
     "config",
     "controllers",
@@ -33,23 +31,22 @@
     "services",
     "app.js",
     "config.js",
-    "server.js"
-  ], */
-  /*   "exclude": [
-    "./.nyc_output",
-    "./.vscode",
-    "./assets",
-    "./bin",
-    "./coverage",
-    "./data",
-    "./dist",
-    "./public",
-    "./spec",
-    "./tests-integration",
-    "./views",
-    "./karma.conf.js",
-    "./newrelic.js",
-    "./run-jasmine.js",
-    "./wallaby.conf.js"
-  ] */
+    "server.js",
+    "config.js",
+    ".nyc_output",
+    ".vscode",
+    "assets",
+    "bin",
+    "coverage",
+    "data",
+    "dist",
+    "public",
+    "spec",
+    "tests-integration",
+    "views",
+    "karma.conf.js",
+    "newrelic.js",
+    "run-jasmine.js",
+    "wallaby.conf.js"
+  ]
 }
