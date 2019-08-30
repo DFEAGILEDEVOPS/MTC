@@ -101,12 +101,12 @@
     color: govuk-colour("dark-grey");
     margin-bottom: govuk-em(-20px, $govuk-root-font-size);
   }
-  .information {
+  .pin-information {
     font-size: 26px;
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0 govuk-em(5px, $govuk-root-font-size);
+    margin: 0 0 govuk-em(4px, $govuk-root-font-size) govuk-em(5px, $govuk-root-font-size);
     width: auto;
     line-height: 1;
   }
@@ -132,7 +132,7 @@
       height: govuk-em(90px, $govuk-root-font-size);
       float: right;
       position: static;
-      margin-top: govuk-em(-115px, $govuk-root-font-size);
+      margin-top: govuk-em(-105px, $govuk-root-font-size);
     }
   }
   .url {

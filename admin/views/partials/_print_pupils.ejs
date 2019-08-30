@@ -34,12 +34,12 @@
                             </div>
                             <div class="pin-content">
                                 <span class="govuk-label">School Password:</span>
-                                <span class="information"><%= (
+                                <span class="pin-information"><%= (
                                             !!school ? school.pin : 'No active password'
                                     ) %></span>
                                 <span class="separator"></span>
                                 <label class="govuk-label">PIN:</label>
-                                <span class="information"><%= pupils[i].pin %></span>
+                                <span class="pin-information"><%= pupils[i].pin %></span>
                             </div>
                             <% if (qrDataURL) { %>
                                 <div class="qr"><img src="<%= qrDataURL %>" /></div>
