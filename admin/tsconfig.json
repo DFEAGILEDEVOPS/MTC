@@ -17,22 +17,10 @@
     }
   },
   "include": [
-    "."
+    "services/data-access"
   ],
   "exclude": [
-    "availability",
-    "config",
-    "controllers",
-    "error-types",
-    "helpers",
-    "lib",
-    "models",
-    "routes",
-    "services",
-    "app.js",
-    "config.js",
-    "server.js",
-    "config.js",
+   /*
     ".nyc_output",
     ".vscode",
     "assets",
@@ -47,6 +35,6 @@
     "karma.conf.js",
     "newrelic.js",
     "run-jasmine.js",
-    "wallaby.conf.js"
+    "wallaby.conf.js" */
   ]
 }
