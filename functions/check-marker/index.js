@@ -8,11 +8,12 @@ module.exports = async (context, checkToMark) => {
   const start = performance.now()
   const version = parseInt(checkToMark.version, 10)
   context.log.info(`${functionName}: version:${version} message received for checkCode ${checkToMark.checkCode}`)
+  return
   try {
     if (version !== 1) {
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    await v1.process(context, checkToMark)
+    // await v1.process(context, checkToMark)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error

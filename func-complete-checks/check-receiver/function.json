@@ -1,0 +1,13 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "authLevel": null,
+      "type": "queueTrigger",
+      "direction": "in",
+      "name": "myQueueItem",
+      "methods": null
+    }
+  ],
+  "scriptFile": "../dist/check-receiver/index.js"
+}

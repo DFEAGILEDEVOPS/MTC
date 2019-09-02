@@ -32,11 +32,14 @@ const v1 = {
 
 async function updateReceivedCheckWithValidationTimestamp (receivedCheck) {
   receivedCheck.validatedAt = moment().toDate()
+  receivedCheck.isValid = true
   await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
 async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck) {
   receivedCheck.validationError = errorMessage
+  receivedCheck.validatedAt = moment().toDate()
+  receivedCheck.isValid = false
   await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
