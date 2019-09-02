@@ -1,8 +1,8 @@
 import { AzureFunction, Context } from "@azure/functions"
 import { ICompleteCheckMessageV3 } from "../types/message-schemas";
-const { performance } = require('perf_hooks')
+import { performance } from "perf_hooks"
 const functionName = 'check-validator'
-const v1 = require('./v1')
+import v1 from "./v1"
 
 const serviceBusQueueTrigger: AzureFunction = async function(context: Context, checkToValidate: ICompleteCheckMessageV3): Promise<void> {
   const start = performance.now()

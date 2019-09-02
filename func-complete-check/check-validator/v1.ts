@@ -8,7 +8,7 @@ import azureStorageHelper from "../lib/azure-storage-helper"
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 // import checkSchema from "../message-schemas/complete-check.v1.json"
 
-export default class v1 {
+export class v1 {
   async process (context: Context, receivedCheck: ICompleteCheckMessageV3) {
     try {
       this.detectArchive(receivedCheck)
@@ -64,3 +64,4 @@ export default class v1 {
   }
 } */
 
+export default new v1()
