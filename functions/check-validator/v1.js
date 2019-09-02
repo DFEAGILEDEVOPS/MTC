@@ -3,23 +3,24 @@
 const compressionService = require('../lib/compression.service')
 const checkSchema = require('../check-receiver/message-schema/message.v1.json')
 const R = require('ramda')
+const moment = require('moment')
+const azureStorageHelper = require('../lib/azure-storage-helper')
+const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 const v1 = {
   process: async function (context, checkMetadata) {
     let receivedCheck = findReceivedCheck(context.bindings.receivedCheckTable)
     try {
-      ensureArchiveExists(receivedCheck)
-      context.log(`archive property exists`)
+      detectArchive(receivedCheck)
       const decompressedString = compressionService.decompress(receivedCheck.archive)
       const checkData = JSON.parse(decompressedString)
-      validate(checkData, context)
+      validateArchive(checkData, context)
     } catch (error) {
-      // TODO update receivedCheck with processing error
+      updateReceivedCheckWithErrorDetails(error.message, receivedCheck)
       context.log.error(error.message)
       return
-      // context.bindings.receivedCheckTable.validationError = error.message
-      // return
     }
+    updateReceivedCheckWithValidationTimestamp(receivedCheck)
     // dispatch message to indicate ready for marking
     const markingMessage = {
       checkCode: checkMetadata.checkCode,
@@ -27,6 +28,16 @@ const v1 = {
     }
     context.bindings.checkMarkingQueue = [markingMessage]
   }
+}
+
+async function updateReceivedCheckWithValidationTimestamp (receivedCheck) {
+  receivedCheck.validatedAt = moment().toDate()
+  await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
+}
+
+async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck, context) {
+  receivedCheck.validationError = errorMessage
+  await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
 function findReceivedCheck (receivedCheckRef) {
@@ -42,7 +53,7 @@ function findReceivedCheck (receivedCheckRef) {
   return receivedCheckRef[0]
 }
 
-function validate (check, context) {
+function validateArchive (check, context) {
   // get top level properties of message schema as an array
   const allProperties = Object.getOwnPropertyNames(checkSchema)
   const requiredProperties = R.without(['version'], allProperties)
@@ -55,7 +66,7 @@ function validate (check, context) {
   }
 }
 
-function ensureArchiveExists (message) {
+function detectArchive (message) {
   if (!message.hasOwnProperty('archive')) {
     throw new Error(`Message is missing 'archive' property`)
   }
