@@ -108,7 +108,7 @@ const checkFormV2DataService = {
 
   /**
    * Finds existing familiarisation check form
-   * @returns {Object}
+   * @returns {Promise<Object>}
    */
   sqlFindFamiliarisationCheckForm: async () => {
     const sql = `
@@ -152,7 +152,7 @@ const checkFormV2DataService = {
     checkFormRanked.checkWindowAdminEndDate
     FROM ${sqlService.adminSchema}.${table} cF
     LEFT JOIN (
-        SELECT 
+        SELECT
           cF2.*,
           cFW.checkWindow_id,
           cW.name AS checkWindowName,
@@ -228,7 +228,7 @@ const checkFormV2DataService = {
           ON cf.id = fw.checkForm_id
       INNER JOIN ${sqlService.adminSchema}.[checkWindow] cw
         ON cw.id = fw.checkWindow_id
-      WHERE cf.isDeleted=0 
+      WHERE cf.isDeleted=0
       AND fw.checkWindow_id= @checkWindowId
       AND cf.isLiveCheckForm = @isLiveCheckForm
       ORDER BY cw.[name] ASC`
@@ -268,7 +268,7 @@ const checkFormV2DataService = {
       value: checkWindowId,
       type: TYPES.Int
     })
-    queries.push(`DELETE fw 
+    queries.push(`DELETE fw
     FROM ${sqlService.adminSchema}.[checkFormWindow] fw
     INNER JOIN ${sqlService.adminSchema}.[checkForm] cf
       ON cf.id = fw.checkForm_id

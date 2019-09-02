@@ -13,7 +13,7 @@ if (config.Redis.useTLS) {
   redisConfig.tls = { host: config.Redis.Host }
 }
 
-let redis = false
+let redis
 
 const redisConnect = () => {
   if (!redis) {
@@ -26,7 +26,7 @@ const redisCacheService = {}
 /**
  * Returns the data from a Redis key entry
  * @param redisKey - the full Redis key to get
- * @returns {String}
+ * @returns {Promise<any>}
  */
 redisCacheService.get = async redisKey => {
   redisConnect()
@@ -48,7 +48,7 @@ redisCacheService.get = async redisKey => {
  * Stores data for a Redis key
  * @param redisKey - the full Redis key to set
  * @param data - string data to insert
- * @returns {Boolean}
+ * @returns {Promise<Boolean>}
  */
 redisCacheService.set = async (redisKey, data) => {
   redisConnect()
@@ -68,7 +68,7 @@ redisCacheService.set = async (redisKey, data) => {
 /**
  * Drops any supplied caches - so they can be re-queried
  * @param caches - A single string or array of strings
- * @returns {Boolean}
+ * @returns {Promise<Boolean>}
  */
 redisCacheService.drop = async (caches = []) => {
   if (Array.isArray(caches) && caches.length === 0) {

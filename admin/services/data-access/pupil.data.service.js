@@ -30,7 +30,7 @@ pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
  * Find a pupil by their urlSlug
  * @param urlSlug - GUID
  * @param schoolId - look for the pupil only in a particular school
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
   const params = [
@@ -52,7 +52,7 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
  * Find a pupil by their urlSlug with age reason
  * @param urlSlug - GUID
  * @param schoolId - look for the pupil only in a particular school
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, schoolId) {
   const params = [
@@ -91,7 +91,7 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
 /**
  * Find a pupil by upn
  * @param upn
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneByUpn = async (upn = '') => {
   const param = { name: 'upn', type: TYPES.NVarChar, value: upn.trim().toUpperCase() }
@@ -109,7 +109,7 @@ pupilDataService.sqlFindOneByUpn = async (upn = '') => {
  * Find a pupil by upn within school
  * @param {String} upn
  * @param {Number} schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn, schoolId) => {
   const params = [
@@ -138,7 +138,7 @@ pupilDataService.sqlFindOneByUpnAndSchoolId = async (upn, schoolId) => {
 /**
  * Find a pupil by Id
  * @param id
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneById = async (id) => {
   const param = { name: 'id', type: TYPES.Int, value: id }
@@ -156,7 +156,7 @@ pupilDataService.sqlFindOneById = async (id) => {
  * Find a pupil by Id and check they have rights to that school by checking the school id matches too
  * @param {number} id
  * @param {number} schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
   const paramPupil = { name: 'id', type: TYPES.Int, value: id }
@@ -173,9 +173,9 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
 
 /**
  * Find a pupil by Id and schoolId with associated attendance reasons
- * @param {number} id
+ * @param {string} urlSlug
  * @param {number} schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug, schoolId) => {
   const paramPupil = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
@@ -200,7 +200,7 @@ pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug
  * Find a pupil by school id and pupil pin
  * @param {number} pin
  * @param {number} schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
   const paramPupilPin = { name: 'pin', type: TYPES.NVarChar, value: pin }
@@ -343,7 +343,7 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils, pinEnv = 'live') => {
 }
 /**
  * Update several pupil tokens in one query
- * @param {id: Number, jwtToken: String, jwtSecret: String} pupils
+ * @param {id: number, jwtToken: String, jwtSecret: String} pupils
  * @return {Promise}
  */
 pupilDataService.sqlUpdateTokensBatch = async (pupils) => {

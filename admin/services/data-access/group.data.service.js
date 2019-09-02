@@ -37,9 +37,9 @@ groupDataService.sqlFindGroups = async (schoolId) => {
  */
 groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   const sql = `
-  SELECT 
-         g.id, 
-         g.name, 
+  SELECT
+         g.id,
+         g.name,
          COUNT(p.id) as pupilCount
   FROM [mtc_admin].[group] g
   LEFT JOIN [mtc_admin].pupil p ON (g.id = p.group_id)
@@ -64,7 +64,7 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
  * Get group by id.
  * @param groupId
  * @param schoolId
- * @returns {Promise<void>}
+ * @returns {Promise<object>}
  */
 groupDataService.sqlFindOneById = async (groupId, schoolId) => {
   const sql = `SELECT id, [name]
@@ -92,7 +92,7 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
  * Get group by name.
  * @param groupName
  * @param schoolId
- * @returns {Promise<void>}
+ * @returns {Promise<object>}
  */
 groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
   const sql = `SELECT id, [name]
@@ -291,7 +291,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
 /**
  * Find group by pupil id
  * @param pupilId
- * @return {Object}
+ * @return {Promise<Object>}
  */
 groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
   if (!pupilId) return false
