@@ -83,7 +83,7 @@ const dateService = {
    * @param keyDay
    * @param keyMonth
    * @param keyYear
-   * @returns {Moment}}
+   * @returns {Moment}
    */
   formatDateFromRequest: function (dateItem, keyDay, keyMonth, keyYear) {
     return moment.utc(
