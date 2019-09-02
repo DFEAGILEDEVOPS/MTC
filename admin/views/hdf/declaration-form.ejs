@@ -10,9 +10,11 @@
                 <div class="govuk-error-summary__body">
                     <p>See highlighted errors below.</p>
                     <ul class="govuk-list govuk-error-summary__list">
-                        <% if (typeof validation !== 'undefined' && validation.name) { %>
-                            <li><a href="#group-name"><%= validation.name %></a></li>
-                        <% } %>
+                        <% error.getUniqueFields(['firstName', 'lastName', 'jobTitle']).map(f => { %>
+                            <% if (typeof error.get(f) !== 'boolean') { %>
+                                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                            <% } %>
+                        <% }); %>
                     </ul>
                 </div>
             </div>
