@@ -1,6 +1,8 @@
 'use strict'
 
 const moment = require('moment')
+// use lib instead of binding to avoid race condition with inserted entity and message
+// see ../check-validator/index.js for details
 const azureStorageHelper = require('../lib/azure-storage-helper')
 const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
@@ -15,8 +17,6 @@ const v3 = {
       checkReceivedAt: moment().toDate(),
       messageVersion: receivedCheck.version
     }
-    /*  context.bindings.receivedCheckTable = []
-    context.bindings.receivedCheckTable.push(entity) */
     await azureTableService.insertEntityAsync('receivedCheck', entity)
 
     // put message on validation queue
