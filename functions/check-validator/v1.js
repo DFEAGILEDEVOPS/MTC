@@ -35,7 +35,7 @@ async function updateReceivedCheckWithValidationTimestamp (receivedCheck) {
   await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
-async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck, context) {
+async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck) {
   receivedCheck.validationError = errorMessage
   await azureTableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
