@@ -1,21 +1,29 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <%- partial('partials/_session_expiry') %>
-        <div class="govuk-box-highlight">
-          <h1 class="heading-xlarge">
-            Headteacher's declaration form submitted
-          </h1>
-          <p class="font-large">
-            on <strong class="bold"><%= signedDayAndDate %></strong>
-          </p>
-        </div>
-        <p>
-          <a href="/attendance/submitted-form"><strong>View the submitted form</strong></a>
-        </p>
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation gov">
+                <h1 class="govuk-panel__title">
+                    Headteacher's declaration form submitted
+                </h1>
+                <div class="govuk-panel__body">
+                    <p class="govuk-body govuk-!-font-size-36">
+                        on <strong class="govuk-!-font-weight-bold"><%= signedDayAndDate %></strong>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <p>
+                    <a class="govuk-link" href="/attendance/submitted-form"><strong>View the submitted form</strong></a>
+                </p>
+            </div>
+            <div class="govuk-back-to-top govuk-!-margin-top-9">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         </div>
     </div>
-</div>
+</main>
