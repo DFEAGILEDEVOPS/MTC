@@ -1,10 +1,10 @@
 import { AzureFunction, Context } from "@azure/functions"
-import * as schemas from "./types/schemas"
+import * as schemas from "../types/message-schemas"
 import { performance } from "perf_hooks"
 const functionName = "check-receiver"
 import v3 from "./v3"
 
-const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.ICompleteCheckMessage): Promise<void> {
+const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.ICompleteCheckMessageV3): Promise<void> {
   const start = performance.now()
   const version = parseInt(completedCheck.version, 10)
   context.log.info(`${functionName}: version:${version} message received for checkCode ${completedCheck.checkCode}`)

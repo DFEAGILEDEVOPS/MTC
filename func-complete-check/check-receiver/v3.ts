@@ -1,12 +1,12 @@
 import { Context } from "@azure/functions"
-import { ICompleteCheckMessage } from "./types/schemas"
+import { ICompleteCheckMessageV3 } from "../types/message-schemas"
 import moment = require("moment");
 //@ts-ignore
-import azureStorageHelper from "../../functions/lib/azure-storage-helper"
+import azureStorageHelper from "../lib/azure-storage-helper"
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 export class v3 {
-  async process (context: Context, receivedCheck: ICompleteCheckMessage) {
+  async process (context: Context, receivedCheck: ICompleteCheckMessageV3) {
     const entity = {
       PartitionKey: receivedCheck.schoolUUID,
       RowKey: receivedCheck.checkCode,

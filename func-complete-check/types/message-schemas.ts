@@ -1,4 +1,4 @@
-export interface ICompleteCheck {
+export interface ICompleteCheckV1 {
   answers: Array<object>
   audit: Array<object>
   config: object
@@ -11,7 +11,7 @@ export interface ICompleteCheck {
   checkCode: string
 }
 
-export interface ICompleteCheckMessage {
+export interface ICompleteCheckMessageV3 {
   version: string
   checkCode: string
   schoolUUID: string
