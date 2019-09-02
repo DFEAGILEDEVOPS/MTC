@@ -8,12 +8,11 @@
   li {
     margin-top: 10px;
 
-    @include media(desktop) {
+    @include govuk-media-query($from: desktop) {
       width: 50%;
       float: left;
     }
-
-    @include media(mobile) {
+    @include govuk-media-query($until: tablet) {
       margin-top: 5px;
     }
   }
