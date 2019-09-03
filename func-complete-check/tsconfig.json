@@ -8,6 +8,7 @@
     "strict": true,
     "allowUnreachableCode": false,
     "alwaysStrict": true,
+    "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
