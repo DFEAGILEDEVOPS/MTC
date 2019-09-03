@@ -5,7 +5,7 @@
       "direction": "in",
       "type": "queueTrigger",
       "name": "completedCheck",
-      "queueName": "check-complete",
+      "queueName": "check-submitted",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     },
     {

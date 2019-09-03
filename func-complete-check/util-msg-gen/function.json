@@ -17,9 +17,9 @@
     },
     {
       "type": "queue",
-      "name": "completeCheckQueue",
+      "name": "submittedCheckQueue",
       "direction": "out",
-      "queueName": "check-complete",
+      "queueName": "check-submitted",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ],

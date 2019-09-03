@@ -13,7 +13,7 @@ const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest)
     // delete largeCompleteCheck.answers
     const archive = lz.compressToUTF16(JSON.stringify(largeCompleteCheck))
     message.archive = archive
-    context.bindings.completeCheckQueue = [ message ]
+    context.bindings.submittedCheckQueue = [ message ]
     context.done()
 }
 

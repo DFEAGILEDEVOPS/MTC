@@ -1,7 +1,8 @@
 {
   "queues": [
-    "check-complete",
+    "check-complete", // to be retired
     "check-started",
+    "check-submitted",
     "prepare-check",
     "prepared-check-delete",
     "prepared-check-sync",
@@ -13,7 +14,8 @@
   ],
   "service-bus-queues": [
     "check-marking",
-    "check-validation"
+    "check-validation",
+    "check-completion"
   ],
   "tables": [
     "receivedCheck",
