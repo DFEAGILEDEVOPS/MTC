@@ -1,4 +1,4 @@
-/// <reference path="../types/message-schemas.ts" />
+/// <reference path="../typings/message-schemas.ts" />
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import * as lz from "lz-string"
 import uuid from "uuid/v4"

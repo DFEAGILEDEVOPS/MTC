@@ -1,26 +1,37 @@
 'use strict'
 
 import 'dotenv/config'
-import * as azureStorage from "azure-storage"
-const QueryComparisons = azureStorage.TableUtilities.QueryComparisons
-const TableQuery = azureStorage.TableQuery
+import * as az from "azure-storage"
+const QueryComparisons = az.TableUtilities.QueryComparisons
+const TableQuery = az.TableQuery
 import bluebird from "bluebird"
-import * as R from "ramda"
+import { Logger} from "@azure/functions"
+
+export declare class AsyncTableService extends az.TableService {
+  replaceEntityAsync (table: string, entity: any): Promise<any>
+  queryEntitiesAsync(table: string, tableQuery: az.TableQuery, currentToken?: az.TableService.TableContinuationToken): Promise<any>
+  deleteEntityAsync(table: string, entityDescriptor: any): Promise<any>
+  insertEntityAsync(table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>
+}
+
+export declare class StorageError extends Error {
+  type: string
+}
 
 const preparedCheckTable = 'preparedCheck'
-let azureTableService
-let azureQueueService
-let azureBlobService
+let tableService: AsyncTableService
+let qService: az.QueueService
+let blobService: az.BlobService
 
 const azureStorageHelper = {
-  getFromPreparedCheckTableStorage: async function getFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
-    const query = new azureStorage.TableQuery()
+  getFromPreparedCheckTableStorage: async function getFromPreparedCheckTableStorage (azureTableService: az.TableService, checkCode: string, logger: Logger) {
+    const query = new az.TableQuery()
       .top(1)
       .where(TableQuery.guidFilter('checkCode', QueryComparisons.EQUAL, checkCode))
 
     let check
     try {
-      const data = await azureTableService.queryEntitiesAsync(preparedCheckTable, query, null)
+      const data = await tableService.queryEntitiesAsync(preparedCheckTable, query, undefined)
       check = data.response.body.value[0]
     } catch (error) {
       const msg = `getFromPreparedCheckTableStorage(): error during retrieve for table storage check for checkCode [${checkCode}]`
@@ -32,16 +43,15 @@ const azureStorageHelper = {
     if (!check) {
       const msg = `getFromPreparedCheckTableStorage(): check does not exist: [${checkCode}]`
       logger.info(msg)
-      const error = new Error(msg)
-      //@ts-ignore
+      const error = new StorageError(msg)
       error.type = 'NOT_FOUND'
       throw error
     }
     return check
   },
 
-  deleteFromPreparedCheckTableStorage: async function deleteFromPreparedCheckTableStorage (azureTableService, checkCode, logger) {
-    const check = await azureStorageHelper.getFromPreparedCheckTableStorage(azureTableService, checkCode, logger)
+  deleteFromPreparedCheckTableStorage: async function deleteFromPreparedCheckTableStorage (tableService: AsyncTableService, checkCode: string, logger: Logger) {
+    const check = await azureStorageHelper.getFromPreparedCheckTableStorage(tableService, checkCode, logger)
     const entity = {
       PartitionKey: check.PartitionKey,
       RowKey: check.RowKey
@@ -49,7 +59,7 @@ const azureStorageHelper = {
 
     // Delete the prepared check so the pupil cannot login again
     try {
-      const res = await azureTableService.deleteEntityAsync(preparedCheckTable, entity)
+      const res = await tableService.deleteEntityAsync(preparedCheckTable, entity)
       if (!(res && res.result && res.result.isSuccessful === true)) {
         throw new Error('deleteFromPreparedCheckTableStorage(): bad result from deleteEntity')
       }
@@ -64,16 +74,16 @@ const azureStorageHelper = {
   /**
    * Promisify and cache the azureTableService library as it still lacks Promise support
    */
-  getPromisifiedAzureTableService: function getPromisifiedAzureTableService () {
-    if (azureTableService) {
-      return azureTableService
+  getPromisifiedAzureTableService: function getPromisifiedAzureTableService (): AsyncTableService {
+    if (tableService) {
+      return tableService
     }
-    azureTableService = azureStorage.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
+    tableService = az.createTableService() as AsyncTableService
+    bluebird.promisifyAll(tableService, {
+      promisifier: (originalFunction) => function (this: any, ...args) {
         return new Promise((resolve, reject) => {
           try {
-            originalFunction.call(this, ...args, (error, result, response) => {
+            originalFunction.call(this, ...args, (error: any, result: any, response: any) => {
               if (error) {
                 return reject(error)
               }
@@ -86,7 +96,7 @@ const azureStorageHelper = {
       }
     })
 
-    return azureTableService
+    return tableService
   },
 
   /**
@@ -94,15 +104,15 @@ const azureStorageHelper = {
    * @return {*}
    */
   getPromisifiedAzureQueueService: function getPromisifiedAzureQueueService () {
-    if (azureQueueService) {
-      return azureQueueService
+    if (qService) {
+      return qService
     }
-    azureQueueService = azureStorage.createQueueService()
-    bluebird.promisifyAll(azureQueueService, {
-      promisifier: (originalFunction) => function (...args) {
+    qService = az.createQueueService()
+    bluebird.promisifyAll(qService, {
+      promisifier: (originalFunction) => function (this: any, ...args) {
         return new Promise((resolve, reject) => {
           try {
-            originalFunction.call(this, ...args, (error, result, response) => {
+            originalFunction.call(this, ...args, (error: any, result: any, response: any) => {
               if (error) {
                 return reject(error)
               }
@@ -115,7 +125,7 @@ const azureStorageHelper = {
       }
     })
 
-    return azureQueueService
+    return qService
   },
 
   /**
@@ -123,15 +133,15 @@ const azureStorageHelper = {
    * @return {*}
    */
   getPromisifiedAzureBlobService: function getPromisifiedAzureBlobService () {
-    if (azureBlobService) {
-      return azureBlobService
+    if (blobService) {
+      return blobService
     }
-    azureBlobService = azureStorage.createBlobService()
-    bluebird.promisifyAll(azureBlobService, {
-      promisifier: (originalFunction) => function (...args) {
+    blobService = az.createBlobService()
+    bluebird.promisifyAll(blobService, {
+      promisifier: (originalFunction) => function (this:any, ...args) {
         return new Promise((resolve, reject) => {
           try {
-            originalFunction.call(this, ...args, (error, result, response) => {
+            originalFunction.call(this, ...args, (error: any, result: any, response: any) => {
               if (error) {
                 return reject(error)
               }
@@ -144,78 +154,7 @@ const azureStorageHelper = {
       }
     })
 
-    return azureBlobService
-  },
-
-  /**
-   * Add a message to an Azure Queue
-   * @param queueName
-   * @param messageData
-   * @return {Promise<*>}
-   */
-  addMessageToQueue: async function addMessageToQueue (queueName, messageData) {
-    const azureQueueService = this.getPromisifiedAzureQueueService()
-    const message = JSON.stringify(messageData)
-    const encodedMessage = Buffer.from(message).toString('base64')
-    return azureQueueService.createMessageAsync(queueName, encodedMessage)
-  },
-
-  /**
-   * Make a request for the pupil-status to be updated for multiple pupils
-   * @param {[{pupilId: <number>, checkCode: <string>}]} checkData - must contain `pupilId` and `checkCode` props
-   * @return {Promise<*|Promise<*>>}
-   */
-  updatePupilStatus: async function (logger, logPrefix, checkData) {
-    logger.info(`${logPrefix}: updatePupilStatus(): got ${checkData.length} pupils`)
-    // Batch the async messages up, to limit max concurrency
-    const batches = R.splitEvery(100, checkData)
-    checkData = null
-
-    logger.verbose(`${logPrefix}: updatePupilStatus(): ${batches.length} batches detected`)
-
-    batches.forEach(async (checks, batchNumber) => {
-      try {
-        const msgs = checks.map(check => this.addMessageToQueue('pupil-status', {
-          version: 1,
-          pupilId: check.pupilId,
-          checkCode: check.checkCode
-        }))
-        await Promise.all(msgs)
-        logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
-      } catch (error) {
-        logger.error(`${logPrefix}: updatePupilStatus(): ERROR: ${error.message}`)
-      }
-    })
-  },
-
-  /**
-   * Filter for live checks and make a request for the pupil-status to be updated for multiple pupils
-   * @param {Object} logger
-   * @param {String} logPrefix
-   * @param {[{checkId: <number>, pupilId: <number>, checkCode: <string>, isLiveCheck: <boolean>}]} checkData - must contain `checkId`, `pupilId`, `checkCode` and `isLiveCheck` props
-   * @return {Promise<*|Promise<*>>}
-   */
-  updatePupilStatusForLiveChecks: async function (logger, logPrefix, checkData) {
-    logger.info(`${logPrefix}: updatePupilStatus(): got ${checkData.length} pupils`)
-    // Batch the async messages up for live checks only, to limit max concurrency
-    const batches = R.splitEvery(100, R.filter(c => c.isLiveCheck, checkData))
-    checkData = null
-
-    logger.verbose(`${logPrefix}: updatePupilStatus(): ${batches.length} batches detected`)
-
-    batches.forEach(async (checks, batchNumber) => {
-      try {
-        const msgs = checks.map(check => this.addMessageToQueue('pupil-status', {
-          version: 1,
-          pupilId: check.pupilId,
-          checkCode: check.checkCode
-        }))
-        await Promise.all(msgs)
-        logger.verbose(`${logPrefix}: batch ${batchNumber} complete`)
-      } catch (error) {
-        logger.error(`${logPrefix}: updatePupilStatus(): ERROR: ${error.message}`)
-      }
-    })
+    return blobService
   }
 }
 

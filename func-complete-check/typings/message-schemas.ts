@@ -36,6 +36,7 @@ export interface ReceivedCheck {
   archive: string
   checkReceivedAt: Date
   checkVersion: number
+  isValid?: boolean
   validatedAt?: Date
   validationError?: string
   mark?: number

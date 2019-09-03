@@ -1,5 +1,5 @@
 
-import lzString = require('lz-string')
+import lzString from 'lz-string'
 
 const moduleToExport = {
   /**
@@ -7,8 +7,8 @@ const moduleToExport = {
    * @param {string} string
    * @return {*|string}
    */
-  compress: function compress (string) {
-    return lzString.compressToUTF16(string)
+  compress: function compress (input: string): any | string {
+    return lzString.compressToUTF16(input)
   },
 
   /**
@@ -16,8 +16,8 @@ const moduleToExport = {
    * @param {string} string
    * @return {*|string|(string|null|undefined)}
    */
-  decompress: function decompress (string) {
-    return lzString.decompressFromUTF16(string)
+  decompress: function decompress (input: string): any | string | (string | null | undefined) {
+    return lzString.decompressFromUTF16(input)
   }
 }
 

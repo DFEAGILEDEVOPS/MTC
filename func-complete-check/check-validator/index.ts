@@ -1,5 +1,5 @@
 import { AzureFunction, Context } from "@azure/functions"
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1 } from "../types/message-schemas";
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1 } from "../typings/message-schemas";
 import { performance } from "perf_hooks"
 const functionName = 'check-validator'
 import v1 from "./v1"

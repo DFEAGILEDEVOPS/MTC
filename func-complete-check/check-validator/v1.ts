@@ -1,9 +1,8 @@
 import { Context } from "@azure/functions"
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from "../types/message-schemas"
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from "../typings/message-schemas"
 import moment = require("moment");
 import * as R from "ramda"
 import compressionService from "../lib/compression-service"
-//@ts-ignore
 import azureStorageHelper from "../lib/azure-storage-helper"
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 import checkSchema from "../messages/complete-check.v1.json"
@@ -24,8 +23,8 @@ class v1 {
     await updateReceivedCheckWithValidationTimestamp(receivedCheck)
     // dispatch message to indicate ready for marking
     const markingMessage: MarkCheckMessageV1 = {
-      checkCode: receivedCheck.RowKey,
-      schoolUUID: receivedCheck.PartitionKey,
+      schoolUUID: validateCheckMessage.schoolUUID,
+      checkCode: validateCheckMessage.checkCode,
       version: "1"
     }
 
@@ -33,7 +32,7 @@ class v1 {
   }
 }
 // TODO strongly type the inputs and outputs
-function findReceivedCheck (receivedCheckRef) {
+function findReceivedCheck (receivedCheckRef: any) {
   if (!receivedCheckRef) {
     throw new Error('received check reference is undefined')
   }
@@ -46,26 +45,26 @@ function findReceivedCheck (receivedCheckRef) {
   return receivedCheckRef[0]
 }
 
-async function updateReceivedCheckWithValidationTimestamp (receivedCheck) {
+async function updateReceivedCheckWithValidationTimestamp (receivedCheck: ReceivedCheck) {
   receivedCheck.validatedAt = moment().toDate()
   receivedCheck.isValid = true
   await tableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
-async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck) {
+async function updateReceivedCheckWithErrorDetails (errorMessage: string, receivedCheck: ReceivedCheck) {
   receivedCheck.validationError = errorMessage
   receivedCheck.validatedAt = moment().toDate()
   receivedCheck.isValid = false
   await tableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
-function detectArchive (message) {
+function detectArchive (message: object) {
   if (!message.hasOwnProperty('archive')) {
     throw new Error(`message is missing 'archive' property`)
   }
 }
 
-function validateArchive (check, context) {
+function validateArchive (check: object, context: Context) {
   // get top level properties of message schema as an array
   //@ts-ignore
   const allProperties = Object.getOwnPropertyNames(checkSchema)

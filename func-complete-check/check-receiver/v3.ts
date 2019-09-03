@@ -1,7 +1,6 @@
 import { Context } from "@azure/functions"
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from "../types/message-schemas"
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from "../typings/message-schemas"
 import moment = require("moment");
-//@ts-ignore
 import azureStorageHelper from "../lib/azure-storage-helper"
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 
