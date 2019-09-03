@@ -220,8 +220,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
 
   // // Add information for each question asked
   const p = (num) => `Q${num}`
-  let markedAnswers, markAnswersString
-
+  let markedAnswers
 
   const markedAnswersString = R.prop('markedAnswers', data)
   if (!markedAnswersString) {
@@ -245,7 +244,6 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     console.error(`PS Report: missing payload: ${data.checkCode}`)
     return psData
   }
-
 
   markedAnswers.answer.forEach(answer => {
     const q = answer.questionNumber
