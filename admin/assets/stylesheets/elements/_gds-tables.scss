@@ -50,3 +50,7 @@ table.govuk-spacious-two-column {
 table.govuk-spacious.reduced-top-margin {
   margin-top: govuk-em(15px, $govuk-root-font-size);
 }
+
+.govuk-table__caption {
+  display: table-header-group;
+}
