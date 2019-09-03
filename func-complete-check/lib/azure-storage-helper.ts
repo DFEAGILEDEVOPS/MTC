@@ -1,11 +1,11 @@
 'use strict'
 
-require('dotenv').config()
-const azureStorage = require('azure-storage')
+import 'dotenv/config'
+import * as azureStorage from "azure-storage"
 const QueryComparisons = azureStorage.TableUtilities.QueryComparisons
 const TableQuery = azureStorage.TableQuery
-const bluebird = require('bluebird')
-const R = require('ramda')
+import bluebird from "bluebird"
+import * as R from "ramda"
 
 const preparedCheckTable = 'preparedCheck'
 let azureTableService

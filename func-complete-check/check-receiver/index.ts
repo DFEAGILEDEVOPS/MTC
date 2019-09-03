@@ -4,12 +4,14 @@ import { performance } from "perf_hooks"
 const functionName = "check-receiver"
 import v3 from "./v3"
 
-const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.ICompleteCheckMessageV3): Promise<void> {
+const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.CompleteCheckMessageV3): Promise<void> {
   const start = performance.now()
-  const version = parseInt(completedCheck.version, 10)
+  const version = completedCheck.version
+  context.log(typeof(version))
+  context.log(typeof(completedCheck.version))
   context.log.info(`${functionName}: version:${version} message received for checkCode ${completedCheck.checkCode}`)
   try {
-    if (version !== 3) {
+    if (version !== "3") {
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }

@@ -1,4 +1,4 @@
-export interface ICompleteCheckV1 {
+export interface CompleteCheckV1 {
   answers: Array<object>
   audit: Array<object>
   config: object
@@ -11,9 +11,33 @@ export interface ICompleteCheckV1 {
   checkCode: string
 }
 
-export interface ICompleteCheckMessageV3 {
+export interface CompleteCheckMessageV3 {
   version: string
   checkCode: string
   schoolUUID: string
   archive: string
+}
+
+export interface ValidateCheckMessage {
+  checkCode: string
+  schoolUUID: string
+  version: string
+}
+
+export interface MarkCheckMessage {
+  checkCode: string
+  schoolUUID: string
+  version: string
+}
+
+export interface ReceivedCheck {
+  PartitionKey: string //schoolUUID
+  RowKey: string //checkCode
+  archive: string
+  checkReceivedAt: Date
+  checkVersion: number
+  validatedAt?: Date
+  validationError?: string
+  mark?: number
+  markedAt?: Date
 }

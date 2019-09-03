@@ -7,17 +7,21 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
+        "get"
       ]
     },
     {
-      "authLevel": null,
       "type": "http",
       "direction": "out",
-      "name": "res",
-      "methods": null
+      "name": "res"
+    },
+    {
+      "type": "queue",
+      "name": "completeCheckQueue",
+      "direction": "out",
+      "queueName": "check-complete",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/gemessage-gen-util/index.js"
+  "scriptFile": "../dist/util-msg-gen/index.js"
 }

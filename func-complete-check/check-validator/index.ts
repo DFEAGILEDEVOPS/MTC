@@ -1,15 +1,18 @@
 import { AzureFunction, Context } from "@azure/functions"
-import { ICompleteCheckMessageV3 } from "../types/message-schemas";
+import { CompleteCheckMessageV3, ValidateCheckMessage } from "../types/message-schemas";
 import { performance } from "perf_hooks"
 const functionName = 'check-validator'
 import v1 from "./v1"
 
-const serviceBusQueueTrigger: AzureFunction = async function(context: Context, checkToValidate: ICompleteCheckMessageV3): Promise<void> {
+const serviceBusQueueTrigger: AzureFunction = async function(context: Context, validateCheckMessage: ValidateCheckMessage): Promise<void> {
   const start = performance.now()
-  const version = parseInt(checkToValidate.version, 10)
-  context.log.info(`${functionName}: version:${version} message received for checkCode ${checkToValidate.checkCode}`)
+  const version = validateCheckMessage.version
+  context.log.info(`${functionName}: version:${version} message received for checkCode ${validateCheckMessage.checkCode}`)
   try {
-    await v1.process(context, checkToValidate)
+    if (version != "1") {
+      throw new Error(`Message schema version ${version} unsupported`)
+    }
+    await v1.process(context, validateCheckMessage)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error

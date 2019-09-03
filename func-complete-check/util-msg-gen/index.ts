@@ -1,21 +1,20 @@
+/// <reference path="../types/message-schemas.ts" />
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import * as lz from "lz-string"
+import uuid from "uuid/v4"
+import * as checkMessage from "../message-schemas/complete-check-message-template.json"
+import * as largeCompleteCheck from "../message-schemas/large-complete-check.json"
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
+const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
+    const message = JSON.parse(JSON.stringify(checkMessage))
+    message.checkCode = uuid()
+    message.schoolUUID = uuid()
+    // enable to create an invalid check
+    // delete largeCompleteCheck.answers
+    const archive = lz.compressToUTF16(JSON.stringify(largeCompleteCheck))
+    message.archive = archive
+    context.bindings.completeCheckQueue = [ message ]
+    context.done()
+}
 
-    if (name) {
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
-        };
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: "Please pass a name on the query string or in the request body"
-        };
-    }
-};
-
-export default httpTrigger;
+export default httpTrigger
