@@ -4,7 +4,7 @@ import { performance } from "perf_hooks"
 const functionName = "check-receiver"
 import v3 from "./v3"
 
-const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.CompleteCheckMessageV3): Promise<void> {
+const queueTrigger: AzureFunction = async function (context: Context, completedCheck: schemas.SubmittedCheckMessageV3): Promise<void> {
   const start = performance.now()
   const version = completedCheck.version
   context.log(typeof(version))

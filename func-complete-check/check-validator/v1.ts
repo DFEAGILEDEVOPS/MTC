@@ -1,15 +1,15 @@
 import { Context } from "@azure/functions"
-import { ValidateCheckMessage, ReceivedCheck, MarkCheckMessage } from "../types/message-schemas"
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from "../types/message-schemas"
 import moment = require("moment");
 import * as R from "ramda"
 import compressionService from "../lib/compression-service"
 //@ts-ignore
 import azureStorageHelper from "../lib/azure-storage-helper"
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
-import checkSchema from "../message-schemas/complete-check.v1.json"
+import checkSchema from "../messages/complete-check.v1.json"
 
 class v1 {
-  async process (context: Context, validateCheckMessage: ValidateCheckMessage) {
+  async process (context: Context, validateCheckMessage: ValidateCheckMessageV1) {
     let receivedCheck = findReceivedCheck(context.bindings.receivedCheckTable)
     try {
       detectArchive(receivedCheck)
@@ -23,7 +23,7 @@ class v1 {
     }
     await updateReceivedCheckWithValidationTimestamp(receivedCheck)
     // dispatch message to indicate ready for marking
-    const markingMessage: MarkCheckMessage = {
+    const markingMessage: MarkCheckMessageV1 = {
       checkCode: receivedCheck.RowKey,
       schoolUUID: receivedCheck.PartitionKey,
       version: "1"
@@ -60,7 +60,6 @@ async function updateReceivedCheckWithErrorDetails (errorMessage, receivedCheck)
 }
 
 function detectArchive (message) {
-  // TODO use same pattern as validateArchive()?
   if (!message.hasOwnProperty('archive')) {
     throw new Error(`message is missing 'archive' property`)
   }

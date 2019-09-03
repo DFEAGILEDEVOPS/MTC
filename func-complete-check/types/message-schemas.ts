@@ -1,4 +1,4 @@
-export interface CompleteCheckV1 {
+export interface SubmittedCheckV1 {
   answers: Array<object>
   audit: Array<object>
   config: object
@@ -11,20 +11,20 @@ export interface CompleteCheckV1 {
   checkCode: string
 }
 
-export interface CompleteCheckMessageV3 {
+export interface SubmittedCheckMessageV3 {
   version: string
   checkCode: string
   schoolUUID: string
   archive: string
 }
 
-export interface ValidateCheckMessage {
+export interface ValidateCheckMessageV1 {
   checkCode: string
   schoolUUID: string
   version: string
 }
 
-export interface MarkCheckMessage {
+export interface MarkCheckMessageV1 {
   checkCode: string
   schoolUUID: string
   version: string

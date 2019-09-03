@@ -1,10 +1,10 @@
 import { AzureFunction, Context } from "@azure/functions"
-import { CompleteCheckMessageV3, ValidateCheckMessage } from "../types/message-schemas";
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1 } from "../types/message-schemas";
 import { performance } from "perf_hooks"
 const functionName = 'check-validator'
 import v1 from "./v1"
 
-const serviceBusQueueTrigger: AzureFunction = async function(context: Context, validateCheckMessage: ValidateCheckMessage): Promise<void> {
+const serviceBusQueueTrigger: AzureFunction = async function(context: Context, validateCheckMessage: ValidateCheckMessageV1): Promise<void> {
   const start = performance.now()
   const version = validateCheckMessage.version
   context.log.info(`${functionName}: version:${version} message received for checkCode ${validateCheckMessage.checkCode}`)
