@@ -31,8 +31,8 @@ export interface MarkCheckMessageV1 {
 }
 
 export interface ReceivedCheck {
-  PartitionKey: string //schoolUUID
-  RowKey: string //checkCode
+  PartitionKey: string // schoolUUID
+  RowKey: string // checkCode
   archive: string
   checkReceivedAt: Date
   checkVersion: number

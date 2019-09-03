@@ -1,21 +1,21 @@
-import { Context } from "@azure/functions"
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from "../typings/message-schemas"
-import moment = require("moment");
-import azureStorageHelper from "../lib/azure-storage-helper"
+import { Context } from '@azure/functions'
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from '../typings/message-schemas'
+import Moment from 'moment'
+import azureStorageHelper from '../lib/azure-storage-helper'
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 
-class v3 {
+class V3 {
   async process (context: Context, receivedCheck: SubmittedCheckMessageV3) {
-    const receivedCheckEntity : ReceivedCheck = {
+    const receivedCheckEntity: ReceivedCheck = {
       PartitionKey: receivedCheck.schoolUUID,
       RowKey: receivedCheck.checkCode,
       archive: receivedCheck.archive,
-      checkReceivedAt: moment().toDate(),
+      checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version
     }
     await tableService.insertEntityAsync('receivedCheck', receivedCheckEntity)
-    const message : ValidateCheckMessageV1 = {
-      version: "1",
+    const message: ValidateCheckMessageV1 = {
+      version: '1',
       checkCode: receivedCheck.checkCode,
       schoolUUID: receivedCheck.schoolUUID
     }
@@ -23,4 +23,4 @@ class v3 {
   }
 }
 
-export default new v3()
+export default new V3()

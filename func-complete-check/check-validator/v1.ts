@@ -1,13 +1,13 @@
-import { Context } from "@azure/functions"
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from "../typings/message-schemas"
-import moment = require("moment");
-import * as R from "ramda"
-import compressionService from "../lib/compression-service"
-import azureStorageHelper from "../lib/azure-storage-helper"
+import { Context } from '@azure/functions'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../typings/message-schemas'
+import Moment from 'moment'
+import * as R from 'ramda'
+import compressionService from '../lib/compression-service'
+import azureStorageHelper from '../lib/azure-storage-helper'
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
-import checkSchema from "../messages/complete-check.v1.json"
+import checkSchema from '../messages/complete-check.v1.json'
 
-class v1 {
+class V1 {
   async process (context: Context, validateCheckMessage: ValidateCheckMessageV1) {
     let receivedCheck = findReceivedCheck(context.bindings.receivedCheckTable)
     try {
@@ -25,7 +25,7 @@ class v1 {
     const markingMessage: MarkCheckMessageV1 = {
       schoolUUID: validateCheckMessage.schoolUUID,
       checkCode: validateCheckMessage.checkCode,
-      version: "1"
+      version: '1'
     }
 
     context.bindings.checkMarkingQueue = [markingMessage]
@@ -46,14 +46,14 @@ function findReceivedCheck (receivedCheckRef: any) {
 }
 
 async function updateReceivedCheckWithValidationTimestamp (receivedCheck: ReceivedCheck) {
-  receivedCheck.validatedAt = moment().toDate()
+  receivedCheck.validatedAt = Moment().toDate()
   receivedCheck.isValid = true
   await tableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
 
 async function updateReceivedCheckWithErrorDetails (errorMessage: string, receivedCheck: ReceivedCheck) {
   receivedCheck.validationError = errorMessage
-  receivedCheck.validatedAt = moment().toDate()
+  receivedCheck.validatedAt = Moment().toDate()
   receivedCheck.isValid = false
   await tableService.replaceEntityAsync('receivedCheck', receivedCheck)
 }
@@ -66,7 +66,7 @@ function detectArchive (message: object) {
 
 function validateArchive (check: object, context: Context) {
   // get top level properties of message schema as an array
-  //@ts-ignore
+  // @ts-ignore
   const allProperties = Object.getOwnPropertyNames(checkSchema)
   const requiredProperties = R.without(['version'], allProperties)
   for (let index = 0; index < requiredProperties.length; index++) {
@@ -78,4 +78,4 @@ function validateArchive (check: object, context: Context) {
   }
 }
 
-export default new v1()
+export default new V1()

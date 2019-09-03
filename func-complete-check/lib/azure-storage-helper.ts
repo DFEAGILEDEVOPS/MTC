@@ -1,17 +1,17 @@
 'use strict'
 
 import 'dotenv/config'
-import * as az from "azure-storage"
+import * as az from 'azure-storage'
 const QueryComparisons = az.TableUtilities.QueryComparisons
 const TableQuery = az.TableQuery
-import bluebird from "bluebird"
-import { Logger} from "@azure/functions"
+import bluebird from 'bluebird'
+import { Logger } from '@azure/functions'
 
 export declare class AsyncTableService extends az.TableService {
   replaceEntityAsync (table: string, entity: any): Promise<any>
-  queryEntitiesAsync(table: string, tableQuery: az.TableQuery, currentToken?: az.TableService.TableContinuationToken): Promise<any>
-  deleteEntityAsync(table: string, entityDescriptor: any): Promise<any>
-  insertEntityAsync(table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>
+  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken?: az.TableService.TableContinuationToken): Promise<any>
+  deleteEntityAsync (table: string, entityDescriptor: any): Promise<any>
+  insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>
 }
 
 export declare class StorageError extends Error {
@@ -138,7 +138,7 @@ const azureStorageHelper = {
     }
     blobService = az.createBlobService()
     bluebird.promisifyAll(blobService, {
-      promisifier: (originalFunction) => function (this:any, ...args) {
+      promisifier: (originalFunction) => function (this: any, ...args) {
         return new Promise((resolve, reject) => {
           try {
             originalFunction.call(this, ...args, (error: any, result: any, response: any) => {

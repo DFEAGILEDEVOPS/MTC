@@ -6,7 +6,19 @@
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin",
+        "alwaysShowRuleFailuresAsWarnings": false,
+        "ignoreDefinitionFiles": true,
+        "configFile": "./tslint.json",
+        "suppressWhileTypeErrorsPresent": false
+      }
+    ]
   }
 }
