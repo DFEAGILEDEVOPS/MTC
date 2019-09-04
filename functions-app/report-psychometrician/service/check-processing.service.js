@@ -111,6 +111,7 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
     // Open the input file for reading
     const inputStream = fs.createReadStream(filename)
       .on('error', error => {
+        console.error(`${functionName}: Error reading CSV: ${error}`)
         psReportCsvStream.end(() => {
           anomalyCsvStream.end(() => {
             reject(error)
