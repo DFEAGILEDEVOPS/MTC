@@ -2,7 +2,7 @@ class HdfFormPage < SitePrism::Page
   set_url '/attendance/declaration-form'
 
   element :logo, '.logo-text'
-  element :heading, '.heading-medium'
+  element :heading, '.govuk-heading-xl'
   element :first_name, 'input[name="firstName"]'
   element :last_name, 'input[name="lastName"]'
   element :is_headteacher_yes, 'input[name="isHeadteacher"][value="Y"]'
@@ -12,7 +12,7 @@ class HdfFormPage < SitePrism::Page
   element :breadcrumb, '#content .breadcrumbs'
   element :csrf, 'input[name="_csrf"]', visible: false
   elements :error_messages, '.error-message'
-  section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
+  section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-title"]'
 
   def enter_details(hash)
     first_name.set hash.fetch(:first_name, '')
