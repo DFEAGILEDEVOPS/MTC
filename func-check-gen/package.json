@@ -1,0 +1,30 @@
+{
+  "name": "func-check-gen",
+  "version": "",
+  "scripts": {
+    "build": "tsc",
+    "build:production": "npm run prestart && npm prune --production",
+    "watch": "tsc --w",
+    "prestart": "npm run build && func extensions install",
+    "start:host": "func start",
+    "start": "npm run start:host & npm run watch",
+    "test": "echo \"No tests yet...\""
+  },
+  "description": "",
+  "devDependencies": {
+    "@azure/functions": "^1.0.1-beta1",
+    "@types/bluebird": "^3.5.27",
+    "@types/node": "^12.7.4",
+    "@typescript-eslint/eslint-plugin": "^2.1.0",
+    "@typescript-eslint/parser": "^2.1.0",
+    "dotenv": "^8.1.0",
+    "tslint": "^5.19.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.3.3",
+    "typescript-tslint-plugin": "^0.5.4"
+  },
+  "dependencies": {
+    "azure-storage": "^2.10.3",
+    "bluebird": "^3.5.5"
+  }
+}
