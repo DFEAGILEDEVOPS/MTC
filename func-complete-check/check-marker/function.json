@@ -1,0 +1,28 @@
+{
+  "bindings": [
+    {
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "name": "markCheckMessage",
+      "queueName": "check-marking",
+      "connection": "ServiceBusConnection"
+    },
+    {
+      "direction": "in",
+      "type": "table",
+      "name": "receivedCheckTable",
+      "tableName": "receivedCheck",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING",
+      "filter": "(PartitionKey eq '{schoolUUID}') and (RowKey eq '{checkCode}')",
+      "take": "1"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkCompletionQueue",
+      "queueName": "check-completion",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/check-marker/index.js"
+}

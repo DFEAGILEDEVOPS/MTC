@@ -47,6 +47,7 @@ const dataService = {
                      p.lastName,
                      p.dateOfBirth,
                      p.upn,
+                     p.gender,
                      (select
                           id,
                           check_id,

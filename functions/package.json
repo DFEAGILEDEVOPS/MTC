@@ -1,6 +1,7 @@
 {
   "license": "GPL-3.0",
   "scripts": {
+    "bindings": "func extensions install",
     "start": "func host start",
     "test": "yarn lint && yarn run nyc -r html jasmine **/*.spec.js */**/*.spec.js",
     "lint": "standard",

@@ -1,4 +1,26 @@
 {
-  "queues": ["check-started", "check-complete", "prepare-check", "pupil-feedback", "pupil-login", "pupil-prefs",  "pupil-status", "prepared-check-sync", "prepared-check-delete", "test-pupil-connection"],
-  "tables": ["preparedCheck", "pupilEvent", "pupilFeedback"]
+  "queues": [
+    "check-complete", // to be retired
+    "check-started",
+    "check-submitted",
+    "prepare-check",
+    "prepared-check-delete",
+    "prepared-check-sync",
+    "pupil-feedback",
+    "pupil-login",
+    "pupil-prefs",
+    "pupil-status",
+    "test-pupil-connection"
+  ],
+  "service-bus-queues": [
+    "check-marking",
+    "check-validation",
+    "check-completion"
+  ],
+  "tables": [
+    "receivedCheck",
+    "preparedCheck",
+    "pupilEvent",
+    "pupilFeedback"
+  ]
 }
