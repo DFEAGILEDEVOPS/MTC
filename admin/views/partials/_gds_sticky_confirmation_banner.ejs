@@ -9,15 +9,6 @@
                 <button id="stickyConfirm" data-prevent-double-click="true" class="govuk-button govuk-form-button govuk-!-margin-bottom-0" type="button" data-module="govuk-button">
                     <%= submitLabel %>
                 </button>
-                <% if (typeof submitPrint !== 'undefined') { %>
-                    <script>
-                        document.querySelector('#stickyConfirm').addEventListener('click', function(event) {
-                            event.preventDefault();
-                            window.MTCAdmin.printPopup.hideUncheckedPupils('.pupil-print-table');
-                            window.print();
-                        });
-                    </script>
-                <% } %>
                 <a id="stickyCancel" href="<%= cancelLink %>" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
                     <%= cancelLabel %>
                 </a>
@@ -25,4 +16,12 @@
         </div>
     </div>
 </div>
-
+<% if (typeof submitPrint !== 'undefined') { %>
+    <script>
+      document.querySelector('#stickyConfirm').onclick = function(event) {
+        event.preventDefault();
+        window.MTCAdmin.printPopup.hideUncheckedPupils('.pupil-print-table');
+        window.print();
+      };
+    </script>
+<% } %>

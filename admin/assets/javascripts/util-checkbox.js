@@ -190,7 +190,8 @@ var stickyBanner = {
   calculatePosition: function () {
     var stickyBannerEl = $('#stickyBanner')
     var footerEl = $('#govuk-footer').length === 0 ? $('#footer') : $('#govuk-footer')
-    if (stickyBannerEl.next(footerEl).length === 0) {
+    var printPinsForm = $('#printPinsForm')
+    if (stickyBannerEl.next(footerEl).length === 0 || printPinsForm.length > 0) {
       // we're moving the banner outside of the form, so add a click handler
       // to submit it
       var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $(document.forms && document.forms[0])
