@@ -1,13 +1,15 @@
 {
   "name": "func-complete-check",
   "version": "0.1.0",
+  "private": false,
+  "license": "GPL-3.0",
   "scripts": {
     "build": "tsc",
-    "build:production": "npm run prestart && npm prune --production",
+    "build:production": "yarn prestart",
     "watch": "tsc --w",
-    "prestart": "npm run build && func extensions install",
+    "prestart": "yarn build && func extensions install",
     "start:host": "func start",
-    "start": "npm run start:host & npm run watch",
+    "start": "yarn start:host & yarn watch",
     "test": "echo \"No tests yet :O \"",
     "lint": "standard && tslint --project ."
   },
