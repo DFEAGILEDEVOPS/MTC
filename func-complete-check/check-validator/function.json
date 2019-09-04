@@ -1,0 +1,28 @@
+{
+  "bindings": [
+    {
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "name": "validateCheckMessage",
+      "queueName": "check-validation",
+      "connection": "ServiceBusConnection"
+    },
+    {
+      "direction": "in",
+      "type": "table",
+      "name": "receivedCheckTable",
+      "tableName": "receivedCheck",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING",
+      "filter": "(PartitionKey eq '{schoolUUID}') and (RowKey eq '{checkCode}')",
+      "take": "1"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkMarkingQueue",
+      "queueName": "check-marking",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/check-validator/index.js"
+}
