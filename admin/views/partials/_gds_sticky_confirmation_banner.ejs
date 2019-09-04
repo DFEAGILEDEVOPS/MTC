@@ -12,7 +12,6 @@
                 <% if (typeof submitPrint !== 'undefined') { %>
                     <script>
                       document.querySelector('#stickyConfirm').addEventListener('click', function(event) {
-                        event.preventDefault();
                         window.MTCAdmin.printPopup.hideUncheckedPupils('.pupil-print-table');
                         window.print();
                       })
