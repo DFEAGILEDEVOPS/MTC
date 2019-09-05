@@ -27,6 +27,7 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
   './assets/javascripts/mtc-autocomplete.js',
+  './assets/javascripts/mtc-check-forms.js',
   './assets/javascripts/print-popup.js',
   './assets/javascripts/table-sorting.js',
   './assets/javascripts/session-expiry.js',
