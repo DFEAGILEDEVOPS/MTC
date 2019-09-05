@@ -4,14 +4,13 @@ import azureStorageHelper from '../lib/azure-storage-helper'
 const tableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-  const schoolCount = 10000 // 18000
+  const schoolCount = 110000
   const pupilCount = 45
   const pupilPin = 1234
   const schoolPin = 123456
   let batch
   const entGen = TableUtilities.entityGenerator
-  context.log(`entity generator is ${entGen}`)
-  for (let schoolIdx = 1001; schoolIdx <= schoolCount; schoolIdx++) {
+  for (let schoolIdx = 100000; schoolIdx <= schoolCount; schoolIdx++) {
     context.log(`building batch ${schoolIdx}`)
     batch = new TableBatch()
     for (let pupilIdx = 1; pupilIdx <= pupilCount; pupilIdx++) {

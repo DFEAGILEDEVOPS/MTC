@@ -1,0 +1,23 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "authLevel": null,
+      "type": "http",
+      "direction": "out",
+      "name": "res",
+      "methods": null
+    }
+  ],
+  "scriptFile": "../dist/check-allocator-redis/index.js"
+}
