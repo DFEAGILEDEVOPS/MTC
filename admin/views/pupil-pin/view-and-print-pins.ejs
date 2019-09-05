@@ -112,7 +112,10 @@
     </div>
 </main>
 <script>
-    document.querySelector('#printPinsButton').addEventListener('click', function(event) {
-        window.print();
-    })
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelector('#printPinsButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    window.print();
+  })
+})
 </script>
