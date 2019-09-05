@@ -15,6 +15,11 @@ module.exports = {
   startedAt: moment('2018-02-11T15:42:38.807'),
   formData: [{ f1: 2, f2: 5 }, { f1: 11, f2: 2 }, { f1: 5, f2: 10 }, { f1: 4, f2: 4 }, { f1: 3, f2: 9 }, { f1: 2, f2: 4 }, { f1: 3, f2: 3 }, { f1: 4, f2: 9 }, { f1: 6, f2: 5 }, { f1: 12, f2: 12 }],
   data: {
+    device: {
+      navigator: {
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15'
+      }
+    },
     access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNVEMgQWRtaW4iLCJzdWIiOjEyLCJleHAiOjE1MTgzNjczMzgsIm5iZiI6MTUxODM2MzczOCwiandpIjoiMjQwZTFiOWQtMjk1My00YjAwLWE3YjUtOTc4NDczNjQyYzBiIiwiaWF0IjoxNTE4MzYzNzM4fQ.ULgckomwh5y9bwblEvVYNS-cNO2JnHxLGSxYMvcmoNU',
     answers: [{
       factor1: 2,
@@ -78,7 +83,10 @@ module.exports = {
       clientTimestamp: '2018-02-11T15:42:21.997Z'
     }, {
       type: 'QuestionRendered',
-      clientTimestamp: '2018-02-11T15:42:24.003Z'
+      clientTimestamp: '2018-02-11T15:42:24.003Z',
+      data: {
+        sequenceNumber: 1
+      }
     }, {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:25.904Z'
@@ -207,9 +215,11 @@ module.exports = {
       clientTimestamp: '2018-02-11T15:43:26.772Z'
     }],
     config: {
-      questionTime: 5,
-      loadingTime: 2,
-      speechSynthesis: false
+      questionTime: 6,
+      loadingTime: 3,
+      questionReader: false,
+      colourContrast: true,
+      fontSize: true
     },
     inputs: [
       {
