@@ -27,7 +27,7 @@ const anomalyFileReportService = {
    */
   detectAnomalies: function (row, logger) {
     const data = R.evolve(rowToDataTransformations, row)
-    console.log(`Transformed data is`, data)
+    // console.log(`Transformed data is`, data)
     // run all anomaly detections against the data and return the result
     return R.values(detections).map(f => f(data, logger))
   }
