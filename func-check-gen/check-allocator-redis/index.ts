@@ -1,21 +1,46 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import * as Redis from 'handy-redis'
+import checkTemplate from '../json/prepared-check.json'
+import * as uuid from 'uuid'
+
+const redisKeyPrefix = 'check:allocation:'
+const schoolsToAllocate = 25000
+const pupilsPerSchool = 50
+const redisItemExpiryInSeconds = 3600 // 1 hour
+
+class SchoolRecord {
+  constructor () {
+    this.pupils = new Array<object>()
+    this.createdAt = new Date()
+  }
+  pupils: Array<object>
+  createdAt: Date
+}
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
-
-    if (name) {
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
-        };
+  // init redis
+  const redis = Redis.createHandyClient({
+    host: process.env.RedisHost,
+    password: process.env.RedisKey,
+    port: 6380,
+    tls: process.env.RedisHost
+  })
+  for (let schoolIdx = 0; schoolIdx < schoolsToAllocate; schoolIdx++) {
+    context.log(`adding school ${schoolIdx}`)
+    const schoolUUID = uuid.v4()
+    const schoolItem = new SchoolRecord()
+    let pupilUUID
+    const pupils = new Array()
+    for (let pupilIdx = 0; pupilIdx < pupilsPerSchool; pupilIdx++) {
+      pupilUUID = uuid.v4()
+      pupils.push({
+        id: pupilUUID,
+        check: checkTemplate
+      })
     }
-    else {
-        context.res = {
-            status: 400,
-            body: "Please pass a name on the query string or in the request body"
-        };
-    }
-};
+    schoolItem.pupils = pupils
+    const response = await redis.setex(`${redisKeyPrefix}:${schoolUUID}:${pupilUUID}`, redisItemExpiryInSeconds, JSON.stringify(schoolItem))
+  }
+}
 
-export default httpTrigger;
+export default httpTrigger

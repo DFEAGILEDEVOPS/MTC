@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "azure-storage": "^2.10.3",
+    "bluebird": "^3.5.5"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.27"
+  }
+}

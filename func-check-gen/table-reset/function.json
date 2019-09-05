@@ -7,14 +7,17 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get"
+        "get",
+        "post"
       ]
     },
     {
+      "authLevel": null,
       "type": "http",
       "direction": "out",
-      "name": "res"
+      "name": "res",
+      "methods": null
     }
   ],
-  "scriptFile": "../dist/check-allocator-table/index.js"
+  "scriptFile": "../dist/table-reset/index.js"
 }
