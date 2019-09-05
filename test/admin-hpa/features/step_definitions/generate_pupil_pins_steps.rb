@@ -288,7 +288,6 @@ And(/^I should be able to generate pins for all pupils in this group$/) do
   pupils_with_pins = generated_pins_page.pupil_list.rows.select {|row| row.has_pin?}
   names = pupils_with_pins.map {|row| row.name.text}
   expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
-
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
