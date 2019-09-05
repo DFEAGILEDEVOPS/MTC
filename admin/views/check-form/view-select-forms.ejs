@@ -1,100 +1,102 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<form method="post" action="/check-form/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
-  <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-  <div class="grid-row">
-    <div class="column-two-thirds">
-      <h1 class="heading-xlarge"><%= pageTitle %></h1>
-      <%- partial('partials/_session_expiry') %>
-      <div class="panel panel-border-wide">
-          <% if (checkFormData && checkFormData.length) { %>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <div class="govuk-inset-text">
+        <% if (checkFormData && checkFormData.length) { %>
           <div><%= !checkWindowData.isBeforeCheckType ? 'Assigned' : 'Assign' %> forms to <b><%= pageTitle %></b></div>
           <div><%= checkWindowData.checkFormTypeTitle %> period: <%= checkFormType !== 'live' ?
-            `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
-            `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
+                    `${checkWindowData.familiarisationCheckStartDate} to ${checkWindowData.familiarisationCheckEndDate}` :
+                    `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
           </div>
-          <% } else if (checkFormData && checkFormData.length === 0) { %>
-          No forms have been uploaded yet. Please go to <a href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.
-          <% } %>
-      </div>
-
-      <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
-      <table class="spacious" id="assignFormToWindowList" role="group">
-        <thead>
-        <tr>
-          <th scope="col">Form name</th>
-          <% if (!checkWindowData.isBeforeCheckType) { %>
-          <th scope="col">Assigned to this window</th>
-          <% } %>
-          <% if (checkWindowData.isBeforeCheckType) { %>
-          <th scope="col">
-            <div class="tick-all-checkboxes-wrapper">
-              <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
-              <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
-              <div class="multiple-choice-mtc">
-                <input id="tickAllCheckboxes" name="allForms" type="checkbox" aria-label="Select all Forms.">
-                <div></div>
-              </div>
-            </div>
-          </th>
-          <% } %>
-        </tr>
-        </thead>
-        <tbody>
-        <% checkFormData.forEach((checkForm, i) => { %>
-        <tr>
-          <td>
-            <label for="checkForm<%= checkForm.urlSlug %>">
-              <%= checkForm.name %>
-            </label>
-          </td>
-          <% if (!checkWindowData.isBeforeCheckType) { %>
-          <td><%= checkForm.checked ? 'Yes' : '' %></td>
-          <% } %>
-          <% if (checkWindowData.isBeforeCheckType) { %>
-          <td class="align-right">
-            <div class="multiple-choice-mtc">
-              <input id="checkForm-<%= i %>"
-                     name="checkForms[]"
-                     type="checkbox"
-                     value="<%= checkForm.urlSlug %>"
-                     aria-label="Tick form <%= checkForm.name %>"
-                     aria-checked="false"
-                     <% if (checkForm.checked) { %>checked="true"<% } %>
-                     role="checkbox">
-              <div></div>
-            </div>
-          </td>
-        </tr>
+        <% } else if (checkFormData && checkFormData.length === 0) { %>
+          No forms have been uploaded yet. Please go to <a class="govuk-link" href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.
         <% } %>
-        <% }) %>
-        </tbody>
-      </table>
-      <% } %>
-      <% if (checkFormType !== 'live' && checkWindowData.isBeforeCheckType) { %>
-      <div class="form-buttons">
-        <input type="submit" class="button" value="Save" />
-        <a class="button button-secondary" href="/check-form/assign-forms-to-check-windows">Cancel</a>
       </div>
+      <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
+      <form method="post" action="/check-form/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <table class="govuk-table govuk-spacious" id="assignFormToWindowList" role="group">
+          <caption class="govuk-table__caption">List of check forms</caption>
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Form name</th>
+            <% if (!checkWindowData.isBeforeCheckType) { %>
+            <th scope="col" class="govuk-table__header">Assigned to this window</th>
+            <% } %>
+            <% if (checkWindowData.isBeforeCheckType) { %>
+            <th scope="col" class="govuk-table__header">
+              <td>
+                <div class="tick-all-checkboxes-wrapper">
+                  <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                  <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                  <div class="multiple-choice-mtc">
+                    <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all forms.">
+                    <div></div>
+                  </div>
+                </div>
+              </td>
+            </th>
+            <% } %>
+          </tr>
+          </thead>
+          <tbody>
+            <% checkFormData.forEach((checkForm, i) => { %>
+              <tr class="govuk-table__row">
+                <td>
+                  <label class="govuk-label" for="checkForm<%= checkForm.urlSlug %>">
+                    <%= checkForm.name %>
+                  </label>
+                </td>
+                <% if (!checkWindowData.isBeforeCheckType) { %>
+                  <td><%= checkForm.checked ? 'Yes' : '' %></td>
+                <% } %>
+                <% if (checkWindowData.isBeforeCheckType) { %>
+                  <td>
+                    <div class="multiple-choice-mtc">
+                      <input id="checkForm-<%= i %>"
+                             name="checkForms[]"
+                             type="checkbox"
+                             class="govuk-checkboxes__input"
+                             value="<%= checkForm.urlSlug %>"
+                             aria-label="Tick form <%= checkForm.name %>"
+                             aria-checked="false"
+                             <% if (checkForm.checked) { %>checked="true"<% } %>
+                             role="checkbox">
+                      <div></div>
+                    </div>
+                  </td>
+                <% } %>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% if (checkFormType !== 'live' && checkWindowData.isBeforeCheckType) { %>
+        <input type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" value="Save" />
+        <a class="govuk-button--secondary" href="/check-form/assign-forms-to-check-windows">Cancel</a>
+        <% } %>
+      </form>
+        <div class="govuk-back-to-top">
+          <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+            <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+              <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+            </svg>Back to top
+          </a>
+        </div>
       <% } %>
-
-      <div class="back-to-top-container">
-        <a href="#top">Back to top</a>
-      </div>
-
-    </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
     </div>
   </div>
-  <% if (checkFormType === 'live' && checkWindowData.isBeforeCheckType) { %>
-  <%- partial('partials/_sticky_confirmation_banner',
-    {
-      countingLabel: 'Forms',
-      cancelLabel: 'Cancel',
-      cancelLink: '/check-form/assign-forms-to-check-windows',
-      submitLabel: 'Confirm',
-      isSubmitDisabled: true
-    }) %>
-  <% } %>
-</form>
+</main>
+<% if (checkFormType === 'live' && checkWindowData.isBeforeCheckType) { %>
+  <%- partial('partials/_gds_sticky_confirmation_banner',
+      {
+        countingLabel: 'Forms',
+        cancelLabel: 'Cancel',
+        cancelLink: '/check-form/assign-forms-to-check-windows',
+        submitLabel: 'Confirm',
+        isSubmitDisabled: true
+      })
+  %>
+<% } %>
