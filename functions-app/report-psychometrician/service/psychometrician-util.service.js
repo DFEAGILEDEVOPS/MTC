@@ -28,6 +28,13 @@ psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, compl
   return R.propOr('error', 'clientTimestamp', logEntry)
 }
 
+/**
+ * @deprecated - not robust enough for production data
+ * @param firstAuditEventType
+ * @param secondAuditEventType
+ * @param completedCheck
+ * @return {string|*}
+ */
 psUtilService.getClientTimestampDiffFromAuditEvents = function (firstAuditEventType, secondAuditEventType, completedCheck) {
   if (!completedCheck.data) return ''
 
@@ -35,6 +42,25 @@ psUtilService.getClientTimestampDiffFromAuditEvents = function (firstAuditEventT
     moment(psUtilService.getClientTimestampFromAuditEvent(secondAuditEventType, completedCheck))
       .diff(moment(psUtilService.getClientTimestampFromAuditEvent(firstAuditEventType, completedCheck)))
   ).format('HH:mm:ss', { trim: false })
+}
+
+/**
+ * Return a duration given two dateTimes as Moment objects.
+ * Returns an empty string on error.
+ * @param {Object} tStart - moment date
+ * @param {Object} tEnd - moment date
+ * @return {string|*}
+ */
+psUtilService.getTimeDiff = function (tStart, tEnd) {
+  if (!moment.isMoment(tStart) || !tStart.isValid()) {
+    return ''
+  }
+
+  if (!moment.isMoment(tEnd) || !tEnd.isValid()) {
+    return ''
+  }
+
+  return moment.duration(tEnd.diff(tStart)).format('HH:mm:ss', { trim: false })
 }
 
 /**
@@ -208,7 +234,7 @@ psUtilService.getLastAnswerInputTime = function (inputs, answer) {
 /**
  * Returns the client timestamp as a string of the first input from the user
  * @param {Array} inputs
- * @param {Object} answer
+ * @param {String} answer
  * @return {String}
  */
 psUtilService.getFirstInputTime = function (inputs, answer) {
@@ -258,6 +284,7 @@ psUtilService.filterInputsToAnswerKeys = function (inputs) {
 /**
  * Calculate the response time for the question: time between the first key being pressed and the last key being pressed
  * @param {Array} input
+ * @param {string} answer - the response provided as the answer to the question
  * @return {*}
  */
 psUtilService.getResponseTime = function (inputs, answer) {
@@ -341,6 +368,11 @@ psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
   return 0
 }
 
+/**
+ * @deprecated - no longer needed in v2
+ * @param markedAnswer
+ * @return {string|number}
+ */
 psUtilService.getScore = function (markedAnswer) {
   if (!markedAnswer.hasOwnProperty('isCorrect')) {
     return 'error'
@@ -477,10 +509,10 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
-psUtilService.getPupilStatus = function (check) {
-  if (check.attendanceCode) {
+psUtilService.getPupilStatus = function (attendanceCode, checkStatus) {
+  if (attendanceCode) {
     return 'Not taking the check'
-  } else if (check.code === 'NTR') {
+  } else if (checkStatus === 'NTR') {
     return 'Incomplete'
   }
   return 'Completed'

@@ -1,0 +1,16 @@
+{
+  "name": "2020",
+  "version": "1.0.0",
+  "description": "spikes and exploration",
+  "main": "index.js",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@azure/cosmos": "^3.2.0",
+    "dotenv": "^8.1.0",
+    "uuid": "^3.3.3"
+  },
+  "scripts": {
+    "start":"node ./index.js"
+  }
+}

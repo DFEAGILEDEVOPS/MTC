@@ -71,10 +71,10 @@ describe('anomaly-report.service', () => {
       const reportData = {
         CheckCode: '763AD270-278D-4221-886C-23FF7E5E5736',
         Date: 'date',
-        'Speech Synthesis': false,
+        'Speech Synthesis': undefined,
         Mark: '9 out of 10',
         Device: 'Other ',
-        Agent: 'Other 0.0.0 / Other 0.0.0',
+        Agent: 'Safari 12.1.2 / Mac OS X 10.14.6',
         Message: 'message',
         'Tested Value': 1,
         'Expected Value': 2,
