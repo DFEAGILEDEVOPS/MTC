@@ -1,6 +1,6 @@
 {
   "queues": [
-    "check-complete", // to be retired
+    "check-complete",
     "check-started",
     "check-submitted",
     "prepare-check",
