@@ -8,7 +8,7 @@
     "prestart": "yarn build && func extensions install",
     "start:host": "func start",
     "start": "yarn start:host & yarn watch",
-    "test": "echo \"No tests yet...\""
+    "test": "yarn build && ./node_modules/.bin/jasmine"
   },
   "description": "",
   "devDependencies": {
