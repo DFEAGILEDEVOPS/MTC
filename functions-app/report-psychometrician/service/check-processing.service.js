@@ -3,6 +3,7 @@ const csv = require('fast-csv')
 const fs = require('fs-extra')
 const path = require('path')
 
+const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const config = require('../../config')
 const mtcFsUtils = require('../../lib/mtc-fs-utils')
@@ -124,8 +125,14 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
       .pipe(parser)
       .on('data', row => {
         try {
+          /** @type Object */
           const psData = psychometricianReportService.produceReportDataV2(row)
           checkProcessingService.writeCsv(inputStream, psReportCsvStream, psData)
+          /** @type Array */
+          const anomalyData = anomalyFileReportService.detectAnomalies(row, logger)
+          anomalyData.forEach(anomaly => {
+            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, anomaly)
+          })
           meta.processCount += 1
         } catch (error) {
           console.error(`${functionName} ERROR producing report data: ${error}`)
