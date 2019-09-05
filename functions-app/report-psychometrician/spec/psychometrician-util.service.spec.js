@@ -2,6 +2,7 @@
 /* global describe, it, expect, beforeEach, spyOn, fail */
 const R = require('ramda')
 const service = require('../service/psychometrician-util.service')
+const moment = require('moment')
 
 // Get a marked check mock
 const checkMockOrig = require('./mocks/check-with-results')
@@ -1141,15 +1142,15 @@ describe('psychometrician-util.service', () => {
 
   describe('#getPupilStatus', () => {
     it('returns "Incomplete" when attendanceCode is set', () => {
-      const status = service.getPupilStatus({ attendanceCode: 1 })
+      const status = service.getPupilStatus('LEFTT', '')
       expect(status).toBe('Not taking the check')
     })
-    it('returns "Not taking the check" when code is NTR', () => {
-      const status = service.getPupilStatus({ code: 'NTR' })
+    it('returns "Incomplete" when code is NTR', () => {
+      const status = service.getPupilStatus('', 'NTR')
       expect(status).toBe('Incomplete')
     })
     it('returns "Completed" when no attendanceCode or NTR', () => {
-      const status = service.getPupilStatus({ code: 'CMP' })
+      const status = service.getPupilStatus('', 'CMP')
       expect(status).toBe('Completed')
     })
   })
@@ -1288,6 +1289,57 @@ describe('psychometrician-util.service', () => {
     it('returns "" for an unknown code', () => {
       const n = service.getAttendanceReasonNumber('XX')
       expect(n).toBe('')
+    })
+  })
+
+  describe('#getTimeDiff', () => {
+    it('detects when tStart is null', () => {
+      const res = service.getTimeDiff(null, moment())
+      expect(res).toBe('')
+    })
+
+    it('detects when tStart is a empty string', () => {
+      const res = service.getTimeDiff('', moment())
+      expect(res).toBe('')
+    })
+
+    it('detects when tStart is undefined', () => {
+      const res = service.getTimeDiff(undefined, moment())
+      expect(res).toBe('')
+    })
+
+    it('detects when tStart is an invalid moment date', () => {
+      const t1 = moment('2019-02-30T11:59:59')
+      const res = service.getTimeDiff(t1, moment())
+      expect(res).toBe('')
+    })
+
+    it('detects when tStart is null', () => {
+      const res = service.getTimeDiff(moment, null)
+      expect(res).toBe('')
+    })
+
+    it('detects when tStart is a empty string', () => {
+      const res = service.getTimeDiff(moment(), '')
+      expect(res).toBe('')
+    })
+
+    it('detects when tEnd is undefined', () => {
+      const res = service.getTimeDiff(moment(), undefined)
+      expect(res).toBe('')
+    })
+
+    it('detects when tEnd is an invalid moment date', () => {
+      const t2 = moment('2019-02-30T11:59:59')
+      const res = service.getTimeDiff(moment(), t2)
+      expect(res).toBe('')
+    })
+
+    it('returns the duration correctly', () => {
+      const t1 = moment('2019-08-29T16:55:30')
+      const t2 = moment('2019-08-29T16:57:35')
+      const res = service.getTimeDiff(t1, t2)
+      expect(res).toBe('00:02:05')
     })
   })
 })
