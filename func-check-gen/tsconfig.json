@@ -23,8 +23,5 @@
         "suppressWhileTypeErrorsPresent": false
       }
     ]
-  },
-  "references": [
-    { "path": "../ts-lib" }
-]
+  }
 }

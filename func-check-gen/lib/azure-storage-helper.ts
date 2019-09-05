@@ -9,7 +9,7 @@ import { Logger } from '@azure/functions'
 
 export declare class AsyncTableService extends az.TableService {
   replaceEntityAsync (table: string, entity: any): Promise<any>
-  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken?: az.TableService.TableContinuationToken): Promise<any>
+  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken | null): Promise<any>
   deleteEntityAsync (table: string, entityDescriptor: any): Promise<any>
   insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>
   executeBatchAsync (table: string, batch: az.TableBatch): Promise<any>
@@ -33,7 +33,7 @@ const azureStorageHelper = {
 
     let check
     try {
-      const data = await tableService.queryEntitiesAsync(preparedCheckTable, query, undefined)
+      const data = await tableService.queryEntitiesAsync(preparedCheckTable, query, null)
       check = data.response.body.value[0]
     } catch (error) {
       const msg = `getFromPreparedCheckTableStorage(): error during retrieve for table storage check for checkCode [${checkCode}]`
