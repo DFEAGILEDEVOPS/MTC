@@ -6,7 +6,7 @@ const dataService = require('./service/data.service')
 const dateService = require('./service/date.service')
 
 const v1 = {
-  process: async function process (logger) {
+  process: async function exec (logger) {
     try {
       const startDate = moment()
       const startTs = dateService.formatIso8601(startDate)
