@@ -4,7 +4,7 @@ class DeclarationConfirmPage < SitePrism::Page
   element :form, 'form'
   element :submit_button, 'input[value="Submit"]'
   element :cancel_button, "a.govuk-button", text: "Cancel"
-  elements :error_messages, '.error-message'
+  elements :error_messages, '.govuk-error-message'
   section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-title"]'
 
   def submit_invalid_confirmed()

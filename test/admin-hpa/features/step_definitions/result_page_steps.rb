@@ -5,6 +5,11 @@ end
 
 When(/^we are in (.*) week of check end date without submitted HDF$/) do|check_end_week|
   today_date = Date.today
+
+  if today_date.friday?
+    today_date -= 1
+  end
+
   while !today_date.friday?
     today_date -= 1
   end

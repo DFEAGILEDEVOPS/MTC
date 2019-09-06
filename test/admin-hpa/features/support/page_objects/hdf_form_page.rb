@@ -11,7 +11,7 @@ class HdfFormPage < SitePrism::Page
   element :continue, 'input[type="submit"]'
   element :breadcrumb, '#content .breadcrumbs'
   element :csrf, 'input[name="_csrf"]', visible: false
-  elements :error_messages, '.error-message'
+  elements :error_messages, '.govuk-error-message'
   section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-title"]'
 
   def enter_details(hash)
