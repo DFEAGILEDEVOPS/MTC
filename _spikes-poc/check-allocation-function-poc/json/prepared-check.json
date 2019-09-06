@@ -1,0 +1,8 @@
+{
+  "config": {"audibleSounds":false,"checkTime":10,"colourContrast":false,"fontSize":false,"inputAssistance":false,"loadingTime":1,"nextBetweenQuestions":false,"numpadRemoval":false,"practice":false,"questionReader":false,"questionTime":6,"compressCompletedCheck":true},
+  "pupil": {"firstName":"Juliana","lastName":"Brewer","dob":"2 February 2009"},
+  "questions": [{"order":1,"factor1":2,"factor2":5},{"order":2,"factor1":11,"factor2":2},{"order":3,"factor1":5,"factor2":10},{"order":4,"factor1":4,"factor2":4},{"order":5,"factor1":3,"factor2":9},{"order":6,"factor1":2,"factor2":4},{"order":7,"factor1":3,"factor2":3},{"order":8,"factor1":4,"factor2":9},{"order":9,"factor1":6,"factor2":5},{"order":10,"factor1":12,"factor2":12}],
+  "school": {"id":2,"name":"Example School One"},
+  "tokens": {"checkStarted":{"token":"st=2019-09-05T09%3A24%3A06Z&se=2019-09-06T09%3A29%3A06Z&sp=a&sv=2018-03-28&sig=pMKjwQgkLJ%2Fugu%2F2LD9ash6TH8ei0HH1EkgKLL5UYvo%3D","url":"https://devsamtc.queue.core.windows.net/check-started"},"pupilPreferences":{"token":"st=2019-09-05T09%3A24%3A06Z&se=2019-09-06T09%3A29%3A06Z&sp=a&sv=2018-03-28&sig=h3qSeIHauj6kHb%2Bp4OHVmnK3zM19hE%2FUkbFYMVwocpA%3D","url":"https://devsamtc.queue.core.windows.net/pupil-prefs"},"pupilFeedback":{"token":"st=2019-09-05T09%3A24%3A06Z&se=2019-09-06T09%3A29%3A06Z&sp=a&sv=2018-03-28&sig=aA0C2SrT1VimFGwb30PQGxwtyuJU0BF5ezw4KdAb%2FFs%3D","url":"https://devsamtc.queue.core.windows.net/pupil-feedback"},"jwt":{"token":"token-disabled"},"checkComplete":{"token":"st=2019-09-05T09%3A24%3A06Z&se=2019-09-06T09%3A29%3A06Z&sp=a&sv=2018-03-28&sig=KrHONi9FyO4MWeNUa9MxnqiyR9gbsB5mZEx6cFrMHA0%3D","url":"https://devsamtc.queue.core.windows.net/check-complete"}},
+  "createdAt": ""
+}
