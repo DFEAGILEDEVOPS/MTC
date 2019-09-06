@@ -9,10 +9,10 @@ const table = '[jobStatus]'
 
 /**
  * Find job status by type code.
- * @return {Object}
+ * @return {Promise<Object>}
  */
 jobStatusDataService.sqlFindOneByTypeCode = async (jobStatusCode) => {
-  const sql = `SELECT * 
+  const sql = `SELECT *
   FROM ${sqlService.adminSchema}.${table}
   WHERE jobStatusCode=@jobStatusCode`
   const params = [
@@ -28,10 +28,10 @@ jobStatusDataService.sqlFindOneByTypeCode = async (jobStatusCode) => {
 
 /**
  * Find job status by id.
- * @return {Object}
+ * @return {Promise<Object>}
  */
 jobStatusDataService.sqlFindOneById = async (id) => {
-  const sql = `SELECT * 
+  const sql = `SELECT *
   FROM ${sqlService.adminSchema}.${table}
   WHERE id=@id`
   const params = [
