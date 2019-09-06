@@ -19,5 +19,5 @@
 ### redis
 - use TTL on allocations, no delete required 🎖
 - takes ~25 minutes to generate 1.25 million check allocations.  the poc procedure uses a pre-fetched static check
-- must include rebuild option for complete recovery
+- must include rebuild option for complete recovery when data lost (just run again via portal?)
 
