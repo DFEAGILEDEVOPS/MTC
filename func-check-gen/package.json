@@ -31,6 +31,7 @@
     "azure-storage": "^2.10.3",
     "bluebird": "^3.5.5",
     "handy-redis": "^1.6.2",
+    "moment": "^2.24.0",
     "uuid": "^3.3.3"
   }
 }

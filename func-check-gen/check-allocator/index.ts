@@ -2,6 +2,8 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import * as Redis from 'handy-redis'
 import checkTemplate from '../json/prepared-check.json'
 import * as uuid from 'uuid'
+import { Url } from 'url'
+import { SasToken, SasTokenService } from '../lib/sas-token-service'
 
 const redisKeyPrefix = 'check:allocation:'
 const schoolsToAllocate = 25000
@@ -9,14 +11,14 @@ const pupilsPerSchool = 50
 const redisItemExpiryInSeconds = 3600 // 1 hour
 
 class SchoolRecord {
-  constructor (sasToken: string) {
-    this.sasToken = sasToken
+  constructor (sasTokens: Array<SasToken>) {
+    this.sasTokens = sasTokens
     this.pupils = new Array<object>()
     this.createdAt = new Date()
   }
   pupils: Array<object>
   createdAt: Date
-  sasToken: string
+  sasTokens: Array<SasToken>
 }
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
@@ -28,14 +30,18 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     tls: process.env.RedisHost
   })
   // TODO generate SAS token(s)
-  const sasToken = ''
+  const sasTokenService = new SasTokenService()
+  const queues = ['check-submitted', 'check-started', 'pupil-prefs', 'pupil-feedback']
+
+  // TODO load all pupils via SQL (schoolUUID(urlSlug), pupilUUID(urlSlug))
   for (let schoolIdx = 0; schoolIdx < schoolsToAllocate; schoolIdx++) {
     context.log(`adding school ${schoolIdx}`)
     const schoolUUID = uuid.v4()
-    const schoolItem = new SchoolRecord(sasToken)
+    const schoolItem = new SchoolRecord()
     let pupilUUID
     const pupils = new Array()
     for (let pupilIdx = 0; pupilIdx < pupilsPerSchool; pupilIdx++) {
+      checkTemplate.createdAt = new Date().toISOString()
       pupilUUID = uuid.v4()
       pupils.push({
         id: pupilUUID,
