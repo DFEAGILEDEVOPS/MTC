@@ -32,7 +32,6 @@
                   </div>
                 </div>
                 <div class="govuk-!-margin-bottom-5"></div>
-  <!--              <div class="divider"></div>-->
                 <div id="<%= `${cw.urlSlug.toString()}-live` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-live`)) { %> class="assigned-forms-highlight govuk-highlight-item"<% } %>>
               <span class="govuk-!-font-weight-bold govuk-!-font-size-19">
                 <a class="govuk-link" href="/check-form/select-form/live/<%= cw.urlSlug %>">
@@ -45,14 +44,13 @@
                   </div>
                 </div>
                 <div class="govuk-!-margin-bottom-5"></div>
-  <!--              <div class="divider"></div>-->
               </dd>
             </dl>
           <% }) %>
         </div>
       <% } else { %>
         <div class="govuk-inset-text">
-            There are currently no available check windows .<br />
+            There are currently no available check windows.<br />
             Contact the service manager to get new check windows created.
         </div>
       <% } %>
