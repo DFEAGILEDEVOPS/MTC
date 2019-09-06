@@ -250,9 +250,9 @@ Then(/^I should see a validation error for the day of the month$/) do
 end
 
 When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
-  today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: month, year: "#{today_date.year - 10}"}
+  dob = calculate_age(9)
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: month, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -279,10 +279,10 @@ Then(/^I should see a validation error for the year$/) do
 end
 
 When(/^I attempt to enter names that are more than (\d+) characters long$/) do |number|
-  today_date = Date.today
+  dob = calculate_age(9)
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   @long_name = ('F' * (number.to_i + 1))
-  @details_hash = {first_name: @long_name, middle_name: @long_name, last_name: @long_name, female: true, upn: @upn, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: @long_name, middle_name: @long_name, last_name: @long_name, female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -298,9 +298,9 @@ Then(/^I should see only (\d+) characters are saved$/) do |number|
 end
 
 When(/^I submit valid details with a already used UPN$/) do
-  today_date = Date.today
+  dob = calculate_age(9)
   @upn = 'H801200001001'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -313,10 +313,10 @@ Then(/^I should see an error stating more than (\d+) pupil with the same UPN$/) 
 end
 
 When(/^I submit valid details with a UPN that has a incorrect check letter$/) do
-  today_date = Date.today
+  dob = calculate_age(9)
   @upn = UpnGenerator.generate
   @upn[0]= 'O'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -329,8 +329,8 @@ Then(/^I should see an error stating wrong check letter at character (\d+)$/) do
 end
 
 When(/^I submit valid details with a UPN that has a invalid LA code$/) do
-  today_date = Date.today
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'A000201100221', day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  dob = calculate_age(9)
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'A000201100221', day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -343,8 +343,8 @@ Then(/^I should see an error stating characters between 2\-4 are invalid$/) do
 end
 
 When(/^I submit valid details with a UPN that has a alpha character between characters 5\-12$/) do
-  today_date = Date.today
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'J80511A100122', day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  dob = calculate_age(9)
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'J80511A100122', day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -357,10 +357,10 @@ Then(/^I should see an error stating characters between 5\-12 are invalid$/) do
 end
 
 When(/^I submit valid details with a UPN that has a invalid alpha character at character 13$/) do
-  today_date = Date.today
+  dob = calculate_age(9)
   @upn = UpnGenerator.generate
   @upn[12]= 'S'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -373,9 +373,9 @@ Then(/^I should see an error stating character 13 is invalid$/) do
 end
 
 When(/^I submit valid details with a UPN has a lowercase alpha character$/) do
-  today_date = Date.today
+  dob = calculate_age(9)
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: rand(1..24).to_s, month: rand(1..12).to_s, year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page

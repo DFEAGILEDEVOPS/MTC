@@ -1,10 +1,14 @@
 // needs to be refactored for re-usability
 @media print {
+  .govuk-template {
+    background-color: govuk-colour('white');
+  }
   #content {
     padding-bottom: 0;
   }
   .no-print, .no-print * {
     display: none;
+    background-color: govuk-colour('white');
   }
   .only-print {
     display: block !important;
@@ -68,7 +72,7 @@
         -ms-writing-mode: tb-rl;
         transform: rotate(180deg);
         -ms-transform: rotate(180deg);
-        height: pem(65px);
+        height: govuk-em(65px, $govuk-root-font-size);
         font-weight: bold;
         width: 16px;
         white-space: nowrap;
@@ -78,13 +82,13 @@
       padding: 0.5em;
     }
     &.line-content {
-      padding-right: pem(20px);
+      padding-right: govuk-em(20px, $govuk-root-font-size);
     }
   }
   .pupil-content {
     text-align: left;
     font-size: 12px;
-    margin-bottom: pem(40px);
+    margin-bottom: govuk-em(40px, $govuk-root-font-size);
   }
   .fullname {
     font-size: 22px;
@@ -95,28 +99,28 @@
   }
   .dob {
     color: govuk-colour("dark-grey");
-    margin-bottom: pem(-20px);
+    margin-bottom: govuk-em(-20px, $govuk-root-font-size);
   }
-  .information {
+  .pin-information {
     font-size: 26px;
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0 pem(5px);
+    margin: 0 0 govuk-em(4px, $govuk-root-font-size) govuk-em(5px, $govuk-root-font-size);
     width: auto;
     line-height: 1;
   }
   .label {
     font-size: 14px;
-    max-width: pem(80px);
+    max-width: govuk-em(80px, $govuk-root-font-size);
   }
   .separator {
-    padding: 0 pem(30px);
+    padding: 0 govuk-em(30px, $govuk-root-font-size);
   }
   .pin-content {
     text-align: left;
     font-size: 12px;
-    margin-top: pem(20px);
+    margin-top: govuk-em(20px, $govuk-root-font-size);
 	  display: flex;
     align-items: flex-end;
   }
@@ -124,11 +128,11 @@
     position: relative;
     left: 12px;
     img {
-      width: pem(90px);
-      height: pem(90px);
+      width: govuk-em(90px, $govuk-root-font-size);
+      height: govuk-em(90px, $govuk-root-font-size);
       float: right;
       position: static;
-      margin-top: pem(-115px);
+      margin-top: govuk-em(-105px, $govuk-root-font-size);
     }
   }
   .url {

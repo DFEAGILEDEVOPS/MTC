@@ -11,9 +11,10 @@ Given(/^I want to edit a previously added pupil$/) do
 end
 
 When(/^I update with valid pupil data$/) do
+  dob = calculate_age(9)
   @updated_upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '2009'}
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @updated_details_hash[:upn]=@upn if @page == edit_pupil_page
   @updated_upn = @upn if @page == edit_pupil_page
   @page.enter_details(@updated_details_hash)
@@ -29,7 +30,7 @@ Then(/^this should be saved$/) do
   expect(@updated_details_hash[:last_name]).to eql @stored_pupil_details['lastName']
   expect(gender).to eql @stored_pupil_details['gender']
   expect(@updated_details_hash[:upn].to_s).to eql @stored_pupil_details['upn']
-  expect(Time.parse(@updated_details_hash[:day]+ "-"+ @updated_details_hash[:month]+"-"+ @updated_details_hash[:year])).to eql @stored_pupil_details['dateOfBirth']
+  expect((@updated_details_hash[:day]+ "-"+ @updated_details_hash[:month]+"-"+ @updated_details_hash[:year])).to eql  @stored_pupil_details['dateOfBirth'].strftime("%e-%-m-%Y").strip
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
 end
