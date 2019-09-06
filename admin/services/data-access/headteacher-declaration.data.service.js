@@ -52,7 +52,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
 /**
  * Find count of pupils blocking hdf submission before check end date
  * @param schoolId
- * @return {Number}
+ * @return {Promise<Number>}
  */
 headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
   const sql = `
@@ -74,7 +74,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
 /**
  * Find count of pupils blocking hdf submission before check end date
  * @param schoolId
- * @return {Number}
+ * @return {Promise<Number>}
  */
 headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
   const sql = `

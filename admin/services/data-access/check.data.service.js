@@ -86,7 +86,7 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
 checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) {
   const sql = `
   SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
-  WHERE pupil_id=@pupilId 
+  WHERE pupil_id=@pupilId
   AND startedAt IS NOT NULL
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
@@ -119,10 +119,10 @@ checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
 }
 
 checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.[check] 
-  SET mark=@mark, 
-  maxMark=@maxMark, 
-  markedAt=@markedAt 
+  const sql = `UPDATE ${sqlService.adminSchema}.[check]
+  SET mark=@mark,
+  maxMark=@maxMark,
+  markedAt=@markedAt
   WHERE checkCode=@checkCode`
 
   const params = [
@@ -162,7 +162,7 @@ checkDataService.sqlCreate = async function (check) {
 /**
  * Find the latest check for pupil that is flagged as not started
  * @param pupilId - the pupil taking the check
- * @return {Promise.<void>} - lean Check objects
+ * @return {Promise.<object>} - lean Check objects
  */
 checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
   const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
@@ -182,7 +182,7 @@ checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
 /**
  * Find the latest started check for pupil
  * @param pupilId - the pupil taking the check
- * @return {Promise.<void>} - lean Check objects
+ * @return {Promise.<object>} - lean Check objects
  */
 checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
   const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
@@ -233,16 +233,16 @@ checkDataService.sqlCreateBatch = async function (checks) {
 /**
  * Retrieve the latest check during pupil authentication from the pupil app.
  * @param pupilId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
   const sql = `
-  SELECT TOP 1 * 
+  SELECT TOP 1 *
   FROM ${sqlService.adminSchema}.${table}
-  WHERE data IS NULL 
+  WHERE data IS NULL
   AND startedAt IS NULL
   AND pupil_id = @pupilId
-  ORDER BY createdAt DESC 
+  ORDER BY createdAt DESC
   `
   const params = [{ name: 'pupilId', value: pupilId, type: TYPES.Int }]
   const result = await sqlService.query(sql, params)
@@ -259,14 +259,14 @@ checkDataService.sqlUpdate = async function (checkData) {
 }
 
 checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
-  const select = `SELECT 
+  const select = `SELECT
     f.id,
     f.name,
-    c.pupil_id     
+    c.pupil_id
   FROM ${sqlService.adminSchema}.${table} c INNER JOIN
     ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
   WHERE
-    f.isDeleted <> 1  
+    f.isDeleted <> 1
   `
   const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
   const andClause = 'AND pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'

@@ -82,7 +82,7 @@ completedCheckDataService.sqlFindUnmarked = async function (batchSize) {
   }
   const safeBatchSize = parseInt(batchSize, 10)
 
-  const sql = `SELECT TOP ${safeBatchSize} chk.id 
+  const sql = `SELECT TOP ${safeBatchSize} chk.id
     FROM [mtc_admin].[check] chk JOIN
      [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN
      [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
@@ -103,7 +103,7 @@ completedCheckDataService.sqlSetAllUnmarked = async () => {
 /**
  * Return a single check with the SPA data as an object
  * @param checkCode
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 completedCheckDataService.sqlFindOneByCheckCode = async function (checkCode) {
   const params = [
@@ -140,7 +140,7 @@ completedCheckDataService.sqlFind = async (lowCheckId, batchSize) => {
     throw new Error(`batchSize too large`)
   }
   const sql = `
-    SELECT 
+    SELECT
       TOP ${safeBatchSize} *
     FROM ${sqlService.adminSchema}.[check]
     WHERE data IS NOT NULL

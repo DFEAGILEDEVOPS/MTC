@@ -41,10 +41,10 @@ jobDataService.sqlCreate = async (pupilCensusRecord) => {
 /**
  * Find job by id.
  * @param {Number} jobId
- * @return {Object}
+ * @return {Promise<Object>}
  */
 jobDataService.sqlFindById = async (jobId) => {
-  const sql = `SELECT TOP 1 * 
+  const sql = `SELECT TOP 1 *
   FROM ${sqlService.adminSchema}.${table}
   WHERE id=@jobId`
   const params = [
@@ -61,17 +61,17 @@ jobDataService.sqlFindById = async (jobId) => {
 /**
  * Find latest job by type id.
  * @param {Number} jobTypeId
- * @return {Object}
+ * @return {Promise<Object>}
  */
 jobDataService.sqlFindLatestByTypeId = async (jobTypeId) => {
-  const sql = `SELECT TOP 1 
+  const sql = `SELECT TOP 1
   j.*,
   js.jobStatusCode,
   js.description as jobStatusDescription
   FROM ${sqlService.adminSchema}.${table} j
   INNER JOIN ${sqlService.adminSchema}.[jobStatus] js
     ON  js.id = j.jobStatus_id
-  WHERE jobType_id=@jobTypeId 
+  WHERE jobType_id=@jobTypeId
   ORDER BY createdAt DESC`
   const params = [
     {

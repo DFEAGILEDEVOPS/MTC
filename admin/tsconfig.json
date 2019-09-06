@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "types/*"
+      ]
+    }
+  },
+  "include": [
+    "services/data-access"
+  ],
+  "exclude": [
+   /*
+    ".nyc_output",
+    ".vscode",
+    "assets",
+    "bin",
+    "coverage",
+    "data",
+    "dist",
+    "public",
+    "spec",
+    "tests-integration",
+    "views",
+    "karma.conf.js",
+    "newrelic.js",
+    "run-jasmine.js",
+    "wallaby.conf.js" */
+  ]
+}
