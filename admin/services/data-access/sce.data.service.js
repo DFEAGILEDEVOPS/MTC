@@ -4,6 +4,7 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const sceDataService = {}
 const redisCacheService = require('../redis-cache.service')
+const sceSpecificLeaCode = 702
 
 /**
  * Find school urns and names
@@ -37,7 +38,7 @@ sceDataService.sqlFindSceSchools = async () => {
   FROM ${sqlService.adminSchema}.[school]
   LEFT JOIN ${sqlService.adminSchema}.[sce]
     ON sce.school_id = school.id
-  WHERE school.leaCode = 702
+  WHERE school.leaCode = ${sceSpecificLeaCode}
   OR sce.id IS NOT NULL
   ORDER BY school.name ASC`
   return sqlService.query(sql)
