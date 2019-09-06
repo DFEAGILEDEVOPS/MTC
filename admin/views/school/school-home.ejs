@@ -10,7 +10,7 @@
             <%- partial('partials/_gds_session_expiry') %>
             <ol class="govuk-list">
                 <li>
-                    <h2 class="govuk-heading-s arrow-up"><a href="/pupil-register/pupils-list">Pupil register</a></h2>
+                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-register/pupils-list">Pupil register</a></h2>
                     <% if (hasIncompleteChecks) { %>
                     <span class="govuk-body-m">Add, edit and review pupils</span>
                         <p>
@@ -23,7 +23,7 @@
                 </li>
                 <li>
                     <% if (featureEligibilityData.isGroupsPageAccessible) { %>
-                    <h2 class="govuk-heading-s"><a href="/group/pupils-list">Group pupils</a></h2>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/group/pupils-list">Group pupils</a></h2>
                     <p>Create groups</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Group pupils</a></h2>
@@ -35,13 +35,13 @@
                 </li>
 
                 <li>
-                    <h2 class="govuk-heading-s"><a href="/pupils-not-taking-the-check/pupils-list">Pupils not taking the check</a></h2>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list">Pupils not taking the check</a></h2>
                     <p>Enter a reason for pupils who are unable to take the check</p>
                 </li>
 
                 <li>
                     <% if (isFeatureEnabled('accessArrangements')) { %>
-                    <h2 class="govuk-heading-s"><a href="/access-arrangements/overview">Access arrangements</a></h2>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/access-arrangements/overview">Access arrangements</a></h2>
                     <% } else { %>
                     <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Access arrangements</a></h2>
                     <% }%>
@@ -50,7 +50,7 @@
 
                 <li>
                     <% if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                    <h2 class="govuk-heading-s"><a href="/pupil-pin/generate-familiarisation-pins-overview">Try it out - password and PINs</a></h2>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Try it out - password and PINs</a></h2>
                     <p>Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Try it out - password and PINs</a></h2>
@@ -69,7 +69,7 @@
 
                 <li>
                     <% if (featureEligibilityData.isLivePinGenerationAllowed) { %>
-                        <h2 class="govuk-heading-s"><a href="/pupil-pin/generate-live-pins-overview">Start the multiplication tables check - password and PINs</a></h2>
+                        <h2 class="govuk-heading-s"><a class="govuk-link" href="/pupil-pin/generate-live-pins-overview">Start the multiplication tables check - password and PINs</a></h2>
                         <p>Generate school password and personal identification numbers (PINs) so pupils can take the MTC</p>
                     <% } else { %>
                         <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Start the multiplication tables check - password and PINs</a></h2>
@@ -88,7 +88,7 @@
 
                 <li>
                     <% if (featureEligibilityData.isRestartsPageAccessible) { %>
-                        <h2 class="govuk-heading-s"><a href="/restart/overview">Restarts</a></h2>
+                        <h2 class="govuk-heading-s"><a class="govuk-link" href="/restart/overview">Restarts</a></h2>
                         <p>Select pupils to restart because of an interrupted check</p>
                     <% } else { %>
                         <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Restarts</a></h2>
@@ -104,7 +104,7 @@
 
                 <li>
                     <% if (featureEligibilityData.isHdfPageAccessible) { %>
-                        <h2 class="govuk-heading-s"><a href="/attendance/declaration-form">Headteacher's declaration form</a></h2>
+                        <h2 class="govuk-heading-s"><a class="govuk-link" href="/attendance/declaration-form">Headteacher's declaration form</a></h2>
                         <p>Complete headteacher's declaration form once all pupils have a status of 'Completed' or a reason for not taking the check</p>
                     <% } else { %>
                         <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Headteacher's declaration form</a></h2>
@@ -119,7 +119,7 @@
 
                 <li>
                     <% if (isResultsFeatureAccessible) { %>
-                    <h2 class="govuk-heading-s"><a href="/results/view-results">Results</a></h2>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/results/view-results">Results</a></h2>
                     <p>View pupil results</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s"><a class="govuk-font-greyed-out govuk-disabled-link">Results</a></h2>

@@ -1,10 +1,10 @@
 class DeclarationEditReasonPage < SitePrism::Page
-    element :heading, '.heading-xlarge', text: "Edit reason for not taking the check"
+    element :heading, '.govuk-heading-xl', text: "Edit reason for not taking the check"
     element :details, "details"
     element :save_button, 'input[value="Save"]'
-    element :cancel_button, "a.button-secondary"
-    element :pupil_name, '.panel-border-wide p'
-    element :select_reason_text, 'h2', '1. Select reason'
+    element :cancel_button, "a.govuk-button"
+    element :pupil_name, '.govuk-inset-text'
+    element :select_reason_text, 'h3', 'Select reason'
     elements :attendance_codes, 'input[id^=attendance-code-]'
     element :save, 'button[type="submit"]'
 

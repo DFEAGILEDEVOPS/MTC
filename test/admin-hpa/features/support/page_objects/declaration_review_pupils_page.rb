@@ -1,13 +1,13 @@
 class DeclarationReviewPupilsPage < SitePrism::Page
     set_url '/attendance/review-pupil-details'
-    element :heading, '.heading-xlarge', text: "Review pupil details"
-    element :message, '.lede'
-    element :pupils_table, "table[id='attendanceList']"
-    element :continue_button, ".form-group a"
+    element :heading, '.govuk-heading-xl', text: "Review pupil details"
+    element :message, '#lead-paragraph  '
+    element :pupils_table, "#attendanceList"
+    element :continue_button, 'a[href="/attendance/confirm-and-submit"]'
 
     section :pupil_list, '#attendanceList tbody' do
       sections :rows, 'tr' do
-        element :name, '.highlight-wrapper'
+        element :name, '.govuk-highlight-wrapper'
         element :reason, 'td:nth-of-type(2)'
         element :link, 'a'
       end
