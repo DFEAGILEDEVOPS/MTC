@@ -1,10 +1,10 @@
 // Filters
 
 .filter-header {
-  background-color: $panel-colour;
+  background-color: govuk-colour("light-grey");
   cursor: pointer;
-  margin-top: pem(15px);
-  padding: pem(8) pem(10) pem(4) pem(10);
+  margin-top: govuk-em(15px, $govuk-root-font-size);
+  padding: govuk-em(8, $govuk-root-font-size) govuk-em(10, $govuk-root-font-size) govuk-em(4, $govuk-root-font-size) govuk-em(10, $govuk-root-font-size);
 }
 
 .filter-label {
@@ -13,13 +13,13 @@
   position: relative;
 
   &:after {
-    color: $grey-1;
+    color: govuk-colour("dark-grey");
     content: "^";
     font-weight: normal;
-    font-size: pem(25px);
+    font-size: govuk-em(25px, $govuk-root-font-size);
     position: absolute;
-    right: pem(3px);
-    top: pem(-9px);
+    right: govuk-em(3px, $govuk-root-font-size);
+    top: govuk-em(-9px, $govuk-root-font-size);
     transform: rotate(-180deg) scale(1.5,1);
   }
 }
@@ -33,7 +33,7 @@
 
 .filter-content {
   background-color: $panel-colour;
-  padding: 0 pem(10) pem(10) pem(10);
+  padding: 0 govuk-em(10, $govuk-root-font-size) govuk-em(10, $govuk-root-font-size) govuk-em(10, $govuk-root-font-size);
 }
 
 #filterByGroup {
@@ -42,18 +42,18 @@
   margin: 0;
 
   label {
-    padding-left: pem(4px);
+    padding-left: govuk-em(4px, $govuk-root-font-size);
   }
 }
 
 .filter-name {
   label {
     background-color: $grey-1;
-    padding: pem(5px);
+    padding: govuk-em(5px, $govuk-root-font-size);
     float: left;
 
     img {
-      padding: pem(4px);
+      padding: govuk-em(4px, $govuk-root-font-size);
       vertical-align: middle;
     }
   }
@@ -64,7 +64,7 @@
 
     input {
       width: 100%;
-      padding-bottom: pem(4px);
+      padding-bottom: govuk-em(4px, $govuk-root-font-size);
       margin-top: 0;
     }
   }
