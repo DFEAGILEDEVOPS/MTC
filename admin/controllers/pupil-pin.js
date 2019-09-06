@@ -35,6 +35,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -50,6 +51,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     return next(err)
   }
   return res.render('pupil-pin/generate-pins-overview', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
@@ -89,6 +91,7 @@ const getGeneratePinsList = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -108,6 +111,7 @@ const getGeneratePinsList = async (req, res, next) => {
   }
 
   return res.render('pupil-pin/generate-pins-list', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     pupils,
     groups,
@@ -193,6 +197,7 @@ const getViewAndPrintPins = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -208,6 +213,7 @@ const getViewAndPrintPins = async (req, res, next) => {
     return next(error)
   }
   return res.render('pupil-pin/view-and-print-pins', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
@@ -246,6 +252,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
+        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -262,6 +269,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
     return next(error)
   }
   return res.render('pupil-pin/view-and-custom-print-pins', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,

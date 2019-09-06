@@ -1,7 +1,7 @@
 // Filters
 
 .filter-header {
-  background-color: govuk-color("light-grey");
+  background-color: govuk-colour("light-grey");
   cursor: pointer;
   margin-top: govuk-em(15px, $govuk-root-font-size);
   padding: govuk-em(8px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size) govuk-em(4px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size);
@@ -13,7 +13,7 @@
   position: relative;
 
   &:after {
-    color: govuk-color("dark-grey");
+    color: govuk-colour("dark-grey");
     content: "^";
     font-weight: normal;
     font-size: govuk-em(25px, $govuk-root-font-size);
@@ -32,7 +32,7 @@
 }
 
 .filter-content {
-  background-color: govuk-color("light-grey");
+  background-color: govuk-colour("light-grey");
   padding: 0 govuk-em(10px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size);
 }
 
@@ -48,7 +48,7 @@
 
 .filter-name {
   label {
-    background-color: govuk-color("dark-grey");
+    background-color: govuk-colour("dark-grey");
     padding: govuk-em(5px, $govuk-root-font-size);
     float: left;
 

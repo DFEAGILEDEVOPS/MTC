@@ -25,8 +25,8 @@ Then(/^pupil reason page is displayed as per the design$/) do
 end
 
 Then(/^I should see set of reasons I can choose$/) do
-  expected_reason_hash = SqlDbHelper.get_attendance_codes.map{|code| code['reason']}
-  expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map{|code| code['id']}.sort
+  expected_reason_hash = SqlDbHelper.get_attendance_codes.map {|code| code['reason']}
+  expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
   actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
   expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
 end
@@ -192,7 +192,7 @@ end
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
   pupil_reason_page.select_reason(@reason)
-  @pupil_names.each{|pupil| pupil_reason_page.select_pupil(pupil)}
+  @pupil_names.each {|pupil| pupil_reason_page.select_pupil(pupil)}
   pupil_reason_page.sticky_banner.confirm.click
 end
 
@@ -269,7 +269,7 @@ Then(/^I should see a message stating there are no pupils not taking the check$/
 end
 
 Then(/^I should not see a sticky banner$/) do
-  if (current_url.include? 'pupils-not-taking-the-check') || (current_url.include? 'group')
+  if (current_url.include? 'pupils-not-taking-the-check') || (current_url.include? 'group') || (current_url.include? 'generate-familiarisation-pins-list') || (current_url.include? 'generate-live-pins-list') || (current_url.include? 'view-and-custom-print-live-pins')
     expect(pupil_reason_page.sticky_banner).to_not be_visible
   else
     expect(select_form_to_assign_page.sticky_banner).to_not be_visible
@@ -296,7 +296,7 @@ end
 Then(/^I should not see the pupil in the list$/) do
   generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.displayed?
   generated_pins_page.generate_more_pin_btn.click if generated_pins_page.displayed?
-  pupil_list = generate_pins_overview_page.pupil_list.rows.map{|row| row.name.text}
+  pupil_list = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text}
   expect(pupil_list).to_not include @pupil_lastname + ', ' + @pupil_forename
 end
 
@@ -308,7 +308,7 @@ When(/^I choose to filter pupils via group on the pupil reason page$/) do
 end
 
 Then(/^only those pupils from the group should be displayed$/) do
-  filtered_pupils = pupil_reason_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = pupil_reason_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils.sort.size).to eql @pupil_group_array.sort.size
 end
 

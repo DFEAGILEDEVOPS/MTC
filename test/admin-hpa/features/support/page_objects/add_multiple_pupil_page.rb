@@ -43,7 +43,7 @@ class AddMultiplePupilPage < SitePrism::Page
       number.to_i.times do
         upn = UpnGenerator.generate
         @upn_list << upn
-        csv << ["#{(0...8).map { (65 + rand(26)).chr }.join}","#{(0...8).map { (65 + rand(26)).chr }.join}", "","03/12/2008","f",upn]
+        csv << ["#{(0...8).map { (65 + rand(26)).chr }.join}","#{(0...8).map { (65 + rand(26)).chr }.join}", "","02/1/2011","f",upn]
       end
     end
     page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/#{file_name}"))

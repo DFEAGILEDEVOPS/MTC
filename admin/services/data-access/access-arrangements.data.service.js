@@ -23,9 +23,9 @@ accessArrangementsDataService.CODES = Object.freeze({
  */
 accessArrangementsDataService.sqlFindAccessArrangements = async function () {
   const sql = `
-  SELECT 
-    id, 
-    code, 
+  SELECT
+    id,
+    code,
     description
   FROM ${sqlService.adminSchema}.[accessArrangements]
   ORDER BY displayOrder ASC`
@@ -35,7 +35,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
 /**
  * Find access arrangement by codes
  * @param {Array} codes
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async function (codes) {
   if (Object.keys(accessArrangementCodes).length === 0) {
@@ -55,7 +55,7 @@ accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async func
 /**
  * Find access arrangement codes by ids
  * @param {Array} ids
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds = async function (ids) {
   if (Object.keys(accessArrangementCodes).length === 0) {
@@ -72,7 +72,7 @@ accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds = async func
 
 /**
  * Initialise method to populate accessArrangementCodes for caching purposes
- * @returns {Array}
+ * @returns {Promise<void>}
  */
 const init = async () => {
   let accessArrangements
