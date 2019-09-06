@@ -5,10 +5,11 @@ Given(/^I have generated a pin via the admin app$/) do
   find('#password').set 'password'
   find('button[type="submit"]').click
   visit ENV['ADMIN_BASE_URL']+'/pupil-pin/generate-live-pins-list'
-  all('tbody tr').first.find('input[type="checkbox"]').click
-  find('.sticky-banner-wrapper #stickyConfirm').click
-  @school_password = all('.pin-content span:nth-child(2)').last.text
-  @pupil_pin = all('.pin-content span:nth-child(5)').last.text
+  pupil_name = generate_pins_overview_page.pupil_list.rows.first.name.text
+  generate_pins_overview_page.pupil_list.rows.first.checkbox.click
+  generate_pins_overview_page.sticky_banner.confirm.click
+  @school_password = view_and_custom_print_live_check_page.find_pupil_row(pupil_name).school_password.text
+  @pupil_pin = view_and_custom_print_live_check_page.find_pupil_row(pupil_name).pin.text
   AzureTableHelper.wait_for_prepared_check(@school_password,@pupil_pin)
 end
 
