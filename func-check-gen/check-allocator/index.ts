@@ -4,6 +4,7 @@ import checkTemplate from '../json/prepared-check.json'
 import * as uuid from 'uuid'
 import { Url } from 'url'
 import { SasToken, SasTokenService } from '../lib/sas-token-service'
+import Moment from 'moment'
 
 const redisKeyPrefix = 'check:allocation:'
 const schoolsToAllocate = 25000
@@ -30,14 +31,20 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     tls: process.env.RedisHost
   })
   // TODO generate SAS token(s)
+  const tokens = Array<SasToken>()
+  const expireTokenAt = Moment().add(1, 'day').toDate()
   const sasTokenService = new SasTokenService()
   const queues = ['check-submitted', 'check-started', 'pupil-prefs', 'pupil-feedback']
+  queues.forEach((q) => {
+    const token = sasTokenService.generateSasToken(q, expireTokenAt)
+    tokens.push(token)
+  })
 
   // TODO load all pupils via SQL (schoolUUID(urlSlug), pupilUUID(urlSlug))
   for (let schoolIdx = 0; schoolIdx < schoolsToAllocate; schoolIdx++) {
     context.log(`adding school ${schoolIdx}`)
     const schoolUUID = uuid.v4()
-    const schoolItem = new SchoolRecord()
+    const schoolItem = new SchoolRecord(tokens)
     let pupilUUID
     const pupils = new Array()
     for (let pupilIdx = 0; pupilIdx < pupilsPerSchool; pupilIdx++) {
