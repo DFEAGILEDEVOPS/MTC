@@ -21,12 +21,12 @@ export class SasToken {
 }
 
 export class SasTokenService {
-  _qService: IQueueService
+  private qService: IQueueService
   constructor (queueService?: IQueueService) {
     if (!queueService) {
-      this._qService = azure.createQueueService()
+      this.qService = azure.createQueueService()
     } else {
-      this._qService = queueService
+      this.qService = queueService
     }
   }
 
@@ -47,8 +47,8 @@ export class SasTokenService {
         Expiry: expiryDate.toDate()
       }
     }
-    const sasToken = this._qService.generateSharedAccessSignature(queueName, sharedAccessPolicy)
-    const url = this._qService.getUrl(queueName)
+    const sasToken = this.qService.generateSharedAccessSignature(queueName, sharedAccessPolicy)
+    const url = this.qService.getUrl(queueName)
 
     return new SasToken(sasToken, url)
   }
