@@ -30,7 +30,7 @@ export class SasTokenService {
     }
   }
 
-  generateSasToken (queueName: string, expiryDate: Date): SasToken {
+  generateSasToken (queueName: string, expiryDate: moment.Moment): SasToken {
     if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
       throw new Error('Invalid expiryDate')
     }

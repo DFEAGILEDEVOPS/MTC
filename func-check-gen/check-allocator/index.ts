@@ -32,7 +32,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   })
   // TODO generate SAS token(s)
   const tokens = Array<SasToken>()
-  const expireTokenAt = Moment().add(1, 'day').toDate()
+  const expireTokenAt = Moment().add(1, 'day')
   const sasTokenService = new SasTokenService()
   const queues = ['check-submitted', 'check-started', 'pupil-prefs', 'pupil-feedback']
   queues.forEach((q) => {
