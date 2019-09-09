@@ -33,6 +33,7 @@ const controller = {
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
+        layout: 'gds-layout',
         breadcrumbs: req.breadcrumbs(),
         isNewCheckWindow
       })
