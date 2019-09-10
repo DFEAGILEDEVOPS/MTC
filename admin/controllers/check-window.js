@@ -28,6 +28,7 @@ const controller = {
       return next(error)
     }
     return res.render('check-window/manage-check-windows', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
       checkWindows
