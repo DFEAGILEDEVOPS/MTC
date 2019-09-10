@@ -1,0 +1,13 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "authLevel": null,
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "name": "mySbMsg",
+      "methods": null
+    }
+  ],
+  "scriptFile": "../dist/check-activator/index.js"
+}

@@ -8,6 +8,7 @@ export class CheckAllocationService {
   }
 
   allocate (logger: CommonLogger): void {
-
+    const excludeUnusedAllocations = true
+    this.dataService.getAllPupilData(excludeUnusedAllocations)
   }
 }
