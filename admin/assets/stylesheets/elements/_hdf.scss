@@ -1,4 +1,4 @@
-.form-group.inset {
+.govuk-form-group.inset {
   margin-left: 50px !important;
 }
 
@@ -19,4 +19,8 @@
       border-width: 0 0 3px 3px;
     }
   }
+}
+
+.govuk-panel__body p {
+  color: govuk-colour("white");
 }
