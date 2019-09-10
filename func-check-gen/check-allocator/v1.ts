@@ -1,6 +1,4 @@
 import { Context } from '@azure/functions'
-import checkAllocationService from '../lib/check-allocation-service'
+import { CheckAllocationService } from '../lib/check-allocation-service'
 
-export function process (context: Context) {
-
-}
+// export function process (context: Context) {}

@@ -25,7 +25,7 @@ describe('sas token service', () => {
     const token = sut.generateSasToken('', moment())
     expect(token.token).toBe('sas')
   })
-  it('should throw an error when expiryDate is before now', () => {
+  it('should throw an error when expiryDate is invalid', () => {
     const invalidMoment = moment('2019-13-41')
     try {
       sut.generateSasToken('', invalidMoment)
