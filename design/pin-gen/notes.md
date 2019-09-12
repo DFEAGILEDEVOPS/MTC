@@ -1,5 +1,7 @@
 # overnight pin generation
 
+![Check Allocation Process](./check-allocation.png "Check allocation Sequence")
+
 ## function apps
 - update tsconfig.json, add tslint, add jasmine
 - how do we share ts files across multiple function libraries to avoid duplication
