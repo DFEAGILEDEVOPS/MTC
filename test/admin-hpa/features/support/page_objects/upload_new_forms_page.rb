@@ -1,17 +1,17 @@
 class UploadNewFormsPage < SitePrism::Page
   set_url '/check-form/upload-new-forms'
 
-  element :heading, '.heading-xlarge', text: 'Upload new form'
-  element :download_form_example_template, '.numeric-list .heading-small.icon-download'
-  elements :new_form_info_message, '.numeric-list li'
+  element :heading, '.govuk-heading-xl', text: 'Upload new form'
+  element :download_form_example_template, '.govuk-list .govuk-icon-download'
+  elements :new_form_info_message, '.govuk-list li'
   element :chose_file, '#csvFiles'
   element :live_check_form, "#checkFormType[value='L']"
   element :familiarisation_check_form, "#checkFormType[value='F']"
-  elements :error_messages, '.error-summary-list li a'
-  element :upload, 'input[value="Upload"]'
+  elements :error_messages, '.govuk-error-summary__list li a'
+  element :upload, '#upload-form-submit'
   elements :upload_area_error, '.error_message'
 
-  element :cancel, 'a.button-secondary'
+  element :cancel, 'a.govuk-button--secondary'
   element :confirm_overwrite, '#js-modal-confirmation-button'
   element :cancel_overwrite, '#js-modal-cancel-button'
 
