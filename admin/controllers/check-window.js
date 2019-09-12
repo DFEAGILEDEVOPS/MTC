@@ -139,6 +139,7 @@ const controller = {
       return next(error)
     }
     return res.render('check-window/create-check-window', {
+      layout: 'gds-layout',
       error: new ValidationError(),
       errorMessage: checkWindowErrorMessages,
       breadcrumbs: req.breadcrumbs(),
