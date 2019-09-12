@@ -1,32 +1,32 @@
 .pupil-census-uploaded-file {
-  border-top: 1px solid $grey-2;
-  border-bottom: 1px solid $grey-2;
+  border-top: 1px solid govuk-colour('mid-grey');
+  border-bottom: 1px solid govuk-colour('mid-grey');
   display: inline-flex;
   min-width: 100%;
   > dd {
-    padding-top: pem(10px);
-    padding-bottom: pem(10px);
+    padding-top: govuk-em(10px, $govuk-root-font-size);
+    padding-bottom: govuk-em(10px, $govuk-root-font-size);
     > span:first-child {
       display:inline-block;
       word-wrap: break-word;
-      width: pem(120px);
+      width: govuk-em(120px, $govuk-root-font-size);
     }
   }
 }
 
 .job-status {
-  min-width: pem(255px);
-  margin-left: pem(100px);
+  min-width: govuk-em(255px, $govuk-root-font-size);
+  margin-left: govuk-em(100px, $govuk-root-font-size);
 }
 
 .job-status-value {
-  margin-left: pem(80px);
+  margin-left: govuk-em(80px, $govuk-root-font-size);
 }
 
 .job-remove {
-  margin-left: pem(50px);
+  margin-left: govuk-em(50px, $govuk-root-font-size);
 }
 
 .no-file-uploaded {
-  width: pem(500px);
+  width: govuk-em(500px, $govuk-root-font-size);
 }

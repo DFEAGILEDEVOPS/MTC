@@ -157,6 +157,7 @@ const controller = {
       return next(error)
     }
     res.render('service-manager/upload-pupil-census', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
       pupilCensus,
