@@ -45,18 +45,16 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.log(`adding school ${schoolIdx}`)
     const schoolUUID = uuid.v4()
     const schoolItem = new SchoolRecord(tokens)
-    let pupilUUID
     const pupils = new Array()
     for (let pupilIdx = 0; pupilIdx < pupilsPerSchool; pupilIdx++) {
       checkTemplate.createdAt = new Date().toISOString()
-      pupilUUID = uuid.v4()
       pupils.push({
-        id: pupilUUID,
+        id: uuid.v4(),
         check: checkTemplate
       })
     }
     schoolItem.pupils = pupils
-    await redis.setex(`${redisKeyPrefix}:${schoolUUID}:${pupilUUID}`, redisItemExpiryInSeconds, JSON.stringify(schoolItem))
+    await redis.setex(`${redisKeyPrefix}:${schoolUUID}`, redisItemExpiryInSeconds, JSON.stringify(schoolItem))
   }
 }
 
