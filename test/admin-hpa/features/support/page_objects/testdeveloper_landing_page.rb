@@ -3,7 +3,7 @@ class TestdeveloperLandingPage < SitePrism::Page
 
   element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
-  element :heading, '.heading-xlarge', text: 'Multiplication tables check for test development'
+  element :heading, '.govuk-heading-xl', text: 'Multiplication tables check for test development'
   element :upload_and_view_forms, 'a', text: 'Upload and view forms'
   element :upload_and_view_forms_text, 'p', text: 'Add, view, remove and edit check forms'
   element :assign_forms_to_check_windows, 'a', text: 'Assign forms to check windows'

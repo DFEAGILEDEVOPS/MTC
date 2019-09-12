@@ -1,11 +1,11 @@
 class ViewFormPage < SitePrism::Page
   set_url '/check-form/view{/check_id}'
 
-  element :heading, '.heading-xlarge'
+  element :heading, '.govuk-heading-xl'
   element :information, '.information'
   element :back_to_manage_forms, 'a[href="/check-form/assign-forms-to-check-windows"]'
   element :delete_form, 'a', text: 'Remove form'
-  section :phase_banner, PhaseBanner, '.phase-banner'
+  section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
   elements :question_numbers, 'dd.inline-definition-list'
   elements :question_and_answers, 'dd.inline-definition-list'
@@ -22,8 +22,8 @@ class ViewFormPage < SitePrism::Page
   section :modal, '.modal-box.show' do
     element :heading, '#modal-title'
     element :content, '.modal-content p'
-    element :cancel, '.modal-cancel'
-    element :confirm, '.modal-confirm'
+    element :cancel, '#js-modal-cancel-button'
+    element :confirm, '#js-modal-confirmation-button'
   end
 
 end
