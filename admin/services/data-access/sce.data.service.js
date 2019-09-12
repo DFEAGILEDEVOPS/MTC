@@ -4,6 +4,7 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const sceDataService = {}
 const redisCacheService = require('../redis-cache.service')
+const sceSpecificLeaCode = 702
 
 /**
  * Find school urns and names
@@ -37,7 +38,7 @@ sceDataService.sqlFindSceSchools = async () => {
   FROM ${sqlService.adminSchema}.[school]
   LEFT JOIN ${sqlService.adminSchema}.[sce]
     ON sce.school_id = school.id
-  WHERE school.leaCode = 702 
+  WHERE school.leaCode = ${sceSpecificLeaCode}
   OR sce.id IS NOT NULL
   ORDER BY school.name ASC`
   return sqlService.query(sql)
@@ -45,7 +46,7 @@ sceDataService.sqlFindSceSchools = async () => {
 
 /**
  * Inserts or updates data for an sce school
- * @param {int} schoolId
+ * @param {number} schoolId
  * @param {string} timezone
  * @return {Promise<Object>}
  */
@@ -93,8 +94,8 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone, countryCode) => {
 /**
   * Batch upsert sce schools using the stored procedure
   *
-  * @param {[{school_id, timestamp}]} schools - array of schools to upsert
-  * @return {Promise<void>}
+  * @param {[{id, timestamp, timezone, countryCode}]} schools - array of schools to upsert
+  * @return {Promise<object>}
   */
 sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
   const declareTable = `declare @tvp as [mtc_admin].SceTableType`
@@ -124,7 +125,7 @@ sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
 
 /**
  * Deletes data for an sce school
- * @param {int} schoolId
+ * @param {number} schoolId
  * @return {Promise<Object>}
  */
 sceDataService.sqlDeleteSceSchool = async (schoolId) => {

@@ -294,8 +294,8 @@ sqlService.query = async (sql, params = [], redisKey) => {
 
 /**
  * Add parameters to an SQL request
- * @param {{name, value, type}[]} params - array of parameter objects
- * @param {{}} request -  mssql request
+ * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
+ * @param {{input}} request -  mssql request
  */
 function addParamsToRequest (params, request) {
   if (params) {
@@ -374,7 +374,7 @@ sqlService.modify = async (sql, params = []) => {
  * Assumes all table have Int ID datatype
  * @param {string} table
  * @param {number} id
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 sqlService.findOneById = async (table, id) => {
   const paramId = {
@@ -383,7 +383,7 @@ sqlService.findOneById = async (table, id) => {
     value: id
   }
   const sql = `
-      SELECT *    
+      SELECT *
       FROM ${sqlService.adminSchema}.${table}
       WHERE id = @id
     `
@@ -396,7 +396,7 @@ sqlService.findOneById = async (table, id) => {
  * It's okay if the table name has square brackets around it like '[pupil]'
  * @param {string} table
  * @param {string} column
- * @return {TYPE}
+ * @return {Promise<TYPE>}
  *
  */
 sqlService.getCacheEntryForColumn = async function (table, column) {
@@ -419,7 +419,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  * Provide the INSERT statement for passing to modify and parameters given a key/value object
  * @param {string} table
  * @param {object} data
- * @return {{sql: string, params}}
+ * @return {Promise<{sql: string, params: Array, outputParams: object}>}
  */
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
@@ -438,7 +438,7 @@ sqlService.generateInsertStatement = async (table, data) => {
  * Provide the INSERT statements for passing to modify and parameters an array
  * @param {string} table
  * @param {array} data
- * @return {{sql: string, params}}
+ * @return {Promise<{sql: string, params}>}
  */
 sqlService.generateMultipleInsertStatements = async (table, data) => {
   if (!Array.isArray(data)) throw new Error('Insert data is not an array')
@@ -513,12 +513,12 @@ sqlService.create = async (tableName, data) => {
  */
 sqlService.updateDataTypeCache = async function () {
   const sql =
-    `SELECT  
-      TABLE_NAME, 
-      COLUMN_NAME, 
-      DATA_TYPE, 
-      NUMERIC_PRECISION, 
-      NUMERIC_SCALE, 
+    `SELECT
+      TABLE_NAME,
+      COLUMN_NAME,
+      DATA_TYPE,
+      NUMERIC_PRECISION,
+      NUMERIC_SCALE,
       CHARACTER_MAXIMUM_LENGTH
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema

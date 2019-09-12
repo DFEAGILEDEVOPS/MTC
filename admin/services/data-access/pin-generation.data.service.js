@@ -57,7 +57,7 @@ const serviceToExport = {
 
   /**
    * Find checks that are being re-started
-   * @param {number} - schoolId
+   * @param {number} schoolId
    * @param {[number]} checkIds - all check Ids generated during pin generation
    * @param {[number]} pupilIds - pupils known to be doing a restart
    */
@@ -97,8 +97,8 @@ const serviceToExport = {
    * Batch create checks with pins, now using a stored procedure
    * A pin will be randomly allocated
    *
-   * @param {[{pupilId, checkFormId, checkWindowId, isLiveCheck, pinExpiresAt, schoolId}]} checks - array of check objects to create
-   * @return {Promise<void>}
+   * @param {[{pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id}]} checks - array of check objects to create
+   * @return {Promise<object>}
    */
   sqlCreateBatch: async (checks) => {
     const declareTable = `declare @tvp as [mtc_admin].CheckTableType`

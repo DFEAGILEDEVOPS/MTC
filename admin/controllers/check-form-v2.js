@@ -22,6 +22,7 @@ controller.getViewFormsPage = async (req, res, next) => {
   }
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('check-form/view-forms', {
+    layout: 'gds-layout',
     checkForms,
     breadcrumbs: req.breadcrumbs(),
     messages: res.locals.messages
@@ -47,6 +48,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
   }
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/upload-new-forms', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     errors: error || new ValidationError(),
     formData: req.body,
@@ -117,6 +119,7 @@ controller.getViewFormPage = async (req, res, next) => {
   res.locals.pageTitle = checkFormData.checkFormName
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/view-form', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     checkFormData
   })
@@ -146,6 +149,7 @@ controller.getAssignFormsPage = async (req, res, next) => {
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
   res.render('check-form/view-assign-forms-to-check-windows', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     highlight: hl && new Set(hl),
@@ -182,6 +186,7 @@ controller.getSelectFormPage = async (req, res, next) => {
   req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/view-select-forms', {
+    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     checkFormData,

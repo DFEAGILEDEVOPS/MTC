@@ -11,8 +11,8 @@ const pupilAttendanceDataService = {}
 pupilAttendanceDataService.sqlInsertBatch = async (ids, attendanceCodeId, userId) => {
   logger.debug('pupilAttendanceDataService.sqlInsertBatch: called')
   const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
-     pupil_id, 
-     recordedBy_user_id, 
+     pupil_id,
+     recordedBy_user_id,
      attendanceCode_id
    ) VALUES `
 
@@ -33,8 +33,8 @@ pupilAttendanceDataService.sqlInsertBatch = async (ids, attendanceCodeId, userId
 
 pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, userId) => {
   const update = `UPDATE ${sqlService.adminSchema}.${table}
-    SET 
-      attendanceCode_id = @attendanceCodeId, 
+    SET
+      attendanceCode_id = @attendanceCodeId,
       recordedBy_user_id = @userId
   `
 
@@ -74,7 +74,7 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
 /**
  * Returns pupil attendance based on pupil id
  * @param pupilId
- * @return {Object}
+ * @return {Promise<Object>}
  */
 pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   const select = `

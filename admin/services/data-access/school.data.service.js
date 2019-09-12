@@ -31,12 +31,12 @@ const schoolDataService = {
   /**
    * Find a School from the pin
    * @param {number} pin
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   sqlFindOneBySchoolPin: async (pin) => {
     const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
     const sql = `
-        SELECT *    
+        SELECT *
         FROM ${sqlService.adminSchema}.${table}
         WHERE pin = @pin
       `

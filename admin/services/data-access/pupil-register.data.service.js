@@ -8,7 +8,7 @@ const service = {
   getPupilRegister: async function (schoolId) {
     const sql = `
      SELECT * FROM [mtc_admin].[vewPupilRegister]
-     WHERE school_id = @schoolId 
+     WHERE school_id = @schoolId
      ORDER BY lastName, foreName ASC`
 
     const params = [
@@ -21,7 +21,7 @@ const service = {
   /**
    * Fetches incomplete checks based on school id.
    * @param {number} schoolId
-   * @return {Array} pupils
+   * @return {Promise<Array>} pupils
    */
   getIncompleteChecks: async function (schoolId) {
     const sql = `

@@ -1,12 +1,12 @@
 .assigned-check-windows {
-  border-top: 1px solid $grey-2;
+  border-top: 1px solid govuk-colour('mid-grey');
   > dl > dd {
-    border-bottom: 1px solid $grey-2;
+    border-bottom: 1px solid govuk-colour('mid-grey');
   }
 }
 
 .check-window-period {
-  margin: pem(2px) 0 0 0;
+  margin: govuk-em(2px, $govuk-root-font-size) 0 0 0;
 }
 
 .assigned-forms-highlight {
@@ -14,5 +14,5 @@
 }
 
 .divider {
-  margin: pem(20px) 0;
+  margin: govuk-em(20px, $govuk-root-font-size) 0;
 }
