@@ -1,523 +1,575 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<div class="grid-row">
-    <div class="column-two-thirds">
-
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (error.hasError()) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-            <p>See highlighted errors below.</p>
-            <ul class="error-summary-list">
-                <% error.getUniqueFields([
-                    'checkWindowName',
-                    'adminStartDay',
-                    'adminStartMonth',
-                    'adminStartYear',
-                    'adminEndDay',
-                    'adminEndMonth',
-                    'adminEndYear',
-                    'familiarisationCheckStartDay',
-                    'familiarisationCheckStartMonth',
-                    'familiarisationCheckStartYear',
-                    'familiarisationCheckEndDay',
-                    'familiarisationCheckEndMonth',
-                    'familiarisationCheckEndYear',
-                    'liveCheckStartDay',
-                    'liveCheckStartMonth',
-                    'liveCheckStartYear',
-                    'liveCheckEndDay',
-                    'liveCheckEndMonth',
-                    'liveCheckEndYear'
-                ]).map(f => { %>
-                <% if (typeof error.get(f) !== 'boolean') { %>
-                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                <% } %>
-                <% }); %>
-            </ul>
-        </div>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% error.getUniqueFields([
+                            'checkWindowName',
+                            'adminStartDay',
+                            'adminStartMonth',
+                            'adminStartYear',
+                            'adminEndDay',
+                            'adminEndMonth',
+                            'adminEndYear',
+                            'familiarisationCheckStartDay',
+                            'familiarisationCheckStartMonth',
+                            'familiarisationCheckStartYear',
+                            'familiarisationCheckEndDay',
+                            'familiarisationCheckEndMonth',
+                            'familiarisationCheckEndYear',
+                            'liveCheckStartDay',
+                            'liveCheckStartMonth',
+                            'liveCheckStartYear',
+                            'liveCheckEndDay',
+                            'liveCheckEndMonth',
+                            'liveCheckEndYear'
+                        ]).map(f => { %>
+                            <% if (typeof error.get(f) !== 'boolean') { %>
+                                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                            <% } %>
+                        <% }); %>
+                    </ul>
+                </div>
+            </div>
         <% } %>
-
-        <h1 class="heading-xlarge"><%= pageTitle %></h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <form action="/check-window/submit-check-window" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-
-            <div class="form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">
-                <label for="checkWindowName" class="form-label-bold">
-                    Check window name
-                    <% if (error.isError('checkWindowName')) { %>
-                    <span class="error-message"><%= error.get('checkWindowName') %></span>
+            <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <form action="/check-window/submit-check-window" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">
+                    <label for="checkWindowName" class="govuk-label govuk-!-font-weight-bold">
+                        Check window name
+                        <% if (error.isError('checkWindowName')) { %>
+                            <span class="govuk-error-message"><%= error.get('checkWindowName') %></span>
+                        <% } %>
+                    </label>
+                    <% if (!checkWindowData.pastCheckWindow) { %>
+                        <input class="govuk-input govuk-!-width-one-half <%= error.isError('checkWindowName') ? 'govuk-input--error' : '' %>"
+                               id="checkWindowName"
+                               name="checkWindowName"
+                               type="text"
+                               value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
+                               aria-required="true"
+                               maxlength="35"
+                               aria-label="Check window name."
+                        >
+                    <% } else { %>
+                        <input type="hidden" name="checkWindowName" value="<%= checkWindowData.checkWindowName %>">
+                        <div class="disabled-check-window-field"><%= checkWindowData.checkWindowName %></div>
                     <% } %>
-                </label>
-                <% if (!checkWindowData.pastCheckWindow) { %>
-                <input class="form-control <%= error.isError('checkWindowName') ? 'form-control-error' : '' %>"
-                       id="checkWindowName"
-                       name="checkWindowName"
-                       type="text"
-                       value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
-                       aria-required="true"
-                       maxlength="35"
-                       aria-label="Check window name."
-                >
-                <% } else { %>
-                <input type="hidden" name="checkWindowName" value="<%= checkWindowData.checkWindowName %>">
-                <div class="disabled-check-window-field"><%= checkWindowData.checkWindowName %></div>
-                <% } %>
-            </div>
-            <br />
-            <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
-            error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
-            error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear') ||
-            error.isError('adminStartDateAfterAdminEndDate') ||error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
-            error.isError('adminEndDateBeforeAdminStartDate') ||error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
-                    ? 'form-group-error' : '' %>">
-                <label class="form-label-bold">
-                    School administration period
-                    <% if (!checkWindowData.adminPeriodDisabled) { %>
-                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.adminStartDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartDay')) { %>
-                    <span class="error-message"><%= error.get('adminStartDay') %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartMonth')) { %>
-                    <span class="error-message"><%= error.get('adminStartMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartYear')) { %>
-                    <span class="error-message"><%= error.get('adminStartYear') %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.adminEndDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndDay')) { %>
-                    <span class="error-message"><%= error.get('adminEndDay') %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndMonth')) { %>
-                    <span class="error-message"><%= error.get('adminEndMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndYear')) { %>
-                    <span class="error-message"><%= error.get('adminEndYear') %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartDateAfterAdminEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminStartDateAfterAdminEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartDateAfterFamiliarisationCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminStartDateAfterFamiliarisationCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('adminStartDateAfterLiveCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminStartDateAfterLiveCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminEndDateBeforeAdminStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndDateBeforeLiveCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminEndDateBeforeLiveCheckEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.adminEndDateBeforeFamiliarisationCheckEndDate %></span>
-                    <% } %>
-                </label>
-                <% if (!checkWindowData.adminStartDateDisabled) { %>
-                <div class="form-group start-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="adminStartDay">Day</label>
-                            <input class="form-control <%= error.isError('adminStartDay') ? 'form-control-error' : ''%>"
-                                   id="adminStartDay"
-                                   name="adminStartDay"
-                                   type="number"
-                                   value="<%= checkWindowData.adminStartDay %>"
-                                   aria-required="true"
-                                   aria-label="Administration start day."
-                            >
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="adminStartMonth">Month</label>
-                            <input class="form-control <%= error.isError('adminStartMonth') ? 'form-control-error' : '' %>"
-                                   id="adminStartMonth"
-                                   name="adminStartMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.adminStartMonth %>"
-                                   aria-required="true"
-                                   aria-label="Administration start month."
-                            >
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="adminStartYear">Year</label>
-                            <input class="form-control <%= error.isError('adminStartYear') ? 'form-control-error' : '' %>"
-                                   id="adminStartYear"
-                                   name="adminStartYear"
-                                   type="number"
-                                   value="<%= checkWindowData.adminStartYear %>"
-                                   aria-required="true"
-                                   aria-label="Administration start year."
-                            >
-                        </div>
-                    </div>
                 </div>
-                <% } else { %>
-                <input type="hidden" name="adminStartDay" value="<%= checkWindowData.adminStartDay %>">
-                <input type="hidden" name="adminStartMonth" value="<%= checkWindowData.adminStartMonth %>">
-                <input type="hidden" name="adminStartYear" value="<%= checkWindowData.adminStartYear %>">
-                <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
-                <% } %>
-                <% if (!checkWindowData.adminStartDateDisabled) { %>
-                <div class="separator">to</div>
-                <% } %>
-                <% if (!checkWindowData.adminEndDateDisabled) { %>
-                <div class="form-group end-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="adminEndDay">Day</label>
-                            <input class="form-control <%= error.isError('adminEndDay') ? 'form-control-error' : ''%>"
-                                   id="adminEndDay"
-                                   name="adminEndDay"
-                                   type="number"
-                                   value="<%= checkWindowData.adminEndDay %>"
-                                   aria-required="true"
-                                   aria-label="Administration end day."
-                            >
+                <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
+                error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
+                error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear') ||
+                error.isError('adminStartDateAfterAdminEndDate') ||error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
+                error.isError('adminEndDateBeforeAdminStartDate') ||error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
+                        ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold">
+                        School administration period
+                        <% if (!checkWindowData.adminPeriodDisabled) { %>
+                            <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartDateInThePast')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminStartDateInThePast %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartDay')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminStartDay') %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartMonth')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminStartMonth') %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartYear')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminStartYear') %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndDateInThePast')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminEndDateInThePast %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndDay')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminEndDay') %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndMonth')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminEndMonth') %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndYear')) { %>
+                            <span class="govuk-error-message"><%= error.get('adminEndYear') %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartDateAfterAdminEndDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminStartDateAfterAdminEndDate %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartDateAfterFamiliarisationCheckStartDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminStartDateAfterFamiliarisationCheckStartDate %></span>
+                        <% } %>
+                        <% if (error.isError('adminStartDateAfterLiveCheckStartDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminStartDateAfterLiveCheckStartDate %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndDateBeforeAdminStartDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminEndDateBeforeAdminStartDate %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndDateBeforeLiveCheckEndDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminEndDateBeforeLiveCheckEndDate %></span>
+                        <% } %>
+                        <% if (error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')) { %>
+                            <span class="govuk-error-message"><%= errorMessage.adminEndDateBeforeFamiliarisationCheckEndDate %></span>
+                        <% } %>
+                    </label>
+                    <% if (!checkWindowData.adminStartDateDisabled) { %>
+                        <div class="govuk-form-group start-date">
+                            <div class="govuk-date-input" id="admin-start-date">
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminStartDay">
+                                            Day
+                                        </label>
+                                        <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('adminStartDay') ? 'govuk-input--error' : ''%>"
+                                            id="adminStartDay"
+                                            name="adminStartDay"
+                                            type="number"
+                                            value="<%= checkWindowData.adminStartDay %>"
+                                            pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminStartMonth">
+                                            Month
+                                        </label>
+                                        <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('adminStartMonth') ? 'govuk-input--error' : '' %>"
+                                            id="adminStartMonth"
+                                            name="adminStartMonth"
+                                            type="number"
+                                            value="<%= checkWindowData.adminStartMonth %>"
+                                            pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminStartYear">
+                                            Year
+                                        </label>
+                                        <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('adminStartYear') ? 'govuk-input--error' : '' %>"
+                                            id="adminStartYear"
+                                            name="adminStartYear"
+                                            type="number"
+                                            value="<%= checkWindowData.adminStartYear %>"
+                                            pattern="[0-9]*">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="adminEndMonth">Month</label>
-                            <input class="form-control <%= error.isError('adminEndMonth') ? 'form-control-error' : ''%>"
-                                   id="adminEndMonth"
-                                   name="adminEndMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.adminEndMonth %>"
-                                   aria-required="true"
-                                   aria-label="Administration end month."
-                            >
+                    <% } else { %>
+                        <input type="hidden" name="adminStartDay" value="<%= checkWindowData.adminStartDay %>">
+                        <input type="hidden" name="adminStartMonth" value="<%= checkWindowData.adminStartMonth %>">
+                        <input type="hidden" name="adminStartYear" value="<%= checkWindowData.adminStartYear %>">
+                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                    <% } %>
+                    <% if (!checkWindowData.adminStartDateDisabled) { %>
+                        <div class="date-input-separator">to</div>
+                    <% } %>
+                    <% if (!checkWindowData.adminEndDateDisabled) { %>
+                        <div class="govuk-form-group end-date">
+                            <div class="govuk-date-input" id="admin-end-date">
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminEndDay">
+                                            Day
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('adminEndDay') ? 'govuk-input--error' : ''%>"
+                                                id="adminEndDay"
+                                                name="adminEndDay"
+                                                type="number"
+                                                value="<%= checkWindowData.adminEndDay %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminEndMonth">
+                                            Month
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('adminEndMonth') ? 'govuk-input--error' : '' %>"
+                                                id="adminEndMonth"
+                                                name="adminEndMonth"
+                                                type="number"
+                                                value="<%= checkWindowData.adminEndMonth %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="adminEndYear">
+                                            Year
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('adminEndYear') ? 'govuk-input--error' : '' %>"
+                                                id="adminEndYear"
+                                                name="adminEndYear"
+                                                type="number"
+                                                value="<%= checkWindowData.adminEndYear %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="adminEndYear">Year</label>
-                            <input class="form-control <%= error.isError('adminEndYear') ? 'form-control-error' : ''%>"
-                                   id="adminEndYear"
-                                   name="adminEndYear"
-                                   type="number"
-                                   value="<%= checkWindowData.adminEndYear %>"
-                                   aria-required="true"
-                                   aria-label="Administration end year."
-                            >
-                        </div>
+                    <% } else { %>
+                        <input type="hidden" name="adminEndDay" value="<%= checkWindowData.adminEndDay %>">
+                        <input type="hidden" name="adminEndMonth" value="<%= checkWindowData.adminEndMonth %>">
+                        <input type="hidden" name="adminEndYear" value="<%= checkWindowData.adminEndYear %>">
+                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDate.format('D MMMM YYYY') %></div>
+                    <% } %>
                     </div>
-                </div>
-                <% } else { %>
-                <input type="hidden" name="adminEndDay" value="<%= checkWindowData.adminEndDay %>">
-                <input type="hidden" name="adminEndMonth" value="<%= checkWindowData.adminEndMonth %>">
-                <input type="hidden" name="adminEndYear" value="<%= checkWindowData.adminEndYear %>">
-                <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDate.format('D MMMM YYYY') %></div>
-                <% } %>
-            </div>
-            <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
-            error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
-            error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear') ||
-            error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate') ||error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') || error.isError('familiarisationCheckStartDateBeforeAdminStartDate') ||
-            error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
-            error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold">
-                    Try it out period
-                    <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
-                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartDay')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckStartDay') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartMonth')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckStartMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartYear')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckStartYear') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDay')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckEndDay') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndMonth')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckEndMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndYear')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckEndYear') %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateAfterLiveCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateAfterFamiliarisationCheckEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckStartDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateBeforeAdminStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateBeforeAdminStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDateAfterAdminEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateAfterAdminEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateNotEqualLiveCheckEndDate %></span>
-                    <% } %>
-                </label>
-                <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
-                <div class="form-group start-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="familiarisationCheckStartDay">Day</label>
-                            <input class="form-control  <%= error.isError('familiarisationCheckStartDay') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckStartDay"
-                                   name="familiarisationCheckStartDay"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckStartDay %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation start day."
-                            >
+                    <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
+                    error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
+                    error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear') ||
+                    error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate') ||error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') || error.isError('familiarisationCheckStartDateBeforeAdminStartDate') ||
+                    error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
+                    error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'govuk-form-group--error' : '' %>">
+                        <label class="govuk-label govuk-!-font-weight-bold">
+                            Try it out period
+                            <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
+                                <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartDateInThePast')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckStartDateInThePast %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartDay')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckStartDay') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartMonth')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckStartMonth') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartYear')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckStartYear') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDateInThePast')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateInThePast %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDay')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckEndDay') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndMonth')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckEndMonth') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndYear')) { %>
+                                <span class="govuk-error-message"><%= error.get('familiarisationCheckEndYear') %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckStartDateAfterLiveCheckStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckStartDateAfterFamiliarisationCheckEndDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckStartDateBeforeAdminStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckStartDateBeforeAdminStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDateBeforeAdminStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateBeforeAdminStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDateAfterAdminEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateAfterAdminEndDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateNotEqualLiveCheckEndDate %></span>
+                            <% } %>
+                        </label>
+                    <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
+                        <div class="govuk-form-group start-date">
+                            <div class="govuk-date-input" id="familiarisation-start-date">
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckStartDay">
+                                            Day
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('familiarisationCheckStartDay') ? 'govuk-input--error' : ''%>"
+                                                id="familiarisationCheckStartDay"
+                                                name="familiarisationCheckStartDay"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckStartDay %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckStartMonth">
+                                            Month
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('familiarisationCheckStartMonth') ? 'govuk-input--error' : '' %>"
+                                                id="familiarisationCheckStartMonth"
+                                                name="familiarisationCheckStartMonth"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckStartMonth %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckStartYear">
+                                            Year
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('familiarisationCheckStartYear') ? 'govuk-input--error' : '' %>"
+                                                id="familiarisationCheckStartYear"
+                                                name="familiarisationCheckStartYear"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckStartYear %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="familiarisationCheckStartMonth">Month</label>
-                            <input class="form-control  <%= error.isError('familiarisationCheckStartMonth') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckStartMonth"
-                                   name="familiarisationCheckStartMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckStartMonth %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation start month."
-                            >
+                    <% } else { %>
+                        <input type="hidden" name="familiarisationCheckStartDay" value="<%= checkWindowData.familiarisationCheckStartDay %>">
+                        <input type="hidden" name="familiarisationCheckStartMonth" value="<%= checkWindowData.familiarisationCheckStartMonth %>">
+                        <input type="hidden" name="familiarisationCheckStartYear" value="<%= checkWindowData.familiarisationCheckStartYear %>">
+                        <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                    <% } %>
+                    <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
+                        <div class="date-input-separator">to</div>
+                    <% } %>
+                    <% if (!checkWindowData.familiarisationCheckEndDateDisabled) { %>
+                        <div class="govuk-form-group end-date">
+                            <div class="govuk-date-input" id="familiarisation-end-date">
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckEndDay">
+                                            Day
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('familiarisationCheckEndDay') ? 'govuk-input--error' : ''%>"
+                                                id="familiarisationCheckEndDay"
+                                                name="familiarisationCheckEndDay"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckEndDay %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckEndMonth">
+                                            Month
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('familiarisationCheckEndMonth') ? 'govuk-input--error' : '' %>"
+                                                id="familiarisationCheckEndMonth"
+                                                name="familiarisationCheckEndMonth"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckEndMonth %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label" for="familiarisationCheckEndYear">
+                                            Year
+                                        </label>
+                                        <input
+                                                class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('familiarisationCheckEndYear') ? 'govuk-input--error' : '' %>"
+                                                id="familiarisationCheckEndYear"
+                                                name="familiarisationCheckEndYear"
+                                                type="number"
+                                                value="<%= checkWindowData.familiarisationCheckEndYear %>"
+                                                pattern="[0-9]*">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="familiarisationCheckStartYear">Year</label>
-                            <input class="form-control <%= error.isError('familiarisationCheckStartYear') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckStartYear"
-                                   name="familiarisationCheckStartYear"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckStartYear %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation start year."
-                            >
-                        </div>
+                    <% } else { %>
+                        <input type="hidden" name="familiarisationCheckEndDay" value="<%= checkWindowData.familiarisationCheckEndDay %>">
+                        <input type="hidden" name="familiarisationCheckEndMonth" value="<%= checkWindowData.familiarisationCheckEndMonth %>">
+                        <input type="hidden" name="familiarisationCheckEndYear" value="<%= checkWindowData.familiarisationCheckEndYear %>">
+                        <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
+                    <% } %>
                     </div>
-                </div>
-                <% } else { %>
-                <input type="hidden" name="familiarisationCheckStartDay" value="<%= checkWindowData.familiarisationCheckStartDay %>">
-                <input type="hidden" name="familiarisationCheckStartMonth" value="<%= checkWindowData.familiarisationCheckStartMonth %>">
-                <input type="hidden" name="familiarisationCheckStartYear" value="<%= checkWindowData.familiarisationCheckStartYear %>">
-                <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
-                <% } %>
-                <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
-                <div class="separator">to</div>
-                <% } %>
-                <% if (!checkWindowData.familiarisationCheckEndDateDisabled) { %>
-                <div class="form-group end-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="familiarisationCheckEndDay">Day</label>
-                            <input class="form-control <%= error.isError('familiarisationCheckEndDay') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckEndDay"
-                                   name="familiarisationCheckEndDay"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckEndDay %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation end day."
-                            >
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="familiarisationCheckEndMonth">Month</label>
-                            <input class="form-control <%= error.isError('familiarisationCheckEndMonth') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckEndMonth"
-                                   name="familiarisationCheckEndMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckEndMonth %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation end month."
-                            >
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="familiarisationCheckEndYear">Year</label>
-                            <input class="form-control <%= error.isError('familiarisationCheckEndYear') ? 'form-control-error' : ''%>"
-                                   id="familiarisationCheckEndYear"
-                                   name="familiarisationCheckEndYear"
-                                   type="number"
-                                   value="<%= checkWindowData.familiarisationCheckEndYear %>"
-                                   aria-required="true"
-                                   aria-label="Familiarisation end year."
-                            >
-                        </div>
-                    </div>
-                </div>
-                <% } else { %>
-                <input type="hidden" name="familiarisationCheckEndDay" value="<%= checkWindowData.familiarisationCheckEndDay %>">
-                <input type="hidden" name="familiarisationCheckEndMonth" value="<%= checkWindowData.familiarisationCheckEndMonth %>">
-                <input type="hidden" name="familiarisationCheckEndYear" value="<%= checkWindowData.familiarisationCheckEndYear %>">
-                <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
-                <% } %>
-            </div>
-            <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
-            error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
-            error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear') ||
-            error.isError('liveCheckStartDateAfterLiveCheckEndDate') ||error.isError('liveCheckStartDateBeforeAdminStartDate') || error.isError('liveCheckEndDateAfterAdminEndDate') ||
-            error.isError('liveCheckEndDateAfterAdminEndDate') ||error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') || error.isError('liveCheckEndDateBeforeLiveCheckStartDate') ||
-            error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') ||error.isError('liveCheckEndDateBeforeLiveCheckStartDate') || error.isError('liveCheckEndDateBeforeAdminStartDate') ||
-            error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold">
-                    Multiplication tables check period
-                    <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
-                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckStartDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartDay')) { %>
-                    <span class="error-message"><%= error.get('liveCheckStartDay') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartMonth')) { %>
-                    <span class="error-message"><%= error.get('liveCheckStartMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartYear')) { %>
-                    <span class="error-message"><%= error.get('liveCheckStartYear') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDateInThePast')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckEndDateInThePast %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDay')) { %>
-                    <span class="error-message"><%= error.get('liveCheckEndDay') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndMonth')) { %>
-                    <span class="error-message"><%= error.get('liveCheckEndMonth') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndYear')) { %>
-                    <span class="error-message"><%= error.get('liveCheckEndYear') %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartDateAfterLiveCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckStartDateAfterLiveCheckEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckStartDateBeforeAdminStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDateAfterAdminEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckEndDateAfterAdminEndDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckStartDateBeforeFamiliarisationCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDateBeforeLiveCheckStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckEndDateBeforeLiveCheckStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckEndDateBeforeAdminStartDate %></span>
-                    <% } %>
-                    <% if (error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate')) { %>
-                    <span class="error-message"><%= errorMessage.liveCheckEndDateNotEqualFamiliarisationCheckEndDate %></span>
-                    <% } %>
-                </label>
+                    <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
+                    error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
+                    error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear') ||
+                    error.isError('liveCheckStartDateAfterLiveCheckEndDate') ||error.isError('liveCheckStartDateBeforeAdminStartDate') || error.isError('liveCheckEndDateAfterAdminEndDate') ||
+                    error.isError('liveCheckEndDateAfterAdminEndDate') ||error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') || error.isError('liveCheckEndDateBeforeLiveCheckStartDate') ||
+                    error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') ||error.isError('liveCheckEndDateBeforeLiveCheckStartDate') || error.isError('liveCheckEndDateBeforeAdminStartDate') ||
+                    error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'govuk-form-group--error' : '' %>">
+                        <label class="govuk-label govuk-!-font-weight-bold">
+                            Multiplication tables check period
+                            <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
+                                <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartDateInThePast')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckStartDateInThePast %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartDay')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckStartDay') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartMonth')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckStartMonth') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartYear')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckStartYear') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDateInThePast')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateInThePast %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDay')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckEndDay') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndMonth')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckEndMonth') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndYear')) { %>
+                                <span class="govuk-error-message"><%= error.get('liveCheckEndYear') %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartDateAfterLiveCheckEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckStartDateAfterLiveCheckEndDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartDateBeforeAdminStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckStartDateBeforeAdminStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDateAfterAdminEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateAfterAdminEndDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckStartDateBeforeFamiliarisationCheckStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDateBeforeLiveCheckStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateBeforeLiveCheckStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDateBeforeAdminStartDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateBeforeAdminStartDate %></span>
+                            <% } %>
+                            <% if (error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate')) { %>
+                                <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateNotEqualFamiliarisationCheckEndDate %></span>
+                            <% } %>
+                        </label>
                 <% if (!checkWindowData.liveCheckStartDateDisabled) { %>
-                <div class="form-group start-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="liveCheckStartDay">Day</label>
-                            <input class="form-control <%= error.isError('liveCheckStartDay') ? 'form-control-error' : ''%>"
-                                   id="liveCheckStartDay"
-                                   name="liveCheckStartDay"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckStartDay %>"
-                                   aria-required="true"
-                                   aria-label="Live check start day."
-                            >
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="liveCheckStartMonth">Month</label>
-                            <input class="form-control <%= error.isError('liveCheckStartMonth') ? 'form-control-error' : ''%>"
-                                   id="liveCheckStartMonth"
-                                   name="liveCheckStartMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckStartMonth %>"
-                                   aria-required="true"
-                                   aria-label="Live check start month."
-                            >
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="liveCheckStartYear">Year</label>
-                            <input class="form-control <%= error.isError('liveCheckStartYear') ? 'form-control-error' : ''%>"
-                                   id="liveCheckStartYear"
-                                   name="liveCheckStartYear"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckStartYear %>"
-                                   aria-required="true"
-                                   aria-label="Live check start year."
-                            >
+                    <div class="govuk-form-group start-date">
+                        <div class="govuk-date-input" id="live-checl-start-date">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckStartDay">
+                                        Day
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('liveCheckStartDay') ? 'govuk-input--error' : ''%>"
+                                            id="liveCheckStartDay"
+                                            name="liveCheckStartDay"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckStartDay %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckStartMonth">
+                                        Month
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('liveCheckStartMonth') ? 'govuk-input--error' : '' %>"
+                                            id="liveCheckStartMonth"
+                                            name="liveCheckStartMonth"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckStartMonth %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckStartYear">
+                                        Year
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('liveCheckStartYear') ? 'govuk-input--error' : '' %>"
+                                            id="liveCheckStartYear"
+                                            name="liveCheckStartYear"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckStartYear %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <% } else { %>
-                <input type="hidden" name="liveCheckStartDay" value="<%= checkWindowData.liveCheckStartDay %>">
-                <input type="hidden" name="liveCheckStartMonth" value="<%= checkWindowData.liveCheckStartMonth %>">
-                <input type="hidden" name="liveCheckStartYear" value="<%= checkWindowData.liveCheckStartYear %>">
-                <div class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                    <input type="hidden" name="liveCheckStartDay" value="<%= checkWindowData.liveCheckStartDay %>">
+                    <input type="hidden" name="liveCheckStartMonth" value="<%= checkWindowData.liveCheckStartMonth %>">
+                    <input type="hidden" name="liveCheckStartYear" value="<%= checkWindowData.liveCheckStartYear %>">
+                    <div class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
                 <% } %>
                 <% if (!checkWindowData.liveCheckStartDateDisabled) { %>
-                <div class="separator">to</div>
+                    <div class="date-input-separator">to</div>
                 <% } %>
                 <% if (!checkWindowData.liveCheckEndDateDisabled) { %>
-                <div class="form-group end-date">
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="liveCheckEndDay">Day</label>
-                            <input class="form-control <%= error.isError('liveCheckEndDay') ? 'form-control-error' : ''%>"
-                                   id="liveCheckEndDay"
-                                   name="liveCheckEndDay"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckEndDay %>"
-                                   aria-required="true"
-                                   aria-label="Live check end day."
-                            >
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="liveCheckEndMonth">Month</label>
-                            <input class="form-control <%= error.isError('liveCheckEndMonth') ? 'form-control-error' : ''%>"
-                                   id="liveCheckEndMonth"
-                                   name="liveCheckEndMonth"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckEndMonth %>"
-                                   aria-required="true"
-                                   aria-label="Live check end month."
-                            >
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="liveCheckEndYear">Year</label>
-                            <input class="form-control <%= error.isError('liveCheckEndYear') ? 'form-control-error' : ''%>"
-                                   id="liveCheckEndYear"
-                                   name="liveCheckEndYear"
-                                   type="number"
-                                   value="<%= checkWindowData.liveCheckEndYear %>"
-                                   aria-required="true"
-                                   aria-label="Live check end year."
-                            >
+                    <div class="govuk-form-group end-date">
+                        <div class="govuk-date-input" id="live-check-end-date">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckEndDay">
+                                        Day
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('liveCheckEndDay') ? 'govuk-input--error' : ''%>"
+                                            id="liveCheckEndDay"
+                                            name="liveCheckEndDay"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckEndDay %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckEndMonth">
+                                        Month
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-2 <%= error.isError('liveCheckEndMonth') ? 'govuk-input--error' : '' %>"
+                                            id="liveCheckEndMonth"
+                                            name="liveCheckEndMonth"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckEndMonth %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="liveCheckEndYear">
+                                        Year
+                                    </label>
+                                    <input
+                                            class="govuk-input govuk-date-input__input govuk-input--width-4 <%= error.isError('liveCheckEndYear') ? 'govuk-input--error' : '' %>"
+                                            id="liveCheckEndYear"
+                                            name="liveCheckEndYear"
+                                            type="number"
+                                            value="<%= checkWindowData.liveCheckEndYear %>"
+                                            pattern="[0-9]*">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <% } else { %>
-                <input type="hidden" name="liveCheckEndDay" value="<%= checkWindowData.liveCheckEndDay %>">
-                <input type="hidden" name="liveCheckEndMonth" value="<%= checkWindowData.liveCheckEndMonth %>">
-                <input type="hidden" name="liveCheckEndYear" value="<%= checkWindowData.liveCheckEndYear %>">
-                <span class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDate.format('D MMMM YYYY') %></span>
+                    <input type="hidden" name="liveCheckEndDay" value="<%= checkWindowData.liveCheckEndDay %>">
+                    <input type="hidden" name="liveCheckEndMonth" value="<%= checkWindowData.liveCheckEndMonth %>">
+                    <input type="hidden" name="liveCheckEndYear" value="<%= checkWindowData.liveCheckEndYear %>">
+                    <span class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDate.format('D MMMM YYYY') %></span>
                 <% } %>
-            </div>
-            <% if (!checkWindowData.pastCheckWindow) { %>
-            <div class="form-buttons">
+                </div>
+                <% if (!checkWindowData.pastCheckWindow) { %>
                 <input type="hidden" name="checkWindowUrlSlug" value="<%= checkWindowData.checkWindowUrlSlug %>">
-                <input class="button" type="submit" value="Save">
-                <a href="/check-window/manage-check-windows" class="button button-secondary">Cancel</a>
-            </div>
-            <% } %>
-        </form>
+                <input class="govuk-button govuk-!-margin-right-2" type="submit" value="Save">
+                <a href="/check-window/manage-check-windows" class="govuk-button govuk-button--secondary">Cancel</a>
+                <% } %>
+            </form>
+        </div>
     </div>
-</div>
+</main>
