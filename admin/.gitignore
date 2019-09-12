@@ -66,3 +66,6 @@ data/files/*
 
 # don't show stuff generated from ~/bin/generate-dependency-graphs.sh
 dependency-graphs
+
+# typescript output directory
+dist

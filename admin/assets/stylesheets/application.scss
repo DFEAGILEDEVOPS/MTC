@@ -45,10 +45,8 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_phase-banner';
 @import 'elements/_headings';
 @import 'elements/_organization-logo';
-@import 'elements/_printing';
 @import 'elements/_top_navigation';
 @import 'elements/_electron';
-@import 'elements/_filters';
 @import 'elements/_flash-messages';
 @import 'elements/_boxes';
 @import 'elements/_lists';
@@ -57,16 +55,12 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_results';
 @import 'elements/_check-windows';
 @import 'elements/_sorting';
-@import 'elements/_not-taking-check';
 @import 'elements/_sticky-confirmation-banner';
 @import 'elements/_mtc-checkboxes';
 @import 'elements/_modal';
 @import 'elements/_pupil-census';
-@import 'elements/_pupil-pin';
 @import 'elements/_accessible-autocomplete';
 @import 'elements/_custom_banners.scss';
-@import 'elements/_assign-forms.scss';
-@import 'elements/_hdf';
 
 // New GOVUK Frontend Toolkit
 
@@ -80,6 +74,7 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-app-cookie-banner';
 @import 'elements/_gds-app-related-items';
 @import 'elements/_gds-back-to-top';
+@import 'elements/_gds-check-forms';
 @import 'elements/_gds-custom-fonts';
 @import 'elements/_gds-custom-icons';
 @import 'elements/_gds-filters';
@@ -94,10 +89,15 @@ $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 @import 'elements/_gds-sorting';
 @import 'elements/_gds-tables';
 @import 'elements/_groups';
+@import 'elements/_printing';
+@import 'elements/_hdf';
+@import 'elements/_not-taking-check';
 @import 'elements/_pupils';
+@import 'elements/_pupil-pin';
 @import 'elements/_restarts';
 @import 'elements/_sign-out';
 @import 'elements/_sta-organisation-logo';
+@import 'elements/_assign-forms.scss';
 
 // Global
 

@@ -117,8 +117,8 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   })
 
   const insertSql = `INSERT INTO ${sqlService.adminSchema}.[pupilAccessArrangements] (
-      pupil_id, 
-      recordedBy_user_id, 
+      pupil_id,
+      recordedBy_user_id,
       accessArrangements_id,
       questionReaderReasons_id,
       inputAssistanceInformation,
@@ -235,7 +235,7 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     paa.nextButtonInformation,
     paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
-    qrr.code as questionReaderReasonCode 
+    qrr.code as questionReaderReasonCode
     FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
     INNER JOIN ${sqlService.adminSchema}.pupil p
       ON p.id = paa.pupil_id
@@ -250,7 +250,7 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
 /**
  * Delete pupil's access arrangements.
  * @param {String} urlSlug
- * @return {Object}
+ * @return {Promise<Object>}
  */
 pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (urlSlug) => {
   const sql = `DELETE paa FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa

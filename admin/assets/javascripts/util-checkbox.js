@@ -195,7 +195,9 @@ var stickyBanner = {
       // to submit it
       var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $(document.forms && document.forms[0])
       $('#stickyConfirm').on('click touchstart', function () {
-        form.submit()
+        // prevent form submission for print pins form
+        var printPinsForm = document.getElementById('printPinsForm')
+        !printPinsForm && form.submit()
       })
       // move the sticky banner to be a sibling of content and footer
       // so it can be full width

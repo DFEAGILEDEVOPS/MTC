@@ -72,23 +72,24 @@ const checkFormDataService = {
       LEFT JOIN ${sqlService.adminSchema}.[checkFormWindow] cfw ON (cf.id = cfw.checkForm_id)
       LEFT JOIN ${sqlService.adminSchema}.[checkWindow] cw ON (cfw.checkWindow_id = cw.id)
       WHERE cf.isDeleted = 0
-      AND cw.id = @windowId   
+      AND cw.id = @windowId
       AND isLiveCheckForm = @isLiveCheckForm
       ORDER BY cf.name ASC`
 
-      params.push({
-        name: 'windowId',
-        value: windowId,
-        type: TYPES.Int
-      },
-      {
-        name: 'isLiveCheckForm',
-        value: isLiveCheck ? 1 : 0,
-        type: TYPES.Bit
-      })
+      params.push(
+        {
+          name: 'windowId',
+          value: windowId,
+          type: TYPES.Int
+        },
+        {
+          name: 'isLiveCheckForm',
+          value: isLiveCheck ? 1 : 0,
+          type: TYPES.Bit
+        })
     } else {
-      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] 
-             WHERE isDeleted=0 
+      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm]
+             WHERE isDeleted=0
              ORDER BY [name] ${sortOrder}`
     }
     return sqlService.query(sql, params)
@@ -100,8 +101,8 @@ const checkFormDataService = {
       value: windowId,
       type: TYPES.Int
     }]
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 
-      AND [id] NOT IN (SELECT DISTINCT checkForm_id FROM checkFormWindow 
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0
+      AND [id] NOT IN (SELECT DISTINCT checkForm_id FROM checkFormWindow
       WHERE checkWindow_id =@windowId) ORDER BY [name]`
     return sqlService.query(sql, params)
   },
@@ -237,7 +238,7 @@ const checkFormDataService = {
   /**
    * Fetch check form by id.
    * @param id
-   * @returns {Promise.<void>}
+   * @returns {Promise.<object>}
    */
   sqlFindOneById: async (id) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
@@ -255,7 +256,7 @@ const checkFormDataService = {
   /**
    * Fetch check form with parsed check form data by id.
    * @param id
-   * @returns {Promise.<void>}
+   * @returns {Promise.<object>}
    */
   sqlFindOneParsedById: async (id) => {
     const params = [

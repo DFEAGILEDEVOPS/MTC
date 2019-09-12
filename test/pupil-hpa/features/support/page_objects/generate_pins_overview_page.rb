@@ -31,7 +31,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'

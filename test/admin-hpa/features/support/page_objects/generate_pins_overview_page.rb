@@ -1,9 +1,9 @@
 class GeneratePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-live-pins-overview'
 
-  element :heading, '.heading-xlarge'
-  element :generate_pin_message, 'p.lede'
-  element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :heading, '.govuk-heading-xl'
+  element :generate_pin_message, 'p.govuk-body'
+  element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
   section :instruction_section, 'details' do
@@ -11,13 +11,13 @@ class GeneratePinsOverviewPage < SitePrism::Page
     elements :info_message, '.list-number li'
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
-  element :related_heading, ".heading-medium", text: 'Related'
+  element :related_heading, ".govuk-heading-m", text: 'Related'
   element :guidance, "a", text: 'Guidance'
   element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
   element :restarts, "a[href='/restart/overview']", text: 'Restarts'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :group_filter, GroupFilter, '.column-two-thirds'
+  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
@@ -31,7 +31,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'
@@ -43,7 +43,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
-    element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
+    element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'input[value="View all pins"]'
     element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
   end

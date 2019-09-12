@@ -1,9 +1,9 @@
 class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-familiarisation-pins-overview'
 
-  element :heading, '.heading-xlarge'
-  element :generate_pin_message, 'p.lede'
-  element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :heading, '.govuk-heading-xl'
+  element :generate_pin_message, 'p.govuk-body'
+  element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
@@ -11,18 +11,18 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
 
   section :instruction_section, 'details' do
     element :toggle, 'summary[role="button"]'
-    elements :info_message, '.list-number li'
+    elements :info_message, '.govuk-list--number li'
   end
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
-    element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
+    element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'input[value="View all pins"]'
     element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
   end
 
-  section :group_filter, GroupFilter, '.column-two-thirds'
+  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
@@ -36,7 +36,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)

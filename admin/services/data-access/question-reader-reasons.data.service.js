@@ -21,9 +21,9 @@ questionReaderReasonsDataService.CODES = Object.freeze({
  */
 questionReaderReasonsDataService.sqlFindQuestionReaderReasons = async function () {
   const sql = `
-  SELECT 
-    id, 
-    code, 
+  SELECT
+    id,
+    code,
     description
   FROM ${sqlService.adminSchema}.[questionReaderReasons]
   ORDER BY displayOrder ASC`
@@ -47,7 +47,7 @@ questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode = async fun
 
 /**
  * Initialise method to populate accessArrangementCodes for caching purposes
- * @returns {Array}
+ * @returns {Promise<void>}
  */
 const init = async () => {
   let questionReaderReasons

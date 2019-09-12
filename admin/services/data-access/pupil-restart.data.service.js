@@ -24,7 +24,7 @@ pupilRestartDataService.sqlCreate = async (data) => {
  */
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
   const sql = `SELECT COUNT(*) AS [cnt]
-  FROM ${sqlService.adminSchema}.[pupilRestart] 
+  FROM ${sqlService.adminSchema}.[pupilRestart]
   WHERE pupil_id=@pupilId AND isDeleted=0
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
@@ -42,12 +42,12 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
 /**
  * Find latest restart for pupil
  * @param pupilId
- * @return {Promise.<void>}
+ * @return {Promise.<object>}
  */
 pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
-  const sql = `SELECT TOP 1 * 
-  FROM ${sqlService.adminSchema}.[pupilRestart] 
-  WHERE pupil_id=@pupilId AND isDeleted=0 
+  const sql = `SELECT TOP 1 *
+  FROM ${sqlService.adminSchema}.[pupilRestart]
+  WHERE pupil_id=@pupilId AND isDeleted=0
   ORDER BY createdAt DESC`
   const params = [
     {
@@ -66,9 +66,9 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
  */
 pupilRestartDataService.sqlFindRestartCodes = async function () {
   const sql = `
-  SELECT 
-    id, 
-    code, 
+  SELECT
+    id,
+    code,
     description
   FROM ${sqlService.adminSchema}.[pupilRestartCode]
   ORDER BY description ASC`
@@ -78,11 +78,11 @@ pupilRestartDataService.sqlFindRestartCodes = async function () {
 /**
  * Find pupil's restart reason description by id
  * @param id
- * @return {Promise.<void>}
+ * @return {Promise.<string>}
  */
 pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
   const sql = `
-  SELECT 
+  SELECT
     description
   FROM ${sqlService.adminSchema}.[pupilRestartReason]
   WHERE id=@id
@@ -105,9 +105,9 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
  */
 pupilRestartDataService.sqlFindRestartReasons = async function () {
   const sql = `
-  SELECT 
-    id, 
-    code, 
+  SELECT
+    id,
+    code,
     description
   FROM ${sqlService.adminSchema}.[pupilRestartReason]
   ORDER BY displayOrder ASC`
@@ -116,7 +116,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 
 /**
  * Find restart reason id
- * @return {Number}
+ * @return {Promise<string>}
  */
 pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
   const sql = `
@@ -154,8 +154,8 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart] 
-  SET isDeleted=1, deletedByUser_id=@userId  
+  const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart]
+  SET isDeleted=1, deletedByUser_id=@userId
   WHERE id = @restartId`
   return sqlService.modify(sql, params)
 }
@@ -164,11 +164,11 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
  * Find latest open restarts by pupil slug and, for security, schoolId
  * @param pupilUrlSlug
  * @param schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 pupilRestartDataService.sqlFindOpenRestartForPupil = async (pupilUrlSlug, schoolId) => {
-  const sql = `SELECT TOP (1) pr.* 
-               FROM [mtc_admin].[pupilRestart] pr JOIN 
+  const sql = `SELECT TOP (1) pr.*
+               FROM [mtc_admin].[pupilRestart] pr JOIN
                     [mtc_admin].[pupil] p ON (pr.pupil_id = p.id)
                WHERE isDeleted = 0
                AND p.urlSlug = @pupilUrlSlug
@@ -189,10 +189,10 @@ pupilRestartDataService.sqlFindOpenRestartForPupil = async (pupilUrlSlug, school
  * Find a check by id
  * @param checkId
  * @param schoolId
- * @return {Promise<void>}
+ * @return {Promise<Object>}
  */
 pupilRestartDataService.sqlFindCheckById = async function (checkId, schoolId) {
-  const sql = `SELECT 
+  const sql = `SELECT
                 chk.*,
                 cs.code
                FROM [mtc_admin].[check] chk join

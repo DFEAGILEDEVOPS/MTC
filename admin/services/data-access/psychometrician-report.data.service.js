@@ -6,7 +6,7 @@ const TYPES = sqlService.TYPES
 const psychometricianReportDataService = {
   /**
    * Get latest report meta info
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   getLatest: async function getLatest () {
     const sql = `select TOP (1) bf.*
@@ -21,7 +21,7 @@ const psychometricianReportDataService = {
   /**
    * Fetch report meta info by URL Slug
    * @param urlSlug
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   sqlGetByUrlSlug: async function sqlGetByUrlSlug (urlSlug) {
     const sql = `select bf.*

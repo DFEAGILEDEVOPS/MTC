@@ -1,78 +1,77 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<form method="post" action="/attendance/confirm-and-submit">
-    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-
-    <div class="grid-row">
-        <div class="column-two-thirds">
-
-            <% if (error.hasError()) { %>
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-                <p>See highlighted errors below.</p>
-                <ul class="error-summary-list">
-                    <% error.getFields().map(f => { %>
-                    <% if (typeof error.get(f) !== 'boolean') { %>
-                        <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                    <% } %>
-                    <% }); %>
-                </ul>
-            </div>
-            <% } %>
-                
-            <h1 class="heading-xlarge">Confirm and submit</h1>
-
-            <%- partial('partials/_session_expiry') %>
-
-            <div class="form-group" id="confirm">
-                <div class="multiple-choice">
-                    <input id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
-                    <label for="confirmYes">
-                        <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
-                        In particular:
-                        <a id="confirmBoxes"></a>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group inset <%= error.isError('confirmBoxes') ? 'form-group-error' : '' %>" id="confirm">
-                <% if (error.isError('confirmBoxes')) { %>
-                    <span class="error-message"><%= error.get('confirmBoxes') %></span>
-                <% } %>
-                <div class="multiple-choice smaller">
-                    <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
-                    <label for="pupilDetails">pupil details are correct</label>
-                </div>
-                <div class="multiple-choice smaller">
-                    <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
-                    <label for="uniquePins">each pupil who took the check used the unique PIN generated for them</label>
-                </div>
-                <div class="multiple-choice smaller">
-                    <input type="checkbox" id="staffConfirm" name="staffConfirm" value="checked" <% if (formData['staffConfirm']) {%> checked<% } %>>
-                    <label for="staffConfirm">all staff involved in the administration of the check have confirmed to me that the check was administered in line with the statutory arrangements</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="multiple-choice">
-                    <input id="confirmNo" type="radio" role="radio" name="confirm" value="N">
-                    <label for="confirmNo">
-                        <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
-                    </label>
-    
-                    <div class="panel panel-border-wide">
-                        <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/attendance/confirm-and-submit">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <% if (error.hasError()) { %>
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        You need to fix the errors on this page before continuing.
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <p>See highlighted errors below.</p>
+                        <ul class="govuk-list govuk-error-summary__list">
+                        <% error.getFields().map(f => { %>
+                            <% if (typeof error.get(f) !== 'boolean') { %>
+                                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                            <% } %>
+                        <% }); %>
+                        </ul>
                     </div>
                 </div>
-            </div>
+                <% } %>
+                <h1 class="govuk-heading-xl">Confirm and submit</h1>
+                <%- partial('partials/_gds_session_expiry') %>
+                <div class="govuk-form-group" id="confirm">
+                    <div class="multiple-choice">
+                        <input class="govuk-radios__input" id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
+                        <label for="confirmYes">
+                            <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
+                            In particular:
+                            <a id="confirmBoxes"></a>
+                        </label>
+                    </div>
+                </div>
+                <div class="govuk-form-group inset <%= error.isError('confirmBoxes') ? 'govuk-form-group--error' : '' %>" id="confirm">
+                <% if (error.isError('confirmBoxes')) { %>
+                    <span class="govuk-error-message"><%= error.get('confirmBoxes') %></span>
+                <% } %>
+                    <div class="multiple-choice smaller">
+                        <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
+                        <label class="govuk-label" for="pupilDetails">pupil details are correct</label>
+                    </div>
+                    <div class="multiple-choice smaller">
+                        <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
+                        <label class="govuk-label" for="uniquePins">each pupil who took the check used the unique PIN generated for them</label>
+                    </div>
+                    <div class="multiple-choice smaller">
+                        <input type="checkbox" id="staffConfirm" name="staffConfirm" value="checked" <% if (formData['staffConfirm']) {%> checked<% } %>>
+                        <label class="govuk-label" for="staffConfirm">all staff involved in the administration of the check have confirmed to me that the check was administered in line with the statutory arrangements</label>
+                    </div>
+                </div>
 
-            <div class="form-buttons">
-                <input type="submit" class="button" value="Submit" />
-                <a class="button button-secondary" href="/school/school-home">Cancel</a>
-            </div>
-            
-            <div class="back-to-top-container">
-                <a href="#top">Back to top</a>
+                <div class="govuk-form-group">
+                    <div class="multiple-choice">
+                        <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="N">
+                        <label class="govuk-label" for="confirmNo">
+                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
+                        </label>
+                        <div class="govuk-inset-text">
+                            If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" class="govuk-button govuk-!-margin-right-2" value="Submit" />
+                <a class="govuk-button govuk-button--secondary" href="/school/school-home">Cancel</a>
+            </form>
+            <div class="govuk-back-to-top govuk-!-margin-top-5">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
             </div>
         </div>
     </div>
-</form>
+</main>
