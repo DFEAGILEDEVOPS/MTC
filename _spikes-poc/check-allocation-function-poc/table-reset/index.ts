@@ -39,7 +39,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   }
   const end = performance.now()
   const durationMs = end - start
-  context.log(`${tableName} cleared in ${millisToMinutesAndSeconds(durationMs)} ms`)
+  context.log(`${tableName} cleared in ${millisToMinutesAndSeconds(durationMs)} minutes`)
 }
 
 function millisToMinutesAndSeconds (milliSeconds: number) {
