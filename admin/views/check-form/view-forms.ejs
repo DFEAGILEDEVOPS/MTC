@@ -1,94 +1,88 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info) { %>
-        <div class="info-message">
-          <%= messages.info[0].message %>
-        </div>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <%= messages.info[0].message %>
+            </div>
         <% } %>
-        <h1 class="heading-xlarge">Upload and view forms</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede" id="lead-paragraph">
-            Upload, view or remove check forms.
-        </p>
-        <div class="button-wrapper">
-            <a class="button button-primary" href="/check-form/upload-new-forms">Upload new form</a>
-        </div>
-
+            <h1 class="govuk-heading-xl">Upload and view forms</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Upload, view or remove check forms.
+            </p>
+            <a class="govuk-button" href="/check-form/upload-new-forms">Upload new form</a>
         <% if (Array.isArray(checkForms) && checkForms.length > 0) { %>
-        <div class="group">
-          <table class="spacious" id="checkFormsList" role="group">
-            <thead>
-            <tr>
-              <th scope="col">
-                <a class="sortingLink">
-                  Form <span class="sort-icon asc"></span>
-                </a>
-              </th>
-              <th scope="col">
-                <a class="sortingLink">Type<span class="sort-icon"></span></a>
-              </th>
-              <th scope="col">
-                <a class="sortingLink">Uploaded on<span class="sort-icon"></span></a>
-              </th>
-              <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% checkForms.forEach(cf => { %>
-            <tr>
-              <td<% if (messages.info && Array.isArray(messages.info[0].checkForms) && messages.info[0].checkForms.some(f => f.checkFormName === cf.checkFormName)) { %> class="highlight-item"<% } %>>
-                <div class="highlight-wrapper">
-                  <a name="anchor-<%= cf.checkFormName %>"></a>
-                  <a href="/check-form/view/<%= cf.urlSlug %>" class="bold"><%= cf.checkFormName %></a>
-                </div>
-              </td>
-              <td><%= cf.checkFormType %></td>
-              <td><%= cf.createdAt %></td>
-              <td class="align-right">
-                <% if (cf.canRemoveCheckForm) { %>
-                <a class="modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>">Remove</a>
-                <% } %>
-              </td>
-            </tr>
-            <% }) %>
-            </tbody>
-          </table>
+            <table id="checkFormsList" role="group" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                <caption class="govuk-table__caption">Check forms</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                            <a class="sortingLink">Form<span class="sort-icon asc"></span></a>
+                        </th>
+                        <th scope="col" class="govuk-table__header">
+                            <a class="sortingLink">Type<span class="sort-icon"></span></a>
+                        </th>
+                        <th scope="col" class="govuk-table__header">
+                            <a class="sortingLink">Uploaded on<span class="sort-icon"></span></a>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% checkForms.forEach(cf => { %>
+                    <tr class="govuk-table__row">
+                        <td scope="row" <% if (messages.info && Array.isArray(messages.info[0].checkForms) && messages.info[0].checkForms.some(f => f.checkFormName === cf.checkFormName)) { %> class="govuk-highlight-item"<% } %>>
+                            <div class="govuk-highlight-wrapper">
+                                <a name="anchor-<%= cf.checkFormName %>"></a>
+                                <a class="govuk-link" href="/check-form/view/<%= cf.urlSlug %>" class="govuk-!-font-weight-bold"><%= cf.checkFormName %></a>
+                            </div>
+                        </td>
+                        <td><%= cf.checkFormType %></td>
+                        <td><%= cf.createdAt %></td>
+                        <td>
+                        <% if (cf.canRemoveCheckForm) { %>
+                            <a class="govuk-link modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>">Remove</a>
+                        <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <% } else {%>
+            <p class="govuk-body">Please upload a check form</p>
+            <% } %>
         </div>
-        <% } else {%>
-        <br>
-        <p>Please upload a check form</p>
-        <% } %>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/check-form/assign-forms-to-check-windows">Assign forms to check window</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="/check-form/assign-forms-to-check-windows">Assign forms to check window</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
+</main>
 <script>
-  $(function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'checkFormsList', {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'checkFormsList', {
       sortNullsLast: false,
       ignoredStrings: []
     })
   })
 </script>
-<%- partial('partials/_modal_box', {
-  modalTitle: 'Remove form',
-  modalText: 'Are you sure you want to remove this?',
-  modalConfirmationLabel: 'Yes',
-  modalConfirmationUrl: '#',
-  modalCancelLabel: 'No',
-  modalCancelUrl: '#'
+<%- partial('partials/_gds_modal_box', {
+    modalTitle: 'Remove form',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
 }) %>
