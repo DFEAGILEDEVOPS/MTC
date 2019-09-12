@@ -1,46 +1,48 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Multiplication tables check for test development</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <ol class="list">
-            <% const uploadAndViewFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/view-forms' : '/test-developer/upload-and-view-forms' %>
-            <li>
-                <h2 class="heading-small"><a  href="<%= uploadAndViewFormsHrefValue %>">Upload and view forms</a></h2>
-                <p>Add, view, remove and edit check forms</p>
-            </li>
-
-            <li>
-              <% const assignFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/assign-forms-to-check-windows' : '/test-developer/assign-form-to-window' %>
-              <h2 class="heading-small"><a href="<%= assignFormsHrefValue %>">Assign forms to check windows</a></h2>
-                <p>Select uploaded forms and assign them to check windows</p>
-            </li>
-
-            <li>
-                <h2 class="heading-small"><a href="/test-developer/download-pupil-check-data">Download pupil check data</a></h2>
-                <p>Generate and download detailed raw pupil check data</p>
-            </li>
-
-            <li>
-                <h2 class="heading-small"><a href="/test-developer/view-pupil-payload">View pupil payload</a></h2>
-                <p>Inspect the raw payload of a pupil check</p>
-            </li>
-        </ol>
-    </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Multiplication tables check for test development</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <ol class="govuk-list">
+                <% const uploadAndViewFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/view-forms' : '/test-developer/upload-and-view-forms' %>
+                <li>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="<%= uploadAndViewFormsHrefValue %>">Upload and view forms</a></h4>
+                    <p class="govuk-body">Add, view, remove and edit check forms</p>
+                </li>
+                <li>
+                    <% const assignFormsHrefValue = isNewCheckFormFeatureToggleEnabled ? '/check-form/assign-forms-to-check-windows' : '/test-developer/assign-form-to-window' %>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="<%= assignFormsHrefValue %>">Assign forms to check windows</a></h4>
+                    <p>Select uploaded forms and assign them to check windows</p>
+                </li>
+                <li>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="/test-developer/download-pupil-check-data">Download pupil check data</a></h4>
+                    <p>Generate and download detailed raw pupil check data</p>
+                </li>
+
+                <li>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="/test-developer/view-pupil-payload">View pupil payload</a></h4>
+                    <p>Inspect the raw payload of a pupil check</p>
+                </li>
+            </ol>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>
