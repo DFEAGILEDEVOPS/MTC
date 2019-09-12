@@ -38,7 +38,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     for (let pupilIdx = 0; pupilIdx < pupilsPerSchool; pupilIdx++) {
       pupilUUID = uuid.v4()
       pupils.push({
-        id: pupilUUID,
+        id: uuid.v4(),
         check: checkTemplate
       })
     }
