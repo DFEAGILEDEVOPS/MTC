@@ -4,7 +4,7 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">View pupil payload</h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" novalidate>
+            <form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" rel="noopener noreferrer" novalidate>
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Attempt ID</label>
                     <input type="text"
