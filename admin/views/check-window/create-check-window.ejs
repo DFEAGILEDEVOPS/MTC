@@ -170,7 +170,7 @@
                         <input type="hidden" name="adminStartDay" value="<%= checkWindowData.adminStartDay %>">
                         <input type="hidden" name="adminStartMonth" value="<%= checkWindowData.adminStartMonth %>">
                         <input type="hidden" name="adminStartYear" value="<%= checkWindowData.adminStartYear %>">
-                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminStartDateFormatted %> to&nbsp;</div>
                     <% } %>
                     <% if (!checkWindowData.adminStartDateDisabled) { %>
                         <div class="date-input-separator">to</div>
@@ -226,7 +226,7 @@
                         <input type="hidden" name="adminEndDay" value="<%= checkWindowData.adminEndDay %>">
                         <input type="hidden" name="adminEndMonth" value="<%= checkWindowData.adminEndMonth %>">
                         <input type="hidden" name="adminEndYear" value="<%= checkWindowData.adminEndYear %>">
-                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDate.format('D MMMM YYYY') %></div>
+                        <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDateFormatted %></div>
                     <% } %>
                     </div>
                     <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
@@ -337,7 +337,7 @@
                         <input type="hidden" name="familiarisationCheckStartDay" value="<%= checkWindowData.familiarisationCheckStartDay %>">
                         <input type="hidden" name="familiarisationCheckStartMonth" value="<%= checkWindowData.familiarisationCheckStartMonth %>">
                         <input type="hidden" name="familiarisationCheckStartYear" value="<%= checkWindowData.familiarisationCheckStartYear %>">
-                        <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                        <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDateFormatted %> to&nbsp;</div>
                     <% } %>
                     <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
                         <div class="date-input-separator">to</div>
@@ -393,7 +393,7 @@
                         <input type="hidden" name="familiarisationCheckEndDay" value="<%= checkWindowData.familiarisationCheckEndDay %>">
                         <input type="hidden" name="familiarisationCheckEndMonth" value="<%= checkWindowData.familiarisationCheckEndMonth %>">
                         <input type="hidden" name="familiarisationCheckEndYear" value="<%= checkWindowData.familiarisationCheckEndYear %>">
-                        <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
+                        <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDateFormatted %></span>
                     <% } %>
                     </div>
                     <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
@@ -505,7 +505,7 @@
                     <input type="hidden" name="liveCheckStartDay" value="<%= checkWindowData.liveCheckStartDay %>">
                     <input type="hidden" name="liveCheckStartMonth" value="<%= checkWindowData.liveCheckStartMonth %>">
                     <input type="hidden" name="liveCheckStartYear" value="<%= checkWindowData.liveCheckStartYear %>">
-                    <div class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                    <div class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckStartDateFormatted %> to&nbsp;</div>
                 <% } %>
                 <% if (!checkWindowData.liveCheckStartDateDisabled) { %>
                     <div class="date-input-separator">to</div>
@@ -561,7 +561,7 @@
                     <input type="hidden" name="liveCheckEndDay" value="<%= checkWindowData.liveCheckEndDay %>">
                     <input type="hidden" name="liveCheckEndMonth" value="<%= checkWindowData.liveCheckEndMonth %>">
                     <input type="hidden" name="liveCheckEndYear" value="<%= checkWindowData.liveCheckEndYear %>">
-                    <span class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDate.format('D MMMM YYYY') %></span>
+                    <span class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDateFormatted %></span>
                 <% } %>
                 </div>
                 <% if (!checkWindowData.pastCheckWindow) { %>
