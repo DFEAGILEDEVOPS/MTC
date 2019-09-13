@@ -1,9 +1,9 @@
 export interface ICheckAllocationDataService {
-  getAllPupilData (): Array<any>
+  getAllPupilData (excludeUnusedAllocations: boolean): Array<any>
 }
 
 export class CheckAllocationDataService implements ICheckAllocationDataService {
-  getAllPupilData (): any[] {
+  getAllPupilData (excludeUnusedAllocations: boolean): any[] {
     throw new Error('Method not implemented.')
   }
 }
