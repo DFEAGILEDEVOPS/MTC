@@ -1,0 +1,36 @@
+{
+  "name": "func-check-gen",
+  "version": "",
+  "scripts": {
+    "build": "tsc",
+    "build:production": "yarn prestart",
+    "watch": "tsc --w",
+    "prestart": "yarn build && func extensions install",
+    "start:host": "func start",
+    "start": "yarn start:host & yarn watch",
+    "test": "yarn build && ./node_modules/.bin/jasmine"
+  },
+  "description": "",
+  "devDependencies": {
+    "@azure/functions": "^1.0.1-beta1",
+    "@types/bluebird": "^3.5.27",
+    "@types/jasmine": "^3.4.0",
+    "@types/node": "^12.7.4",
+    "@types/uuid": "^3.4.5",
+    "@typescript-eslint/eslint-plugin": "^2.1.0",
+    "@typescript-eslint/parser": "^2.1.0",
+    "dotenv": "^8.1.0",
+    "jasmine": "^3.4.0",
+    "jasmine-ts-console-reporter": "^3.1.1",
+    "tslint": "^5.19.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.3.3",
+    "typescript-tslint-plugin": "^0.5.4"
+  },
+  "dependencies": {
+    "azure-storage": "^2.10.3",
+    "bluebird": "^3.5.5",
+    "handy-redis": "^1.6.2",
+    "uuid": "^3.3.3"
+  }
+}
