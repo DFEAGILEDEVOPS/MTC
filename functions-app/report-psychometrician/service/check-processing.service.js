@@ -2,6 +2,7 @@
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 const path = require('path')
+const R = require('ramda')
 
 const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
@@ -131,7 +132,7 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
           /** @type Array */
           const anomalyData = anomalyFileReportService.detectAnomalies(row, logger)
           anomalyData.forEach(anomaly => {
-            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, anomaly)
+            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, R.flatten(anomaly))
           })
           meta.processCount += 1
         } catch (error) {
