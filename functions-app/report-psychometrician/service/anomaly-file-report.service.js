@@ -14,6 +14,8 @@ const rowToDataTransformations = {
   checkStartedAt: moment
 }
 
+const isNotNil = R.complement(R.isNil)
+
 /**
  *
  * @type {{detectAnomalies: (function(*=, *=): *)}}
@@ -29,7 +31,9 @@ const anomalyFileReportService = {
     const data = R.evolve(rowToDataTransformations, row)
     // console.log(`Transformed data is`, data)
     // run all anomaly detections against the data and return the result
-    return R.values(detections).map(f => f(data, logger))
+    const raw = R.values(detections).map(f => f(data, logger))
+    // Filter out any undefined responses
+    return R.filter(isNotNil, raw)
   }
 }
 

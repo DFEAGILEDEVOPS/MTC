@@ -137,6 +137,7 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
           meta.processCount += 1
         } catch (error) {
           console.error(`${functionName} ERROR producing report data: ${error}`)
+          console.error(error)
           meta.errorCount += 1
         }
       })
