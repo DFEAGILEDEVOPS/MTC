@@ -88,6 +88,7 @@ const controller = {
         res.locals.pageTitle = 'Settings on pupil check'
         req.breadcrumbs(res.locals.pageTitle)
         return res.render('service-manager/check-settings', {
+          layout: 'gds-layout',
           settings: req.body,
           error: validationError,
           errorMessage: settingsErrorMessages,
