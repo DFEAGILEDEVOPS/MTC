@@ -18,12 +18,10 @@ create table mtc_admin.check2
 			references mtc_admin.checkForm,
 	submittedCheckReceivedAt datetimeoffset(3), -- necessary?
 	submittedCheckReceived bit default 0 not null, -- pupil table
-	isLiveCheck bit default 0 not null
+	isLiveCheck bit default 0 not null,
+  isVoid bit default 0 not null,
+  restartId int
 )
-go
-
-alter table mtc_admin.check2
-	add restartId int
 go
 
 alter table mtc_admin.check2
