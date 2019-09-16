@@ -3,6 +3,7 @@ const csv = require('fast-csv')
 const fs = require('fs-extra')
 const path = require('path')
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 
 const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
@@ -13,6 +14,7 @@ const psychometricianReportService = require('./psychometrician-report.service')
 
 const checkProcessingService = {}
 const functionName = 'psychometricReport'
+
 /**
  * Get checks ids that will be used to cache psychometrician report data
  * @param {Number} batchSize
@@ -63,6 +65,18 @@ checkProcessingService.hasWorkToDo = async function hasWorkToDo () {
   return psychometricianReportDataService.hasUnprocessedChecks()
 }
 
+/**
+ * Filter out arrays of undefined etc
+ */
+checkProcessingService.filterNils = R.filter(RA.isNotNilOrEmpty)
+
+/**
+ *
+ * @param inputStream
+ * @param csvStream
+ * @param {Object} data
+ * @return {Promise<void>}
+ */
 checkProcessingService.writeCsv = async function writeCsv (inputStream, csvStream, data) {
   try {
     if (!csvStream.write(data)) {
@@ -130,9 +144,11 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
           const psData = psychometricianReportService.produceReportDataV2(row)
           checkProcessingService.writeCsv(inputStream, psReportCsvStream, psData)
           /** @type Array */
-          const anomalyData = anomalyFileReportService.detectAnomalies(row, logger)
-          anomalyData.forEach(anomaly => {
-            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, R.flatten(anomaly))
+          const rawAnomalyData = anomalyFileReportService.detectAnomalies(row, logger)
+          const anomalyData = checkProcessingService.filterNils(rawAnomalyData)
+
+          anomalyData.forEach(data => {
+            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, data)
           })
           meta.processCount += 1
         } catch (error) {

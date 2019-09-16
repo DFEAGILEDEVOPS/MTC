@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const RA = require('ramda-adjunct');
+const RA = require('ramda-adjunct')
 
 const report = require('./report')
 
