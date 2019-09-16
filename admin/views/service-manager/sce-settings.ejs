@@ -101,15 +101,13 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const timezoneEls = document.getElementsByClassName('timezone')
-    timezoneEls.forEach(function(elm) {
-      window.accessibleAutocomplete.enhanceSelectElement({
-        selectElement: elm,
-        minLength: 2,
-        preserveNullOptions: true,
-        defaultValue: '',
-        showAllValues: true
-      })
+    const timezoneEl = document.getElementById('timezone')
+    window.accessibleAutocomplete.enhanceSelectElement({
+      selectElement: timezoneEl,
+      minLength: 2,
+      preserveNullOptions: true,
+      defaultValue: '',
+      showAllValues: true
     })
     window.MTCAdmin.tableSort.applySorting(window.document, 'sce-schools', {
       sortNullsLast: true,
