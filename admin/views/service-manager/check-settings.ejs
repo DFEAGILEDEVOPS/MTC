@@ -1,66 +1,58 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row" aria-describedby="lead-paragraph">
-    <div class="column-two-thirds">
-
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
-        <div class="info-message">
-            Settings updated
-        </div>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                Settings updated
+            </div>
         <% } %>
-
         <% if (error.hasError()) { %>
-        <div class="error-summary top-padding-30" role="group" aria-labelledby="error-summary-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-1">You need to fix the errors on this page before continuing.</h2>
-            <p>See highlighted errors below.</p>
-
-            <% if (error.hasError()) { %>
-            <ul class="error-summary-list">
-            <% ['questionTimeLimit', 'loadingTimeLimit', 'checkTimeLimit'].map(errorKey => { %>
-                <% if (error.isError(errorKey)) { %>
-                <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
-                <% } %>
-            <% }) %>
-            </ul>
-            <% } %>
-        </div>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% ['questionTimeLimit', 'loadingTimeLimit', 'checkTimeLimit'].map(errorKey => { %>
+                            <% if (error.isError(errorKey)) { %>
+                                <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
+                            <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
         <% } %>
-
-        <h1 class="heading-xlarge">Settings on pupil check</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede" id="lead-paragraph">Adjust settings which apply to the pupil check only</p>
-
+        <h1 class="govuk-heading-xl">Settings on pupil check</h1>
+        <%- partial('partials/_gds_session_expiry') %>
+        <p class="govuk-body">Adjust settings which apply to the pupil check only</p>
         <form action="/service-manager/check-settings" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group">
-                <label for="questionTimeLimit" class="form-label-bold">
-                    Question time limit
-                    <span class="form-hint">For example, 6  for 6 seconds. Possible to 2 decimal places.</span>
-                    <% if (error.isError('questionTimeLimit')) { %>
-                    <span class="error-message"><%= error.get('questionTimeLimit') %></span>
-                    <% } %>
-                </label>
-                <label class="form-label" for="questionTimeLimit">Seconds</label>
-                <input class="form-control narrow-width"
+            <div class="govuk-form-group">
+                <label for="questionTimeLimit" class="govuk-label govuk-!-font-weight-bold">Question time limit</label>
+                <span class="govuk-hint">For example, 6  for 6 seconds. Possible to 2 decimal places.</span>
+                <% if (error.isError('questionTimeLimit')) { %>
+                    <span class="govuk-error-message"><%= error.get('questionTimeLimit') %></span>
+                <% } %>
+                <label class="govuk-label" for="questionTimeLimit">Seconds</label>
+                <input class="govuk-input govuk-input--width-4"
                        id="questionTimeLimit"
                        name="questionTimeLimit"
                        type="text"
                        value="<%= settings.questionTimeLimit %>"
                        aria-required="true"
                        aria-label="Question time limit.">
+
             </div>
-            <div class="form-group">
-                <label for="loadingTimeLimit" class="form-label-bold">
-                    Time between questions
-                    <span class="form-hint">For example, 3 for 3 seconds. Possible to 2 decimal places.</span>
-                    <% if (error.isError('loadingTimeLimit')) { %>
-                    <span class="error-message"><%= error.get('loadingTimeLimit') %></span>
-                    <% } %>
-                </label>
-                <label class="form-label" for="loadingTimeLimit">Seconds</label>
-                <input class="form-control narrow-width"
+            <div class="govuk-form-group">
+                <label for="loadingTimeLimit" class="govuk-label govuk-!-font-weight-bold">Time between questions</label>
+                <span class="govuk-hint">For example, 3 for 3 seconds. Possible to 2 decimal places.</span>
+                <% if (error.isError('loadingTimeLimit')) { %>
+                    <span class="govuk-error-message"><%= error.get('loadingTimeLimit') %></span>
+                <% } %>
+                <label class="govuk-label" for="loadingTimeLimit">Seconds</label>
+                <input class="govuk-input govuk-input--width-4"
                        id="loadingTimeLimit"
                        name="loadingTimeLimit"
                        type="text"
@@ -68,16 +60,16 @@
                        aria-required="true"
                        aria-label="Time between questions.">
             </div>
-            <div class="form-group">
-                <label for="loadingTimeLimit" class="form-label-bold">
+            <div class="govuk-form-group">
+                <label for="loadingTimeLimit" class="govuk-label govuk-!-font-weight-bold">
                     Maximum length of check
-                    <span class="form-hint">How long an individual has to complete the check before being signed out automatically. For example, 30 for 30 minutes.</span>
+                    <span class="govuk-hint">How long an individual has to complete the check before being signed out automatically. For example, 30 for 30 minutes.</span>
                     <% if (error.isError('checkTimeLimit')) { %>
-                    <span class="error-message"><%= error.get('checkTimeLimit') %></span>
+                        <span class="govuk-error-message"><%= error.get('checkTimeLimit') %></span>
                     <% } %>
                 </label>
-                <label class="form-label" for="checkTimeLimit">Minutes</label>
-                <input class="form-control narrow-width"
+                <label class="govuk-label" for="checkTimeLimit">Minutes</label>
+                <input class="govuk-input govuk-input--width-4"
                        id="checkTimeLimit"
                        name="checkTimeLimit"
                        type="text"
@@ -85,11 +77,9 @@
                        aria-required="true"
                        aria-label="Maximum length of check.">
             </div>
-
-            <div class="form-buttons">
-                <input class="button" type="submit" value="Save">
-                <a href="/service-manager/home" class="button button-secondary">Cancel</a>
-            </div>
+            <input class="govuk-button" type="submit" value="Save">
+            <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
         </form>
+        </div>
     </div>
-</div>
+</main>

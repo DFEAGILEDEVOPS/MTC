@@ -54,3 +54,15 @@ table.govuk-spacious.reduced-top-margin {
 .govuk-table__caption {
   display: table-header-group;
 }
+
+.govuk-column-narrow {
+  width: 10%;
+}
+
+.govuk-column-wide {
+  width: 50%;
+}
+
+.govuk-no-white-space-wrap {
+  white-space: nowrap;
+}
