@@ -1,35 +1,40 @@
-
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<header class="page-header">
-    <h1 class="heading-xlarge">View pupil payload</h1>
-</header>
-
-<%- partial('partials/_session_expiry') %>
-
-<form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" novalidate>
-    <div class="form-group">
-        <label class="form-label-bold" for="checkCode">Attempt ID</label>
-        <input type="text"
-               id="checkCode"
-               class="form-control"
-               name="checkCode"
-               value=""/>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">View pupil payload</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <form action="/test-developer/raw-pupil-payload" id="payloadForm" method="get" target="_blank" rel="noopener noreferrer" novalidate>
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Attempt ID</label>
+                    <input type="text"
+                           id="checkCode"
+                           class="govuk-input govuk-!-width-three-quarters"
+                           name="checkCode"
+                           value=""/>
+                </div>
+                <button type="submit" id="save-access-arrangement" class="govuk-button">View payload</button>
+                <a href="/test-developer/" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    Cancel
+                </a>
+            </form>
+            <div class="govuk-back-to-top govuk-!-margin-top-9">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="form-buttons">
-        <input type="submit" class="button" value="View payload"/>
-        <a href="/test-developer/" class="button button-secondary">Cancel</a>
-    </div>
-</form>
-<div class="back-to-top-container">
-    <a href="#top"> Back to top </a>
-</div>
+</main>
+
 <script>
-    $(document).ready(function () {
-        $('#payloadForm').submit(function () {
-          setTimeout(function () {
-            $('#checkCode').val('')
-          })
-        })
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('payloadForm').addEventListener('submit', function() {
+      setTimeout(function () {
+        document.getElementById('checkCode').value = ''
+      })
     })
+  })
 </script>

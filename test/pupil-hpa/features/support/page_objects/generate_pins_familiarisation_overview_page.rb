@@ -36,7 +36,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   def generate_pin_using_name(name)
     has_generate_pin_btn? ? generate_pin_btn.click : generated_pin_overview.generate_additional_pins_btn.click

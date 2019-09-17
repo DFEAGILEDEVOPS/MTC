@@ -3,7 +3,7 @@
   font-size: 12px;
   display: flex;
   align-items: flex-end;
-  margin-top: pem(20px);
+  margin-top: govuk-em(20px, $govuk-root-font-size);
   white-space: normal;
 
   .information {
@@ -11,21 +11,21 @@
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0 pem(5px);
+    margin: 0 govuk-em(5px, $govuk-root-font-size);
     width: auto;
     line-height: 1;
   }
   .label {
     font-size: 16px;
-    max-width: pem(80px);
+    max-width: govuk-em(80px, $govuk-root-font-size);
   }
   .separator {
-    padding: 0 pem(30px);
+    padding: 0 govuk-em(30px, $govuk-root-font-size);
   }
 }
 
 .generate-additional-pins {
-  padding-top: pem(10px);
+  padding-top: govuk-em(10px, $govuk-root-font-size);
   form {
     display: inline-block;
   }
@@ -33,6 +33,6 @@
   a {
     display: inline-block;
     vertical-align: bottom;
-    padding: 0 pem(10px);
+    padding: 0 govuk-em(10px, $govuk-root-font-size);
   }
 }

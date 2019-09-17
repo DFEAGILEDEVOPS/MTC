@@ -10,10 +10,10 @@ const table = '[jobType]'
 
 /**
  * Find job type by type code.
- * @return {Object}
+ * @return {Promise<Object>}
  */
 jobTypeDataService.sqlFindOneByTypeCode = async (jobTypeCode) => {
-  const sql = `SELECT * 
+  const sql = `SELECT *
   FROM ${sqlService.adminSchema}.${table}
   WHERE jobTypeCode=@jobTypeCode`
   const params = [

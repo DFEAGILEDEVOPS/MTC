@@ -1,5 +1,5 @@
 Given(/^I am on the Upload and View forms page$/) do
-  upload_and_view_forms_page.load
+  upload_and_view_forms_v2_page.load
 end
 
 Then(/^I should see a heading on Upload and View forms page$/) do

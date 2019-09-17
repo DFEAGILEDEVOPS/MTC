@@ -12,7 +12,7 @@ const checkWindowDataService = {
   /**
    * Fetch check window document by id.
    * @param id
-   * @returns {Promise.<void>}
+   * @returns {Promise.<object>}
    */
   sqlFindOneById: async (id) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
@@ -175,7 +175,7 @@ const checkWindowDataService = {
   },
   /**
    * Find a single current check window.  If multiple windows are concurrently running it takes the first.
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   sqlFindOneCurrent: async () => {
     const checkWindows = await checkWindowDataService.sqlFindCurrent(null, null)
@@ -250,13 +250,13 @@ const checkWindowDataService = {
   /**
    * Find active check windows
    * @param checkWindowId
-   * @return {Object}
+   * @return {Promise<Object>}
    */
   sqlFindOneActiveCheckWindow: async (checkWindowId) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND id = @checkWindowId
-    AND @currentTimeStamp >= checkStartDate 
+    AND @currentTimeStamp >= checkStartDate
     AND @currentTimeStamp <= checkEndDate`
 
     const currentTimestamp = moment.utc().toDate()
@@ -280,7 +280,7 @@ const checkWindowDataService = {
    * Find all check windows
    * @param sortBy
    * @param sortDirection
-   * @returns [{Object}]
+   * @returns [{Promise<Object>}]
    */
   sqlFindAllCheckWindows: async (sortBy, sortDirection) => {
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
@@ -295,7 +295,7 @@ const checkWindowDataService = {
         sortBy = 'name'
     }
     const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
-                FROM ${sqlService.adminSchema}.[checkWindow] 
+                FROM ${sqlService.adminSchema}.[checkWindow]
                 WHERE isDeleted=0
                 ORDER BY ${sortBy} ${sortDirection}`
     const params = []
@@ -305,7 +305,7 @@ const checkWindowDataService = {
   /**
    * Fetch check window by url slug.
    * @param {String} urlSlug
-   * @returns {Object}
+   * @returns {Promise<Object>}
    */
   sqlFindOneByUrlSlug: async (urlSlug) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND urlSlug=@urlSlug`
@@ -346,7 +346,7 @@ const checkWindowDataService = {
 
   /**
    * Fetch active check window
-   * @return {Object}
+   * @return {Promise<Object>}
    */
   sqlFindActiveCheckWindow: async () => {
     const sql = `SELECT TOP 1 *
@@ -359,7 +359,7 @@ const checkWindowDataService = {
 
   /**
    * Fetch latest check window
-   * @return {Object}
+   * @return {Promise<Object>}
    */
   sqlFindLatestCheckWindow: async () => {
     const sql = `SELECT TOP 1 *

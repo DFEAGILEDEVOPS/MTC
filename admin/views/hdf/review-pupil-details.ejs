@@ -1,82 +1,73 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-        <div class="info-message">
-            <a href="#anchor-<%= messages.urlSlug %>"><%= messages.info %></a>
-        </div>
-        <% } %>
-            
-        <h1 class="heading-xlarge">Review pupil details</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <p class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">
-            Please review your pupil list. All pupils should have an status of 'Complete' or a reason for not taking the check.
-            Click on pupil's name to edit outcome if a reason below is incorrect.
-        </p>
-    </div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <form method="post" action="/school/submit-attendance-form" autocomplete="off">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-
-            <table class="spacious" id="attendanceList" role="listbox">
-                <thead>
-                    <tr>
-                        <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
-                        <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <% pupils.forEach( (pupil, index) => { %>
-                <tr>
-                    <td<% if (messages.urlSlug && messages.urlSlug == pupil.urlSlug) { %> class="highlight-item"<% } %>>
-                        <div class="highlight-wrapper" id="anchor-<%= pupil.urlSlug %>">
-                            <span><%=pupil.fullName %></span>
-                            <% if (pupil.showDoB) { %>
-                                <div class="font-greyed-out font-xsmall">
-                                    Date of birth: <%= pupil.dateOfBirth %>
-                                </div>
-                            <% } %>
-                        </div>
-                    </td>
-                    <td>
-                      <% if (pupil.reasonCode) { %>
-                        <%= pupil.reason %>
-                      <% } else { %>
-                        <%= pupil.status %>
-                      <% } %>
-                    </td>
-                    <td>
-                        <% if (pupil.reason) { %>
-                            <a href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
-                        <% } %>
-                    </td>
-                </tr>
-                <% }) %>
-                </tbody>
-            </table>
-
-            <div class="form-group form-horizontal">
-                <a href="/attendance/confirm-and-submit" class="button">Continue</a>
+            <div class="govuk-info-message govuk-!-margin-bottom-7">
+                <a href="#anchor-<%= messages.urlSlug %>"><%= messages.info %></a>
             </div>
-        </form>
-
-        <div class="back-to-top-container">
-          <a href="#top">Back to top</a>
+        <% } %>
+            <h1 class="govuk-heading-xl">Review pupil details</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body" id="lead-paragraph" aria-labelledby="lead-paragraph">
+                Please review your pupil list. All pupils should have an status of 'Complete' or a reason for not taking the check.
+                Click on pupil's name to edit outcome if a reason below is incorrect.
+            </p>
+            <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <table class="govuk-table govuk-spacious" id="attendanceList" role="listbox">
+                    <caption class="govuk-table__caption">List of available pupils</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
+                            <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% pupils.forEach( (pupil, index) => { %>
+                        <tr>
+                            <td<% if (messages.urlSlug && messages.urlSlug == pupil.urlSlug) { %> class="govuk-highlight-item"<% } %>>
+                                <div class="govuk-highlight-wrapper" id="anchor-<%= pupil.urlSlug %>">
+                                    <span><%=pupil.fullName %></span>
+                                    <% if (pupil.showDoB) { %>
+                                        <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                            Date of birth: <%= pupil.dateOfBirth %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td>
+                                <% if (pupil.reasonCode) { %>
+                                    <%= pupil.reason %>
+                                <% } else { %>
+                                    <%= pupil.status %>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (pupil.reason) { %>
+                                    <a class="govuk-link" href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+                <a href="/attendance/confirm-and-submit" class="govuk-button">Continue</a>
+            </form>
+            <div class="govuk-back-to-top govuk-!-margin-top-5">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
         </div>
     </div>
-</div>
-
+</main>
 <script>
-  $(function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'attendanceList', {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'attendanceList', {
       sortNullsLast: false,
       ignoredStrings: []
     })

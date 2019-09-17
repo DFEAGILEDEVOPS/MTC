@@ -1,8 +1,8 @@
 class CustomPinsFamiliarisationPage < SitePrism::Page
   set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
-  element :heading, '.heading-xlarge'
-  element :pin_message, '.lede', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
+  element :heading, '.govuk-heading-xl'
+  element :pin_message, '.govuk-body', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
   element :filter_by_name, '#search-name'
   section :group_filter, GroupFilter, '#filterByGroup'
 
@@ -20,7 +20,7 @@ class CustomPinsFamiliarisationPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   def find_pupil_row(name)
     wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}

@@ -1,124 +1,125 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds check-forms">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (errors.hasError()) { %>
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-              <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-              <p>See highlighted errors below.</p>
-              <ul class="error-summary-list">
-                <% errors.getUniqueFields(['csvFiles', 'checkFormType']).map(f => { %>
-                <% const errorMessages = errors.get(f) %>
-                <% if (Array.isArray(errorMessages)) { %>
-                <%  errorMessages.map(e => { %>
-                <li><a href="#<%= f %>"><%= e %></a></li>
-                <% }) } else { %>
-                <li><a href="#<%= f %>"><%= errorMessages %></a></li>
-                <% } %>
-                <% }) %>
-              </ul>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% errors.getUniqueFields(['csvFiles', 'checkFormType']).map(f => { %>
+                            <% const errorMessages = errors.get(f) %>
+                            <% if (Array.isArray(errorMessages)) { %>
+                                <%  errorMessages.map(e => { %>
+                                    <li><a href="#<%= f %>"><%= e %></a></li>
+                            <% }) } else { %>
+                                <li><a href="#<%= f %>"><%= errorMessages %></a></li>
+                            <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
             </div>
         <% } %>
-
-        <h1 class="heading-xlarge">Upload new form</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <h2 class="heading-medium top-padding-30"><a name="csv-guidance">Download example</a></h2>
-
-        <ol class="numeric-list">
-            <li>
-                Download the example
-                <div class="panel panel-border-wide short">
-                    <a href="<%= assetPath %>csv/check-form-sample.csv" class="heading-small icon-download">Check form example (CSV, 4KB)</a>
-                </div>
-            </li>
-            <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
-            <li>Add check questions using the given format</li>
-            <li>Save as a CSV file on your computer</li>
-            <li>Select 'Choose file' button and navigate to the file on your computer</li>
-            <li>Choose the file(s) to upload</li>
-        </ol>
-
-        <h2 class="heading-medium">Upload file(s)</h2>
-
-        <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="<%= hasExistingFamiliarisationCheckForm %>" />
-            <% const csvErrors = errors.get('csvFiles') %>
-            <div class="form-group<% if (csvErrors && csvErrors.length > 0) { %> form-group-error<% } %>">
-                <% if (csvErrors) { %>
-                  <% csvErrors.map(e => { %>
-                <label class="error-message"><%= e %></label>
-                  <% }) %>
-                <% } %>
-                <div class="font-xsmall">
-                    <input
-                      type="file"
-                      name="csvFiles"
-                      id="csvFiles"
-                      accept=".csv"
-                      class="<%= errors.isError('csvFiles') ? 'form-control-error' : '' %>"
-                      aria-label="Choose a file to upload"
-                      multiple
-                    />
-                </div>
-                <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove files" aria-label="Remove uploaded files." />
-            </div>
-            <% const checkFormType = errors.get('checkFormType') %>
-            <div class="form-group <%= errors.isError('checkFormType') ? 'form-group-error' : '' %>" id="check-form-type">
-              <% if (checkFormType) { %>
-              <label class="error-message"><%= checkFormType %></label>
-              <% } %>
-                <fieldset role="radiogroup">
-                    <div class="inline">
-                        <div class="multiple-choice">
-                            <input id="checkFormType"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="checkFormType"
-                                   value="L"
-                                   <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'L') { %>checked="checked"
-                                    <% } %>
-                            />
-                            <label for="live-check-form">MTC form</label>
-                        </div>
-                        <div class="multiple-choice">
-                            <input id="checkFormType"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="checkFormType"
-                                   value="F"
-                                   <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'F') { %>checked="checked"
-                                    <% } %>
-                            />
-                            <label for="familiarisation-check-form">'Try it out' form</label>
-                        </div>
+            <h1 class="govuk-heading-xl">Upload new form</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <h3 class="govuk-heading-m">Download example</h3>
+            <ol class="govuk-list govuk-list--number">
+                <li>
+                    Download the example
+                    <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+                        <a href="<%= assetPath %>csv/check-form-sample.csv" class="govuk-link govuk-!-font-weight-bold govuk-icon-download">Check form example (CSV, 4KB)</a>
                     </div>
-                </fieldset>
-            </div>
-
-            <div class="form-buttons">
-                <input type="submit" class="button" id="upload-form-submit" value="Upload" />
-                <a href="/check-form/view-forms" class="button button-secondary">Cancel</a>
-            </div>
-        </form>
+                </li>
+                <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+                <li>Add check questions using the given format</li>
+                <li>Save as a CSV file on your computer</li>
+                <li>Select 'Choose file' button and navigate to the file on your computer</li>
+                <li>Choose the file(s) to upload</li>
+            </ol>
+            <h3 class="govuk-heading-m">Upload files</h3>
+            <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="<%= hasExistingFamiliarisationCheckForm %>" />
+            <% const csvErrors = errors.get('csvFiles') %>
+                <div class="govuk-!-margin-bottom-4 govuk-form-group<% if (csvErrors && csvErrors.length > 0) { %> govuk-form-group--error<% } %>">
+                <% if (csvErrors) { %>
+                    <% csvErrors.map(e => { %>
+                    <label class="govuk-error-message"><%= e %></label>
+                    <% }) %>
+                <% } %>
+                    <input
+                        type="file"
+                        name="csvFiles"
+                        id="csvFiles"
+                        accept=".csv"
+                        class="govuk-file-upload <%= errors.isError('csvFiles') ? 'govuk-file-upload--error' : '' %>"
+                        aria-label="Choose a file to upload"
+                        multiple
+                    />
+                    <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile" value="Remove files" aria-label="Remove uploaded files." />
+                </div>
+                <% const checkFormType = errors.get('checkFormType') %>
+                <div class="govuk-form-group <%= errors.isError('checkFormType') ? 'govuk-form-group--error' : '' %>" id="check-form-type">
+                <% if (checkFormType) { %>
+                    <label class="govuk-error-message"><%= checkFormType %></label>
+                <% } %>
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
+                            <div class="govuk-radios govuk-radios--inline">
+                                <div class="govuk-radios__item">
+                                    <input id="checkFormType"
+                                           type="radio"
+                                           role="radio"
+                                           class="govuk-radios__input"
+                                           aria-checked="false"
+                                           name="checkFormType"
+                                           value="L"
+                                           <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'L') { %>checked="checked"
+                                            <% } %>
+                                    />
+                                    <label class="govuk-label govuk-radios__label" for="live-check-form">
+                                        MTC form
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input id="checkFormType"
+                                           type="radio"
+                                           role="radio"
+                                           class="govuk-radios__input"
+                                           aria-checked="false"
+                                           name="checkFormType"
+                                           value="F"
+                                           <% if (formData && formData['checkFormType'] && formData['checkFormType'].toUpperCase() === 'F') { %>checked="checked"
+                                            <% } %>
+                                    />
+                                    <label class="govuk-label govuk-radios__label" for="familiarisation-check-form">
+                                        'Try it out' form
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <button type="submit" class="govuk-button" id="upload-form-submit">Upload</button>
+                <a href="/check-form/view-forms" class="govuk-button govuk-button--secondary">Cancel</a>
+            </form>
+        </div>
     </div>
-</div>
-
-<%- partial('partials/_modal_box', {
-  modalTitle: 'Overwrite form',
-  modalText: 'There can only be one \'Try it out\' form. Are you sure you want to overwrite the current form?',
-  modalConfirmationLabel: 'Yes',
-  modalConfirmationUrl: '#',
-  modalCancelLabel: 'No',
-  modalCancelUrl: '#'
+</main>
+<%- partial('partials/_gds_modal_box', {
+    modalTitle: 'Overwrite form',
+    modalText: 'There can only be one \'Try it out\' form. Are you sure you want to overwrite the current form?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
 }) %>
 
 <script>
-  $(function () {
-    window.GOVUK.checkForms()
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.checkForms()
   })
 </script>

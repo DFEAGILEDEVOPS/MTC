@@ -1,120 +1,116 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <% if (error.hasError()) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-            <p>See highlighted errors below.</p>
-            <ul class="error-summary-list">
-                <% error.getUniqueFields(['firstName', 'lastName', 'jobTitle',]).map(f => { %>
-                <% if (typeof error.get(f) !== 'boolean') { %>
-                    <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                <% } %>
-                <% }); %>
-            </ul>
-        </div>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to fix the errors on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted errors below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% error.getUniqueFields(['firstName', 'lastName', 'jobTitle']).map(f => { %>
+                            <% if (typeof error.get(f) !== 'boolean') { %>
+                                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                            <% } %>
+                        <% }); %>
+                    </ul>
+                </div>
+            </div>
         <% } %>
-
-        <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
+        <h1 class="govuk-heading-xl">Headteacher’s declaration form</h1>
+        <%- partial('partials/_gds_session_expiry') %>
         <% if (!hdfEligibility) { %>
-        <h1 class="lede">Currently unavailable</h1>
-
-        <p>
-            All pupils should have completed a check or have a reason for not taking the check.
-            Access to this section will then become available.
-        </p>
+            <span class="govuk-heading-m">Currently unavailable</span>
+            <p class="govuk-body">
+                All pupils should have completed a check or have a reason for not taking the check.
+                Access to this section will then become available.
+            </p>
         <% } else { %>
-        <p class="lede">
-          Confirm all pupils taking the check completed it according to <a href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
-          In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
-        </p>
-
-        <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-
-            <div class="form-group <%= error.isError('firstName') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="firstName">First name
-                  <% if (error.isError('firstName')) { %>
-                      <span class="error-message"><%= error.get('firstName') %></span>
-                  <% } %>
-                </label>
-                <input type="text"
-                    id="firstName"
-                    class="form-control <%= error.isError('firstName') ? 'form-control-error' : '' %>"
-                    name="firstName"
-                    value="<%= formData['firstName'] %>"
-                />
-            </div>
-
-            <div class="form-group <%= error.isError('lastName') ? 'form-group-error' : '' %>">
-              <label class="form-label-bold" for="lastName">Last name
-                <% if (error.isError('lastName')) { %>
-                  <span class="error-message"><%= error.get('lastName') %></span>
-                <% } %>
-              </label>
-              <input type="text"
-                id="lastName"
-                class="form-control <%= error.isError('lastName') ? 'form-control-error' : '' %>"
-                name="lastName"
-                value="<%= formData['lastName'] %>"
-              />
-            </div>
-
-            <div class="form-group" id="headteacher">
-                <fieldset role="radiogroup">
-                    <legend class="form-label-bold">Are you the headteacher?</legend>
-                    <div class="multiple-choice">
-                        <input id="isheadteacher-yes"
-                              type="radio"
-                              role="radio"
-                              name="isHeadteacher"
-                              value="Y"
-                              <% if (!formData['isHeadteacher'] || formData['isHeadteacher'].toUpperCase() === 'Y') { %>
-                              checked="checked"
-                              <% } %>
-                        />
-                        <label for="isheadteacher-yes">Yes</label>
-                    </div>
-
-                    <div class="multiple-choice">
-                        <input id="isheadteacher-no"
-                              type="radio"
-                              role="radio"
-                              name="isHeadteacher"
-                              value="N"
-                              <% if (formData['isHeadteacher'] && formData['isHeadteacher'].toUpperCase() === 'N') { %>
-                              checked="checked"
-                              <% } %>
-                        />
-                        <label for="isheadteacher-no">No</label>
-
-                        <div class="hide">
-                            <div class="panel panel-border-wide">
-                                <div class="form-group <%= error.isError('jobTitle') ? 'form-group-error' : '' %>">
-                                    <div class="form-label" for="jobTitle">Job title</div>
-                                    <span class="form-hint">For example, Deputy headteacher</span>
-                                    <% if (error.isError('jobTitle')) { %>
-                                    <span class="error-message"> <%= error.get('jobTitle') %></span>
+            <p class="govuk-body govuk-!-font-size-24">
+                Confirm all pupils taking the check completed it according to <a class="govuk-link" href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
+                In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
+            </p>
+            <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group <%= error.isError('firstName') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="firstName">First name
+                        <% if (error.isError('firstName')) { %>
+                            <span class="govuk-error-message"><%= error.get('firstName') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="firstName"
+                           class="govuk-input govuk-!-width-one-half <%= error.isError('firstName') ? 'govuk-input--error' : '' %>"
+                           name="firstName"
+                           value="<%= formData['firstName'] %>"
+                    />
+                </div>
+                <div class="govuk-form-group <%= error.isError('lastName') ? 'form-group-error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
+                        <% if (error.isError('lastName')) { %>
+                            <span class="govuk-error-message"><%= error.get('lastName') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="lastName"
+                           class="govuk-input govuk-!-width-one-half <%= error.isError('lastName') ? 'govuk-input--error' : '' %>"
+                           name="lastName"
+                           value="<%= formData['lastName'] %>"
+                    />
+                </div>
+                <div class="govuk-form-group govuk-!-margin-top-5" id="headteacher">
+                    <fieldset class="govuk-fieldset" role="radiogroup">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Are you the headteacher?</legend>
+                        <div class="multiple-choice">
+                            <input id="isheadteacher-yes"
+                                   class="govuk-radios__input"
+                                   type="radio"
+                                   role="radio"
+                                   name="isHeadteacher"
+                                   value="Y"
+                            <% if (!formData['isHeadteacher'] || formData['isHeadteacher'].toUpperCase() === 'Y') { %>
+                                   checked="checked"
                                     <% } %>
-                                    <textarea
-                                        class="form-control form-control-3-4 restart-reason-info <%= error.isError('jobTitle') ? 'form-control-error' : '' %>"
-                                        name="jobTitle"
-                                        id="jobTitle"
-                                        rows="1"
-                                        maxlength="128"><%= formData['jobTitle'] %></textarea>
+                            />
+                            <label class="govuk-label" for="isheadteacher-yes">Yes</label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input id="isheadteacher-no"
+                                   class="govuk-radios__input"
+                                   type="radio"
+                                   role="radio"
+                                   name="isHeadteacher"
+                                   value="N"
+                            <% if (formData['isHeadteacher'] && formData['isHeadteacher'].toUpperCase() === 'N') { %>
+                                   checked="checked"
+                                    <% } %>
+                            />
+                            <label class="govuk-label" for="isheadteacher-no">No</label>
+                            <div class="hide">
+                                <div class="govuk-inset-text">
+                                    <div class="govuk-form-group <%= error.isError('jobTitle') ? 'govuk-form-group--error' : '' %>">
+                                        <div class="govuk-label" for="jobTitle">Job title</div>
+                                        <span class="govuk-hint">For example, Deputy headteacher</span>
+                                        <% if (error.isError('jobTitle')) { %>
+                                            <span class="govuk-error-message"> <%= error.get('jobTitle') %></span>
+                                        <% } %>
+                                        <textarea
+                                                class="govuk-textarea govuk-!-width-three-quarters <%= error.isError('jobTitle') ? 'govuk-input--error' : '' %>"
+                                                name="jobTitle"
+                                                id="jobTitle"
+                                                rows="1"
+                                                maxlength="128"><%= formData['jobTitle'] %></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </fieldset>
-            </div>
-
-            <input class="button" type="submit" value="Continue">
-        </form>
+                    </fieldset>
+                </div>
+                <input class="govuk-button" type="submit" value="Continue">
+            </form>
         <% } %>
+        </div>
     </div>
-</div>
+</main>

@@ -12,6 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "plugins": [
       {
         "name": "typescript-tslint-plugin",

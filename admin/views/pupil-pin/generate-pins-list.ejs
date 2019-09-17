@@ -1,107 +1,99 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-
-        <header class="page-header">
-            <h1 class="heading-xlarge">Select pupils to generate PINs -  <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %> </h1>
-        </header>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <h3>Filter by name</h3>
-        <div class="form-group filter-name">
-            <label for="search-name">
-                <img src="/images/icon-search.png"/>
-            </label>
-            <span>
-                <input class="form-control" id="search-name" type="text" name="search-name">
-            </span>
-        </div>
-
-        <%- partial('partials/_groups_filter', { groups: groups }) %>
-
-        <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off" id="pupilListForm">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <% if (pupils && pupils.length > 0) { %>
-            <table class="spacious reduced-top-margin" id="generatePins" role="listbox" aria-label="Select pupils.">
-                <thead>
-                <tr>
-                    <th scope="col">
-                        <a class="sortingLink">
-                            Pupil <span class="sort-icon asc"></span>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <div class="tick-all-checkboxes-wrapper">
-                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
-                            <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
-                            <div class="multiple-choice-mtc">
-                                <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
-                                <div></div>
-                            </div>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <% pupils.forEach( (pupil, index) => { %>
-                <tr<% if (pupil && pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
-                    <td>
-                        <label for="pupil-<%= pupil.id %>">
-                            <%= pupil.fullName %>
-                        </label>
-                        <% if (pupil.showDoB) { %>
-                        <div class="font-greyed-out font-xsmall">
-                            Date of birth: <%= pupil.dateOfBirth %>
-                        </div>
-                        <% } %>
-                    </td>
-                    <td>
-                        <div class="multiple-choice-mtc">
-                            <input id="pupil-<%= pupil.id %>"
-                                   name="pupil[<%= index %>]"
-                                   type="checkbox"
-                                   value="<%= pupil.id %>"
-                                   aria-label="Tick pupil <%= pupil.fullName %>."
-                                   aria-checked="false"
-                                   role="checkbox">
-                            <div></div>
-                        </div>
-                    </td>
-                </tr>
-                <% }) %>
-                </tbody>
-            </table>
-            <div class="back-to-top-container">
-                <a href="#top">Back to top</a>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Select pupils to generate PINs -  <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %> </h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <h3 class="govuk-heading-m">Filter by name</h3>
+            <div class="govuk-form-group filter-name">
+                <label for="search-name">
+                    <img src="/images/icon-search.png"/>
+                </label>
+                <span>
+                    <input class="govuk-input" id="search-name" type="text" name="search-name">
+                </span>
             </div>
+            <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
+            <% if (pupils && pupils.length > 0) { %>
+            <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off" id="pupilListForm">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <table class="govuk-table govuk-spacious govuk-!-margin-bottom-9" id="generatePins" role="listbox" aria-label="Select pupils.">
+                    <caption class="govuk-table__caption">List of available pupils</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-width-full">
+                                <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil name</span></span></a>
+                            </th>
+                            <th scope="col">
+                                <div class="tick-all-checkboxes-wrapper">
+                                    <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                                    <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                                    <div class="multiple-choice-mtc">
+                                        <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% pupils.forEach( (pupil, index) => { %>
+                        <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
+                            <td scope="row">
+                                <label for="pupil-<%= pupil.id %>">
+                                    <%= pupil.fullName %>
+                                </label>
+                                <% if (pupil.showDoB) { %>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                        Date of birth: <%= pupil.dateOfBirth %>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="multiple-choice-mtc">
+                                    <input id="pupil-<%= pupil.id %>"
+                                           name="pupil[<%= index %>]"
+                                           class="govuk-checkboxes__input"
+                                           type="checkbox"
+                                           value="<%= pupil.id %>"
+                                           aria-label="Tick pupil <%= pupil.fullName %>."
+                                           aria-checked="false"
+                                           role="checkbox">
+                                    <div></div>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+                <%- partial('partials/_gds_sticky_confirmation_banner',
+                        {
+                            cancelLabel: 'Cancel',
+                            cancelLink: `/pupil-pin/generate-${pinEnv}-pins-overview`,
+                            submitLabel: 'Confirm'
+                        })
+                %>
+            </form>
             <% } else { %>
-            <br class="clearfix"/>
-            <p>No pupils found.</p>
+                <div class="govuk-body">
+                    No pupils found.
+                </div>
             <% } %>
-
-            <%- partial('partials/_sticky_confirmation_banner', {
-                cancelLabel: 'Cancel',
-                cancelLink: `/pupil-pin/generate-${pinEnv}-pins-overview`,
-                submitLabel: 'Confirm'
-            }) %>
-
-        </form>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</main>
 <script>
-  $(function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'generatePins', {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'generatePins', {
       sortNullsLast: false,
       ignoredStrings: []
     })
   })
-</script>
-
-<script>
-    $('#pupilListForm').on('submit', function (event) {
-        $('#stickyConfirm').prop('disabled', true);
-        return true;
-    });
 </script>

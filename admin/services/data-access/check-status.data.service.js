@@ -7,7 +7,7 @@ const table = 'checkStatus'
 
 /**
  * Find one by ID
- * @param {integer} status
+ * @param {number} id
  */
 module.exports.sqlFindOneById = async function sqlFindOneById (id) {
   return sqlService.findOneById(table, id)
@@ -16,7 +16,7 @@ module.exports.sqlFindOneById = async function sqlFindOneById (id) {
 /**
  * Find one by Code
  * @param code
- * @return {Promise<*>}
+ * @return {Promise<object>}
  */
 module.exports.sqlFindOneByCode = async function sqlFindOneByCode (code) {
   const sql = `SELECT TOP 1 * from ${sqlService.adminSchema}.${table}
