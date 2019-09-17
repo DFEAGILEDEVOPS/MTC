@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "es2017",
     "outDir": "dist",
     "rootDir": ".",
     "sourceMap": true,
@@ -12,15 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "plugins": [
-      {
-        "name": "typescript-tslint-plugin",
-        "alwaysShowRuleFailuresAsWarnings": false,
-        "ignoreDefinitionFiles": true,
-        "configFile": "./tslint.json",
-        "suppressWhileTypeErrorsPresent": false
-      }
-    ]
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
   }
 }
