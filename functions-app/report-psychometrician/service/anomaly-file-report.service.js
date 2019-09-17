@@ -4,7 +4,8 @@ const moment = require('moment')
 const R = require('ramda')
 
 const detections = {
-  detectWrongNumberOfAnswers: require('./detections/detect-wrong-number-of-answers')
+  detectWrongNumberOfAnswers: require('./detections/detect-wrong-number-of-answers'),
+  detectLowBattery: require('./detections/detect-low-battery')
 }
 
 const rowToDataTransformations = {
