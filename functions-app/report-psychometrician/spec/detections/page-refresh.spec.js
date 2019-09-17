@@ -13,7 +13,7 @@ describe('#detectPageRefresh', () => {
     const res = detectPageRefresh({ checkPayload: {
       audit: audits
     } })
-    expect(res).toEqual({ CheckCode: undefined,
+    expect(res).toEqual({ 'Attempt ID': undefined,
       Date: '',
       Mark: 'undefined out of undefined',
       Device: 'Other ',

@@ -45,7 +45,7 @@ describe('#anomaly-file-report.service', () => {
   describe('#detectAnomalies', () => {
     it('detects wrong number of answers', () => {
       const res = anomalyFileReportService.detectAnomalies(row, mockContext)
-      expect(res[0]).toEqual({ CheckCode: '763AD270-278D-4221-886C-23FF7E5E5736',
+      expect(res[0]).toEqual({ 'Attempt ID': '763AD270-278D-4221-886C-23FF7E5E5736',
         Date: '11/02/2018',
         Mark: '14 out of 25',
         Device: 'Other ',
