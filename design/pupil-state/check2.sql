@@ -16,11 +16,14 @@ create table mtc_admin.check2
 	checkForm_id int not null
 		constraint check2_checkForm_id_fk
 			references mtc_admin.checkForm,
-	submittedCheckReceivedAt datetimeoffset(3), -- necessary?
-	submittedCheckReceived bit default 0 not null, -- pupil table
+	receivedByServerAt datetimeoffset(3),
+	submittedCheckReceived bit default 0 not null, -- or NULL check on recievedByServerAt?
 	isLiveCheck bit default 0 not null,
   isVoid bit default 0 not null,
-  restartId int
+  restartId int,
+  complete bit default 0 not null,
+  processingFailed bit default 0 not null,
+  completedAt datetimeoffset(3)
 )
 go
 

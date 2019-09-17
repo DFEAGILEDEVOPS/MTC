@@ -6,9 +6,12 @@ alter table mtc_admin.pupil
 	add checkComplete bit default 0
 go
 
+-- not required, as we can include against check via currentCheckId reference
+/*
 alter table mtc_admin.pupil
 	add checkReceived bit default 0
 go
+*/
 
 alter table mtc_admin.pupil
 	add restartActive bit default 0

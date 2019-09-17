@@ -23,3 +23,9 @@ potential query optimisation to have better way to flag the expiry of the restar
 
 move to functions-app as long running, and upload file direct to BLOB storage which triggers function.
 
+## check-started function
+
+To be retired
+implement version construct as per other functions
+Q: restarts depend on a check-started being received - is this brittle? Yes, restarts no longer depend on this.
+Q: how could we record check-started in a non status related way? separate db / microservice?
