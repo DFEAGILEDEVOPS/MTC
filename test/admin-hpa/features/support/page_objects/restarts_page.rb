@@ -43,7 +43,7 @@ class RestartsPage < SitePrism::Page
   section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   section :explanation_section, 'details' do
-    element :toggle, 'summary[role="button"]'
+    element :toggle, '.govuk-details__summary'
     element :loss_of_internet, 'strong', text: 'Loss of internet'
     element :it_issues, 'strong', text: 'IT Issues'
     element :classroom_disruption, 'strong', text: 'Classroom disruption'
