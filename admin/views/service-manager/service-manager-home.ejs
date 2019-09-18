@@ -1,51 +1,47 @@
-<div class="grid-row">
-    <div class="column-full">
-        <%- partial('partials/_name_and_sign_out') %>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Multiplication tables check for service managers</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <ol class="govuk-list">
+                <% const hrefValue = isNewCheckWindow ? '/check-window/manage-check-windows' : '/service-manager/check-windows' %>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="<%= hrefValue %>">Manage check windows</a></h2>
+                    <p>Create, edit or remove check windows</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-manager/upload-pupil-census">Upload pupil census</a></h2>
+                    <p>Enter pupil data into the check</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-manager/check-settings">Settings on pupil check</a></h2>
+                    <p>Change the settings within the pupil check</p>
+                </li>
+
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="#">Settings on school pages</a></h2>
+                    <p>Change the settings within the school pages</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-manager/mod-settings">Settings for Ministry of Defence schools (MOD)</a></h2>
+                    <p>Set timezones, convert and remove school listed as MOD</p>
+                </li>
+            </ol>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-</div>
-
-<div class="grid-row" aria-describedby="lead-paragraph">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Multiplication tables check for service managers</h1>
-
-        <%- partial('partials/_session_expiry') %>
-
-        <ol class="list">
-            <% const hrefValue = isNewCheckWindow ? '/check-window/manage-check-windows' : '/service-manager/check-windows' %>
-            <li>
-                <h2 class="heading-small"><a href="<%= hrefValue %>">Manage check windows</a></h2>
-                <p>Create, edit or remove check windows</p>
-            </li>
-            <li>
-                <h2 class="heading-small"><a href="/service-manager/upload-pupil-census">Upload pupil census</a></h2>
-                <p>Enter pupil data into the check</p>
-            </li>
-            <li>
-                <h2 class="heading-small"><a href="/service-manager/check-settings">Settings on pupil check</a></h2>
-                <p>Change the settings within the pupil check</p>
-            </li>
-
-            <li>
-                <h2 class="heading-small"><a href="#">Settings on school pages</a></h2>
-                <p>Change the settings within the school pages</p>
-            </li>
-            <li>
-                <h2 class="heading-small"><a href="/service-manager/mod-settings">Settings for Ministry of Defence schools (MOD)</a></h2>
-                <p>Set timezones, convert and remove school listed as MOD</p>
-            </li>
-        </ol>
-    </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
+</main>

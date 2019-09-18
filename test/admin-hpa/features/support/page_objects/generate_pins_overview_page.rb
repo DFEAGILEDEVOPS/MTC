@@ -7,8 +7,8 @@ class GeneratePinsOverviewPage < SitePrism::Page
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
   section :instruction_section, 'details' do
-    element :toggle, 'summary[role="button"]'
-    elements :info_message, '.list-number li'
+    element :toggle, '.govuk-details__summary'
+    elements :info_message, '.govuk-list--number li'
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'

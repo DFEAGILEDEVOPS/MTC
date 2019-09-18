@@ -25,7 +25,7 @@ class PupilReasonPage < SitePrism::Page
   end
 
   section :explanation_section, 'details' do
-    element :toggle, 'summary[role="button"]'
+    element :toggle, '.govuk-details__summary'
     element :absent, 'strong', text: 'Absent'
     element :absent_explanation, 'div', text: 'Pupil did not take the check due to absence.'
     element :left_school, 'strong', text: 'Left school'
