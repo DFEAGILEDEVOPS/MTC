@@ -313,7 +313,7 @@ app.use(function (err, req, res, next) {
   res.locals.errorCode = ''
   res.status(err.status || 500)
   res.locals.pageTitle = 'Error'
-  res.render('error')
+  res.render('error', { layout: 'gds-layout'})
 })
 
 module.exports = app
