@@ -1,119 +1,94 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<% if (fileErrors.hasError()) { %>
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
-      <% if (fileErrors && fileErrors.hasError()) { %>
-      <p>See highlighted errors below.</p>
-      <ul class="error-summary-list">
-        <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
-        <% const errors = fileErrors.get(f) %>
-        <% if (Array.isArray(errors)) { %>
-        <%  errors.map(e => { %>
-        <li><a href="#<%= f %>"><%= e %></a></li>
-        <% }) } else { %>
-        <li><a href="#<%= f %>"><%= errors %></a></li>
-        <% } %>
-        <% }) %>
-      </ul>
-    </div>
-  </div>
-</div>
-<% } %>
-<% } %>
-
-
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <header class="page-header">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
       <% if (messages && messages.info) { %>
-      <div class="info-message">
-        <%= messages.info %>
-      </div>
+        <div class="govuk-info-message">
+          <%= messages.info %>
+        </div>
       <% } %>
-      <h1 class="heading-xlarge">Upload pupil census</h1>
-
-      <%- partial('partials/_session_expiry') %>
-
-      <h3 class="heading-medium">Download template</h3>
-      <ol class="list list-number">
-        <li>Download the template
-          <div class="panel panel-border-wide short">
-            <a href="/csv/mtc-census-headers.csv" class="heading-small icon-download">Pupil census template (CSV, <%= templateFileSize %>KB)</a>
+      <% if (fileErrors.hasError()) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            You need to fix the errors on this page before continuing.
+          </h2>
+          <div class="govuk-error-summary__body">
+            <p>See highlighted errors below.</p>
+            <ul class="govuk-list govuk-error-summary__list">
+              <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+                <% const errors = fileErrors.get(f) %>
+                <% if (Array.isArray(errors)) { %>
+                  <%  errors.map(e => { %>
+                    <li><a href="#<%= f %>"><%= e %></a></li>
+                <% }) } else { %>
+                  <li><a href="#<%= f %>"><%= errors %></a></li>
+                <% } %>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+      <% } %>
+      <h1 class="govuk-heading-xl">Upload pupil census</h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <h3 class="govuk-heading-m">Download template</h3>
+      <ol class="govuk-list govuk-list--number">
+        <li>
+          Download the template
+          <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+            <a href="/csv/mtc-census-headers.csv" class="govuk-link govuk-!-font-weight-bold govuk-icon-download">Pupil census template (CSV, <%= templateFileSize %>KB)</a>
           </div>
         </li>
         <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
         <li>Add pupil details using the given format</li>
-        <p>
-        <ul class="list list-bullet">
-          <li>Enter date of birth in format dd/mm/yyyy</li>
-          <li>Enter a gender as M or F</li>
-        </ul>
-        </p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>Enter date of birth in format dd/mm/yyyy</li>
+            <li>Enter a gender as M or F</li>
+          </ul>
         <li>Save as a CSV file on your computer</li>
         <li>Select 'Choose file' button and navigate to the file on your computer</li>
         <li>Choose the file to upload</li>
         <li>Click 'Upload'</li>
       </ol>
-
-    </header>
-    <br>
-    <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
-      <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-      <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
-        <% if (fileErrors && fileErrors.hasError()) { %>
-        <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
-        <% const errors = fileErrors.get(f) %>
-        <% if (Array.isArray(errors)) { %>
-        <%  errors.map(e => { %>
-        <label class="error-message"><%= e %></label>
-        <% }) } else { %>
-        <label class="error-message"><%= errors %></label>
-        <% } %>
-        <% }) %>
-        <% } %>
-        <% if (!pupilCensus || (pupilCensus && ['COM', 'FLD', 'CWR'].some(c => c === pupilCensus.jobStatusCode))) { %>
-        <div class="font-xsmall">
-          <input type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
-                 aria-label="Choose a file to upload"/>
+      <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group<% if (fileErrors && fileErrors.hasError()) { %> govuk-form-group--error<% } %>">
+          <% if (fileErrors && fileErrors.hasError()) { %>
+            <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
+              <% const errors = fileErrors.get(f) %>
+              <% if (Array.isArray(errors)) { %>
+                <%  errors.map(e => { %>
+                  <label class="govuk-error-message"><%= e %></label>
+              <% }) } else { %>
+                <label class="govuk-error-message"><%= errors %></label>
+              <% } %>
+            <% }) %>
+          <% } %>
+          <% if (!pupilCensus || (pupilCensus && ['COM', 'FLD', 'CWR'].some(c => c === pupilCensus.jobStatusCode))) { %>
+            <input class="govuk-file-upload" type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
+                   aria-label="Choose a file to upload"/>
+            <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file" />
+            <button type="submit" class="govuk-button" id="upload-form-submit">Upload</button>
+            <a href="/service-manager/home" class="govuk-button govuk-button--secondary">Cancel</a>
+          <% } %>
         </div>
-        <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
-               aria-label="Remove uploaded file."/>
-      </div>
-      <div class="form-buttons">
-        <input type="submit" id="upload-form-submit" class="button" value="Upload" />
-        <a href="/service-manager/home" class="button button-secondary">Cancel</a>
-      </div>
-    </form>
-    <% } %>
-
-    <span class="bold-small">
-            <span>Uploaded file</span>
-            <span class="job-status">Status</span>
-        </span>
-    <dl class="pupil-census-uploaded-file">
-      <% if (pupilCensus) { %>
-      <dd><span><%= pupilCensus.csvName %></span></dd>
-      <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
-      <% } else { %>
-      <dd><span class="no-file-uploaded">No file uploaded</span></dd>
-      <% } %>
-    </dl>
-    <% if (pupilCensus && pupilCensus.dbErrorText) { %>
+      </form>
+      <span class="govuk-!-font-weight-bold">
+        <span>Uploaded file</span>
+        <span class="job-status">Status</span>
+      </span>
+      <dl class="pupil-census-uploaded-file">
+          <% if (pupilCensus) { %>
+              <dd><span><%= pupilCensus.csvName %></span></dd>
+              <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
+          <% } else { %>
+              <dd><span class="no-file-uploaded">No file uploaded</span></dd>
+          <% } %>
+      </dl>
+      <% if (pupilCensus && pupilCensus.dbErrorText) { %>
       <span>
         <%- pupilCensus.dbErrorText %>
       </span>
-    <% } %>
-    </form>
+      <% } %>
+    </div>
   </div>
-</div>
-<%- partial('partials/_modal_box', {
-  modalTitle: 'Please confirm',
-  modalText: 'Are you sure you want to remove this?',
-  modalConfirmationLabel: 'Yes',
-  modalConfirmationUrl: '#',
-  modalCancelLabel: 'No',
-  modalCancelUrl: '#'
-}) %>
+</main>
