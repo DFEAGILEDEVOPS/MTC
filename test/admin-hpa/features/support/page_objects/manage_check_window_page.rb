@@ -1,15 +1,15 @@
 class ManageCheckWindowPage < SitePrism::Page
-  set_url '/service-manager/check-windows'
+  set_url '/check-window/manage-check-windows'
 
-  element :heading, '.heading-xlarge', text: 'Manage check windows'
-  element :page_instructions, '.lede', text: 'Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.'
+  element :heading, '.govuk-heading-xl', text: 'Manage check windows'
+  element :page_instructions, '.govuk-body', text: 'Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.'
   element :create_new_window, 'a', text: 'Create new check window'
-  element :panel, '.panel-border-wide', text: 'Check will be available for schools on weekdays from 8am to 3:30pm'
+  element :panel, '.govuk-inset-text', text: 'Check will be available for schools on weekdays from 8am to 4pm'
   element :guidance, 'a', text: 'Guidance'
-  element :adjust_timings, 'aside.support-column nav li a', text: 'Settings on pupil check'
-  element :progress_report, '.disabled-link', text: 'Progress reports'
+  element :adjust_timings, '.app-related-items li a', text: 'Settings on pupil check'
+  element :progress_report, '.govuk-disabled-link', text: 'Progress reports'
   element :info_message, '.info-message', text: 'Changes have been saved'
-  element :flash_message, '.info-message'
+  element :flash_message, '.govuk-info-message'
   element :sort_desc, 'a[href="/service-manager/check-windows/checkWindowName/desc"]'
   element :sort_asc, 'a[href="/service-manager/check-windows/checkWindowName/asc"]'
 
@@ -33,8 +33,8 @@ class ManageCheckWindowPage < SitePrism::Page
   section :modal, '.modal-box.show' do
     element :heading, '#modal-title'
     element :contents, '.modal-content p'
-    element :cancel, '.modal-cancel'
-    element :confirm, '.modal-confirm'
+    element :cancel, '#js-modal-cancel-button'
+    element :confirm, '#js-modal-confirmation-button'
 
   end
 

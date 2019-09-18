@@ -1,9 +1,9 @@
 class AdminPage < SitePrism::Page
   set_url '/service-manager/home'
 
-  element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
+  element :home, '#content > .page-header > .breadcrumbs a', text: 'MTC Administration Homepage'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
-  element :heading, '.heading-xlarge', text: 'Multiplication tables check for service managers'
+  element :heading, '.govuk-heading-xl', text: 'Multiplication tables check for service managers'
   element :manage_check_windows, 'a', text: 'Manage check windows'
   element :updated_manage_check_windows, 'a[href="/check-window/manage-check-windows"]', text: 'Manage check windows'
   element :manage_check_windows_text, 'p', text: 'Create, edit or remove check windows'
