@@ -17,7 +17,7 @@
                     <ul class="govuk-list govuk-error-summary__list">
                         <% ['questionTimeLimit', 'loadingTimeLimit', 'checkTimeLimit'].map(errorKey => { %>
                             <% if (error.isError(errorKey)) { %>
-                                <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
+                                <li><a href="#<%= errorKey %>"><%= errorMessage[errorKey] %></a></li>
                             <% } %>
                         <% }) %>
                     </ul>
