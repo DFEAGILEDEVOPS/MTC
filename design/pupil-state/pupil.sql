@@ -3,7 +3,8 @@ alter table mtc_admin.pupil
 go
 
 alter table mtc_admin.pupil
-	add checkComplete bit default 0
+	add checkComplete bit
+	constraint DF_checkComplete_Default default (0)
 go
 
 -- not required, as we can include against check via currentCheckId reference
@@ -14,7 +15,8 @@ go
 */
 
 alter table mtc_admin.pupil
-	add restartActive bit default 0
+	add restartActive bit
+	constraint DF_restartActive_Default default (0)
 go
 
 alter table mtc_admin.pupil

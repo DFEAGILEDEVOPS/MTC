@@ -1,9 +1,11 @@
 alter table mtc_admin.[check]
-	add received bit default 0 not null
+	add received bit not null
+  constraint DF_received_Default default (0)
 go
 
 alter table mtc_admin.[check]
-	add complete bit default 0 not null
+	add complete bit not null
+  constraint DF_complete_Default default (0)
 go
 
 alter table mtc_admin.[check]
@@ -11,7 +13,8 @@ alter table mtc_admin.[check]
 go
 
 alter table mtc_admin.[check]
-	add processingFailed bit default 0 not null
+	add processingFailed bit not null
+  constraint DF_processingFailed_Default default (0)
 go
 
 alter table mtc_admin.[check]
