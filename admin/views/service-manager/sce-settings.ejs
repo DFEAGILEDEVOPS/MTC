@@ -57,7 +57,11 @@
                     <% }) %>
                     </tbody>
                 </table>
-                <input type="submit" class="govuk-button" value="Save"/>
+                <% if (Array.isArray(sceSchools) && sceSchools.length > 0) { %>
+                <button type="submit" class="govuk-button">Save</button>
+                <% } else { %>
+                <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">Save</button>
+                <% } %>
                 <a href="/service-manager/mod-settings/cancel" class="govuk-button govuk-button--secondary">Cancel</a>
             </form>
             <div class="govuk-back-to-top govuk-!-margin-top-9">
