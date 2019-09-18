@@ -7,17 +7,16 @@
                 <p class="govuk-body govuk-!-font-size-19"><%= modalText %></p>
                 <button
                     id="js-modal-confirmation-button"
-                    onclick=""
                     class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-bottom-0"
                     title="<%= modalConfirmationLabel %>"
                 ><%= modalConfirmationLabel %></button>
-                <button
-                    onclick="window.location.replace('<%= modalCancelUrl %>')"
+                <a
+                    href="<%= modalCancelUrl %>"
                     id="js-modal-cancel-button"
                     data-focus-back="js-modal-link"
-                    class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-bottom-0"
+                    class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-bottom-0 govuk-!-display-inline-block"
                     title="<%= modalCancelLabel %>"
-                ><%= modalCancelLabel %></button>
+                ><%= modalCancelLabel %></a>
             </div>
         </div>
     </dialog>
