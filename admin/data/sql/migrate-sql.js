@@ -80,6 +80,7 @@ const runMigrations = async (version) => {
     logger.info('SQL Migrations complete')
   } catch (error) {
     logger.error('Error executing migration...')
+    console.dir(error)
     logger.error(error)
     logger.error(`${error.appliedMigrations.length} migrations were applied.`)
     error.appliedMigrations.forEach(migration => {
