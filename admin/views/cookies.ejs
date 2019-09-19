@@ -1,205 +1,198 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Cookies</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                MTC puts small files (known as ‘cookies’) on to your computer to collect information about how
+                you browse the site.
+            </p>
+            <p class="govuk-body">
+                Cookies are used to:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>remember you once you've signed in</li>
+                <li>remember the notifications you've seen so we don't show them again</li>
+                <li>measure how you use the website so it can be updated and improved based on your needs</li>
+            </ul>
+            <p class="govuk-body">
+                You’ll normally see a message on the site before we store a cookie on your computer.
+            </p>
+            <p class="govuk-body">
+                Find out
+                <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="https://ico.org.uk/your-data-matters/online/cookies/">
+                    how to manage cookies.
+                </a> <img alt="" src="/images/icon-link.png"/>
+            </p>
+            <h2 class="govuk-heading-l">How cookies are used on MTC</h2>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Cookies</h1>
+            <h3 class="govuk-heading-m">Session cookies</h3>
 
-        <%- partial('partials/_session_expiry') %>
-        
-        <p class="lede">
-            MTC puts small files (known as ‘cookies’) on to your computer to collect information about how
-        you browse the site.
-        </p>
-
-        <p>
-            Cookies are used to:
-        </p>
-
-        <ul class="list list-bullet">
-            <li>remember you once you've signed in</li>
-            <li>remember the notifications you've seen so we don't show them again</li>
-            <li>measure how you use the website so it can be updated and improved based on your needs</li>
-        </ul>
-
-        <p>
-            You’ll normally see a message on the site before we store a cookie on your computer.
-        </p>
-
-        <p>
-            Find out
-            <a target="_blank" rel="noopener noreferrer" href="https://ico.org.uk/your-data-matters/online/cookies/">
-                how to manage cookies.
-            </a> <img alt="" src="/images/icon-link.png"/>
-        </p>
-
-        <h2 class="heading-large">How cookies are used on MTC</h2>
-
-        <h3 class="heading-medium">Session cookies</h3>
-
-        <table class="table-font-xsmall">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Purpose</th>
-                    <th>Expires</th>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col">Name</th>
+                    <th scope="col">Purpose</th>
+                    <th scope="col">Expires</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
+                </thead>
+                <tbody>
+                <tr class="govuk-table__row">
                     <td>Mtc-admin-session-id</td>
                     <td>Remembers if you’ve signed in recently</td>
                     <td>When you close your browser</td>
                 </tr>
-                <tr>
+                <tr class="govuk-table__row">
                     <td>ai_session</td>
                     <td>To monitor application performance</td>
                     <td>30 minutes</td>
                 </tr>
-                <tr>
+                <tr class="govuk-table__row">
                     <td>ai_user</td>
                     <td>To count the number of users on the application</td>
-                    <td class="nowrap">1 year</td>
+                    <td class="govuk-no-white-space-wrap">1 year</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+            <h3 class="govuk-heading-m">Our introductory message</h3>
 
-        <h3 class="heading-medium">Our introductory message</h3>
+            <p class="govuk-body">
+                You may see a pop-up welcome message when you first visit MTC.
+                We’ll store a cookie so that your computer knows you’ve seen it and knows not to show it again.
+            </p>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col">Name</th>
+                        <th scope="col">Purpose</th>
+                        <th scope="col">Expires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="govuk-table__row">
+                        <td>seen_cookie_message</td>
+                        <td>Saves a message to let us know that you have seen our cookie message</td>
+                        <td class="govuk-no-white-space-wrap">1 month</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="govuk-heading-m">Our performance survey</h3>
 
-        <p>
-            You may see a pop-up welcome message when you first visit MTC.
-            We’ll store a cookie so that your computer knows you’ve seen it and knows not to show it again.
-        </p>
+            <p class="govuk-body">
+                We use <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="https://www.smartsurvey.co.uk/">SmartSurvey</a>
+                <img alt="" src="/images/icon-link.png"/> to collect responses to the survey.
+                If you take part, SmartSurvey will save extra cookies to your computer to track your progress through it.
+            </p>
 
-        <table class="table-font-xsmall">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Purpose</th>
-                    <th>Expires</th>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col">Name</th>
+                    <th scope="col">Purpose</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>seen_cookie_message</td>
-                    <td>Saves a message to let us know that you have seen our cookie message</td>
-                    <td class="nowrap">1 month</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3 class="heading-medium">Our performance survey</h3>
-
-        <p>
-            We use <a target="_blank" rel="noopener noreferrer" href="https://www.smartsurvey.co.uk/">SmartSurvey</a> 
-            <img alt="" src="/images/icon-link.png"/> to collect responses to the survey.
-            If you take part, SmartSurvey will save extra cookies to your computer to track your progress through it.
-        </p>
-
-        <table class="table-font-xsmall">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Purpose</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
+                </thead>
+                <tbody>
+                <tr class="govuk-table__row">
                     <td>_ga, _gat_UA-31798632-30, _gid</td>
                     <td>
                         We use SmartSurvey for the performance survey on MTC. For more information, please see the
-                        <a target="_blank" rel="noopener noreferrer" href="https://www.smartsurvey.co.uk/privacy-policy">SmartSurvey privacy information</a>
+                        <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="https://www.smartsurvey.co.uk/privacy-policy">SmartSurvey privacy information</a>
                         <img alt="" src="/images/icon-link.png"/>
                     </td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <h3 class="heading-medium">Universal analytics</h3>
+            <h3 class="govuk-heading-m">Universal analytics</h3>
 
-        <p>
-            We use Google Analytics software to collect information about how you use MTC.
-            We do this to help make sure the site is meeting the needs of its users and to help us make improvements.
-        </p>
+            <p class="govuk-body">
+                We use Google Analytics software to collect information about how you use MTC.
+                We do this to help make sure the site is meeting the needs of its users and to help us make improvements.
+            </p>
 
-        <p>
-            Google Analytics stores information about:
-        </p>
+            <p class="govuk-body">
+                Google Analytics stores information about:
+            </p>
 
-        <ul class="list list-bullet">
-            <li>the pages you visit on MTC - how long you spend on each MTC page</li>
-            <li>how you got to the site</li>
-            <li>what you click on while you're visiting the site</li>
-        </ul>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the pages you visit on MTC - how long you spend on each MTC page</li>
+                <li>how you got to the site</li>
+                <li>what you click on while you're visiting the site</li>
+            </ul>
 
-        <p>
-            We don’t collect or store your personal information (e.g. your name or address)
-            so this information can’t be used to identify who you are.
-        </p>
+            <p class="govuk-body">
+                We don’t collect or store your personal information (e.g. your name or address)
+                so this information can’t be used to identify who you are.
+            </p>
 
-        <p>
-            We don’t allow Google to use or share our analytics data.
-        </p>
+            <p class="govuk-body">
+                We don’t allow Google to use or share our analytics data.
+            </p>
 
-        <p>
-            Google Analytics sets the following cookies:
-        </p>
+            <p class="govuk-body">
+                Google Analytics sets the following cookies:
+            </p>
 
-        <table class="table-font-xsmall">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Purpose</th>
-                    <th>Expires</th>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col">Name</th>
+                    <th scope="col">Purpose</th>
+                    <th scope="col" class="govuk-!-width-one-quarter">Expires</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>_ga</td>
-                    <td>This helps us count how many people visit MTC by tracking if you’ve visited before</td>
-                    <td>2 years</td>
-                </tr>
-                <tr>
-                    <td>_gid</td>
-                    <td>This helps us count how many people visit MTC by tracking if you’ve visited before</td>
-                    <td>24 hours</td>
-                </tr>
-                <tr>
-                    <td>_dc_gtm_*</td>
-                    <td>Used to manage the rate at which page view requests are made</td>
-                    <td>10 minutes</td>
-                </tr>
-                <tr>
-                    <td>_gsScrollPos*</td>
-                    <td>Used to remember how far down a page you have viewed</td>
-                    <td>When you close your browser</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p class="top-padding-30">
-            You can <a target="_blank" rel="noopener noreferrer" href="https://tools.google.com/dlpage/gaoptout">opt out of Google Analytics cookies.</a>
-            <img alt="" src="/images/icon-link.png"/>
-        </p>
-
-        <p>
-            <span class="font-xsmall">Last updated 30 January 2019</span>
-        </p>
-
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
+                </thead>
+                <tbody>
+                    <tr class="govuk-table__row">
+                        <td>_ga</td>
+                        <td>This helps us count how many people visit MTC by tracking if you’ve visited before</td>
+                        <td>2 years</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td>_gid</td>
+                        <td>This helps us count how many people visit MTC by tracking if you’ve visited before</td>
+                        <td>24 hours</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td>_dc_gtm_*</td>
+                        <td>Used to manage the rate at which page view requests are made</td>
+                        <td>10 minutes</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td>_gsScrollPos*</td>
+                        <td>Used to remember how far down a page you have viewed</td>
+                        <td>When you close your browser</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="govuk-body govuk-top-padding-30">
+                You can <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="https://tools.google.com/dlpage/gaoptout">opt out of Google Analytics cookies.</a>
+                <img alt="" src="/images/icon-link.png"/>
+            </p>
+            <p class="govuk-body">
+                <span class="govuk-!-font-size-16">Last updated 30 January 2019</span>
+            </p>
+            <div class="govuk-back-to-top govuk-!-margin-top-5">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/privacy">Privacy notice</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
         </div>
     </div>
-
-    <div class="column-one-third add-title-margin">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="/privacy">Privacy notice</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
+</main>
