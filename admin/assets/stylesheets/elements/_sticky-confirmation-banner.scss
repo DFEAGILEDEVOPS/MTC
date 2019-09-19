@@ -1,4 +1,4 @@
-.sticky-banner-wrapper {
+.govuk-sticky-banner-wrapper {
   background-color: rgba(217, 236, 226, 1);
   display: none;
   margin: 0;
@@ -14,7 +14,7 @@
   &.show {
     display: block;
   }
-    
+
   &.fixed {
     position: fixed;
     bottom: 0;
@@ -23,7 +23,7 @@
   #content {
     padding: 0;
 
-    .grid-row {
+    .govuk-grid-row {
       display: flex;
       align-items: center;
     }
@@ -33,7 +33,7 @@
     font-size: 16px;
   }
 
-  .grid-row {
+  .govuk-grid-row {
     margin: 0 -7px;
   }
 
@@ -41,34 +41,13 @@
     text-align: left;
   }
 
-  .button-secondary {
-    margin-left: pem(15px)
+  .govuk-button--secondary {
+    margin-left: govuk-em(15px, $govuk-root-font-size);
   }
 
-  @include media(mobile) {
-    overflow: hidden;
-    padding: 0 0 15px 0;
-
-    .grid-row {
-      margin: 0 -5px;
-    }
-
-    .button {
-      float: right;
-      width: 49%;
-    }
-
-    .button-secondary:not(:last-child) {
-      margin-right: 0;
-    }
-
-    .button-secondary {
-      float: left;
-      margin-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      text-align: center;
-      width: 49%;
+  @include govuk-media-query($until: tablet) {
+    .govuk-button--secondary {
+      margin: govuk-em(10px, $govuk-root-font-size) 0;
     }
   }
 
@@ -77,8 +56,8 @@
   }
 }
 
-@include media(mobile) {
-  .sticky-banner-wrapper {
+@include govuk-media-query($until: tablet) {
+  .govuk-sticky-banner-wrapper {
     padding-bottom: 5px;
   }
 }

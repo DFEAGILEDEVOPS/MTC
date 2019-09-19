@@ -13,7 +13,7 @@
 }
 
 #checkWindowsForm {
-  @include media(mobile) {
+  @include govuk-media-query($until: mobile) {
     .button.button-secondary {
       margin-top: 10px;
     }

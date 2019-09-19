@@ -1,6 +1,7 @@
 .assigned-check-windows {
+  font-family: $govuk-font-family;
   border-top: 1px solid govuk-colour('mid-grey');
-  > dl > dd {
+  > dl {
     border-bottom: 1px solid govuk-colour('mid-grey');
   }
 }

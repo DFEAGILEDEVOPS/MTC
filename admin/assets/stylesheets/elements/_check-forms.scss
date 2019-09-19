@@ -29,44 +29,41 @@
 }
 
 dl.inline-definition-list {
-  @include core-36;
-
+  font-size: govuk-em(12px, $govuk-root-font-size);
   margin: 0;
   overflow: hidden;
   padding: 0;
   width: 100%;
 
   dd {
-    @include core-36;
-
+    font-size: govuk-em(36px, $govuk-root-font-size);
     float: left;
     margin: 0 0 1em 0;
     padding: 0;
     width: 90%;
-
-    @include media(tablet) {
+    @include govuk-media-query($from: tablet) {
       width: 80%;
     }
-    @include media(desktop) {
+    @include govuk-media-query($from: desktop) {
       width: 90%;
     }
   }
 
   dt {
-    @include core-24;
+    font-size: 24px;
 
-    color: $grey-1;
+    color: govuk-colour("dark-grey");
     float: left;
     margin: 0;
     padding: 5px 0;
     width: 10%;
 
-    @include media(tablet) {
+    @include govuk-media-query($from: tablet) {
       float: left;
       width: 20%;
     }
 
-    @include media(desktop) {
+    @include govuk-media-query($from: desktop) {
       float: left;
       width: 10%;
     }
@@ -75,34 +72,34 @@ dl.inline-definition-list {
 
 .first-factor {
   display: inline-block;
-  margin-left: pem(40px);
-  margin-right: pem(6px);
+  margin-left: govuk-em(40px, $govuk-root-font-size);
+  margin-right: govuk-em(6px, $govuk-root-font-size);
   text-align: right;
-  width: pem(17px);
+  width: govuk-em(17px, $govuk-root-font-size);
 
-  @include media(tablet) {
-    margin-left: pem(10px);
+  @include govuk-media-query($from: tablet) {
+    margin-left: govuk-em(10px, $govuk-root-font-size);
   }
 
-  @include media(mobile) {
-    margin-left: pem(15px);
+  @include govuk-media-query($from: mobile) {
+    margin-left: govuk-em(15px, $govuk-root-font-size);
   }
 }
 
 .second-factor {
   display: inline-block;
-  margin-left: pem(6px);
+  margin-left: govuk-em(6px, $govuk-root-font-size);
   text-align: left;
-  width: pem(15px);
+  width: govuk-em(15px, $govuk-root-font-size);
 }
 
 .equals-sign {
-  margin-left: pem(5px);
-  margin-right: pem(5px);
+  margin-left: govuk-em(5px, $govuk-root-font-size);
+  margin-right: govuk-em(5px, $govuk-root-font-size);
 
-  @include media(tablet) {
-    margin-left: pem(5px);
-    margin-right: pem(5px);
+  @include govuk-media-query($from: tablet) {
+    margin-left: govuk-em(5px, $govuk-root-font-size);
+    margin-right: govuk-em(5px, $govuk-root-font-size);
   }
 }
 
