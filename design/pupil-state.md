@@ -14,6 +14,8 @@ references when related events occur.  For example - when a pin is generated for
 - restart consumed: pupil logged in and collected the check made available by restart
   - is this essential? could we not allow a restart even if not logged in? as recording login to sql is expensive
 - not attending: pupil will not be taking the check
+- not received: the pupil logged in but a submitted check was never received. (allows 24 hours for a submitted check to be processed and marked as received) requires a restart.
+- check expired: no login was recorded.  the check was never used.  does not require a restart
 
 ## check expiry & restart counts
 
