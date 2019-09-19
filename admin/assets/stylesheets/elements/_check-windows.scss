@@ -22,7 +22,14 @@
 
 .inline-group {
   display: table;
-  margin-bottom: pem(50px);
+  margin-bottom: govuk-em(50px, $govuk-root-font-size);
+
+  @include govuk-media-query($from: desktop) {
+    width: 550px;
+  }
+  @include govuk-media-query($until: mobile) {
+    width: 500px;
+  }
 }
 
 .start-date {
@@ -33,22 +40,27 @@
 .end-date {
   float: left;
   margin-bottom: 0;
+  @include govuk-media-query($from: desktop) {
+    margin-left: 20px;
+  }
+  @include govuk-media-query($until: mobile) {
+    margin-left: 0;
+  }
 }
 
-.separator {
+.date-input-separator {
   float: left;
-  margin-top: pem(30px);
-  margin-right: pem(15px);
+  margin-top: govuk-em(30px, $govuk-root-font-size);
 }
 
 .hint-spacious {
-  margin-bottom: pem(5px);
-  padding-top: pem(5px);
+  margin-bottom: govuk-em(5px, $govuk-root-font-size);
+  padding-top: govuk-em(5px, $govuk-root-font-size);
 }
 
 .disabled-check-window-field {
-  margin-top: pem(10px);
-  margin-bottom: pem(10px);
+  margin-top: govuk-em(10px, $govuk-root-font-size);
+  margin-bottom: govuk-em(10px, $govuk-root-font-size);
 }
 
 .left-float {

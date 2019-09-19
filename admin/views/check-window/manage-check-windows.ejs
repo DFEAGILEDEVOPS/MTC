@@ -1,73 +1,74 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <% if (messages && messages.info && messages.info.length) { %>
-        <div class="info-message">
-            <%= messages.info %>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.info %>
+                </div>
+            <% } %>
+            <h1 class="govuk-heading-xl">Manage check windows</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.
+            </p>
+            <div class="govuk-inset-text">
+                Check will be available for schools on weekdays from 8am to 4pm
+            </div>
+            <a class="govuk-button" href="/check-window/create-check-window">Create new check window</a>
+            <% if (Array.isArray(checkWindows) && checkWindows.length > 0) { %>
+                <table class="govuk-spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+                    <caption class="govuk-table__caption">List of check windows</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col"><a class="sortingLink">Check window<span class="sort-icon asc"></span></a></th>
+                            <th class="govuk-table__header" scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                            <th class="govuk-table__header" scope="col">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% checkWindows.forEach((checkWindow) => { %>
+                        <tr class="govuk-table__row">
+                            <td>
+                                <a class="govuk-link govuk-!-font-weight-bold govuk-!-font-size-19" href="/check-window/edit/<%= checkWindow.urlSlug %>"><%= checkWindow.name %></a>
+                            </td>
+                            <td><%= checkWindow.status %></td>
+                            <td>
+                                <% if (checkWindow.canRemove) { %>
+                                    <a class="govuk-link modal-link" id="js-modal-link" href="/check-window/remove/<%= checkWindow.urlSlug %>" >Remove</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+            <span class="govuk-body">No check windows created.</span>
+            <% } %>
         </div>
-        <% } %>
-        <h1 class="heading-xlarge">Manage check windows</h1>
-        <%- partial('partials/_session_expiry') %>
-        <p class="lede">Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.</p>
-        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
-        <br />
-
-        <div class="button-wrapper">
-            <a class="button button-primary" href="/check-window/create-check-window">Create new check window</a>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/service-manager/check-settings">Settings on pupil check</a>
+                        </li>
+                        <li>
+                            <a class="govuk-disabled-link" href="#">Progress reports</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
         </div>
-        <br />
-        <% if (Array.isArray(checkWindows) && checkWindows.length > 0) { %>
-        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
-            <thead>
-            <tr>
-                <th scope="col"><a class="sortingLink">Check window<span class="sort-icon asc"></span></a></th>
-                <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
-                <th scope="col">&nbsp;</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% checkWindows.forEach((checkWindow) => { %>
-            <tr>
-                <td>
-                    <span class="bold-small"><a href="/check-window/edit/<%= checkWindow.urlSlug %>"><%= checkWindow.name %></a></span>
-                </td>
-                <td><%= checkWindow.status %></td>
-                <td>
-                    <% if (checkWindow.canRemove) { %>
-                    <a href="/check-window/remove/<%= checkWindow.urlSlug %>" class="modal-link" id="js-modal-link">Remove</a>
-                    <% } %>
-                </td>
-            </tr>
-            <% }) %>
-            </tbody>
-        </table>
-        <% } else { %>
-        No check windows created.
-        <% } %>
     </div>
-
-    <div class="column-one-third sidebar" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                    </li>
-                    <li>
-                        <a href="/service-manager/check-settings">Settings on pupil check</a>
-                    </li>
-                    <li>
-                        <a href="#" class="font-greyed-out disabled-link">Progress reports</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
-
-<%- partial('partials/_modal_box', {
+</main>
+<%- partial('partials/_gds_modal_box', {
     modalTitle: 'Remove check window',
     modalText: 'Are you sure you want to remove this?',
     modalConfirmationLabel: 'Confirm',
@@ -77,8 +78,8 @@
 }) %>
 
 <script>
-  $(function () {
-    window.GOVUK.tableSort.applySorting(window.document, 'checkWindowList', {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.tableSort.applySorting(window.document, 'checkWindowList', {
       sortNullsLast: false,
       ignoredStrings: []
     })
