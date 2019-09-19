@@ -7,7 +7,6 @@ references when related events occur.  For example - when a pin is generated for
 
 - can take check: can have a pin & check activated by a teacher
 - taking check: pin & check allocated
-- logged in: check has been collected by pupil
 - check received: submitted check received, awaiting processing
 - complete: check is valid and marked.  no further action necessary
 - processing failed: submitted check could not be processed
