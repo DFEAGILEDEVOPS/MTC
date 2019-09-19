@@ -1,10 +1,14 @@
-<h1><%= message %></h1>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl"><%= message %></h1>
 
-<%- partial('partials/_session_expiry') %>
+        <%- partial('partials/_session_expiry') %>
 
-<h2>Error code: <%= errorCode %></h2>
-<p>ID: <%= errorId %></p>
-<% if (!!userMessage) { %>
-<p><%= userMessage %></p>
-<% } %>
-<pre><%= error.stack %></pre>
+        <h2 class="govuk-heading-l">Error code: <%= errorCode %></h2>
+        <p class="govuk-body">ID: <%= errorId %></p>
+        <% if (!!userMessage) { %>
+        <p class="govuk-body"><%= userMessage %></p>
+        <% } %>
+        <pre><%= error.stack %></pre>
+    </div>
+</main>

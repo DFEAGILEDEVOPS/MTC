@@ -6,7 +6,7 @@ Then(/^i should see that the MOD schools page matches design$/) do
   expect(mod_schools_page).to have_heading
   expect(mod_schools_page).to have_info_text
   expect(mod_schools_page).to have_update_to_mod_school_button
-  expect(mod_schools_page).to have_save
+  expect(mod_schools_page).to have_disabled_save
   expect(mod_schools_page).to have_cancel
 end
 
