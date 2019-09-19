@@ -28,7 +28,7 @@
                     </thead>
                     <tbody>
                     <% sceSchools.forEach((s) => { %>
-                        <tr class="govuk-table__row">
+                        <tr class="govuk-body govuk-table__row">
                             <td class="allow-wrap <% if (highlight === s.urlSlug) { %>govuk-highlight-item<% } %>">
                                 <div class="govuk-highlight-wrapper">
                                     <%= s.name %>
@@ -50,8 +50,8 @@
                                     <% }) %>
                                 </select>
                             </td>
-                            <td class="govuk-no-white-space-wrap nowrap govuk-column-narrow">
-                                <a href="/service-manager/mod-settings/remove-school/<%= s.urn %>" class="govuk-link modal-link" id="js-modal-link">Remove school</a>
+                            <td class="govuk-body govuk-no-white-space-wrap nowrap govuk-column-narrow">
+                                <a href="/service-manager/mod-settings/remove-school/<%= s.urn %>" class="govuk-!-margin-left-2 govuk-link modal-link" id="js-modal-link">Remove school</a>
                             </td>
                         </tr>
                     <% }) %>
