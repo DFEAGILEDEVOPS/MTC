@@ -27,14 +27,14 @@ class AddEditCheckWindowV2Page < SitePrism::Page
   element :live_check_end_year, '#liveCheckEndYear'
 
   element :save_changes, 'input[value="Save"]'
-  element :cancel, 'a.button.button-secondary'
-  elements :error_messages, '.error-message'
+  element :cancel, 'a.govuk-button.govuk-button--secondary'
+  elements :error_messages, '.govuk-error-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
+  section :error_summary, "div.govuk-error-summary[data-module='govuk-error-summary']" do
     element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
-    element :error_text, 'p', text: 'See highlighted errors below'
-    elements :error_messages, '.error-summary-list li'
+    element :error_text, 'p', text: 'See highlighted errors below.'
+    elements :error_messages, '.govuk-list li'
   end
 
   def enter_details(hash)

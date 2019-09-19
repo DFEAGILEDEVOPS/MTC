@@ -10,7 +10,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   element :view_all_pins_btn, 'input[value="View all pins"]'
 
   section :instruction_section, 'details' do
-    element :toggle, 'summary[role="button"]'
+    element :toggle, '.govuk-details__summary'
     elements :info_message, '.govuk-list--number li'
   end
 

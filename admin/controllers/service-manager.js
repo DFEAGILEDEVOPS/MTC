@@ -33,6 +33,7 @@ const controller = {
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
+        layout: 'gds-layout',
         breadcrumbs: req.breadcrumbs(),
         isNewCheckWindow
       })
@@ -156,6 +157,7 @@ const controller = {
       return next(error)
     }
     res.render('service-manager/upload-pupil-census', {
+      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
       pupilCensus,
