@@ -6,8 +6,8 @@ alter table mtc_admin.pupil
 	constraint DF_checkComplete_Default default (0)
 
 alter table mtc_admin.pupil
-	add restartActive bit
-	constraint DF_restartActive_Default default (0)
+	add restartAvailable bit
+	constraint DF_restartAvailable_Default default (0)
 
 alter table mtc_admin.pupil
 	add attendanceId int
