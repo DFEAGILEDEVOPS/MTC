@@ -33,8 +33,3 @@ time is given to process it overnight.
 5. expiry service finds login event.
 6. check could still be processing.  END
 7. next
-## System Events
-
-- pin generation.  creates a new check
-- restart. creates a new restart
-- non-attendance recorded.  creates a reason for not taking the check
