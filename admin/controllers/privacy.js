@@ -4,7 +4,6 @@ const getPrivacyPage = async (req, res) => {
   res.locals.pageTitle = 'Privacy notice'
   req.breadcrumbs(res.locals.pageTitle)
   res.render('privacy.ejs', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs()
   })
 }
