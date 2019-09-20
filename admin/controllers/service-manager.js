@@ -62,6 +62,7 @@ const controller = {
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/check-settings', {
+        layout: 'gds-layout',
         settings,
         successfulPost,
         error: new ValidationError(),
@@ -87,6 +88,7 @@ const controller = {
         res.locals.pageTitle = 'Settings on pupil check'
         req.breadcrumbs(res.locals.pageTitle)
         return res.render('service-manager/check-settings', {
+          layout: 'gds-layout',
           settings: req.body,
           error: validationError,
           errorMessage: settingsErrorMessages,
@@ -330,6 +332,7 @@ const controller = {
     try {
       const sceSchools = await sceService.getSceSchools()
       res.render('service-manager/sce-settings', {
+        layout: 'gds-layout',
         breadcrumbs: req.breadcrumbs(),
         highlight: hl,
         messages: res.locals.messages,
@@ -415,6 +418,7 @@ const controller = {
       const schoolNames = schools.map(s => s.name)
       const schoolUrns = schools.map(s => s.urn.toString())
       res.render('service-manager/sce-add-school', {
+        layout: 'gds-layout',
         breadcrumbs: req.breadcrumbs(),
         err: res.error || new ValidationError(),
         countriesTzData: scePresenter.getCountriesTzData(),

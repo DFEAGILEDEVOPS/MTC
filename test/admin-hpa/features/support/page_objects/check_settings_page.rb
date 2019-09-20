@@ -6,10 +6,10 @@ class CheckSettingsPage < SitePrism::Page
   element :check_time_limit, "#checkTimeLimit"
   element :save_changes, "input[value='Save']"
   element :cancel, "a", text: 'Cancel'
-  element :error_message, '.error-message'
-  element :error_summary_list, '.error-summary-list'
-  element :error_summary, '.column-two-thirds .error-summary p'
-  element :successful_submission, '.box-successful h2'
+  element :error_message, '.govuk-error-message'
+  element :error_summary_list, '.govuk-error-summary__list'
+  element :error_summary, '.govuk-grid-column-two-thirds .govuk-error-summary__body p'
+  element :successful_submission, '.govuk-info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 
   def update_question_time_limit(value)

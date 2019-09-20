@@ -1,11 +1,18 @@
 {
-  "disabled": false,
   "bindings": [
     {
-      "schedule": "30 */3 * * * *",
-      "name": "checkExpiryTimer",
-      "type": "timerTrigger",
-      "direction": "in"
+      "name": "queueMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "prepared-check-delete",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "name": "pupilEventsTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "pupilEvent",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ]
 }
