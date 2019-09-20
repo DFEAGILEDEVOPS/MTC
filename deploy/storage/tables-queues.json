@@ -12,10 +12,11 @@
     "pupil-status",
     "test-pupil-connection"
   ],
-  "service-bus-queues": [
+  "serviceBusQueues": [
+    "check-completion",
     "check-marking",
-    "check-validation",
-    "check-completion"
+    "check-notification",
+    "check-validation"
   ],
   "tables": [
     "receivedCheck",
