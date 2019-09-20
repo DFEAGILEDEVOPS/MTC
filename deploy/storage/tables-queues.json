@@ -12,12 +12,6 @@
     "pupil-status",
     "test-pupil-connection"
   ],
-  "serviceBusQueues": [
-    "check-completion",
-    "check-marking",
-    "check-notification",
-    "check-validation"
-  ],
   "tables": [
     "receivedCheck",
     "preparedCheck",

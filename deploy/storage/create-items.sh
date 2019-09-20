@@ -43,12 +43,3 @@ do
 	echo "creating $t table in $storageAccountName"
 	az storage table create --name $t --account-name $storageAccountName --account-key $storageAccountKey
 done
-
-declare -a sbqueuenames=( $(jq -r '.serviceBusQueues[]' $jsonSource) )
-
-# create service bus queues if they do not exist
-for sbq in "${sbqueuenames[@]}"
-do
-	echo "creating $sbq service bus queue in $sbNamespace"
-	az servicebus queue create --resource-group $resourceGroupName --namespace-name $sbNamespace --name $sbq
-done
