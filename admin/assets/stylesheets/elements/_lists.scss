@@ -24,3 +24,7 @@
 .error-summary-list {
   word-break: break-word;
 }
+
+.govuk-list-item--dashed:before {
+  content: "— ";
+}
