@@ -19,7 +19,7 @@ const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) 
       reject(error)
     }
   })
-})
+}))
 
 async function main () {
   try {
