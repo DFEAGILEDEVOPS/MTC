@@ -3,13 +3,13 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-            <div class="govuk-info-message govuk-!-margin-bottom-7">
+            <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
                 <a href="#group-<%= messages.groupId %>"><%= messages.info %></a>
             </div>
         <% } %>
 
         <% if (messages && messages.deleted && messages.deleted.length) { %>
-            <div class="govuk-info-message govuk-!-margin-bottom-7">
+            <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
                 <%= messages.deleted %>
             </div>
         <% } %>
