@@ -7,6 +7,7 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "dependencies": {
-    "azure": "^2.3.1-preview"
+    "azure": "^2.3.1-preview",
+    "dotenv": "^8.1.0"
   }
 }
