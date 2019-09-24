@@ -10,3 +10,4 @@ Creates service bus queues defined in queues-topics.json, if they do not already
 
 `MaxSizeInMegabytes` - max queue size
 `DefaultMessageTimeToLive` - how long the message stays on the queue before expiry in [ISO8061 format](https://www.digi.com/resources/documentation/digidocs/90001437-13/reference/r_iso_8601_duration_format.htm)
+`LockDuration` - maximum time a consumer can lock the message for.
