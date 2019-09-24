@@ -3,17 +3,19 @@
 require('dotenv').config()
 const azure = require('azure')
 const sbService = azure.createServiceBusService()
-const queues = require('./queues-topics.json')
+const queues = require('./queues-topics.json').queues
+const fiveGigabytes = 5120
+const fourteenDays = 'P14D'
 
 const defaultQueueOptions = {
-  MaxSizeInMegabytes: '5120',
-  DefaultMessageTimeToLive: ''
+  MaxSizeInMegabytes: fiveGigabytes,
+  DefaultMessageTimeToLive: fourteenDays
 }
 
 const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) => {
   sbService.createQueueIfNotExists(queueName, queueOptions, function (error) {
     if (!error) {
-      console.log(`${q} queue created`)
+      console.log(`${queueName} queue created`)
       resolve()
     } else {
       reject(error)
@@ -26,11 +28,13 @@ async function main () {
     const promises = queues.map(q => createQueue(q, defaultQueueOptions))
     await Promise.all(promises)
   } catch (error) {
-    process.exitCode = 1
-    console.error(`Error creating queue: ${error.message}`)
+    throw new Error(`Error creating queue: ${error.message}`)
   }
 }
 
 main().then(() => {
   console.log(`queues created successfully`)
+}).catch((error) => {
+  console.error(`error creating queues: ${error.message}`)
+  process.exitCode = 1
 })
