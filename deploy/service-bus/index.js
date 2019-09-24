@@ -2,18 +2,30 @@
 
 const azure = require('azure')
 const sbService = azure.createServiceBusService()
-const util = require('util')
+const queues = require('./queues-topics.json')
 
 const defaultQueueOptions = {
   MaxSizeInMegabytes: '5120',
   DefaultMessageTimeToLive: ''
 }
 
-const createQueue = (queueName, queueOptions) => {
-  const promise = util.promisify(sbService.createQueueIfNotExists('myqueue', queueOptions, function (error) {
+const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) => {
+  sbService.createQueueIfNotExists(queueName, queueOptions, function (error) {
     if (!error) {
       // Queue exists
+      resolve()
+    } else {
+      reject(error)
     }
-  }))
-  return promise
-}
+  })
+}))
+
+(async function main () {
+  try {
+    const promises = queues.map(q => createQueue(q, defaultQueueOptions))
+    await Promise.all(promises)
+  } catch (error) {
+    process.exitCode = 1
+    console.error(`Error caught: ${error.message}`)
+  }
+})()
