@@ -17,7 +17,7 @@ class UploadAndViewFormsPage < SitePrism::Page
 
   element :upload_form_message, '#lead-paragraph', text: 'View, upload or remove check forms.'
   element :upload_new_form, 'a', text: 'Upload new form'
-  section :phase_banner, PhaseBanner, '.phase-banner'
+  section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
   element :info_message, '.info-message'
 
