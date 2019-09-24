@@ -6,7 +6,7 @@ const sbService = azure.createServiceBusService()
 const queues = require('./queues-topics.json').queues
 const fiveGigabytes = 5120
 const fourteenDays = 'P14D'
-const fiveMinutes = 'PT5M' // not working
+const fiveMinutes = 'PT5M'
 const oneDay = 'P1D'
 
 const defaultQueueOptions = {
