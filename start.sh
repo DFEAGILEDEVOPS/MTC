@@ -6,7 +6,8 @@ echo "Purging Azure Storage..."
 (cd ${scriptDir}/admin && yarn purgestorage)
 
 echo "Purging Service Bus..."
-(cd ${scriptDir}/deploy/service-bus && yarn start)
+(cd ${scriptDir}/deploy/service-bus && yarn deleteqs)
+(cd ${scriptDir}/deploy/service-bus && yarn createqs)
 
 echo "Starting docker..."
 docker-compose up -d
