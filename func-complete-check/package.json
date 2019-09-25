@@ -4,7 +4,7 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
+    "build": "yarn clean && tsc",
     "build:production": "yarn prestart",
     "watch": "tsc --w",
     "prestart": "yarn build && func extensions install",
@@ -12,7 +12,8 @@
     "start": "yarn start:host & yarn watch",
     "lint": "standard && tslint --project .",
     "test": "yarn jest",
-    "test:watch": "yarn jest --watch"
+    "test:watch": "yarn jest --watch",
+    "clean": "rm -rf ./dist"
   },
   "description": "",
   "devDependencies": {
