@@ -32,10 +32,10 @@
                             <td>
                                 <a class="govuk-link govuk-!-font-weight-bold govuk-!-font-size-19" href="/check-window/edit/<%= checkWindow.urlSlug %>"><%= checkWindow.name %></a>
                             </td>
-                            <td><%= checkWindow.status %></td>
+                            <td class="govuk-body"><%= checkWindow.status %></td>
                             <td>
                                 <% if (checkWindow.canRemove) { %>
-                                    <a class="govuk-link modal-link" id="js-modal-link" href="/check-window/remove/<%= checkWindow.urlSlug %>" >Remove</a>
+                                    <a class="govuk-body govuk-link modal-link" id="js-modal-link" href="/check-window/remove/<%= checkWindow.urlSlug %>" >Remove</a>
                                 <% } %>
                             </td>
                         </tr>
