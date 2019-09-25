@@ -119,7 +119,3 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
 AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
-
-config_data = JSON.parse(File.read("../../pupil-spa/src/public/config.json"))
-puts "spa ping url in config is: #{config_data['authPingURL']}"
-puts "auth url in config is: #{config_data['authURL']}"
