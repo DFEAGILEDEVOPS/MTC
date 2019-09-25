@@ -5,6 +5,9 @@ scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo "Purging Azure Storage..."
 (cd ${scriptDir}/admin && yarn purgestorage)
 
+echo "Purging Service Bus..."
+(cd ${scriptDir}/deploy/service-bus && yarn start)
+
 echo "Starting docker..."
 docker-compose up -d
 

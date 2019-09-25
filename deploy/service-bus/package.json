@@ -4,7 +4,8 @@
   "description": "creates service bus queues",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js"
+    "createqs": "node ./create.js",
+    "deleteqs": "node ./delete.js"
   },
   "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
   "author": "Guy Harwood",
