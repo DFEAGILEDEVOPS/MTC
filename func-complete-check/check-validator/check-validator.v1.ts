@@ -22,6 +22,7 @@ export class CheckValidatorV1 implements ICheckValidator {
     // without a reference to it and should rightly go on the dead letter queue
     const receivedCheck = this.findReceivedCheck(receivedCheckData)
     try {
+      this.detectArchive(receivedCheck)
       // all failures must be caught and recorded against the entity
     } catch (error) {
       // TODO update receivedCheck with validation errors

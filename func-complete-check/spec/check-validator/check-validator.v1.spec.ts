@@ -43,4 +43,10 @@ describe('check-validator/v1', () => {
       expect(error.message).toBe('received check data is empty')
     }
   })
+  it('records check object validation errors against the entity', () => {
+    fail('not yet implemented')
+  })
+  it('records missing archive property error against the entity', () => {
+    fail('not yet implemented')
+  })
 })
