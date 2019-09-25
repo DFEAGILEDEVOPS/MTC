@@ -14,8 +14,8 @@ Given(/^I have generated a pin via the admin app$/) do
 end
 
 Given(/^I make a request with valid credentials$/) do
-  step 'I have generated a pin via the admin app'
-  @response = RequestHelper.auth(@school_password, @pupil_pin)
+  step 'I have generated a live pin'
+  @response = RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 end
 
 Then(/^I should get a (\d+)$/) do |code|
@@ -25,7 +25,7 @@ end
 And(/^I should see a valid response$/) do
   parsed_response = JSON.parse(@response.body)
   expect(parsed_response['questions'].size).to eql 25
-  pupil_details = SqlDbHelper.find_pupil_via_pin(@pupil_pin)
+  pupil_details = SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])
   expect(parsed_response['pupil']).to eql create_pupil_details_hash(pupil_details)
   expect(parsed_response['school']).to eql create_school_details_hash(pupil_details['school_id'])
   # expect(parsed_response['config']).to eql create_config_details_hash
