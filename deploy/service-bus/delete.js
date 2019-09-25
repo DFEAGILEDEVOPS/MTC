@@ -17,12 +17,8 @@ const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
 }))
 
 async function main () {
-  try {
-    const promises = queues.map(q => deleteQueue(q))
-    await Promise.all(promises)
-  } catch (error) {
-    throw new Error(`Error deleting queue: ${error.message}`)
-  }
+  const promises = queues.map(q => deleteQueue(q))
+  await Promise.all(promises)
 }
 
 main().then(() => {
