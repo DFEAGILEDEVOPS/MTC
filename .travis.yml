@@ -35,6 +35,7 @@ before_install:
 - "${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh"
 - cd ${TRAVIS_BUILD_DIR}/deploy/service-bus && yarn install --frozen-lockfile && yarn createqs
 install:
+- cd ${TRAVIS_BUILD_DIR}
 - docker-compose -f docker-compose.yml -f docker-compose.functions.yml up --build
   -d && sleep 30
 - docker info
