@@ -33,9 +33,8 @@ before_install:
 - rvm reload && rvm install 2.4.1 && rvm use ruby 2.4.1
 - sudo apt-get install google-chrome-stable
 - "${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh"
-- cd deploy/service-bus && yarn install && yarn createqs
+- cd ${TRAVIS_BUILD_DIR}/deploy/service-bus && yarn install --frozen-lockfile && yarn createqs
 install:
-- cd ${TRAVIS_BUILD_DIR}
 - docker-compose -f docker-compose.yml -f docker-compose.functions.yml up --build
   -d && sleep 30
 - docker info
