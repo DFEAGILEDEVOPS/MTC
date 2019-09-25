@@ -10,15 +10,11 @@ set -e
 # $1 storage account name
 # $2 storage account key
 # $3 storage service (cors) allowed origins
-# $4 service bus namespace
-# $5 resource group name
 
 # Set variables
 storageAccountName=$1
 storageAccountKey=$2
 allowedOrigins=$3
-sbNamespace=$4
-resourceGroupName=$5
 
 # clear and rebuild cors rule for the queues
 echo "clearing CORS policy on $storageAccountName"
