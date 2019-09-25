@@ -23,6 +23,24 @@
   #content {
     padding: 0;
 
+    max-width: 960px;
+
+    margin: 0 $govuk-gutter-half;
+
+    @include govuk-media-query($until: tablet) {
+      margin: 0 $govuk-gutter;
+    }
+
+    @include govuk-media-query($from: ($govuk-gutter * 2 + 960)) {
+      margin: 0 auto;
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
     .govuk-grid-row {
       display: flex;
       align-items: center;
