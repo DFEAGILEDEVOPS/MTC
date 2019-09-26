@@ -39,8 +39,6 @@ export interface ReceivedCheck {
   isValid?: boolean
   validatedAt?: Date
   validationError?: string
-  mark?: number
-  markedAt?: Date
   answers?: string
 }
 
@@ -55,4 +53,5 @@ export interface ValidatedCheck {
   mark?: number
   markedAt?: Date
   answers: string
+  markError?: string
 }
