@@ -41,4 +41,18 @@ export interface ReceivedCheck {
   validationError?: string
   mark?: number
   markedAt?: Date
+  answers?: string
+}
+
+export interface ValidatedCheck {
+  PartitionKey: string // schoolUUID
+  RowKey: string // checkCode
+  archive: string
+  checkReceivedAt: Date
+  checkVersion: number
+  isValid: boolean
+  validatedAt: Date
+  mark?: number
+  markedAt?: Date
+  answers: string
 }

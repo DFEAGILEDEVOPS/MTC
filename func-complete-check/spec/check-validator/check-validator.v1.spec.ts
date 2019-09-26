@@ -162,6 +162,34 @@ describe('check-validator/v1', () => {
     expect(loggerMock.info).toHaveBeenCalled()
   })
 
+  test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
+    const receivedCheckEntity: ReceivedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1
+    }
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+    compressionServiceMock.decompress = jest.fn((input: string) => {
+      return JSON.stringify(checkSchema)
+    })
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.validationError).toBeUndefined()
+    expect(actualEntity.answers).toEqual(checkSchema.answers)
+    expect(loggerMock.info).toHaveBeenCalled()
+  })
+
   test('check marking message is created and added to output binding array', async () => {
     const receivedCheckEntity: ReceivedCheck = {
       PartitionKey: uuid.v4(),
