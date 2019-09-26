@@ -7,10 +7,10 @@
   position: relative;
 
   padding: 0 5px;
-  margin-bottom: $gutter-one-third;
+  margin-bottom: $govuk-gutter / 3;
   top: -11px;
 
-  @include media(tablet) {
+  @include govuk-media-query($until: tablet) {
     float: right;
   }
 
@@ -23,12 +23,10 @@
     width: 38px;
     height: 38px;
     z-index: 1;
-
-    // IE8 doesn’t support pseudoelements, so we don’t want to hide native elements there.
-    @if ($is-ie == false) or ($ie-version == 9) {
-      margin: 0;
-      @include opacity(0);
-    }
+    margin: 0;
+    zoom: 1;
+    filter: alpha(opacity=0);
+    opacity: 0;
   }
 
   div {
@@ -40,7 +38,7 @@
     -ms-touch-action: manipulation;
     touch-action: manipulation;
 
-    @include media(tablet) {
+    @include govuk-media-query($until: tablet) {
       float: left;
       padding-top: 7px;
       padding-bottom: 7px;
@@ -74,17 +72,23 @@
     -webkit-transform: rotate(-45deg); // Safari 8 compatibility
     -ms-transform: rotate(-45deg); // IE9 compatibility
     transform: rotate(-45deg);
-    @include opacity(0);
+    zoom: 1;
+    filter: alpha(opacity=0);
+    opacity: 0;
   }
 
   // Focused state
   [type=checkbox]:focus + div::before {
-    @include box-shadow(0 0 0 3px $focus-colour);
+    box-shadow: 0 0 0 3px govuk-colour("yellow");
+    -webkit-box-shadow: 0 0 0 3px govuk-colour("yellow");
+    -moz-box-shadow: 0 0 0 3px govuk-colour("yellow");
   }
 
   // Selected state
   input:checked + div::after {
-    @include opacity(1);
+    zoom: 1;
+    filter: alpha(opacity=1);
+    opacity: 1;
   }
 
   // Disabled state
@@ -93,7 +97,9 @@
   }
 
   input:disabled + div {
-    @include opacity(0.5);
+    zoom: 1;
+    filter: alpha(opacity=0.5);
+    opacity: 0.5;
     cursor: default;
   }
 
@@ -127,13 +133,13 @@
     visibility: hidden;
   }
 
-  @include media (desktop) {
+  @include govuk-media-query($from: desktop) {
     .multiple-choice-mtc {
       display: inline-block;
       visibility: visible;
 
       div {
-        padding-left: $gutter-and-a-half;
+        padding-left: $govuk-gutter * 1.5;
       }
     }
   }
@@ -154,24 +160,24 @@ body.js-enabled .tick-all-checkboxes {
 .inline .multiple-choice-mtc {
   clear: none;
 
-  @include media (tablet) {
+  @include govuk-media-query($until: tablet) {
     margin-bottom: 0;
-    margin-right: $gutter;
+    margin-right: $govuk-gutter;
   }
 }
 
 // Checkbox list
 
 ul.checkbox-list {
-  margin-top: pem(15px);
-  margin-left: pem(-35px);
+  margin-top: govuk-em(15px, $govuk-root-font-size);
+  margin-left: govuk-em(-35px, $govuk-root-font-size);
   li:first-child {
-    border-top: 1px solid $grey-2;
+    border-top: 1px solid govuk-colour("mid-grey");
   }
   li {
-    padding-bottom: pem(15px);
-    padding-top: pem(15px);
-    border-bottom: 1px solid $grey-2;
+    padding-bottom: govuk-em(15px, $govuk-root-font-size);
+    padding-top: govuk-em(15px, $govuk-root-font-size);
+    border-bottom: 1px solid govuk-colour("mid-grey");
     .multiple-choice-mtc input {
       top: -20px;
     }

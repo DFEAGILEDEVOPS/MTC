@@ -1,9 +1,8 @@
 // Flash message
-.info-message {
-  border: 5px solid $green;
+.govuk-info-message {
+  border: 5px solid govuk-colour("green");
   padding: 1em;
-  margin-top: 40px;
-  color: $black;
+  color: govuk-colour("black");
   font-weight: bold;
 
   a,
@@ -11,19 +10,19 @@
   a:visited,
   a:active,
   a:hover {
-    color: $green;
+    color: govuk-colour("green");
   }
   &.clickable {
     text-decoration: underline;
-    color: $green;
+    color: govuk-colour("green");
   }
 }
 
-.warning-message {
-  border: 5px solid $red;
+.govuk-warning-message {
+  border: 5px solid govuk-colour("red");
   padding: 1em;
   margin-top: 40px;
-  color: $red;
+  color: govuk-colour("red");
   font-weight: bold;
 
   a,
@@ -31,52 +30,52 @@
   a:visited,
   a:active,
   a:hover {
-    color: $red;
+    color: govuk-colour("red");
   }
   &.clickable {
     text-decoration: underline;
-    color: $red;
+    color: govuk-colour("red");
   }
 }
 
 // Green border to highlight table cell content
-.highlight-item {
+.govuk-highlight-item {
   display: flex;
 
   &:before {
     content: '';
-    border-left: 7px solid $green;
+    border-left: 7px solid govuk-colour("green");
     display: table-cell;
     padding-left: 10px;
     margin-top: -5px;
     margin-bottom: -5px;
   }
 
-  .highlight-wrapper {
+  .govuk-highlight-wrapper {
     display: table-cell;
   }
 }
 
 // Red border to display warning on table cell content
-.warning-item {
+.govuk-warning-item {
   display: flex;
 
   &:before {
     content: '';
-    border-left: 7px solid $red;
+    border-left: 7px solid govuk-colour("red");
     display: table-cell;
     padding-left: 10px;
     margin-top: -5px;
     margin-bottom: -5px;
   }
 
-  .highlight-wrapper {
+  .govuk-highlight-wrapper {
     display: table-cell;
   }
 }
 
-.green-panel {
-  border-color: $green;
+.govuk-green-panel {
+  border-color: govuk-colour("green");
   div:first-child {
     margin-top: -15px;
   }

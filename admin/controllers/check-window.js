@@ -28,7 +28,6 @@ const controller = {
       return next(error)
     }
     return res.render('check-window/manage-check-windows', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
       checkWindows
@@ -47,7 +46,6 @@ const controller = {
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('check-window/create-check-window', {
-      layout: 'gds-layout',
       checkWindowData: {},
       breadcrumbs: req.breadcrumbs(),
       error: new ValidationError(),
@@ -84,7 +82,6 @@ const controller = {
           checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData, requestData)
         }
         return res.render('check-window/create-check-window', {
-          layout: 'gds-layout',
           error: error || new ValidationError(),
           errorMessage: checkWindowErrorMessages,
           breadcrumbs: req.breadcrumbs(),
@@ -139,7 +136,6 @@ const controller = {
       return next(error)
     }
     return res.render('check-window/create-check-window', {
-      layout: 'gds-layout',
       error: new ValidationError(),
       errorMessage: checkWindowErrorMessages,
       breadcrumbs: req.breadcrumbs(),

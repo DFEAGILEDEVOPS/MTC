@@ -28,8 +28,9 @@
 }
 
 .autocomplete__input--focused {
+  outline: 3px solid #fd0;
   outline-offset: 0;
-  outline: 3px solid #ffbf47
+  box-shadow: inset 0 0 0 2px;
 }
 
 .autocomplete__input--show-all-values {
@@ -126,7 +127,7 @@
   padding: 4px
 }
 
-@media (min-width: 641px) {
+@include govuk-media-query($from: tablet) {
   .autocomplete__hint,.autocomplete__input,.autocomplete__option {
     font-size:19px;
     line-height: 1.31579

@@ -28,7 +28,7 @@ const getSignIn = (req, res) => {
     if (config.NCA_TOOLS_AUTH_URL) {
       res.redirect(config.NCA_TOOLS_AUTH_URL)
     } else {
-      res.render('sign-in', { layout: 'gds-layout' })
+      res.render('sign-in')
     }
   }
 }
@@ -65,7 +65,7 @@ const getSignOut = (req, res) => {
 
 const getSignInFailure = (req, res) => {
   res.locals.pageTitle = 'Check Development App - Sign-in error'
-  res.render('sign-in-failure', { layout: 'gds-layout' })
+  res.render('sign-in-failure')
 }
 
 const postAuth = (req, res) => {

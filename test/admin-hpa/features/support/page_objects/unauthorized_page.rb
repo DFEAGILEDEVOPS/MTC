@@ -3,6 +3,6 @@ class UnauthorizedPage < SitePrism::Page
 
   element :heading, '.heading-xlarge', text: 'Access unauthorised'
   element :info_text, 'p.lede', text: "You're not authorised to access this page."
-  element :back_to_home, '.column-two-thirds a[href="/"]'
+  element :back_to_home, '.govuk-link[href="/"]'
 
 end

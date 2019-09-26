@@ -6,6 +6,7 @@
   > dd {
     padding-top: govuk-em(10px, $govuk-root-font-size);
     padding-bottom: govuk-em(10px, $govuk-root-font-size);
+    margin-inline-start: 0;
     > span:first-child {
       display:inline-block;
       word-wrap: break-word;
@@ -29,4 +30,5 @@
 
 .no-file-uploaded {
   width: govuk-em(500px, $govuk-root-font-size);
+  margin-bottom: govuk-em(5px, $govuk-root-font-size);
 }
