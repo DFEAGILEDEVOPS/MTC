@@ -13,7 +13,7 @@
 }
 
 #checkWindowsForm {
-  @include media(mobile) {
+  @include govuk-media-query($until: mobile) {
     .button.button-secondary {
       margin-top: 10px;
     }
@@ -51,6 +51,7 @@
 .date-input-separator {
   float: left;
   margin-top: govuk-em(30px, $govuk-root-font-size);
+  margin-right: govuk-em(20px, $govuk-root-font-size);
 }
 
 .hint-spacious {

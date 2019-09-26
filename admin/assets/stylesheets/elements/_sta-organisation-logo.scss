@@ -15,7 +15,7 @@
   line-height: 15px;
   padding: 20px 0 0 6px;
 
-  @include media(tablet) {
+  @include govuk-media-query($until: tablet) {
     background-image: url('/images/org_crest_18px.png');
     background-position: 6px top;
     background-size: auto 25px;
@@ -25,7 +25,7 @@
     padding: 25px 0 0 7px;
   }
 
-  @include media(desktop) {
+  @include govuk-media-query($from: desktop) {
     background-image: url('/images/org_crest_27px.png');
     background-position: 6px top;
     background-size: auto 40px;

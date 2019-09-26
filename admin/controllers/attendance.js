@@ -43,14 +43,12 @@ controller.getResults = async (req, res, next) => {
   if (hdfSubmitted &&
     (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
     return res.render('school/results', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       pupils: pupilsFormatted,
       school
     })
   } else {
     return res.render('school/no-results', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs()
     })
   }
@@ -140,7 +138,6 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   const pupilsWithProcessStatus = hdfPresenter.getPupilsWithViewStatus(pupils)
   const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
   return res.render('hdf/review-pupil-details', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     pupils: pupilsSortedWithFlags
   })
@@ -168,7 +165,6 @@ controller.getEditReason = async (req, res, next) => {
   }
 
   return res.render('hdf/attendance-edit-reason', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     pupil: pupil,
     attendanceCodes: attendanceCodes
@@ -203,7 +199,6 @@ controller.getConfirmSubmit = async (req, res, next) => {
     const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
-        layout: 'gds-layout',
         hdfEligibility,
         formData: req.body,
         error: new ValidationError(),
@@ -212,13 +207,11 @@ controller.getConfirmSubmit = async (req, res, next) => {
     }
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
     }
     return res.render('hdf/confirm-and-submit', {
-      layout: 'gds-layout',
       formData: req.body,
       error: res.error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
@@ -264,7 +257,6 @@ controller.getDeclarationForm = async (req, res, next) => {
     const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -278,7 +270,6 @@ controller.getDeclarationForm = async (req, res, next) => {
   }
 
   return res.render('hdf/declaration-form', {
-    layout: 'gds-layout',
     hdfEligibility,
     formData: req.body,
     error: new ValidationError(),
@@ -303,7 +294,6 @@ controller.postDeclarationForm = async (req, res, next) => {
     res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('hdf/declaration-form', {
-      layout: 'gds-layout',
       hdfEligibility,
       formData: form,
       error: validationError,
@@ -326,7 +316,6 @@ controller.getHDFSubmitted = async (req, res, next) => {
     }
     const resultsDate = hdfPresenter.getResultsDate(hdf)
     return res.render('hdf/submitted', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       signedDayAndDate: dateService.formatShortGdsDate(hdf.signedDate),
       hdf,
@@ -347,7 +336,6 @@ controller.getHDFSubmittedForm = async (req, res, next) => {
       return res.redirect('/attendance/declaration-form')
     }
     return res.render('hdf/submitted-form', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       hdf: hdf,
       signedDate: dateService.formatFullGdsDate(hdf.signedDate)

@@ -5,17 +5,17 @@
 }
 
 .score-presenter {
-  margin-bottom: pem(35px);
+  margin-bottom: govuk-em(35px, $govuk-root-font-size);
   > dd {
     display: inline-block;
     width: 47%;
     > h3:first-child {
-      border-bottom: 1px solid $grey-2;
-      padding-bottom: pem(10px);
-      margin-right: pem(20px);
+      border-bottom: 1px solid govuk-colour("mid-grey") govuk-em(12px, $govuk-root-font-size);
+      padding-bottom: govuk-em(10px, $govuk-root-font-size);
+      margin-right: govuk-em(20px, $govuk-root-font-size);
     }
     > div {
-      margin-top: pem(10px);
+      margin-top: govuk-em(10px, $govuk-root-font-size);
     }
   }
 }

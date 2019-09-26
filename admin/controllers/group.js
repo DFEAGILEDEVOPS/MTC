@@ -30,7 +30,6 @@ const groupPupilsPage = async (req, res, next) => {
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.groupsAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -41,7 +40,6 @@ const groupPupilsPage = async (req, res, next) => {
 
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/groups.ejs', {
-    layout: 'gds-layout',
     groups,
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
@@ -68,7 +66,6 @@ const manageGroupPage = async (req, res, next) => {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.groupsAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -97,7 +94,6 @@ const manageGroupPage = async (req, res, next) => {
   req.breadcrumbs('Group pupils', '/group/pupils-list')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/manage-group.ejs', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     actionTitle: res.locals.pageTitle,
     action,
@@ -158,7 +154,6 @@ const addGroup = async (req, res, next) => {
     req.breadcrumbs(res.locals.pageTitle)
 
     return res.render('groups/manage-group.ejs', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       actionTitle: res.locals.pageTitle,
       action: 'add',
@@ -237,7 +232,6 @@ const editGroup = async (req, res, next) => {
     req.breadcrumbs(res.locals.pageTitle)
 
     return res.render('groups/manage-group.ejs', {
-      layout: 'gds-layout',
       breadcrumbs: req.breadcrumbs(),
       actionTitle: res.locals.pageTitle,
       action: 'edit',

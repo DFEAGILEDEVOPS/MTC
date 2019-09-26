@@ -13,8 +13,15 @@
   }
 }
 
+#modal-wrapper {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  font-family: $govuk-font-family;
+}
+
 dialog.modal-box {
-  background-color: $white;
+  background-color: govuk-colour("white");
   border-width: 0;
   display: none;
   margin: 0;
@@ -29,8 +36,8 @@ dialog.modal-box {
   }
 
   h1 {
-    background-color: $govuk-blue;
-    color: $white;
+    background-color: govuk-colour("blue");
+    color: govuk-colour("white");
     font-size: 22px;
     margin-bottom: 10px;
     padding: 12px 12px 10px 12px;
@@ -46,15 +53,5 @@ dialog.modal-box {
 
   .modal-content {
     padding: 10px 12px 10px 12px;
-  }
-}
-
-.modal-buttons {
-  margin-bottom: 4px;
-}
-
-.modal-confirm {
-  .button-secondary {
-    margin-left: 0;
   }
 }

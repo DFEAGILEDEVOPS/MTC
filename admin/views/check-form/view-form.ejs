@@ -16,11 +16,11 @@
         <div>Uploaded: <%= checkFormData.createdAt %></div>
       </div>
     <div>
-      <dl class="inline-definition-list" role="list">
+      <dl class="govuk-body inline-definition-list" role="list">
         <% let num = 1 %>
         <% checkFormData.formData.forEach((q, i) => { %>
-          <dt class="inline-definition-list" role="listitem">Q<%= num++ %></dt>
-          <dd class="inline-definition-list">
+          <dt class="govuk-body inline-definition-list" role="listitem">Q<%= num++ %></dt>
+          <dd class="govuk-body inline-definition-list">
             <span class="first-factor" role="listitem"><%= q.f1 %></span>
             <span class="times-sign" role="listitem">&times;</span>
             <span class="second-factor" role="listitem"><%= q.f2 %></span>
