@@ -93,7 +93,7 @@ describe('check-validator/v1', () => {
     expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
   })
 
-  test('check object with missing properties are recorded as validation errors against the entity', async () => {
+  test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
     const receivedCheckEntity: ReceivedCheck = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
@@ -117,5 +117,29 @@ describe('check-validator/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBe('submitted check is missing the following properties: answers,audit,config,device,inputs,pupil,questions,school,tokens,checkCode')
     expect(actualEntity.isValid).toBe(false)
+  })
+
+  test('submitted check with no validation errors is marked as valid', async () => {
+    const receivedCheckEntity: ReceivedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1
+    }
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+    compressionServiceMock.decompress = jest.fn((input: string) => {
+      return JSON.stringify(checkSchema)
+    })
+    await sut.validate([receivedCheckEntity], validateReceivedCheckQueueMessage, loggerMock)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.validationError).toBeUndefined()
+    expect(actualEntity.isValid).toBe(true)
+    expect(loggerMock.info).toHaveBeenCalled()
   })
 })

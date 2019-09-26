@@ -38,15 +38,23 @@ export class CheckValidatorV1 implements ICheckValidator {
       const decompressedString = this._compressionService.decompress(receivedCheck.archive)
       const checkData = JSON.parse(decompressedString)
       this.validateCheckStructure(checkData)
-      // all failures must be caught and recorded against the entity
+      await this.setReceivedCheckAsValid(receivedCheck)
+      logger.info(`receivedCheck successfully validated`)
+      return
     } catch (error) {
-      await this.updateReceivedCheckWithErrorDetails(error.message, receivedCheck)
+      await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       logger.error(error.message)
       return
     }
   }
 
-  private async updateReceivedCheckWithErrorDetails (errorMessage: string, receivedCheck: ReceivedCheck) {
+  private async setReceivedCheckAsValid (receivedCheck: ReceivedCheck) {
+    receivedCheck.validatedAt = Moment().toDate()
+    receivedCheck.isValid = true
+    await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  }
+
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheck) {
     receivedCheck.validationError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false
