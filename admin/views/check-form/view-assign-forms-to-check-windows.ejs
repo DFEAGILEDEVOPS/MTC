@@ -26,7 +26,7 @@
                 <a class="govuk-link" href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period
                 </a>
               </span>
-                  (<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)
+                  <span class="govuk-body govuk-!-font-size-19">(<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</span>
                   <div class="check-window-period" id="<%= cw.urlSlug %>-familiarisation-period">
                     <%= cw.familiarisationCheckStartDate %> to <%= cw.familiarisationCheckEndDate %>
                   </div>
@@ -38,7 +38,7 @@
                   Multiplication tables check period
                 </a>
               </span>
-                  (<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)
+                  <span class="govuk-body govuk-!-font-size-19">(<%= cw.liveCheckFormCount === 1 ? `${cw.liveCheckFormCount} form` : `${cw.liveCheckFormCount} forms` %> assigned)</span>
                   <div class="check-window-period" id="<%= cw.urlSlug %>-live-period">
                     <%= cw.checkStartDate %> to <%= cw.checkEndDate %>
                   </div>

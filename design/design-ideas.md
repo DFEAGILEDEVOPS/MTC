@@ -38,7 +38,7 @@ Submits a check-marking message onto the queue after recording validation dateti
 Records a 'validationError' against the entry on failure.
 
 ### check-validation queue properties (currently service bus)
-- Max size: 1GB (to be reviewed)
+- Max size: 5GB
 - TTL: 14 days
 - Lock duration: 5 minutes
 - Duplicate detection: enabled
@@ -55,7 +55,7 @@ records 'mark' against the entry on completion.
 Further actions to be defined, but will include signalling that check is ready for PS report and MI.
 
 ### check-marking queue properties
-- Max size: 1GB (to be reviewed)
+- Max size: 5GB
 - TTL: 14 days
 - Lock duration: 5 minutes
 - Duplicate detection: enabled

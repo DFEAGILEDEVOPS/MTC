@@ -1,132 +1,143 @@
-<%- partial('partials/_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Privacy notice</h1>
+            <%- partial('partials/_gds_session_expiry') %>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Privacy notice</h1>
 
-        <%- partial('partials/_session_expiry') %>
 
-        <ul class="list list-contents">
-            <li>Contents</li>
-            <li class="list-item--dashed"><a href="#overview">Overview</a></li>
-            <li class="list-item--dashed"><a href="#data-collection-and-access">What data will be collected and who can
-                    access it?</a></li>
-            <li class="list-item--dashed"><a href="#retaining-personal-data">How long will we keep your data?</a></li>
-            <li class="list-item--dashed"><a href="#legal">What is the legal basis for collecting and processing data?</a></li>
-            <li class="list-item--dashed"><a href="#contact">Who can I contact about the use of personal data?</a></li>
-        </ul>
-        <hr />
-        <div id="overview">
-            <h3 class="heading-medium">Overview</h3>
-            <p>
-                The Standards and Testing Agency (STA) will use the results of the final 2019 multiplication tables check (MTC) trial and national pilot to:
-            </p>
-            <ul class="list list-bullet">
-                <li>
-                    collect evidence on the performance of check items and forms to evaluate their comparable difficulty and inform future form construction
-                </li>
-                <li>
-                    develop and refine the live pilot digital service for implementing MTC as a final live service development
-                </li>
+            <ul class="govuk-list">
+                <li>Contents</li>
+                <li class="govuk-list-item--dashed"><a class="govuk-link" href="#overview">Overview</a></li>
+                <li class="govuk-list-item--dashed"><a class="govuk-link" href="#data-collection-and-access">What data will be collected and who can
+                        access it?</a></li>
+                <li class="govuk-list-item--dashed"><a class="govuk-link" href="#retaining-personal-data">How long will we keep your data?</a></li>
+                <li class="govuk-list-item--dashed"><a class="govuk-link" href="#legal">What is the legal basis for collecting and processing data?</a></li>
+                <li class="govuk-list-item--dashed"><a class="govuk-link" href="#contact">Who can I contact about the use of personal data?</a></li>
             </ul>
 
-            <p>
-                As data processor, STA is responsible for securely storing and handling any personal data required to
-                administer both the final trial and national pilot checks. We will keep data for only as long as it is
-                required for research and operational purposes, and will regularly review retention of the data, in
-                accordance and in line with the requirements of UK data protection legislation and the
-                <a target="_blank" rel="noopener noreferrer"
-                   href="https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr">
-                    General Data Protection Regulation (GDPR)
-                </a>. <img alt="" src="/images/icon-link.png"/>
-            </p>
-        </div>
-
-
-        <div id="data-collection-and-access">
-            <h3 class="heading-medium">What data will be collected and who can access it?</h3>
-            <p>We will collect and hold the following categories of data:</p>
-
-            <ul class="list list-bullet">
-                <li>participating pupils’ names</li>
-                <li>participating pupils’ dates of birth</li>
-                <li>participating pupils’ unique pupil numbers</li>
-                <li>names of participating schools</li>
-            </ul>
-            <p>
-                The MTC check will be completed online by all eligible year 4 pupils (age 8-9) who schools agree and
-                decide to enter for the trial or national pilot in 2019.
-            </p>
-            <p>
-                STA will store the data collected securely within its own system and retain it in line with the agency’s
-                data retention policy. Access within STA will be restricted to those employees who need to see the pupil
-                data. Schools will also see the data for their participating pupils.
-            </p>
-        </div>
-
-
-        <div id="retaining-personal-data">
-            <h3 class="heading-medium">How long will we keep your data?</h3>
-            <p>
-                STA will only keep personal data for as long as it is needed for the purpose of the trialling and
-                service development of the live check. STA will retain the data for no longer than necessary, in
-                accordance with the law, and will systematically review and manage retention. The data will be securely
-                destroyed once it is no longer required. Please note, under section 33 of the Data Protection Act 1998,
-                and in compliance with the relevant conditions, we can lawfully keep personal data processed purely for
-                research purposes indefinitely.
-            </p>
-        </div>
-
-        <div id="legal">
-            <h3 class="heading-medium">What is the legal basis for collecting and processing the data?</h3>
-            <p>
-                The Data Protection Act 2018, Part 2 Chapter 2 Lawfulness of processing Section 8 (d) allows for when
-                (data) processing is necessary for the exercise of a function of the Crown, a Minister of the Crown or a
-                government department. For the processing of personal data, the relevant condition is Article 6 (1) (e)
-                of GDPR.
-            </p>
-        </div>
-
-        <div id="contact">
-            <h3 class="heading-medium">Who can I contact about the use of personal data?</h3>
-            <p>
-                As an executive agency of the Department for Education (DfE), STA determines the purposes and means of
-                processing personal data as part of the MTC project. You can find more information about this in DfE’s
-                <a target="_blank" rel="noopener noreferrer"
-                   href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">
-                    personal information charter</a>. <img alt="" src="/images/icon-link.png"/></p>
-            </p>
-            <p>
-                If you have any questions about how we use your personal information, please
-                <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/contact-dfe">contact DfE</a>
-                <img alt="" src="/images/icon-link.png"/> and
-                quote ‘Use of multiplication tables check data’ as a reference. If you want to get in touch with the Data
-                Protection Officer (DPO), please contact DfE and mark it ‘for the attention of the DPO’.
-            </p>
-            <p>
-                You have the right to lodge a complaint about data protection issues with the Information Commissioner’s
-                Office. For more information, visit the
-                <a target="_blank" rel="noopener noreferrer"
-                    href="https://ico.org.uk/make-a-complaint">ICO website</a>.
-                <img alt="" src="/images/icon-link.png"/>
-            </p>
-        </div>
-        <span class="font-xsmall">Last updated 31 January 2019</span>
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
-        </div>
-    </div>
-
-    <div class="column-one-third add-title-margin">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
+            <hr />
+            <br />
+            <div id="overview">
+                <h3 class="govuk-heading-m">Overview</h3>
+                <p>
+                    The Standards and Testing Agency (STA) will use the results of the final 2019 multiplication tables check (MTC) trial and national pilot to:
+                </p>
+                <ul class="govuk-list govuk-list--bullet">
                     <li>
-                        <a href="/cookies">Cookies</a>
+                        collect evidence on the performance of check items and forms to evaluate their comparable difficulty and inform future form construction
+                    </li>
+                    <li>
+                        develop and refine the live pilot digital service for implementing MTC as a final live service development
                     </li>
                 </ul>
-            </nav>
-        </aside>
+
+                <p class="govuk-body">
+                    As data processor, STA is responsible for securely storing and handling any personal data required to
+                    administer both the final trial and national pilot checks. We will keep data for only as long as it is
+                    required for research and operational purposes, and will regularly review retention of the data, in
+                    accordance and in line with the requirements of UK data protection legislation and the
+                    <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+                       href="https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr">
+                        General Data Protection Regulation (GDPR)
+                    </a>. <img alt="" src="/images/icon-link.png"/>
+                </p>
+            </div>
+
+
+            <div id="data-collection-and-access">
+                <h3 class="govuk-heading-m">What data will be collected and who can access it?</h3>
+                <p class="govuk-body">We will collect and hold the following categories of data:</p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>participating pupils’ names</li>
+                    <li>participating pupils’ dates of birth</li>
+                    <li>participating pupils’ unique pupil numbers</li>
+                    <li>names of participating schools</li>
+                </ul>
+                <p class="govuk-body">
+                    The MTC check will be completed online by all eligible year 4 pupils (age 8-9) who schools agree and
+                    decide to enter for the trial or national pilot in 2019.
+                </p>
+                <p class="govuk-body">
+                    STA will store the data collected securely within its own system and retain it in line with the agency’s
+                    data retention policy. Access within STA will be restricted to those employees who need to see the pupil
+                    data. Schools will also see the data for their participating pupils.
+                </p>
+            </div>
+
+
+            <div id="retaining-personal-data">
+                <h3 class="govuk-heading-m">How long will we keep your data?</h3>
+                <p class="govuk-body">
+                    STA will only keep personal data for as long as it is needed for the purpose of the trialling and
+                    service development of the live check. STA will retain the data for no longer than necessary, in
+                    accordance with the law, and will systematically review and manage retention. The data will be securely
+                    destroyed once it is no longer required. Please note, under section 33 of the Data Protection Act 1998,
+                    and in compliance with the relevant conditions, we can lawfully keep personal data processed purely for
+                    research purposes indefinitely.
+                </p>
+            </div>
+
+            <div id="legal">
+                <h3 class="govuk-heading-m">What is the legal basis for collecting and processing the data?</h3>
+                <p class="govuk-body">
+                    The Data Protection Act 2018, Part 2 Chapter 2 Lawfulness of processing Section 8 (d) allows for when
+                    (data) processing is necessary for the exercise of a function of the Crown, a Minister of the Crown or a
+                    government department. For the processing of personal data, the relevant condition is Article 6 (1) (e)
+                    of GDPR.
+                </p>
+            </div>
+
+            <div id="contact">
+                <h3 class="govuk-heading-m">Who can I contact about the use of personal data?</h3>
+                <p class="govuk-body">
+                    As an executive agency of the Department for Education (DfE), STA determines the purposes and means of
+                    processing personal data as part of the MTC project. You can find more information about this in DfE’s
+                    <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+                       href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">
+                        personal information charter</a>. <img alt="" src="/images/icon-link.png"/></p>
+                </p>
+                <p class="govuk-body">
+                    If you have any questions about how we use your personal information, please
+                    <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/contact-dfe">contact DfE</a>
+                    <img alt="" src="/images/icon-link.png"/> and
+                    quote ‘Use of multiplication tables check data’ as a reference. If you want to get in touch with the Data
+                    Protection Officer (DPO), please contact DfE and mark it ‘for the attention of the DPO’.
+                </p>
+                <p class="govuk-body">
+                    You have the right to lodge a complaint about data protection issues with the Information Commissioner’s
+                    Office. For more information, visit the
+                    <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+                       href="https://ico.org.uk/make-a-complaint">ICO website</a>.
+                    <img alt="" src="/images/icon-link.png"/>
+                </p>
+            </div>
+            <span class="govuk-body govuk-!-font-size-16">Last updated 31 January 2019</span>
+
+
+            <div class="govuk-back-to-top govuk-!-margin-top-9">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/cookies">Cookies</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-</div>
+</main>

@@ -72,16 +72,16 @@
           <% } %>
         </div>
       </form>
-      <span class="govuk-!-font-weight-bold">
+      <span class="govuk-body govuk-!-font-weight-bold">
         <span>Uploaded file</span>
         <span class="job-status">Status</span>
       </span>
-      <dl class="pupil-census-uploaded-file">
+      <dl class="govuk-body pupil-census-uploaded-file">
           <% if (pupilCensus) { %>
               <dd><span><%= pupilCensus.csvName %></span></dd>
               <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
           <% } else { %>
-              <dd><span class="no-file-uploaded">No file uploaded</span></dd>
+              <dd><span class="govuk-body no-file-uploaded">No file uploaded</span></dd>
           <% } %>
       </dl>
       <% if (pupilCensus && pupilCensus.dbErrorText) { %>

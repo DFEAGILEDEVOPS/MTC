@@ -32,7 +32,6 @@ controller.getOverview = async (req, res, next) => {
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -45,7 +44,6 @@ controller.getOverview = async (req, res, next) => {
   const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
 
   return res.render('access-arrangements/overview', {
-    layout: 'gds-layout',
     highlight: hl,
     messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs(),
@@ -78,7 +76,6 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
       return res.render('availability/section-unavailable', {
-        layout: 'gds-layout',
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs()
       })
@@ -87,7 +84,6 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     return next(error)
   }
   return res.render('access-arrangements/select-access-arrangements', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     accessArrangements,
     questionReaderReasons,
@@ -176,7 +172,6 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     return next(error)
   }
   return res.render('access-arrangements/select-access-arrangements', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     accessArrangements,
     questionReaderReasons,
