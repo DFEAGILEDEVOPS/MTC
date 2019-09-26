@@ -1,7 +1,12 @@
 
 import lzString from 'lz-string'
 
-export class CompressionService {
+export interface ICompressionService {
+  compress (input: string): string
+  decompress (input: string): any | string | (string | null | undefined)
+}
+
+export class CompressionService implements ICompressionService {
   /**
    * Compress a string
    * @param {string} string

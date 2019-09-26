@@ -1,0 +1,3 @@
+test('typescript runtime casting', () => {
+
+})
