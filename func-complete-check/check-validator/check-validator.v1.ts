@@ -1,5 +1,5 @@
 import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck } from '../typings/message-schemas'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../typings/message-schemas'
 import { ILogger } from '../lib/ILogger'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
@@ -8,7 +8,12 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../lib/compression-service'
 
 export interface ICheckValidator {
-  validate (receivedCheckData: Array<object>, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): void
+  validate (functionBindings: object, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): void
+}
+
+export interface ICheckValidatorFunctionBindings {
+  receivedCheckTable: Array<any>
+  checkMarkingQueue: Array<any>
 }
 
 export class CheckValidatorV1 implements ICheckValidator {
@@ -29,23 +34,32 @@ export class CheckValidatorV1 implements ICheckValidator {
     }
   }
 
-  async validate (receivedCheckReference: Array<any>, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
+  async validate (functionBindings: ICheckValidatorFunctionBindings, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
     // this should fail outside of the catch as we wont be able to update the entity
     // without a reference to it and should rightly go on the dead letter queue
-    const receivedCheck = this.findReceivedCheck(receivedCheckReference)
+    const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     try {
       this.detectArchive(receivedCheck)
       const decompressedString = this._compressionService.decompress(receivedCheck.archive)
       const checkData = JSON.parse(decompressedString)
       this.validateCheckStructure(checkData)
-      await this.setReceivedCheckAsValid(receivedCheck)
-      logger.info(`receivedCheck successfully validated`)
-      return
     } catch (error) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       logger.error(error.message)
       return
     }
+
+    await this.setReceivedCheckAsValid(receivedCheck)
+    logger.info(`receivedCheck successfully validated`)
+
+    // dispatch message to indicate ready for marking
+    const markingMessage: MarkCheckMessageV1 = {
+      schoolUUID: validateCheckMessage.schoolUUID,
+      checkCode: validateCheckMessage.checkCode,
+      version: '1'
+    }
+
+    functionBindings.checkMarkingQueue = [markingMessage]
   }
 
   private async setReceivedCheckAsValid (receivedCheck: ReceivedCheck) {

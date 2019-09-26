@@ -1,5 +1,5 @@
 import { AzureFunction, Context } from '@azure/functions'
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1 } from '../typings/message-schemas'
+import { ValidateCheckMessageV1 } from '../typings/message-schemas'
 import { performance } from 'perf_hooks'
 const functionName = 'check-validator'
 import * as V1 from './check-validator.v1'
@@ -13,7 +13,8 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
       throw new Error(`Message schema version ${version} unsupported`)
     }
     const validator = new V1.CheckValidatorV1()
-    await validator.validate(context.bindings.receivedCheckTable, validateCheckMessage, context.log)
+    // the casting could very well fail at runtime...
+    await validator.validate(context.bindings as V1.ICheckValidatorFunctionBindings, validateCheckMessage, context.log)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error

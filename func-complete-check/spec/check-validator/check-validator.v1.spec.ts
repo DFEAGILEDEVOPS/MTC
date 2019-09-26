@@ -1,6 +1,6 @@
 import * as CheckValidator from '../../check-validator/check-validator.v1'
 import { IAsyncTableService } from '../../lib/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck } from '../../typings/message-schemas'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../typings/message-schemas'
 import { ILogger } from '../../lib/ILogger'
 import checkSchema from '../../messages/complete-check.v1.json'
 import * as R from 'ramda'
@@ -59,8 +59,11 @@ describe('check-validator/v1', () => {
 
   test('error should be thrown when receivedCheck reference is an empty array', async () => {
     try {
-      const receivedCheckRef: Array<any> = []
-      await sut.validate(receivedCheckRef, validateReceivedCheckQueueMessage, loggerMock)
+      const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [],
+        checkMarkingQueue: []
+      }
+      await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
       expect(error.message).toBe('received check reference is empty')
@@ -74,7 +77,11 @@ describe('check-validator/v1', () => {
       actualTableName = table
       actualEntity = entity
     })
-    await sut.validate([{}], validateReceivedCheckQueueMessage, loggerMock)
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [{}],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBe('message is missing [archive] property')
@@ -89,7 +96,11 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    await sut.validate([receivedCheckEntity], validateReceivedCheckQueueMessage, loggerMock)
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
   })
 
@@ -112,7 +123,11 @@ describe('check-validator/v1', () => {
         foo: 'bar'
       })
     })
-    await sut.validate([receivedCheckEntity], validateReceivedCheckQueueMessage, loggerMock)
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBe('submitted check is missing the following properties: answers,audit,config,device,inputs,pupil,questions,school,tokens,checkCode')
@@ -136,10 +151,44 @@ describe('check-validator/v1', () => {
     compressionServiceMock.decompress = jest.fn((input: string) => {
       return JSON.stringify(checkSchema)
     })
-    await sut.validate([receivedCheckEntity], validateReceivedCheckQueueMessage, loggerMock)
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBeUndefined()
     expect(actualEntity.isValid).toBe(true)
     expect(loggerMock.info).toHaveBeenCalled()
+  })
+
+  test('check marking message is created and added to output binding array', async () => {
+    const receivedCheckEntity: ReceivedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1
+    }
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+    compressionServiceMock.decompress = jest.fn((input: string) => {
+      return JSON.stringify(checkSchema)
+    })
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    expect(functionBindings.checkMarkingQueue.length).toBe(1)
+    const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
+    expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
+    expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)
+    expect(checkMarkingMessage.version).toBe('1')
+
   })
 })
