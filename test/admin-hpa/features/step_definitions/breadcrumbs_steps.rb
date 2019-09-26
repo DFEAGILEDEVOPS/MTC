@@ -1,14 +1,11 @@
+
 Then(/^I should see the breadcrumb as "([^"]*)"$/) do |breadcrumb|
   @breadcrumb = breadcrumb
-  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n")) if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') ||
-    (@breadcrumb.include? 'Restarts') || (@breadcrumb.include? 'Start the MTC - password and PINs') || (@breadcrumb.include? 'Upload and view forms') || (@breadcrumb.include? 'Manage check windows') || (@breadcrumb.include? 'Upload pupil census')
-  expect(profile_page.breadcrumb.text).to eq(@breadcrumb) unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') ||
-    (@breadcrumb.include? 'Restarts') || (@breadcrumb.include? 'Start the MTC - password and PINs') || (@breadcrumb.include? 'Upload and view forms') || (@breadcrumb.include? 'Manage check windows') || (@breadcrumb.include? 'Upload pupil census')
+  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n"))
 end
 
 And(/^I click the Home link on breadcrumb$/) do
-  profile_page.home_v2.click if (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts') || (@breadcrumb.include? 'Start the MTC - password and PINs') || (@breadcrumb.include? 'Upload and view forms') || (@breadcrumb.include? 'Manage check windows') || (@breadcrumb.include? 'Upload pupil census')
-  profile_page.home.click unless (@breadcrumb.include? 'Pupil register') || (@breadcrumb.include? 'Edit pupil') || (@breadcrumb.include? 'Pupils not taking the check') || (@breadcrumb.include? 'Restarts') || (@breadcrumb.include? 'Start the MTC - password and PINs') || (@breadcrumb.include? 'Upload and view forms') || (@breadcrumb.include? 'Manage check windows') || (@breadcrumb.include? 'Upload pupil census')
+  profile_page.home_v2.click
 end
 
 Then(/^I should be taken to the admin page$/) do
