@@ -22,8 +22,7 @@ export class CheckMarkerV1 {
   }
 
   async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
-    // this should fail outside of the catch as we wont be able to update the entity
-    // without a reference to it and should rightly go on the dead letter queue
+
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     if (RA.isEmptyString(receivedCheck.answers)) {
       receivedCheck.markError = 'answers property not populated'
