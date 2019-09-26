@@ -1,0 +1,8 @@
+{
+  "queues": [
+    "check-completion",
+    "check-marking",
+    "check-notification",
+    "check-validation"
+  ]
+}
