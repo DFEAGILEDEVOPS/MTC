@@ -1,0 +1,17 @@
+{
+  "name": "service-bus-deploy",
+  "version": "1.0.0",
+  "description": "creates service bus queues",
+  "main": "index.js",
+  "scripts": {
+    "createqs": "node ./create.js",
+    "deleteqs": "node ./delete.js"
+  },
+  "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "azure": "^2.3.1-preview",
+    "dotenv": "^8.1.0"
+  }
+}

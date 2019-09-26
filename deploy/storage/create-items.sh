@@ -17,10 +17,13 @@ storageAccountKey=$2
 allowedOrigins=$3
 
 # clear and rebuild cors rule for the queues
+echo "clearing CORS policy on $storageAccountName"
 az storage cors clear --services q --account-name $storageAccountName --account-key $storageAccountKey
+echo "setting CORS policy on $storageAccountName for $allowedOrigins"
 az storage cors add --methods HEAD OPTIONS POST --origins $allowedOrigins --services q --account-name $storageAccountName --account-key $storageAccountKey --allowed-headers '*' --exposed-headers '*'
 
 declare -a queuenames=( $(jq -r '.queues[]' $jsonSource) )
+
 # create queues if they do not exist
 for q in "${queuenames[@]}"
 do
@@ -29,6 +32,7 @@ do
 done
 
 declare -a tablenames=( $(jq -r '.tables[]' $jsonSource) )
+
 # create tables if they do not exist
 for t in "${tablenames[@]}"
 do
