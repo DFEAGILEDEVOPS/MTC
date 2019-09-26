@@ -3,7 +3,7 @@
     {
       "direction": "in",
       "type": "queueTrigger",
-      "name": "completedCheck",
+      "name": "submittedCheck",
       "queueName": "check-submitted",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     },
