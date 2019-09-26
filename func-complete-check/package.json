@@ -13,7 +13,8 @@
     "lint": "standard && tslint --project .",
     "test": "yarn jest",
     "test:watch": "yarn jest --watch",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "test:coverage": "yarn jest --coverage"
   },
   "description": "",
   "devDependencies": {
