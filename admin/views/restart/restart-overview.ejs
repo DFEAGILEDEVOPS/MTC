@@ -3,7 +3,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
         <% if (messages && messages.info) { %>
-            <div class="govuk-info-message govuk-!-margin-bottom-7">
+            <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
                 <%= messages.info[0] %>
             </div>
         <% } %>
@@ -20,7 +20,7 @@
             <form method="post" action="/restart/delete/" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <table id='submitted-restarts' class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
-                    <caption class="govuk-table__caption">Restarts recorded</caption>
+                    <caption class="govuk-body govuk-table__caption">Restarts recorded</caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Pupil</th>
@@ -59,7 +59,7 @@
                 </table>
             </form>
         <% } else { %>
-            <div>No pupils selected to restart the check.</div>
+            <div class="govuk-body">No pupils selected to restart the check.</div>
         <% } %>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">

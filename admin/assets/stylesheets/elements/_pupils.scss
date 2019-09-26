@@ -15,12 +15,6 @@
   }
 }
 
-.width-60 {
-  @include media(mobile) {
-    width: 60%;
-  }
-}
-
 .pupil-name-container {
   margin-bottom: govuk-em(5px, $govuk-root-font-size);
   margin-top: govuk-em(5px, $govuk-root-font-size);
