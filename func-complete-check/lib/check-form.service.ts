@@ -8,15 +8,17 @@ export interface ICheckFormService {
 
 export class CheckFormService implements ICheckFormService {
 
-  private _pool: mssql.ConnectionPool
+  private connection: mssql.ConnectionPool
 
   constructor () {
-    this._pool = new mssql.ConnectionPool(config.Sql)
+    this.connection = new mssql.ConnectionPool(config.Sql)
   }
 
   async getCheckFormDataByCheckCode (checkCode: string) {
+    let pool: any
     try {
-      const request = new mssql.Request(this._pool)
+      pool = await this.connection.connect()
+      const request = new mssql.Request(pool)
       const sql = `SELECT TOP 1 f.formData
                FROM mtc_admin.[check] chk
                INNER JOIN mtc_admin.[checkForm] f ON chk.checkForm_id = f.id
@@ -34,7 +36,7 @@ export class CheckFormService implements ICheckFormService {
       console.error(err.message)
       throw err
     } finally {
-      await this._pool.close()
+      await pool.close()
     }
   }
 
