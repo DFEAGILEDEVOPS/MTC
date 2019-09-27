@@ -54,4 +54,5 @@ export interface ValidatedCheck {
   markedAt?: Date
   answers: string
   markError?: string
+  maxMarks?: number
 }

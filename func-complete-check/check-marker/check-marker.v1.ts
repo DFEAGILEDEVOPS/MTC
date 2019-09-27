@@ -2,12 +2,38 @@ import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
 import { ValidatedCheck } from '../typings/message-schemas'
-import moment = require('moment')
+import moment from 'moment'
 import { ICheckFormService, CheckFormService } from '../lib/check-form.service'
 
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
   checkNotificationQueue: Array<any>
+}
+
+declare class Answer {
+  factor1: number
+  factor2: number
+  answer: string
+  sequenceNumber: number
+  question: string
+  clientTimestamp: string
+}
+
+declare class CheckFormQuestion {
+  f1: number
+  f2: number
+}
+
+declare class MarkingData {
+  answers: Array<Answer>
+  formQuestions: Array<CheckFormQuestion>
+  results: any
+}
+
+declare class Mark {
+  mark: number
+  maxMarks: number
+  processedAt: Date
 }
 
 export class CheckMarkerV1 {
@@ -31,36 +57,40 @@ export class CheckMarkerV1 {
 
   async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
 
-    await this.validateData(functionBindings)
-
-
+    const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
+    const markingData = await this.validateData(functionBindings, validatedCheck)
+    if (markingData === undefined) {
+      return
+    }
+    const results = this.markCheck(markingData)
+    await this.persistMark(results, validatedCheck)
+    // TODO put notification on queue
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings) {
-    const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
-    if (RA.isEmptyString(receivedCheck.answers)) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'answers property not populated')
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck): Promise<MarkingData | void> {
+    if (RA.isEmptyString(validatedCheck.answers)) {
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
     }
 
     let parsedAnswersJson: any
     try {
-      parsedAnswersJson = JSON.parse(receivedCheck.answers)
+      parsedAnswersJson = JSON.parse(validatedCheck.answers)
     } catch (error) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'answers data is not valid JSON')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
       return
     }
 
     if (!RA.isArray(parsedAnswersJson)) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'answers data is not an array')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
       return
     }
 
-    const checkCode = receivedCheck.RowKey
+    const checkCode = validatedCheck.RowKey
     const rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
 
     if (R.isNil(rawCheckForm)) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'associated checkForm could not be found by checkCode')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
       return
     }
 
@@ -69,21 +99,52 @@ export class CheckMarkerV1 {
     try {
       checkForm = JSON.parse(rawCheckForm)
     } catch (error) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'associated checkForm data is not valid JSON')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm data is not valid JSON')
       return
     }
 
     if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
-      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'check form data is either empty or not an array')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
       return
     }
+
+    const toReturn: MarkingData = {
+      answers: parsedAnswersJson,
+      formQuestions: checkForm,
+      results: []
+    }
+    return toReturn
   }
 
-  private buildResults () {
+  private markCheck (markingData: MarkingData): Mark {
+    const results: Mark = {
+      mark: 0,
+      maxMarks: markingData.formQuestions.length,
+      processedAt: moment.utc().toDate()
+    }
 
+    let questionNumber = 1
+    for (let question of markingData.formQuestions) {
+      const currentIndex = questionNumber - 1
+      const answerRecord = markingData.answers[currentIndex]
+      const answer = (answerRecord && answerRecord.answer) || ''
+      questionNumber += 1
+
+      if (answer && question.f1 * question.f2 === parseInt(answer, 10)) {
+        results.mark += 1
+      }
+    }
+    return results
   }
 
-  private findReceivedCheck (receivedCheckRef: Array<any>): ValidatedCheck {
+  private async persistMark (mark: Mark, receivedCheck: ValidatedCheck) {
+    receivedCheck.mark = mark.mark
+    receivedCheck.markedAt = mark.processedAt
+    receivedCheck.maxMarks = mark.maxMarks
+    return this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  }
+
+  private findValidatedCheck (receivedCheckRef: Array<any>): ValidatedCheck {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
