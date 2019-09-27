@@ -13,6 +13,11 @@ function filterInputsForQuestion (questionNumber, factor1, factor2, inputs) {
   return filteredInputs
 }
 
+/**
+ * Detect inputs before the question was shown
+ * @param data
+ * @return {Array}
+ */
 const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestionIsShown (data) {
   const anomalyReports = []
   const addToOutput = (...args) => anomalyReports.push(report(...args))
@@ -26,6 +31,7 @@ const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestio
     const questionTimerStartedAudit = audits.find(e => e.type === 'QuestionTimerStarted' && e.data && e.data.sequenceNumber === markedAnswer.questionNumber)
     if (!questionTimerStartedAudit) {
       addToOutput(data, 'QuestionTimerStarted not found', null, null, `Q${markedAnswer.questionNumber}`)
+      return
     }
 
     const questionShownAt = moment(questionTimerStartedAudit.clientTimestamp)
@@ -35,7 +41,7 @@ const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestio
     }
     // If there are any inputs before `questionTimerStarted` it's an anomaly
     const inputs = filterInputsForQuestion(markedAnswer.questionNumber, markedAnswer.factor1, markedAnswer.factor2, R.pathOr([], ['checkPayload', 'inputs'], data))
-    if (!inputs) {
+    if (R.isEmpty(inputs)) {
       // It's okay for there to be no inputs for a question - the pupil did not respond
       return
     }
@@ -53,7 +59,6 @@ const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestio
       }
     })
   })
-
   return removeDuplicates(anomalyReports)
 }
 
