@@ -4,7 +4,6 @@ import config from '../config'
 
 export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
-  init (): Promise<void>
 }
 
 export class CheckFormService implements ICheckFormService {
@@ -15,13 +14,8 @@ export class CheckFormService implements ICheckFormService {
     this._pool = new mssql.ConnectionPool(config.Sql)
   }
 
-  async init () {
-    await this._pool.connect()
-  }
-
   async getCheckFormDataByCheckCode (checkCode: string) {
     try {
-      // await this._pool.connect()
       const request = new mssql.Request(this._pool)
       const sql = `SELECT TOP 1 f.formData
                FROM mtc_admin.[check] chk

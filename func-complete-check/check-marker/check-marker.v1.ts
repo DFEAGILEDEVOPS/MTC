@@ -29,7 +29,6 @@ export class CheckMarkerV1 {
   }
 
   async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
-    await this._sqlService.init()
 
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     if (RA.isEmptyString(receivedCheck.answers)) {
