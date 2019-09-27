@@ -3,7 +3,7 @@ import { IAsyncTableService } from '../lib/storage-helper'
 import { AsyncTableService } from '../lib/azure-storage-helper'
 import { ValidatedCheck } from '../typings/message-schemas'
 import moment = require('moment')
-import { ISqlService, SqlService } from '../lib/sql'
+import { ICheckFormService, CheckFormService } from '../lib/check-form.service'
 
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
@@ -13,9 +13,9 @@ export interface ICheckMarkerFunctionBindings {
 export class CheckMarkerV1 {
 
   private _tableService: IAsyncTableService
-  private _sqlService: ISqlService
+  private _sqlService: ICheckFormService
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ISqlService) {
+  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
       this._tableService = new AsyncTableService()
     } else {
@@ -23,7 +23,7 @@ export class CheckMarkerV1 {
     }
 
     if (sqlService === undefined) {
-      this._sqlService = new SqlService()
+      this._sqlService = new CheckFormService()
     } else {
       this._sqlService = sqlService
     }

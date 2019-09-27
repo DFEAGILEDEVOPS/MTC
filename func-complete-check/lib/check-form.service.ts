@@ -2,11 +2,11 @@
 import * as mssql from 'mssql'
 import config from '../config'
 
-export interface ISqlService {
+export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
 }
 
-export class SqlService implements ISqlService {
+export class CheckFormService implements ICheckFormService {
 
   private _pool: mssql.ConnectionPool
 

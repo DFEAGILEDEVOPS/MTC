@@ -4,7 +4,7 @@ import moment = require('moment')
 import { ValidatedCheck } from '../../typings/message-schemas'
 import { IAsyncTableService } from '../../lib/storage-helper'
 import checkSchema from '../../messages/complete-check.v1.json'
-import { ISqlService } from '../../lib/sql'
+import { ICheckFormService } from '../../lib/check-form.service'
 import { S } from 'ts-toolbelt'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
@@ -14,13 +14,13 @@ const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   insertEntityAsync: jest.fn()
 }))
 
-const SqlServiceMock = jest.fn<ISqlService, any>(() => ({
+const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
   getCheckFormDataByCheckCode: jest.fn()
 }))
 
 let sut: Subject.CheckMarkerV1
 let tableServiceMock: IAsyncTableService
-let sqlServiceMock: ISqlService
+let sqlServiceMock: ICheckFormService
 
 describe('check-marker/v1', () => {
 
