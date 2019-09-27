@@ -36,10 +36,6 @@ export class CheckFormService implements ICheckFormService {
       if (!R.isNil(result.recordset)) {
         return result.recordset[0].formData
       }
-/*       console.dir(result)
-      const checkFormData = R.head(result)
-      console.log(`checkFormData is ${checkFormData}`)
-      return checkFormData */
     } catch (err) {
       console.error(err.message)
       throw err
