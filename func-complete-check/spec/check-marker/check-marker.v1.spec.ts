@@ -144,16 +144,85 @@ describe('check-marker/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('associated checkForm could not be found by checkCode')
     expect(actualEntity.markedAt).toBeTruthy()
+  })
+
+  test('error is recorded against entity when checkForm data is not valid JSON', async () => {
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(checkSchema.answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
-      return []
+      return 'not JSON'
+    })
+
+    await sut.mark(functionBindings)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.markError).toBe('associated checkForm data is not valid JSON')
+    expect(actualEntity.markedAt).toBeTruthy()
+  })
+
+  test('error is recorded against entity when checkForm data is not a populated array', async () => {
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(checkSchema.answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([])
+    })
+
+    await sut.mark(functionBindings)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.markError).toBe('check form data is either empty or not an array')
+    expect(actualEntity.markedAt).toBeTruthy()
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify({ not: 'array' })
     })
 
     await sut.mark(functionBindings)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('associated checkForm could not be found by checkCode')
+    expect(actualEntity.markError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeTruthy()
   })
-
 })

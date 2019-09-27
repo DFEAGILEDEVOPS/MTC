@@ -1,4 +1,5 @@
 import * as RA from 'ramda-adjunct'
+import * as R from 'ramda'
 import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
 import { ValidatedCheck } from '../typings/message-schemas'
 import moment = require('moment')
@@ -50,12 +51,28 @@ export class CheckMarkerV1 {
     }
 
     const checkCode = receivedCheck.RowKey
-    const checkForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
+    const rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
 
-    if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
+    if (R.isNil(rawCheckForm)) {
       await this.updateReceivedCheckWithMarkingError(receivedCheck, 'associated checkForm could not be found by checkCode')
       return
     }
+
+    let checkForm: any
+
+    try {
+      checkForm = JSON.parse(rawCheckForm)
+    } catch (error) {
+      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'associated checkForm data is not valid JSON')
+      return
+    }
+
+    if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
+      await this.updateReceivedCheckWithMarkingError(receivedCheck, 'check form data is either empty or not an array')
+      return
+    }
+
+
   }
 
   private findReceivedCheck (receivedCheckRef: Array<any>): ValidatedCheck {

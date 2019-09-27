@@ -31,10 +31,13 @@ export class CheckFormService implements ICheckFormService {
         }
       ]
       this.addParamsToRequestSimple(params, request)
-      return request.query(sql)
+      const checkFormData = await request.query(sql)
+      return checkFormData
     } catch (err) {
       console.error(err.message)
       throw err
+    } finally {
+      await this.connection.close()
     }
   }
 
