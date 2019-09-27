@@ -288,4 +288,130 @@ describe('check-marker/v1', () => {
     expect(actualEntity.markError).toBeUndefined()
     expect(actualEntity.markedAt).toBeTruthy()
   })
+
+  test('marking updates entity with mark, maxMarks and timestamp: one wrong', async () => {
+    const answers = [
+      {
+        factor1: 2,
+        factor2: 5,
+        answer: '10',
+        sequenceNumber: 1,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z'
+      },
+      {
+        factor1: 11,
+        factor2: 2,
+        answer: '21',
+        sequenceNumber: 2,
+        question: '11x2',
+        clientTimestamp: '2018-09-24T12:00:03.963Z'
+      }
+    ]
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        },
+        {
+          f1: 11,
+          f2: 2
+        }])
+    })
+
+    await sut.mark(functionBindings)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.mark).toBe(1)
+    expect(actualEntity.maxMarks).toBe(2)
+    expect(actualEntity.markError).toBeUndefined()
+    expect(actualEntity.markedAt).toBeTruthy()
+  })
+
+  test('marking updates entity with mark, maxMarks and timestamp: both wrong', async () => {
+    const answers = [
+      {
+        factor1: 2,
+        factor2: 5,
+        answer: '11',
+        sequenceNumber: 1,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z'
+      },
+      {
+        factor1: 11,
+        factor2: 2,
+        answer: '21',
+        sequenceNumber: 2,
+        question: '11x2',
+        clientTimestamp: '2018-09-24T12:00:03.963Z'
+      }
+    ]
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        },
+        {
+          f1: 11,
+          f2: 2
+        }])
+    })
+
+    await sut.mark(functionBindings)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.mark).toBe(0)
+    expect(actualEntity.maxMarks).toBe(2)
+    expect(actualEntity.markError).toBeUndefined()
+    expect(actualEntity.markedAt).toBeTruthy()
+  })
 })
