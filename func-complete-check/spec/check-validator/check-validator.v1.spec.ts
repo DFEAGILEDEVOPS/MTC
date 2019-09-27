@@ -186,7 +186,7 @@ describe('check-validator/v1', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBeUndefined()
-    expect(actualEntity.answers).toEqual(checkSchema.answers)
+    expect(actualEntity.answers).toEqual(JSON.stringify(checkSchema.answers))
     expect(loggerMock.info).toHaveBeenCalled()
   })
 

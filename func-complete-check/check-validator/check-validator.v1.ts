@@ -62,7 +62,7 @@ export class CheckValidatorV1 {
   private async setReceivedCheckAsValid (receivedCheck: ReceivedCheck, checkData: any) {
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = true
-    receivedCheck.answers = checkData.answers
+    receivedCheck.answers = JSON.stringify(checkData.answers)
     await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
