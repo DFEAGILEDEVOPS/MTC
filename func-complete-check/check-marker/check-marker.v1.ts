@@ -31,6 +31,12 @@ export class CheckMarkerV1 {
 
   async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
 
+    await this.validateData(functionBindings)
+
+
+  }
+
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings) {
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     if (RA.isEmptyString(receivedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(receivedCheck, 'answers property not populated')
@@ -71,7 +77,9 @@ export class CheckMarkerV1 {
       await this.updateReceivedCheckWithMarkingError(receivedCheck, 'check form data is either empty or not an array')
       return
     }
+  }
 
+  private buildResults () {
 
   }
 
