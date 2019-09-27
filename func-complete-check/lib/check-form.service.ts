@@ -1,6 +1,7 @@
 
 import * as mssql from 'mssql'
 import config from '../config'
+import * as R from 'ramda'
 
 export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
@@ -31,8 +32,14 @@ export class CheckFormService implements ICheckFormService {
         }
       ]
       this.addParamsToRequestSimple(params, request)
-      const checkFormData = await request.query(sql)
-      return checkFormData
+      const result: mssql.IResult<any> = await request.query(sql)
+      if (!R.isNil(result.recordset)) {
+        return result.recordset[0].formData
+      }
+/*       console.dir(result)
+      const checkFormData = R.head(result)
+      console.log(`checkFormData is ${checkFormData}`)
+      return checkFormData */
     } catch (err) {
       console.error(err.message)
       throw err
