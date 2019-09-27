@@ -28,6 +28,14 @@ export class CheckMarkerV1 {
       receivedCheck.markError = 'answers property not populated'
       receivedCheck.markedAt = moment().toDate()
       await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+      return
+    }
+
+    if (!RA.isArray(receivedCheck.answers)) {
+      receivedCheck.markError = 'answers data is not an array'
+      receivedCheck.markedAt = moment().toDate()
+      await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+      return
     }
   }
 

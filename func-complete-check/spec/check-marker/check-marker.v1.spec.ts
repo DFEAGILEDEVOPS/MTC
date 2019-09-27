@@ -70,8 +70,37 @@ describe('check-marker/v1', () => {
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
-  xtest('error is recorded against entity when answers is not an array', async () => {
+  test('error is recorded against entity when answers is not an array', async () => {
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: `{
+        foo: 1
+      }`
+    }
 
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    await sut.mark(functionBindings)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.markError).toBe('answers data is not an array')
+    expect(actualEntity.markedAt).toBeTruthy()
   })
 
 })
