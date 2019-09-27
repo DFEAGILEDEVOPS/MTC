@@ -7,7 +7,7 @@ import * as largeCompleteCheck from '../messages/large-complete-check.json'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
   const message = JSON.parse(JSON.stringify(checkMessage))
-  message.checkCode = uuid()
+  message.checkCode = req.query['checkCode']
   message.schoolUUID = uuid()
   // enable to create an invalid check
   // delete largeCompleteCheck.answers

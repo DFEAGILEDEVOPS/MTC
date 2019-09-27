@@ -15,7 +15,8 @@ const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
 }))
 
 const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
-  getCheckFormDataByCheckCode: jest.fn()
+  getCheckFormDataByCheckCode: jest.fn(),
+  init: jest.fn()
 }))
 
 let sut: Subject.CheckMarkerV1

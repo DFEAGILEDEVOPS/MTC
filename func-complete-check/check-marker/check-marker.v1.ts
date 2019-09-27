@@ -1,6 +1,5 @@
 import * as RA from 'ramda-adjunct'
-import { IAsyncTableService } from '../lib/storage-helper'
-import { AsyncTableService } from '../lib/azure-storage-helper'
+import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
 import { ValidatedCheck } from '../typings/message-schemas'
 import moment = require('moment')
 import { ICheckFormService, CheckFormService } from '../lib/check-form.service'
@@ -30,6 +29,7 @@ export class CheckMarkerV1 {
   }
 
   async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
+    await this._sqlService.init()
 
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     if (RA.isEmptyString(receivedCheck.answers)) {

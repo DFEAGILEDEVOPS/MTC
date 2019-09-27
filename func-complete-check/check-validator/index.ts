@@ -23,7 +23,6 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
-
 }
 
 export default serviceBusQueueTrigger
