@@ -148,7 +148,13 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
           const anomalyData = checkProcessingService.filterNils(rawAnomalyData)
 
           anomalyData.forEach(data => {
-            checkProcessingService.writeCsv(inputStream, anomalyCsvStream, data)
+            if (RA.isArray(data)) {
+              data.forEach(innerData => {
+                checkProcessingService.writeCsv(inputStream, anomalyCsvStream, innerData)
+              })
+            } else {
+              checkProcessingService.writeCsv(inputStream, anomalyCsvStream, data)
+            }
           })
           meta.processCount += 1
         } catch (error) {
