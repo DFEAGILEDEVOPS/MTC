@@ -15,7 +15,7 @@ export class CheckFormService implements ICheckFormService {
   }
 
   async getCheckFormDataByCheckCode (checkCode: string) {
-    let pool: any
+    let pool: mssql.ConnectionPool
     try {
       pool = await this.connection.connect()
       const request = new mssql.Request(pool)
@@ -35,8 +35,6 @@ export class CheckFormService implements ICheckFormService {
     } catch (err) {
       console.error(err.message)
       throw err
-    } finally {
-      await pool.close()
     }
   }
 
