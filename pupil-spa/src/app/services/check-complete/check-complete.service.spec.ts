@@ -65,9 +65,16 @@ describe('CheckCompleteService', () => {
     spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
     spyOn(storageService, 'setItem');
-    spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-    spyOn(azureQueueService, 'addMessage')
-      .and.returnValue(Promise.resolve());
+    spyOn(storageService, 'getAllItems').and.returnValue({
+      pupil: {
+        checkCode: 'checkCode'
+      },
+      school: {
+        uuid: 'school_uuid'
+      }
+    });
+
+    spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.resolve());
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);

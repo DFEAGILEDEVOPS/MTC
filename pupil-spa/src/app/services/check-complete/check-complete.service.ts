@@ -72,11 +72,13 @@ export class CheckCompleteService {
     const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
     excludedItems.forEach(i => delete payload[i]);
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
+    payload.schoolUUID = payload && payload.school && payload.school.uuid
     const checkConfig = this.storageService.getItem(CheckCompleteService.configStorageKey);
     if (checkConfig.compressCompletedCheck) {
       message = {
         version: 2,
         checkCode: payload.checkCode,
+        schoolUUID: payload.schoolUUID,
         archive: CompressorService.compress(JSON.stringify(payload))
       };
     } else {
