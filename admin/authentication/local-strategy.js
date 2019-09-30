@@ -28,7 +28,7 @@ module.exports = async function (req, email, password, done) {
     // school with dfeNumber 1234567.
     // NOTE that this is not a generic implementation: you actually need to be called 'helpdesk' or 'service-manager'
     // rather than simply have the role.  This is fine - it's only for local-dev
-    const matches = email.match(/^(helpdesk|service-manager):(\d{7})$/)
+    const matches = email.match(/^(service-manager):(\d{7})$/)
     if (matches) {
       email = matches[1]
       dfeNumber = matches[2]
@@ -38,7 +38,7 @@ module.exports = async function (req, email, password, done) {
 
     let schoolPromise, rolePromise
     if (dfeNumber) {
-      // Login as a help desk or service-manager user impersonating a school user, so they get a TEACHER role
+      // Login as a service-manager user impersonating a school user, so they get a TEACHER role
       schoolPromise = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
       rolePromise = roleDataService.sqlFindOneByTitle('TEACHER')
     } else {
@@ -49,7 +49,13 @@ module.exports = async function (req, email, password, done) {
 
     const [school, role] = await Promise.all([schoolPromise, rolePromise])
 
-    if (!user || !role || !school) {
+    if (user && user.identifier !== 'helpdesk' && !school) {
+      // Invalid user
+      await saveInvalidLogonEvent(logonEvent, 'Invalid user')
+      return done(null, false)
+    }
+
+    if (!user || !role) {
       // Invalid user
       await saveInvalidLogonEvent(logonEvent, 'Invalid user')
       return done(null, false)
@@ -68,9 +74,9 @@ module.exports = async function (req, email, password, done) {
       displayName: email,
       UserName: email,
       UserType: 'SchoolNom',
-      School: school.dfeNumber,
-      schoolId: school.id,
-      timezone: school.timezone,
+      School: school && school.dfeNumber,
+      schoolId: school && school.id,
+      timezone: school && school.timezone,
       role: role.title,
       logonAt: Date.now(),
       id: user.id
