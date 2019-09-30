@@ -303,7 +303,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
       sasExpiryDate
     )
     checkSubmitSasToken = sasTokenService.generateSasToken(
-      queueNameService.CHECK_SUBMIT,
+      queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
   }
