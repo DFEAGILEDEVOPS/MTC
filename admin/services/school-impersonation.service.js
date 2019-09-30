@@ -33,6 +33,11 @@ schoolImpersonationService.validateCreateImpersonation = async (user, dfeNumber)
   return user
 }
 
+/**
+ * Remove impersonation data from request.user object
+ * @param {object} user
+ * @returns {void}
+ */
 schoolImpersonationService.removeImpersonation = (user) => {
   const impersonationKeys = ['School', 'schoolId', 'timezone']
   if (user.School || user.schoolId || user.timezone) {
