@@ -63,7 +63,7 @@ controller.postSchoolImpersonation = async (req, res, next) => {
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.getHelpdeskHome = async (req, res, next) => {
+controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'MTC Helpdesk Homepage'
   try {
     // Fetch set of flags to determine pin generation allowance on UI
@@ -74,7 +74,7 @@ controller.getHelpdeskHome = async (req, res, next) => {
     const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
     const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
-    res.render('helpdesk/helpdesk-home', {
+    return res.render('school/school-home', {
       breadcrumbs: [ { 'name': 'School Home' } ],
       featureEligibilityData,
       hasIncompleteChecks,

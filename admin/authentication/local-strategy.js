@@ -5,13 +5,9 @@ const R = require('ramda')
 const logger = require('../services/log.service').getLogger()
 
 const userDataService = require('../services/data-access/user.data.service')
-const schoolDataService = require('../services/data-access/school.data.service')
-const roleDataService = require('../services/data-access/role.data.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
 
-module.exports = async function (req, email, password, done) {
-  let dfeNumber
-
+module.exports = async function (req, userIdentifier, password, done) {
   /**
    * Store the logon attempt
    */
@@ -24,38 +20,8 @@ module.exports = async function (req, email, password, done) {
   }
 
   try {
-    // Local helpdesk or service-manager users can logon with with `helpdesk:1234567` to impersonate a teacher for
-    // school with dfeNumber 1234567.
-    // NOTE that this is not a generic implementation: you actually need to be called 'helpdesk' or 'service-manager'
-    // rather than simply have the role.  This is fine - it's only for local-dev
-    const matches = email.match(/^(service-manager):(\d{7})$/)
-    if (matches) {
-      email = matches[1]
-      dfeNumber = matches[2]
-    }
-
-    const user = await userDataService.sqlFindOneByIdentifier(email)
-
-    let schoolPromise, rolePromise
-    if (dfeNumber) {
-      // Login as a service-manager user impersonating a school user, so they get a TEACHER role
-      schoolPromise = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-      rolePromise = roleDataService.sqlFindOneByTitle('TEACHER')
-    } else {
-      // Normal login
-      schoolPromise = schoolDataService.sqlFindOneById(R.prop('school_id', user))
-      rolePromise = roleDataService.sqlFindOneById(R.prop('role_id', user))
-    }
-
-    const [school, role] = await Promise.all([schoolPromise, rolePromise])
-
-    if (user && user.identifier !== 'helpdesk' && !school) {
-      // Invalid user
-      await saveInvalidLogonEvent(logonEvent, 'Invalid user')
-      return done(null, false)
-    }
-
-    if (!user || !role) {
+    const user = await userDataService.sqlFindUserInfoByIdentifier(userIdentifier)
+    if (!user || !user.identifier || !user.roleName) {
       // Invalid user
       await saveInvalidLogonEvent(logonEvent, 'Invalid user')
       return done(null, false)
@@ -70,14 +36,14 @@ module.exports = async function (req, email, password, done) {
     }
 
     const sessionData = {
-      EmailAddress: email,
-      displayName: email,
-      UserName: email,
+      EmailAddress: userIdentifier,
+      displayName: userIdentifier,
+      UserName: userIdentifier,
       UserType: 'SchoolNom',
-      School: school && school.dfeNumber,
-      schoolId: school && school.id,
-      timezone: school && school.timezone,
-      role: role.title,
+      School: user.dfeNumber,
+      schoolId: user.schoolId,
+      timezone: user.timezone,
+      role: user.roleName,
       logonAt: Date.now(),
       id: user.id
     }

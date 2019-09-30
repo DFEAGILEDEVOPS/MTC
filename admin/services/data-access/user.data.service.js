@@ -24,6 +24,36 @@ const userDataService = {
     const rows = await sqlService.query(sql, [paramIdentifier])
     return R.head(rows)
   },
+
+  /**
+   * Find a User information including role and school by the identifier
+   * String -> {User} || undefined
+   * @param identifier
+   * @return {Promise<object>}
+   */
+  sqlFindUserInfoByIdentifier: async (identifier) => {
+    const paramIdentifier = { name: 'identifier', type: TYPES.NVarChar, value: identifier }
+    const sql = `
+      SELECT
+        u.id,
+        u.passwordHash,
+        u.identifier,
+        r.title AS roleName,
+        u.school_id AS schoolId,
+        s.dfeNumber,
+        sce.timezone AS timezone
+      FROM mtc_admin.${table} u
+      INNER JOIN mtc_admin.[role] r
+        ON u.role_id = r.id
+      LEFT JOIN mtc_admin.school s
+        ON u.school_id = s.id
+      LEFT JOIN mtc_admin.sce
+        ON s.id = sce.school_id
+      WHERE identifier = @identifier
+    `
+    const rows = await sqlService.query(sql, [paramIdentifier])
+    return R.head(rows)
+  },
   /**
    * Insert a user record and return the userId
    * @param user object

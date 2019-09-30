@@ -89,7 +89,7 @@ describe('helpdesk controller', () => {
       expect(controller.getSchoolImpersonation).toHaveBeenCalled()
     })
   })
-  describe('getHelpdeskHome', () => {
+  describe('getSchoolLandingPage', () => {
     const reqParams = {
       method: 'GET',
       url: '/home'
@@ -103,7 +103,7 @@ describe('helpdesk controller', () => {
       spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
       const res = getRes()
       const req = getReq(reqParams)
-      await controller.getHelpdeskHome(req, res, next)
+      await controller.getSchoolLandingPage(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(schoolService.findSchoolByDfeNumber).toHaveBeenCalled()
@@ -121,7 +121,7 @@ describe('helpdesk controller', () => {
       spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
       const res = getRes()
       const req = getReq(reqParams)
-      await controller.getHelpdeskHome(req, res, next)
+      await controller.getSchoolLandingPage(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(schoolService.findSchoolByDfeNumber).not.toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()

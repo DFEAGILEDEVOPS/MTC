@@ -39,10 +39,7 @@ schoolImpersonationService.validateCreateImpersonation = async (user, dfeNumber)
  * @returns {void}
  */
 schoolImpersonationService.removeImpersonation = (user) => {
-  const impersonationKeys = ['School', 'schoolId', 'timezone']
-  if (user.School || user.schoolId || user.timezone) {
-    R.forEach(k => delete user[k], impersonationKeys)
-  }
+  R.forEach(k => delete user[k], ['School', 'schoolId', 'timezone'])
 }
 
 module.exports = schoolImpersonationService

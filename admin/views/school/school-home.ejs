@@ -1,6 +1,16 @@
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <%- partial('partials/_name_and_sign_out') %>
+        <% if (user.role === 'HELPDESK') { %>
+            <div id="sign-out">
+                <a class="govuk-link" href="/helpdesk/school-impersonation">Remove Impersonation</a>
+            </div>
+            <% if (typeof user != 'undefined') { %>
+            <div class="signed-in-as">Signed in as <%= user.displayName %></div>
+            <% } %>
+        <% } else { %>
+            <%- partial('partials/_name_and_sign_out') %>
+        <% } %>
     </div>
 </div>
 <main class="govuk-main-wrapper" id="main-content" role="main">
@@ -130,6 +140,12 @@
                         </p>
                     <% } %>
                 </li>
+                <% if (user.role === 'HELPDESK') { %>
+                    <li>
+                        <h2 class="govuk-heading-s"><a class="govuk-link" href="#">PINs history</a></h2>
+                        <p>View PINs history</p>
+                    </li>
+                <% } %>
             </ol>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
