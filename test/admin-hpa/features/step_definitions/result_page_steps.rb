@@ -35,9 +35,15 @@ And(/^we are on Result page$/) do
 end
 
 Then(/^Result page for no submitted hdf is displayed as per the design$/) do
-  expect(results_page).to have_heading
-  expect(results_page).to have_no_hdf_message
-  expect(results_page).to have_hdf_button
+  today_date = Date.today
+  if today_date.saturday? || today_date.sunday?
+    expect(results_page).to have_heading
+  else
+    expect(results_page).to have_heading
+    expect(results_page).to have_no_hdf_message
+    expect(results_page).to have_hdf_button
+  end
+
 end
 
 Then(/^Result page is displayed as per the design$/) do
