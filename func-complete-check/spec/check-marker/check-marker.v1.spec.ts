@@ -5,7 +5,7 @@ import { ValidatedCheck } from '../../typings/message-schemas'
 import { IAsyncTableService } from '../../lib/storage-helper'
 import checkSchema from '../../messages/complete-check.v1.json'
 import { ICheckFormService } from '../../lib/check-form.service'
-import { S } from 'ts-toolbelt'
+import * as R from 'ramda'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -226,7 +226,7 @@ describe('check-marker/v1', () => {
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
-  test('marking updates entity with mark, maxMarks and timestamp: all correct', async () => {
+  test('marking updates entity with mark, maxMarks and timestamp: both answers correct', async () => {
     const answers = [
       {
         factor1: 2,
@@ -289,7 +289,7 @@ describe('check-marker/v1', () => {
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
-  test('marking updates entity with mark, maxMarks and timestamp: one wrong', async () => {
+  test('marking updates entity with mark, maxMarks and timestamp: one answer wrong', async () => {
     const answers = [
       {
         factor1: 2,
@@ -352,7 +352,7 @@ describe('check-marker/v1', () => {
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
-  test('marking updates entity with mark, maxMarks and timestamp: both wrong', async () => {
+  test('marking updates entity with mark, maxMarks and timestamp: both answers wrong', async () => {
     const answers = [
       {
         factor1: 2,
@@ -413,5 +413,58 @@ describe('check-marker/v1', () => {
     expect(actualEntity.maxMarks).toBe(2)
     expect(actualEntity.markError).toBeUndefined()
     expect(actualEntity.markedAt).toBeTruthy()
+  })
+
+  test('check notification is dispatched when marking successful', async () => {
+    const answers = [
+      {
+        factor1: 2,
+        factor2: 5,
+        answer: '10',
+        sequenceNumber: 1,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z'
+      }
+    ]
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        }])
+    })
+
+    await sut.mark(functionBindings)
+    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
+    expect(notificationQueueMessage.checkCode).toBeDefined()
+    expect(notificationQueueMessage.type).toBe('marked')
+  })
+
+  test('check notification is dispatched when marking unsuccessful', async () => {
+
   })
 })

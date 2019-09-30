@@ -10,7 +10,7 @@ export interface ICheckMarkerFunctionBindings {
   checkNotificationQueue: Array<any>
 }
 
-declare class Answer {
+declare interface Answer {
   factor1: number
   factor2: number
   answer: string
@@ -19,18 +19,18 @@ declare class Answer {
   clientTimestamp: string
 }
 
-declare class CheckFormQuestion {
+declare interface CheckFormQuestion {
   f1: number
   f2: number
 }
 
-declare class MarkingData {
+declare interface MarkingData {
   answers: Array<Answer>
   formQuestions: Array<CheckFormQuestion>
   results: any
 }
 
-declare class Mark {
+declare interface Mark {
   mark: number
   maxMarks: number
   processedAt: Date
@@ -64,7 +64,10 @@ export class CheckMarkerV1 {
     }
     const results = this.markCheck(markingData)
     await this.persistMark(results, validatedCheck)
-    // TODO put notification on queue
+    functionBindings.checkNotificationQueue.push({
+      checkCode: validatedCheck.RowKey,
+      type: 'marked'
+    })
   }
 
   private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck): Promise<MarkingData | void> {
