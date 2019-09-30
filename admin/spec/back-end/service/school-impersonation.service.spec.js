@@ -9,7 +9,7 @@ const schoolImpersonationDfeNumberValidator = require('../../../lib/validator/sc
 const ValidationError = require('../../../lib/validation-error')
 
 describe('schoolImpersonationService', () => {
-  describe('validateCreateImpersonation', () => {
+  describe('validateImpersonationForm', () => {
     it('returns the user session object if no validation occurred', async () => {
       const validationError = new ValidationError()
       spyOn(schoolImpersonationEmptyValueValidator, 'validate').and.returnValue(validationError)
@@ -17,7 +17,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationDfeNumberValidator, 'validate').and.returnValue(validationError)
       const user = {}
       const dfeNumber = '1230000'
-      const result = await schoolImpersonationService.validateCreateImpersonation(user, dfeNumber)
+      const result = await schoolImpersonationService.validateImpersonationForm(user, dfeNumber)
       expect(result).toEqual({ School: '1230000', schoolId: 1, timezone: '' })
     })
     it('returns a validation error if schoolImpersonationEmptyValueValidator returned a validation error', async () => {
@@ -28,7 +28,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationDfeNumberValidator, 'validate').and.returnValue(validationError)
       const user = {}
       const dfeNumber = undefined
-      const result = await schoolImpersonationService.validateCreateImpersonation(user, dfeNumber)
+      const result = await schoolImpersonationService.validateImpersonationForm(user, dfeNumber)
       expect(result).toEqual(validationError)
       expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
       expect(schoolImpersonationDfeNumberValidator.validate).not.toHaveBeenCalled()
@@ -42,7 +42,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationDfeNumberValidator, 'validate').and.returnValue(validationError2)
       const user = {}
       const dfeNumber = 'dfeNumber'
-      const result = await schoolImpersonationService.validateCreateImpersonation(user, dfeNumber)
+      const result = await schoolImpersonationService.validateImpersonationForm(user, dfeNumber)
       expect(result).toEqual(validationError2)
       expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
       expect(schoolImpersonationDfeNumberValidator.validate).toHaveBeenCalled()

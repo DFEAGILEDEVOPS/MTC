@@ -45,7 +45,7 @@ controller.getSchoolImpersonation = async (req, res, next, error = null) => {
 controller.postSchoolImpersonation = async (req, res, next) => {
   const { dfeNumber } = req.body
   try {
-    const outcome = await schoolImpersonationService.validateCreateImpersonation(req.user, dfeNumber)
+    const outcome = await schoolImpersonationService.validateImpersonationForm(req.user, dfeNumber)
     if (outcome.hasError && outcome.hasError()) {
       return controller.getSchoolImpersonation(req, res, next, outcome)
     }

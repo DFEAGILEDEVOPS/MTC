@@ -13,7 +13,7 @@ const schoolImpersonationService = {}
  * @param {string} dfeNumber
  * @returns {Object}
  */
-schoolImpersonationService.validateCreateImpersonation = async (user, dfeNumber) => {
+schoolImpersonationService.validateImpersonationForm = async (user, dfeNumber) => {
   let validationError
   validationError = schoolImpersonationEmptyValueValidator.validate(dfeNumber)
   if (validationError.hasError()) {

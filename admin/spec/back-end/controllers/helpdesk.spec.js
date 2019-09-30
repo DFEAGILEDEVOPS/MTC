@@ -61,18 +61,18 @@ describe('helpdesk controller', () => {
       url: '/school-impersonation',
       body: { dfeNumber: '1230000' }
     }
-    it('should call schoolImpersonationService.validateCreateImpersonation method to validate dfeNumber given and create an impersonation', async () => {
+    it('should call schoolImpersonationService.validateImpersonationForm method to validate dfeNumber given and create an impersonation', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(schoolImpersonationService, 'validateCreateImpersonation')
+      spyOn(schoolImpersonationService, 'validateImpersonationForm')
       await controller.postSchoolImpersonation(req, res, next)
-      expect(schoolImpersonationService.validateCreateImpersonation).toHaveBeenCalled()
+      expect(schoolImpersonationService.validateImpersonationForm).toHaveBeenCalled()
     })
     it('should render the helpdesk home if no validation error occurred', async () => {
       const req = getReq(reqParams)
       const res = getRes()
       spyOn(res, 'redirect')
-      spyOn(schoolImpersonationService, 'validateCreateImpersonation').and.returnValue({ School: '1230000' })
+      spyOn(schoolImpersonationService, 'validateImpersonationForm').and.returnValue({ School: '1230000' })
       await controller.postSchoolImpersonation(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
     })
@@ -81,7 +81,7 @@ describe('helpdesk controller', () => {
       const res = getRes()
       const validationError = new ValidationError()
       validationError.addError('dfeNumber', 'error')
-      spyOn(schoolImpersonationService, 'validateCreateImpersonation').and.returnValue(validationError)
+      spyOn(schoolImpersonationService, 'validateImpersonationForm').and.returnValue(validationError)
       spyOn(controller, 'getSchoolImpersonation')
       spyOn(res, 'render')
       await controller.postSchoolImpersonation(req, res, next)
