@@ -65,22 +65,28 @@ describe('CheckCompleteService', () => {
     spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
     spyOn(storageService, 'setItem');
+    const expectedSchoolUUID = 'school_uuid';
     spyOn(storageService, 'getAllItems').and.returnValue({
       pupil: {
         checkCode: 'checkCode'
       },
       school: {
-        uuid: 'school_uuid'
+        uuid: expectedSchoolUUID
       }
     });
-
-    spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.resolve());
+    // spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.resolve());
+    let capturedMessage;
+    spyOn(azureQueueService, 'addMessage').and.callFake((queueName, url, token, message, retryConfig) => {
+      capturedMessage = message;
+    });
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(capturedMessage).toBeDefined();
+    expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setItem).toHaveBeenCalledTimes(2);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
