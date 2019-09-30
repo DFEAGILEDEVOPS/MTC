@@ -32,7 +32,7 @@
             <form action="/helpdesk/school-impersonation" id="schoolImpersonationForm" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= err.isError('dfeNumber') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Dfe Number</label>
+                    <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">DfE Number</label>
                     <% if (err.isError('dfeNumber')) { %>
                         <span class="govuk-error-message"><%= err.get('dfeNumber') %></span>
                     <% } %>
