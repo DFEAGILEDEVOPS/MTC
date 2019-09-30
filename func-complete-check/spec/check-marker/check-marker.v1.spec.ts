@@ -465,6 +465,33 @@ describe('check-marker/v1', () => {
   })
 
   test('check notification is dispatched when marking unsuccessful', async () => {
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify({ foo: 1 })
+    }
 
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    await sut.mark(functionBindings)
+    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
+    expect(notificationQueueMessage.checkCode).toBeDefined()
+    expect(notificationQueueMessage.type).toBe('unmarkable')
   })
 })
