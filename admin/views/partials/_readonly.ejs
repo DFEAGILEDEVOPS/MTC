@@ -1,9 +1,9 @@
 <% if (availabilityData.hdfSubmitted) { %>
-    <div class="govuk-info-message govuk-!-margin-bottom-7">
+    <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
         Currently unavailable. This section is now read only.
     </div>
 <% } else if(availabilityData.checkWindowClosed) { %>
-    <div class="govuk-info-message govuk-!-margin-bottom-7">
+    <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
         Currently unavailable as the Multiplication tables check window <% if(availabilityData.checkWindowYear){ %>for <%= availabilityData.checkWindowYear %><% } %> has closed.
     </div>
 <% } %>

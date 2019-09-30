@@ -27,7 +27,6 @@ const getTestDeveloperHomePage = async (req, res, next) => {
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {
-      layout: 'gds-layout',
       breadcrumbs: '',
       isNewCheckFormFeatureToggleEnabled
     })
@@ -53,7 +52,6 @@ const uploadAndViewFormsPage = async (req, res, next) => {
     return next(error)
   }
   return res.render('test-developer/upload-and-view-forms', {
-    layout: 'gds-layout',
     forms: formData,
     breadcrumbs: req.breadcrumbs()
   })
@@ -92,7 +90,6 @@ const uploadCheckForm = async (req, res, next) => {
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/upload-new-form', {
-      layout: 'gds-layout',
       error,
       breadcrumbs: req.breadcrumbs()
     })
@@ -130,7 +127,6 @@ const saveCheckForm = async (req, res, next) => {
   // * file size exceeded?
   if (!uploadFile) {
     return res.render('test-developer/upload-new-form', {
-      layout: 'gds-layout',
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
     })
@@ -144,7 +140,6 @@ const saveCheckForm = async (req, res, next) => {
   // If a non-csv file was uploaded, fail with error
   if (!R.all((file) => path.extname(file.filename.toLowerCase()) === '.csv', uploadFile)) {
     return res.render('test-developer/upload-new-form', {
-      layout: 'gds-layout',
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
     })
@@ -176,7 +171,6 @@ const saveCheckForm = async (req, res, next) => {
         if (err) logger.error(err)
       })
       return res.render('test-developer/upload-new-form', {
-        layout: 'gds-layout',
         error: new Error(`There is a problem with the form content - ${uploadFile[i].filename}`),
         breadcrumbs: req.breadcrumbs()
       })
@@ -263,7 +257,6 @@ const displayCheckForm = async (req, res) => {
   res.locals.pageTitle = formData && formData.name
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/view-check-form', {
-    layout: 'gds-layout',
     form: formData,
     num: 1,
     breadcrumbs: req.breadcrumbs()
@@ -296,7 +289,6 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
 
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-check-forms-to-windows', {
-    layout: 'gds-layout',
     checkWindowsData: checkWindowsData,
     totalFormsAvailable,
     breadcrumbs: req.breadcrumbs()
@@ -336,7 +328,6 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-forms', {
-    layout: 'gds-layout',
     checkWindowId: checkWindow.id,
     checkWindowName: checkWindow.name,
     checkFormsList,
@@ -420,7 +411,6 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
     req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/unassign-check-forms', {
-      layout: 'gds-layout',
       checkWindowId: checkWindow.id,
       checkWindowName: checkWindow.name,
       checkFormsList,
@@ -488,7 +478,6 @@ const getDownloadPupilCheckData = async (req, res, next) => {
   }
 
   res.render('test-developer/download-pupil-check-data', {
-    layout: 'gds-layout',
     breadcrumbs: req.breadcrumbs(),
     psychometricianReport
   })

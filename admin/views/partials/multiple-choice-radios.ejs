@@ -1,6 +1,0 @@
-<% for (let i = 0; i < elements.length; i++ ) { %>
-<div class="multiple-choice">
-    <input id="radio-<%= i %>" type="radio" name="<%= name %>" value="<%= elements[i] %>" <% if (typeof selected !== 'undefined'  && selected === elements[i]) { %> checked="checked" <% } %> >
-    <label for="radio-<%= i %>"> <%= elements[i] %> </label>
-</div>
-<% } %>

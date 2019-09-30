@@ -9,7 +9,6 @@ const controller = {
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('test-developer/view-pupil-payload-form', {
-        layout: 'gds-layout',
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
