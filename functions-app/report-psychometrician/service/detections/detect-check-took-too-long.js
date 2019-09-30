@@ -22,7 +22,7 @@ const checkTookTooLong = function (data) {
     (config.questionReader ? numberOfQuestions * 2.5 : 0)
 
   const checkStartedDate = getCheckStartedDate(
-    R.prop('checkStartedAt', data),
+   null,  // always get the date from the audit log
     R.prop('checkPayload', data)
   )
   const checkCompleteDate = getCheckCompleteDate(R.prop('checkPayload', data))
