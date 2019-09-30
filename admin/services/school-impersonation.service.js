@@ -2,8 +2,7 @@
 const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
-const schoolImpersonationEmptyValueValidator = require('../lib/validator/school-impersonation/school-impersonation-empty-value-validator')
-const schoolImpersonationDfeNumberValidator = require('../lib/validator/school-impersonation/school-impersonation-dfe-number-validator')
+const schoolImpersonationDfeNumberValidator = require('../lib/validator/school-impersonation-dfe-number-validator')
 
 const schoolImpersonationService = {}
 
@@ -15,7 +14,7 @@ const schoolImpersonationService = {}
  */
 schoolImpersonationService.validateImpersonationForm = async (user, dfeNumber) => {
   let validationError
-  validationError = schoolImpersonationEmptyValueValidator.validate(dfeNumber)
+  validationError = schoolImpersonationDfeNumberValidator.isDfeNumberEmpty(dfeNumber)
   if (validationError.hasError()) {
     return validationError
   }
@@ -23,7 +22,7 @@ schoolImpersonationService.validateImpersonationForm = async (user, dfeNumber) =
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   } catch (error) {}
-  validationError = schoolImpersonationDfeNumberValidator.validate(school)
+  validationError = schoolImpersonationDfeNumberValidator.isDfeNumberValid(school)
   if (validationError.hasError()) {
     return validationError
   }
