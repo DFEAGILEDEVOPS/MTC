@@ -12,7 +12,7 @@ export interface SubmittedCheckV1 {
 }
 
 export interface SubmittedCheckMessageV3 {
-  version: string
+  version: number
   checkCode: string
   schoolUUID: string
   archive: string
@@ -21,13 +21,13 @@ export interface SubmittedCheckMessageV3 {
 export interface ValidateCheckMessageV1 {
   checkCode: string
   schoolUUID: string
-  version: string
+  version: number
 }
 
 export interface MarkCheckMessageV1 {
   checkCode: string
   schoolUUID: string
-  version: string
+  version: number
 }
 
 export interface ReceivedCheck {

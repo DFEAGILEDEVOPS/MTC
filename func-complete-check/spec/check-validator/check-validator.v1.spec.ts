@@ -30,7 +30,7 @@ const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
 let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   schoolUUID: uuid.v4(),
   checkCode: uuid.v4(),
-  version: '1'
+  version: 1
 }
 
 let sut: CheckValidator.CheckValidatorV1
@@ -48,7 +48,7 @@ describe('check-validator/v1', () => {
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
       checkCode: 'xyz',
-      version: '1'
+      version: 1
     }
     mockCheck = R.clone(checkSchema)
   })
@@ -214,7 +214,7 @@ describe('check-validator/v1', () => {
     const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
     expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)
-    expect(checkMarkingMessage.version).toBe('1')
+    expect(checkMarkingMessage.version).toBe(1)
 
   })
 })

@@ -51,7 +51,7 @@ export class CheckValidatorV1 {
     const markingMessage: MarkCheckMessageV1 = {
       schoolUUID: validateCheckMessage.schoolUUID,
       checkCode: validateCheckMessage.checkCode,
-      version: '1'
+      version: 1
     }
 
     functionBindings.checkMarkingQueue = [markingMessage]

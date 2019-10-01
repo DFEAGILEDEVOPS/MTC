@@ -9,11 +9,11 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   const version = markCheckMessage.version
   context.log.info(`${functionName}: version:${version} message received for checkCode ${markCheckMessage.checkCode}`)
   try {
-    if (version !== '1') {
+    if (version !== 1) {
       throw new Error(`Message schema version ${version} unsupported`)
     }
     const marker = new V1.CheckMarkerV1()
-    await marker.mark(context.bindings as V1.ICheckMarkerFunctionBindings)
+    await marker.mark(context.bindings as V1.ICheckMarkerFunctionBindings, context.log)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
