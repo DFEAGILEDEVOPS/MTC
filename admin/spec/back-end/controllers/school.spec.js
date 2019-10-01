@@ -6,6 +6,7 @@ const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
+const helpdeskService = require('../../../services/helpdesk.service')
 const pupilRegisterService = require('../../../services/pupil-register.service')
 const schoolController = require('../../../controllers/school')
 const schoolService = require('../../../services/school.service')
@@ -47,6 +48,7 @@ describe('school controller:', () => {
 
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
+        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
@@ -66,6 +68,7 @@ describe('school controller:', () => {
         done()
       })
       it('should throw an error if getActiveCheckWindow method throws an error', async () => {
+        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue((Promise.reject(new Error('error'))))
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
@@ -80,6 +83,14 @@ describe('school controller:', () => {
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         expect(pupilRegisterService.hasIncompleteChecks).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
+      })
+      it('should redirect to school impersonation form if a helpdesk user with no impersonation lands attempts to access school home page', async () => {
+        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(true)
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'redirect')
+        await schoolController.getSchoolLandingPage(req, res, next)
+        expect(res.redirect).toHaveBeenCalled()
       })
     })
   })

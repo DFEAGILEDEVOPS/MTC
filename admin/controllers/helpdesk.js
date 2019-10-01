@@ -1,14 +1,6 @@
 'use strict'
 
-const moment = require('moment-timezone')
-
-const checkWindowV2Service = require('../services/check-window-v2.service')
-const config = require('../config')
-const pupilRegisterService = require('../services/pupil-register.service')
-const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const schoolImpersonationService = require('../services/school-impersonation.service')
-const schoolService = require('../services/school.service')
-const resultPageAvailabilityService = require('../services/results-page-availability.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {}
@@ -23,7 +15,6 @@ const controller = {}
  */
 controller.getSchoolImpersonation = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'MTC Helpdesk School Impersonation'
-  schoolImpersonationService.removeImpersonation(req.user)
   try {
     res.render('helpdesk/school-impersonation', {
       formData: req.body,
@@ -36,20 +27,20 @@ controller.getSchoolImpersonation = async (req, res, next, error = null) => {
 }
 
 /**
- * Submit helpdesk school impersonation
+ * Add helpdesk school impersonation
  * @param {object} req
  * @param {object} res
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.postSchoolImpersonation = async (req, res, next) => {
+controller.postAddSchoolImpersonation = async (req, res, next) => {
   const { dfeNumber } = req.body
   try {
-    const outcome = await schoolImpersonationService.validateImpersonationForm(req.user, dfeNumber)
-    if (outcome.hasError && outcome.hasError()) {
-      return controller.getSchoolImpersonation(req, res, next, outcome)
+    const validationError = await schoolImpersonationService.processImpersonationForm(req.user, dfeNumber)
+    if (validationError && validationError.hasError && validationError.hasError()) {
+      return controller.getSchoolImpersonation(req, res, next, validationError)
     }
-    res.redirect('home')
+    res.redirect('/school/school-home')
   } catch (error) {
     next(error)
   }
@@ -57,33 +48,20 @@ controller.postSchoolImpersonation = async (req, res, next) => {
 }
 
 /**
- * Renders the helpdesk (role) landing page
+ * Remove helpdesk school impersonation
  * @param {object} req
  * @param {object} res
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.getSchoolLandingPage = async (req, res, next) => {
-  res.locals.pageTitle = 'MTC Helpdesk Homepage'
+controller.postRemoveSchoolImpersonation = async (req, res, next) => {
   try {
-    // Fetch set of flags to determine pin generation allowance on UI
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)
-    const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
-    const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
-    const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
-    const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
-    return res.render('school/school-home', {
-      breadcrumbs: [ { 'name': 'School Home' } ],
-      featureEligibilityData,
-      hasIncompleteChecks,
-      isResultsFeatureAccessible,
-      schoolName
-    })
+    schoolImpersonationService.removeImpersonation(req.user)
+    res.redirect('/helpdesk/school-impersonation')
   } catch (error) {
-    return next(error)
+    next(error)
   }
+  return next()
 }
 
 module.exports = controller

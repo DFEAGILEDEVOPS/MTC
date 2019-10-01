@@ -10,7 +10,7 @@ const isDfeNumberEmpty = (dfeNumber) => {
   return validationError
 }
 
-const isDfeNumberValid = (school) => {
+const isSchoolRecordValid = (school) => {
   let validationError = new ValidationError()
   if (!school || !school.id) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectInput)
@@ -19,4 +19,4 @@ const isDfeNumberValid = (school) => {
   return validationError
 }
 
-module.exports = { isDfeNumberEmpty, isDfeNumberValid }
+module.exports = { isDfeNumberEmpty, isSchoolRecordValid }

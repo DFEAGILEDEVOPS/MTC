@@ -1,10 +1,13 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <% if (user.role === 'HELPDESK') { %>
-            <div id="sign-out">
-                <a class="govuk-link" href="/helpdesk/school-impersonation">Remove Impersonation</a>
-            </div>
+        <% if (user.role === roles.helpdesk) { %>
+            <form method="post" action="/helpdesk/remove-school-impersonation">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div id="sign-out">
+                    <button class="govuk-button-as-link govuk-!-font-size-16 govuk-body govuk-!-margin-bottom-0" type="submit">Remove impersonation</button>
+                </div>
+            </form>
             <% if (typeof user != 'undefined') { %>
             <div class="signed-in-as">Signed in as <%= user.displayName %></div>
             <% } %>
@@ -140,7 +143,7 @@
                         </p>
                     <% } %>
                 </li>
-                <% if (user.role === 'HELPDESK') { %>
+                <% if (user.role === roles.helpdesk) { %>
                     <li>
                         <h2 class="govuk-heading-s"><a class="govuk-link" href="#">PINs history</a></h2>
                         <p>View PINs history</p>

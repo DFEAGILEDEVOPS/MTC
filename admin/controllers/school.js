@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
+const helpdeskService = require('../services/helpdesk.service')
 const pupilRegisterService = require('../services/pupil-register.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const schoolService = require('../services/school.service')
@@ -20,6 +21,10 @@ const controller = {}
 controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   try {
+    const hasHelpdeskNotReceivedImpersonation = helpdeskService.hasHelpdeskNotReceivedImpersonation(req.user)
+    if (hasHelpdeskNotReceivedImpersonation) {
+      return res.redirect('/helpdesk/school-impersonation')
+    }
     // Fetch set of flags to determine pin generation allowance on UI
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const schoolName = await schoolService.findSchoolByDfeNumber(req.user.School)

@@ -2,7 +2,7 @@
 const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
-const schoolImpersonationDfeNumberValidator = require('../lib/validator/school-impersonation-dfe-number-validator')
+const schoolImpersonationValidator = require('../lib/validator/school-impersonation-validator')
 
 const schoolImpersonationService = {}
 
@@ -12,24 +12,29 @@ const schoolImpersonationService = {}
  * @param {string} dfeNumber
  * @returns {Object}
  */
-schoolImpersonationService.validateImpersonationForm = async (user, dfeNumber) => {
+schoolImpersonationService.processImpersonationForm = async (user, dfeNumber) => {
   let validationError
-  validationError = schoolImpersonationDfeNumberValidator.isDfeNumberEmpty(dfeNumber)
+  validationError = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
+  // returns a validation error if dfeNumber provided is empty
   if (validationError.hasError()) {
     return validationError
   }
   let school
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-  } catch (error) {}
-  validationError = schoolImpersonationDfeNumberValidator.isDfeNumberValid(school)
+  } catch (ignore) {}
+  // returns a validation error if the school record is not valid
+  validationError = schoolImpersonationValidator.isSchoolRecordValid(school)
   if (validationError.hasError()) {
     return validationError
   }
+  return schoolImpersonationService.impersonateSchool(user, school)
+}
+
+schoolImpersonationService.impersonateSchool = async (user, school) => {
   user.School = school.dfeNumber
   user.schoolId = school.id
   user.timezone = school.timezone
-  return user
 }
 
 /**

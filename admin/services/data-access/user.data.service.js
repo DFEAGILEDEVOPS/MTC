@@ -42,7 +42,7 @@ const userDataService = {
         u.school_id AS schoolId,
         s.dfeNumber,
         sce.timezone
-      FROM mtc_admin.${table} u
+      FROM mtc_admin.[user] u
       INNER JOIN mtc_admin.[role] r
         ON u.role_id = r.id
       LEFT JOIN mtc_admin.school s
