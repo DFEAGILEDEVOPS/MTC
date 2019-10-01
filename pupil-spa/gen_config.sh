@@ -21,6 +21,8 @@ connectivityCheckEnabled=${CONNECTIVITY_CHECK_ENABLED:-"false"}
 supportNumber=${SUPPORT_NUMBER:-"0300 303 3013"}
 gaCode=${GA_CODE:-"null"}
 websiteOffline=${WEBSITE_OFFLINE:-"false"}
+submitsToCheckReceiver=${SUBMITS_TO_CHECK_RECEIVER:-"false"}
+
 if [ $gaCode == "null" ]
 then
     gaCodeParsed="null"
@@ -57,6 +59,7 @@ cat <<EOF > config.json
   "googleAnalyticsTrackingCode": $gaCodeParsed,
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed,
   "websiteOffline": $websiteOffline,
-  "connectivityCheckEnabled": $connectivityCheckEnabled
+  "connectivityCheckEnabled": $connectivityCheckEnabled,
+  "submitsToCheckReceiver": $submitsToCheckReceiver
 }
 EOF
