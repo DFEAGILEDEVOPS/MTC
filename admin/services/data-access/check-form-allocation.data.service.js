@@ -8,7 +8,7 @@ const table = '[checkFormAllocation]'
 const checkFormAllocationDataService = {}
 
 checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
-  const select = `SELECT 
+  const select = `SELECT
       chk.id as check_id,
       chk.checkCode as check_checkCode,
       chk.isLiveCheck as check_isLiveCheck,
@@ -22,10 +22,11 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       checkForm.id as checkForm_id,
       checkForm.formData as checkForm_formData,
       school.id as school_id,
+      school.urlSlug as school_uuid,
       school.name as school_name,
       school.pin as school_pin,
       ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
-    FROM 
+    FROM
       ${sqlService.adminSchema}.[check] chk
       JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
       JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (chk.checkForm_id = checkForm.id)
