@@ -47,8 +47,6 @@ export class CheckValidatorV1 {
     }
 
     await this.setReceivedCheckAsValid(receivedCheck, checkData)
-    logger.info(`receivedCheck successfully validated`)
-
     // dispatch message to indicate ready for marking
     const markingMessage: MarkCheckMessageV1 = {
       schoolUUID: validateCheckMessage.schoolUUID,

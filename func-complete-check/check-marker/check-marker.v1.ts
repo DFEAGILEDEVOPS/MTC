@@ -61,7 +61,7 @@ export class CheckMarkerV1 {
     const markingData = await this.validateData(functionBindings, validatedCheck)
     if (markingData === undefined) {
       functionBindings.checkNotificationQueue.push({
-        checkCode: 'checkCode',
+        checkCode: validatedCheck.RowKey,
         type: 'unmarkable'
       })
       return

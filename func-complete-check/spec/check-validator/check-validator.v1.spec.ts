@@ -159,7 +159,6 @@ describe('check-validator/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBeUndefined()
     expect(actualEntity.isValid).toBe(true)
-    expect(loggerMock.info).toHaveBeenCalled()
   })
 
   test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
@@ -187,7 +186,6 @@ describe('check-validator/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBeUndefined()
     expect(actualEntity.answers).toEqual(JSON.stringify(checkSchema.answers))
-    expect(loggerMock.info).toHaveBeenCalled()
   })
 
   test('check marking message is created and added to output binding array', async () => {
