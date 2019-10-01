@@ -5,7 +5,7 @@
             <div id="sign-out">
                 <a class="govuk-link" href="/helpdesk/school-impersonation">Remove Impersonation</a>
             </div>
-            <% if (typeof user != 'undefined') { %>
+            <% if (typeof user !== 'undefined') { %>
             <div class="signed-in-as">Signed in as <%= user.displayName %></div>
             <% } %>
         <% } else { %>
