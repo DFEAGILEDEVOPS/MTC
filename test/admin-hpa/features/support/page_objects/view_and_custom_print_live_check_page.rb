@@ -9,7 +9,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
   element :opened_filter, '.filter-label', text: 'Filter by groups'
   sections :groups, '#filterByGroup li' do
     element :checkbox, '.pupils-not-taking-the-check'
-    element :name, 'label[class="govuk-!-font-size-16"]'
+    element :name, 'label[class*="font-size-16"]'
     element :count, '.group-count'
   end
 
