@@ -6,6 +6,7 @@ import { IAsyncTableService } from '../../lib/storage-helper'
 import checkSchema from '../../messages/complete-check.v1.json'
 import { ICheckFormService } from '../../lib/check-form.service'
 import * as R from 'ramda'
+import { ILogger } from '../../lib/ILogger'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -19,15 +20,24 @@ const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
   init: jest.fn()
 }))
 
+const LoggerMock = jest.fn<ILogger, any>(() => ({
+  error: jest.fn(),
+  info: jest.fn(),
+  verbose: jest.fn(),
+  warn: jest.fn()
+}))
+
 let sut: Subject.CheckMarkerV1
 let tableServiceMock: IAsyncTableService
 let sqlServiceMock: ICheckFormService
+let loggerMock: ILogger
 
 describe('check-marker/v1', () => {
 
   beforeEach(() => {
     tableServiceMock = new TableServiceMock()
     sqlServiceMock = new SqlServiceMock()
+    loggerMock = new LoggerMock()
     sut = new Subject.CheckMarkerV1(tableServiceMock, sqlServiceMock)
   })
 
@@ -41,7 +51,7 @@ describe('check-marker/v1', () => {
         receivedCheckTable: [],
         checkNotificationQueue: []
       }
-      await sut.mark(functionBindings)
+      await sut.mark(functionBindings, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
       expect(error.message).toBe('received check reference is empty')
@@ -73,7 +83,7 @@ describe('check-marker/v1', () => {
       actualEntity = entity
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('answers property not populated')
@@ -104,7 +114,7 @@ describe('check-marker/v1', () => {
       actualEntity = entity
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('answers data is not an array')
@@ -139,7 +149,7 @@ describe('check-marker/v1', () => {
       return
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('associated checkForm could not be found by checkCode')
@@ -174,10 +184,46 @@ describe('check-marker/v1', () => {
       return 'not JSON'
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('associated checkForm data is not valid JSON')
+    expect(actualEntity.markedAt).toBeTruthy()
+  })
+
+  test('error is recorded against entity when checkForm lookup throws error', async () => {
+    const validatedCheckEntity: ValidatedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(checkSchema.answers)
+    }
+
+    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: []
+    }
+
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+
+    const expectedErrorMessage = 'sql error'
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      throw new Error(expectedErrorMessage)
+    })
+
+    await sut.mark(functionBindings, loggerMock)
+    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.markError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -209,7 +255,7 @@ describe('check-marker/v1', () => {
       return JSON.stringify([])
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('check form data is either empty or not an array')
@@ -219,7 +265,7 @@ describe('check-marker/v1', () => {
       return JSON.stringify({ not: 'array' })
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.markError).toBe('check form data is either empty or not an array')
@@ -280,7 +326,7 @@ describe('check-marker/v1', () => {
         }])
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(2)
@@ -343,7 +389,7 @@ describe('check-marker/v1', () => {
         }])
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(1)
@@ -406,7 +452,7 @@ describe('check-marker/v1', () => {
         }])
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(0)
@@ -457,7 +503,7 @@ describe('check-marker/v1', () => {
         }])
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(functionBindings.checkNotificationQueue.length).toBe(1)
     const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBeDefined()
@@ -465,9 +511,10 @@ describe('check-marker/v1', () => {
   })
 
   test('check notification is dispatched when marking unsuccessful', async () => {
+    const checkCode = uuid.v4()
     const validatedCheckEntity: ValidatedCheck = {
       PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      RowKey: checkCode,
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -488,10 +535,10 @@ describe('check-marker/v1', () => {
       actualEntity = entity
     })
 
-    await sut.mark(functionBindings)
+    await sut.mark(functionBindings, loggerMock)
     expect(functionBindings.checkNotificationQueue.length).toBe(1)
     const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
-    expect(notificationQueueMessage.checkCode).toBeDefined()
+    expect(notificationQueueMessage.checkCode).toBe(checkCode)
     expect(notificationQueueMessage.type).toBe('unmarkable')
   })
 })

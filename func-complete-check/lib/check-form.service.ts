@@ -34,7 +34,9 @@ export class CheckFormService implements ICheckFormService {
       this.addParamsToRequestSimple(params, request)
       const result: mssql.IResult<any> = await request.query(sql)
       if (!R.isNil(result.recordset)) {
-        return result.recordset[0].formData
+        if (!R.isEmpty(result.recordset) && !R.isNil(result.recordset[0].formData)) {
+          return result.recordset[0].formData
+        }
       }
     } catch (err) {
       console.error(err.message)

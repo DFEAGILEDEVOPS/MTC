@@ -4,6 +4,7 @@ import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
 import { ValidatedCheck } from '../typings/message-schemas'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from '../lib/check-form.service'
+import { ILogger } from '../lib/ILogger'
 
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
@@ -55,10 +56,11 @@ export class CheckMarkerV1 {
     }
   }
 
-  async mark (functionBindings: ICheckMarkerFunctionBindings): Promise<void> {
+  async mark (functionBindings: ICheckMarkerFunctionBindings, logger: ILogger): Promise<void> {
 
     const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
-    const markingData = await this.validateData(functionBindings, validatedCheck)
+    const markingData = await this.validateData(functionBindings, validatedCheck, logger)
+    functionBindings.checkNotificationQueue = []
     if (markingData === undefined) {
       functionBindings.checkNotificationQueue.push({
         checkCode: validatedCheck.RowKey,
@@ -74,7 +76,7 @@ export class CheckMarkerV1 {
     })
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck): Promise<MarkingData | void> {
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck, logger: ILogger): Promise<MarkingData | void> {
     if (RA.isEmptyString(validatedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
@@ -94,7 +96,15 @@ export class CheckMarkerV1 {
     }
 
     const checkCode = validatedCheck.RowKey
-    const rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
+    let rawCheckForm
+
+    try {
+      rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
+    } catch (error) {
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
+      logger.error(error)
+      return
+    }
 
     if (R.isNil(rawCheckForm)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
