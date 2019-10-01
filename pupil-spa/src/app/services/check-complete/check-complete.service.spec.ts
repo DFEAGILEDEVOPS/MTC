@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
-import { AppConfigService, loadConfigMockService } from '../config/config.service';
+import { AppConfigService, loadConfigMockService, IAppConfig } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
@@ -56,9 +56,11 @@ describe('CheckCompleteService', () => {
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
   });
+
   it('should be created', () => {
     expect(checkCompleteService).toBeTruthy();
   });
+
   it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
@@ -74,7 +76,6 @@ describe('CheckCompleteService', () => {
         uuid: expectedSchoolUUID
       }
     });
-    // spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.resolve());
     let capturedMessage;
     spyOn(azureQueueService, 'addMessage').and.callFake((queueName, url, token, message, retryConfig) => {
       capturedMessage = message;
@@ -91,6 +92,25 @@ describe('CheckCompleteService', () => {
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
   });
+
+  it('uses checkComplete token by default', async () => {
+    spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+    spyOn(appUsageService , 'store');
+    spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+    spyOn(storageService, 'setItem');
+    const expectedSchoolUUID = 'school_uuid';
+    spyOn(storageService, 'getAllItems').and.returnValue({
+      pupil: {
+        checkCode: 'checkCode'
+      },
+      school: {
+        uuid: expectedSchoolUUID
+      }
+    });
+    await checkCompleteService.submit(Date.now());
+    expect(tokenService.getToken).toHaveBeenCalledWith('checkComplete');
+  });
+
   it(`submit should call azure queue service service unsuccessfully, audit failure
     and redirect to submission failed page`, async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
@@ -111,6 +131,7 @@ describe('CheckCompleteService', () => {
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
   });
+
   it(`submit should call azure queue service service when sas token has expired and redirect to session expiry page`, async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
@@ -133,6 +154,7 @@ describe('CheckCompleteService', () => {
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/session-expired']);
   });
+
   it('submit should return if the app is configured to run in practice mode', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));

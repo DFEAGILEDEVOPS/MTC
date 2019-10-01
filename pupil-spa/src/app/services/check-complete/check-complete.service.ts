@@ -23,6 +23,7 @@ export class CheckCompleteService {
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
   submissionPendingViewMinDisplay;
+  submitsToCheckReceiver: boolean;
 
   constructor(private auditService: AuditService,
               private azureQueueService: AzureQueueService,
@@ -34,10 +35,12 @@ export class CheckCompleteService {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
       submissionPendingViewMinDisplay,
+      submitsToCheckReceiver
     } = APP_CONFIG;
     this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
     this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
     this.submissionPendingViewMinDisplay = submissionPendingViewMinDisplay;
+    this.submitsToCheckReceiver = submitsToCheckReceiver;
   }
 
   /**
@@ -62,7 +65,8 @@ export class CheckCompleteService {
       return this.onSuccess(startTime);
     }
     const queueName = queueNames.checkComplete;
-    const {url, token} = this.tokenService.getToken('checkComplete');
+    const {url, token} = this.submitsToCheckReceiver ? this.tokenService.getToken('checkSubmit')
+      : this.tokenService.getToken('checkComplete');
     const retryConfig = {
       errorDelay: this.checkSubmissionApiErrorDelay,
       errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
@@ -72,7 +76,7 @@ export class CheckCompleteService {
     const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
     excludedItems.forEach(i => delete payload[i]);
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-    payload.schoolUUID = payload && payload.school && payload.school.uuid
+    payload.schoolUUID = payload && payload.school && payload.school.uuid;
     const checkConfig = this.storageService.getItem(CheckCompleteService.configStorageKey);
     if (checkConfig.compressCompletedCheck) {
       message = {
