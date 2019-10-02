@@ -2,7 +2,6 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import * as Redis from 'handy-redis'
 import checkTemplate from '../json/example-prepared-check.json'
 import * as uuid from 'uuid'
-import { Url } from 'url'
 import { SasToken, SasTokenService } from '../lib/sas-token-service'
 import Moment from 'moment'
 
