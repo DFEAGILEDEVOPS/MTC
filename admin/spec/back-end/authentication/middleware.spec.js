@@ -163,5 +163,15 @@ describe('isAuthenticated', () => {
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/sign-in')
     })
+    it('prevents the programmer mis-use', () => {
+      reqParams.user = {}
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const func = isAuthenticated()
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/sign-in')
+    })
   })
 })
