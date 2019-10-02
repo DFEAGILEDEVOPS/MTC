@@ -57,6 +57,7 @@ controller.postAddSchoolImpersonation = async (req, res, next) => {
 controller.postRemoveSchoolImpersonation = async (req, res, next) => {
   try {
     schoolImpersonationService.removeImpersonation(req.user)
+    req.flash('info', 'School impersonation has been removed')
     res.redirect('/helpdesk/school-impersonation')
   } catch (error) {
     next(error)

@@ -87,12 +87,13 @@ describe('helpdesk controller', () => {
       await controller.postRemoveSchoolImpersonation(req, res, next)
       expect(schoolImpersonationService.removeImpersonation).toHaveBeenCalled()
     })
-    it('should redirect to school impersonation form', async () => {
+    it('should add a flash message and redirect to school impersonation form', async () => {
       const req = getReq(reqParams)
       const res = getRes()
       spyOn(schoolImpersonationService, 'removeImpersonation')
       spyOn(res, 'redirect')
       await controller.postRemoveSchoolImpersonation(req, res, next)
+      expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
   })
