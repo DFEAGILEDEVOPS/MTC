@@ -22,6 +22,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   try {
     const hasHelpdeskNotReceivedImpersonation = helpdeskService.hasHelpdeskNotReceivedImpersonation(req.user)
+    // Prevent helpdesk users from accessing school home when impersonation data are not populated
     if (hasHelpdeskNotReceivedImpersonation) {
       return res.redirect('/helpdesk/school-impersonation')
     }
