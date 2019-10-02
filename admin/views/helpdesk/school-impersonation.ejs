@@ -34,7 +34,7 @@
             <% } %>
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <form action="/helpdesk/add-school-impersonation" id="schoolImpersonationForm" method="post">
+            <form action="/helpdesk/add-school-impersonation" id="schoolImpersonationForm" method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= err.isError('dfeNumber') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">DfE Number</label>
