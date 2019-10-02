@@ -17,7 +17,7 @@ function isAuthenticated (roles) {
         (Array.isArray(roles) && roles.some(r => r === userRole))) {
         return next()
       } else {
-        logger.warn(`could not authorise ${roles} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
+        logger.warn(`could not authorise ${[roles].join()} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
         return res.redirect('/unauthorised')
       }
     }

@@ -36,7 +36,7 @@ controller.getSchoolImpersonation = async (req, res, next, error = null) => {
 controller.postAddSchoolImpersonation = async (req, res, next) => {
   const { dfeNumber } = req.body
   try {
-    const validationError = await schoolImpersonationService.processImpersonationForm(req.user, dfeNumber)
+    const validationError = await schoolImpersonationService.setSchoolImpersonation(req.user, dfeNumber)
     if (validationError && validationError.hasError && validationError.hasError()) {
       return controller.getSchoolImpersonation(req, res, next, validationError)
     }

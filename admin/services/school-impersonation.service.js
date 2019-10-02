@@ -12,7 +12,7 @@ const schoolImpersonationService = {}
  * @param {string} dfeNumber
  * @returns {Object}
  */
-schoolImpersonationService.processImpersonationForm = async (user, dfeNumber) => {
+schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
   let validationError
   validationError = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
   // returns a validation error if dfeNumber provided is empty

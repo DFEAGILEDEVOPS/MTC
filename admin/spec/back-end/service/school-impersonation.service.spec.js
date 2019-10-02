@@ -8,7 +8,7 @@ const schoolImpersonationValidator = require('../../../lib/validator/school-impe
 const ValidationError = require('../../../lib/validation-error')
 
 describe('schoolImpersonationService', () => {
-  describe('processImpersonationForm', () => {
+  describe('setSchoolImpersonation', () => {
     it('calls schoolImpersonationService.impersonateSchool if no validation occurred', async () => {
       const validationError = new ValidationError()
       spyOn(schoolImpersonationValidator, 'isDfeNumberEmpty').and.returnValue(validationError)
@@ -17,7 +17,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationService, 'impersonateSchool')
       const user = {}
       const dfeNumber = '1230000'
-      await schoolImpersonationService.processImpersonationForm(user, dfeNumber)
+      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(schoolImpersonationService.impersonateSchool).toHaveBeenCalled()
     })
     it('returns a validation error if schoolImpersonationValidator.isDfeNumberEmpty returned a validation error', async () => {
@@ -29,7 +29,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationService, 'impersonateSchool')
       const user = {}
       const dfeNumber = undefined
-      const result = await schoolImpersonationService.processImpersonationForm(user, dfeNumber)
+      const result = await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(result).toEqual(validationError)
       expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
       expect(schoolImpersonationValidator.isDfeNumberEmpty).toHaveBeenCalled()
@@ -46,7 +46,7 @@ describe('schoolImpersonationService', () => {
       spyOn(schoolImpersonationService, 'impersonateSchool')
       const user = {}
       const dfeNumber = 'dfeNumber'
-      const result = await schoolImpersonationService.processImpersonationForm(user, dfeNumber)
+      const result = await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(result).toEqual(validationError2)
       expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
       expect(schoolImpersonationValidator.isSchoolRecordValid).toHaveBeenCalled()
