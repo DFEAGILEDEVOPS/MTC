@@ -157,7 +157,7 @@ describe('isAuthenticated', () => {
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
     })
-    it('redirects to unauthorised rkute if the user role is undefined and the allowed role is undefined', () => {
+    it('redirects to unauthorised route if the user role is undefined and the allowed role is undefined', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
