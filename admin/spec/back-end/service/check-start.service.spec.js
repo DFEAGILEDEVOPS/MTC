@@ -297,6 +297,12 @@ describe('check-start.service', () => {
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
       })
+      it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
+        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(5)
+        expect(Object.keys(res[0].tokens)).toContain('checkComplete')
+        expect(Object.keys(res[0].tokens)).toContain('checkSubmit')
+      })
     })
     describe('when familiarisation checks are generated', () => {
       beforeEach(() => {

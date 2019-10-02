@@ -2,6 +2,7 @@
 const config = require('../config')
 
 const NAMES = {
+  CHECK_SUBMIT: 'check-submitted', // replaces check-complete
   CHECK_COMPLETE: 'check-complete',
   CHECK_STARTED: 'check-started',
   PREPARE_CHECK: 'prepare-check',
