@@ -30,7 +30,7 @@ const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
 let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   schoolUUID: uuid.v4(),
   checkCode: uuid.v4(),
-  version: '1'
+  version: 1
 }
 
 let sut: CheckValidator.CheckValidatorV1
@@ -48,7 +48,7 @@ describe('check-validator/v1', () => {
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
       checkCode: 'xyz',
-      version: '1'
+      version: 1
     }
     mockCheck = R.clone(checkSchema)
   })
@@ -159,7 +159,33 @@ describe('check-validator/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.validationError).toBeUndefined()
     expect(actualEntity.isValid).toBe(true)
-    expect(loggerMock.info).toHaveBeenCalled()
+  })
+
+  test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
+    const receivedCheckEntity: ReceivedCheck = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1
+    }
+    let actualTableName: string | undefined
+    let actualEntity: any
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+      actualTableName = table
+      actualEntity = entity
+    })
+    compressionServiceMock.decompress = jest.fn((input: string) => {
+      return JSON.stringify(checkSchema)
+    })
+    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: []
+    }
+    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.validationError).toBeUndefined()
+    expect(actualEntity.answers).toEqual(JSON.stringify(checkSchema.answers))
   })
 
   test('check marking message is created and added to output binding array', async () => {
@@ -188,7 +214,7 @@ describe('check-validator/v1', () => {
     const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
     expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)
-    expect(checkMarkingMessage.version).toBe('1')
+    expect(checkMarkingMessage.version).toBe(1)
 
   })
 })

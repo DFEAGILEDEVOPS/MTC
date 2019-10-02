@@ -19,8 +19,8 @@
     {
       "direction": "out",
       "type": "serviceBus",
-      "name": "checkCompletionQueue",
-      "queueName": "check-completion",
+      "name": "checkNotificationQueue",
+      "queueName": "check-notification",
       "connection": "ServiceBusConnection"
     }
   ],
