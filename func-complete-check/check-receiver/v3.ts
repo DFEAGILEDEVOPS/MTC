@@ -15,7 +15,7 @@ class V3 {
     }
     await tableService.insertEntityAsync('receivedCheck', receivedCheckEntity)
     const message: ValidateCheckMessageV1 = {
-      version: '1',
+      version: 1,
       checkCode: receivedCheck.checkCode,
       schoolUUID: receivedCheck.schoolUUID
     }
