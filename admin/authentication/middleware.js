@@ -1,21 +1,22 @@
 'use strict'
 
+const R = require('ramda')
+
 const logger = require('../services/log.service').getLogger()
 
 function isAuthenticated (arg) {
   return function (req, res, next) {
     if (req.isAuthenticated()) {
-      let roles = typeof arg === 'string' && arg.length > 1
-        ? [arg] : arg
+      const roles = !Array.isArray(arg) ? [arg] : arg
       let userRole
       if (req.user) {
-        userRole = ((req.user).role || {})
+        userRole = req.user && req.user.role
       }
       logger.debug(`checking authorisation on ${req.url} for roles:${roles && roles.join()} against userRole:${userRole}`)
-      if (roles === undefined || (Array.isArray(roles) && roles.some(r => r === userRole))) {
+      if (Array.isArray(roles) && R.includes(userRole, roles)) {
         return next()
       } else {
-        logger.warn(`could not authorise ${roles.join()} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
+        logger.warn(`could not authorise ${roles && roles.join()} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
         return res.redirect('/unauthorised')
       }
     }

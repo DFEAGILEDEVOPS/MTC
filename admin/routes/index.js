@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const R = require('ramda')
 
 const { getCommitId, getBuildNumber } = require('../helpers/healthcheck')
 const config = require('../config')
@@ -12,6 +13,7 @@ const { getCookiesPage } = require('../controllers/cookies')
 const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
+const roles = require('../lib/consts/roles')
 const { home,
   getSignIn,
   postSignIn,
@@ -35,7 +37,7 @@ router.post('/sign-in',
 )
 
 /* Sign out */
-router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
+router.get('/sign-out', isAuthenticated(R.values(roles)), (req, res) => getSignOut(req, res))
 /* Sign in failure */
 router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */

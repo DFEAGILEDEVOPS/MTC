@@ -76,7 +76,7 @@ describe('isAuthenticated', () => {
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
     })
-    it('calls next if the role passed is undefined while the request is authenticated', () => {
+    it('calls redirect if the role passed is undefined while the request is authenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
@@ -87,8 +87,65 @@ describe('isAuthenticated', () => {
       spyOn(res, 'redirect')
       const func = isAuthenticated(undefined)
       func(req, res, next)
-      expect(next).toHaveBeenCalled()
-      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+    })
+    it('calls redirect if the role passed is an empty string while the request is authenticated', () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: 'TEST-DEVELOPER'
+      }
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const func = isAuthenticated('')
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+    })
+    it('calls redirect if the role passed is an object while the request is authenticated', () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: 'TEST-DEVELOPER'
+      }
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const func = isAuthenticated({})
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+    })
+    it('calls redirect if the role passed is an object while the request is authenticated', () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: 'TEST-DEVELOPER'
+      }
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const funcArg = function () {}
+      const func = isAuthenticated(funcArg)
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+    })
+    it('calls redirect if the request user object does not have a role defined ', () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: undefined
+      }
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const func = isAuthenticated('TEST-DEVELOPER')
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
     })
   })
   describe(' if the request is not authenticated', () => {
