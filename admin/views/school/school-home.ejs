@@ -8,7 +8,7 @@
                     <button class="govuk-button-as-link govuk-!-font-size-16 govuk-body govuk-!-margin-bottom-0" type="submit">Remove impersonation</button>
                 </div>
             </form>
-            <% if (typeof user != 'undefined') { %>
+            <% if (typeof user !== 'undefined') { %>
             <div class="signed-in-as">Signed in as <%= user.displayName %></div>
             <% } %>
         <% } else { %>
