@@ -22,6 +22,10 @@
         "configFile": "./tslint.json",
         "suppressWhileTypeErrorsPresent": false
       }
-    ]
-  }
+    ],
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

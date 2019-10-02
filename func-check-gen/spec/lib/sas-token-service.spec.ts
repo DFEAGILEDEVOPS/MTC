@@ -14,18 +14,18 @@ describe('sas token service', () => {
   beforeEach(() => {
     sut = new SasTokenService(mockQService)
   })
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
-  it('should return url provided by queue service implementation', () => {
+  test('should return url provided by queue service implementation', () => {
     const token = sut.generateSasToken('', moment())
     expect(token.url).toBe('url')
   })
-  it('should return token provided by queue service implementation', () => {
+  test('should return token provided by queue service implementation', () => {
     const token = sut.generateSasToken('', moment())
     expect(token.token).toBe('sas')
   })
-  it('should throw an error when expiryDate is invalid', () => {
+  test('should throw an error when expiryDate is invalid', () => {
     const invalidMoment = moment('2019-13-41')
     try {
       sut.generateSasToken('', invalidMoment)

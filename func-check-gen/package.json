@@ -2,26 +2,31 @@
   "name": "func-check-gen",
   "version": "",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "build:production": "yarn prestart",
     "watch": "tsc --w",
     "prestart": "yarn build && func extensions install",
     "start:host": "func start",
     "start": "yarn start:host & yarn watch",
-    "test": "yarn build && ./node_modules/.bin/jasmine"
+    "lint": "standard && tslint --project .",
+    "test": "yarn jest",
+    "test:watch": "yarn jest --watch",
+    "clean": "rm -rf ./dist",
+    "test:coverage": "yarn jest --coverage"
   },
   "description": "",
   "devDependencies": {
     "@azure/functions": "^1.0.1-beta1",
     "@types/bluebird": "^3.5.27",
-    "@types/jasmine": "^3.4.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.4",
     "@types/uuid": "^3.4.5",
     "@typescript-eslint/eslint-plugin": "^2.1.0",
     "@typescript-eslint/parser": "^2.1.0",
     "dotenv": "^8.1.0",
-    "jasmine": "^3.4.0",
-    "jasmine-ts-console-reporter": "^3.1.1",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
     "tslint": "^5.19.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.3.3",
@@ -32,7 +37,6 @@
     "bluebird": "^3.5.5",
     "handy-redis": "^1.6.2",
     "moment": "^2.24.0",
-    "to-bool": "^0.0.1",
     "uuid": "^3.3.3"
   }
 }

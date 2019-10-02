@@ -2,7 +2,6 @@
 
 import * as azure from 'azure-storage'
 import moment = require('moment')
-import { Url } from 'url'
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 
