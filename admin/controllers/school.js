@@ -21,9 +21,10 @@ const controller = {}
 controller.getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   try {
-    const hasHelpdeskNotReceivedImpersonation = helpdeskService.hasHelpdeskNotReceivedImpersonation(req.user)
+    const isHelpdeskRole = helpdeskService.isHelpdeskRole(req.user)
+    const isImpersonating = helpdeskService.isImpersonating(req.user)
     // Prevent helpdesk users from accessing school home when impersonation data are not populated
-    if (hasHelpdeskNotReceivedImpersonation) {
+    if (isHelpdeskRole && !isImpersonating) {
       return res.redirect('/helpdesk/school-impersonation')
     }
     // Fetch set of flags to determine pin generation allowance on UI

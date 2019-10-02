@@ -48,7 +48,8 @@ describe('school controller:', () => {
 
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
-        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(false)
+        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
+        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
@@ -68,7 +69,8 @@ describe('school controller:', () => {
         done()
       })
       it('should throw an error if getActiveCheckWindow method throws an error', async () => {
-        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(false)
+        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
+        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue((Promise.reject(new Error('error'))))
         spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
@@ -85,7 +87,8 @@ describe('school controller:', () => {
         expect(next).toHaveBeenCalled()
       })
       it('should redirect to school impersonation form if a helpdesk user with no impersonation lands attempts to access school home page', async () => {
-        spyOn(helpdeskService, 'hasHelpdeskNotReceivedImpersonation').and.returnValue(true)
+        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(true)
+        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(res, 'redirect')
