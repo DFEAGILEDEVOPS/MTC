@@ -1,6 +1,6 @@
 'use strict'
 
-const roles = require('../lib/consts/service-roles.js')
+const roles = require('../lib/consts/roles.js')
 const helpdeskService = {}
 
 /**
