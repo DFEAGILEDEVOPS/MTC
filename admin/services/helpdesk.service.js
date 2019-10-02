@@ -18,7 +18,7 @@ helpdeskService.isHelpdeskRole = (user) => {
  * @returns {boolean}
  */
 helpdeskService.isImpersonating = (user) => {
-  return user.School && user.schoolId && typeof user.timezone === 'string'
+  return typeof user.School === 'number' && typeof user.schoolId === 'number' && typeof user.timezone === 'string'
 }
 
 module.exports = helpdeskService
