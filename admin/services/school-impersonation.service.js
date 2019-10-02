@@ -13,20 +13,19 @@ const schoolImpersonationService = {}
  * @returns {Object}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
-  let validationError
-  validationError = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
+  const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
   // returns a validation error if dfeNumber provided is empty
-  if (validationError.hasError()) {
-    return validationError
+  if (dfeNumberValidationError.hasError()) {
+    return dfeNumberValidationError
   }
   let school
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   } catch (ignore) {}
   // returns a validation error if the school record is not valid
-  validationError = schoolImpersonationValidator.isSchoolRecordValid(school)
-  if (validationError.hasError()) {
-    return validationError
+  const schoolValidationError = schoolImpersonationValidator.isSchoolRecordValid(school)
+  if (schoolValidationError.hasError()) {
+    return schoolValidationError
   }
   return schoolImpersonationService.impersonateSchool(user, school)
 }
