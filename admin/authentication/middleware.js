@@ -13,7 +13,7 @@ function isAuthenticated (arg) {
         userRole = req.user && req.user.role
       }
       logger.debug(`checking authorisation on ${req.url} for roles:${roles && roles.join()} against userRole:${userRole}`)
-      if (Array.isArray(roles) && R.includes(userRole, roles)) {
+      if (userRole && Array.isArray(roles) && R.includes(userRole, roles)) {
         return next()
       } else {
         logger.warn(`could not authorise ${roles && roles.join()} against userRole:${userRole}, UserName:${req.user.UserName} ID:${req.user.id}`)
