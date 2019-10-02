@@ -171,6 +171,20 @@ describe('isAuthenticated', () => {
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
     })
+    it('redirects to unauthorised route if the user role is undefined and the allowed role is an array with a value of undefined', () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: undefined
+      }
+      const req = httpMocks.createRequest(reqParams)
+      spyOn(req, 'isAuthenticated').and.returnValue(true)
+      spyOn(res, 'redirect')
+      const func = isAuthenticated([undefined])
+      func(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+    })
   })
   describe(' if the request is not authenticated', () => {
     it('redirects to sign in route', () => {
