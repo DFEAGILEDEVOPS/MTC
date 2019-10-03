@@ -1,10 +1,14 @@
 const ValidationError = require('../validation-error')
 const SchoolImpersonationMessages = require('../errors/school-impersonation')
 
-const isDfeNumberEmpty = (dfeNumber) => {
+const isDfeNumberValid = (dfeNumber) => {
   let validationError = new ValidationError()
   if (!dfeNumber) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.noInput)
+    return validationError
+  }
+  if (typeof dfeNumber !== 'string' || isNaN(dfeNumber)) {
+    validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
     return validationError
   }
   return validationError
@@ -19,4 +23,4 @@ const isSchoolRecordValid = (school) => {
   return validationError
 }
 
-module.exports = { isDfeNumberEmpty, isSchoolRecordValid }
+module.exports = { isDfeNumberValid, isSchoolRecordValid }

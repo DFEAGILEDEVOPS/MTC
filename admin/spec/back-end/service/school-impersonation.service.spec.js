@@ -11,7 +11,7 @@ describe('schoolImpersonationService', () => {
   describe('setSchoolImpersonation', () => {
     it('calls schoolImpersonationService.impersonateSchool if no validation occurred', async () => {
       const validationError = new ValidationError()
-      spyOn(schoolImpersonationValidator, 'isDfeNumberEmpty').and.returnValue(validationError)
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(validationError)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       spyOn(schoolImpersonationValidator, 'isSchoolRecordValid').and.returnValue(validationError)
       spyOn(schoolImpersonationService, 'impersonateSchool')
@@ -20,25 +20,25 @@ describe('schoolImpersonationService', () => {
       await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(schoolImpersonationService.impersonateSchool).toHaveBeenCalled()
     })
-    it('returns a validation error if schoolImpersonationValidator.isDfeNumberEmpty returned a validation error', async () => {
+    it('returns a validation error if schoolImpersonationValidator.isDfeNumberValid returned a validation error', async () => {
       const validationError = new ValidationError()
       validationError.addError('dfeNumber', 'error')
-      spyOn(schoolImpersonationValidator, 'isDfeNumberEmpty').and.returnValue(validationError)
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(validationError)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationValidator, 'isSchoolRecordValid').and.returnValue(validationError)
+      spyOn(schoolImpersonationValidator, 'isSchoolRecordValid')
       spyOn(schoolImpersonationService, 'impersonateSchool')
       const user = {}
       const dfeNumber = undefined
       const result = await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(result).toEqual(validationError)
       expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
-      expect(schoolImpersonationValidator.isDfeNumberEmpty).toHaveBeenCalled()
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalled()
       expect(schoolImpersonationValidator.isSchoolRecordValid).not.toHaveBeenCalled()
       expect(schoolImpersonationService.impersonateSchool).not.toHaveBeenCalled()
     })
     it('returns a validation error if schoolImpersonationValidator.isSchoolRecordValid returned a validation error', async () => {
       const validationError1 = new ValidationError()
-      spyOn(schoolImpersonationValidator, 'isDfeNumberEmpty').and.returnValue(validationError1)
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(validationError1)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       const validationError2 = new ValidationError()
       validationError2.addError('dfeNumber', 'error')
@@ -49,6 +49,8 @@ describe('schoolImpersonationService', () => {
       const result = await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(result).toEqual(validationError2)
       expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalled()
       expect(schoolImpersonationValidator.isSchoolRecordValid).toHaveBeenCalled()
       expect(schoolImpersonationService.impersonateSchool).not.toHaveBeenCalled()
     })

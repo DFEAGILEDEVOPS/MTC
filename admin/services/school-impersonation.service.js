@@ -13,8 +13,8 @@ const schoolImpersonationService = {}
  * @returns {Object}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
-  const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
-  // returns a validation error if dfeNumber provided is empty
+  const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+  // returns a validation error if dfeNumber provided is empty or has incorrect type
   if (dfeNumberValidationError.hasError()) {
     return dfeNumberValidationError
   }

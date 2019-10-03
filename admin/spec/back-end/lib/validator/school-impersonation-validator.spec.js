@@ -7,17 +7,37 @@ describe('schoolImpersonationDfeNumberValidator', function () {
   describe('isDfeNumberEmpty', function () {
     it('should not add a validation error if dfeNumber is a string value', function () {
       const dfeNumber = '1230000'
-      const result = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
       expect(result.hasError()).toBeFalsy()
     })
-    it('should not add a validation error if dfeNumber is a numeric value', function () {
+    it('should add a validation error if dfeNumber is a numeric value', function () {
       const dfeNumber = 1230000
-      const result = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
-      expect(result.hasError()).toBeFalsy()
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
     })
     it('should add a validation error if dfeNumber is empty', function () {
       const dfeNumber = undefined
-      const result = schoolImpersonationValidator.isDfeNumberEmpty(dfeNumber)
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should not add a validation error if dfeNumber is a string that contains only a number', function () {
+      const dfeNumber = '1230000'
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeFalsy()
+    })
+    it('should add a validation error if dfeNumber is a string that contains two numbers and a space in-between', function () {
+      const dfeNumber = '123 0000'
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should add a validation error if dfeNumber is a string that contains one number and one character and a space in-between', function () {
+      const dfeNumber = '1 d'
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should add a validation error if dfeNumber is a string that contains a number and one special character', function () {
+      const dfeNumber = '1*'
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
       expect(result.hasError()).toBeTruthy()
     })
   })
