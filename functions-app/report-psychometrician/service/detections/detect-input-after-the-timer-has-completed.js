@@ -8,7 +8,7 @@ const report = require('./report')
 const filterInputsForQuestion = require('./filter-inputs-for-question')
 const removeDuplicates = require('./remove-duplicate-anomaly-reports')
 const getQuestionTimerEndEvent = require('./get-question-timer-end-event')
-const dateFormat = 'YYYY-MM-DDThh:mm:ss.SSSZ'
+const dateFormat = 'Y-MM-DDTHH:mm:ss.SSSZ'
 
 const detectInputAfterTimerHasCompleted = function (data) {
   const anomalyReports = []
@@ -43,11 +43,11 @@ const detectInputAfterTimerHasCompleted = function (data) {
     try {
       questionTimerEndedAt = moment(tsString, dateFormat, true)
       if (!questionTimerEndedAt.isValid()) {
-        addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #1', questionTimerEndedAt.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
+        addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #1', tsString, 'Valid ts', markedAnswer.questionNumber)
         return
       }
     } catch (ignore) {
-      addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #2', questionTimerEndedAt.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
+      addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #2', tsString, 'Valid ts', markedAnswer.questionNumber)
     }
 
     // If there are any inputs after `questionTimerCancelled` for this question it's an anomaly

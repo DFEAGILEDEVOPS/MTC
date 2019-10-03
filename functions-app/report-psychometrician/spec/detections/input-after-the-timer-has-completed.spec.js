@@ -283,6 +283,44 @@ describe('input after the timer has completed', () => {
     expect(r[0]['Question number']).toBe(1)
   })
 
+  it('can parse a year beyond 2030, 24H hours, 00 minutes', () => {
+    const r = detectInputAfterTheTimerHasCompleted({
+      checkPayload: {
+        audit: [
+          {
+            type: 'QuestionTimerCancelled',
+            clientTimestamp: '2040-12-31T13:12:00.777Z',
+            data: {
+              sequenceNumber: 1,
+              question: '1x10'
+            }
+          }
+        ],
+        inputs: [
+          {
+            'input': '',
+            'eventType': '',
+            'clientTimestamp': '2040-12-31T13:12:00.777Z', // 2040
+            'question': '1x10',
+            'sequenceNumber': 1
+          }
+        ]
+      },
+      markedAnswers: {
+        answer: [
+          {
+            id: 1,
+            answer: '10',
+            factor1: 1,
+            factor2: 10,
+            questionNumber: 1
+          }
+        ]
+      }
+    })
+    expect(r).toEqual([]) // no output, all pass
+  })
+
   it('reports on inputs with late timestamps', () => {
     const r = detectInputAfterTheTimerHasCompleted({
       checkPayload: {
