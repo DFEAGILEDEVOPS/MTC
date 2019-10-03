@@ -1,7 +1,7 @@
 'use strict'
 
 import 'dotenv/config'
-import * as toBool from './lib/to-bool'
+import * as toBool from '@mtclib/to-bool'
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'

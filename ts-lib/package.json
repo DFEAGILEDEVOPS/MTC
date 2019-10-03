@@ -28,6 +28,7 @@
   "dependencies": {
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
+    "dotenv": "^8.1.0",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0"
   }

@@ -2,7 +2,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import * as Redis from 'handy-redis'
 import checkTemplate from '../json/example-prepared-check.json'
 import * as uuid from 'uuid'
-import { SasToken, SasTokenService } from '../lib/sas-token-service'
+import { SasToken, SasTokenService } from '@mtclib/sas-token-service'
 import Moment from 'moment'
 
 const redisKeyPrefix = 'check:allocation:'

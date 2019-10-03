@@ -1,10 +1,10 @@
 import * as CheckValidator from '../../check-validator/check-validator.v1'
-import { IAsyncTableService } from '@mtclib/async-table-service'
+import { IAsyncTableService } from '../../../ts-lib/src/async-table-service'
 import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../typings/message-schemas'
-import { ILogger } from '@mtclib/ILogger'
+import { ILogger } from '../../../ts-lib/src/ILogger'
 import checkSchema from '../../messages/complete-check.v1.json'
 import * as R from 'ramda'
-import { ICompressionService } from '@mtclib/compression-service'
+import { ICompressionService } from '../../../ts-lib/src/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 
