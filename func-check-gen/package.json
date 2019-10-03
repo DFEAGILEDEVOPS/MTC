@@ -6,13 +6,12 @@
   "scripts": {
     "build": "yarn clean && tsc --build",
     "build:production": "yarn prestart",
-    "watch": "tsc --w",
     "prestart": "yarn build && func extensions install",
     "start:host": "func start",
     "start": "yarn start:host & yarn watch",
     "lint": "standard && tslint --project .",
     "test": "yarn jest",
-    "test:watch": "yarn jest --watch",
+    "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist",
     "test:coverage": "yarn jest --coverage"
   },
