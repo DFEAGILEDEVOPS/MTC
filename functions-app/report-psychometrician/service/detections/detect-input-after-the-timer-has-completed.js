@@ -7,6 +7,7 @@ const moment = require('moment')
 const report = require('./report')
 const filterInputsForQuestion = require('./filter-inputs-for-question')
 const removeDuplicates = require('./remove-duplicate-anomaly-reports')
+const getQuestionTimerEndEvent = require('./get-question-timer-end-event')
 const dateFormat = 'YYYY-MM-DDThh:mm:ss.SSSZ'
 
 const detectInputAfterTimerHasCompleted = function (data) {
@@ -23,17 +24,17 @@ const detectInputAfterTimerHasCompleted = function (data) {
   const audits = R.pathOr([], ['checkPayload', 'audit'], data)
 
   markedAnswers.forEach(markedAnswer => {
-    const questionTimerCancelledEvent = audits.find(e => {
-      return e.type === 'QuestionTimerCancelled' &&
-        e.data &&
-        e.data.sequenceNumber === markedAnswer.questionNumber &&
-        e.data.question === `${markedAnswer.factor1}x${markedAnswer.factor2}`
-    })
-    if (!questionTimerCancelledEvent) {
+    const questionTimerEndEvent = getQuestionTimerEndEvent(
+      audits,
+      markedAnswer.questionNumber,
+      markedAnswer.factor1,
+      markedAnswer.factor2
+    )
+    if (!questionTimerEndEvent) {
       addToOutput(data, 'QuestionTimerCancelled event not found for question', null, null, markedAnswer.questionNumber)
       return
     }
-    const tsString = R.prop('clientTimestamp', questionTimerCancelledEvent)
+    const tsString = R.prop('clientTimestamp', questionTimerEndEvent)
     if (!tsString) {
       addToOutput(data, 'QuestionTimerCancelledEvent missing its timestamp', null, null, markedAnswer.questionNumber)
       return
