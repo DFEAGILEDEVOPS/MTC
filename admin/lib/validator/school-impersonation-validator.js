@@ -7,7 +7,8 @@ const isDfeNumberValid = (dfeNumber) => {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.noInput)
     return validationError
   }
-  if (typeof dfeNumber !== 'string' || isNaN(dfeNumber)) {
+  const isNumericRegex = new RegExp(/^\d+$/)
+  if (typeof dfeNumber !== 'string' || !isNumericRegex.test(dfeNumber)) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
     return validationError
   }

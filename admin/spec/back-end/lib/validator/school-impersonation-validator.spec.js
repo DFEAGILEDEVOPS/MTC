@@ -40,6 +40,26 @@ describe('schoolImpersonationDfeNumberValidator', function () {
       const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
       expect(result.hasError()).toBeTruthy()
     })
+    it('should add a validation error if dfeNumber is a string that contains a special character and a number', function () {
+      const dfeNumber = '.9991001'
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should add a validation error if dfeNumber is an empty string', function () {
+      const dfeNumber = ''
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should add a validation error if dfeNumber is undefined', function () {
+      const dfeNumber = undefined
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
+    it('should add a validation error if dfeNumber is null', function () {
+      const dfeNumber = null
+      const result = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
+      expect(result.hasError()).toBeTruthy()
+    })
   })
   describe('isSchoolRecordValid', function () {
     it('should not add a validation error if school object is valid', function () {
