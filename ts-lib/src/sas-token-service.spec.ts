@@ -1,4 +1,4 @@
-import { IQueueService, SasTokenService } from '../../lib/sas-token-service'
+import { IQueueService, SasTokenService } from './sas-token-service'
 import * as azurestorage from 'azure-storage'
 import moment from 'moment'
 

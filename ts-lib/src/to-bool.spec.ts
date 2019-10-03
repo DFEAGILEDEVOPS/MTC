@@ -1,4 +1,4 @@
-import * as toBool from '../../lib/to-bool'
+import * as toBool from './to-bool'
 
 describe('primitiveToBoolean', () => {
   test('should be true if its 1 / "1" or "true"', () => {

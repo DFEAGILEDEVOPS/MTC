@@ -1,6 +1,6 @@
 import * as subject from '../../check-allocator/check-allocator.v1'
-import { IRedisService } from '../../lib/data-access/redis-service'
-import { ICheckWindowService } from '../../lib/CheckWindowService'
+import { IRedisService } from '@mtclib/redis-service'
+import { ICheckWindowService } from '@mtclib/CheckWindowService'
 
 let sut: subject.CheckAllocatorV1
 
