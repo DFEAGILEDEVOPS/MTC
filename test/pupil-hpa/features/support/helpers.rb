@@ -29,7 +29,7 @@ module Helpers
   end
 
   def create_school_details_hash(school_id)
-    {"id" => SqlDbHelper.find_school(school_id)['id'], "name"=>SqlDbHelper.find_school(school_id)['name']}
+    {"id" => SqlDbHelper.find_school(school_id)['id'], "name"=>SqlDbHelper.find_school(school_id)['name'], "uuid"=>SqlDbHelper.find_school(school_id)['urlSlug']}
   end
 
   def create_config_details_hash
