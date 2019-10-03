@@ -13,6 +13,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@mtclib/*": ["../ts-lib/src/*"]
+    },
     "plugins": [
       {
         "name": "typescript-tslint-plugin",
@@ -22,5 +26,10 @@
         "suppressWhileTypeErrorsPresent": false
       }
     ]
-  }
+  },
+  "references": [
+    {
+      "path": "../ts-lib"
+    }
+  ]
 }

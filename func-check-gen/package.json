@@ -4,7 +4,7 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "yarn clean && tsc",
+    "build": "yarn clean && tsc --build",
     "build:production": "yarn prestart",
     "watch": "tsc --w",
     "prestart": "yarn build && func extensions install",
