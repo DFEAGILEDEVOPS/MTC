@@ -1,11 +1,11 @@
-import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
+import { IAsyncTableService, AsyncTableService } from '@mtclib/async-table-service'
 import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../typings/message-schemas'
-import { ILogger } from '../lib/ILogger'
+import { ILogger } from '@mtclib/ILogger'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import checkSchema from '../messages/complete-check.v1.json'
 import Moment from 'moment'
-import { ICompressionService, CompressionService } from '../lib/compression-service'
+import { ICompressionService, CompressionService } from '@mtclib/compression-service'
 
 export interface ICheckValidator {
   validate (functionBindings: object, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): void
