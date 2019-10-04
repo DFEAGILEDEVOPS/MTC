@@ -10,7 +10,7 @@ const schoolController = require('../controllers/school')
 
 router.get(
   ['/', '/school-home'],
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([rolesConfig.ROLE_TEACHER, rolesConfig.ROLE_HELPDESK]),
   isAdminWindowAvailable,
   (req, res, next) => schoolController.getSchoolLandingPage(req, res, next)
 )

@@ -14,6 +14,8 @@ const home = (req, res) => {
         return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
       case 'SERVICE-MANAGER':
         return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
+      case 'HELPDESK':
+        return res.redirect(rolesConfig.HOME_ROLE_HELPDESK)
     }
   } else {
     res.redirect('/sign-in')
@@ -46,6 +48,8 @@ const postSignIn = (req, res) => {
       return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
     case 'SERVICE-MANAGER':
       return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
+    case 'HELPDESK':
+      return res.redirect(rolesConfig.HOME_ROLE_HELPDESK)
     default:
       return res.redirect(rolesConfig.HOME_TEACHER)
   }
