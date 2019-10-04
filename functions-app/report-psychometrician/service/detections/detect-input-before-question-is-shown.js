@@ -48,7 +48,7 @@ const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestio
         addToOutput(data, 'Input received before Question shown',
           input.clientTimestamp,
           `>= ${questionTimerStartedAudit.clientTimestamp}`,
-          `Q${markedAnswer.questionNumber}`)
+          markedAnswer.questionNumber)
       }
     })
   })

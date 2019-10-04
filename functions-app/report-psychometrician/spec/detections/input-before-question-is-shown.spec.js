@@ -72,6 +72,7 @@ describe('#detectInputBeforeQuestionIsShown', () => {
     // to report it once.
     expect(res.length).toBe(1)
     expect(res[0].Message).toBe('Input received before Question shown')
+    expect(res[0]['Question number']).toBe(1)
   })
 
   it('does not report anything if there is nothing to report', () => {
