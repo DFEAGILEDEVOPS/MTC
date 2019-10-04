@@ -1,4 +1,4 @@
-const rolesConfig = require('../roles-config')
+const roles = require('../lib/consts/roles')
 const express = require('express')
 const isAuthenticated = require('../authentication/middleware')
 const isAdminWindowAvailable = require('../availability/middleware')
@@ -14,31 +14,31 @@ const {
 
 router.get(
   '/generate-:pinEnv-pins-overview',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => getGeneratePinsOverview(req, res, next)
 )
 router.get(
   '/generate-:pinEnv-pins-list/:groupIds?',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => getGeneratePinsList(req, res, next)
 )
 router.post(
   '/generate-:pinEnv-pins',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => postGeneratePins(req, res, next)
 )
 router.get(
   '/view-and-custom-print-:pinEnv-pins',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => getViewAndCustomPrintPins(req, res, next)
 )
 router.get(
   '/view-and-print-:pinEnv-pins',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => getViewAndPrintPins(req, res, next)
 )

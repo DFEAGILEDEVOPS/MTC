@@ -1,7 +1,7 @@
 'use strict'
 
 const logger = require('../services/log.service').getLogger()
-const rolesConfig = require('../roles-config')
+const homeRoutes = require('../lib/consts/home-routes')
 const config = require('../config')
 
 const home = (req, res) => {
@@ -9,13 +9,13 @@ const home = (req, res) => {
     switch (req.user.role) {
       case 'TEACHER':
       case 'HEADTEACHER':
-        return res.redirect(rolesConfig.HOME_TEACHER)
+        return res.redirect(homeRoutes.schoolHomeRoute)
       case 'TEST-DEVELOPER':
-        return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
+        return res.redirect(homeRoutes.testDeveloperHomeRoute)
       case 'SERVICE-MANAGER':
-        return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
+        return res.redirect(homeRoutes.serviceManagerHomeRoute)
       case 'HELPDESK':
-        return res.redirect(rolesConfig.HOME_ROLE_HELPDESK)
+        return res.redirect(homeRoutes.schoolHomeRoute)
     }
   } else {
     res.redirect('/sign-in')
@@ -43,15 +43,15 @@ const postSignIn = (req, res) => {
   switch (role) {
     case 'TEACHER':
     case 'HEADTEACHER':
-      return res.redirect(rolesConfig.HOME_TEACHER)
+      return res.redirect(homeRoutes.schoolHomeRoute)
     case 'TEST-DEVELOPER':
-      return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
+      return res.redirect(homeRoutes.testDeveloperHomeRoute)
     case 'SERVICE-MANAGER':
-      return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
+      return res.redirect(homeRoutes.serviceManagerHomeRoute)
     case 'HELPDESK':
-      return res.redirect(rolesConfig.HOME_ROLE_HELPDESK)
+      return res.redirect(homeRoutes.schoolHomeRoute)
     default:
-      return res.redirect(rolesConfig.HOME_TEACHER)
+      return res.redirect(homeRoutes.schoolHomeRoute)
   }
 }
 
@@ -77,7 +77,7 @@ const postAuth = (req, res) => {
   logger.debug('postAuth() executing postAuth for user in role:', req.user.role)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
-  return res.redirect(rolesConfig.HOME_TEACHER)
+  return res.redirect(homeRoutes.schoolHomeRoute)
 }
 
 const getUnauthorised = (req, res) => {

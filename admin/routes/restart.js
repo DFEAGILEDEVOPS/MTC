@@ -1,4 +1,4 @@
-const rolesConfig = require('../roles-config')
+const roles = require('../lib/consts/roles')
 const express = require('express')
 const isAuthenticated = require('../authentication/middleware')
 const isAdminWindowAvailable = require('../availability/middleware')
@@ -7,25 +7,25 @@ const restartController = require('../controllers/restart')
 
 router.get(
   '/overview',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => restartController.getRestartOverview(req, res, next)
 )
 router.get(
   '/select-restart-list',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => restartController.getSelectRestartList(req, res, next)
 )
 router.post(
   '/submit-restart-list',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => restartController.postSubmitRestartList(req, res, next)
 )
 router.post(
   '/delete',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => restartController.postDeleteRestart(req, res, next)
 )
