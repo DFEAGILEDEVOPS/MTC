@@ -287,6 +287,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
 
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
   let checkCompleteSasToken
+  let checkSubmitSasToken
 
   const checkStartedSasToken = sasTokenService.generateSasToken(
     queueNameService.NAMES.CHECK_STARTED,
@@ -299,6 +300,10 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
   if (hasLiveChecks) {
     checkCompleteSasToken = sasTokenService.generateSasToken(
       queueNameService.NAMES.CHECK_COMPLETE,
+      sasExpiryDate
+    )
+    checkSubmitSasToken = sasTokenService.generateSasToken(
+      queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
   }
@@ -338,7 +343,8 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
       },
       school: {
         id: o.school_id,
-        name: o.school_name
+        name: o.school_name,
+        uuid: o.school_uuid
       },
       tokens: {
         checkStarted: {
@@ -365,6 +371,10 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
     if (o.check_isLiveCheck) {
       message.tokens.checkComplete = {
         token: checkCompleteSasToken.token,
+        url: checkCompleteSasToken.url
+      }
+      message.tokens.checkSubmit = {
+        token: checkSubmitSasToken.token,
         url: checkCompleteSasToken.url
       }
     }

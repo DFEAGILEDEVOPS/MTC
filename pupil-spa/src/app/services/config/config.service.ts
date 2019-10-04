@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -23,6 +23,7 @@ export interface IAppConfig {
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
   connectivityCheckEnabled: boolean;
+  submitsToCheckReceiver: boolean;
 }
 
 export class AppConfig implements IAppConfig {
@@ -49,6 +50,7 @@ export class AppConfig implements IAppConfig {
   readonly testPupilConnectionDelay: number;
   readonly testPupilConnectionMaxAttempts: number;
   readonly connectivityCheckEnabled: boolean;
+  readonly submitsToCheckReceiver: boolean;
 }
 
 /**

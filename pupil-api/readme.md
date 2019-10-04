@@ -42,7 +42,7 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * PORT - number - defaults to `3003`
 * LOG_LEVEL - string - defaults to `debug`
 * EXPRESS_LOGGING_WINSTON - bool - defaults to `false`
-* CORS_WHITELIST - string - defaults to `http://localhost:4200` Can be a comma separated list
+* CORS_WHITELIST - string - Can be a comma separated list
 * APPINSIGHTS_WINSTON_LOGGER - bool - defaults to `false`
 * APPINSIGHTS_INSTRUMENTATIONKEY - string
 
