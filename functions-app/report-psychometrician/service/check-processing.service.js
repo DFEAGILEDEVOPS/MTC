@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const R = require('ramda')
 const RA = require('ramda-adjunct')
+const { performance } = require('perf_hooks')
 
 const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
@@ -97,6 +98,7 @@ checkProcessingService.writeCsv = async function writeCsv (inputStream, csvStrea
  */
 checkProcessingService.generateReportsFromFile = async function (logger, filename) {
   const meta = { errorCount: 0, processCount: 0 }
+  const start = performance.now()
 
   // Get the parser for later use
   const parser = csv.parse({ headers: true })
@@ -169,6 +171,10 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
       })
       .on('end', row => {
         logger.info('stream ended')
+        const end = performance.now()
+        const durationInMilliseconds = end - start
+        const durationInMinutes = Math.floor(durationInMilliseconds / 1000)
+        logger.info(`Time taken: ${durationInMinutes} mins`)
         psReportCsvStream.end(() => {
           anomalyCsvStream.end(() => {
             resolve(meta)
