@@ -12,6 +12,11 @@ const checkTookTooLong = function (data) {
     throw new TypeError('data should be an object')
   }
 
+  if(R.pathEq(['checkPayload', 'config', 'nextBetweenQuestions'], true, data)) {
+    // This calculation is meaningless as the user controls the total time of the check
+    return
+  }
+
   const markedAnswers = R.pathOr([], ['markedAnswers', 'answer'], data) // contains the question info
   const config = R.pathOr({}, ['checkPayload', 'config'], data)
   const numberOfQuestions = R.length(markedAnswers) || 0
