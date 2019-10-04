@@ -32,6 +32,7 @@ class SchoolLandingPage < SitePrism::Page
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
+  element :remove_impersonation, '.govuk-button-as-link', text: 'Remove impersonation'
 
   element :related, '#subsection-title'
   element :guidance, 'aside.app-related-items nav li a', text: 'Guidance'
