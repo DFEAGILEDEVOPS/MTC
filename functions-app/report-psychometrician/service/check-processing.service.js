@@ -174,7 +174,7 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
         const durationInMinutes = Math.floor((end - start) / 1000)
         psReportCsvStream.end(() => {
           anomalyCsvStream.end(() => {
-            meta.durationInMins = Math.floor(durationInMilliseconds / 1000)
+            meta.durationInMins = Math.floor(durationInMinutes / 1000)
             resolve(meta)
           })
         })
