@@ -1,8 +1,18 @@
-<% if (isAuthenticated) { %>
-<div id="sign-out">
-    <a class="govuk-link" href="/sign-out">Sign out</a>
-</div>
+<% if (user.role === roles.helpdesk && !isSubmitImpersonationUrl) { %>
+    <form method="post" action="/helpdesk/remove-school-impersonation">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div id="sign-out">
+            <button class="govuk-button-as-link govuk-!-font-size-16 govuk-body govuk-!-margin-bottom-0" type="submit">Remove impersonation</button>
+        </div>
+    </form>
+<% } else { %>
+    <% if (isAuthenticated) { %>
+        <div id="sign-out">
+            <a class="govuk-link" href="/sign-out">Sign out</a>
+        </div>
+    <% } %>
+<% } %>
 <% if (typeof user != 'undefined') { %>
-<div class="signed-in-as">Signed in as <%= user.displayName %></div>
+    <div class="signed-in-as">Signed in as <%= user.displayName %></div>
 <% } %>
-<% } %>
+
