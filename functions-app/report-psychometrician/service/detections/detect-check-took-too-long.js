@@ -7,13 +7,22 @@ const getCheckStartedDate = require('./get-check-started-date')
 const getCheckCompleteDate = require('./get-check-complete-date')
 const report = require('./report')
 
+const hasRefresh = R.find(function (audit) {
+  return R.propEq('type', 'RefreshDetected', audit)
+})
+
 const checkTookTooLong = function (data) {
   if (!RA.isPlainObj(data)) {
     throw new TypeError('data should be an object')
   }
 
-  if(R.pathEq(['checkPayload', 'config', 'nextBetweenQuestions'], true, data)) {
+  if (R.pathEq(['checkPayload', 'config', 'nextBetweenQuestions'], true, data)) {
     // This calculation is meaningless as the user controls the total time of the check
+    return
+  }
+
+  if (hasRefresh(R.path(['checkPayload', 'audit'], data))) {
+    // Hitting refresh is most likely going to take the check over the time-limit.
     return
   }
 

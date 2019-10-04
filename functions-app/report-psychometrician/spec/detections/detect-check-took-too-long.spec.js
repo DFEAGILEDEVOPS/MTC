@@ -174,4 +174,27 @@ describe('check took too long', () => {
     const r = detectCheckTookTooLong(data)
     expect(r).toBeUndefined()
   })
+
+  it('ignores checks that have a refresh', () => {
+    const data = {
+      markedAnswers: {
+        answer: [
+          {}
+        ]
+      },
+      checkPayload: {
+        config: {
+          loadingTime: 3,
+          questionTime: 6
+        },
+        audit: [
+          { type: 'CheckStarted', clientTimestamp: '2019-05-31T14:20:04.100Z' },
+          { type: 'RefreshDetected', clientTimestamp: '2019-05-T14:21:01.199Z' },
+          { type: 'CheckSubmissionPending', clientTimestamp: '2019-05-31T14:22:00.100Z' }
+        ]
+      }
+    }
+    const r = detectCheckTookTooLong(data)
+    expect(r).toBeUndefined()
+  })
 })
