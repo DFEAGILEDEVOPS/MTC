@@ -4,6 +4,7 @@ const moment = require('moment')
 const { version: appVersion } = require('../package.json')
 const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
+const roles = require('../lib/consts/roles.js')
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
@@ -62,4 +63,5 @@ module.exports = async function (app) {
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.guidancePdf = 'https://www.gov.uk/government/publications/multiplication-tables-check-administration-guidance'
+  app.locals.roles = roles
 }
