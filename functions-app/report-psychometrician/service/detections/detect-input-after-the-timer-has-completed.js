@@ -77,7 +77,7 @@ const detectInputAfterTimerHasCompleted = function (data) {
       }
 
       if (inputTimestamp.isAfter(questionTimerEndedAt)) {
-        addToOutput(data, 'Input received before Question shown',
+        addToOutput(data, 'Input received after timer cut-off',
           input.clientTimestamp,
           tsString,
           markedAnswer.questionNumber)

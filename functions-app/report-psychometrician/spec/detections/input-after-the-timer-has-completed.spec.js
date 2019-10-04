@@ -356,7 +356,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('Input received before Question shown')
+    expect(r[0]['Message']).toBe('Input received after timer cut-off')
     expect(r[0]['Question number']).toBe(1)
     expect(r[0]['Tested Value']).toEqual('2019-06-27T12:46:25.672Z')
     expect(r[0]['Expected Value']).toEqual('2019-06-27T12:46:25.671Z')
