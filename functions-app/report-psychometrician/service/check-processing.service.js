@@ -170,13 +170,11 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
         meta.errorCount += 1
       })
       .on('end', row => {
-        logger.info('stream ended')
         const end = performance.now()
-        const durationInMilliseconds = end - start
-        const durationInMinutes = Math.floor(durationInMilliseconds / 1000)
-        logger.info(`Time taken: ${durationInMinutes} mins`)
+        const durationInMinutes = Math.floor((end - start) / 1000)
         psReportCsvStream.end(() => {
           anomalyCsvStream.end(() => {
+            meta.durationInMins = Math.floor(durationInMilliseconds / 1000)
             resolve(meta)
           })
         })
