@@ -131,3 +131,60 @@ end
 When(/^I navigate to the school landing page$/) do
   school_landing_page.load
 end
+
+
+And(/^I enter and submit a valid (.*) for impersonation$/) do |dfenumber|
+  helpdesk_impersonation_page.dfe_number.set dfenumber
+  helpdesk_impersonation_page.submit.click
+end
+
+
+Then(/^I should be taken to the teachers school homepage corresponding to that (.*)$/) do |dfenumber|
+  school_name = SqlDbHelper.find_school_by_dfeNumber(dfenumber)['name']
+  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
+  expect(school_landing_page).to have_pupil_register
+  expect(school_landing_page).to have_remove_impersonation
+end
+
+
+Given(/^I have impersonated a school with the helpdesk user$/) do
+  step 'I have signed in with helpdesk'
+  step 'I enter and submit a valid 9991001 for impersonation'
+end
+
+
+When(/^I want to remove the impersonation$/) do
+  school_landing_page.remove_impersonation.click
+end
+
+Then(/^I am taken back to the helpdesk impersonation page$/) do
+  expect(helpdesk_impersonation_page).to be_displayed
+  expect(helpdesk_impersonation_page).to have_impersonation_removed
+end
+
+
+Given(/^I am on the helpdesk impersonation page$/) do
+  step 'I have signed in with helpdesk'
+end
+
+When(/^I want to sign out as a helpdesk user$/) do
+  helpdesk_impersonation_page.sign_out.click
+end
+
+
+When(/^I enter (.*) as the Dfe number$/) do |invalid_dfe_number|
+  helpdesk_impersonation_page.dfe_number.set invalid_dfe_number
+  helpdesk_impersonation_page.submit.click
+end
+
+
+Then(/^I am shown an error stating the value does not match a school$/) do
+  expect(helpdesk_impersonation_page.error_summary.map {|error| error.text}).to eql ["The school DfE number provided does not match a school in the MTC database"]
+  expect(helpdesk_impersonation_page.error_message.map {|error| error.text}).to eql ["The school DfE number provided does not match a school in the MTC database"]
+end
+
+
+Then(/^I am shown an error stating the value is in the incorrect format$/) do
+  expect(helpdesk_impersonation_page.error_summary.map {|error| error.text}).to eql ["The school DfE number provided has an incorrect format"]
+  expect(helpdesk_impersonation_page.error_message.map {|error| error.text}).to eql ["The school DfE number provided has an incorrect format"]
+end
