@@ -8,9 +8,6 @@ const getCheckCompleteDate = require('./get-check-complete-date')
 const report = require('./report')
 
 const hasRefresh = R.find(function (audit) {
-  if (!RA.isArray(audit)) {
-    return
-  }
   return R.propEq('type', 'RefreshDetected', audit)
 })
 
@@ -24,7 +21,7 @@ const checkTookTooLong = function (data) {
     return
   }
 
-  if (hasRefresh(R.path(['checkPayload', 'audit'], data))) {
+  if (hasRefresh(R.pathOr([], ['checkPayload', 'audit'], data))) {
     // Hitting refresh is most likely going to take the check over the time-limit.
     return
   }
