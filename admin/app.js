@@ -212,6 +212,8 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
+// TODO only initialise chosen strategy
+
 // passport nca tools strategy
 passport.use(authModes.ncaTools, new CustomStrategy(
   require('./authentication/nca-tools-authentication-strategy')
@@ -220,7 +222,9 @@ passport.use(authModes.ncaTools, new CustomStrategy(
 // passport dfe-signon strategy
 // guarded because it calls the provider when initialised
 ;(async function () {
-  if (config.DfeSignOn.authUrl) {
+  if (config.Auth.mode === authModes.dfeSignIn &&
+    config.Auth.dfeSignIn.authUrl) {
+    logger.debug('initialising dfe signin')
     passport.use(authModes.dfeSignIn, await initDfeSignOnStrategy())
   }
 })()

@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-  local: 'Local',
-  ncaTools: 'custom',
-  dfeSignIn: 'TEACHER'
+  local: 'local',
+  ncaTools: 'nca',
+  dfeSignIn: 'dfe'
 })

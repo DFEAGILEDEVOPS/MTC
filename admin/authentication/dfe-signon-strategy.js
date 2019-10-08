@@ -7,20 +7,20 @@ const asyncRetry = require('login.dfe.async-retry')
 
 const initSignOn = async () => {
   Issuer.defaultHttpOptions = { timeout: 10000 }
-  const issuer = await asyncRetry(async () => Issuer.discover(config.DfeSignOn.authUrl), asyncRetry.strategies.apiStrategy)
-
+  const issuer = await asyncRetry(async () => Issuer.discover(config.Auth.dfeSignIn.authUrl), asyncRetry.strategies.apiStrategy)
+  logger.debug('dfe.issuer', issuer)
   const client = new issuer.Client({
-    client_id: config.DfeSignOn.clientId,
-    client_secret: config.DfeSignOn.clientSecret
+    client_id: config.Auth.dfeSignIn.clientId,
+    client_secret: config.Auth.dfeSignIn.clientSecret
   })
-  if (config.DfeSignOn.clockTolerance && config.DfeSignOn.clockTolerance > 0) {
-    client.CLOCK_TOLERANCE = config.DfeSignOn.clockTolerance
+  if (config.Auth.dfeSignIn.clockTolerance && config.Auth.dfeSignIn.clockTolerance > 0) {
+    client.CLOCK_TOLERANCE = config.Auth.dfeSignIn.clockTolerance
   }
 
   return new Strategy({
     client,
     params: {
-      // redirect_uri: `//${config.hostingEnvironment.host}:${config.PORT}/auth/cb`,
+      // redirect_uri: `http://localhost:3001/auth`,
       scope: 'openid profile email'
     }
   }, (tokenset, authUserInfo, done) => {
