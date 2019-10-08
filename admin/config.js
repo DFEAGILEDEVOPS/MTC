@@ -143,5 +143,8 @@ module.exports = {
     clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
     apiSecret: process.env.DFE_SIGNON_API_SECRET,
     clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE || 300
+  },
+  Auth: {
+    Mode: process.env.AUTH_MODE || 'Local'
   }
 }
