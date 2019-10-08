@@ -141,6 +141,7 @@ module.exports = {
     authUrl: process.env.DFE_SIGNON_AUTH_URL,
     clientId: process.env.DFE_SIGNON_CLIENT_ID,
     clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
-    clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE
+    apiSecret: process.env.DFE_SIGNON_API_SECRET,
+    clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE || 300
   }
 }
