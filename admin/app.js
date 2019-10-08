@@ -211,6 +211,7 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
+// guy dfesignin
 // passport with custom strategy
 passport.use(new CustomStrategy(
   require('./authentication/nca-tools-authentication-strategy')
@@ -260,7 +261,7 @@ app.use(function (req, res, next) {
 // also exclude if url in the csrfExcludedPaths
 const csrf = csurf()
 const csrfExcludedPaths = [
-  '/auth', // disable CSRF for NCA tools
+  '/auth', // disable CSRF for federated auth
   '/sign-in' // disable CSRF for login
 ]
 app.use(function (req, res, next) {

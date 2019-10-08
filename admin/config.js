@@ -32,7 +32,6 @@ module.exports = {
   Environment: getEnvironment(),
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
-  NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   OVERRIDE_AVAILABILITY_CHECKS: false,
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
@@ -137,14 +136,17 @@ module.exports = {
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
   },
-  DfeSignOn: {
-    authUrl: process.env.DFE_SIGNON_AUTH_URL,
-    clientId: process.env.DFE_SIGNON_CLIENT_ID,
-    clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
-    apiSecret: process.env.DFE_SIGNON_API_SECRET,
-    clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE || 300
-  },
   Auth: {
-    Mode: process.env.AUTH_MODE || 'Local'
+    mode: process.env.AUTH_MODE || 'Local', // see ./lib/consts/auth-modes.js for valid options
+    dfeSignIn: {
+      authUrl: process.env.DFE_SIGNON_AUTH_URL,
+      clientId: process.env.DFE_SIGNON_CLIENT_ID,
+      clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
+      apiSecret: process.env.DFE_SIGNON_API_SECRET,
+      clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE || 300
+    },
+    ncaTools: {
+      authUrl: process.env.NCA_TOOLS_AUTH_URL
+    }
   }
 }
