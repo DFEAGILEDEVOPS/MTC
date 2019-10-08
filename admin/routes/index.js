@@ -105,7 +105,7 @@ router.post('/auth-dso',
     }
     next()
   },
-  passport.authenticate('custom', {
+  passport.authenticate('oidc', {
     failureRedirect: '/sign-in-failure'
   }), (req, res) => postSignIn(req, res)
 )

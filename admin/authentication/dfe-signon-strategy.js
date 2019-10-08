@@ -10,8 +10,8 @@ const initSignOn = async () => {
   const issuer = await asyncRetry(async () => Issuer.discover(config.DfeSignOn.authUrl), asyncRetry.strategies.apiStrategy)
 
   const client = new issuer.Client({
-    client_id: config.identifyingParty.clientId,
-    client_secret: config.identifyingParty.clientSecret
+    client_id: config.DfeSignOn.clientId,
+    client_secret: config.DfeSignOn.clientSecret
   })
   if (config.DfeSignOn.clockTolerance && config.DfeSignOn.clockTolerance > 0) {
     client.CLOCK_TOLERANCE = config.DfeSignOn.clockTolerance
