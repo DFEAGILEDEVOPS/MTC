@@ -9,6 +9,7 @@ const report = require('./report')
 
 const hasRefresh = R.find(function (audit) {
   if (!RA.isArray(audit)) {
+    return
   }
   return R.propEq('type', 'RefreshDetected', audit)
 })
