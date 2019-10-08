@@ -29,6 +29,7 @@ const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
 const initDfeSignOnStrategy = require('./authentication/dfe-signon-strategy')
+const authModes = require('./lib/consts/auth-modes')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -211,21 +212,21 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-// guy dfesignin
-// passport with custom strategy
-passport.use(new CustomStrategy(
+// passport nca tools strategy
+passport.use(authModes.ncaTools, new CustomStrategy(
   require('./authentication/nca-tools-authentication-strategy')
 ))
 
 // passport dfe-signon strategy
+// guarded because it calls the provider when initialised
 ;(async function () {
   if (config.DfeSignOn.authUrl) {
-    passport.use('oidc', await initDfeSignOnStrategy())
+    passport.use(authModes.dfeSignIn, await initDfeSignOnStrategy())
   }
 })()
 
-// Passport with local strategy
-passport.use(
+// passport default/local strategy
+passport.use(authModes.local,
   new LocalStrategy({
     passReqToCallback: true
   },
