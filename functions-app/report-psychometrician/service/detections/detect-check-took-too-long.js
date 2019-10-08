@@ -48,7 +48,7 @@ const checkTookTooLong = function (data) {
     return
   }
 
-  const totalCheckSeconds = checkCompleteDate.diff(checkStartedDate, 'seconds')
+  const totalCheckSeconds = checkCompleteDate.diff(checkStartedDate, 'seconds', true)
 
   if (totalCheckSeconds > maxCheckSeconds) {
     return report(data, 'Check took too long', totalCheckSeconds, maxCheckSeconds)
