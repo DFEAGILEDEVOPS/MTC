@@ -1,4 +1,4 @@
-<% if (user.role === roles.helpdesk && !isSubmitImpersonationUrl) { %>
+<% if (user && user.role === roles.helpdesk && !isSubmitImpersonationUrl) { %>
     <form method="post" action="/helpdesk/remove-school-impersonation">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div id="sign-out">
@@ -12,7 +12,7 @@
         </div>
     <% } %>
 <% } %>
-<% if (typeof user != 'undefined') { %>
+<% if (user) { %>
     <div class="signed-in-as">Signed in as <%= user.displayName %></div>
 <% } %>
 
