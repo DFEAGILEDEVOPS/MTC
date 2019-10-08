@@ -136,5 +136,11 @@ module.exports = {
     Port: process.env.REDIS_PORT || 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
+  },
+  DfeSignOn: {
+    authUrl: process.env.DFE_SIGNON_AUTH_URL,
+    clientId: process.env.DFE_SIGNON_CLIENT_ID,
+    clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
+    clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE
   }
 }

@@ -28,6 +28,7 @@ const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
+const initDfeSignOnStrategy = require('./authentication/dfe-signon-strategy')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -214,6 +215,13 @@ passport.deserializeUser(function (user, done) {
 passport.use(new CustomStrategy(
   require('./authentication/nca-tools-authentication-strategy')
 ))
+
+// passport dfe-signon strategy
+;(async function () {
+  if (config.DfeSignOn.authUrl) {
+    passport.use('oidc', await initDfeSignOnStrategy())
+  }
+})()
 
 // Passport with local strategy
 passport.use(

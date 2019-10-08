@@ -96,4 +96,18 @@ router.post('/auth',
   }), (req, res) => postSignIn(req, res)
 )
 
+/* DFE Sign on Authentication Endpoint */
+router.post('/auth-dso',
+  function (req, res, next) {
+    // Only allow post requests if dso enabled
+    if (!config.DfeSignOn.authUrl) {
+      return res.status(404).send('Not found')
+    }
+    next()
+  },
+  passport.authenticate('custom', {
+    failureRedirect: '/sign-in-failure'
+  }), (req, res) => postSignIn(req, res)
+)
+
 module.exports = router
