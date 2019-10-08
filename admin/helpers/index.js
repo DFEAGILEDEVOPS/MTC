@@ -64,4 +64,5 @@ module.exports = async function (app) {
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.guidancePdf = 'https://www.gov.uk/government/publications/multiplication-tables-check-administration-guidance'
   app.locals.roles = roles
+  app.locals.isSubmitImpersonationUrl = false
 }

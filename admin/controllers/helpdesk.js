@@ -16,6 +16,7 @@ const controller = {}
 controller.getSchoolImpersonation = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'MTC Helpdesk School Impersonation'
   try {
+    res.locals.isSubmitImpersonationUrl = true
     res.render('helpdesk/school-impersonation', {
       formData: req.body,
       err: error || new ValidationError(),

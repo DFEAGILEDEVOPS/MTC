@@ -58,7 +58,7 @@ Feature:
       | 0000000            |
       | 1                  |
 
- Scenario Outline: An error is shown when an invalid Dfe number is entered
+  Scenario Outline: An error is shown when an invalid Dfe number is entered
     Given I am on the helpdesk impersonation page
     When I enter <invalid_dfe_number> as the Dfe number
     Then I am shown an error stating the value is in the incorrect format
@@ -76,6 +76,40 @@ Feature:
       | 9991**2            |
       | 9991OO2            |
 
+
+  Scenario Outline: Helpdesk user can access all pages
+    Given I have impersonated a school with the helpdesk user
+    Then I should be able to navigate to the <page>
+
+    Examples:
+      | page                               |
+      | pupil_register                     |
+      | group_pupils                       |
+      | pupils_not_taking_check            |
+      | access_arrangements                |
+      | generate_pupil_pin_familiarisation |
+      | generate_pupil_pin                 |
+      | restarts                           |
+      | hdf                                |
+
+
+  Scenario Outline: Helpdesk user can only access pages related to the role
+    Given I have impersonated a school with the helpdesk user
+    When I attempt to navigate to <url>
+    Then I should be shown the access unauthorized page
+    And I can return to the school landing page
+
+    Examples:
+      | url                                       |
+      | /check-window/manage-check-windows        |
+      | /check-window/create-check-window         |
+      | /service-manager/upload-pupil-census      |
+      | /service-manager/check-settings           |
+      | /service-manager/mod-settings             |
+      | /check-form/view-forms                    |
+      | /check-form/upload-new-forms              |
+      | /test-developer/download-pupil-check-data |
+      | /test-developer/view-pupil-payload        |
 
   @wip
   Scenario Outline: Service-manager school persona school is displayed

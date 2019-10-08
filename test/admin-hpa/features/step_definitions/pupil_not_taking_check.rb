@@ -178,7 +178,7 @@ Then(/^I should be able to unselect all pupils$/) do
 end
 
 Then(/^I should be taken to the pupil not taking check page$/) do
-  expect(pupils_not_taking_check_page).to be_displayed
+  expect(current_url).to include 'pupils-not-taking-the-check'
 end
 
 And(/^I should see the updated pupil on the hub page$/) do

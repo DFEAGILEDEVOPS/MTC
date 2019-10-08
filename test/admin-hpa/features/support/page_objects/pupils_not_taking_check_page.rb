@@ -1,5 +1,5 @@
 class PupilsNotTakingCheckPage < SitePrism::Page
-  set_url '/pupils-not-taking-the-check'
+  set_url '/pupils-not-taking-the-check/pupils-list'
 
   element :heading, '.govuk-heading-xl', text: 'Pupils not taking the check'
   element :info_text, 'p.govuk-body', text: "All pupils must be considered for the multiplication tables check at the end of year 4. If a pupil is not going to take the check, a reason must be provided."
