@@ -19,14 +19,21 @@ const home = (req, res) => {
         return res.redirect(homeRoutes.schoolHomeRoute)
     }
   } else {
-    res.redirect('/sign-in')
+    switch (config.Auth.mode) {
+      case authModes.dfeSignIn:
+        return res.redirect('/oidc-sign-in')
+      case authModes.ncaTools:
+        return res.redirect(config.Auth.ncaTools.authUrl)
+      default:
+        return res.redirect('/sign-in')
+    }
   }
 }
 
 const redirectToAuthModeSignIn = (res) => {
   switch (config.Auth.mode) {
     case authModes.ncaTools:
-      res.redirect(config.Auth.ncaTools.authUrl)
+      res.redirect('/oidc-sign-in')
       break
     case authModes.dfeSignIn:
       res.redirect(config.Auth.dfeSignIn.authUrl)

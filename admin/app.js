@@ -299,6 +299,8 @@ if (WEBSITE_OFFLINE) {
   app.use('/check-window', checkWindow)
   app.use('/check-form', checkForm)
   app.use('/results', results)
+  app.use('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
+    { successRedirect: '/', failureRedirect: '/auth' }))
 }
 
 // catch 404 and forward to error handler
