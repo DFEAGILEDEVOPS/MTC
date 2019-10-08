@@ -188,3 +188,23 @@ Then(/^I am shown an error stating the value is in the incorrect format$/) do
   expect(helpdesk_impersonation_page.error_summary.map {|error| error.text}).to eql ["The school DfE number provided has an incorrect format"]
   expect(helpdesk_impersonation_page.error_message.map {|error| error.text}).to eql ["The school DfE number provided has an incorrect format"]
 end
+
+
+Then(/^I should be able to navigate to the (.*)$/) do |page|
+  school_landing_page.send(page).click
+  page = 'generate_pins_familiarisation_overview' if page == 'generate_pupil_pin_familiarisation'
+  page = 'generate_pins_overview' if page == 'generate_pupil_pin'
+  page = 'declaration' if page == 'hdf'
+  expect(send("#{page}_page")).to be_displayed
+end
+
+
+When(/^I attempt to navigate to (.*)$/) do |url|
+  visit ENV['ADMIN_BASE_URL'] + url
+end
+
+
+And(/^I can return to the school landing page$/) do
+  unauthorized_page.back_to_home.click
+  expect(school_landing_page).to be_displayed
+end
