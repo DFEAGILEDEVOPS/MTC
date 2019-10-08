@@ -1,4 +1,7 @@
 class DeclarationPage < SitePrism::Page
+
+  set_url '/attendance/declaration-form'
+
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
   element :heading, '.govuk-heading-xl', text: "Headteacher's declaration form"
   element :confirm_hdf, '.multiple-choice #confirmYes'
