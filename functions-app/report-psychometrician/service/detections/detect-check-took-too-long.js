@@ -8,6 +8,7 @@ const getCheckCompleteDate = require('./get-check-complete-date')
 const report = require('./report')
 
 const hasRefresh = R.find(function (audit) {
+  }
   return R.propEq('type', 'RefreshDetected', audit)
 })
 
