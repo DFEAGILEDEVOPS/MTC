@@ -5,6 +5,7 @@ const toBool = require('to-bool')
 const sql = require('./config/sql.config')
 const twoMinutesInMilliseconds = 120000
 const thirtySecondsInMilliseconds = 30000
+const authModes = require('./lib/consts/auth-modes')
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -137,7 +138,7 @@ module.exports = {
     useTLS: getEnvironment() !== 'Local-Dev'
   },
   Auth: {
-    mode: process.env.AUTH_MODE || 'Local', // see ./lib/consts/auth-modes.js for valid options
+    mode: process.env.AUTH_MODE || authModes.local, // see ./lib/consts/auth-modes.js for valid options
     dfeSignIn: {
       authUrl: process.env.DFE_SIGNON_AUTH_URL,
       clientId: process.env.DFE_SIGNON_CLIENT_ID,
