@@ -10,14 +10,12 @@ async function getPing (req, res) {
   let commitId = 'NOT FOUND'
   try {
     buildNumber = await getBuildNumber()
-  } catch (error) {
-
-  } catch (ignore) {}
+  } catch (ignore) {
+  }
 
   try {
     commitId = await getCommitId()
   } catch (error) {
-
   }
 
   res.setHeader('Content-Type', 'application/json')
