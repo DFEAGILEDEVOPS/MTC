@@ -12,7 +12,7 @@ async function getPing (req, res) {
     buildNumber = await getBuildNumber()
   } catch (error) {
 
-  }
+  } catch (ignore) {}
 
   try {
     commitId = await getCommitId()
