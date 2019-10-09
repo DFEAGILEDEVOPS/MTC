@@ -113,7 +113,7 @@ const checkFormService = {
    * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
    * @return {Promise}
    */
-  populateFromFile: async function (checkForm, absCsvFile) {
+  populateFromFile: function (checkForm, absCsvFile) {
     if (!checkForm) {
       throw new Error('Check form argument missing')
     }
