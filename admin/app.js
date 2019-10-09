@@ -28,7 +28,6 @@ const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
-const initDfeSignOnStrategy = require('./authentication/dfe-signon-strategy')
 const authModes = require('./lib/consts/auth-modes')
 
 const logger = require('./services/log.service').getLogger()
@@ -212,31 +211,32 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-// TODO only initialise chosen strategy
-
-// passport nca tools strategy
-passport.use(authModes.ncaTools, new CustomStrategy(
-  require('./authentication/nca-tools-authentication-strategy')
-))
-
-// passport dfe-signon strategy
-// guarded because it calls the provider when initialised
-;(async function () {
-  if (config.Auth.mode === authModes.dfeSignIn &&
-    config.Auth.dfeSignIn.authUrl) {
-    logger.debug('initialising dfe signin')
-    passport.use(authModes.dfeSignIn, await initDfeSignOnStrategy())
-  }
-})()
-
-// passport default/local strategy
-passport.use(authModes.local,
-  new LocalStrategy({
-    passReqToCallback: true
-  },
-  require('./authentication/local-strategy')
-  )
-)
+// initialise chosen auth strategy only
+switch (config.Auth.mode) {
+  case authModes.dfeSignIn:
+    ;(async function () {
+      if (config.Auth.dfeSignIn.authUrl) {
+        passport.use(authModes.dfeSignIn, await require('./authentication/dfe-signon-strategy')())
+      } else {
+        throw new Error('unable to configure passport for dfeSignin - no Auth URL specified')
+      }
+    })()
+    break
+  case authModes.ncaTools:
+    passport.use(authModes.ncaTools, new CustomStrategy(
+      require('./authentication/nca-tools-authentication-strategy')
+    ))
+    break
+  default:
+    passport.use(authModes.local,
+      new LocalStrategy({
+        passReqToCallback: true
+      },
+      require('./authentication/local-strategy')
+      )
+    )
+    break
+}
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
@@ -299,8 +299,6 @@ if (WEBSITE_OFFLINE) {
   app.use('/check-window', checkWindow)
   app.use('/check-form', checkForm)
   app.use('/results', results)
-  app.use('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
-    { successRedirect: '/', failureRedirect: '/auth' }))
 }
 
 // catch 404 and forward to error handler

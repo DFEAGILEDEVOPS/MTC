@@ -13,35 +13,13 @@ const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
-const { home,
-  getSignIn,
-  postSignIn,
-  getSignOut,
-  getSignInFailure,
-  getUnauthorised } = require('../controllers/authentication')
+const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised } = require('../controllers/authentication')
 const getPing = require('../controllers/ping')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
-
-router.get('/auth-dso',
-  (req, res, next) => {
-    next()
-  },
-  passport.authenticate(config.Auth.mode, { failureRedirect: '/sign-in-failure' }),
-  (req, res) => postSignIn(req, res)
-)
-
-/* Login validation */
-router.post('/sign-in',
-  (req, res, next) => {
-    next()
-  },
-  passport.authenticate(config.Auth.mode, { failureRedirect: '/sign-in-failure' }),
-  (req, res) => postSignIn(req, res)
-)
 
 /* Sign out */
 router.get('/sign-out', isAuthenticated(R.values(roles)), (req, res) => getSignOut(req, res))
@@ -63,18 +41,45 @@ router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPa
 
 router.get('/ping', (req, res) => getPing(req, res))
 
-/* NCA Tools or DfeSignIn Authentication Endpoint */
-router.post('/auth',
-  function (req, res, next) {
-    // Only allow post requests if not in local auth mode
-    if (config.Auth.mode === authModes.local) {
-      return res.status(404).send('Not found')
-    }
-    next()
-  },
-  passport.authenticate(config.Auth.mode, {
-    failureRedirect: '/sign-in-failure'
-  }), (req, res) => postSignIn(req, res)
-)
+const signInFailureRedirect = '/sign-in-failure'
+
+/* Local login submission */
+if (config.Auth.mode === authModes.local) {
+  router.post('/sign-in',
+    (req, res, next) => {
+      next()
+    },
+    passport.authenticate(config.Auth.mode, { failureRedirect: signInFailureRedirect }),
+    (req, res) => postSignIn(req, res)
+  )
+}
+
+/* federated auth callbacks */
+
+/* NCA Tools */
+if (config.Auth.mode === authModes.ncaTools) {
+  router.post('/auth',
+    function (req, res, next) {
+      next()
+    },
+    passport.authenticate(authModes.ncaTools, {
+      failureRedirect: signInFailureRedirect
+    }), (req, res) => postSignIn(req, res)
+  )
+}
+
+/* Dfe Sign-in */
+
+if (config.Auth.mode === authModes.dfeSignIn) {
+  router.get('/auth-dso',
+    (req, res, next) => {
+      next()
+    },
+    passport.authenticate(authModes.dfeSignIn, { failureRedirect: signInFailureRedirect }),
+    (req, res) => postSignIn(req, res)
+  )
+  router.get('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
+    { successRedirect: '/', failureRedirect: signInFailureRedirect }))
+}
 
 module.exports = router
