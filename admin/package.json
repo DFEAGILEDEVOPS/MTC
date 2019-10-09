@@ -22,7 +22,7 @@
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
   },
   "engines": {
-    "node": ">= 8.11"
+    "node": ">= 10.16.3"
   },
   "dependencies": {
     "applicationinsights": "^1.0.8",
