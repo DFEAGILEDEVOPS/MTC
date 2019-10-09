@@ -5,22 +5,21 @@
 
 const config = require('../../../config')
 const path = require('path')
-const checkFormService = require('../../../services/check-form.service')
 
 describe('check form service.populateFromFile', () => {
-  let checkForm, service
+  let checkForm, sut
   checkForm = {}
-  service = require('../../../services/check-form.service')
+  sut = require('../../../services/check-form.service')
 
   describe('with spy', function () {
     beforeEach(function () {
       checkForm = {}
-      spyOn(checkFormService, 'isRowCountValid')
+      spyOn(sut, 'isRowCountValid')
     })
 
     it('should throw an error if not called with a checkForm in arg 1', async (done) => {
       try {
-        await checkFormService.populateFromFile(null, null)
+        await sut.populateFromFile(null, null)
         expect('expected to throw').toBe('error')
       } catch (error) {
         expect(error).toBeDefined()
@@ -31,7 +30,7 @@ describe('check form service.populateFromFile', () => {
 
     it('should throw an error if not called with a csvFile in arg 2', async (done) => {
       try {
-        await service.populateFromFile(checkForm, null)
+        await sut.populateFromFile(checkForm, null)
         expect('expected to throw').toBe('error')
       } catch (error) {
         expect(error).toBeDefined()
@@ -46,7 +45,7 @@ describe('check form service.populateFromFile', () => {
     const csvFile = 'data/fixtures/check-form-1.csv'
     const file = path.join(__dirname, '/../../../', csvFile)
     try {
-      const checkFormPop = await service.populateFromFile(checkForm, file)
+      const checkFormPop = await sut.populateFromFile(checkForm, file)
       const questions = JSON.parse(checkFormPop.formData)
       expect(questions.length).toBe(config.LINES_PER_CHECK_FORM)
       // check last question is 12 x 12
@@ -61,7 +60,7 @@ describe('check form service.populateFromFile', () => {
     const csvFile = 'data/fixtures/check-form-2.csv'
     try {
       const file = path.join(__dirname, '/../../../', csvFile)
-      await service.populateFromFile(checkForm, file)
+      await sut.populateFromFile(checkForm, file)
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
@@ -73,7 +72,7 @@ describe('check form service.populateFromFile', () => {
   it('should throw when the csv data contains non-numeric data', async (done) => {
     const csvFile = 'data/fixtures/check-form-3.csv'
     try {
-      await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
+      await sut.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
@@ -85,7 +84,7 @@ describe('check form service.populateFromFile', () => {
   it('should throw when the csv data contains a header row', async (done) => {
     let csvFile = 'data/fixtures/check-form-4.csv'
     try {
-      await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
+      await sut.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
@@ -97,7 +96,7 @@ describe('check form service.populateFromFile', () => {
   it('should trim values automatically', async () => {
     let csvFile = 'data/fixtures/check-form-5.csv'
     try {
-      const checkFormPop = await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
+      const checkFormPop = await sut.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       const questions = JSON.parse(checkFormPop.formData)
       // Test trim on Q4
       expect(questions[4 - 1].f1).toBe(1)
@@ -119,7 +118,7 @@ describe('check form service.populateFromFile', () => {
   it('should detect if the wrong number of columns are provided', async (done) => {
     let csvFile = 'data/fixtures/check-form-6.csv'
     try {
-      await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
+      await sut.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
