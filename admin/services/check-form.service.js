@@ -121,69 +121,15 @@ const checkFormService = {
     if (!absCsvFile) {
       throw new Error('CSV file argument missing')
     }
+
+    if (checkFormService.isRowCountValid(absCsvFile) !== true) {
+      throw new Error(`Invalid number of lines`)
+    }
+
     const checkFormData = []
 
     return new Promise(function (resolve, reject) {
       csv.parseFile(absCsvFile, { headers: false, trim: true })
-        /* .on('readable', function () {
-          if (checkFormService.isRowCountValid(absCsvFile) !== true) {
-            reject(new Error(`Invalid number of lines:`))
-          }
-        }) */
-        .validate((row) => {
-          if (row && row[0] && row[1]) {
-            if (row[0] < 1 || row[0] > 12 || row[1] < 1 || row[1] > 12) {
-              return false
-            }
-            if (row[0].match(/[^0-9]/) || row[1].match(/[^0-9]/)) {
-              return false
-            }
-          }
-          // We expect 2, and only 2 columns
-          return row.length === 2
-        })
-        .on('data', function (row) {
-          let q = {}
-          q.f1 = parseInt(row[ 0 ], 10)
-          q.f2 = parseInt(row[ 1 ], 10)
-          checkFormData.push(q)
-        })
-        .on('data-invalid', function (row) {
-          reject(new Error(`Row is invalid: [${row[ 0 ]}] [${row[ 1 ]}]`))
-        })
-        .on('end', function () {
-          checkForm.formData = JSON.stringify(checkFormData)
-          resolve(checkForm)
-        })
-        .on('error', function (error) {
-          reject(error)
-        })
-    })
-  },
-
-  /**
-   * Populate a plain object with data from a CSV file
-   * @param {object} checkForm object
-   * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
-   * @return {Promise}
-   */
-  populateFromFile_Original: function (checkForm, absCsvFile) {
-    if (!checkForm) {
-      throw new Error('Check form argument missing')
-    }
-
-    if (!absCsvFile) {
-      throw new Error('CSV file argument missing')
-    }
-    const checkFormData = []
-
-    return new Promise(function (resolve, reject) {
-      csv.fromPath(absCsvFile, { headers: false, trim: true })
-        .on('readable', function () {
-          if (checkFormService.isRowCountValid(absCsvFile) !== true) {
-            reject(new Error(`Invalid number of lines:`))
-          }
-        })
         .validate((row) => {
           if (row && row[0] && row[1]) {
             if (row[0] < 1 || row[0] > 12 || row[1] < 1 || row[1] > 12) {

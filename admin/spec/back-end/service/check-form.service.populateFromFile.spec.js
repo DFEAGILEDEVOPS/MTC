@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spyOn fail */
+/* global describe beforeEach it expect spyOn fail fdescribe fit */
 
 // Test the check-form.service populateFromFile method
 
