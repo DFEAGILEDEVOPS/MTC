@@ -5,7 +5,6 @@ const R = require('ramda')
 
 const { getCommitId, getBuildNumber } = require('../helpers/healthcheck')
 const config = require('../config')
-const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
 const { getPrivacyPage } = require('../controllers/privacy')
@@ -43,9 +42,9 @@ router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */
 router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 /* Test developer routing */
-router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
+router.get('/test-developer', isAuthenticated(roles.testDeveloper), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
 /* Service manager routing */
-router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
+router.get('/service-manager', isAuthenticated(roles.serviceManager), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
 router.get('/contact', (req, res) => getContactPage(req, res))
 router.get('/privacy', (req, res) => getPrivacyPage(req, res))
