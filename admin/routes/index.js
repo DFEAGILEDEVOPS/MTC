@@ -26,6 +26,14 @@ router.get('/', (req, res) => home(req, res))
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
 
+router.get('/auth-dso',
+  (req, res, next) => {
+    next()
+  },
+  passport.authenticate(config.Auth.mode, { failureRedirect: '/sign-in-failure' }),
+  (req, res) => postSignIn(req, res)
+)
+
 /* Login validation */
 router.post('/sign-in',
   (req, res, next) => {

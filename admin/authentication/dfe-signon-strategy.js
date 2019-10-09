@@ -8,7 +8,7 @@ const asyncRetry = require('login.dfe.async-retry')
 const initSignOn = async () => {
   Issuer.defaultHttpOptions = { timeout: 10000 }
   const issuer = await asyncRetry(async () => Issuer.discover(config.Auth.dfeSignIn.authUrl), asyncRetry.strategies.apiStrategy)
-  logger.debug('dfe.issuer', issuer)
+  logger.debug('discovered dfe.issuer:', issuer)
   const client = new issuer.Client({
     client_id: config.Auth.dfeSignIn.clientId,
     client_secret: config.Auth.dfeSignIn.clientSecret
