@@ -17,6 +17,7 @@ const serviceMessageProcessingService = require('../services/service-message-pro
 const serviceMessageService = require('../services/service-message.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
+const serviceMessagePresenter = require('../helpers/service-message-presenter')
 
 const featureToggles = require('feature-toggles')
 
@@ -485,21 +486,22 @@ const controller = {
   },
 
   /**
-   * Create service message
+   * Submit service message
    * @param req
    * @param res
    * @param next
    * @param err
    * @returns {Promise.<void>}
    */
-  getCreateServiceMessage: async (req, res, next, err = undefined) => {
+  getSubmitServiceMessage: async (req, res, next, err = undefined) => {
     req.breadcrumbs('Manage service message', '/service-manager/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('service-manager/service-message/create-service-message', {
+    res.render('service-manager/service-message/submit-service-message', {
       err: err || new ValidationError(),
       formData: req.body,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      isEditView: false
     })
   },
 
@@ -515,13 +517,40 @@ const controller = {
     try {
       const result = await serviceMessageProcessingService.process(requestData)
       if (result && result.hasError && result.hasError()) {
-        return controller.getCreateServiceMessage(req, res, next, result)
+        return controller.getSubmitServiceMessage(req, res, next, result)
       }
-      req.flash('info', 'Service message has been created')
+      const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
+      req.flash('info', flashMessage)
       return res.redirect('/service-manager/service-message')
     } catch (error) {
       return next(error)
     }
+  },
+
+  /**
+   * Edit service message data
+   * @param req
+   * @param res
+   * @param next
+   * @param err
+   * @returns {Promise.<void>}
+   */
+  getEditServiceMessage: async (req, res, next, err = undefined) => {
+    req.breadcrumbs('Manage service message', '/service-manager/service-message')
+    res.locals.pageTitle = 'Edit service message'
+    req.breadcrumbs(res.locals.pageTitle)
+    let serviceMessage
+    try {
+      serviceMessage = await serviceMessageService.getMessage()
+    } catch (error) {
+      return next(error)
+    }
+    res.render('service-manager/service-message/submit-service-message', {
+      err: err || new ValidationError(),
+      formData: serviceMessage || req.body,
+      breadcrumbs: req.breadcrumbs(),
+      isEditView: true
+    })
   }
 }
 

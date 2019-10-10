@@ -616,7 +616,7 @@ describe('service manager controller:', () => {
       expect(serviceMessageService.getMessage).toHaveBeenCalled()
     })
   })
-  describe('getCreateServiceMessage', () => {
+  describe('getSubmitServiceMessage', () => {
     let goodReqParams
     beforeEach(() => {
       goodReqParams = {
@@ -628,7 +628,7 @@ describe('service manager controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(res, 'render')
-      await controller.getCreateServiceMessage(req, res, next)
+      await controller.getSubmitServiceMessage(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
   })
@@ -654,9 +654,9 @@ describe('service manager controller:', () => {
       const validationError = new ValidationError()
       validationError.addError('serviceMessageTitle', 'error')
       spyOn(serviceMessageProcessingService, 'process').and.returnValue(validationError)
-      spyOn(controller, 'getCreateServiceMessage')
+      spyOn(controller, 'getSubmitServiceMessage')
       await controller.postSubmitServiceMessage(req, res, next)
-      expect(controller.getCreateServiceMessage).toHaveBeenCalled()
+      expect(controller.getSubmitServiceMessage).toHaveBeenCalled()
     })
     it('should redirect to the overview page if a validation error is not present', async () => {
       const res = getRes()
@@ -665,6 +665,22 @@ describe('service manager controller:', () => {
       spyOn(res, 'redirect')
       await controller.postSubmitServiceMessage(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
+    })
+  })
+  describe('getEditServiceMessage', () => {
+    let goodReqParams
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/edit-service-message'
+      }
+    })
+    it('should call serviceMessageService.getMessage', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(serviceMessageService, 'getMessage')
+      await controller.getEditServiceMessage(req, res, next)
+      expect(serviceMessageService.getMessage).toHaveBeenCalled()
     })
   })
 })

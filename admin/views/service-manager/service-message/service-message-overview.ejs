@@ -17,9 +17,15 @@
             <p class="govuk-body">
                 Add, edit or delete a service message for schools.
             </p>
-            <a href="/service-manager/service-message/create-service-message" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <%if (Object.keys(serviceMessage).length > 0) { %>
+            <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                Create service message
+            </button>
+            <% } else { %>
+            <a href="/service-manager/service-message/submit-service-message" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                 Create service message
             </a>
+            <% } %>
             <%if (Object.keys(serviceMessage).length > 0) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service message</caption>

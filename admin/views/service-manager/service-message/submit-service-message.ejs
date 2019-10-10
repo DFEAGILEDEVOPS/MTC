@@ -58,6 +58,9 @@
                                 rows="4"><%= formData['serviceMessageContent'] %></textarea>
                     </div>
                 </div>
+                <% if(isEditView) { %>
+                    <input type="hidden" id="isEditView" name="isEditView" value="true"/>
+                <% } %>
                 <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
                 <a href="/service-manager/service-message" class="govuk-button govuk-button--secondary">Cancel</a>
             </form>
