@@ -18,7 +18,6 @@ describe('generate-error-csv.service', () => {
         [ 'Maria', 'Stella', 'Brown', 'X822200014002', '7/15/2005', 'F' ] ]
       try {
         const { file } = await generateErrorCSVService.generate(school, headers, csvData)
-        console.log('file is', file)
         expect(file).toBeDefined()
         expect(file.name).toBe('test')
       } catch (error) {
