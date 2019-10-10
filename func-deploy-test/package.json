@@ -9,6 +9,9 @@
   "description": "",
   "devDependencies": {
     "@azure/functions": "^1.0.1-beta1",
+    "gulp": "^4.0.2",
+    "gulp-replace": "^1.0.0",
+    "gulp-typescript": "^5.0.1",
     "typescript": "^3.3.3"
   }
 }
