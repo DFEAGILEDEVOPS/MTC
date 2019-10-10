@@ -10,8 +10,8 @@ const checkWindowEditService = require('../../../services/check-window-edit.serv
 const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
 const scePresenter = require('../../../helpers/sce')
 const uploadedFileService = require('../../../services/uploaded-file.service')
-const redisCacheService = require('../../../services/redis-cache.service')
 const serviceMessageProcessingService = require('../../../services/service-message-processing.service')
+const serviceMessageService = require('../../../services/service-message.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -603,17 +603,17 @@ describe('service manager controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const redisResult = JSON.stringify({ title: 'title' })
-      spyOn(redisCacheService, 'get').and.returnValue(redisResult)
+      spyOn(serviceMessageService, 'getMessage').and.returnValue(redisResult)
       spyOn(res, 'render')
       await controller.getServiceMessage(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
-    it('should call redisCacheService.get', async () => {
+    it('should call serviceMessageService.getMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(redisCacheService, 'get')
+      spyOn(serviceMessageService, 'getMessage')
       await controller.getServiceMessage(req, res, next)
-      expect(redisCacheService.get).toHaveBeenCalled()
+      expect(serviceMessageService.getMessage).toHaveBeenCalled()
     })
   })
   describe('getCreateServiceMessage', () => {

@@ -1,6 +1,6 @@
 'use strict'
 
-const redisCacheService = require('../services/redis-cache.service')
+const serviceMessageService = require('../services/service-message.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 
@@ -20,12 +20,7 @@ serviceMessageProcessingService.process = async (requestData) => {
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors
   }
-  const redisKey = 'serviceMessage'
-  const serviceMessage = {
-    serviceMessageTitle,
-    serviceMessageContent
-  }
-  return redisCacheService.set(redisKey, serviceMessage)
+  await serviceMessageService.setMessage(serviceMessageTitle, serviceMessageContent)
 }
 
 module.exports = serviceMessageProcessingService

@@ -13,8 +13,8 @@ const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
-const redisCacheService = require('../services/redis-cache.service')
 const serviceMessageProcessingService = require('../services/service-message-processing.service')
+const serviceMessageService = require('../services/service-message.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 
@@ -473,11 +473,8 @@ const controller = {
     res.locals.pageTitle = 'Manage service message'
     req.breadcrumbs(res.locals.pageTitle)
     let serviceMessage
-    let redisResult
     try {
-      const redisKey = 'serviceMessage'
-      redisResult = await redisCacheService.get(redisKey)
-      serviceMessage = JSON.parse(redisResult)
+      serviceMessage = await serviceMessageService.getMessage()
     } catch (error) {
       return next(error)
     }
