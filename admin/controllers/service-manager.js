@@ -493,11 +493,11 @@ const controller = {
    * @param err
    * @returns {Promise.<void>}
    */
-  getSubmitServiceMessage: async (req, res, next, err = undefined) => {
+  getServiceMessageForm: async (req, res, next, err = undefined) => {
     req.breadcrumbs('Manage service message', '/service-manager/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('service-manager/service-message/submit-service-message', {
+    res.render('service-manager/service-message/service-message-form', {
       err: err || new ValidationError(),
       formData: req.body,
       breadcrumbs: req.breadcrumbs(),
@@ -517,7 +517,7 @@ const controller = {
     try {
       const result = await serviceMessageProcessingService.process(requestData)
       if (result && result.hasError && result.hasError()) {
-        return controller.getSubmitServiceMessage(req, res, next, result)
+        return controller.getServiceMessageForm(req, res, next, result)
       }
       const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
       req.flash('info', flashMessage)
@@ -545,7 +545,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    res.render('service-manager/service-message/submit-service-message', {
+    res.render('service-manager/service-message/service-message-form', {
       err: err || new ValidationError(),
       formData: serviceMessage || req.body,
       breadcrumbs: req.breadcrumbs(),

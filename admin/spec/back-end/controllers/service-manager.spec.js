@@ -616,19 +616,19 @@ describe('service manager controller:', () => {
       expect(serviceMessageService.getMessage).toHaveBeenCalled()
     })
   })
-  describe('getSubmitServiceMessage', () => {
+  describe('getServiceMessageForm', () => {
     let goodReqParams
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/service-message/submit-service-message'
+        url: '/service-manager/service-message/service-message-form'
       }
     })
     it('should render the create service message page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(res, 'render')
-      await controller.getSubmitServiceMessage(req, res, next)
+      await controller.getServiceMessageForm(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
   })
@@ -654,9 +654,9 @@ describe('service manager controller:', () => {
       const validationError = new ValidationError()
       validationError.addError('serviceMessageTitle', 'error')
       spyOn(serviceMessageProcessingService, 'process').and.returnValue(validationError)
-      spyOn(controller, 'getSubmitServiceMessage')
+      spyOn(controller, 'getServiceMessageForm')
       await controller.postSubmitServiceMessage(req, res, next)
-      expect(controller.getSubmitServiceMessage).toHaveBeenCalled()
+      expect(controller.getServiceMessageForm).toHaveBeenCalled()
     })
     it('should redirect to the overview page if a validation error is not present', async () => {
       const res = getRes()
