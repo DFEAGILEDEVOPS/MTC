@@ -10,22 +10,16 @@ let logger
 const v2 = {
   process: async function exec (loggerArg) {
     logger = loggerArg
-    const meta = {
-      processCount: 0,
-      errorCount: 0
-    }
     logger.info(`${functionName}: v2.process() called`)
+    let meta = {}
     try {
-      const data = await checkProcessingService.generateReportsFromFile(logger, process.env.PS_INPUT_FILE)
-      meta.processCount += data.processCount
-      if (meta.processCount % 1000 === 0) {
-        logger(`${functionName}: ${meta.processCount} checks processed`)
-      }
+      meta = await checkProcessingService.generateReportsFromFile(logger, process.env.PS_INPUT_FILE)
+      logger.info(`${functionName}: v2.process() finished`)
+      logger.info(`Time taken: ${meta.durationInMins}`)
+      return
     } catch (error) {
       logger.error(`${functionName}: Error during processing: ${error.message}`, error)
-      meta.errorCount += 1
     }
-
     return meta
   }
 }

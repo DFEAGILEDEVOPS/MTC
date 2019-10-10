@@ -53,7 +53,11 @@ describe('#anomaly-file-report.service', () => {
         Message: 'Wrong number of answers',
         'Tested Value': 9,
         'Expected Value': 10,
-        'Question number': null })
+        'Question number': null,
+        QuestionReader: 0,
+        NextBetweenQuestions: 0,
+        InputAssistance: 0
+      })
     })
   })
 })
