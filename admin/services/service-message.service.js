@@ -28,4 +28,12 @@ serviceMessageService.setMessage = async (serviceMessageTitle, serviceMessageCon
   return redisCacheService.set(redisKey, serviceMessage)
 }
 
+/**
+ * Drops the service message
+ * @returns {Promise<*>}
+ */
+serviceMessageService.dropMessage = async () => {
+  return redisCacheService.drop(redisKey)
+}
+
 module.exports = serviceMessageService

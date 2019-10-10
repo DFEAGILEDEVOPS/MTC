@@ -621,7 +621,7 @@ describe('service manager controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/service-message/create-service-message'
+        url: '/service-manager/service-message/submit-service-message'
       }
     })
     it('should render the create service message page', async () => {
@@ -636,7 +636,7 @@ describe('service manager controller:', () => {
     let goodReqParams
     beforeEach(() => {
       goodReqParams = {
-        method: 'GET',
+        method: 'POST',
         url: '/service-manager/service-message/submit-service-message'
       }
     })
@@ -672,7 +672,7 @@ describe('service manager controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/edit-service-message'
+        url: '/service-manager//service-message/edit-service-message'
       }
     })
     it('should call serviceMessageService.getMessage', async () => {
@@ -681,6 +681,22 @@ describe('service manager controller:', () => {
       spyOn(serviceMessageService, 'getMessage')
       await controller.getEditServiceMessage(req, res, next)
       expect(serviceMessageService.getMessage).toHaveBeenCalled()
+    })
+  })
+  describe('postRemoveServiceMessage', () => {
+    let goodReqParams
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'POST',
+        url: '/service-manager/service-message/remove-service-message'
+      }
+    })
+    it('should call serviceMessageService.dropMessage', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(serviceMessageService, 'dropMessage')
+      await controller.postRemoveServiceMessage(req, res, next)
+      expect(serviceMessageService.dropMessage).toHaveBeenCalled()
     })
   })
 })

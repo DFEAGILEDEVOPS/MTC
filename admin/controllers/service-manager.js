@@ -551,6 +551,23 @@ const controller = {
       breadcrumbs: req.breadcrumbs(),
       isEditView: true
     })
+  },
+
+  /**
+   * Remove service message
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postRemoveServiceMessage: async (req, res, next) => {
+    try {
+      await serviceMessageService.dropMessage()
+      req.flash('info', 'Service message has been successfully removed')
+      return res.redirect('/service-manager/service-message')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

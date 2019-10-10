@@ -7,11 +7,6 @@
                     <%= messages.info[0] %>
                 </div>
             <% } %>
-            <% if (messages && messages.deleteInfo) { %>
-                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                    <%= messages.deleteInfo[0] %>
-                </div>
-            <% } %>
             <h1 class="govuk-heading-xl">Service message</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
@@ -44,7 +39,10 @@
                                 </div>
                             </td>
                             <td>
-                                <a class="govuk-link modal-link" id="js-modal-link" href="/service-manager/remove-service-message">Remove</a>
+                                <form action="/service-manager/service-message/remove-service-message" id="serviceMessageDeleteForm" method="post" autocomplete="off">
+                                    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                                    <button class="govuk-button-as-link no-underline govuk-!-font-size-16" type="submit">Remove</button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>

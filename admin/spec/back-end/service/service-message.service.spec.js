@@ -21,4 +21,11 @@ describe('serviceMessageService', () => {
       expect(redisCacheService.set).toHaveBeenCalled()
     })
   })
+  describe('dropMessage', () => {
+    it('should call redisCacheService.drop', async () => {
+      spyOn(redisCacheService, 'drop')
+      await serviceMessageService.dropMessage()
+      expect(redisCacheService.drop).toHaveBeenCalled()
+    })
+  })
 })
