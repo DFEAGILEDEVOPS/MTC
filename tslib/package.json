@@ -4,14 +4,17 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "yarn clean && tsc",
+    "build": "tsc -b --v",
+    "build:watch": "tsc -b --v -w",
+    "rebuild": "yarn clean && yarn build",
     "lint": "standard && tslint --project .",
     "test": "yarn lint && yarn jest",
+    "watch:all": "yarn jest --watchAll",
     "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist",
     "test:coverage": "yarn jest --coverage"
   },
-  "description": "Root MTC Typescript project.  Contains all shared components and azure functions",
+  "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "devDependencies": {
     "@azure/functions": "^1.0.3",
     "@types/bluebird": "^3.5.27",
