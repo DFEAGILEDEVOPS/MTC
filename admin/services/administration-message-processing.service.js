@@ -11,7 +11,7 @@ const administrationMessageProcessingService = {}
  * @param {object} requestData
  * @returns {object}
  */
-administrationMessageProcessingService.process = async (requestData) => {
+administrationMessageProcessingService.submitServiceMessage = async (requestData) => {
   const { serviceMessageTitle, serviceMessageContent } = requestData
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },

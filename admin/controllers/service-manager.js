@@ -515,7 +515,7 @@ const controller = {
   postSubmitServiceMessage: async (req, res, next) => {
     const requestData = req.body
     try {
-      const result = await administrationMessageProcessingService.process(requestData)
+      const result = await administrationMessageProcessingService.submitServiceMessage(requestData)
       if (result && result.hasError && result.hasError()) {
         return controller.getServiceMessageForm(req, res, next, result)
       }

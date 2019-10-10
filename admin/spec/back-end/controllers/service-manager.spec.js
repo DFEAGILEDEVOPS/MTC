@@ -640,20 +640,20 @@ describe('service manager controller:', () => {
         url: '/service-manager/service-message/submit-service-message'
       }
     })
-    it('should call administrationMessageProcessingService.process', async () => {
+    it('should call administrationMessageProcessingService.submitServiceMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(administrationMessageProcessingService, 'process')
+      spyOn(administrationMessageProcessingService, 'submitServiceMessage')
       spyOn(controller, 'getServiceMessage')
       await controller.postSubmitServiceMessage(req, res, next)
-      expect(administrationMessageProcessingService.process).toHaveBeenCalled()
+      expect(administrationMessageProcessingService.submitServiceMessage).toHaveBeenCalled()
     })
     it('should display the same page if a validation error is present', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const validationError = new ValidationError()
       validationError.addError('serviceMessageTitle', 'error')
-      spyOn(administrationMessageProcessingService, 'process').and.returnValue(validationError)
+      spyOn(administrationMessageProcessingService, 'submitServiceMessage').and.returnValue(validationError)
       spyOn(controller, 'getServiceMessageForm')
       await controller.postSubmitServiceMessage(req, res, next)
       expect(controller.getServiceMessageForm).toHaveBeenCalled()
@@ -661,7 +661,7 @@ describe('service manager controller:', () => {
     it('should redirect to the overview page if a validation error is not present', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(administrationMessageProcessingService, 'process')
+      spyOn(administrationMessageProcessingService, 'submitServiceMessage')
       spyOn(res, 'redirect')
       await controller.postSubmitServiceMessage(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
