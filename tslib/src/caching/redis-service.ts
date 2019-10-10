@@ -1,4 +1,3 @@
-
 export interface IRedisService {
   get (key: string): any
   setex (key: string, value: string, ttl: number): any

@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@azure/functions@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@azure/functions/-/functions-1.0.3.tgz#1b51d58f188903f59f39bd093fe6f7b8d88deb11"
+  integrity sha512-/D+sz6LgWT+A6RRW2zhwlwhKqqDSxL6HCF1Q1lN0iXolD2FfNFZpzrOxGyGYEEXp/5Dtjp12bcRTBhMH1cBi2Q==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"

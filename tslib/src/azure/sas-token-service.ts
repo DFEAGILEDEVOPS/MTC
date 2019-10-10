@@ -1,5 +1,3 @@
-'use strict'
-
 import * as azure from 'azure-storage'
 import moment = require('moment')
 
