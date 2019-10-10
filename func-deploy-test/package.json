@@ -1,0 +1,14 @@
+{
+  "name": "function-test-app",
+  "version": "0.1.0",
+  "scripts" : {
+    "build:production": "echo TODO",
+    "prestart": "cd ../tslib && yarn build && cd ../func-deploy-test && func extensions install",
+    "start": "func start"
+  },
+  "description": "",
+  "devDependencies": {
+    "@azure/functions": "^1.0.1-beta1",
+    "typescript": "^3.3.3"
+  }
+}
