@@ -1,10 +1,10 @@
 {
   "name": "function-test-app",
   "version": "0.1.0",
-  "scripts" : {
+  "scripts": {
     "build:production": "echo TODO",
-    "prestart": "cd ../tslib && yarn build && cd ../func-deploy-test && func extensions install",
-    "start": "func start"
+    "start:dev": "cd ../tslib && yarn build && cd ../func-deploy-test && func extensions install && yarn start:host",
+    "start:host": "func start"
   },
   "description": "",
   "devDependencies": {
@@ -13,5 +13,8 @@
     "gulp-replace": "^1.0.0",
     "gulp-typescript": "^5.0.1",
     "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "dotenv": "^8.1.0"
   }
 }
