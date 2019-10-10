@@ -10,8 +10,8 @@ const checkWindowEditService = require('../../../services/check-window-edit.serv
 const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
 const scePresenter = require('../../../helpers/sce')
 const uploadedFileService = require('../../../services/uploaded-file.service')
-const serviceMessageProcessingService = require('../../../services/service-message-processing.service')
-const serviceMessageService = require('../../../services/service-message.service')
+const administrationMessageProcessingService = require('../../../services/administration-message-processing.service')
+const administrationMessageService = require('../../../services/administration-message.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -603,17 +603,17 @@ describe('service manager controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const redisResult = JSON.stringify({ title: 'title' })
-      spyOn(serviceMessageService, 'getMessage').and.returnValue(redisResult)
+      spyOn(administrationMessageService, 'getMessage').and.returnValue(redisResult)
       spyOn(res, 'render')
       await controller.getServiceMessage(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
-    it('should call serviceMessageService.getMessage', async () => {
+    it('should call administrationMessageService.getMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(serviceMessageService, 'getMessage')
+      spyOn(administrationMessageService, 'getMessage')
       await controller.getServiceMessage(req, res, next)
-      expect(serviceMessageService.getMessage).toHaveBeenCalled()
+      expect(administrationMessageService.getMessage).toHaveBeenCalled()
     })
   })
   describe('getServiceMessageForm', () => {
@@ -640,20 +640,20 @@ describe('service manager controller:', () => {
         url: '/service-manager/service-message/submit-service-message'
       }
     })
-    it('should call serviceMessageProcessingService.process', async () => {
+    it('should call administrationMessageProcessingService.process', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(serviceMessageProcessingService, 'process')
+      spyOn(administrationMessageProcessingService, 'process')
       spyOn(controller, 'getServiceMessage')
       await controller.postSubmitServiceMessage(req, res, next)
-      expect(serviceMessageProcessingService.process).toHaveBeenCalled()
+      expect(administrationMessageProcessingService.process).toHaveBeenCalled()
     })
     it('should display the same page if a validation error is present', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const validationError = new ValidationError()
       validationError.addError('serviceMessageTitle', 'error')
-      spyOn(serviceMessageProcessingService, 'process').and.returnValue(validationError)
+      spyOn(administrationMessageProcessingService, 'process').and.returnValue(validationError)
       spyOn(controller, 'getServiceMessageForm')
       await controller.postSubmitServiceMessage(req, res, next)
       expect(controller.getServiceMessageForm).toHaveBeenCalled()
@@ -661,7 +661,7 @@ describe('service manager controller:', () => {
     it('should redirect to the overview page if a validation error is not present', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(serviceMessageProcessingService, 'process')
+      spyOn(administrationMessageProcessingService, 'process')
       spyOn(res, 'redirect')
       await controller.postSubmitServiceMessage(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
@@ -675,12 +675,12 @@ describe('service manager controller:', () => {
         url: '/service-manager//service-message/edit-service-message'
       }
     })
-    it('should call serviceMessageService.getMessage', async () => {
+    it('should call administrationMessageService.getMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(serviceMessageService, 'getMessage')
+      spyOn(administrationMessageService, 'getMessage')
       await controller.getEditServiceMessage(req, res, next)
-      expect(serviceMessageService.getMessage).toHaveBeenCalled()
+      expect(administrationMessageService.getMessage).toHaveBeenCalled()
     })
   })
   describe('postRemoveServiceMessage', () => {
@@ -691,12 +691,12 @@ describe('service manager controller:', () => {
         url: '/service-manager/service-message/remove-service-message'
       }
     })
-    it('should call serviceMessageService.dropMessage', async () => {
+    it('should call administrationMessageService.dropMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(serviceMessageService, 'dropMessage')
+      spyOn(administrationMessageService, 'dropMessage')
       await controller.postRemoveServiceMessage(req, res, next)
-      expect(serviceMessageService.dropMessage).toHaveBeenCalled()
+      expect(administrationMessageService.dropMessage).toHaveBeenCalled()
     })
   })
 })

@@ -2,14 +2,14 @@
 
 const redisCacheService = require('../services/redis-cache.service')
 
-const serviceMessageService = {}
+const administrationMessageService = {}
 const redisKey = 'serviceMessage'
 
 /**
  * Get the service message
  * @returns {object}
  */
-serviceMessageService.getMessage = async () => {
+administrationMessageService.getMessage = async () => {
   const redisResult = await redisCacheService.get(redisKey)
   return JSON.parse(redisResult)
 }
@@ -20,7 +20,7 @@ serviceMessageService.getMessage = async () => {
  * @param {String} serviceMessageContent
  * @returns {Promise<*>}
  */
-serviceMessageService.setMessage = async (serviceMessageTitle, serviceMessageContent) => {
+administrationMessageService.setMessage = async (serviceMessageTitle, serviceMessageContent) => {
   const serviceMessage = {
     serviceMessageTitle,
     serviceMessageContent
@@ -32,8 +32,8 @@ serviceMessageService.setMessage = async (serviceMessageTitle, serviceMessageCon
  * Drops the service message
  * @returns {Promise<*>}
  */
-serviceMessageService.dropMessage = async () => {
+administrationMessageService.dropMessage = async () => {
   return redisCacheService.drop(redisKey)
 }
 
-module.exports = serviceMessageService
+module.exports = administrationMessageService

@@ -13,8 +13,8 @@ const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
-const serviceMessageProcessingService = require('../services/service-message-processing.service')
-const serviceMessageService = require('../services/service-message.service')
+const administrationMessageProcessingService = require('../services/administration-message-processing.service')
+const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
@@ -475,7 +475,7 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     let serviceMessage
     try {
-      serviceMessage = await serviceMessageService.getMessage()
+      serviceMessage = await administrationMessageService.getMessage()
     } catch (error) {
       return next(error)
     }
@@ -515,7 +515,7 @@ const controller = {
   postSubmitServiceMessage: async (req, res, next) => {
     const requestData = req.body
     try {
-      const result = await serviceMessageProcessingService.process(requestData)
+      const result = await administrationMessageProcessingService.process(requestData)
       if (result && result.hasError && result.hasError()) {
         return controller.getServiceMessageForm(req, res, next, result)
       }
@@ -541,7 +541,7 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     let serviceMessage
     try {
-      serviceMessage = await serviceMessageService.getMessage()
+      serviceMessage = await administrationMessageService.getMessage()
     } catch (error) {
       return next(error)
     }
@@ -562,7 +562,7 @@ const controller = {
    */
   postRemoveServiceMessage: async (req, res, next) => {
     try {
-      await serviceMessageService.dropMessage()
+      await administrationMessageService.dropMessage()
       req.flash('info', 'Service message has been successfully removed')
       return res.redirect('/service-manager/service-message')
     } catch (error) {

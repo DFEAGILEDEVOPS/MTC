@@ -1,17 +1,17 @@
 'use strict'
 
-const serviceMessageService = require('../services/service-message.service')
+const administrationMessageService = require('./administration-message.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 
-const serviceMessageProcessingService = {}
+const administrationMessageProcessingService = {}
 
 /**
  * Validate and store the service message data
  * @param {object} requestData
  * @returns {object}
  */
-serviceMessageProcessingService.process = async (requestData) => {
+administrationMessageProcessingService.process = async (requestData) => {
   const { serviceMessageTitle, serviceMessageContent } = requestData
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
@@ -20,7 +20,7 @@ serviceMessageProcessingService.process = async (requestData) => {
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors
   }
-  await serviceMessageService.setMessage(serviceMessageTitle, serviceMessageContent)
+  await administrationMessageService.setMessage(serviceMessageTitle, serviceMessageContent)
 }
 
-module.exports = serviceMessageProcessingService
+module.exports = administrationMessageProcessingService
