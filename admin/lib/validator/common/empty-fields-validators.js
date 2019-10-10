@@ -1,8 +1,8 @@
 'use strict'
 
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 
-const { isEmpty } = require('validator')
 const ValidationError = require('../../validation-error')
 
 /**
@@ -13,7 +13,7 @@ const ValidationError = require('../../validation-error')
 module.exports.validate = function (fields) {
   const validationError = new ValidationError()
   R.forEach(f => {
-    if (typeof f.fieldValue !== 'string' || isEmpty(f.fieldValue && f.fieldValue.trim())) {
+    if (!f.fieldValue || RA.isEmptyString(f.fieldValue && f.fieldValue.trim())) {
       validationError.addError(f.fieldKey, f.errorMessage)
     }
   }, fields)
