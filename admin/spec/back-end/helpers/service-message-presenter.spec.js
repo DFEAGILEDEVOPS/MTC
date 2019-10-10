@@ -4,7 +4,7 @@ const serviceMessagePresenter = require('../../../helpers/service-message-presen
 
 describe('serviceMessagePresenter', () => {
   describe('getFlashMessage', () => {
-    it('returns the edited flash message is isEdit is found as true on the request data', () => {
+    it('returns the edited flash message if isEdit is found as true on the request data', () => {
       const requestData = { isEditView: true }
       const result = serviceMessagePresenter.getFlashMessage(requestData)
       expect(result).toBe('Service message has been updated')
