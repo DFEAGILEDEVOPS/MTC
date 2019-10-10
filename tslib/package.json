@@ -4,8 +4,8 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "./node_modules/typescript/bin/tsc -b --v",
-    "build:watch": "./node_modules/typescript/bin/tsc -b --v -w",
+    "build": "tsc -b --v",
+    "build:watch": "tsc -b --v -w",
     "rebuild": "yarn clean && yarn build",
     "lint": "standard && tslint --project .",
     "test": "yarn lint && yarn jest",
