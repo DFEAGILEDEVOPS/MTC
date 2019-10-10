@@ -10,6 +10,8 @@ const checkWindowEditService = require('../../../services/check-window-edit.serv
 const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
 const scePresenter = require('../../../helpers/sce')
 const uploadedFileService = require('../../../services/uploaded-file.service')
+const redisCacheService = require('../../../services/redis-cache.service')
+const serviceMessageProcessingService = require('../../../services/service-message-processing.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -587,6 +589,82 @@ describe('service manager controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(req.flash).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+  })
+  describe('getServiceMessage', () => {
+    let goodReqParams
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/service-message'
+      }
+    })
+    it('should render the service message overview page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const redisResult = JSON.stringify({ title: 'title' })
+      spyOn(redisCacheService, 'get').and.returnValue(redisResult)
+      spyOn(res, 'render')
+      await controller.getServiceMessage(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+    })
+    it('should call redisCacheService.get', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(redisCacheService, 'get')
+      await controller.getServiceMessage(req, res, next)
+      expect(redisCacheService.get).toHaveBeenCalled()
+    })
+  })
+  describe('getCreateServiceMessage', () => {
+    let goodReqParams
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/service-message/create-service-message'
+      }
+    })
+    it('should render the create service message page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'render')
+      await controller.getCreateServiceMessage(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+    })
+  })
+  describe('postSubmitServiceMessage', () => {
+    let goodReqParams
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-manager/service-message/submit-service-message'
+      }
+    })
+    it('should call serviceMessageProcessingService.process', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(serviceMessageProcessingService, 'process')
+      spyOn(controller, 'getServiceMessage')
+      await controller.postSubmitServiceMessage(req, res, next)
+      expect(serviceMessageProcessingService.process).toHaveBeenCalled()
+    })
+    it('should display the same page if a validation error is present', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const validationError = new ValidationError()
+      validationError.addError('serviceMessageTitle', 'error')
+      spyOn(serviceMessageProcessingService, 'process').and.returnValue(validationError)
+      spyOn(controller, 'getCreateServiceMessage')
+      await controller.postSubmitServiceMessage(req, res, next)
+      expect(controller.getCreateServiceMessage).toHaveBeenCalled()
+    })
+    it('should redirect to the overview page if a validation error is not present', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(serviceMessageProcessingService, 'process')
+      spyOn(res, 'redirect')
+      await controller.postSubmitServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
     })
   })
 })

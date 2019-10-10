@@ -28,5 +28,10 @@ router.get('/mod-settings/cancel', isAuthenticated(roles.serviceManager), (req, 
 router.get('/mod-settings/add-school', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getSceAddSchool(req, res, next))
 router.post('/mod-settings/add-school', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postSceAddSchool(req, res, next))
 router.get('/mod-settings/remove-school/:urn', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getSceRemoveSchool(req, res, next))
+router.get('/service-message', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getServiceMessage(req, res, next))
+router.get('/service-message/create-service-message', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getCreateServiceMessage(req, res, next))
+router.post('/service-message/submit-service-message', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postSubmitServiceMessage(req, res, next))
+router.get('/service-message/edit-service-message', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getEditServiceMessage(req, res, next))
+router.post('/service-message/remove-service-message', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postRemoveServiceMessage(req, res, next))
 
 module.exports = router

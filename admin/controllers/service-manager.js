@@ -13,6 +13,8 @@ const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
+const redisCacheService = require('../services/redis-cache.service')
+const serviceMessageProcessingService = require('../services/service-message-processing.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 
@@ -458,6 +460,71 @@ const controller = {
 
     req.flash('info', `'${school.name}' added as an MOD school`)
     return res.redirect(`/service-manager/mod-settings?hl=${school.urlSlug}`)
+  },
+
+  /**
+   * Manage service message
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getServiceMessage: async (req, res, next) => {
+    res.locals.pageTitle = 'Manage service message'
+    req.breadcrumbs(res.locals.pageTitle)
+    let serviceMessage
+    let redisResult
+    try {
+      const redisKey = 'serviceMessage'
+      redisResult = await redisCacheService.get(redisKey)
+      serviceMessage = JSON.parse(redisResult)
+    } catch (error) {
+      return next(error)
+    }
+    res.render('service-manager/service-message/service-message-overview', {
+      breadcrumbs: req.breadcrumbs(),
+      serviceMessage
+    })
+  },
+
+  /**
+   * Create service message
+   * @param req
+   * @param res
+   * @param next
+   * @param err
+   * @returns {Promise.<void>}
+   */
+  getCreateServiceMessage: async (req, res, next, err = undefined) => {
+    req.breadcrumbs('Manage service message', '/service-manager/service-message')
+    res.locals.pageTitle = 'Create service message'
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/service-message/create-service-message', {
+      err: err || new ValidationError(),
+      formData: req.body,
+      breadcrumbs: req.breadcrumbs()
+    })
+  },
+
+  /**
+   * Submit service message data
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  postSubmitServiceMessage: async (req, res, next) => {
+    const requestData = req.body
+    try {
+      const result = await serviceMessageProcessingService.process(requestData)
+      if (result && result.hasError && result.hasError()) {
+        return controller.getCreateServiceMessage(req, res, next, result)
+      }
+      req.flash('info', 'Service message has been created')
+      return res.redirect('/service-manager/service-message')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

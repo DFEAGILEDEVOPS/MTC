@@ -1,0 +1,66 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (messages && messages.info) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.info[0] %>
+                </div>
+            <% } %>
+            <% if (messages && messages.deleteInfo) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.deleteInfo[0] %>
+                </div>
+            <% } %>
+            <h1 class="govuk-heading-xl">Service message</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                Add, edit or delete a service message for schools.
+            </p>
+            <a href="/service-manager/service-message/create-service-message" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Create service message
+            </a>
+            <%if (Object.keys(serviceMessage).length > 0) { %>
+                <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                    <caption class="govuk-body govuk-table__caption">Service message</caption>
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-full">Title</th>
+                        <th scope="col" class="govuk-table__header"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <td scope="row">
+                                <div>
+                                    <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
+                                       href="/service-manager/service-message/edit-service-message/"><%= serviceMessage.serviceMessageTitle %></a>
+                                </div>
+                            </td>
+                            <td>
+                                <a class="govuk-link modal-link" id="js-modal-link" href="/service-manager/remove-service-message">Remove</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No service message created</p>
+            <% } %>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+<%- partial('partials/_gds_modal_box', {
+    modalTitle: 'Remove service message',
+    modalText: 'Are you sure you want to remove the current service message?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
+}) %>
