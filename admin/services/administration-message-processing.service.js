@@ -7,7 +7,7 @@ const serviceMessageErrorMessages = require('../lib/errors/service-message')
 const administrationMessageProcessingService = {}
 
 /**
- * Validate and store the service message data
+ * Validates and stores the service message data
  * @param {object} requestData
  * @returns {object}
  */
