@@ -464,7 +464,7 @@ const controller = {
   },
 
   /**
-   * Manage service message
+   * Renders manage service message page
    * @param req
    * @param res
    * @param next
@@ -486,7 +486,7 @@ const controller = {
   },
 
   /**
-   * Submit service message
+   * Renders submit service message page
    * @param req
    * @param res
    * @param next
@@ -506,7 +506,7 @@ const controller = {
   },
 
   /**
-   * Submit service message data
+   * Submits service message data
    * @param req
    * @param res
    * @param next
@@ -528,7 +528,7 @@ const controller = {
   },
 
   /**
-   * Edit service message data
+   * Renders edit service message data page
    * @param req
    * @param res
    * @param next
@@ -554,7 +554,7 @@ const controller = {
   },
 
   /**
-   * Remove service message
+   * Removes service message
    * @param req
    * @param res
    * @param next
