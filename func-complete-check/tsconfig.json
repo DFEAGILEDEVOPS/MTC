@@ -29,7 +29,7 @@
   },
   "references": [
     {
-      "path": "../ts-lib"
+      "path": "../tslib"
     }
   ]
 }
