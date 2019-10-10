@@ -7,7 +7,7 @@ const serviceMessageErrorMessages = require('../lib/errors/service-message')
 const serviceMessageProcessingService = {}
 
 /**
- * Identify if role is helpdesk
+ * Validate and store the service message data
  * @param {object} requestData
  * @returns {object}
  */
