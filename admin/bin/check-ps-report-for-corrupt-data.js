@@ -19,11 +19,11 @@ function report (prop, row, val) {
   console.log(`${prop} field not matched for ${row['AttemptId']} val was '${val}'`)
 }
 
-function reportMissing(row, prop) {
+function reportMissing (row, prop) {
   process.stderr.write(`${prop} field missing for ${row['AttemptId']}\n`)
 }
 
-function reportProgress(count) {
+function reportProgress (count) {
   // process.stdout.write('.')
 }
 
@@ -127,22 +127,22 @@ function checkReaderEnd (row, prop) {
   regexTest(row, prop, timeRegex)
 }
 
-function checkDob(row, prop) {
+function checkDob (row, prop) {
   const regex = /^\d\d\/\d\d\/\d\d\d\d$/
-  if(!row[prop]) {
-    return report(prop, row, val)
+  if (!row[prop]) {
+    return report(prop, row, row[prop])
   }
   regexTest(row, prop, regex)
 }
 
-function checkGender(row, prop) {
+function checkGender (row, prop) {
   const val = row[prop]
   if (val !== 'M' && val !== 'F') {
     report(prop, row, val)
   }
 }
 
-function checkPupilId(row, prop) {
+function checkPupilId (row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -152,7 +152,7 @@ function checkPupilId(row, prop) {
   }
 }
 
-function checkForename(row, prop) {
+function checkForename (row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -162,7 +162,7 @@ function checkForename(row, prop) {
   }
 }
 
-function checkSurname(row, prop) {
+function checkSurname (row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -172,7 +172,7 @@ function checkSurname(row, prop) {
   }
 }
 
-function checkFormMark(row, prop) {
+function checkFormMark (row, prop) {
   const val = Number(row[prop])
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -182,17 +182,17 @@ function checkFormMark(row, prop) {
   }
 }
 
-function checkQDisplayTime(row, prop) {
+function checkQDisplayTime (row, prop) {
   const val = Number(row[prop])
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
   }
-  if (!RA.inRange(6,9, val)) {
+  if (!RA.inRange(6, 9, val)) {
     report(prop, row, row[prop])
   }
 }
 
-function checkPauseLength(row, prop) {
+function checkPauseLength (row, prop) {
   const val = Number(row[prop])
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -202,7 +202,7 @@ function checkPauseLength(row, prop) {
   }
 }
 
-function checkDeviceType(row, prop) {
+function checkDeviceType (row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -212,7 +212,7 @@ function checkDeviceType(row, prop) {
   }
 }
 
-function checkDeviceTypeModel(row, prop) {
+function checkDeviceTypeModel (row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -222,7 +222,7 @@ function checkDeviceTypeModel(row, prop) {
   }
 }
 
-function checkDeviceID(row, prop) {
+function checkDeviceID (row, prop) {
   // DeviceId
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
@@ -233,7 +233,7 @@ function checkDeviceID(row, prop) {
   }
 }
 
-function checkSchoolName(row, prop) {
+function checkSchoolName (row, prop) {
   // School Name
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
@@ -244,28 +244,28 @@ function checkSchoolName(row, prop) {
   }
 }
 
-function checkEstab(row, prop) {
+function checkEstab (row, prop) {
   const regex = /^\d{4}$/
   regexTest(row, prop, regex)
 }
 
-function checkSchoolURN(row, prop) {
+function checkSchoolURN (row, prop) {
   const regex = /^\d{6}$/
   regexTest(row, prop, regex)
 }
 
-function checkLAnum(row, prop) {
+function checkLAnum (row, prop) {
   // should be LAnum
   const regex = /^\d{3}$/
   regexTest(row, prop, regex)
 }
 
-function checkAttemptID(row, prop) {
+function checkAttemptID (row, prop) {
   const regex = /^[0-9A-Za-z-]+$/
   regexTest(row, prop, regex)
 }
 
-function checkFormID(row, prop) {
+function checkFormID (row, prop) {
   // should be FormID
   const regex = /^[0-9A-Za-z]{4,}$/
   regexTest(row, prop, regex)
@@ -276,11 +276,11 @@ function checkTestDate (row, prop) {
   regexTest(row, prop, regex)
 }
 
-function checkTimeStart(row, prop) {
+function checkTimeStart (row, prop) {
   regexTest(row, prop, timeRegex)
 }
 
-function checkTimeComplete(row, prop) {
+function checkTimeComplete (row, prop) {
   regexTest(row, prop, timeRegex)
 }
 
