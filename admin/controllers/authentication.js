@@ -7,6 +7,7 @@ const config = require('../config')
 const bluebird = require('bluebird')
 const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const request = require('async-request')
+const roleService = require('../services/role.service')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
@@ -87,18 +88,18 @@ const getUserInfoFromDfeApi = async (token, user) => {
 
 const postDfeSignIn = async (req, res) => {
   logger.debug(JSON.stringify(req.user, null, 2))
-  let usersRole
   try {
     const token = await createJwtForDfeApi()
     const userInfo = await getUserInfoFromDfeApi(token, req.user)
     logger.debug(JSON.stringify(userInfo, null, 2))
-    usersRole = userInfo.roles[0].name
-    logger.debug(`user role is ${usersRole}`)
+    const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].name)
+    logger.debug(`user role is ${mtcRole}`)
+    req.user.role = mtcRole
   } catch (error) {
     throw new Error(`unable to resolve dfe user:${error.message}`)
   }
 
-  switch (usersRole) {
+  switch (req.user.role) {
     case 'TEACHER':
     case 'HEADTEACHER':
     case 'HELPDESK':
