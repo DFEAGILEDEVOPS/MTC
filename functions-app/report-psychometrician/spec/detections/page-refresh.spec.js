@@ -21,6 +21,10 @@ describe('#detectPageRefresh', () => {
       Message: 'Page refresh detected',
       'Tested Value': 1,
       'Expected Value': 0,
-      'Question number': null })
+      'Question number': null,
+      QuestionReader: 0,
+      NextBetweenQuestions: 0,
+      InputAssistance: 0
+    })
   })
 })
