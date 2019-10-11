@@ -52,7 +52,7 @@ const checkFormService = {
 
       // We have multiple forms to choose from so we randomly select an unseen form
       const idx = await random.getRandomIntInRange(0, unseenForms.length - 1)
-      return unseenForms[ idx ]
+      return unseenForms[idx]
     } catch (error) {
       throw new Error('Error allocating checkForm: ' + error.message)
     }
@@ -184,7 +184,7 @@ const checkFormService = {
    */
   // TODO why is there functionality for check windows in the check form service?????
   checkWindowNames: (checkWindows) => {
-    let checkWindowsName = []
+    const checkWindowsName = []
     checkWindows.forEach(cw => {
       checkWindowsName.push(' ' + cw.name)
     })
@@ -237,9 +237,8 @@ const checkFormService = {
    * @returns {boolean}
    */
   isRowCountValid: (file) => {
-    let result
-    let csvData = fs.readFileSync(file)
-    result = csvData.toString().split('\n').map(function (line) {
+    const csvData = fs.readFileSync(file)
+    const result = csvData.toString().split('\n').map(function (line) {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM

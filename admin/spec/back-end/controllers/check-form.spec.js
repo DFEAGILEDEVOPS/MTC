@@ -37,7 +37,7 @@ describe('check-form controller:', () => {
   describe('Check routes', () => {
     let controller
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/test-developer/home'
     }
@@ -457,7 +457,7 @@ describe('check-form controller:', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           const assignedCheckForms = [
-            { 'id': 100, 'name': 'MTC0100' }
+            { id: 100, name: 'MTC0100' }
           ]
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
             {
@@ -489,7 +489,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - When checkWindowDataService.fetchCheckWindow', () => {
         beforeEach(() => {
           const assignedCheckForms = [
-            { '_id': 100, 'name': 'MTC0100' }
+            { _id: 100, name: 'MTC0100' }
           ]
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
@@ -562,7 +562,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -583,7 +583,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -604,7 +604,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -618,7 +618,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = null
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).not.toHaveBeenCalled()
@@ -632,7 +632,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = null
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).not.toHaveBeenCalled()
