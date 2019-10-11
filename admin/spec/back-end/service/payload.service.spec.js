@@ -42,7 +42,7 @@ describe('payload.service', () => {
         { id: 1, clientTimestamp: '2019-05-24T17:10:16.808Z' }
       ]
       const res = service.addRelativeTimingsToSection(mock)
-      expect(res[0].hasOwnProperty('relativeTiming')).toBeTruthy()
+      expect({}.hasOwnProperty.call(res[0], 'relativeTiming')).toBeTruthy()
       expect(res[0].relativeTiming).toEqual('+0.00')
       expect(res[0].clientTimestamp).toEqual('2019-05-24T17:10:16.808Z')
     })

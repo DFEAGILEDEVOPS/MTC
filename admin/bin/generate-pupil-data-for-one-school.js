@@ -11,9 +11,8 @@ const sqlService = require('../services/data-access/sql.service')
 const pupilCountPerSchool = 30
 
 const schoolIdParam = process.argv[2]
-let schoolId
+const schoolId = parseInt(schoolIdParam)
 
-schoolId = parseInt(schoolIdParam)
 if (isNaN(schoolId)) {
   console.error('target school id (int) is a required argument')
   process.exitCode = -1

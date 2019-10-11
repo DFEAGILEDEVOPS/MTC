@@ -165,9 +165,9 @@ describe('check-start.service', () => {
       it('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true)
-        expect(c.hasOwnProperty('pupil_id'))
-        expect(c.hasOwnProperty('checkWindow_id'))
-        expect(c.hasOwnProperty('checkForm_id'))
+        expect({}.hasOwnProperty.call(c, 'pupil_id'))
+        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
+        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
       })
     })
 
@@ -175,9 +175,9 @@ describe('check-start.service', () => {
       it('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false)
-        expect(c.hasOwnProperty('pupil_id'))
-        expect(c.hasOwnProperty('checkWindow_id'))
-        expect(c.hasOwnProperty('checkForm_id'))
+        expect({}.hasOwnProperty.call(c, 'pupil_id'))
+        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
+        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
       })
     })
   })
@@ -234,7 +234,7 @@ describe('check-start.service', () => {
       await service.pupilLogin(1)
       expect(checkDataService.sqlUpdate).toHaveBeenCalled()
       const arg = checkDataService.sqlUpdate.calls.mostRecent().args[0]
-      expect(arg.hasOwnProperty('pupilLoginDate')).toBeTruthy()
+      expect({}.hasOwnProperty.call(arg, 'pupilLoginDate')).toBeTruthy()
       expect(moment.isMoment(arg.pupilLoginDate)).toBeTruthy()
     })
 
@@ -244,8 +244,8 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlUpdate')
       spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       const res = await service.pupilLogin(1)
-      expect(res.hasOwnProperty('checkCode')).toBeTruthy()
-      expect(res.hasOwnProperty('questions')).toBeTruthy()
+      expect({}.hasOwnProperty.call(res, 'checkCode')).toBeTruthy()
+      expect({}.hasOwnProperty.call(res, 'questions')).toBeTruthy()
     })
   })
 

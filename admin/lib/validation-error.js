@@ -31,7 +31,7 @@ module.exports = class ValidationError {
    * @return {boolean}
    */
   isError (field) {
-    if (this.errors.hasOwnProperty(field)) {
+    if ({}.hasOwnProperty.call(this.errors, field)) {
       return true
     }
     return false
@@ -43,7 +43,7 @@ module.exports = class ValidationError {
    * @return {String}  - possibly empty string
    */
   get (field) {
-    if (this.errors.hasOwnProperty(field)) {
+    if ({}.hasOwnProperty.call(this.errors, field)) {
       return this.errors[field]
     }
     return ''

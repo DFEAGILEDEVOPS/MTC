@@ -71,7 +71,7 @@ function sleep (ms) {
  */
 logger.info('ENVIRONMENT_NAME : ' + config.Environment)
 const environmentName = config.Environment
-let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
+let featureTogglesSpecific, featureTogglesDefault
 let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
   featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
@@ -83,7 +83,7 @@ try {
   featureTogglesDefault = require(featureTogglesDefaultPath)
 } catch (err) {}
 
-featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
+const featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
 
 if (featureTogglesMerged) {
   logger.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)

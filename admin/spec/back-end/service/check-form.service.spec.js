@@ -41,8 +41,8 @@ describe('check-form.service', () => {
       try {
         const checkForm = await service.allocateCheckForm(availableForms, seenForms)
         expect(typeof checkForm).toBe('object')
-        expect(checkForm.hasOwnProperty('id')).toBe(true)
-        expect(checkForm.hasOwnProperty('name')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'id')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
       } catch (error) {
         fail(error)
       }
@@ -125,9 +125,9 @@ describe('check-form.service', () => {
         expect(Array.isArray(questions)).toBeTruthy()
         expect(questions.length).toBe(2)
         questions.forEach((q) => {
-          expect(q.hasOwnProperty('order')).toBeTruthy()
-          expect(q.hasOwnProperty('factor1')).toBeTruthy()
-          expect(q.hasOwnProperty('factor2')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'order')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor1')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor2')).toBeTruthy()
         })
       } catch (error) {
         fail(error)

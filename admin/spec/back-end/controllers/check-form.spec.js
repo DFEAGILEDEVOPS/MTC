@@ -161,9 +161,7 @@ describe('check-form controller:', () => {
 
     describe('#saveCheckForm - Saving a single check form', () => {
       function standardReq () {
-        let req
-        req = getReq(goodReqParams)
-
+        const req = getReq(goodReqParams)
         req.method = 'POST'
         req.url = 'test-developer/upload-new-form'
         req.files = {}
@@ -340,8 +338,7 @@ describe('check-form controller:', () => {
 
     describe('#saveCheckForm - Saving multiple check forms', () => {
       function multiReq () {
-        let req
-        req = getReq(goodReqParams)
+        const req = getReq(goodReqParams)
 
         req.method = 'POST'
         req.url = 'test-developer/upload-new-form'

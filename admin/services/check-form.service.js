@@ -292,9 +292,8 @@ const checkFormService = {
    * @returns {boolean}
    */
   isRowCountValid: (file) => {
-    let result
     const csvData = fs.readFileSync(file)
-    result = csvData.toString().split('\n').map(function (line) {
+    const result = csvData.toString().split('\n').map(function (line) {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM

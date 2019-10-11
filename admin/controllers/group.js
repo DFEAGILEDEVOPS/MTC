@@ -196,7 +196,6 @@ const editGroup = async (req, res, next) => {
     return next(error)
   }
 
-  let group
   let oldGroup
 
   try {
@@ -205,7 +204,7 @@ const editGroup = async (req, res, next) => {
     return next(error)
   }
 
-  group = {
+  const group = {
     name: req.body.name,
     pupils: req.body.pupil,
     id: req.body.groupId,
@@ -216,7 +215,6 @@ const editGroup = async (req, res, next) => {
   if (validationError.hasError()) {
     let pupilsList
     const selectedPupils = []
-    let selectedPupilIds
 
     try {
       pupilsList = await groupService.getPupils(req.user.schoolId, req.body.groupId)
@@ -224,7 +222,7 @@ const editGroup = async (req, res, next) => {
       return next(error)
     }
 
-    selectedPupilIds = Object.values(req.body.pupil)
+    const selectedPupilIds = Object.values(req.body.pupil)
     selectedPupilIds.map((p) => { selectedPupils[p] = true })
 
     req.breadcrumbs('Group pupils', '/group/pupils-list')

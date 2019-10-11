@@ -22,9 +22,8 @@ describe('sql.service:integration', () => {
     })
 
     it('select query with parameters', async () => {
-      let settingsRows
       const id = { name: 'id', type: TYPES.Int, value: 1 }
-      settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
+      const settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
       expect(settingsRows).toBeDefined()
       expect(settingsRows.length).toBe(1)
     })

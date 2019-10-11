@@ -8,9 +8,8 @@ const path = require('path')
 const checkFormService = require('../../../services/check-form.service')
 
 describe('check form service.populateFromFile', () => {
-  let checkForm, service
-  checkForm = {}
-  service = require('../../../services/check-form.service')
+  let checkForm
+  const service = require('../../../services/check-form.service')
 
   describe('with spy', function () {
     beforeEach(function () {

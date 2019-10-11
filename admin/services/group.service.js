@@ -30,8 +30,7 @@ groupService.getGroupsAsArray = async function (schoolId) {
     throw new Error('schoolId is required')
   }
   const groupsIndex = []
-  let groups
-  groups = await groupDataService.sqlFindGroups(schoolId)
+  const groups = await groupDataService.sqlFindGroups(schoolId)
   if (groups.length > 0) {
     groups.map((obj) => { groupsIndex[obj.id] = obj.name })
   }

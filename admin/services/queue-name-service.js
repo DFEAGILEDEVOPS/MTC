@@ -23,7 +23,8 @@ const nameService = {
    */
   getName: function (qName) {
     const prefix = config.Azure.queuePrefix
-    if (!NAMES.hasOwnProperty(qName.toUpperCase().replace('-', '_'))) {
+    const qNameKey = qName.toUpperCase().replace('-', '_')
+    if (!{}.hasOwnProperty.call(NAMES, qNameKey)) {
       throw new Error('Queue not found: ' + qName)
     }
 
