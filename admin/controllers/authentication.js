@@ -4,7 +4,8 @@ const logger = require('../services/log.service').getLogger()
 const homeRoutes = require('../lib/consts/home-routes')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
-const jwt = Promise.promisifyAll(require('jsonwebtoken'))
+const bluebird = require('bluebird')
+const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const request = require('async-request')
 
 const home = (req, res) => {
@@ -60,21 +61,28 @@ const createJwtForDfeApi = async () => {
   const apiSecret = config.Auth.dfeSignIn.userInfoApi.apiSecret
   const payload = {
     iss: clientId,
-    aud: 'signin.education.gov.uk'
+    aud: config.Auth.dfeSignIn.userInfoApi.audience
   }
-  return jwt.sign(payload, apiSecret)
+  return jwt.sign(payload, apiSecret, { algorithm: 'HS256' })
 }
 
 const getUserInfoFromDfeApi = async (token, user) => {
-  const serviceId = user.serviceId
-  const orgId = user.orgId
-  const url = `${config.Auth.dfeSignIn.userInfoApi.baseUrl}/services/${serviceId}/organisations/${orgId}/users/${user.id}`
-  return request(url, {
+  const serviceId = config.Auth.dfeSignIn.clientId // serves as serviceId also, undocumented
+  const orgId = user.organisation.id
+  const baseUrl = config.Auth.dfeSignIn.userInfoApi.baseUrl
+  const url = `${baseUrl}/services/${serviceId}/organisations/${orgId}/users/${user.id}`
+  const response = await request(url, {
     method: 'GET',
     headers: {
-      Authorisation: `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     }
   })
+  if (response.statusCode === 200) {
+    return JSON.parse(response.body)
+  } else {
+    logger.error(response)
+    throw new Error(`unsatisfactory response returned from DfE API. statusCode:${response.statusCode}`)
+  }
 }
 
 const postDfeSignIn = async (req, res) => {
@@ -83,7 +91,7 @@ const postDfeSignIn = async (req, res) => {
   try {
     const token = await createJwtForDfeApi()
     const userInfo = await getUserInfoFromDfeApi(token, req.user)
-    role = userInfo.role
+    logger.debug(JSON.stringify(userInfo, null, 2))
   } catch (error) {
     throw new Error(`unable to resolve dfe user:${error.message}`)
   }
