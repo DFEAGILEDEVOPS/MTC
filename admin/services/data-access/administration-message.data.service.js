@@ -4,7 +4,6 @@ const R = require('ramda')
 
 const sqlService = require('./sql.service')
 const TYPES = sqlService.TYPES
-const redisCacheService = require('../redis-cache.service')
 const administrationMessageDataService = {}
 
 /**
@@ -14,7 +13,6 @@ const administrationMessageDataService = {}
  */
 administrationMessageDataService.sqlCreate = async (data) => {
   await sqlService.create('serviceMessage', data)
-  return redisCacheService.drop('administrationMessageDataService.sqlFindServiceMessage')
 }
 
 /**
@@ -45,7 +43,6 @@ administrationMessageDataService.sqlUpdate = async (data) => {
     SET title=@title, message=@message, updatedByUser_id=@updatedByUser_id
     WHERE isDeleted=0`
   await sqlService.modify(sql, params)
-  return redisCacheService.drop('administrationMessageDataService.sqlFindServiceMessage')
 }
 
 /**
@@ -66,7 +63,6 @@ administrationMessageDataService.sqlDeleteServiceMessage = async (data) => {
     WHERE isDeleted=0
   `
   await sqlService.modify(sql, params)
-  return redisCacheService.drop('administrationMessageDataService.sqlFindServiceMessage')
 }
 
 /**
@@ -79,7 +75,7 @@ administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
     FROM [mtc_admin].serviceMessage
     WHERE isDeleted = 0
   `
-  const result = await sqlService.query(sql, [], 'administrationMessageDataService.sqlFindServiceMessage')
+  const result = await sqlService.query(sql)
   return R.head(result)
 }
 

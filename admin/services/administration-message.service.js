@@ -1,16 +1,26 @@
 'use strict'
 
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
+const redisCacheService = require('./redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 
 const administrationMessageService = {}
+const serviceMessageRedisKey = 'serviceMessage'
 
 /**
  * Get the current service message
  * @returns {object}
  */
 administrationMessageService.getMessage = async () => {
+  let cachedServiceMessage
+  const result = await redisCacheService.get(serviceMessageRedisKey)
+  try {
+    cachedServiceMessage = JSON.parse(result)
+    if (cachedServiceMessage) {
+      return cachedServiceMessage
+    }
+  } catch (ignore) {}
   return administrationMessageDataService.sqlFindActiveServiceMessage()
 }
 
@@ -34,8 +44,10 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   }
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
-  return requestData.isEditView
-    ? administrationMessageDataService.sqlUpdate(serviceMessageData) : administrationMessageDataService.sqlCreate(serviceMessageData)
+
+  requestData.isEditView
+    ? await administrationMessageDataService.sqlUpdate(serviceMessageData) : await administrationMessageDataService.sqlCreate(serviceMessageData)
+  return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
 }
 
 /**
@@ -66,7 +78,8 @@ administrationMessageService.dropMessage = async (userId) => {
   }
   const sqlDeleteParams = {}
   sqlDeleteParams['deletedByUser_id'] = userId
-  return administrationMessageDataService.sqlDeleteServiceMessage(sqlDeleteParams)
+  await administrationMessageDataService.sqlDeleteServiceMessage(sqlDeleteParams)
+  return redisCacheService.drop(serviceMessageRedisKey)
 }
 
 module.exports = administrationMessageService
