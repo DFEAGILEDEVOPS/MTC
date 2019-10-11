@@ -6,8 +6,8 @@ const startTime = Date.now()
 const R = require('ramda')
 const RA = require('ramda-adjunct')
 
-// const timeRegex =  /^\d{1,2}:\d{2}:\d{2} (AM|PM)$/i // Not quite right - PM instead pm and single digit hours
-const timeRegex = /^\d{2}:\d{2}:\d{2} (AM|PM)$/ // Correct
+// const timeRegex =  /^\d{1,2}:\d{2}:\d{2} (AM|PM)$/i // e.g. '8:33:40 am' Not quite right - PM instead pm and single digit hours
+const timeRegex = /^\d{2}:\d{2}:\d{2} (AM|PM)$/ // Correct '08:33:40 AM'
 
 // Check for corrupt data in the PS report
 function help () {
