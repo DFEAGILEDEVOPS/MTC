@@ -18,11 +18,11 @@ function help () {
 
 function report (prop, row, val) {
   // console.log()
-  console.log(`${prop} field not matched for ${row['AttemptId']} val was '${val}'`)
+  console.log(`${prop} field not matched for ${row.AttemptId} val was '${val}'`)
 }
 
 function reportMissing (row, prop) {
-  process.stderr.write(`${prop} field missing for ${row['AttemptId']}\n`)
+  process.stderr.write(`${prop} field missing for ${row.AttemptId}\n`)
 }
 
 function reportProgress () {
@@ -36,19 +36,19 @@ function reportProgress () {
  * @param {RegExp} regex
  */
 function regexTest (row, prop, regex) {
-  if (row.hasOwnProperty(prop)) {
+  if ({}.hasOwnProperty.call(row, prop)) {
     const val = row[prop]
     if (val.length && !regex.test(val)) {
       report(prop, row, val)
     }
   } else {
-    console.log(`Missing property: ${row['checkCode']} property: ${prop}`)
+    console.log(`Missing property: ${row.checkCode} property: ${prop}`)
   }
 }
 
-function checkStringBetween(row, prop, lowLimit, highLimit) {
+function checkStringBetween (row, prop, lowLimit, highLimit) {
   const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   console.log(`val is ${val} with length ${val.length}`)
@@ -57,9 +57,9 @@ function checkStringBetween(row, prop, lowLimit, highLimit) {
   }
 }
 
-function checkStringNotEmpty(row, prop) {
+function checkStringNotEmpty (row, prop) {
   const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   if (val === '') {
@@ -174,15 +174,13 @@ function checkGender (row, prop) {
 
 function checkPupilId (row, prop) {
   const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   if (val.length !== 13) {
     report(prop, row, val)
   }
 }
-
-
 
 function checkForename (row, prop) {
   checkStringBetween(row, prop, 1, 128)
@@ -194,7 +192,7 @@ function checkSurname (row, prop) {
 
 function checkFormMark (row, prop) {
   const val = Number(row[prop])
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   if (!(RA.isNumber(val)) && RA.inRange(0, 26, val)) {
@@ -204,7 +202,7 @@ function checkFormMark (row, prop) {
 
 function checkQDisplayTime (row, prop) {
   const val = Number(row[prop])
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   if (!RA.inRange(6, 9, val)) {
@@ -214,7 +212,7 @@ function checkQDisplayTime (row, prop) {
 
 function checkPauseLength (row, prop) {
   const val = Number(row[prop])
-  if (!row.hasOwnProperty(prop)) {
+  if (!{}.hasOwnProperty.call(row, prop)) {
     return reportMissing(row, prop)
   }
   if (val !== 3) {
@@ -229,8 +227,6 @@ function checkDeviceType (row, prop) {
 function checkDeviceTypeModel (row, prop) {
   checkStringNotEmpty()
 }
-
-
 
 function checkDeviceID (row, prop) {
   // DeviceId
