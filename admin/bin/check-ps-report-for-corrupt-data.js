@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 'use strict'
+/* Check for corrupt data in the PS report */
+
 const fs = require('fs')
 const csv = require('fast-csv')
 const startTime = Date.now()
@@ -9,7 +11,7 @@ const RA = require('ramda-adjunct')
 // const timeRegex =  /^\d{1,2}:\d{2}:\d{2} (AM|PM)$/i // e.g. '8:33:40 am' Not quite right - PM instead pm and single digit hours
 const timeRegex = /^\d{2}:\d{2}:\d{2} (AM|PM)$/ // Correct '08:33:40 AM'
 
-// Check for corrupt data in the PS report
+/** Utility functions */
 function help () {
   console.log(`usage: ${process.argv[0]} <ps-file-to-inspect>`)
 }
@@ -44,6 +46,28 @@ function regexTest (row, prop, regex) {
   }
 }
 
+function checkStringBetween(row, prop, lowLimit, highLimit) {
+  const val = row[prop]
+  if (!row.hasOwnProperty(prop)) {
+    return reportMissing(row, prop)
+  }
+  console.log(`val is ${val} with length ${val.length}`)
+  if (val.length < lowLimit || val.length > highLimit) {
+    report(prop, row, val)
+  }
+}
+
+function checkStringNotEmpty(row, prop) {
+  const val = row[prop]
+  if (!row.hasOwnProperty(prop)) {
+    return reportMissing(row, prop)
+  }
+  if (val === '') {
+    report(prop, row, row[prop])
+  }
+}
+
+/** Field checks */
 const checkID = function (row, prop) {
   const regex = /^\d{1,2} x \d{1,2}$/
   regexTest(row, prop, regex)
@@ -158,16 +182,7 @@ function checkPupilId (row, prop) {
   }
 }
 
-function checkStringBetween(row, prop, lowLimit, highLimit) {
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  console.log(`val is ${val} with length ${val.length}`)
-  if (val.length < lowLimit || val.length > highLimit) {
-    report(prop, row, val)
-  }
-}
+
 
 function checkForename (row, prop) {
   checkStringBetween(row, prop, 1, 128)
@@ -208,34 +223,14 @@ function checkPauseLength (row, prop) {
 }
 
 function checkDeviceType (row, prop) {
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  if (val === '') {
-    report(prop, row, row[prop])
-  }
+  checkStringNotEmpty()
 }
 
 function checkDeviceTypeModel (row, prop) {
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  if (val === '') {
-    report(prop, row, row[prop])
-  }
+  checkStringNotEmpty()
 }
 
-function checkStringNotEmpty(row, prop) {
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  if (val === '') {
-    report(prop, row, row[prop])
-  }
-}
+
 
 function checkDeviceID (row, prop) {
   // DeviceId
