@@ -2,7 +2,7 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe xdescribe beforeEach it expect spyOn fail jasmine */
+/* global describe beforeEach it expect spyOn fail jasmine */
 
 const fs = require('fs-extra')
 const R = require('ramda')
@@ -132,26 +132,6 @@ describe('check-form.service', () => {
       } catch (error) {
         fail(error)
       }
-    })
-  })
-
-  // TODO consider removal when moved to SQL as method under test is questionable
-  xdescribe('#formatCheckFormsAndWindows()', () => {
-    let checkFormDataServiceStub
-
-    beforeEach(() => {
-    })
-
-    it('when sorting by form name it should call appropriate data service method', async (done) => {
-      spyOn()
-      const results = await service.formatCheckFormsAndWindows('name', 'asc')
-      expect(checkFormDataServiceStub, 'sqlFetchSortedActiveFormsByName').toHaveBeenCalled()
-      expect(results[0].name).toBe('MTC0100')
-      expect(results[0].isDeleted).toBe(false)
-      expect(results[0].questions.length).toBe(3)
-      expect(results[0].removeLink).toBe(true)
-      expect(results[0].checkWindows.length).toBe(0)
-      done()
     })
   })
 

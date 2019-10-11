@@ -46,7 +46,7 @@ service.upload = async (school, uploadFile) => {
   const pr = new Promise((resolve, reject) => {
     const csvDataArray = []
     stream = fs.createReadStream(uploadFile.file)
-    csv.fromStream(stream)
+    csv.parseStream(stream)
       .on('data', (data) => {
         csvDataArray.push(data)
       })

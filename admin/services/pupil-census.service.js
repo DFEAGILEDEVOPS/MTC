@@ -32,7 +32,7 @@ pupilCensusService.upload = async (uploadFile) => {
   const csvData = await new Promise((resolve, reject) => {
     const dataArr = []
     stream = fs.createReadStream(uploadFile.file)
-    csv.fromStream(stream)
+    csv.parseStream(stream)
       .on('data', (data) => {
         // clear extra spaces in empty rows
         const row = data && data.map(r => r.trim())

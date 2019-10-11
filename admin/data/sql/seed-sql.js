@@ -35,7 +35,7 @@ const processSeed = async (seed) => {
     // handle TSV
     content = []
     await new Promise((resolve, reject) => {
-      csv.fromPath(filepath, { delimiter: '\t', headers: true, trim: true })
+      csv.parseFile(filepath, { delimiter: '\t', headers: true, trim: true })
         .on('data', (data) => {
           content.push(data)
         })
