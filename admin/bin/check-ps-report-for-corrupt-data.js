@@ -158,24 +158,23 @@ function checkPupilId (row, prop) {
   }
 }
 
-function checkForename (row, prop) {
+function checkStringBetween(row, prop, lowLimit, highLimit) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
   }
-  if (val.length < 1 || val.length > 128) {
+  console.log(`val is ${val} with length ${val.length}`)
+  if (val.length < lowLimit || val.length > highLimit) {
     report(prop, row, val)
   }
 }
 
+function checkForename (row, prop) {
+  checkStringBetween(row, prop, 1, 128)
+}
+
 function checkSurname (row, prop) {
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  if (val.length < 1 || val.length > 128) {
-    report(prop, row, val)
-  }
+  checkStringBetween(row, prop, 1, 128)
 }
 
 function checkFormMark (row, prop) {
@@ -228,8 +227,7 @@ function checkDeviceTypeModel (row, prop) {
   }
 }
 
-function checkDeviceID (row, prop) {
-  // DeviceId
+function checkStringNotEmpty(row, prop) {
   const val = row[prop]
   if (!row.hasOwnProperty(prop)) {
     return reportMissing(row, prop)
@@ -239,15 +237,14 @@ function checkDeviceID (row, prop) {
   }
 }
 
+function checkDeviceID (row, prop) {
+  // DeviceId
+  checkStringNotEmpty()
+}
+
 function checkSchoolName (row, prop) {
   // School Name
-  const val = row[prop]
-  if (!row.hasOwnProperty(prop)) {
-    return reportMissing(row, prop)
-  }
-  if (val === '') {
-    report(prop, row, row[prop])
-  }
+  checkStringNotEmpty()
 }
 
 function checkEstab (row, prop) {
