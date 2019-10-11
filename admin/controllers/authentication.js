@@ -87,16 +87,18 @@ const getUserInfoFromDfeApi = async (token, user) => {
 
 const postDfeSignIn = async (req, res) => {
   logger.debug(JSON.stringify(req.user, null, 2))
-  let role
+  let usersRole
   try {
     const token = await createJwtForDfeApi()
     const userInfo = await getUserInfoFromDfeApi(token, req.user)
     logger.debug(JSON.stringify(userInfo, null, 2))
+    usersRole = userInfo.roles[0].name
+    logger.debug(`user role is ${usersRole}`)
   } catch (error) {
     throw new Error(`unable to resolve dfe user:${error.message}`)
   }
 
-  switch (role) {
+  switch (usersRole) {
     case 'TEACHER':
     case 'HEADTEACHER':
     case 'HELPDESK':
@@ -112,7 +114,6 @@ const postDfeSignIn = async (req, res) => {
 
 const postSignIn = (req, res) => {
   const { displayName, id, role, timezone } = req.user
-  logger.debug(JSON.stringify(req.user, null, 2))
   logger.info(`postSignIn: User ID logged in: ${id} (${displayName}) timezone is "${timezone}"`)
 
   switch (role) {

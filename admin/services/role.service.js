@@ -48,6 +48,38 @@ const service = {
       throw new Error('roleTitle is required')
     }
     return roleDataService.sqlFindOneByTitle(roleTitle)
+  },
+
+  /**
+   * Provides mapping of NCA Tools 'UserType' string to MTC role.
+   * @returns {string} Defaults to teacher if not found
+   */
+  mapDfeRoleToMtcRole: (dfeRole, school = null) => {
+    const mapping = {
+      'Service-Manager': 'SERVICE-MANAGER',
+      'Head-Teacher': 'HEADTEACHER',
+      Teacher: 'TEACHER',
+      Helpdesk: 'HELPDESK',
+      'Test-Developer': 'TEST-DEVELOPER'
+    }
+
+    let role = mapping[dfeRole]
+
+    if (!role) {
+      throw new Error(`Unknown ncaUserType ${dfeRole}`)
+    }
+
+    if (role === 'HELPDESK' && !school) {
+      // There is no provision for helpdesk users to log on as themselves
+      throw new MtcSchoolMismatchError('No school found with the given DfE number')
+    }
+
+    if ((role === 'HELPDESK' || role === 'SERVICE-MANAGER') && school) {
+      // The user is logging on as a school
+      role = 'TEACHER'
+    }
+
+    return role
   }
 }
 
