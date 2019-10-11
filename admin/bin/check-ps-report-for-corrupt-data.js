@@ -27,6 +27,12 @@ function reportProgress () {
   // process.stdout.write('.')
 }
 
+/**
+ * Test a property on a object according to the given RegExp
+ * @param {Object} row
+ * @param {String} prop
+ * @param {RegExp} regex
+ */
 function regexTest (row, prop, regex) {
   if (row.hasOwnProperty(prop)) {
     const val = row[prop]
