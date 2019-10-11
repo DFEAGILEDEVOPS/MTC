@@ -56,6 +56,7 @@ const getSignIn = (req, res) => {
 const postSignIn = (req, res) => {
   // Only id is available from local and NCA auth
   const { displayName, id, role, timezone } = req.user
+  logger.debug(JSON.stringify(req.user, null, 2))
   logger.info(`postSignIn: User ID logged in: ${id} (${displayName}) timezone is "${timezone}"`)
 
   switch (role) {

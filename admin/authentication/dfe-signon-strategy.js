@@ -21,7 +21,7 @@ const initSignOn = async () => {
     client,
     params: {
       // redirect_uri: `http://localhost:3001/auth`,
-      scope: 'openid profile email'
+      scope: 'openid profile email organisation'
     }
   }, (tokenset, authUserInfo, done) => {
     client.userinfo(tokenset.access_token)
