@@ -547,7 +547,7 @@ const controller = {
     }
     res.render('service-manager/service-message/service-message-form', {
       err: err || new ValidationError(),
-      formData: serviceMessage || req.body,
+      formData: err ? req.body : serviceMessage,
       breadcrumbs: req.breadcrumbs(),
       isEditView: true
     })
