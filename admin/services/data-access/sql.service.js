@@ -172,7 +172,7 @@ async function generateParams (tableName, data) {
       options.length = cacheData.maxLength
     }
 
-    logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
+    // logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
@@ -266,8 +266,8 @@ function addParamsToRequestSimple (params, request) {
  * @return {Promise<*>}
  */
 sqlService.query = async (sql, params = [], redisKey) => {
-  logger.debug(`sql.service.query(): ${sql}`)
-  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  // logger.debug(`sql.service.query(): ${sql}`)
+  // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const query = async () => {
@@ -313,7 +313,7 @@ function addParamsToRequest (params, request) {
       }
       const opts = param.options ? param.options : options
       if (opts && Object.keys(opts).length) {
-        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+        // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
       }
 
       if (opts.precision) {
@@ -334,8 +334,8 @@ function addParamsToRequest (params, request) {
  * @return {Promise}
  */
 sqlService.modify = async (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  // logger.debug('sql.service.modify(): SQL: ' + sql)
+  // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const modify = async () => {
@@ -423,7 +423,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  */
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]`
@@ -459,7 +459,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
     )
   })
   params = R.flatten(params)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`
