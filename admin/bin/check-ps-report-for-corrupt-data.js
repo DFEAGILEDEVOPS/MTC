@@ -23,7 +23,7 @@ function reportMissing (row, prop) {
   process.stderr.write(`${prop} field missing for ${row['AttemptId']}\n`)
 }
 
-function reportProgress (count) {
+function reportProgress () {
   // process.stdout.write('.')
 }
 
@@ -50,7 +50,7 @@ const checkResponse = function (row, prop) {
 
 const checkK = function (row, prop) {
   const val = row[prop]
-  const regex = /^(k|m|t|x)?\[(.*)\]*$/
+  const regex = /^([kmtx])?\[(.*)]*$/
   const inputs = val.split(', ')
   inputs.forEach(input => {
     const s = input.trim()
@@ -61,7 +61,7 @@ const checkK = function (row, prop) {
 }
 
 const checkSco = function (row, prop) {
-  const regex = /^(1|0)$/
+  const regex = /^([10])$/
   regexTest(row, prop, regex)
 }
 
@@ -291,7 +291,7 @@ function checkTimeTaken (row, prop) {
 
 function dataCheck (row, count) {
   if (count % 100 === 0) {
-    reportProgress(count)
+    reportProgress()
   }
   for (let i = 1; i < 26; i++) {
     const cols = [
@@ -362,7 +362,7 @@ function finish (result) {
   const endTime = Date.now()
   const elapsedTime = endTime - startTime
   console.log('All done')
-  console.log('Time taken: ', Math.round((elapsedTime / 1000) / 60, 2), ' mins')
+  console.log('Time taken: ', ((elapsedTime / 1000) / 60).toFixed(2), ' mins')
   console.log('Rows processed ', result)
 }
 
