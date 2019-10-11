@@ -198,11 +198,11 @@
   integrity sha512-5m5W13HR2k3cu88mpzlnPBBv5+GyMHtj4F0P83RG4mqoC0AYVYHVMHfF3SgwKNtqEZiZQASMxU92QsLEekKcnw==
 
 "@types/ramda@^0.26.21":
-  version "0.26.21"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.21.tgz#cfd552c679453d153a9e2fd89ffc5dd5aa93d2c9"
-  integrity sha512-zMYtIZMceA6BvH+or6LmewLBgojbXg5+FGCwjO8K+Z+d/ZWxILmhhASXkehW0PqJL+V0QbyDeeAHix0dvEKXfQ==
+  version "0.26.29"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.29.tgz#34dfaabbc0323faccc8ceaaa070b8507eabadd25"
+  integrity sha512-j0rrDm19024J0X5wHl8ZK0mQas9TVvL7KQPocDEZU0nq/OUtmh0mBBBrfSIKGJZF1VLhtW6MGw+YRojUSY+5kg==
   dependencies:
-    ts-toolbelt "^3.8.4"
+    ts-toolbelt "^4.7.7"
 
 "@types/range-parser@*":
   version "1.2.2"
@@ -6060,6 +6060,11 @@ qs@^6.4.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.6.0.tgz#a99c0f69a8d26bf7ef012f871cdabb0aee4424c2"
   integrity sha512-KIJqT9jQJDQx5h5uAVPimw6yVg2SekOKu959OCtktD3FjzbpvaPr8i4zzg07DOMz+igA4W/aNM7OV8H37pFYfA==
 
+ramda-adjunct@^2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-2.21.0.tgz#b22f6a59b31d624d2a5188bf9d4a09661fb78e37"
+  integrity sha512-i1FT+N6HJqRR+0E7zxDephX7RFcwrSM6PNviSwQiTWoMH92tAbynkunjD+3MRKhDAV/roLG59KXxSRi6U8IJhg==
+
 ramda@^0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
@@ -7394,10 +7399,10 @@ triple-beam@^1.2.0, triple-beam@^1.3.0:
   dependencies:
     glob "^7.1.2"
 
-ts-toolbelt@^3.8.4:
-  version "3.8.52"
-  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-3.8.52.tgz#c0a6a08ccc104123ec01c3065e8a76713bc0545e"
-  integrity sha512-w/Tcq+P72iXM75PGoJTjrqwFun7REq2Vb8yO8UH59kZC8yrdNEQpjjJsUUS6phP/EWnrNE1/Gzz5thVHjHu26Q==
+ts-toolbelt@^4.7.7:
+  version "4.8.8"
+  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-4.8.8.tgz#0ed56ab46cf0c12c11156076a68f1caf1fd9d55c"
+  integrity sha512-5QLdemct/ssqyVgmEIK1KKY7Y39fX05kanAdnp+O529Jk7dFct+4kgasvMGXagBIvLCUviksDCZs2Lo2/fp6BQ==
 
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.10.0"
