@@ -45,7 +45,7 @@
                            id="serviceMessageTitle"
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
                            name="serviceMessageTitle"
-                           value="<%= formData['serviceMessageTitle'] %>"/>
+                           value="<%= formData['title'] %>"/>
                     <div class="govuk-!-margin-top-5 govuk-form-group <%= err.isError('serviceMessageContent') ? 'govuk-form-group--error' : '' %>">
                         <div class="govuk-label govuk-!-font-weight-bold" for="serviceMessageContent">Message</div>
                         <% if (err.isError('serviceMessageContent')) { %>
@@ -55,7 +55,7 @@
                                 class="govuk-textarea govuk-!-width-three-quarters <%= err.isError('serviceMessageContent') ? 'govuk-textarea--error' : '' %>"
                                 name="serviceMessageContent"
                                 id="serviceMessageContent"
-                                rows="4"><%= formData['serviceMessageContent'] %></textarea>
+                                rows="4"><%= formData['message'] %></textarea>
                     </div>
                 </div>
                 <% if(isEditView) { %>

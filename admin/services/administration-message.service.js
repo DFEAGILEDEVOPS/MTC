@@ -1,39 +1,72 @@
 'use strict'
 
-const redisCacheService = require('../services/redis-cache.service')
+const administrationMessageDataService = require('./data-access/administration-message.data.service')
+const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
+const serviceMessageErrorMessages = require('../lib/errors/service-message')
 
 const administrationMessageService = {}
-const redisKey = 'serviceMessage'
 
 /**
- * Get the service message
+ * Get the current service message
  * @returns {object}
  */
 administrationMessageService.getMessage = async () => {
-  const redisResult = await redisCacheService.get(redisKey)
-  return JSON.parse(redisResult)
+  return administrationMessageDataService.sqlFindActiveServiceMessage()
 }
 
 /**
- * Set the service message
- * @param {String} serviceMessageTitle
- * @param {String} serviceMessageContent
+ * Validates and stores the service message data
+ * @param {object} requestData
+ * @param {string} userId
  * @returns {Promise<*>}
  */
-administrationMessageService.setMessage = async (serviceMessageTitle, serviceMessageContent) => {
-  const serviceMessage = {
-    serviceMessageTitle,
-    serviceMessageContent
+administrationMessageService.setMessage = async (requestData, userId) => {
+  if (!userId) {
+    throw new Error('User id not found in session')
   }
-  return redisCacheService.set(redisKey, serviceMessage)
+  const { serviceMessageTitle, serviceMessageContent } = requestData
+  const serviceMessageErrors = emptyFieldsValidator.validate([
+    { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
+    { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent }
+  ])
+  if (serviceMessageErrors.hasError()) {
+    return serviceMessageErrors
+  }
+
+  const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
+  return requestData.isEditView
+    ? administrationMessageDataService.sqlUpdate(serviceMessageData) : administrationMessageDataService.sqlCreate(serviceMessageData)
+}
+
+/**
+ * Prepare the service message data for sql transmission
+ * @param {object} requestData
+ * @param {string} userId
+ * @returns {Object}
+ */
+administrationMessageService.prepareSubmissionData = (requestData, userId) => {
+  const serviceMessageData = {}
+  if (requestData.isEditView) {
+    serviceMessageData.updatedByUser_id = userId
+  } else {
+    serviceMessageData.recordedByUser_id = userId
+  }
+  serviceMessageData.title = requestData.serviceMessageTitle
+  serviceMessageData.message = requestData.serviceMessageContent
+  return serviceMessageData
 }
 
 /**
  * Drops the service message
  * @returns {Promise<*>}
  */
-administrationMessageService.dropMessage = async () => {
-  return redisCacheService.drop(redisKey)
+administrationMessageService.dropMessage = async (userId) => {
+  if (!userId) {
+    throw new Error('User id not found in session')
+  }
+  const sqlDeleteParams = {}
+  sqlDeleteParams['deletedByUser_id'] = userId
+  return administrationMessageDataService.sqlDeleteServiceMessage(sqlDeleteParams)
 }
 
 module.exports = administrationMessageService

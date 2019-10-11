@@ -13,7 +13,6 @@ const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
-const administrationMessageProcessingService = require('../services/administration-message-processing.service')
 const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
@@ -515,9 +514,10 @@ const controller = {
   postSubmitServiceMessage: async (req, res, next) => {
     const requestData = req.body
     try {
-      const result = await administrationMessageProcessingService.submitServiceMessage(requestData)
+      const result = await administrationMessageService.setMessage(requestData, req.user.id)
       if (result && result.hasError && result.hasError()) {
-        return controller.getServiceMessageForm(req, res, next, result)
+        return requestData.isEditView
+          ? controller.getEditServiceMessage(req, res, next, result) : controller.getServiceMessageForm(req, res, next, result)
       }
       const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
       req.flash('info', flashMessage)
@@ -562,7 +562,7 @@ const controller = {
    */
   postRemoveServiceMessage: async (req, res, next) => {
     try {
-      await administrationMessageService.dropMessage()
+      await administrationMessageService.dropMessage(req.user.id)
       req.flash('info', 'Service message has been successfully removed')
       return res.redirect('/service-manager/service-message')
     } catch (error) {

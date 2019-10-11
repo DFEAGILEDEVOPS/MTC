@@ -12,7 +12,7 @@
             <p class="govuk-body">
                 Add, edit or delete a service message for schools.
             </p>
-            <%if (Object.keys(serviceMessage).length > 0) { %>
+            <%if (serviceMessage) { %>
             <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
                 Create service message
             </button>
@@ -21,7 +21,7 @@
                 Create service message
             </a>
             <% } %>
-            <%if (Object.keys(serviceMessage).length > 0) { %>
+            <%if (serviceMessage) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service message</caption>
                     <thead class="govuk-table__head">
@@ -35,7 +35,7 @@
                             <td scope="row">
                                 <div>
                                     <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
-                                       href="/service-manager/service-message/edit-service-message/"><%= serviceMessage.serviceMessageTitle %></a>
+                                       href="/service-manager/service-message/edit-service-message/"><%= serviceMessage.title %></a>
                                 </div>
                             </td>
                             <td>
