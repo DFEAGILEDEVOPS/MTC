@@ -80,6 +80,9 @@ const checkResponse = function (row, prop) {
 
 const checkK = function (row, prop) {
   const val = row[prop]
+  if (val === undefined) {
+    return
+  }
   const regex = /^([kmtx])?\[(.*)]*$/
   const inputs = val.split(', ')
   inputs.forEach(input => {
@@ -221,21 +224,21 @@ function checkPauseLength (row, prop) {
 }
 
 function checkDeviceType (row, prop) {
-  checkStringNotEmpty()
+  checkStringNotEmpty(row, prop)
 }
 
 function checkDeviceTypeModel (row, prop) {
-  checkStringNotEmpty()
+  checkStringNotEmpty(row, prop)
 }
 
 function checkDeviceID (row, prop) {
   // DeviceId
-  checkStringNotEmpty()
+  checkStringNotEmpty(row, prop)
 }
 
 function checkSchoolName (row, prop) {
   // School Name
-  checkStringNotEmpty()
+  checkStringNotEmpty(row, prop)
 }
 
 function checkEstab (row, prop) {
