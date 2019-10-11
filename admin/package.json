@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "applicationinsights": "^1.0.8",
+    "async-request": "^1.2.0",
     "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",

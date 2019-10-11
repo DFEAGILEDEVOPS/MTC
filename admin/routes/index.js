@@ -13,7 +13,7 @@ const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
-const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised } = require('../controllers/authentication')
+const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised, postDfeSignIn } = require('../controllers/authentication')
 const getPing = require('../controllers/ping')
 
 /* GET home page. */
@@ -76,7 +76,7 @@ if (config.Auth.mode === authModes.dfeSignIn) {
       next()
     },
     passport.authenticate(authModes.dfeSignIn, { failureRedirect: signInFailureRedirect }),
-    (req, res) => postSignIn(req, res)
+    (req, res) => postDfeSignIn(req, res)
   )
   router.get('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
     { successRedirect: '/', failureRedirect: signInFailureRedirect }))

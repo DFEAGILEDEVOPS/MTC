@@ -143,8 +143,12 @@ module.exports = {
       authUrl: process.env.DFE_SIGNON_AUTH_URL,
       clientId: process.env.DFE_SIGNON_CLIENT_ID,
       clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
-      apiSecret: process.env.DFE_SIGNON_API_SECRET,
-      clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE || 300
+      clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
+      userInfoApi: {
+        baseUrl: process.env.DFE_USER_INFO_API_URL,
+        apiSecret: process.env.DFE_USER_INFO_API_SECRET,
+        audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
+      }
     },
     ncaTools: {
       authUrl: process.env.NCA_TOOLS_AUTH_URL
