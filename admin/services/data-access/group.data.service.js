@@ -187,7 +187,7 @@ groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds) => {
      UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
-  sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
+  sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
   const groups = await sqlService.query(sql, params)
   if (!groups || groups.length === 0) {
     return modifyResult
@@ -209,7 +209,7 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
   It is only used in one place - groupService.getPupils().
   The name has been updated to sqlFindPupilsInNoGroupOrSpecificGroup inline with its single purpose.
   */
-  let params = [
+  const params = [
     {
       name: 'schoolId',
       value: schoolId,
@@ -227,7 +227,7 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
       value: groupId,
       type: TYPES.Int
     })
-    sql += ` OR group_id=@groupId`
+    sql += ' OR group_id=@groupId'
   }
 
   sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
@@ -249,7 +249,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
     }
   ]
 
-  let sql = `SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId`
+  let sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
   const groups = await sqlService.query(sql, params)
 
   sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
@@ -271,11 +271,11 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
 
   const pupilIdentifiers = pupilIds.map(p => p.id)
 
-  let sqlInit = `SELECT DISTINCT p.group_id as id, g.name
+  const sqlInit = `SELECT DISTINCT p.group_id as id, g.name
     FROM [mtc_admin].[pupil] p
     INNER JOIN [mtc_admin].[group] g
       ON g.id = p.group_id `
-  let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdentifiers, TYPES.Int)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdentifiers, TYPES.Int)
 
   params.push({
     name: 'schoolId',

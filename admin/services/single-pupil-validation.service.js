@@ -25,18 +25,18 @@ const service = {
   validate: async (pupilCsvData, school, isMultiplePupilsSubmission) => {
     const p = ({
       school_id: school.id,
-      upn: pupilCsvData[ 5 ].trim().toUpperCase(),
-      foreName: pupilCsvData[ 1 ],
-      lastName: pupilCsvData[ 0 ],
-      middleNames: pupilCsvData[ 2 ],
-      gender: pupilCsvData[ 4 ],
-      dateOfBirth: moment.utc(pupilCsvData[ 3 ], 'DD/MM/YYYY').toDate()
+      upn: pupilCsvData[5].trim().toUpperCase(),
+      foreName: pupilCsvData[1],
+      lastName: pupilCsvData[0],
+      middleNames: pupilCsvData[2],
+      gender: pupilCsvData[4],
+      dateOfBirth: moment.utc(pupilCsvData[3], 'DD/MM/YYYY').toDate()
     })
-    const dob = pupilCsvData[ 3 ].split('/')
+    const dob = pupilCsvData[3].split('/')
     const pupil = Object.assign({
-      'dob-day': dob[ 0 ] || '',
-      'dob-month': dob[ 1 ] || '',
-      'dob-year': dob[ 2 ] || ''
+      'dob-day': dob[0] || '',
+      'dob-month': dob[1] || '',
+      'dob-year': dob[2] || ''
     }, p)
     const validationError = await pupilValidator.validate(pupil, school.id, isMultiplePupilsSubmission)
 
@@ -50,9 +50,9 @@ const service = {
     seenUpns[p.upn] = true
 
     if (validationError.hasError()) {
-      pupilCsvData[ 6 ] = []
-      Object.keys(validationError.errors).forEach((e) => pupilCsvData[ 6 ].push(validationError.errors[ e ]))
-      pupilCsvData[ 6 ] = pupilCsvData[ 6 ].filter((err, i, arr) => arr.indexOf(err) === i).join(', ')
+      pupilCsvData[6] = []
+      Object.keys(validationError.errors).forEach((e) => pupilCsvData[6].push(validationError.errors[e]))
+      pupilCsvData[6] = pupilCsvData[6].filter((err, i, arr) => arr.indexOf(err) === i).join(', ')
     }
     return { pupil: p, single: pupilCsvData }
   }

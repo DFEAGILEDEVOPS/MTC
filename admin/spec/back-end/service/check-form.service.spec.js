@@ -35,7 +35,7 @@ describe('check-form.service', () => {
       { id: 2, name: 'Form 2' },
       { id: 3, name: 'Form 3' }
     ]
-    const seenForms = [ 2 ]
+    const seenForms = [2]
 
     it('it should return a check-form', async () => {
       try {
@@ -317,7 +317,7 @@ describe('check-form.service', () => {
 
     it('throws an error if the checkWindow.checkStartDate has already passed', async () => {
       // Set up a checkWindow that started 1 day ago
-      let today = moment('2018-06-02T09:00:00').toDate()
+      const today = moment('2018-06-02T09:00:00').toDate()
       const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
       jasmine.clock().mockDate(today)
 

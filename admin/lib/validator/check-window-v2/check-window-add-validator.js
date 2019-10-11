@@ -177,28 +177,28 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
   let liveCheckEndDate
 
   if (!adminStartDateDisabled) {
-    adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
-      checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
+    adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData.adminStartDay,
+      checkWindowData.adminStartMonth, checkWindowData.adminStartYear)
   }
   if (!adminEndDateDisabled) {
-    adminEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminEndDay'],
-      checkWindowData['adminEndMonth'], checkWindowData['adminEndYear'])
+    adminEndDate = dateService.createUTCFromDayMonthYear(checkWindowData.adminEndDay,
+      checkWindowData.adminEndMonth, checkWindowData.adminEndYear)
   }
   if (!familiarisationCheckStartDateDisabled) {
-    familiarisationCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckStartDay'],
-      checkWindowData['familiarisationCheckStartMonth'], checkWindowData['familiarisationCheckStartYear'])
+    familiarisationCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData.familiarisationCheckStartDay,
+      checkWindowData.familiarisationCheckStartMonth, checkWindowData.familiarisationCheckStartYear)
   }
   if (!familiarisationCheckEndDateDisabled) {
-    familiarisationCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckEndDay'],
-      checkWindowData['familiarisationCheckEndMonth'], checkWindowData['familiarisationCheckEndYear'])
+    familiarisationCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData.familiarisationCheckEndDay,
+      checkWindowData.familiarisationCheckEndMonth, checkWindowData.familiarisationCheckEndYear)
   }
   if (!liveCheckStartDateDisabled) {
-    liveCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckStartDay'],
-      checkWindowData['liveCheckStartMonth'], checkWindowData['liveCheckStartYear'])
+    liveCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData.liveCheckStartDay,
+      checkWindowData.liveCheckStartMonth, checkWindowData.liveCheckStartYear)
   }
   if (!liveCheckEndDateDisabled) {
-    liveCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckEndDay'],
-      checkWindowData['liveCheckEndMonth'], checkWindowData['liveCheckEndYear'])
+    liveCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData.liveCheckEndDay,
+      checkWindowData.liveCheckEndMonth, checkWindowData.liveCheckEndYear)
   }
 
   // Compare date fields

@@ -32,7 +32,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = ''
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([pupil1, pupil2])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -45,7 +45,7 @@ describe('pin-generation.service', () => {
       it('with specific properties', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
-        expect(Object.keys(pupils[ 0 ]).length).toBe(8)
+        expect(Object.keys(pupils[0]).length).toBe(8)
         done()
       })
     })
@@ -58,7 +58,7 @@ describe('pin-generation.service', () => {
         pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([pupil1, pupil2])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -84,7 +84,7 @@ describe('pin-generation.service', () => {
         pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([pupil1, pupil2])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(3).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -111,7 +111,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = ''
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
-        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsBySchoolId').resolves([pupil1, pupil2])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
@@ -124,15 +124,15 @@ describe('pin-generation.service', () => {
       it('should display DoB', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
-        expect(pupils[ 0 ].showDoB).toBeTruthy()
-        expect(pupils[ 1 ].showDoB).toBeTruthy()
+        expect(pupils[0].showDoB).toBeTruthy()
+        expect(pupils[1].showDoB).toBeTruthy()
         done()
       })
       it('should display middle names', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
-        expect(pupils[ 0 ].middleNames).toBeTruthy()
-        expect(pupils[ 0 ].fullName).toBe('One, Pupil Middle')
+        expect(pupils[0].middleNames).toBeTruthy()
+        expect(pupils[0].fullName).toBe('One, Pupil Middle')
         done()
       })
     })
@@ -257,9 +257,9 @@ describe('pin-generation.service', () => {
           return fail('not expected to throw: ' + error.message)
         }
         expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(3)
-        expect(sqlFindByIdsSpy.calls.all()[ 1 ].args[ 0 ]).toEqual(unsavedPupilIdsMock(6))
-        expect(sqlFindByIdsSpy.calls.all()[ 2 ].args[ 0 ]).toEqual(unsavedPupilIdsMock(5))
-        const updateArgs = (i) => sqlUpdatePinsBatchSpy.calls.all()[ i ].args[ 0 ]
+        expect(sqlFindByIdsSpy.calls.all()[1].args[0]).toEqual(unsavedPupilIdsMock(6))
+        expect(sqlFindByIdsSpy.calls.all()[2].args[0]).toEqual(unsavedPupilIdsMock(5))
+        const updateArgs = (i) => sqlUpdatePinsBatchSpy.calls.all()[i].args[0]
         const updateArgsIds = (i) => updateArgs(i).map(p => p.id)
         const updateArgsPins = (i) => updateArgs(i).map(p => p.pin).filter(p => !!p)
         expect(updateArgsIds(1)).toEqual(unsavedPupilIdsMock(6))

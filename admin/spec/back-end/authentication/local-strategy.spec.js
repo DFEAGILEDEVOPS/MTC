@@ -11,7 +11,7 @@ const validateAndSave = require('../../../authentication/local-strategy')
 
 describe('localStrategy', () => {
   describe('validateAndSave', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       session: {
         id: 1

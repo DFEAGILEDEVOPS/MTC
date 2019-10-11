@@ -289,14 +289,14 @@ if (WEBSITE_OFFLINE) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  let err = new Error('Not Found')
+  const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
 // error handler
 app.use(function (err, req, res, next) {
-  let errorId = uuidV4()
+  const errorId = uuidV4()
   // set locals, only providing error in development
   // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this

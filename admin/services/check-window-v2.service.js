@@ -93,39 +93,39 @@ checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null)
   checkWindowData.name = requestData.checkWindowName
   checkWindowData.adminStartDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['adminStartDay'],
-      requestData['adminStartMonth'],
-      requestData['adminStartYear']
+      requestData.adminStartDay,
+      requestData.adminStartMonth,
+      requestData.adminStartYear
     )
   checkWindowData.adminEndDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['adminEndDay'],
-      requestData['adminEndMonth'],
-      requestData['adminEndYear']
+      requestData.adminEndDay,
+      requestData.adminEndMonth,
+      requestData.adminEndYear
     )
   checkWindowData.familiarisationCheckStartDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['familiarisationCheckStartDay'],
-      requestData['familiarisationCheckStartMonth'],
-      requestData['familiarisationCheckStartYear']
+      requestData.familiarisationCheckStartDay,
+      requestData.familiarisationCheckStartMonth,
+      requestData.familiarisationCheckStartYear
     )
   checkWindowData.familiarisationCheckEndDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['familiarisationCheckEndDay'],
-      requestData['familiarisationCheckEndMonth'],
-      requestData['familiarisationCheckEndYear']
+      requestData.familiarisationCheckEndDay,
+      requestData.familiarisationCheckEndMonth,
+      requestData.familiarisationCheckEndYear
     )
   checkWindowData.checkStartDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['liveCheckStartDay'],
-      requestData['liveCheckStartMonth'],
-      requestData['liveCheckStartYear']
+      requestData.liveCheckStartDay,
+      requestData.liveCheckStartMonth,
+      requestData.liveCheckStartYear
     )
   checkWindowData.checkEndDate =
     dateService.createUTCFromDayMonthYear(
-      requestData['liveCheckEndDay'],
-      requestData['liveCheckEndMonth'],
-      requestData['liveCheckEndYear']
+      requestData.liveCheckEndDay,
+      requestData.liveCheckEndMonth,
+      requestData.liveCheckEndYear
     )
   // This will ensure the last day of the check window will be taken into account for checks
   // To avoid overflow to the next day during BST the time is set at 1 hour 59mins and 59 seconds before the day change

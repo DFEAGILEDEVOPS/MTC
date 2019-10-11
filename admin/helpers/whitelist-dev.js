@@ -34,7 +34,7 @@ const main = (app) => {
     const errorMessage = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
     logger.alert(errorMessage)
     app.use(function (req, res, next) {
-      let err = new Error(errorMessage)
+      const err = new Error(errorMessage)
       err.status = 500
       next(err)
     })

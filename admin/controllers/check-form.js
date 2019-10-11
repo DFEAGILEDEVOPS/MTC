@@ -110,7 +110,7 @@ const saveCheckForm = async (req, res, next) => {
   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
   req.breadcrumbs(res.locals.pageTitle)
 
-  let uploadError = {}
+  const uploadError = {}
   let uploadFile = req.files.csvFile
   let absFile
   let deleteDir
@@ -119,7 +119,7 @@ const saveCheckForm = async (req, res, next) => {
   // Various errors cause a page to be rendered instead, and it *needs* a title
   uploadError.message = 'A valid CSV file was not uploaded'
   uploadError.errors = {}
-  uploadError.errors['csvFile'] = new Error(uploadError.message)
+  uploadError.errors.csvFile = new Error(uploadError.message)
 
   // Either it actually wasn't uploaded, or it failed one the busboy checks: e.g.
   // * mime-type needs to be text/csv (.csv)
@@ -158,9 +158,9 @@ const saveCheckForm = async (req, res, next) => {
      done: true } ]
    */
 
-  let checkForms = []
+  const checkForms = []
   for (let i = 0; i < uploadFile.length; i++) {
-    let checkForm = {}
+    const checkForm = {}
     absFile = path.join(__dirname, '/../', uploadFile[i].file)
     deleteDir = path.dirname(path.dirname(absFile))
 
@@ -204,8 +204,8 @@ const saveCheckForm = async (req, res, next) => {
     })
   }
 
-  let infoMessages = []
-  let errorMessages = []
+  const infoMessages = []
+  const errorMessages = []
   for (let i = 0; i < checkForms.length; i++) {
     try {
       await checkFormService.create(checkForms[i])
@@ -353,7 +353,7 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
       postedFormIds = Object.values(req.body.checkForm)
     }
   } else if (typeof req.body.checkForm === 'string') {
-    postedFormIds = [ req.body.checkForm ]
+    postedFormIds = [req.body.checkForm]
   }
   // end fix
   const totalForms = Object.values(postedFormIds).length
@@ -361,16 +361,16 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
 
   // Validate again that at least one check form has been ticked
   if (totalForms < 1) {
-    req.flash('error', `Select at least one form`)
+    req.flash('error', 'Select at least one form')
     return res.redirect('/test-developer/assign-form-to-window')
   }
 
   if (!req.body.checkWindowId) {
-    req.flash('error', `Missing check window id`)
+    req.flash('error', 'Missing check window id')
     return res.redirect('/test-developer/assign-form-to-window')
   }
 
-  let checkWindowId = req.body.checkWindowId
+  const checkWindowId = req.body.checkWindowId
 
   try {
     await checkWindowService.assignFormsToWindow(checkWindowId, postedFormIds)
@@ -392,11 +392,11 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
  */
 const unassignCheckFormsFromWindowPage = async (req, res, next) => {
   if (!req.params.checkWindowId) {
-    req.flash('error', `Missing check window id`)
+    req.flash('error', 'Missing check window id')
     return res.redirect('/test-developer/assign-form-to-window')
   }
 
-  let checkWindowId = req.params.checkWindowId
+  const checkWindowId = req.params.checkWindowId
   let checkFormsList
   let checkWindow
 
@@ -430,12 +430,12 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
  */
 const unassignCheckFormFromWindow = async (req, res, next) => {
   if (!req.body.checkWindowId) {
-    req.flash('error', `Missing check window id`)
+    req.flash('error', 'Missing check window id')
     return res.redirect('/test-developer/assign-form-to-window')
   }
 
   if (!req.body.checkFormId) {
-    req.flash('error', `Missing check form id`)
+    req.flash('error', 'Missing check form id')
     return res.redirect(`/test-developer/unassign-forms/${req.body.checkWindowId}`)
   }
 
@@ -445,12 +445,12 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   try {
     await checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
-    req.flash('error', `Failed to unassign form`)
+    req.flash('error', 'Failed to unassign form')
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
     return next(error)
   }
 
-  req.flash('info', `Form unassigned successfully`)
+  req.flash('info', 'Form unassigned successfully')
   res.redirect('/test-developer/assign-form-to-window')
 }
 

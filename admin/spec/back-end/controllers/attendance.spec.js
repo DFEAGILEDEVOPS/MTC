@@ -38,7 +38,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getDeclarationForm', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/declaration-form',
       params: {}
@@ -90,7 +90,7 @@ describe('attendance controller:', () => {
   })
 
   describe('postDeclarationForm route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/attendance/submit-declaration-form',
       body: {},
@@ -127,7 +127,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getReviewPupilDetails', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/review-pupil-details',
       params: {}
@@ -146,7 +146,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getEditReason', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/edit-reason/1',
       params: {
@@ -168,7 +168,7 @@ describe('attendance controller:', () => {
   })
 
   describe('postSubmitEditReason', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/attendance/submit-edit-reason',
       body: { urlSlug: 'xxx-xxx-xxx-xxx', attendanceCode: 'XXX' },
@@ -194,7 +194,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getConfirmSubmit', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/confirm-and-submit'
     }
@@ -248,7 +248,7 @@ describe('attendance controller:', () => {
   })
 
   describe('postConfirmSubmit', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/attendance/confirm-and-submit',
       session: { hdfFormData: { isHeadTeacher: 'Y', firstName: 'Bob', lastName: 'Jones' } },
@@ -294,7 +294,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getHDFSubmitted', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/submitted'
     }
@@ -324,7 +324,7 @@ describe('attendance controller:', () => {
   })
 
   describe('getHDFSubmittedForm', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/attendance/submitted-form'
     }

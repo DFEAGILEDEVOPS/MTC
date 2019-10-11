@@ -39,7 +39,7 @@ describe('check-form controller:', () => {
   describe('Check routes', () => {
     let controller
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/test-developer/home'
     }
@@ -203,7 +203,7 @@ describe('check-form controller:', () => {
             expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
             expect(checkFormService.create).toHaveBeenCalled()
             expect(next).not.toHaveBeenCalled()
-            expect(req.flash).toHaveBeenCalledWith('info', [ { message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' } ])
+            expect(req.flash).toHaveBeenCalledWith('info', [{ message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' }])
             expect(res.statusCode).toBe(302)
           } catch (error) {
             expect(error).toBe('not thrown')
@@ -213,7 +213,7 @@ describe('check-form controller:', () => {
       })
 
       describe('Unhappy path - When checkFormDataService.create fails', () => {
-        let createError = new Error('Error')
+        const createError = new Error('Error')
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
@@ -236,7 +236,7 @@ describe('check-form controller:', () => {
             expect(checkFormService.create).toHaveBeenCalled()
             expect(next).not.toHaveBeenCalled()
             expect(res.statusCode).toBe(302)
-            expect(req.flash).toHaveBeenCalledWith('errors', [ { error: createError, formName: 'MTC0100.csv' } ])
+            expect(req.flash).toHaveBeenCalledWith('errors', [{ error: createError, formName: 'MTC0100.csv' }])
           } catch (error) {
             expect(error).toBe('not thrown')
           }
@@ -346,7 +346,7 @@ describe('check-form controller:', () => {
         req.method = 'POST'
         req.url = 'test-developer/upload-new-form'
         req.files = {}
-        req.files.csvFile = [ {
+        req.files.csvFile = [{
           uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
           field: 'uploadFile',
           file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
@@ -364,7 +364,7 @@ describe('check-form controller:', () => {
           mimetype: 'text/csv',
           truncated: false,
           done: true
-        } ]
+        }]
 
         return req
       }
@@ -404,7 +404,7 @@ describe('check-form controller:', () => {
       })
 
       describe('Unhappy path - When checkFormDataService.create fails for one form', () => {
-        let createError = new Error('Error')
+        const createError = new Error('Error')
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValues(checkFormMock, checkFormMock2)
           spyOn(checkFormService, 'buildFormName').and.returnValues('MTC0100.csv', 'MTC0101.csv')
@@ -430,7 +430,7 @@ describe('check-form controller:', () => {
             expect(req.flash).toHaveBeenCalledWith('info', [
               { message: 'New form uploaded - MTC0101.csv', formName: 'MTC0101.csv' }
             ])
-            expect(req.flash).toHaveBeenCalledWith('errors', [ { error: createError, formName: 'MTC0100.csv' } ])
+            expect(req.flash).toHaveBeenCalledWith('errors', [{ error: createError, formName: 'MTC0100.csv' }])
           } catch (error) {
             expect(error).toBe('not thrown')
           }
@@ -832,7 +832,7 @@ describe('check-form controller:', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           const assignedCheckForms = [
-            { 'id': 100, 'name': 'MTC0100' }
+            { id: 100, name: 'MTC0100' }
           ]
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
             {
@@ -864,7 +864,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - When checkWindowDataService.fetchCheckWindow', () => {
         beforeEach(() => {
           const assignedCheckForms = [
-            { '_id': 100, 'name': 'MTC0100' }
+            { _id: 100, name: 'MTC0100' }
           ]
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
@@ -937,7 +937,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -958,7 +958,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -979,7 +979,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).toHaveBeenCalled()
@@ -993,7 +993,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = null
           req.body.checkFormId = 101
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).not.toHaveBeenCalled()
@@ -1007,7 +1007,7 @@ describe('check-form controller:', () => {
           const req = getReq(goodReqParams)
           req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.body.checkFormId = null
-          req.url = `/test-developer/unassign-form`
+          req.url = '/test-developer/unassign-form'
 
           await controller(req, res, next)
           expect(checkFormService.removeWindowAssignment).not.toHaveBeenCalled()

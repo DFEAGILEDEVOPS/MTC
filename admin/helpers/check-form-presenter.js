@@ -14,7 +14,7 @@ checkFormPresenter.getPresentationListData = (checkFormData) => {
     checkFormName: cf.name,
     checkFormType: cf.isLiveCheckForm ? 'MTC' : 'Try it out',
     createdAt: cf.createdAt.format('YYYY-MM-DD'),
-    canRemoveCheckForm: !cf['checkWindow_id'],
+    canRemoveCheckForm: !cf.checkWindow_id,
     urlSlug: cf.urlSlug
   }))
 }
@@ -32,7 +32,7 @@ checkFormPresenter.getPresentationCheckFormData = (checkFormData) => {
     createdAt: checkFormData.createdAt.format('DD MMMM YYYY'),
     checkWindowAdminStartDate: checkFormData.checkWindowAdminStartDate,
     checkWindowAdminEndDate: checkFormData.checkWindowAdminEndDate,
-    canRemoveCheckForm: !checkFormData['checkWindow_id'],
+    canRemoveCheckForm: !checkFormData.checkWindow_id,
     checkWindowName: checkFormData.checkWindowName,
     formData: JSON.parse(checkFormData.formData),
     urlSlug: checkFormData.urlSlug
@@ -72,8 +72,8 @@ checkFormPresenter.getPresentationCheckWindowListData = (checkWindows) => {
       familiarisationCheckEndDate: dateService.formatFullGdsDate(cw.familiarisationCheckEndDate),
       checkStartDate: dateService.formatFullGdsDate(cw.checkStartDate),
       checkEndDate: dateService.formatFullGdsDate(cw.checkEndDate),
-      familiarisationCheckFormCount: cw['FamiliarisationCheckFormCount'],
-      liveCheckFormCount: cw['LiveCheckFormCount']
+      familiarisationCheckFormCount: cw.FamiliarisationCheckFormCount,
+      liveCheckFormCount: cw.LiveCheckFormCount
     })
   })
   return checkWindowData
@@ -130,7 +130,7 @@ checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, ch
   if (!totalFormAssigned && checkFormType === 'familiarisation') {
     return `Check form has been unassigned from ${checkWindowName}, Try it out`
   }
-  const partial = totalFormAssigned > 1 ? `forms have` : `form has`
+  const partial = totalFormAssigned > 1 ? 'forms have' : 'form has'
   return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
     : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
 }

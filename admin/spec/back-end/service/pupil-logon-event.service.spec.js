@@ -7,9 +7,9 @@ const logger = require('../../../services/log.service.js').getLogger()
 const pupilLogonEventDataService = require('../../../services/data-access/pupil-logon-event.data.service')
 
 describe('pupilLogonEventService', () => {
-  let pupilId = 1
-  let schoolPin = 'zzz12345'
-  let pupilPin = '1234'
+  const pupilId = 1
+  const schoolPin = 'zzz12345'
+  const pupilPin = '1234'
   const service = require('../../../services/pupil-logon-event.service')
 
   it('calls sqlCreate to save the save', async () => {

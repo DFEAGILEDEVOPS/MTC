@@ -83,7 +83,7 @@ describe('check form service.populateFromFile', () => {
   })
 
   it('should throw when the csv data contains a header row', async (done) => {
-    let csvFile = 'data/fixtures/check-form-4.csv'
+    const csvFile = 'data/fixtures/check-form-4.csv'
     try {
       await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       expect('expected to throw').toBe('error')
@@ -95,7 +95,7 @@ describe('check form service.populateFromFile', () => {
   })
 
   it('should trim values automatically', async () => {
-    let csvFile = 'data/fixtures/check-form-5.csv'
+    const csvFile = 'data/fixtures/check-form-5.csv'
     try {
       const checkFormPop = await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       const questions = JSON.parse(checkFormPop.formData)
@@ -117,7 +117,7 @@ describe('check form service.populateFromFile', () => {
   })
 
   it('should detect if the wrong number of columns are provided', async (done) => {
-    let csvFile = 'data/fixtures/check-form-6.csv'
+    const csvFile = 'data/fixtures/check-form-6.csv'
     try {
       await service.populateFromFile(checkForm, path.join(__dirname, '/../../../', csvFile))
       expect('expected to throw').toBe('error')

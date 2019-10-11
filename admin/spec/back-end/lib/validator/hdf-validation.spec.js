@@ -24,41 +24,41 @@ describe('HDF validator', function () {
 
     it('requires firstName to be non-empty', () => {
       requestData.firstName = ''
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('firstName')).toBe(true)
     })
 
     it('requires firstName to be up to 128 chars long', () => {
       requestData.firstName = 's'.repeat(129)
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('firstName')).toBe(true)
     })
 
     it('allows latin chars, hyphen and apostrophe in firstName', () => {
       requestData.firstName = 'Rén-\'e'
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeFalsy()
     })
 
     it('requires lastName to be non-empty', () => {
       requestData.lastName = ''
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('lastName')).toBe(true)
     })
 
     it('requires lastName to be up to 128 chars long', () => {
       requestData.lastName = 's'.repeat(129)
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('lastName')).toBe(true)
     })
 
     it('allows latin chars, hyphen and apostrophe in lastName', () => {
       requestData.lastName = 'Rén-\'e'
-      let validationError = hdfValidator.validate(requestData)
+      const validationError = hdfValidator.validate(requestData)
       expect(validationError.hasError()).toBeFalsy()
     })
 
@@ -69,14 +69,14 @@ describe('HDF validator', function () {
 
       it('requires jobTitle to be non-empty', () => {
         requestData.jobTitle = ''
-        let validationError = hdfValidator.validate(requestData)
+        const validationError = hdfValidator.validate(requestData)
         expect(validationError.hasError()).toBeTruthy()
         expect(validationError.isError('jobTitle')).toBe(true)
       })
 
       it('requires jobTitle to be up to 128 chars long', () => {
         requestData.jobTitle = 's'.repeat(129)
-        let validationError = hdfValidator.validate(requestData)
+        const validationError = hdfValidator.validate(requestData)
         expect(validationError.hasError()).toBeTruthy()
         expect(validationError.isError('jobTitle')).toBe(true)
       })
@@ -85,7 +85,7 @@ describe('HDF validator', function () {
     describe('when a headteacher', () => {
       it('ignores jobTitle', () => {
         requestData.jobTitle = ''
-        let validationError = hdfValidator.validate(requestData)
+        const validationError = hdfValidator.validate(requestData)
         expect(validationError.hasError()).toBeFalsy()
       })
     })

@@ -29,7 +29,7 @@ groupService.getGroupsAsArray = async function (schoolId) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  let groupsIndex = []
+  const groupsIndex = []
   let groups
   groups = await groupDataService.sqlFindGroups(schoolId)
   if (groups.length > 0) {

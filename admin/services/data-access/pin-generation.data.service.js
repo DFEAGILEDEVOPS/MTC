@@ -44,14 +44,14 @@ const serviceToExport = {
     const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
     const select = `SELECT *
                     FROM ${sqlService.adminSchema}.[${view}]`
-    let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
+    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
     const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
     params.push({
       name: 'schoolId',
       value: schoolId,
       type: TYPES.Int
     })
-    const sql = [ select, whereClause ].join(' ')
+    const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
   },
 
@@ -101,7 +101,7 @@ const serviceToExport = {
    * @return {Promise<object>}
    */
   sqlCreateBatch: async (checks) => {
-    const declareTable = `declare @tvp as [mtc_admin].CheckTableType`
+    const declareTable = 'declare @tvp as [mtc_admin].CheckTableType'
     const insertHeader = `INSERT into @tvp
         (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
         VALUES`

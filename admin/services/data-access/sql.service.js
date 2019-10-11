@@ -274,7 +274,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
     let result = false
     if (redisKey) {
       try {
-        let redisResult = await redisCacheService.get(redisKey)
+        const redisResult = await redisCacheService.get(redisKey)
         result = JSON.parse(redisResult)
       } catch (e) {}
     }
@@ -300,7 +300,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
 function addParamsToRequest (params, request) {
   if (params) {
     for (let index = 0; index < params.length; index++) {
-      let param = params[index]
+      const param = params[index]
       param.value = convertMomentToJsDate(param.value)
       if (!param.type) {
         throw new Error('parameter type invalid')
@@ -351,7 +351,7 @@ sqlService.modify = async (sql, params = []) => {
   rawResponse = await retry(modify, retryConfig, dbLimitReached)
 
   if (rawResponse && rawResponse.recordset) {
-    for (let obj of rawResponse.recordset) {
+    for (const obj of rawResponse.recordset) {
       /* TODO remove this strict column name limitation and
         extract column value regardless of name */
       if (obj && obj.SCOPE_IDENTITY) {

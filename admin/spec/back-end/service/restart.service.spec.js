@@ -39,7 +39,7 @@ describe('restart.service', () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([ pupil1, pupil2 ])
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([pupil1, pupil2])
       spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
       try {
@@ -114,11 +114,11 @@ describe('restart.service', () => {
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
-      spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ 'ok': 1, 'n': 1 })
+      spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ ok: 1, n: 1 })
       spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([{ id: 1, urlSlug: 'anc-def' }])
       let results
       try {
-        results = await restartService.restart([ pupilMock.id, pupilMock.id ], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
+        results = await restartService.restart([pupilMock.id, pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
       } catch (error) {
         expect(error).toBeUndefined()
       }
@@ -132,7 +132,7 @@ describe('restart.service', () => {
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue(null)
       try {
-        await restartService.restart([ pupilMock.id ], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
+        await restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
       } catch (error) {
         expect(error.message).toBe('One of the pupils is not eligible for a restart')
       }
@@ -143,12 +143,12 @@ describe('restart.service', () => {
   describe('canAllPupilsRestart', () => {
     it('returns true if all pupils can restart', async () => {
       spyOn(restartService, 'canRestart').and.returnValue(true)
-      const result = await restartService.canAllPupilsRestart([ pupilMock.id, pupilMock.id ])
+      const result = await restartService.canAllPupilsRestart([pupilMock.id, pupilMock.id])
       expect(result).toBeTruthy()
     })
     it('returns false if at least one of the pupils is not eligible for a restart', async () => {
       spyOn(restartService, 'canRestart').and.returnValue(false)
-      const result = await restartService.canAllPupilsRestart([ pupilMock.id, pupilMock.id ])
+      const result = await restartService.canAllPupilsRestart([pupilMock.id, pupilMock.id])
       expect(result).toBeFalsy()
     })
   })
@@ -157,7 +157,7 @@ describe('restart.service', () => {
     it('returns a list of pupils who have been submitted for a restart', async () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([ pupil1, pupil2 ])
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([pupil1, pupil2])
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(restartService, 'getStatus').and.returnValue('Remove restart')
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonDescById').and.returnValue('Did Not Complete')

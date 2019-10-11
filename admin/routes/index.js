@@ -13,12 +13,14 @@ const { getAccessibilityStatementPage } = require('../controllers/accessibility-
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
-const { home,
+const {
+  home,
   getSignIn,
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getUnauthorised } = require('../controllers/authentication')
+  getUnauthorised
+} = require('../controllers/authentication')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
@@ -71,10 +73,10 @@ async function getPing (req, res) {
   }
 
   res.setHeader('Content-Type', 'application/json')
-  let obj = {
-    'Build': buildNumber,
-    'Commit': commitId,
-    'CurrentServerTime': Date.now()
+  const obj = {
+    Build: buildNumber,
+    Commit: commitId,
+    CurrentServerTime: Date.now()
   }
   return res.status(200).send(obj)
 }

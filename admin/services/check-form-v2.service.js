@@ -154,7 +154,7 @@ checkFormV2Service.hasAssignedFamiliarisationForm = async (checkWindow) => {
 checkFormV2Service.updateCheckWindowForms = async (checkWindow, checkFormType, checkFormUrlSlugs) => {
   const isLiveCheckForm = checkFormType.charAt(0).toUpperCase() === checkFormTypes.live
   if (!checkWindow || !checkWindow.id) {
-    throw new Error(`Check window not found`)
+    throw new Error('Check window not found')
   }
   if (checkFormType === 'familiarisation' && !checkFormUrlSlugs) {
     return checkFormV2DataService.sqlUnassignFamiliarisationForm(checkWindow.id)

@@ -16,7 +16,7 @@ describe('sql.service:integration', () => {
 
   describe('should permit', () => {
     it('select query with no parameters', async () => {
-      let settingsRows = await sql.query('SELECT * FROM Settings')
+      const settingsRows = await sql.query('SELECT * FROM Settings')
       expect(settingsRows).toBeDefined()
       expect(settingsRows.length).toBe(1)
     })
@@ -52,7 +52,7 @@ describe('sql.service:integration', () => {
 
     it('ALTER TABLE operation to mtc application user', async () => {
       try {
-        await sql.query(`ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit`)
+        await sql.query('ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit')
         fail('ALTER TABLE operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
@@ -85,7 +85,7 @@ describe('sql.service:integration', () => {
 
     it('DROP VIEW operation to mtc application user', async () => {
       try {
-        await sql.query(`DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]`)
+        await sql.query('DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]')
         fail('DROP VIEW operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
@@ -113,7 +113,7 @@ describe('sql.service:integration', () => {
 
     it('DROP TRIGGER operation to mtc application user', async () => {
       try {
-        await sql.query(`DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]`)
+        await sql.query('DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]')
         fail('DROP TRIGGER operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
@@ -134,7 +134,7 @@ describe('sql.service:integration', () => {
 
     it('DROP PROCEDURE operation to mtc application user', async () => {
       try {
-        await sql.query(`DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]`)
+        await sql.query('DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]')
         fail('DROP PROCEDURE operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
@@ -254,10 +254,10 @@ describe('sql.service:integration', () => {
   it('#findOneById should retrieve a row', async () => {
     const row = await sql.findOneById('[user]', 4)
     expect(row).toBeDefined()
-    expect(row['id']).toBe(4)
-    expect(row['identifier']).toBe('teacher3')
-    expect(row['school_id']).toBe(4)
-    expect(row['role_id']).toBe(3)
+    expect(row.id).toBe(4)
+    expect(row.identifier).toBe('teacher3')
+    expect(row.school_id).toBe(4)
+    expect(row.role_id).toBe(3)
   })
 
   it('#findOneById should prevent sql injection', async () => {
@@ -309,19 +309,19 @@ describe('sql.service:integration', () => {
 
   describe('Inserts', () => {
     it('a single insert returns nothing', async () => {
-      const stm = `INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES ('test 42')`
+      const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 42\')'
       const res = await sql.modify(stm)
       expect(R.isEmpty(res)).toBe(true)
     })
 
     it('a single insert with a scope_identity request returns the identity of the inserted row', async () => {
-      const stm = `INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES ('test 43'); SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY`
+      const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 43\'); SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY'
       const res = await sql.modify(stm)
       expect(res.insertId).toBeDefined()
     })
 
     it('a multiple insert returns nothing', async () => {
-      const stm = `INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES ('test 44'), ('test 45')`
+      const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 44\'), (\'test 45\')'
       const res = await sql.modify(stm)
       expect(R.isEmpty(res)).toBe(true)
     })

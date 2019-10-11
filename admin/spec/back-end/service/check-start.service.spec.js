@@ -256,8 +256,8 @@ describe('check-start.service', () => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
         return {
-          'token': '<someToken',
-          'url': `http://localhost/${s}`
+          token: '<someToken',
+          url: `http://localhost/${s}`
         }
       })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
