@@ -54,8 +54,8 @@ describe('sas-token.service', () => {
       const res = sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
       expect(queueServiceMock.generateSharedAccessSignature).toHaveBeenCalled()
       expect(queueServiceMock.getUrl).toHaveBeenCalled()
-      expect(res.hasOwnProperty('token')).toBe(true)
-      expect(res.hasOwnProperty('url')).toBe(true)
+      expect({}.hasOwnProperty.call(res, 'token')).toBe(true)
+      expect({}.hasOwnProperty.call(res, 'url')).toBe(true)
     })
 
     it('sets the permissions to add only', () => {

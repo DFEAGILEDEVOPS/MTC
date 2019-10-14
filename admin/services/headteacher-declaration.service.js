@@ -76,14 +76,14 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
     throw new Error(`school ${schoolId} not found`)
   }
 
-  let hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
+  const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
   if (!hdfEligibility) {
     throw new Error('Not eligible to submit declaration')
   }
 
-  let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+  const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
   if (!checkWindow || !checkWindow.id) {
-    throw new Error(`Active check window not found`)
+    throw new Error('Active check window not found')
   }
   const data = {
     signedDate: new Date(),

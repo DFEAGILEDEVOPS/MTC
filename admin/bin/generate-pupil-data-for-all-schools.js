@@ -24,8 +24,8 @@ async function insertPupils (school, count) {
   for (let i = 0; i < count; i++) {
     pupilData.push([
       `( '${randomDob()}'`,
-      `'Pupil'`,
-      `'M'`,
+      '\'Pupil\'',
+      '\'M\'',
       `'${count.toString()}'`,
       school.id,
       `'${genUPN(school.leaCode, school.estabCode, i)}')`

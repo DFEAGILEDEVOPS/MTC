@@ -2,7 +2,7 @@
 /* global $ describe it expect beforeEach spyOn */
 
 function initUploadCheckFormElements () {
-  const hasExistingFamiliarisationCheckFormInput = `<input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="" />`
+  const hasExistingFamiliarisationCheckFormInput = '<input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="" />'
   const checkFormTypes = [{ value: 'L', name: 'Live' }, { value: 'F', name: 'Familiarisation' }]
   const checkFormTypeInputs = checkFormTypes.map(cft => `
                         <div class="multiple-choice">

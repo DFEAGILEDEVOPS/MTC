@@ -36,7 +36,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
     return res.render('school/school-home', {
-      breadcrumbs: [ { 'name': 'School Home' } ],
+      breadcrumbs: [{ name: 'School Home' }],
       featureEligibilityData,
       hasIncompleteChecks,
       isResultsFeatureAccessible,

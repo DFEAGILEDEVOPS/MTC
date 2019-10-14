@@ -49,8 +49,8 @@ describe('pupil-upload service', () => {
     beforeEach(() => {
       sandbox.mock(validateCSVService).expects('process')
         .resolves({
-          csvData: [ [ 'test', 'test', 'test', 'test', 'test', 'test', 'Error' ],
-            [ 'test', 'test', 'test', 'test', 'test', 'test', 'Error' ] ]
+          csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
+            ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
         })
       proxyquire('../../../services/pupil-upload.service', {
         '../../../services/validate-csv.service': validateCSVService
@@ -88,8 +88,8 @@ describe('pupil-upload service', () => {
     beforeEach(() => {
       sandbox.mock(validateCSVService).expects('process')
         .resolves({
-          csvData: [ [ 'test', 'test', 'test', 'test', 'test', 'test' ],
-            [ 'test', 'test', 'test', 'test', 'test', 'test' ] ]
+          csvData: [['test', 'test', 'test', 'test', 'test', 'test'],
+            ['test', 'test', 'test', 'test', 'test', 'test']]
         })
       sandbox.mock(generateErrorCSVService).expects('generate').resolves({ file: { name: 'test.csv' } })
       proxyquire('../../../services/pupil-upload.service', {

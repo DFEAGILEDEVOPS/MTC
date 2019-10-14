@@ -56,6 +56,7 @@ if (config.Auth.mode === authModes.local) {
 
 /* federated auth callbacks */
 
+<<<<<<< HEAD
 /* NCA Tools */
 if (config.Auth.mode === authModes.ncaTools) {
   router.post('/auth',
@@ -66,6 +67,15 @@ if (config.Auth.mode === authModes.ncaTools) {
       failureRedirect: signInFailureRedirect
     }), (req, res) => postSignIn(req, res)
   )
+=======
+  res.setHeader('Content-Type', 'application/json')
+  const obj = {
+    Build: buildNumber,
+    Commit: commitId,
+    CurrentServerTime: Date.now()
+  }
+  return res.status(200).send(obj)
+>>>>>>> master
 }
 
 /* Dfe Sign-in */

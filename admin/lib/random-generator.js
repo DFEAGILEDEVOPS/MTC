@@ -13,17 +13,17 @@ const random = {
    */
   getRandom: function (length, chars) {
     if (!chars) {
-      throw new Error(`Argument 'chars' is undefined`)
+      throw new Error('Argument \'chars\' is undefined')
     }
 
-    let charsLength = chars.length
+    const charsLength = chars.length
     if (charsLength > 256) {
       throw new Error(`Argument 'chars' should not have more than 256 characters, 
       otherwise unpredictability will be broken`)
     }
 
-    let randomBytes = crypto.randomBytes(length)
-    let result = []
+    const randomBytes = crypto.randomBytes(length)
+    const result = []
 
     let cursor = 0
     for (let i = 0; i < length; i++) {

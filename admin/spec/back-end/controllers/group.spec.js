@@ -40,7 +40,7 @@ describe('group controller', () => {
   describe('Check routes', () => {
     let controller
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/group/pupils-list'
     }

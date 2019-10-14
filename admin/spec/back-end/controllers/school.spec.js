@@ -32,7 +32,7 @@ describe('school controller:', () => {
   describe('Check routes', () => {
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/school/school-home'
     }

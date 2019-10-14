@@ -30,7 +30,7 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  */
 pupilService.getPrintPupils = async (schoolId) => {
   if (!schoolId) {
-    throw new Error(`schoolId is required`)
+    throw new Error('schoolId is required')
   }
   const p1 = pupilDataService.sqlFindPupilsWithActivePins(schoolId)
   const p2 = schoolDataService.sqlFindOneById(schoolId)
