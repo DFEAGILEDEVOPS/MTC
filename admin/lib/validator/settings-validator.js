@@ -5,7 +5,7 @@ const { isInt, isFloat } = require('validator')
 const settingsErrorMessages = require('../errors/settings')
 
 module.exports.validate = async (settingsData) => {
-  let validationError = new ValidationError()
+  const validationError = new ValidationError()
   if (!settingsData.questionTimeLimit || !isFloat(settingsData.questionTimeLimit, { min: 1, max: 60 })) {
     validationError.addError('questionTimeLimit', settingsErrorMessages.questionTimeLimit)
   }

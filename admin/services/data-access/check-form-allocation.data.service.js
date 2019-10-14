@@ -35,9 +35,9 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       JOIN ${sqlService.adminSchema}.[pin] pin ON (cp.pin_id = pin.id)
       LEFT JOIN ${sqlService.adminSchema}.sce ON (sce.school_id = school.id)
     `
-  let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`
-  const sql = [ select, whereClause ].join(' ')
+  const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
 
@@ -50,7 +50,7 @@ checkFormAllocationDataService.sqlCreateBatch = async function (checkFormAllocat
     isLiveCheck
   )  OUTPUT inserted.ID INTO @output
   VALUES `
-  const output = `; SELECT * from @output`
+  const output = '; SELECT * from @output'
 
   const params = []
   const insertClauses = []

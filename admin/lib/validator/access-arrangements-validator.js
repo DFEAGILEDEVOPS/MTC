@@ -10,7 +10,8 @@ const accessArrangementsErrorMessages = require('../errors/access-arrangements')
  */
 module.exports.validate = (accessArrangementsData) => {
   const validationError = new ValidationError()
-  const { pupilUrlSlug,
+  const {
+    pupilUrlSlug,
     accessArrangements: accessArrangementsCodes,
     questionReaderReason: questionReaderReasonCode,
     inputAssistanceInformation,

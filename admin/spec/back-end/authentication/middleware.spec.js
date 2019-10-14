@@ -18,7 +18,7 @@ describe('isAuthenticated', () => {
   const res = httpMocks.createResponse()
   describe(' if the request is authenticated', () => {
     it('authenticates a user against an allowed role of a string type', async () => {
-      let reqParams = {
+      const reqParams = {
         method: 'GET',
         isAuthenticated: () => {},
         user: {

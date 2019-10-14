@@ -213,7 +213,7 @@ checkDataService.sqlCreateBatch = async function (checks) {
     isLiveCheck
   )  OUTPUT inserted.ID INTO @output
   VALUES `
-  const output = `; SELECT * from @output`
+  const output = '; SELECT * from @output'
 
   const params = []
   const insertClauses = []

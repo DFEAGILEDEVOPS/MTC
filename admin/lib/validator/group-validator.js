@@ -7,7 +7,7 @@ const { isEmpty } = require('validator')
 const groupDataService = require('../../services/data-access/group.data.service')
 
 module.exports.validate = async (groupData, oldName, schoolId) => {
-  let validationError = new ValidationError()
+  const validationError = new ValidationError()
   let isValid = false
 
   // Group name

@@ -35,14 +35,14 @@ describe('check-form.service', () => {
       { id: 2, name: 'Form 2' },
       { id: 3, name: 'Form 3' }
     ]
-    const seenForms = [ 2 ]
+    const seenForms = [2]
 
     it('it should return a check-form', async () => {
       try {
         const checkForm = await service.allocateCheckForm(availableForms, seenForms)
         expect(typeof checkForm).toBe('object')
-        expect(checkForm.hasOwnProperty('id')).toBe(true)
-        expect(checkForm.hasOwnProperty('name')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'id')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
       } catch (error) {
         fail(error)
       }
@@ -125,9 +125,9 @@ describe('check-form.service', () => {
         expect(Array.isArray(questions)).toBeTruthy()
         expect(questions.length).toBe(2)
         questions.forEach((q) => {
-          expect(q.hasOwnProperty('order')).toBeTruthy()
-          expect(q.hasOwnProperty('factor1')).toBeTruthy()
-          expect(q.hasOwnProperty('factor2')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'order')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor1')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor2')).toBeTruthy()
         })
       } catch (error) {
         fail(error)
@@ -297,7 +297,7 @@ describe('check-form.service', () => {
 
     it('throws an error if the checkWindow.checkStartDate has already passed', async () => {
       // Set up a checkWindow that started 1 day ago
-      let today = moment('2018-06-02T09:00:00').toDate()
+      const today = moment('2018-06-02T09:00:00').toDate()
       const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
       jasmine.clock().mockDate(today)
 

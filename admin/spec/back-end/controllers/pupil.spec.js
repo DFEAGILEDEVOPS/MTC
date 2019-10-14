@@ -40,7 +40,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add',
       session: {
@@ -89,7 +89,7 @@ describe('pupil controller:', () => {
 
   describe('#postAddPupil route', () => {
     let sandbox, controller, nextSpy, pupilAddServiceSpy, next, req, res
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
       session: {
@@ -159,7 +159,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add-batch-pupils',
       session: {
@@ -213,7 +213,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add-batch-pupils',
       session: {
@@ -247,7 +247,7 @@ describe('pupil controller:', () => {
       it('saves the new pupil and redirects to the register pupils page', async (done) => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ pupilIds: [ '1', '2' ] }))
+          .resolve({ pupilIds: ['1', '2'] }))
         spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve([pupilMock]))
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -333,7 +333,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/pupil/download-error-csv',
       session: {
@@ -370,7 +370,7 @@ describe('pupil controller:', () => {
   describe('#getEditPupilById', () => {
     let controller, next
     const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/edit/pupil1234',
       session: {
@@ -416,7 +416,7 @@ describe('pupil controller:', () => {
 
   describe('postEditPupil', () => {
     let controller, next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/edit/pupil1234',
       session: {

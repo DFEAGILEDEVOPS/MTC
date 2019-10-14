@@ -17,7 +17,7 @@ module.exports = {
    */
   omitEmptyArrays: function (data) {
     const output = []
-    for (let ary of data) {
+    for (const ary of data) {
       if (this.isEmptyArray(ary)) {
         continue
       }

@@ -16,10 +16,10 @@ describe('random-generator', () => {
   it('throws an error if chars are not given', () => {
     expect(
       function () { randomGenerator.getRandom(10, '') }
-    ).toThrowError(`Argument 'chars' is undefined`)
+    ).toThrowError('Argument \'chars\' is undefined')
     expect(
       function () { randomGenerator.getRandom(10, null) }
-    ).toThrowError(`Argument 'chars' is undefined`)
+    ).toThrowError('Argument \'chars\' is undefined')
   })
 
   it('throws an error if chars are too long', () => {

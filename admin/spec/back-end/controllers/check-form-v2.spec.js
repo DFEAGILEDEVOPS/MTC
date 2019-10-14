@@ -29,7 +29,7 @@ describe('check form v2 controller:', () => {
   }
 
   describe('getViewFormsPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-forms/view-forms'
     }
@@ -45,7 +45,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('getUploadNewFormsPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-forms/upload-new-forms'
     }
@@ -70,7 +70,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('postUpload route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/check-forms/upload',
       files: {
@@ -105,7 +105,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('getDelete route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-forms/delete/urlSlug',
       params: {
@@ -138,7 +138,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('getViewFormPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-form/view/urlSlug',
       params: {
@@ -168,7 +168,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('getAssignFormsPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/assign-forms-to-check-windows'
     }
@@ -199,7 +199,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('getSelectFormPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/select-form/live/checkWindowUrlSlug',
       params: {
@@ -284,7 +284,7 @@ describe('check form v2 controller:', () => {
     })
   })
   describe('postAssignForms route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/assign-forms/live/checkWindowUrlSlug',
       files: {
@@ -298,7 +298,7 @@ describe('check form v2 controller:', () => {
         checkForms: ['urlslug1', 'urlSlug2']
       }
     }
-    let badReqParams = {
+    const badReqParams = {
       method: 'POST',
       url: '/assign-forms/live/checkWindowUrlSlug',
       files: {

@@ -111,7 +111,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `${checkWindow['name']} has been successfully removed`)
+    req.flash('info', `${checkWindow.name} has been successfully removed`)
     return res.redirect('/check-window/manage-check-windows')
   },
 

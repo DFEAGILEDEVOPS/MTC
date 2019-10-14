@@ -82,7 +82,7 @@ restartService.restart = async (
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
   if (!canAllPupilsRestart) {
-    throw new Error(`One of the pupils is not eligible for a restart`)
+    throw new Error('One of the pupils is not eligible for a restart')
   }
   const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
   await Promise.all(pupilsList.map(async pupilId => {
@@ -139,7 +139,7 @@ restartService.canRestart = async pupilId => {
  * @returns {Array}
  */
 restartService.getSubmittedRestarts = async schoolId => {
-  let pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
   if (!pupils || pupils.length === 0) return []
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation

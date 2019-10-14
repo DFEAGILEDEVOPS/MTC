@@ -15,8 +15,8 @@ if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
-const queueNames = names['queues']
-const tableNames = names['tables']
+const queueNames = names.queues
+const tableNames = names.tables
 const poisonQueues = queueNames.map(q => q + '-poison')
 const allQueues = queueNames.concat(poisonQueues)
 const tableService = getPromisifiedService(azure.createTableService())

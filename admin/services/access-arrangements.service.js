@@ -56,9 +56,9 @@ accessArrangementsService.prepareData = async (requestData, pupil, schoolId, use
     throw new Error('Pupil object is not found')
   }
   const omittedFields = []
-  pupilAccessArrangements['pupil_id'] = pupil.id
-  pupilAccessArrangements['recordedBy_user_id'] = userId
-  pupilAccessArrangements['questionReaderReasonCode'] = questionReaderReason
+  pupilAccessArrangements.pupil_id = pupil.id
+  pupilAccessArrangements.recordedBy_user_id = userId
+  pupilAccessArrangements.questionReaderReasonCode = questionReaderReason
   if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
     omittedFields.push('inputAssistanceInformation')
   }
@@ -73,14 +73,14 @@ accessArrangementsService.prepareData = async (requestData, pupil, schoolId, use
   }
   if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.COLOUR_CONTRAST)) {
     const pupilColourContrastAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'CCT')
-    pupilColourContrastAA['pupilColourContrasts_id'] = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA['id'])
+    pupilColourContrastAA.pupilColourContrasts_id = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA.id)
   }
   if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.FONT_SIZE)) {
     const pupilFontSizeAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'FTS')
-    pupilFontSizeAA['pupilFontSizes_id'] = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA['id'])
+    pupilFontSizeAA.pupilFontSizes_id = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA.id)
   }
   if (questionReaderReasonId) {
-    pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReasonId
+    pupilAccessArrangements.questionReaderReasons_id = questionReaderReasonId
   }
   omittedFields.push('accessArrangements', 'questionReaderReason', 'pupilUrlSlug')
   omittedFields.forEach(field => {

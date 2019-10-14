@@ -37,7 +37,7 @@ describe('results controller:', () => {
   }
 
   describe('getViewResultsPage route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/results/view-results'
     }

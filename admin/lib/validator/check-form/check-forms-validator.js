@@ -15,7 +15,7 @@ const ValidationError = require('../../validation-error')
  */
 module.exports.validate = async (uploadedFiles, requestData, existingCheckForms, checkFormTypes) => {
   const { checkFormType } = requestData
-  let validationError = new ValidationError()
+  const validationError = new ValidationError()
 
   const singleFileErrors = await Promise.all(uploadedFiles.map(async (uploadedFile) => singleCheckFormValidator.validate(uploadedFile)))
   const multipleFileErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)

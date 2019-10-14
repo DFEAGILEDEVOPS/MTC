@@ -6,19 +6,15 @@ const httpMocks = require('node-mocks-http')
 
 describe('cookies page controller', () => {
   it('should render the initial cookies page', async (done) => {
-    let res
-    let req
-    let controller
-
-    res = httpMocks.createResponse()
+    const res = httpMocks.createResponse()
     res.locals = {}
 
-    req = httpMocks.createRequest({
+    const req = httpMocks.createRequest({
       method: 'GET',
       url: '/cookies'
     })
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    controller = require('../../../controllers/cookies')
+    const controller = require('../../../controllers/cookies')
 
     spyOn(res, 'render').and.returnValue(null)
     await controller.getCookiesPage(req, res)

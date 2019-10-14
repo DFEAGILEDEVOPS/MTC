@@ -7,7 +7,7 @@ const getOffset = zone => {
 }
 
 const scePresenter = {}
-let countryZonesCache = []
+const countryZonesCache = []
 
 scePresenter.getCountriesTzData = () => {
   if (countryZonesCache.length > 0) return countryZonesCache

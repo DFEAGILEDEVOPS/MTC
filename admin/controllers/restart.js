@@ -54,7 +54,7 @@ controller.getSelectRestartList = async (req, res, next) => {
   let pupils
   let reasons
   let groups = []
-  let groupIds = req.params.groupIds || ''
+  const groupIds = req.params.groupIds || ''
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -113,7 +113,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
     let pupils
     let reasons
     let groups = []
-    let groupIds = req.params.groupIds || ''
+    const groupIds = req.params.groupIds || ''
 
     try {
       pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)

@@ -15,7 +15,7 @@ const pupilCensusProcessingService = {}
 pupilCensusProcessingService.process = async (csvData, jobId) => {
   // Fetch all unique school for pupil records
   const schoolDfeNumbers = R.uniq(csvData.map(r => `${r[0]}${r[1]}`))
-  let schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
+  const schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
   const schoolsHashMap = schools.reduce((obj, item) => {
     obj[item.dfeNumber] = item
     return obj

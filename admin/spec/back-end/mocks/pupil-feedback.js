@@ -1,5 +1,5 @@
 module.exports = {
-  'feedbackData': {
+  feedbackData: {
     _id: '59a6e92ecffb044b5ecbcd6e',
     inputType: 3,
     satisfactionRating: 2,
