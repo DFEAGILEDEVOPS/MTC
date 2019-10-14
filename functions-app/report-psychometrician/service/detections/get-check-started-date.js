@@ -14,6 +14,12 @@ function getCheckStartedDateFromAuditLog (payload) {
   return moment(ts)
 }
 
+/**
+ * Get the time the pupil pressed the 'Start Check' button
+ * @param checkStartedDate
+ * @param payload
+ * @return {(undefined|moment.Moment)|*}
+ */
 function getCheckStartedDate (checkStartedDate, payload) {
   if (moment.isMoment(checkStartedDate)) {
     return checkStartedDate

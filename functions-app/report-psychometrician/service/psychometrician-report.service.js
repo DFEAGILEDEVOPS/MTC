@@ -6,6 +6,8 @@ const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 const psychometricianDataService = require('./data-service/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-service/psychometrician-report-cache.data.service')
+const getCheckStartedDate = require('./detections/get-check-started-date')
+const getCheckCompleteDate = require('./detections/get-check-complete-date')
 
 const psychometricianReportService = {}
 
@@ -175,10 +177,8 @@ psychometricianReportService.produceReportDataV2 = function (data) {
 
   const deviceOptions = R.path(['device'], payload)
   const { type: deviceType, model: deviceModel } = psUtilService.getDeviceTypeAndModel(userAgent)
-  const startTimeString = R.prop('checkStartedAt', data)
-  const startTime = startTimeString && moment(startTimeString)
-  const endTimeString = psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', { data: payload })
-  const endTime = endTimeString && moment(endTimeString)
+  const startTime = getCheckStartedDate(undefined, payload)
+  const endTime = getCheckCompleteDate(payload)
 
   const psData = {
     DOB: R.prop('dateOfBirth', data),
@@ -211,10 +211,10 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     TestDate: dateService.reverseFormatNoSeparator(moment(R.prop('pupilLoginDate', data))),
 
     // TimeStart should be when the user clicked the Start button.
-    TimeStart: startTime ? dateService.formatTimeWithSeconds(moment(startTime)) : '',
+    TimeStart: startTime ? dateService.formatTimeWithSeconds(startTime) : '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
-    TimeComplete: endTime ? dateService.formatTimeWithSeconds(moment(endTime)) : '',
+    TimeComplete: endTime ? dateService.formatTimeWithSeconds(endTime) : '',
     TimeTaken: psUtilService.getTimeDiff(startTime, endTime)
   }
 
