@@ -24,14 +24,10 @@ const initSignOn = async () => {
       scope: config.Auth.dfeSignIn.openIdScope
     }
   }, (tokenset, authUserInfo, done) => {
-    logger.debug('strategy callback fired.')
-    logger.debug('## tokenset ##')
-    logger.debug(JSON.stringify(tokenset, null, 2))
-    logger.debug('## authUserInfo ##')
-    logger.debug(JSON.stringify(authUserInfo, null, 2))
     client.userinfo(tokenset.access_token)
       .then((userInfo) => {
         userInfo.id = userInfo.sub
+        userInfo.name = userInfo.sub
         userInfo.displayName = `${userInfo.given_name} ${userInfo.family_name} (${userInfo.email})`
         userInfo.id_token = tokenset.id_token
         done(null, userInfo)
