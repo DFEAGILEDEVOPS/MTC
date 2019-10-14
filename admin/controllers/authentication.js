@@ -87,14 +87,20 @@ const getUserInfoFromDfeApi = async (token, user) => {
 }
 
 const postDfeSignIn = async (req, res) => {
+  logger.debug('## req.user ##')
   logger.debug(JSON.stringify(req.user, null, 2))
   try {
     const token = await createJwtForDfeApi()
     const userInfo = await getUserInfoFromDfeApi(token, req.user)
+    logger.debug('## userInfo from API ##')
     logger.debug(JSON.stringify(userInfo, null, 2))
+    // TODO array check
     const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].code)
     logger.debug(`user role is ${mtcRole}`)
     req.user.role = mtcRole
+    req.user.displayName = `${userInfo.given_name} ${userInfo.family_name} (${userInfo.email})`
+    logger.info(`postSignIn: User ID logged in: ${req.user.id}
+      (${req.user.displayName}) timezone is "${req.user.timezone}"`)
   } catch (error) {
     throw new Error(`unable to resolve dfe user:${error.message}`)
   }
