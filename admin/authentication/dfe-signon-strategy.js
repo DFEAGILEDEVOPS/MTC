@@ -14,14 +14,14 @@ const initSignOn = async () => {
     client_id: config.Auth.dfeSignIn.clientId,
     client_secret: config.Auth.dfeSignIn.clientSecret
   })
-  if (config.Auth.dfeSignIn.clockTolerance && config.Auth.dfeSignIn.clockTolerance > 0) {
-    client.CLOCK_TOLERANCE = config.Auth.dfeSignIn.clockTolerance
+  if (config.Auth.dfeSignIn.clockToleranceSeconds && config.Auth.dfeSignIn.clockToleranceSeconds > 0) {
+    client.CLOCK_TOLERANCE = config.Auth.dfeSignIn.clockToleranceSeconds
   }
 
   return new Strategy({
     client,
     params: {
-      scope: 'openid profile email organisation'
+      scope: config.Auth.dfeSignIn.openIdScope
     }
   }, (tokenset, authUserInfo, done) => {
     logger.debug('strategy callback fired.')

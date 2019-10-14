@@ -8,6 +8,8 @@ const bluebird = require('bluebird')
 const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const request = require('async-request')
 const roleService = require('../services/role.service')
+const url = require('url')
+const passport = require('passport')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
@@ -146,13 +148,40 @@ const getSignOut = (req, res) => {
         res.redirect(config.Auth.ncaTools.authUrl)
         break
       case authModes.dfeSignIn:
-        res.redirect('/oidc-sign-in')
+        getDfeSignOut(req, res)
         break
       default: //  local
         res.render('/')
         break
     }
   })
+}
+
+const getDfeSignOut = (req, res) => {
+  if (req.user && req.user.id_token) {
+    logger.audit('User logged out', {
+      type: 'Sign-out',
+      userId: req.user.sub,
+      email: req.user.email,
+      client: 'profiles'
+    })
+    const idToken = req.user.id_token
+    const issuer = passport._strategies.oidc._issuer
+    // let returnUrl = `${config.hostingEnvironment.protocol}://${config.hostingEnvironment.host}:${config.hostingEnvironment.port}/signout/complete`
+    // if (req.query.redirect_uri) {
+    //   returnUrl = req.query.redirect_uri
+    // }
+    // req.logout()
+    res.redirect(url.format(Object.assign(url.parse(issuer.end_session_endpoint), {
+      search: null,
+      query: {
+        id_token_hint: idToken
+        // post_logout_redirect_uri: returnUrl
+      }
+    })))
+  } else {
+    res.redirect(req.query.redirect_uri ? req.query.redirect_uri : '/')
+  }
 }
 
 const getSignInFailure = (req, res) => {

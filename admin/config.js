@@ -143,8 +143,9 @@ module.exports = {
       authUrl: process.env.DFE_SIGNON_AUTH_URL,
       clientId: process.env.DFE_SIGNON_CLIENT_ID,
       clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
-      clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
+      clockToleranceSeconds: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
       issuerDiscoveryTimeoutMs: process.env.DFE_SIGNON_DISCOVERY_TIMEOUT_MS || 10000,
+      openIdScope: process.env.DFE_SIGNON_OPENID_SCOPE || 'openid profile email organisation',
       userInfoApi: {
         baseUrl: process.env.DFE_USER_INFO_API_URL,
         apiSecret: process.env.DFE_USER_INFO_API_SECRET,
