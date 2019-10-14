@@ -10,6 +10,7 @@ const roleService = require('./role.service')
 /**
  * @description completes user sign in after DfE callback received.
  * @param {object} user the express request.user object
+ * @returns {object} an updated user object with role populated
  */
 const toExport = async (user) => {
   try {
@@ -19,8 +20,9 @@ const toExport = async (user) => {
     // TODO array check
     const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].code)
     user.role = mtcRole
+    return user
   } catch (error) {
-    throw new Error(`unable to resolve dfe user:${error.message}`)
+    throw new Error(`unable to perform post authentication user initialisation:${error.message}`)
   }
 }
 

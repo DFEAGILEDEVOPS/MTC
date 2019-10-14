@@ -8,6 +8,8 @@ const dfeSignInService = require('../services/dfe-signin.service')
 const url = require('url')
 const passport = require('passport')
 
+const dfeSignInRedirect = '/oidc-sign-in'
+
 const home = (req, res) => {
   if (req.isAuthenticated()) {
     switch (req.user.role) {
@@ -24,7 +26,7 @@ const home = (req, res) => {
   } else {
     switch (config.Auth.mode) {
       case authModes.dfeSignIn:
-        return res.redirect('/oidc-sign-in')
+        return res.redirect(dfeSignInRedirect)
       case authModes.ncaTools:
         return res.redirect(config.Auth.ncaTools.authUrl)
       default:
@@ -36,7 +38,7 @@ const home = (req, res) => {
 const redirectToAuthModeSignIn = (res) => {
   switch (config.Auth.mode) {
     case authModes.ncaTools:
-      res.redirect('/oidc-sign-in')
+      res.redirect(dfeSignInRedirect)
       break
     case authModes.dfeSignIn:
       res.redirect(config.Auth.dfeSignIn.authUrl)
@@ -57,7 +59,7 @@ const getSignIn = (req, res) => {
 }
 
 const postDfeSignIn = async (req, res) => {
-  dfeSignInService.process(req.user)
+  req.user = await dfeSignInService.process(req.user)
   logger.info(`postSignIn: User ID logged in:
     id:${req.user.id} \n
     displayName:${req.user.displayName} \n
@@ -80,10 +82,10 @@ const postDfeSignIn = async (req, res) => {
 
 const postSignIn = (req, res) => {
   logger.info(`postSignIn: User ID logged in:
-  id:${req.user.id} \n
-  displayName:${req.user.displayName} \n
-  role:${req.user.role} \n
-  timezone:"${req.user.timezone}"`)
+    id:${req.user.id} \n
+    displayName:${req.user.displayName} \n
+    role:${req.user.role} \n
+    timezone:"${req.user.timezone}"`)
 
   switch (req.user.role) {
     case 'TEACHER':
@@ -100,23 +102,20 @@ const postSignIn = (req, res) => {
 }
 
 const getSignOut = (req, res) => {
-  req.logout()
-  if (config.Auth.Mode === authModes.dfeSignIn) {
+  if (config.Auth.mode === authModes.dfeSignIn) {
     getDfeSignOut(req, res)
+  } else {
+    req.logout()
   }
+
   req.session.regenerate(function () {
-    // session has been regenerated
     switch (config.Auth.mode) {
       case authModes.ncaTools:
-        res.redirect(config.Auth.ncaTools.authUrl)
-        break
+        return res.redirect(config.Auth.ncaTools.authUrl)
       case authModes.dfeSignIn:
-        // 🤷‍♂️
-        logger.debug('session regen called')
-        break
+        return res.redirect('/')
       default: //  local
-        res.render('/')
-        break
+        return res.redirect('/')
     }
   })
 }
@@ -124,19 +123,16 @@ const getSignOut = (req, res) => {
 const getDfeSignOut = (req, res) => {
   if (req.user && req.user.id_token) {
     const idToken = req.user.id_token
-    const issuer = passport._strategies.oidc._issuer
-    // let returnUrl = `${config.hostingEnvironment.protocol}://${config.hostingEnvironment.host}:${config.hostingEnvironment.port}/signout/complete`
-    // if (req.query.redirect_uri) {
-    //   returnUrl = req.query.redirect_uri
-    // }
-    // req.logout()
-    res.redirect(url.format(Object.assign(url.parse(issuer.end_session_endpoint), {
-      search: null,
+    const issuer = passport._strategies[authModes.dfeSignIn]._issuer
+    req.logout()
+    const issuerEndSessionEndpoint = url.parse(issuer.end_session_endpoint)
+    const urlObject = Object.assign(issuerEndSessionEndpoint, {
       query: {
         id_token_hint: idToken
-        // post_logout_redirect_uri: returnUrl
       }
-    })))
+    })
+    const theUrl = url.format(urlObject)
+    res.redirect(theUrl)
   } else {
     res.redirect(req.query.redirect_uri ? req.query.redirect_uri : '/')
   }
@@ -152,9 +148,9 @@ const getUnauthorised = (req, res) => {
     case authModes.ncaTools:
       res.redirect(config.Auth.ncaTools.authUrl)
       break
-    case authModes.dfeSignIn:
+    /*     case authModes.dfeSignIn:
       res.redirect(config.Auth.dfeSignIn.authUrl)
-      break
+      break */
     default: //  local
       res.locals.pageTitle = 'Access Unauthorised'
       res.render('unauthorised')

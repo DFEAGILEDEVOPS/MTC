@@ -216,7 +216,7 @@ switch (config.Auth.mode) {
   case authModes.dfeSignIn:
     ;(async function () {
       if (config.Auth.dfeSignIn.authUrl) {
-        passport.use(authModes.dfeSignIn, await require('./authentication/dfe-signon-strategy')())
+        passport.use(authModes.dfeSignIn, await require('./authentication/dfe-signin-strategy')())
       } else {
         throw new Error('unable to configure passport for dfeSignin - no Auth URL specified')
       }
