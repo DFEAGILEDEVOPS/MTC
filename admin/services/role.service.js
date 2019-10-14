@@ -54,19 +54,19 @@ const service = {
    * Provides mapping of dfe sign-in roles to MTC roles.
    * @returns {string}
    */
-  mapDfeRoleToMtcRole: (dfeRole) => {
+  mapDfeRoleToMtcRole: (dfeRoleCode) => {
     const mapping = {
-      'Service-Manager': 'SERVICE-MANAGER',
-      'Head-Teacher': 'HEADTEACHER',
-      Teacher: 'TEACHER',
-      Helpdesk: 'HELPDESK',
-      'Test-Developer': 'TEST-DEVELOPER'
+      mtc_service_manager: 'SERVICE-MANAGER',
+      mtc_headteacher: 'HEADTEACHER',
+      mtc_teacher: 'TEACHER',
+      mtc_helpdesk: 'HELPDESK',
+      mtc_test_developer: 'TEST-DEVELOPER'
     }
 
-    let role = mapping[dfeRole]
+    let role = mapping[dfeRoleCode]
 
     if (!role) {
-      throw new Error(`Unknown dfe role ${dfeRole}`)
+      throw new Error(`Unknown dfe role ${dfeRoleCode}`)
     }
     return role
   }

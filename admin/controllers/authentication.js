@@ -92,7 +92,7 @@ const postDfeSignIn = async (req, res) => {
     const token = await createJwtForDfeApi()
     const userInfo = await getUserInfoFromDfeApi(token, req.user)
     logger.debug(JSON.stringify(userInfo, null, 2))
-    const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].name)
+    const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].code)
     logger.debug(`user role is ${mtcRole}`)
     req.user.role = mtcRole
   } catch (error) {
