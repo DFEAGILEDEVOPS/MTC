@@ -144,6 +144,7 @@ module.exports = {
       clientId: process.env.DFE_SIGNON_CLIENT_ID,
       clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
       clockTolerance: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
+      issuerDiscoveryTimeoutMs: process.env.DFE_SIGNON_DISCOVERY_TIMEOUT_MS || 10000,
       userInfoApi: {
         baseUrl: process.env.DFE_USER_INFO_API_URL,
         apiSecret: process.env.DFE_USER_INFO_API_SECRET,

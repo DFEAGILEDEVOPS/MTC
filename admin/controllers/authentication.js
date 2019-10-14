@@ -141,7 +141,17 @@ const getSignOut = (req, res) => {
   req.logout()
   req.session.regenerate(function () {
     // session has been regenerated
-    redirectToAuthModeSignIn(res)
+    switch (config.Auth.mode) {
+      case authModes.ncaTools:
+        res.redirect(config.Auth.ncaTools.authUrl)
+        break
+      case authModes.dfeSignIn:
+        res.redirect('/oidc-sign-in')
+        break
+      default: //  local
+        res.render('/')
+        break
+    }
   })
 }
 
