@@ -10,7 +10,7 @@
             <h1 class="govuk-heading-xl">Service message</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Add, edit or delete a service message for schools.
+                Add or delete a service message for schools.
             </p>
             <%if (serviceMessage) { %>
             <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
@@ -34,8 +34,8 @@
                         <tr class="govuk-table__row">
                             <td scope="row">
                                 <div>
-                                    <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
-                                       href="/service-manager/service-message/edit-service-message/"><%= serviceMessage.title %></a>
+                                    <span class="govuk-!-font-weight-bold name-text-wrap"
+                                       ><%= serviceMessage.title %></span>
                                 </div>
                             </td>
                             <td>

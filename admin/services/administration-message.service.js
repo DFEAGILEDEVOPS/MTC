@@ -27,7 +27,7 @@ administrationMessageService.getMessage = async () => {
 /**
  * Validates and stores the service message data
  * @param {object} requestData
- * @param {string} userId
+ * @param {number} userId
  * @returns {Promise<*>}
  */
 administrationMessageService.setMessage = async (requestData, userId) => {
@@ -45,24 +45,19 @@ administrationMessageService.setMessage = async (requestData, userId) => {
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
 
-  requestData.isEditView
-    ? await administrationMessageDataService.sqlUpdate(serviceMessageData) : await administrationMessageDataService.sqlCreate(serviceMessageData)
+  await administrationMessageDataService.sqlCreate(serviceMessageData)
   return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
 }
 
 /**
  * Prepare the service message data for sql transmission
  * @param {object} requestData
- * @param {string} userId
+ * @param {number} userId
  * @returns {Object}
  */
 administrationMessageService.prepareSubmissionData = (requestData, userId) => {
   const serviceMessageData = {}
-  if (requestData.isEditView) {
-    serviceMessageData.updatedByUser_id = userId
-  } else {
-    serviceMessageData.recordedByUser_id = userId
-  }
+  serviceMessageData.createdByUser_id = userId
   serviceMessageData.title = requestData.serviceMessageTitle
   serviceMessageData.message = requestData.serviceMessageContent
   return serviceMessageData
