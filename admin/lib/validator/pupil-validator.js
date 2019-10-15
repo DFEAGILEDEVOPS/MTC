@@ -9,7 +9,7 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 
 module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission = false) => {
   // TODO: Move to reusable validation service
-  let validationError = new ValidationError()
+  const validationError = new ValidationError()
   // Forename validation
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.foreName)) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameInvalidCharacters)
@@ -101,11 +101,11 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     validationError.addError('ageReason', addPupilErrorMessages.ageReasonLength)
   }
   // Gender Validation
-  if (!(/^(m|f)$/i).test(pupilData['gender'])) {
+  if (!(/^(m|f)$/i).test(pupilData.gender)) {
     validationError.addError('gender', addPupilErrorMessages.genderRequired)
   }
   // UPN Validation
-  const upn = pupilData['upn'].trim().toUpperCase()
+  const upn = pupilData.upn.trim().toUpperCase()
   const expected = upnService.calculateCheckLetter(upn.substring(1))
   const upnErrorArr = []
   if (!isEmpty(upn) && expected !== upn[0]) {

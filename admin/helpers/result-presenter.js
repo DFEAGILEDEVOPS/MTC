@@ -12,7 +12,7 @@ const resultPresenter = {}
  * @returns {Array} pupil data
  */
 resultPresenter.getResultsViewData = (pupils) => {
-  let pupilData = []
+  const pupilData = []
   pupils.forEach((p) => {
     pupilData.push({
       foreName: p.foreName,

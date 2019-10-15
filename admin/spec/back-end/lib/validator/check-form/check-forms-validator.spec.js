@@ -33,7 +33,7 @@ describe('checkFormValidator', function () {
         const existingCheckForms = {}
         const validationError = await checkFormValidator.validate(uploadedFiles, requestData, existingCheckForms, checkFormTypes)
         expect(validationError.errors).toEqual({
-          csvFiles: [ 'error1', 'error2' ]
+          csvFiles: ['error1', 'error2']
         })
       })
       it('and returns a validation error object with errors occurring from singleCheckFormValidator and multipleCheckFormsValidator validators', async () => {

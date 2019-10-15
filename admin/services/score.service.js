@@ -36,7 +36,7 @@ scoreService.calculateScorePercentage = (results) => {
     return errorMessage
   }
 
-  let percentage = (results.marks / results.maxMarks) * 100
+  const percentage = (results.marks / results.maxMarks) * 100
   var rounded = Math.round(percentage * 10) / 10
   return rounded
 }

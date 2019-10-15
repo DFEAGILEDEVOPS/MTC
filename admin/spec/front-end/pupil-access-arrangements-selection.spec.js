@@ -138,7 +138,7 @@ function initAAElements () {
         </div>
     </dialog>
   `
-  const $editViewInput = `<input type="hidden" id="isEditView" name="isEditView" value="true" />`
+  const $editViewInput = '<input type="hidden" id="isEditView" name="isEditView" value="true" />'
   $(document.body).append($formButtons)
   $(document.body).append($modalBox)
   $(document.body).append($editViewInput)

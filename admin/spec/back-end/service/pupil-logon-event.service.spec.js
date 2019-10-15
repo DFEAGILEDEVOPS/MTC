@@ -7,9 +7,9 @@ const logger = require('../../../services/log.service.js').getLogger()
 const pupilLogonEventDataService = require('../../../services/data-access/pupil-logon-event.data.service')
 
 describe('pupilLogonEventService', () => {
-  let pupilId = 1
-  let schoolPin = 'zzz12345'
-  let pupilPin = '1234'
+  const pupilId = 1
+  const schoolPin = 'zzz12345'
+  const pupilPin = '1234'
   const service = require('../../../services/pupil-logon-event.service')
 
   it('calls sqlCreate to save the save', async () => {
@@ -43,7 +43,7 @@ describe('pupilLogonEventService', () => {
     spyOn(pupilLogonEventDataService, 'sqlCreate')
     await service.storeLogonEvent(null, schoolPin, pupilPin, true, 200)
     const data = pupilLogonEventDataService.sqlCreate.calls.mostRecent().args[0]
-    expect(data.hasOwnProperty('pupil_id')).toBeFalsy()
+    expect({}.hasOwnProperty.call(data, 'pupil_id')).toBeFalsy()
   })
 
   it('adds the httpErrorMessage if present', async () => {
@@ -57,7 +57,7 @@ describe('pupilLogonEventService', () => {
     spyOn(pupilLogonEventDataService, 'sqlCreate')
     await service.storeLogonEvent(pupilId, schoolPin, pupilPin, true, 200)
     const data = pupilLogonEventDataService.sqlCreate.calls.mostRecent().args[0]
-    expect(data.hasOwnProperty('httpErrorMessage')).toBeFalsy()
+    expect({}.hasOwnProperty.call(data, 'httpErrorMessage')).toBeFalsy()
   })
 
   it('produces a warning if the database save threw an error', async () => {

@@ -95,7 +95,7 @@ const configService = {
   generateAllConfigs: function generateConfig (configData) {
     const configsByPupil = {}
     configData.forEach(singlePupilConfigData => {
-      configsByPupil[ singlePupilConfigData.pupilId ] = this.generateConfig(singlePupilConfigData)
+      configsByPupil[singlePupilConfigData.pupilId] = this.generateConfig(singlePupilConfigData)
     })
     return configsByPupil
   },

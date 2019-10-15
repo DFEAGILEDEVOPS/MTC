@@ -13,11 +13,11 @@ async function generatePupils () {
   const schools = await getTestSchoolIds()
   const numPupils = [15, 30, 30, 60, 90]
   for (let i = 0; i < schools.length; i++) {
-    let school = schools[i]
-    let pupilsRequired = numPupils[i]
+    const school = schools[i]
+    const pupilsRequired = numPupils[i]
 
     for (let j = 0; j < pupilsRequired; j++) {
-      let serial = pupilIdx.toString().padStart(3, 0)
+      const serial = pupilIdx.toString().padStart(3, 0)
       const pupil = {
         school: school,
         foreName: pupilsData[j].foreName,
@@ -50,7 +50,7 @@ function randomDob () {
 }
 
 async function getTestSchoolIds () {
-  const sql = `select id from mtc_admin.school where dfeNumber in (9991001, 9991002, 9991003, 9991004, 9991005)`
+  const sql = 'select id from mtc_admin.school where dfeNumber in (9991001, 9991002, 9991003, 9991004, 9991005)'
   const data = await sqlService.query(sql)
   return data.map(s => s.id)
 }

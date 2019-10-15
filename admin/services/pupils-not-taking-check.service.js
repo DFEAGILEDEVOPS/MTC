@@ -11,8 +11,8 @@ const pupilsNotTakingCheckService = {
    * @returns {*}
    */
   sortPupilsByReason: (pupilsList, sortDirection) => {
-    let sortedPupilsList
-    sortedPupilsList = pupilsList.sort((a, b) => {
+    // sort is impure!  Suggest converting to a pure function.
+    const sortedPupilsList = pupilsList.sort((a, b) => {
       if (a.reason === '-') {
         return 1
       } else if (b.reason === '-') {

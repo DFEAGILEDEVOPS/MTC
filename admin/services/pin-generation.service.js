@@ -200,9 +200,9 @@ pinGenerationService.generateSchoolPassword = school => {
 
   const wordsArray = Array.from(allowedWords)
   const firstRandomWord =
-    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
+    wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const secondRandomWord =
-    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
+    wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
   const newExpiry = pinExpiryTime(school.timezone)

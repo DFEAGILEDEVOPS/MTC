@@ -25,7 +25,7 @@ uploadedFileService.getAzureBlobFileSize = async (blob) => {
   }
   const blobFile = await azureBlobDataService.getBlobPropertiesAsync('csvuploads', blob)
   if (!blobFile || !blobFile.contentLength) {
-    throw new Error(`Blob file not found or invalid file`)
+    throw new Error('Blob file not found or invalid file')
   }
   return Math.round(R.divide(blobFile.contentLength, 1024) * 100) / 100
 }

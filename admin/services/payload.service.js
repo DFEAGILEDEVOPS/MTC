@@ -13,7 +13,7 @@ const payloadService = {
   addRelativeTimingsToSection: function addRelativeTimingsToSection (objects) {
     let lastTime, current
     const output = [] // output array
-    for (let obj of objects) {
+    for (const obj of objects) {
       if (!obj) {
         output.push(obj)
         continue

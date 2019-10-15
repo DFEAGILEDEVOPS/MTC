@@ -11,7 +11,7 @@ const setValidatorService = {
   validate: function (formIds, databaseObjects) {
     const providedSet = new Set(formIds)
     const databaseSet = new Set(databaseObjects.map(x => x.id))
-    const difference = new Set([ ...providedSet ].filter(x => !databaseSet.has(x)))
+    const difference = new Set([...providedSet].filter(x => !databaseSet.has(x)))
     return difference
   }
 }

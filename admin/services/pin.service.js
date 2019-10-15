@@ -16,7 +16,7 @@ const pinService = {}
  * @returns {Promise<*>}
  */
 pinService.getPupilsWithActivePins = async (schoolId, pinEnv) => {
-  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(schoolId, pinEnv)
+  const pupils = await pupilDataService.sqlFindPupilsWithActivePins(schoolId, pinEnv)
   return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 

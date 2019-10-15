@@ -41,7 +41,7 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getGeneratePinsOverview route', () => {
-    let goodReqParamsLive = {
+    const goodReqParamsLive = {
       method: 'GET',
       url: '/pupil-pin/generate-live-pins-overview',
       params: {
@@ -51,7 +51,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-    let goodReqParamsFam = {
+    const goodReqParamsFam = {
       method: 'GET',
       url: '/pupil-pin/generate-familiarisation-pins-overview',
       params: {
@@ -61,7 +61,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-    let badReqParams = {
+    const badReqParams = {
       method: 'GET',
       url: '/pupil-pin/generate-live-pins-overview',
       params: {
@@ -128,7 +128,7 @@ describe('pupilPin controller:', () => {
 
   describe('getGeneratePinsList route', () => {
     let controller
-    let goodReqParamsLive = {
+    const goodReqParamsLive = {
       method: 'GET',
       url: '/pupil-pin/generate-live-pins-list',
       params: {
@@ -138,7 +138,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-    let goodReqParamsFam = {
+    const goodReqParamsFam = {
       method: 'GET',
       url: '/pupil-pin/generate-familiarisation-pins-list',
       params: {
@@ -149,7 +149,7 @@ describe('pupilPin controller:', () => {
       }
     }
 
-    let badReqParams = {
+    const badReqParams = {
       method: 'GET',
       url: '/pupil-pin/generate-familiarisation-pins-list',
       params: {
@@ -236,7 +236,7 @@ describe('pupilPin controller:', () => {
   })
 
   describe('postGeneratePins route', () => {
-    let goodReqParamsLive = {
+    const goodReqParamsLive = {
       method: 'POST',
       url: '/pupil-pin/generate-live-pins-list',
       params: {
@@ -246,10 +246,10 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        pupil: [ '595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520' ]
+        pupil: ['595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520']
       }
     }
-    let goodReqParamsFam = {
+    const goodReqParamsFam = {
       method: 'POST',
       url: '/pupil-pin/generate-familiarisation-pins-list',
       params: {
@@ -259,11 +259,11 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        pupil: [ '595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520' ]
+        pupil: ['595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520']
       }
     }
 
-    let badReqParams = {
+    const badReqParams = {
       method: 'POST',
       url: '/pupil-pin/generate-familiarisation-pins-list',
       params: {
@@ -273,7 +273,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        pupil: [ '595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520' ]
+        pupil: ['595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520']
       }
     }
 
@@ -406,7 +406,7 @@ describe('pupilPin controller:', () => {
 
   describe('getViewAndPrintPins route', () => {
     let next
-    let goodReqParamsLive = {
+    const goodReqParamsLive = {
       method: 'POST',
       url: '/pupil-pin/view-and-print-live-pins',
       params: {
@@ -416,7 +416,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-    let goodReqParamsFam = {
+    const goodReqParamsFam = {
       method: 'POST',
       url: '/pupil-pin/view-and-print-familiarisation-pins',
       params: {
@@ -427,7 +427,7 @@ describe('pupilPin controller:', () => {
       }
     }
 
-    let badReqParams = {
+    const badReqParams = {
       method: 'POST',
       url: '/pupil-pin/view-and-print-familiarisation-pins',
       params: {
@@ -521,7 +521,7 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getViewAndCustomPrintPins route', () => {
-    let goodReqParamsLive = {
+    const goodReqParamsLive = {
       method: 'POST',
       url: '/pupil-pin/view-and-custom-print-live-pins',
       params: {
@@ -531,7 +531,7 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-    let goodReqParamsFam = {
+    const goodReqParamsFam = {
       method: 'POST',
       url: '/pupil-pin/view-and-custom-print-familiarisation-pins',
       params: {
@@ -542,7 +542,7 @@ describe('pupilPin controller:', () => {
       }
     }
 
-    let badReqParamsFam = {
+    const badReqParamsFam = {
       method: 'POST',
       url: '/pupil-pin/view-and-custom-print-familiarisation-pins',
       params: {

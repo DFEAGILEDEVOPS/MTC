@@ -15,15 +15,15 @@ describe('generateCryptoRandomNumber', () => {
     }
 
     const count = {}
-    for (let num of numbersArr) {
-      count[ num ] = count[ num ] ? count[ num ] + 1 : 1
+    for (const num of numbersArr) {
+      count[num] = count[num] ? count[num] + 1 : 1
     }
 
     const expectedResult = numbersArr.length / ((max - min) + 1)
     const errorPercentTolerance = 0.21 // 21%
     const tolerance = expectedResult * errorPercentTolerance
 
-    for (let [ number, freq ] of Object.entries(count)) {
+    for (const [number, freq] of Object.entries(count)) {
       expect(number >= min && number <= max).toBeTruthy()
       expect(freq).toBeGreaterThanOrEqual(expectedResult - tolerance)
       expect(freq).toBeLessThanOrEqual(expectedResult + tolerance)

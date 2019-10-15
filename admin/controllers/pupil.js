@@ -236,7 +236,7 @@ const postEditPupil = async (req, res, next) => {
 
     school = await schoolDataService.sqlFindOneById(pupil.school_id)
     if (!school) {
-      return next(new Error(`School not found`))
+      return next(new Error('School not found'))
     }
 
     validationError = await pupilValidator.validate(req.body, school.id)

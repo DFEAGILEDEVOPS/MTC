@@ -58,7 +58,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let attendanceCodes
   let pupilsList
   let groups = []
-  let groupIds = req.params.groupIds || ''
+  const groupIds = req.params.groupIds || ''
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()

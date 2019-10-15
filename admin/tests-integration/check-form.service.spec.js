@@ -52,7 +52,7 @@ describe('check-form.service', () => {
       writeCsvFile(count)
 
       availableForms.forEach(f => {
-        expect(count.hasOwnProperty(f.id)).toBeTruthy()
+        expect({}.hasOwnProperty.call(count, f.id)).toBeTruthy()
       })
     })
   })
@@ -67,7 +67,7 @@ function countForm (formsAllocated, availableForms) {
 
   // Add in any forms that had zero allocations
   availableForms.forEach(f => {
-    if (!count.hasOwnProperty(f.id)) {
+    if (!{}.hasOwnProperty.call(count, f.id)) {
       count[f.id] = 0
     }
   })

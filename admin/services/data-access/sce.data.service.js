@@ -98,7 +98,7 @@ sceDataService.sqlUpsertSceSchool = async (schoolId, timezone, countryCode) => {
   * @return {Promise<object>}
   */
 sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
-  const declareTable = `declare @tvp as [mtc_admin].SceTableType`
+  const declareTable = 'declare @tvp as [mtc_admin].SceTableType'
   const insertHeader = `INSERT into @tvp
         (school_id, timezone, countryCode, isOpen)
         VALUES`

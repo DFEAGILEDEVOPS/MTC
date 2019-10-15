@@ -118,9 +118,9 @@ function decryptMessage (encryptedBuffer, key, iv) {
  */
 function parseMessage (plaintext) {
   const arr = plaintext.split(';')
-  let data = {}
+  const data = {}
   arr.forEach(val => {
-    let [k, v] = val.split('=')
+    const [k, v] = val.split('=')
     data[k] = v
   })
 

@@ -31,7 +31,7 @@ module.exports = class ValidationError {
    * @return {boolean}
    */
   isError (field) {
-    if (this.errors.hasOwnProperty(field)) {
+    if ({}.hasOwnProperty.call(this.errors, field)) {
       return true
     }
     return false
@@ -43,7 +43,7 @@ module.exports = class ValidationError {
    * @return {String}  - possibly empty string
    */
   get (field) {
-    if (this.errors.hasOwnProperty(field)) {
+    if ({}.hasOwnProperty.call(this.errors, field)) {
       return this.errors[field]
     }
     return ''
@@ -76,15 +76,15 @@ module.exports = class ValidationError {
    * same error message.
    */
   getUniqueFields (sortArray) {
-    let hash = {}
-    for (let field in this.errors) {
+    const hash = {}
+    for (const field in this.errors) {
       hash[this.errors[field]] = field
     }
-    let unique = {}
-    for (let field in hash) {
+    const unique = {}
+    for (const field in hash) {
       unique[hash[field]] = field
     }
-    let uniqueKeys = Object.keys(unique)
+    const uniqueKeys = Object.keys(unique)
 
     if (sortArray) {
       return ValidationError.sortByFieldOrder(uniqueKeys, sortArray)
