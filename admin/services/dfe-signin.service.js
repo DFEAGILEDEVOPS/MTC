@@ -23,6 +23,7 @@ const service = {
 
     dfeUser.displayName = `${dfeUser.given_name} ${dfeUser.family_name} (${dfeUser.email})`
     dfeUser.id_token = tokenset.id_token
+    dfeUser.providerUserId = dfeUser.sub
 
     const dfeRole = await dfeSigninDataService.getDfeRole(dfeUser)
     const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
@@ -52,11 +53,11 @@ const service = {
     }
 
     // lookup user record
-    let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
+    let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.providerUserId)
     if (!userRecord) {
       // create user record, as this is their first visit to MTC
       const user = {
-        identifier: dfeUser.id,
+        identifier: dfeUser.providerUserId,
         displayName: dfeUser.displayName,
         role_id: roleRecord.id
       }

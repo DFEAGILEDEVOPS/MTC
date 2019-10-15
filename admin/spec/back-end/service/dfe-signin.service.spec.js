@@ -229,4 +229,19 @@ describe('dfe-signin.service', () => {
     expect(user.timezone).toBe(config.DEFAULT_TIMEZONE)
     done()
   })
+
+  it('sets externalUserId to the provided user id and id to the user record id', async (done) => {
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
+      Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, id: 567 }))
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
+    spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    const user = await sut.initialiseUser({ organisation: { urn: 12345 }, sub: 'external-user-id' }, token)
+    expect(user).toBeDefined()
+    expect(user.providerUserId).toBe('external-user-id')
+    expect(user.id).toBe(567)
+    done()
+  })
 })
