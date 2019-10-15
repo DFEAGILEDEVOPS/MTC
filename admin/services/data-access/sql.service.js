@@ -37,7 +37,7 @@ let pool
  * @return {string | undefined}
  */
 const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
-  logger.debug(`findDataType('${type}'): called`)
+  // logger.debug(`findDataType('${type}'): called`)
   if (type.toUpperCase() === k.toUpperCase()) {
     return k
   }

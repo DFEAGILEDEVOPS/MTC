@@ -4,6 +4,7 @@ const config = require('../config')
 const { Strategy, Issuer } = require('openid-client')
 const logger = require('../services/log.service').getLogger()
 const asyncRetry = require('login.dfe.async-retry')
+const dfeSigninService = require('../services/dfe-signin.service')
 
 const initSignOn = async () => {
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
@@ -23,16 +24,27 @@ const initSignOn = async () => {
     params: {
       scope: config.Auth.dfeSignIn.openIdScope
     }
+  }, async (tokenset, authUserInfo, done) => {
+    try {
+      // authUserInfo appears to be exactly the same as what client.userinfo returns 🤷‍♂️
+      // let userInfo = await client.userinfo(tokenset.access_token)
+      const userInfo = await dfeSigninService.initialiseUser(authUserInfo, tokenset)
+      done(null, userInfo)
+    } catch (error) {
+      logger.error(error)
+      done(error)
+    }
+  })
+}
+/*   return new Strategy({
+    client,
+    params: {
+      scope: config.Auth.dfeSignIn.openIdScope
+    }
   }, (tokenset, authUserInfo, done) => {
     client.userinfo(tokenset.access_token)
       .then((userInfo) => {
-        logger.debug('userInfo...')
-        logger.debugObject(userInfo)
-        userInfo.id = userInfo.sub
-        userInfo.name = userInfo.sub
-        userInfo.displayName = `${userInfo.given_name} ${userInfo.family_name} (${userInfo.email})`
-        // look up school by URN
-        userInfo.id_token = tokenset.id_token
+        userInfo = dfeSigninService.initialiseUser(userInfo, tokenset)
         done(null, userInfo)
       })
       .catch((err) => {
@@ -40,6 +52,6 @@ const initSignOn = async () => {
         done(err)
       })
   })
-}
+} */
 
 module.exports = initSignOn

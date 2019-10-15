@@ -8,76 +8,109 @@ const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
-const { MtcHelpdeskImpersonationError } = require('../error-types/mtc-error')
+const roles = require('../lib/consts/roles')
 
 const service = {
-  /**
-   * @description completes user sign in after DfE callback received.
-   * @param {object} user the express request.user object
-   * @returns {object} an updated user object with role populated
-   */
-  getRoleInfo: async (user) => {
-    try {
-      // get role info...
-      const token = await createJwtForDfeApi()
-      const userInfo = await getUserInfoFromDfeApi(token, user)
-      logger.debug('response received from dfe.API:')
-      logger.debugObject(userInfo)
-      // TODO array check
-      const mtcRole = roleService.mapDfeRoleToMtcRole(userInfo.roles[0].code)
-      user.role = mtcRole
-      return user
-    } catch (error) {
-      throw new Error(`unable to perform post authentication user initialisation:${error.message}`)
-    }
-  },
   /**
    * @description maps an authenticated NCA Tools user to an MTC user, school and role
    * @param {object} dfeUser all decrypted user information sent in the request payload
    */
-  mapDfeUserToMtcUser: async (dfeUser) => {
+  initialiseUser: async (dfeUser, tokenset) => {
     if (!dfeUser) {
       throw new Error('dfeUser argument required')
     }
-    // TODO persist nca tools session token (best place might be adminLogonEvent?
+    if (!tokenset) {
+      throw new Error('tokenset argument required')
+    }
+    // set up basic user properties
+    dfeUser.id = dfeUser.sub
+    // dfeUser.name = dfeUser.sub
+    dfeUser.displayName = `${dfeUser.given_name} ${dfeUser.family_name} (${dfeUser.email})`
+    dfeUser.id_token = tokenset.id_token
 
-    let school
-    if (dfeUser.School) {
-      // TODO
-      school = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
-    } else {
-      throw new MtcHelpdeskImpersonationError('No organisation provided by DfE signin')
+    const dfeRole = await getDfeRole(dfeUser)
+    const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
+    dfeUser.role = mtcRoleTitle
+    const roleRecord = await roleService.findByTitle(mtcRoleTitle)
+
+    let schoolRecord
+    // lookup school if in teacher or headteacher role
+    if (dfeUser.role === roles.teacher || dfeUser.role === roles.headTeacher) {
+      if (dfeUser.organisation && dfeUser.organisation.urn) {
+        logger.debug(`looking up school by URN:${dfeUser.organisation.urn}`)
+        schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
+        if (!schoolRecord) {
+          // should we throw? as user in teacher role cannot continue without school...
+          logger.warn(`school not found with URN:${dfeUser.organisation.urn}`)
+        }
+      } else {
+        throw new Error('user.organisation or user.organisation.urn not found on dfeUser object')
+      }
     }
 
-    let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.externalAuthenticationId)
+    // set school specifics
+    if (schoolRecord) {
+      dfeUser.timezone = schoolRecord.timezone || config.DEFAULT_TIMEZONE
+      dfeUser.School = schoolRecord.dfeNumber
+      dfeUser.schoolId = schoolRecord.id
+    }
+
+    // lookup user record
+    let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
     if (!userRecord) {
-      const mtcRoleName = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, school)
-      const role = await roleService.findByTitle(mtcRoleName)
+      // create user record, as this is their first visit to MTC
       const user = {
-        identifier: dfeUser.externalAuthenticationId,
-        displayName: dfeUser.EmailAddress,
-        role_id: role.id
+        identifier: dfeUser.id,
+        displayName: dfeUser.displayName,
+        role_id: roleRecord.id
       }
-      if (school) {
-        user.school_id = school.id
+      if (schoolRecord) {
+        user.school_id = schoolRecord.id
       }
       await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.externalAuthenticationId)
+      userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
     } else {
       // user exists - check requested school
-      if (school && (userRecord.school_id !== school.id)) {
-        await userDataService.sqlUpdateSchool(userRecord.id, school.id)
-        userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.externalAuthenticationId)
+      if (schoolRecord && (userRecord.school_id !== schoolRecord.id)) {
+        await userDataService.sqlUpdateSchool(userRecord.id, schoolRecord.id)
+        userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
       }
     }
-    userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, school)
-    return userRecord
+    // set id to sql record id
+    dfeUser.id = userRecord.id
+    // userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, urn)
+    // return userRecord
+    logger.debug('user setup...')
+    logger.debugObject(dfeUser)
+    return dfeUser
   }
 }
 
+/**
+ * @description completes user sign in after DfE callback received.
+ * @param {object} user the express request.user object
+ * @returns {object} an updated user object with role populated
+ */
+const getDfeRole = async (user) => {
+  try {
+    // get role info...
+    const token = await createJwtForDfeApi()
+    const userInfo = await getUserInfoFromDfeApi(token, user)
+    return userInfo.roles[0].code
+  } catch (error) {
+    logger.error(`unable to get dfe role for user:${user.id} error:${error.message}`)
+    throw error
+  }
+}
+
+/**
+ * @description looks up user role information.
+ * @param {string} token a JWT signed with the dfe API secret
+ * @returns {object} the user info object returned from the API
+ */
 const getUserInfoFromDfeApi = async (token, user) => {
   const serviceId = config.Auth.dfeSignIn.clientId // serves as serviceId also, undocumented
   const orgId = user.organisation.id
@@ -97,6 +130,10 @@ const getUserInfoFromDfeApi = async (token, user) => {
   }
 }
 
+/**
+ * @description creates a JWT signed with the api secret using the HS256 algorithm.
+ * @returns {string} the signed Json Web Token
+ */
 const createJwtForDfeApi = async () => {
   const clientId = config.Auth.dfeSignIn.clientId
   const apiSecret = config.Auth.dfeSignIn.userInfoApi.apiSecret

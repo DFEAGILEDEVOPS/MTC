@@ -63,7 +63,7 @@ const service = {
       mtc_test_developer: 'TEST-DEVELOPER'
     }
 
-    let role = mapping[dfeRoleCode]
+    const role = mapping[dfeRoleCode]
 
     if (!role) {
       throw new Error(`Unknown dfe role ${dfeRoleCode}`)

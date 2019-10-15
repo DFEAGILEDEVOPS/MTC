@@ -76,7 +76,7 @@ if (config.Auth.mode === authModes.dfeSignIn) {
       next()
     },
     passport.authenticate(authModes.dfeSignIn, { failureRedirect: signInFailureRedirect }),
-    (req, res) => postDfeSignIn(req, res)
+    (req, res) => postSignIn(req, res)
   )
   router.get('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
     { successRedirect: '/', failureRedirect: signInFailureRedirect }))
