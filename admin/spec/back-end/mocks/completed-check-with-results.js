@@ -15,7 +15,7 @@ module.exports = {
   startedAt: moment('2018-02-11T15:42:38.807'),
   data: {
     access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNVEMgQWRtaW4iLCJzdWIiOjEyLCJleHAiOjE1MTgzNjczMzgsIm5iZiI6MTUxODM2MzczOCwiandpIjoiMjQwZTFiOWQtMjk1My00YjAwLWE3YjUtOTc4NDczNjQyYzBiIiwiaWF0IjoxNTE4MzYzNzM4fQ.ULgckomwh5y9bwblEvVYNS-cNO2JnHxLGSxYMvcmoNU',
-    answers: [ {
+    answers: [{
       factor1: 2,
       factor2: 5,
       answer: '10',
@@ -65,8 +65,8 @@ module.exports = {
       factor2: 12,
       answer: '144',
       sequenceNumber: 10
-    } ],
-    audit: [ {
+    }],
+    audit: [{
       type: 'WarmupStarted',
       clientTimestamp: '2018-02-11T15:42:21.082Z'
     }, {
@@ -204,7 +204,7 @@ module.exports = {
     }, {
       type: 'CheckSubmissionPending',
       clientTimestamp: '2018-02-11T15:43:26.772Z'
-    } ],
+    }],
     config: {
       questionTime: 5,
       loadingTime: 2
@@ -376,7 +376,7 @@ module.exports = {
         sequenceNumber: 10
       }
     ],
-    questions: [ {
+    questions: [{
       order: 1,
       factor1: 2,
       factor2: 5

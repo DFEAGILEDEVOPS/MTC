@@ -40,9 +40,9 @@ completedCheckDataService.sqlAddResult = async function (checkCode, completedChe
   }
   const checkId = result.id
   const checkDataParams = {
-    'id': checkId,
-    'data': JSON.stringify(completedCheck),
-    'receivedByServerAt': receivedByServerAt
+    id: checkId,
+    data: JSON.stringify(completedCheck),
+    receivedByServerAt: receivedByServerAt
   }
   return sqlService.update('[check]', checkDataParams)
 }
@@ -96,7 +96,7 @@ completedCheckDataService.sqlFindUnmarked = async function (batchSize) {
 // used by PS Report to set all unmarked
 
 completedCheckDataService.sqlSetAllUnmarked = async () => {
-  const sql = `UPDATE [mtc_admin].[check] SET markedAt=NULL`
+  const sql = 'UPDATE [mtc_admin].[check] SET markedAt=NULL'
   return sqlService.modify(sql)
 }
 
@@ -137,7 +137,7 @@ completedCheckDataService.sqlFind = async (lowCheckId, batchSize) => {
   if (safeBatchSize > 250) {
     // As the SQL has an ORDER BY clause we need to limit the number of rows ordered
     // for performance reasons.
-    throw new Error(`batchSize too large`)
+    throw new Error('batchSize too large')
   }
   const sql = `
     SELECT

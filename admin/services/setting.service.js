@@ -30,9 +30,9 @@ settingService.get = async () => {
   let settings = await settingDataService.sqlFindOne()
   if (!settings) {
     settings = {
-      'questionTimeLimit': config.QUESTION_TIME_LIMIT,
-      'loadingTimeLimit': config.TIME_BETWEEN_QUESTIONS,
-      'checkTimeLimit': config.LENGTH_OF_CHECK_MINUTES
+      questionTimeLimit: config.QUESTION_TIME_LIMIT,
+      loadingTimeLimit: config.TIME_BETWEEN_QUESTIONS,
+      checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES
     }
   }
   return settings

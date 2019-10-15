@@ -114,23 +114,18 @@ function updateSchools (rows) {
 
 async function main () {
   const csvPath = process.argv[2]
-
-  try {
-    const rows = await readCSV(csvPath)
-    await sqlService.initPool()
-    const schoolChanges = await checkSchools(rows)
-    if (!schoolChanges.length) {
-      console.log('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
-      process.exit(1)
-    }
-    await updateSchools(rows)
-    const cachesToDrop = schoolChanges.map(r => `schoolData.sqlFindOneById.${r.id}`)
-    await redisCacheService.drop(cachesToDrop)
-    console.log(`Updated ${schoolChanges.length} schools`)
-    process.exit(0)
-  } catch (error) {
-    throw error
+  const rows = await readCSV(csvPath)
+  await sqlService.initPool()
+  const schoolChanges = await checkSchools(rows)
+  if (!schoolChanges.length) {
+    console.log('There are no schools matching the `OLD_dfeNumber` values in the supplied CSV')
+    process.exit(1)
   }
+  await updateSchools(rows)
+  const cachesToDrop = schoolChanges.map(r => `schoolData.sqlFindOneById.${r.id}`)
+  await redisCacheService.drop(cachesToDrop)
+  console.log(`Updated ${schoolChanges.length} schools`)
+  process.exit(0)
 }
 
 main()

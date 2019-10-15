@@ -56,7 +56,7 @@ const groupPupilsPage = async (req, res, next) => {
  */
 const manageGroupPage = async (req, res, next) => {
   let pupilsList
-  let selectedPupils = []
+  const selectedPupils = []
   let group
   let action = 'add'
   res.locals.pageTitle = 'Create group'
@@ -124,7 +124,7 @@ const addGroup = async (req, res, next) => {
   }
 
   let validationError
-  let group = {
+  const group = {
     name: req.body.name,
     pupils: req.body.pupil
   }
@@ -137,8 +137,8 @@ const addGroup = async (req, res, next) => {
 
   if (validationError.hasError()) {
     let pupilsList
-    let selectedPupils = []
-    let selectedPupilsIds = Object.values(req.body.pupil)
+    const selectedPupils = []
+    const selectedPupilsIds = Object.values(req.body.pupil)
 
     try {
       pupilsList = await groupService.getPupils(req.user.schoolId)
@@ -196,7 +196,6 @@ const editGroup = async (req, res, next) => {
     return next(error)
   }
 
-  let group
   let oldGroup
 
   try {
@@ -205,7 +204,7 @@ const editGroup = async (req, res, next) => {
     return next(error)
   }
 
-  group = {
+  const group = {
     name: req.body.name,
     pupils: req.body.pupil,
     id: req.body.groupId,
@@ -215,8 +214,7 @@ const editGroup = async (req, res, next) => {
   const validationError = await groupValidator.validate(req.body, oldGroup.name, req.user.schoolId)
   if (validationError.hasError()) {
     let pupilsList
-    let selectedPupils = []
-    let selectedPupilIds
+    const selectedPupils = []
 
     try {
       pupilsList = await groupService.getPupils(req.user.schoolId, req.body.groupId)
@@ -224,7 +222,7 @@ const editGroup = async (req, res, next) => {
       return next(error)
     }
 
-    selectedPupilIds = Object.values(req.body.pupil)
+    const selectedPupilIds = Object.values(req.body.pupil)
     selectedPupilIds.map((p) => { selectedPupils[p] = true })
 
     req.breadcrumbs('Group pupils', '/group/pupils-list')

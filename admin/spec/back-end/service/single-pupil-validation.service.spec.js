@@ -16,7 +16,7 @@ describe('single-pupil-validation.service', () => {
 
     it('returns a pupil with no errors', async (done) => {
       const school = { _id: '001' }
-      const data = [ 'John', 'Lawrence', 'Smith', 'X822200014001', '5/22/2005', 'M' ]
+      const data = ['John', 'Lawrence', 'Smith', 'X822200014001', '5/22/2005', 'M']
       const isMultiplePupilsSubmission = true
       singlePupilValidationCSVService.init()
       const { single } = await singlePupilValidationCSVService.validate(data, school, isMultiplePupilsSubmission)
@@ -53,7 +53,7 @@ describe('single-pupil-validation.service', () => {
 
     it('returns a pupil with errors', async (done) => {
       const school = { _id: '001' }
-      const data = [ 'John', 'Lawrence', 'Smith', 'X8222000140011', '5/22/2005', 'M' ]
+      const data = ['John', 'Lawrence', 'Smith', 'X8222000140011', '5/22/2005', 'M']
       singlePupilValidationCSVService.init()
       const isMultiplePupilsSubmission = true
       const { single } = await singlePupilValidationCSVService.validate(data, school, isMultiplePupilsSubmission)

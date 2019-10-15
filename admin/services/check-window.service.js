@@ -31,7 +31,7 @@ const checkWindowService = {
     // 2. the check window has not yet started.
     const checkWindows = await checkWindowDataService.sqlFindCheckWindowsAssignedToForms([checkForm.id])
     if (checkWindows && checkWindows.length > 0) {
-      let now = moment.utc()
+      const now = moment.utc()
       for (let index = 0; index < checkWindows.length; index++) {
         const window = checkWindows[index]
         if (window.checkStartDate.isSameOrAfter(now)) {
@@ -49,13 +49,13 @@ const checkWindowService = {
    */
   getFutureCheckWindowsAndCountForms: async () => {
     let checkWindowsList = null
-    let checkWindowsListData = await checkWindowDataService.sqlFindFutureWithFormCount()
+    const checkWindowsListData = await checkWindowDataService.sqlFindFutureWithFormCount()
     if (checkWindowsListData) {
       checkWindowsList = checkWindowsListData.map((cw) => {
         return {
-          'id': cw.id,
-          'checkWindowName': cw.name,
-          'totalForms': cw.FormCount
+          id: cw.id,
+          checkWindowName: cw.name,
+          totalForms: cw.FormCount
         }
       })
     }
@@ -68,13 +68,13 @@ const checkWindowService = {
    */
   getCurrentCheckWindowsAndCountForms: async () => {
     let checkWindowsList = null
-    let checkWindowsListData = await checkWindowDataService.sqlFindCurrentAndFutureWithFormCount()
+    const checkWindowsListData = await checkWindowDataService.sqlFindCurrentAndFutureWithFormCount()
     if (checkWindowsListData) {
       checkWindowsList = checkWindowsListData.map((cw) => {
         return {
-          'id': cw.id,
-          'checkWindowName': cw.name,
-          'totalForms': cw.FormCount
+          id: cw.id,
+          checkWindowName: cw.name,
+          totalForms: cw.FormCount
         }
       })
     }
@@ -88,7 +88,7 @@ const checkWindowService = {
    * @returns {Array}
    */
   mergedFormIds: (existingForms, newForms) => {
-    let resultArray = []
+    const resultArray = []
     existingForms.map((f) => {
       resultArray.push(f)
     })
@@ -231,16 +231,16 @@ const checkWindowService = {
    * @returns {Object}
    */
   formatUnsavedData: (requestData) => {
-    if (!requestData['adminStartDay'] && !requestData['adminStartMonth'] && !requestData['adminStartYear'] && requestData['existingAdminStartDate'] && requestData['adminIsDisabled']) {
-      requestData.adminStartDay = moment(requestData['existingAdminStartDate']).format('D')
-      requestData.adminStartMonth = moment(requestData['existingAdminStartDate']).format('MM')
-      requestData.adminStartYear = moment(requestData['existingAdminStartDate']).format('YYYY')
+    if (!requestData.adminStartDay && !requestData.adminStartMonth && !requestData.adminStartYear && requestData.existingAdminStartDate && requestData.adminIsDisabled) {
+      requestData.adminStartDay = moment(requestData.existingAdminStartDate).format('D')
+      requestData.adminStartMonth = moment(requestData.existingAdminStartDate).format('MM')
+      requestData.adminStartYear = moment(requestData.existingAdminStartDate).format('YYYY')
     }
 
-    if (!requestData['checkStartDay'] && !requestData['checkStartMonth'] && !requestData['checkStartYear'] && requestData['existingCheckStartDate'] && requestData['checkStartIsDisabled']) {
-      requestData.checkStartDay = moment(requestData['existingCheckStartDate']).format('D')
-      requestData.checkStartMonth = moment(requestData['existingCheckStartDate']).format('MM')
-      requestData.checkStartYear = moment(requestData['existingCheckStartDate']).format('YYYY')
+    if (!requestData.checkStartDay && !requestData.checkStartMonth && !requestData.checkStartYear && requestData.existingCheckStartDate && requestData.checkStartIsDisabled) {
+      requestData.checkStartDay = moment(requestData.existingCheckStartDate).format('D')
+      requestData.checkStartMonth = moment(requestData.existingCheckStartDate).format('MM')
+      requestData.checkStartYear = moment(requestData.existingCheckStartDate).format('YYYY')
     }
     return requestData
   },
@@ -258,17 +258,17 @@ const checkWindowService = {
       checkWindow = {}
     }
 
-    checkWindow.name = requestData['checkWindowName']
-    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
+    checkWindow.name = requestData.checkWindowName
+    if (requestData.adminStartDay && requestData.adminStartMonth && requestData.adminStartYear) {
       checkWindow.adminStartDate =
-        dateService.createLocalTimeFromDayMonthYear(requestData['adminStartDay'], requestData['adminStartMonth'], requestData['adminStartYear'])
+        dateService.createLocalTimeFromDayMonthYear(requestData.adminStartDay, requestData.adminStartMonth, requestData.adminStartYear)
     }
-    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
+    if (requestData.checkStartDay && requestData.checkStartMonth && requestData.checkStartYear) {
       checkWindow.checkStartDate =
-        dateService.createLocalTimeFromDayMonthYear(requestData['checkStartDay'], requestData['checkStartMonth'], requestData['checkStartYear'])
+        dateService.createLocalTimeFromDayMonthYear(requestData.checkStartDay, requestData.checkStartMonth, requestData.checkStartYear)
     }
     checkWindow.checkEndDate =
-      dateService.createLocalTimeFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
+      dateService.createLocalTimeFromDayMonthYear(requestData.checkEndDay, requestData.checkEndMonth, requestData.checkEndYear)
     // Ensure check end date time is set to the last minute of the particular day
     checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
     if (!checkWindow.id) {
@@ -285,17 +285,17 @@ const checkWindowService = {
    */
   submit: async (requestData, existingCheckWindow = {}) => {
     const checkWindow = R.clone(existingCheckWindow)
-    checkWindow.name = requestData['checkWindowName']
-    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
+    checkWindow.name = requestData.checkWindowName
+    if (requestData.adminStartDay && requestData.adminStartMonth && requestData.adminStartYear) {
       checkWindow.adminStartDate =
-        dateService.createUTCFromDayMonthYear(requestData['adminStartDay'], requestData['adminStartMonth'], requestData['adminStartYear'])
+        dateService.createUTCFromDayMonthYear(requestData.adminStartDay, requestData.adminStartMonth, requestData.adminStartYear)
     }
-    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
+    if (requestData.checkStartDay && requestData.checkStartMonth && requestData.checkStartYear) {
       checkWindow.checkStartDate =
-        dateService.createUTCFromDayMonthYear(requestData['checkStartDay'], requestData['checkStartMonth'], requestData['checkStartYear'])
+        dateService.createUTCFromDayMonthYear(requestData.checkStartDay, requestData.checkStartMonth, requestData.checkStartYear)
     }
     checkWindow.checkEndDate =
-      dateService.createUTCFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
+      dateService.createUTCFromDayMonthYear(requestData.checkEndDay, requestData.checkEndMonth, requestData.checkEndYear)
     // Ensure check end date time is set to the last minute of the particular day
     checkWindow.checkEndDate.set({ hour: 22, minute: 59, second: 59 })
     checkWindow.adminEndDate = moment(checkWindow.checkEndDate).add(2, 'days')
@@ -342,15 +342,15 @@ const checkWindowService = {
       const existingCheckWindow = await checkWindowDataService.sqlFindOneByUrlSlug(requestData.urlSlug)
       requestData.hasAdminStartDateInPast = moment().isAfter(existingCheckWindow.adminStartDate)
       if (requestData.hasAdminStartDateInPast) {
-        requestData.adminStartDay = moment(existingCheckWindow['adminStartDate']).format('D')
-        requestData.adminStartMonth = moment(existingCheckWindow['adminStartDate']).format('MM')
-        requestData.adminStartYear = moment(existingCheckWindow['adminStartDate']).format('YYYY')
+        requestData.adminStartDay = moment(existingCheckWindow.adminStartDate).format('D')
+        requestData.adminStartMonth = moment(existingCheckWindow.adminStartDate).format('MM')
+        requestData.adminStartYear = moment(existingCheckWindow.adminStartDate).format('YYYY')
       }
       requestData.hasCheckStartDateInPast = moment().isAfter(existingCheckWindow.checkStartDate)
       if (requestData.hasCheckStartDateInPast) {
-        requestData.checkStartDay = moment(existingCheckWindow['checkStartDate']).format('D')
-        requestData.checkStartMonth = moment(existingCheckWindow['checkStartDate']).format('MM')
-        requestData.checkStartYear = moment(existingCheckWindow['checkStartDate']).format('YYYY')
+        requestData.checkStartDay = moment(existingCheckWindow.checkStartDate).format('D')
+        requestData.checkStartMonth = moment(existingCheckWindow.checkStartDate).format('MM')
+        requestData.checkStartYear = moment(existingCheckWindow.checkStartDate).format('YYYY')
       }
     }
     return requestData

@@ -22,7 +22,7 @@ const adminConfig = {
 
 const executeRequest = (connection, sql) => {
   return new Promise((resolve, reject) => {
-    let results = []
+    const results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
       if (err) {

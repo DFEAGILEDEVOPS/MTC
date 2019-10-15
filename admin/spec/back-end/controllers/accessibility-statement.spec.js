@@ -6,19 +6,15 @@ const httpMocks = require('node-mocks-http')
 
 describe('accessibility-statement page controller', () => {
   it('should render the initial accessibility-statement page', async (done) => {
-    let res
-    let req
-    let controller
-
-    res = httpMocks.createResponse()
+    const res = httpMocks.createResponse()
     res.locals = {}
 
-    req = httpMocks.createRequest({
+    const req = httpMocks.createRequest({
       method: 'GET',
       url: '/accessibility-statement'
     })
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    controller = require('../../../controllers/accessibility-statement')
+    const controller = require('../../../controllers/accessibility-statement')
 
     spyOn(res, 'render').and.returnValue(null)
     await controller.getAccessibilityStatementPage(req, res)

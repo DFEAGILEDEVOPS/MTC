@@ -33,7 +33,7 @@ describe('service manager controller:', () => {
   })
 
   describe('getServiceManagerHome', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/home'
     }
@@ -47,7 +47,7 @@ describe('service manager controller:', () => {
     })
   })
   describe('getUpdateTiming', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/check-settings',
       params: {}
@@ -71,7 +71,7 @@ describe('service manager controller:', () => {
     })
   })
   describe('setUpdateTiming', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'POST',
       url: '/service-manager/check-settings',
       body: {
@@ -108,7 +108,7 @@ describe('service manager controller:', () => {
     })
   })
   describe('getCheckWindows', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/check-windows',
       params: {
@@ -133,7 +133,7 @@ describe('service manager controller:', () => {
     })
   })
   describe('getCheckWindowForm', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/check-windows/add',
       params: {
@@ -150,7 +150,7 @@ describe('service manager controller:', () => {
   })
 
   describe('getCheckWindowEditForm', () => {
-    let goodReqEditParams = {
+    const goodReqEditParams = {
       method: 'GET',
       url: '/service-manager/check-windows/edit/1',
       params: {
@@ -264,7 +264,7 @@ describe('service manager controller:', () => {
   })
 
   describe('getUploadPupilCensus', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/upload-pupil-census'
     }
@@ -467,7 +467,7 @@ describe('service manager controller:', () => {
   })
 
   describe('getSceAddSchool', () => {
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/service-manager/sce-add-school',
       params: {

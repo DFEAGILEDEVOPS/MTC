@@ -24,7 +24,7 @@ describe('pupil-restart.data.service', () => {
 
   describe('#sqlGetNumberOfRestartsByPupil', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ 'cnt': 1 }]))
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ cnt: 1 }]))
       service = require('../../../../services/data-access/pupil-restart.data.service')
     })
 

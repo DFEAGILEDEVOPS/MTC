@@ -31,7 +31,7 @@ describe('check window controller:', () => {
   })
 
   describe('getManageCheckWindows route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-window/manage-check-window'
     }
@@ -56,7 +56,7 @@ describe('check window controller:', () => {
     })
   })
   describe('createCheckWindow route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/check-window/create-check-window'
     }
@@ -71,7 +71,7 @@ describe('check window controller:', () => {
     })
   })
   describe('submitCheckWindow route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/check-window/submit-check-window',
       body: {
@@ -79,7 +79,7 @@ describe('check window controller:', () => {
       }
     }
 
-    let reqEditParams = {
+    const reqEditParams = {
       method: 'POST',
       url: '/check-window/submit-check-window',
       body: {
@@ -153,7 +153,7 @@ describe('check window controller:', () => {
     })
   })
   describe('removeCheckWindow route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/remove/:checkWindowUrlSlug',
       params: {
@@ -186,7 +186,7 @@ describe('check window controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
     })
     describe('getCheckWindowEditForm route', () => {
-      let reqParams = {
+      const reqParams = {
         method: 'GET',
         url: '/edit/:checkWindowUrlSlug',
         params: {

@@ -21,7 +21,7 @@ const nameService = {
 
     const lookupKey = getKeyFromValue(tableName)
 
-    if (!NAMES.hasOwnProperty(lookupKey)) {
+    if (!{}.hasOwnProperty.call(NAMES, lookupKey)) {
       throw new Error('Table name not found: ' + tableName)
     }
 

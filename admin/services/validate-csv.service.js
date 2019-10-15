@@ -12,8 +12,8 @@ const service = {}
  */
 service.process = async (csvDataArray, school) => {
   // Remove error column and headers from data and validate rows
-  if (csvDataArray.some(p => p[ 6 ])) csvDataArray.map((r) => r.splice(6, 1))
-  let headers = csvDataArray.shift(0)
+  if (csvDataArray.some(p => p[6])) csvDataArray.map((r) => r.splice(6, 1))
+  const headers = csvDataArray.shift(0)
   const validationErrors = csvValidator.validate(csvDataArray, headers, 'file-upload')
   // Resolve if csv validation errors have occurred
   if (validationErrors.hasError()) return { validationErrors, hasValidationError: true }

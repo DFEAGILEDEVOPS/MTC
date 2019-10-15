@@ -58,7 +58,7 @@ describe('check.data.service', () => {
     })
 
     it('makes the expected calls', () => {
-      service.sqlFindFullyPopulated({ 'testCriteria': 'someValue' })
+      service.sqlFindFullyPopulated({ testCriteria: 'someValue' })
       expect(mock.verify()).toBe(true)
     })
   })

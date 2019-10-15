@@ -69,7 +69,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ''
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
@@ -80,7 +80,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -89,7 +89,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ' Pup il '
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -98,7 +98,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ' '
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
@@ -107,10 +107,10 @@ describe('pupil validator', function () {
 
       it('does not allow punctuation in the forename', async function (done) {
         req.body = getBody()
-        for (let char of notAllowed()) {
+        for (const char of notAllowed()) {
           req.body.foreName = 'Réne' + char
           const schoolId = 2
-          let validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('foreName')).toBe(true)
           expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameInvalidCharacters)
@@ -122,7 +122,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Smithy99'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('foreName')).toBe(false)
         done()
@@ -134,7 +134,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = ''
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
         done()
@@ -144,7 +144,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
         done()
@@ -152,10 +152,10 @@ describe('pupil validator', function () {
 
       it('does not allow punctuation in the middlename', async (done) => {
         req.body = getBody()
-        for (let char of notAllowed()) {
+        for (const char of notAllowed()) {
           req.body.middleNames = 'Réne' + char
           const schoolId = 2
-          let validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('middleNames')).toBe(true)
           expect(validationError.get('middleNames')).toBe(pupilErrors.addPupil.middleNameInvalidCharacters)
@@ -167,7 +167,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = 'Smithy99'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
         done()
@@ -179,7 +179,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ''
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
@@ -190,7 +190,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = 'Smithy99'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('lastName')).toBe(false)
         done()
@@ -200,7 +200,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -209,7 +209,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ' Pup il '
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -218,7 +218,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ' '
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
@@ -227,10 +227,10 @@ describe('pupil validator', function () {
 
       it('does not allow punctuation', async (done) => {
         req.body = getBody()
-        for (let char of notAllowed()) {
+        for (const char of notAllowed()) {
           req.body.lastName = 'Réne' + char
           const schoolId = 2
-          let validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('lastName')).toBe(true)
           expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameInvalidCharacters)
@@ -246,7 +246,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '1'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -257,7 +257,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '07'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -268,7 +268,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '7'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -279,7 +279,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = (new Date().getFullYear() + 1).toString()
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -296,7 +296,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -311,7 +311,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = ''
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -326,7 +326,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '01'
         req.body['dob-year'] = ''
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -343,7 +343,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = (new Date().getFullYear() + 1).toString()
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -360,7 +360,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = 'a'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -375,7 +375,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = 'a'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -390,7 +390,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '02'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -407,7 +407,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '02'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -422,7 +422,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '010'
         req.body['dob-year'] = '2010'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -437,7 +437,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '10'
         req.body['dob-year'] = '20101'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -463,7 +463,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBeTruthy()
         expect(validationError.isError('dob-month')).toBeTruthy()
@@ -482,7 +482,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBeTruthy()
         expect(validationError.isError('dob-month')).toBeTruthy()
@@ -501,7 +501,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId, true)
+        const validationError = await pupilValidator.validate(req.body, schoolId, true)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBeTruthy()
         expect(validationError.isError('dob-month')).toBeTruthy()
@@ -520,7 +520,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '31'
         req.body['dob-month'] = '08'
         req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId, true)
+        const validationError = await pupilValidator.validate(req.body, schoolId, true)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBeTruthy()
         expect(validationError.isError('dob-month')).toBeTruthy()
@@ -539,7 +539,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('dob-day')).toBeFalsy()
         expect(validationError.isError('dob-month')).toBeFalsy()
         expect(validationError.isError('dob-year')).toBeFalsy()
@@ -554,7 +554,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeTruthy()
         done()
       })
@@ -567,7 +567,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '31'
         req.body['dob-month'] = '08'
         req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeTruthy()
         done()
       })
@@ -580,7 +580,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '01'
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeFalsy()
         done()
       })
@@ -593,7 +593,7 @@ describe('pupil validator', function () {
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
         req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeFalsy()
         done()
       })
@@ -602,7 +602,7 @@ describe('pupil validator', function () {
     describe('then gender', () => {
       it('is required', async (done) => {
         req.body = getBody()
-        req.body['gender'] = ''
+        req.body.gender = ''
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -612,7 +612,7 @@ describe('pupil validator', function () {
       })
       it('can be accepted in lowercase', async (done) => {
         req.body = getBody()
-        req.body['gender'] = 'f'
+        req.body.gender = 'f'
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBeFalsy()
@@ -838,7 +838,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'g80120000101a '
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
@@ -847,7 +847,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101S'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -860,7 +860,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101I'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -873,7 +873,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101O'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -886,7 +886,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101A'
         const schoolId = 2
-        let validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         done()
       })
