@@ -39,9 +39,9 @@
                                 </div>
                             </td>
                             <td>
-                                <form action="/service-manager/service-message/remove-service-message" id="serviceMessageDeleteForm" method="post" autocomplete="off">
+                                <form action="/service-manager/service-message/remove-service-message" id="js-modal-form" method="post" autocomplete="off">
                                     <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-                                    <button class="govuk-button-as-link no-underline govuk-!-font-size-16" type="submit">Remove</button>
+                                    <button class="govuk-button-as-link no-underline govuk-!-font-size-16 modal-link" id="js-modal-link" type="submit">Remove</button>
                                 </form>
                             </td>
                         </tr>
