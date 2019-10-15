@@ -77,7 +77,7 @@ administrationMessageService.dropMessage = async (userId) => {
     throw new Error('User id not found in session')
   }
   const sqlDeleteParams = {}
-  sqlDeleteParams['deletedByUser_id'] = userId
+  sqlDeleteParams.deletedByUser_id = userId
   await administrationMessageDataService.sqlDeleteServiceMessage(sqlDeleteParams)
   return redisCacheService.drop(serviceMessageRedisKey)
 }

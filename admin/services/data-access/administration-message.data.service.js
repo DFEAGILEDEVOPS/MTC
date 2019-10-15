@@ -34,7 +34,7 @@ administrationMessageDataService.sqlUpdate = async (data) => {
     },
     {
       name: 'updatedByUser_id',
-      value: data['updatedByUser_id'],
+      value: data.updatedByUser_id,
       type: TYPES.Int
     }
   ]
@@ -53,7 +53,7 @@ administrationMessageDataService.sqlDeleteServiceMessage = async (data) => {
   const params = [
     {
       name: 'deletedByUser_id',
-      value: data['deletedByUser_id'],
+      value: data.deletedByUser_id,
       type: TYPES.Int
     }
   ]
