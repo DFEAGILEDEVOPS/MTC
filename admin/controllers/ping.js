@@ -19,10 +19,10 @@ async function getPing (req, res) {
   }
 
   res.setHeader('Content-Type', 'application/json')
-  let obj = {
-    'Build': buildNumber,
-    'Commit': commitId,
-    'CurrentServerTime': Date.now()
+  const obj = {
+    Build: buildNumber,
+    Commit: commitId,
+    CurrentServerTime: Date.now()
   }
   return res.status(200).send(obj)
 }
