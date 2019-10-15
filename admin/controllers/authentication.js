@@ -5,8 +5,6 @@ const homeRoutes = require('../lib/consts/home-routes')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
 const dfeSignInService = require('../services/dfe-signin.service')
-const url = require('url')
-const passport = require('passport')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
@@ -59,11 +57,11 @@ const getSignIn = (req, res) => {
 }
 
 const postDfeSignIn = async (req, res) => {
-  req.user = await dfeSignInService.process(req.user)
+  req.user = await dfeSignInService.getRoleInfo(req.user)
   logger.info(`postSignIn: User ID logged in:
-    id:${req.user.id} \n
-    displayName:${req.user.displayName} \n
-    role:${req.user.role} \n
+    id:${req.user.id}
+    displayName:${req.user.displayName}
+    role:${req.user.role}
     timezone:"${req.user.timezone}"`)
 
   switch (req.user.role) {
@@ -82,9 +80,9 @@ const postDfeSignIn = async (req, res) => {
 
 const postSignIn = (req, res) => {
   logger.info(`postSignIn: User ID logged in:
-    id:${req.user.id} \n
-    displayName:${req.user.displayName} \n
-    role:${req.user.role} \n
+    id:${req.user.id}
+    displayName:${req.user.displayName}
+    role:${req.user.role}
     timezone:"${req.user.timezone}"`)
 
   switch (req.user.role) {
@@ -102,40 +100,21 @@ const postSignIn = (req, res) => {
 }
 
 const getSignOut = (req, res) => {
-  if (config.Auth.mode === authModes.dfeSignIn) {
-    getDfeSignOut(req, res)
-  } else {
-    req.logout()
-  }
+  req.logout()
 
   req.session.regenerate(function () {
+    const dfeRedirect = 'https://pp-oidc.signin.education.gov.uk/session/end'
+    logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {
       case authModes.ncaTools:
         return res.redirect(config.Auth.ncaTools.authUrl)
       case authModes.dfeSignIn:
-        return res.redirect('/')
+        logger.debug(`redirecting to ${dfeRedirect}`)
+        return res.redirect(dfeRedirect)
       default: //  local
         return res.redirect('/')
     }
   })
-}
-
-const getDfeSignOut = (req, res) => {
-  if (req.user && req.user.id_token) {
-    const idToken = req.user.id_token
-    const issuer = passport._strategies[authModes.dfeSignIn]._issuer
-    req.logout()
-    const issuerEndSessionEndpoint = url.parse(issuer.end_session_endpoint)
-    const urlObject = Object.assign(issuerEndSessionEndpoint, {
-      query: {
-        id_token_hint: idToken
-      }
-    })
-    const theUrl = url.format(urlObject)
-    res.redirect(theUrl)
-  } else {
-    res.redirect(req.query.redirect_uri ? req.query.redirect_uri : '/')
-  }
 }
 
 const getSignInFailure = (req, res) => {

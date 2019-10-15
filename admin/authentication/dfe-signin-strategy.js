@@ -26,9 +26,12 @@ const initSignOn = async () => {
   }, (tokenset, authUserInfo, done) => {
     client.userinfo(tokenset.access_token)
       .then((userInfo) => {
+        logger.debug('userInfo...')
+        logger.debugObject(userInfo)
         userInfo.id = userInfo.sub
         userInfo.name = userInfo.sub
         userInfo.displayName = `${userInfo.given_name} ${userInfo.family_name} (${userInfo.email})`
+        // look up school by URN
         userInfo.id_token = tokenset.id_token
         done(null, userInfo)
       })
