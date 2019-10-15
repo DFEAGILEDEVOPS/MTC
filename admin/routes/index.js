@@ -13,7 +13,7 @@ const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
-const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised, postDfeSignIn } = require('../controllers/authentication')
+const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised } = require('../controllers/authentication')
 const getPing = require('../controllers/ping')
 
 /* GET home page. */

@@ -4,7 +4,6 @@ const logger = require('../services/log.service').getLogger()
 const homeRoutes = require('../lib/consts/home-routes')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
-const dfeSignInService = require('../services/dfe-signin.service')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
@@ -121,6 +120,5 @@ module.exports = {
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getUnauthorised,
-  postDfeSignIn
+  getUnauthorised
 }
