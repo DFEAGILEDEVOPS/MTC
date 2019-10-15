@@ -4,6 +4,7 @@
 
 let sut, schoolDataService, userDataService, roleService, dfeDataService
 const token = { id_token: 'the-token' }
+const config = require('../../../config')
 
 describe('dfe-signin.service', () => {
   beforeEach(() => {
@@ -180,6 +181,52 @@ describe('dfe-signin.service', () => {
     expect(user).toBeDefined()
     expect(user.id_token).toBeDefined()
     expect(user.id_token).toBe(token.id_token)
+    done()
+  })
+
+  it('dfeNumber and schoolId are set on user from school record', async (done) => {
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 123, dfeNumber: 567 }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
+    spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
+    expect(user).toBeDefined()
+    expect(user.School).toBeDefined()
+    expect(user.School).toBe(567)
+    expect(user.schoolId).toBeDefined()
+    expect(user.schoolId).toBe(123)
+    done()
+  })
+
+  it('sets timezone to assigned school timezone when provided', async (done) => {
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
+      Promise.resolve({ id: 123, dfeNumber: 567, timezone: 'the timezone' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
+    spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
+    expect(user).toBeDefined()
+    expect(user.timezone).toBeDefined()
+    expect(user.timezone).toBe('the timezone')
+    done()
+  })
+
+  it('sets timezone to system default when no schoo timezone is set', async (done) => {
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
+      Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
+    spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
+    expect(user).toBeDefined()
+    expect(user.timezone).toBeDefined()
+    expect(user.timezone).toBe(config.DEFAULT_TIMEZONE)
     done()
   })
 })
