@@ -29,6 +29,7 @@ const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
 const authModes = require('./lib/consts/auth-modes')
+const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -213,14 +214,17 @@ passport.deserializeUser(function (user, done) {
 
 // initialise chosen auth strategy only
 switch (config.Auth.mode) {
-  case authModes.dfeSignIn:
+  case 'dfe.async':
     ;(async function () {
       if (config.Auth.dfeSignIn.authUrl) {
-        passport.use(authModes.dfeSignIn, await require('./authentication/dfe-signin-strategy')())
+        passport.use(authModes.dfeSignIn, await dfeSignInStrategy.initialiseAsync())
       } else {
         throw new Error('unable to configure passport for dfeSignin - no Auth URL specified')
       }
     })()
+    break
+  case authModes.dfeSignIn:
+    dfeSignInStrategy.initialise()
     break
   case authModes.ncaTools:
     passport.use(authModes.ncaTools, new CustomStrategy(

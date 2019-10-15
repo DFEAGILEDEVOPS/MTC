@@ -56,28 +56,6 @@ const getSignIn = (req, res) => {
   }
 }
 
-const postDfeSignIn = async (req, res) => {
-  req.user = await dfeSignInService.getRoleInfo(req.user)
-  logger.info(`postSignIn: User ID logged in:
-    id:${req.user.id}
-    displayName:${req.user.displayName}
-    role:${req.user.role}
-    timezone:"${req.user.timezone}"`)
-
-  switch (req.user.role) {
-    case 'TEACHER':
-    case 'HEADTEACHER':
-    case 'HELPDESK':
-      return res.redirect(homeRoutes.schoolHomeRoute)
-    case 'TEST-DEVELOPER':
-      return res.redirect(homeRoutes.testDeveloperHomeRoute)
-    case 'SERVICE-MANAGER':
-      return res.redirect(homeRoutes.serviceManagerHomeRoute)
-    default:
-      return res.redirect(homeRoutes.schoolHomeRoute)
-  }
-}
-
 const postSignIn = (req, res) => {
   logger.info(`postSignIn: User ID logged in:
     id:${req.user.id}
