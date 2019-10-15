@@ -1,14 +1,12 @@
 'use strict'
 
 const config = require('./../config')
-const request = require('async-request')
-const bluebird = require('bluebird')
-const logger = require('../services/log.service').getLogger()
-const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
+const logger = require('./log.service').getLogger()
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
 const roles = require('../lib/consts/roles')
+const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
 
 const service = {
   /**
@@ -28,7 +26,7 @@ const service = {
     dfeUser.displayName = `${dfeUser.given_name} ${dfeUser.family_name} (${dfeUser.email})`
     dfeUser.id_token = tokenset.id_token
 
-    const dfeRole = await getDfeRole(dfeUser)
+    const dfeRole = await dfeSigninDataService.getDfeRole(dfeUser)
     const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
     dfeUser.role = mtcRoleTitle
     const roleRecord = await roleService.findByTitle(mtcRoleTitle)
@@ -83,65 +81,10 @@ const service = {
     dfeUser.id = userRecord.id
     // userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, urn)
     // return userRecord
-    logger.debug('user setup...')
+    logger.debug('user initialised...')
     logger.debugObject(dfeUser)
     return dfeUser
   }
-}
-
-/**
- * @description completes user sign in after DfE callback received.
- * @param {object} user the express request.user object
- * @returns {object} an updated user object with role populated
- */
-const getDfeRole = async (user) => {
-  try {
-    // get role info...
-    const token = await createJwtForDfeApi()
-    const userInfo = await getUserInfoFromDfeApi(token, user)
-    return userInfo.roles[0].code
-  } catch (error) {
-    logger.error(`unable to get dfe role for user:${user.id} error:${error.message}`)
-    throw error
-  }
-}
-
-/**
- * @description looks up user role information.
- * @param {string} token a JWT signed with the dfe API secret
- * @returns {object} the user info object returned from the API
- */
-const getUserInfoFromDfeApi = async (token, user) => {
-  const serviceId = config.Auth.dfeSignIn.clientId // serves as serviceId also, undocumented
-  const orgId = user.organisation.id
-  const baseUrl = config.Auth.dfeSignIn.userInfoApi.baseUrl
-  const url = `${baseUrl}/services/${serviceId}/organisations/${orgId}/users/${user.id}`
-  const response = await request(url, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  if (response.statusCode === 200) {
-    return JSON.parse(response.body)
-  } else {
-    logger.error(response)
-    throw new Error(`unsatisfactory response returned from DfE API. statusCode:${response.statusCode}`)
-  }
-}
-
-/**
- * @description creates a JWT signed with the api secret using the HS256 algorithm.
- * @returns {string} the signed Json Web Token
- */
-const createJwtForDfeApi = async () => {
-  const clientId = config.Auth.dfeSignIn.clientId
-  const apiSecret = config.Auth.dfeSignIn.userInfoApi.apiSecret
-  const payload = {
-    iss: clientId,
-    aud: config.Auth.dfeSignIn.userInfoApi.audience
-  }
-  return jwt.sign(payload, apiSecret, { algorithm: 'HS256' })
 }
 
 module.exports = service
