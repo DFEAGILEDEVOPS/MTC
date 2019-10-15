@@ -20,9 +20,7 @@ const service = {
     if (!tokenset) {
       throw new Error('tokenset argument required')
     }
-    // set up basic user properties
-    dfeUser.id = dfeUser.sub
-    // dfeUser.name = dfeUser.sub
+
     dfeUser.displayName = `${dfeUser.given_name} ${dfeUser.family_name} (${dfeUser.email})`
     dfeUser.id_token = tokenset.id_token
 
@@ -80,10 +78,6 @@ const service = {
     // set id to sql record id
     dfeUser.id = userRecord.id
     dfeUser.school_id = userRecord.school_id
-    // userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, urn)
-    // return userRecord
-    logger.debug('user initialised...')
-    logger.debugObject(dfeUser)
     return dfeUser
   }
 }
