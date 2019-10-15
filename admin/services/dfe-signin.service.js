@@ -79,6 +79,7 @@ const service = {
     }
     // set id to sql record id
     dfeUser.id = userRecord.id
+    dfeUser.school_id = userRecord.school_id
     // userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(dfeUser.UserType, urn)
     // return userRecord
     logger.debug('user initialised...')

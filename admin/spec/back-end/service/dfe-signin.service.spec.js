@@ -55,6 +55,28 @@ describe('dfe-signin.service', () => {
     }
   })
 
+  it('does look up school if teacher', async () => {
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+    spyOn(schoolDataService, 'sqlFindOneByUrn')
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
+    spyOn(userDataService, 'sqlUpdateSchool')
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    await sut.initialiseUser({ organisation: { urn: 12345 } }, { id_token: 'token' })
+    expect(schoolDataService.sqlFindOneByUrn).toHaveBeenCalledWith(12345)
+  })
+
+  it('does look up school if headteacher', async () => {
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_headteacher'))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2 }))
+    spyOn(schoolDataService, 'sqlFindOneByUrn')
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
+    spyOn(userDataService, 'sqlUpdateSchool')
+    spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    await sut.initialiseUser({ organisation: { urn: 123 } }, { id_token: 'token' })
+    expect(schoolDataService.sqlFindOneByUrn).toHaveBeenCalledWith(123)
+  })
+
   it('does not look up school if not teacher or headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
@@ -62,9 +84,8 @@ describe('dfe-signin.service', () => {
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-    await sut.initialiseUser({ organisation: { urn: 12345 } }, { id_token: 'token' })
+    await sut.initialiseUser({}, { id_token: 'token' })
     expect(schoolDataService.sqlFindOneByUrn).not.toHaveBeenCalled()
-    expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
   })
 
   it('creates a user entry if one does not exist', async (done) => {
@@ -100,14 +121,14 @@ describe('dfe-signin.service', () => {
     }
   })
   // failing WIP
-  xit('updates user school if different to current one and refetches the object', async (done) => {
-    spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
+  fit('updates user school if different to current one and refetches the object', async (done) => {
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
       Promise.resolve({ school_id: 999 }),
       Promise.resolve({ school_id: 998 })
     )
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
+    spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, { id_token: 'token' })
