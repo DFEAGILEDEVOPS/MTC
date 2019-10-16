@@ -5,6 +5,7 @@ const toBool = require('to-bool')
 const sql = require('./config/sql.config')
 const twoMinutesInMilliseconds = 120000
 const thirtySecondsInMilliseconds = 30000
+const authModes = require('./lib/consts/auth-modes')
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -32,7 +33,6 @@ module.exports = {
   Environment: getEnvironment(),
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
-  NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   OVERRIDE_AVAILABILITY_CHECKS: false,
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
   OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
@@ -136,5 +136,25 @@ module.exports = {
     Port: process.env.REDIS_PORT || 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
+  },
+  Auth: {
+    mode: process.env.AUTH_MODE || authModes.local, // see ./lib/consts/auth-modes.js for valid options
+    dfeSignIn: {
+      authUrl: process.env.DFE_SIGNON_AUTH_URL,
+      clientId: process.env.DFE_SIGNON_CLIENT_ID,
+      clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
+      clockToleranceSeconds: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
+      issuerDiscoveryTimeoutMs: process.env.DFE_SIGNON_DISCOVERY_TIMEOUT_MS || 10000,
+      openIdScope: process.env.DFE_SIGNON_OPENID_SCOPE || 'openid profile email organisation',
+      userInfoApi: {
+        baseUrl: process.env.DFE_USER_INFO_API_URL,
+        apiSecret: process.env.DFE_USER_INFO_API_SECRET,
+        audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
+      },
+      signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL
+    },
+    ncaTools: {
+      authUrl: process.env.NCA_TOOLS_AUTH_URL
+    }
   }
 }

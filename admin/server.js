@@ -85,4 +85,5 @@ function onListening () {
     ? 'pipe ' + addr
     : 'port ' + addr.port
   logger.debug('Listening on ' + bind)
+  logger.debug('http://localhost:3001')
 }
