@@ -122,7 +122,7 @@ describe('dfe-signin.service', () => {
       done()
     }
   })
-  // failing WIP
+
   it('updates user school if different to current one and refetches the object', async (done) => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(

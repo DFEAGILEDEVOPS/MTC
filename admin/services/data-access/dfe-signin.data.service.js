@@ -53,7 +53,7 @@ const getUserInfoFromDfeApi = async (token, user) => {
  * @description creates a JWT signed with the api secret using the HS256 algorithm.
  * @returns {Promise<string>} the signed Json Web Token
  */
-const createJwtForDfeApi = async () => {
+const createJwtForDfeApi = () => {
   const clientId = config.Auth.dfeSignIn.clientId
   const apiSecret = config.Auth.dfeSignIn.userInfoApi.apiSecret
   const payload = {
