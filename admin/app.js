@@ -212,34 +212,34 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-// initialise chosen auth strategy only
-switch (config.Auth.mode) {
-  case 'dfe.async':
-    ;(async function () {
-      if (config.Auth.dfeSignIn.authUrl) {
-        passport.use(authModes.dfeSignIn, await dfeSignInStrategy.initialiseAsync())
-      } else {
-        throw new Error('unable to configure passport for dfeSignin - no Auth URL specified')
-      }
-    })()
-    break
-  case authModes.dfeSignIn:
-    dfeSignInStrategy.initialise()
-    break
-  case authModes.ncaTools:
-    passport.use(authModes.ncaTools, new CustomStrategy(
-      require('./authentication/nca-tools-authentication-strategy')
-    ))
-    break
-  default:
-    passport.use(authModes.local,
-      new LocalStrategy({
-        passReqToCallback: true
-      },
-      require('./authentication/local-strategy')
+if (config.Auth.mode === authModes.dfeSignIn) {
+  dfeSignInStrategy.initialiseAsync()
+    .then((strategy) => {
+      passport.use(authModes.dfeSignIn, strategy)
+    })
+    .catch((error) => {
+      logger.error(`unable to configure passport for dfeSignin:${error.message}`)
+      // process.exit?
+      throw error
+    })
+} else {
+  // initialise chosen auth strategy only
+  switch (config.Auth.mode) {
+    case authModes.ncaTools:
+      passport.use(authModes.ncaTools, new CustomStrategy(
+        require('./authentication/nca-tools-authentication-strategy')
+      ))
+      break
+    default:
+      passport.use(authModes.local,
+        new LocalStrategy({
+          passReqToCallback: true
+        },
+        require('./authentication/local-strategy')
+        )
       )
-    )
-    break
+      break
+  }
 }
 
 // Middleware to upload all files uploaded to Azure Blob storage
