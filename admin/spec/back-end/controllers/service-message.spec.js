@@ -28,7 +28,7 @@ describe('service message controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/service-message'
+        url: '/service-message'
       }
     })
     it('should render the service message overview page', async () => {
@@ -52,7 +52,7 @@ describe('service message controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'GET',
-        url: '/service-manager/service-message/service-message-form'
+        url: '/service-message/service-message-form'
       }
     })
     it('should render the create service message page', async () => {
@@ -68,7 +68,7 @@ describe('service message controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'POST',
-        url: '/service-manager/service-message/submit-service-message',
+        url: '/service-message/submit-service-message',
         user: {
           id: 1
         },
@@ -124,7 +124,7 @@ describe('service message controller:', () => {
     beforeEach(() => {
       goodReqParams = {
         method: 'POST',
-        url: '/service-manager/service-message/remove-service-message',
+        url: '/service-message/remove-service-message',
         user: {
           id: 1
         }

@@ -34,7 +34,7 @@
             <% } %>
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <form action="/service-manager/service-message/submit-service-message" id="serviceMessageForm" method="post" autocomplete="off">
+            <form action="/service-message/submit-service-message" id="serviceMessageForm" method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= err.isError('serviceMessageTitle') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Title</label>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
-                <a href="/service-manager/service-message" class="govuk-button govuk-button--secondary">Cancel</a>
+                <a href="/service-message" class="govuk-button govuk-button--secondary">Cancel</a>
             </form>
         </div>
     </div>

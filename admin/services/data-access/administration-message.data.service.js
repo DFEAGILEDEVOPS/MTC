@@ -31,7 +31,7 @@ administrationMessageDataService.sqlDeleteServiceMessage = async () => {
  */
 administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
   const sql = `
-    SELECT *
+    SELECT TOP 1
     FROM [mtc_admin].serviceMessage
   `
   const result = await sqlService.query(sql)

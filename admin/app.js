@@ -274,7 +274,7 @@ if (WEBSITE_OFFLINE) {
   app.use('/', index)
   app.use('/test-developer', testDeveloper)
   app.use('/service-manager', serviceManager)
-  app.use('/service-manager/service-message', serviceMessage)
+  app.use('/service-message', serviceMessage)
   app.use('/helpdesk', helpdesk)
   app.use('/school', school)
   app.use('/pupil-pin', pupilPin)
