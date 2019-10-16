@@ -150,7 +150,8 @@ module.exports = {
         baseUrl: process.env.DFE_USER_INFO_API_URL,
         apiSecret: process.env.DFE_USER_INFO_API_SECRET,
         audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
-      }
+      },
+      signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL
     },
     ncaTools: {
       authUrl: process.env.NCA_TOOLS_AUTH_URL
