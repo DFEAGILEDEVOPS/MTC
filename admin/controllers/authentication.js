@@ -80,7 +80,6 @@ const postSignIn = (req, res) => {
 const getSignOut = (req, res) => {
   let dfeSignOutUrl
   if (config.Auth.mode === authModes.dfeSignIn) {
-    // TODO signout url should be retrieved from the passport issuer object, not stored statically in config...
     const dfeUrl = new url.URL(config.Auth.dfeSignIn.signOutUrl)
     dfeUrl.searchParams.append('id_token_hint', req.user.id_token)
     dfeUrl.searchParams.append('post_logout_redirect_uri', `${config.Runtime.externalHost}/sign-out-dso`)
