@@ -15,7 +15,7 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "dotenv": "^8.2.0",
-    "fast-csv": "^2.4.1",
+    "fast-csv": "^3.4.0",
     "fs-extra": "^8.1.0",
     "number-to-words": "^1.2.3",
     "ramda": "^0.26.1",
