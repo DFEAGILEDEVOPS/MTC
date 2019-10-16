@@ -94,6 +94,12 @@ class Logger {
   debug (msg, exception = null) { this.log('debug', msg, exception) }
 
   /**
+   * @description 'pretty' prints an object with indentiation.
+   * @param {object} obj
+   */
+  debugObject (obj) { this.log('debug', JSON.stringify(obj, null, 2)) }
+
+  /**
    * Return the underlying `winston` logger
    * @return {winston.Logger | *}
    */
