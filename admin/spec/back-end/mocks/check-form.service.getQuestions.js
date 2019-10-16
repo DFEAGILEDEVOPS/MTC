@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = [ { order: 1, factor1: 2, factor2: 5 },
+module.exports = [{ order: 1, factor1: 2, factor2: 5 },
   { order: 2, factor1: 11, factor2: 2 },
   { order: 3, factor1: 8, factor2: 9 },
   { order: 4, factor1: 7, factor2: 7 },
@@ -19,4 +19,4 @@ module.exports = [ { order: 1, factor1: 2, factor2: 5 },
   { order: 17, factor1: 7, factor2: 11 },
   { order: 18, factor1: 12, factor2: 5 },
   { order: 19, factor1: 10, factor2: 5 },
-  { order: 20, factor1: 12, factor2: 12 } ]
+  { order: 20, factor1: 12, factor2: 12 }]

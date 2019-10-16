@@ -22,10 +22,11 @@
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
   },
   "engines": {
-    "node": ">= 8.11"
+    "node": ">= 10.16.3"
   },
   "dependencies": {
     "applicationinsights": "^1.0.8",
+    "axios": "^0.19.0",
     "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
@@ -41,7 +42,7 @@
     "express-session": "^1.15.6",
     "express-validator": "^3.2.0",
     "express-winston": "^3.0.1",
-    "fast-csv": "^2.4.1",
+    "fast-csv": "^3.4.0",
     "feature-toggles": "^1.4.0",
     "fs-extra": "^7.0.1",
     "govuk-frontend": "^3.2.0",
@@ -50,10 +51,12 @@
     "iconv-lite": "^0.4.19",
     "ioredis": "4.9.0",
     "jsonwebtoken": "^8.1.1",
+    "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.9.0",
     "mssql": "5.0.2",
+    "openid-client": "^3.7.3",
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
@@ -61,6 +64,7 @@
     "postgrator": "^3.4.0",
     "qrcode": "^1.0.0",
     "ramda": "^0.26.1",
+    "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
     "serve-favicon": "^2.4.5",
     "tedious": "^3.0.1",
@@ -80,6 +84,7 @@
     "chalk": "^2.3.0",
     "command-line-args": "^5.0.2",
     "csv-string": "^3.1.5",
+    "eslint": "^6.5.1",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
     "gulp-concat": "^2.6.1",
@@ -99,10 +104,10 @@
     "karma-safari-launcher": "^1.0.0",
     "madge": "^3.2.0",
     "node-mocks-http": "^1.6.6",
-    "nyc": "^13.1.0",
+    "nyc": "^14.1.1",
     "proxyquire": "^2.1.0",
     "sinon": "^7.1.1",
-    "standard": "^12.0.1",
+    "standard": "^14.3.1",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },

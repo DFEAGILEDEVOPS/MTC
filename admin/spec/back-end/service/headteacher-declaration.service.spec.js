@@ -138,7 +138,7 @@ describe('headteacherDeclarationService', () => {
           await service.submitDeclaration(form, userId, schoolId)
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe(`Not eligible to submit declaration`)
+          expect(error.message).toBe('Not eligible to submit declaration')
         }
       })
     })
@@ -284,7 +284,7 @@ describe('headteacherDeclarationService', () => {
         await service.findPupilBySlugAndDfeNumber(urlSlug, dfeNumber)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe(`School not found`)
+        expect(error.message).toBe('School not found')
       }
     })
 
@@ -337,7 +337,7 @@ describe('headteacherDeclarationService', () => {
         fail('expected to throw')
       } catch (error) {
         expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
-        expect(error.message).toBe(`Attendance code not found`)
+        expect(error.message).toBe('Attendance code not found')
       }
     })
 

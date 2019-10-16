@@ -1,6 +1,6 @@
 'use strict'
 
-const rolesConfig = require('../roles-config')
+const roles = require('../lib/consts/roles')
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
@@ -11,49 +11,49 @@ const pupilController = require('../controllers/pupil')
 
 router.get(
   ['/', '/pupils-list'],
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilRegister.listPupils(req, res, next)
 )
 router.get(
   '/pupil/add',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.getAddPupil(req, res, next)
 )
 router.post(
   '/pupil/add',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.postAddPupil(req, res, next)
 )
 router.get(
   '/pupil/add-batch-pupils',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.getAddMultiplePupils(req, res, next)
 )
 router.post(
   '/pupil/add-batch-pupils',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.postAddMultiplePupils(req, res, next)
 )
 router.get(
   '/pupil/download-error-csv',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res) => pupilController.getErrorCSVFile(req, res)
 )
 router.get(
   '/pupil/edit/:id',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.getEditPupilById(req, res, next)
 )
 router.post(
   '/pupil/edit',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
+  isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => pupilController.postEditPupil(req, res, next)
 )

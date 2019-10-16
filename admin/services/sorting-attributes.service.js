@@ -13,8 +13,8 @@ const sortingAttributesService = {
       return false
     }
 
-    let htmlSortDirection = []
-    let arrowSortDirection = []
+    const htmlSortDirection = []
+    const arrowSortDirection = []
 
     sortingOptions.map((sd, index) => {
       if (sd.key === sortField) {

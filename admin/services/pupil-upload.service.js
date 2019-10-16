@@ -28,9 +28,9 @@ const onCSVReadComplete = async (csvDataArray, school) => {
     })
   } else {
     // Save pupils if validation is successful
-    let result = await pupilDataService.sqlInsertMany(pupils, school.id)
+    const result = await pupilDataService.sqlInsertMany(pupils, school.id)
     if (!R.prop('insertId', result)) return (new Error('No pupils were saved'))
-    const pupilIds = Array.isArray(result.insertId) ? result.insertId : [ result.insertId ]
+    const pupilIds = Array.isArray(result.insertId) ? result.insertId : [result.insertId]
     return { pupilIds }
   }
 }
@@ -44,9 +44,9 @@ const onCSVReadComplete = async (csvDataArray, school) => {
 service.upload = async (school, uploadFile) => {
   let stream
   const pr = new Promise((resolve, reject) => {
-    let csvDataArray = []
+    const csvDataArray = []
     stream = fs.createReadStream(uploadFile.file)
-    csv.fromStream(stream)
+    csv.parseStream(stream)
       .on('data', (data) => {
         csvDataArray.push(data)
       })

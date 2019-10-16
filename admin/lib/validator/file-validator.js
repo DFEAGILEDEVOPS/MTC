@@ -5,7 +5,7 @@ const ValidationError = require('../validation-error')
 const fileErrorMessages = require('../errors/file-csv')
 
 module.exports.validate = async (uploadedFile, element) => {
-  let validationError = new ValidationError()
+  const validationError = new ValidationError()
   // No File
   if (!uploadedFile || !uploadedFile.file) {
     validationError.addError(element, fileErrorMessages.noFile)

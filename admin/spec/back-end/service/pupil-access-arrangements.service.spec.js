@@ -8,53 +8,53 @@ const pupilAccessArrangementsDataService = require('../../../services/data-acces
 
 const pupilAccessArrangementsMock = [
   {
-    'urlSlug': '93935288-CD8F-46D5-99D4-10A9F01F0F70',
-    'foreName': 'Ebony',
-    'middleNames': '',
-    'lastName': 'Daniels',
-    'description': 'Audible time alert'
+    urlSlug: '93935288-CD8F-46D5-99D4-10A9F01F0F70',
+    foreName: 'Ebony',
+    middleNames: '',
+    lastName: 'Daniels',
+    description: 'Audible time alert'
   },
   {
-    'urlSlug': '93935288-CD8F-46D5-99D4-10A9F01F0F70',
-    'foreName': 'Ebony',
-    'middleNames': '',
-    'lastName': 'Daniels',
-    'description': 'Colour contrast'
+    urlSlug: '93935288-CD8F-46D5-99D4-10A9F01F0F70',
+    foreName: 'Ebony',
+    middleNames: '',
+    lastName: 'Daniels',
+    description: 'Colour contrast'
   },
   {
-    'urlSlug': '93935288-CD8F-46D5-99D4-10A9F01F0F70',
-    'foreName': 'Ebony',
-    'middleNames': '',
-    'lastName': 'Daniels',
-    'description': 'Remove on-screen number pad'
+    urlSlug: '93935288-CD8F-46D5-99D4-10A9F01F0F70',
+    foreName: 'Ebony',
+    middleNames: '',
+    lastName: 'Daniels',
+    description: 'Remove on-screen number pad'
   },
   {
-    'urlSlug': '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
-    'foreName': 'Gregory',
-    'middleNames': 'Green',
-    'lastName': 'Duke',
-    'description': 'Colour contrast'
+    urlSlug: '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
+    foreName: 'Gregory',
+    middleNames: 'Green',
+    lastName: 'Duke',
+    description: 'Colour contrast'
   },
   {
-    'urlSlug': '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
-    'foreName': 'Gregory',
-    'middleNames': 'Green',
-    'lastName': 'Duke',
-    'description': 'Font size'
+    urlSlug: '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
+    foreName: 'Gregory',
+    middleNames: 'Green',
+    lastName: 'Duke',
+    description: 'Font size'
   },
   {
-    'urlSlug': '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
-    'foreName': 'Sweeney',
-    'middleNames': 'White',
-    'lastName': 'Wolfe',
-    'description': 'Question reader (reason required)'
+    urlSlug: '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
+    foreName: 'Sweeney',
+    middleNames: 'White',
+    lastName: 'Wolfe',
+    description: 'Question reader (reason required)'
   },
   {
-    'urlSlug': '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
-    'foreName': 'Sweeney',
-    'middleNames': 'White',
-    'lastName': 'Wolfe',
-    'description': 'Remove on-screen number pad'
+    urlSlug: '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
+    foreName: 'Sweeney',
+    middleNames: 'White',
+    lastName: 'Wolfe',
+    description: 'Remove on-screen number pad'
   }
 ]
 
@@ -91,24 +91,24 @@ describe('pupilAccessArrangementsService', () => {
     it('returns pupil access arrangement data without question reader reason', async () => {
       const accessArrangementsData = [
         {
-          'urlSlug': 'urlSlug',
-          'foreName': 'foreName',
-          'lastName': 'lastName',
-          'inputAssistanceInformation': '',
-          'nextButtonInformation': '',
-          'questionReaderOtherInformation': '',
-          'accessArrangementCode': 'CCT',
-          'questionReaderReasonCode': null
+          urlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: '',
+          nextButtonInformation: '',
+          questionReaderOtherInformation: '',
+          accessArrangementCode: 'CCT',
+          questionReaderReasonCode: null
         },
         {
-          'urlSlug': 'urlSlug',
-          'foreName': 'foreName',
-          'lastName': 'lastName',
-          'inputAssistanceInformation': 'inputAssistanceInformation',
-          'nextButtonInformation': 'nextButtonInformation',
-          'questionReaderOtherInformation': '',
-          'accessArrangementCode': 'ITA',
-          'questionReaderReasonCode': null
+          urlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: 'inputAssistanceInformation',
+          nextButtonInformation: 'nextButtonInformation',
+          questionReaderOtherInformation: '',
+          accessArrangementCode: 'ITA',
+          questionReaderReasonCode: null
         }
       ]
       spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)
@@ -130,24 +130,24 @@ describe('pupilAccessArrangementsService', () => {
     it('returns pupil access arrangement data with question reader reason', async () => {
       const accessArrangementsData = [
         {
-          'urlSlug': 'urlSlug',
-          'foreName': 'foreName',
-          'lastName': 'lastName',
-          'inputAssistanceInformation': '',
-          'nextButtonInformation': '',
-          'questionReaderOtherInformation': '',
-          'accessArrangementCode': 'CCT',
-          'questionReaderReasonCode': null
+          urlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: '',
+          nextButtonInformation: '',
+          questionReaderOtherInformation: '',
+          accessArrangementCode: 'CCT',
+          questionReaderReasonCode: null
         },
         {
-          'urlSlug': 'urlSlug',
-          'foreName': 'foreName',
-          'lastName': 'lastName',
-          'inputAssistanceInformation': '',
-          'nextButtonInformation': '',
-          'questionReaderOtherInformation': 'questionReaderOtherInformation',
-          'accessArrangementCode': 'QNR',
-          'questionReaderReasonCode': 'OTH'
+          urlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: '',
+          nextButtonInformation: '',
+          questionReaderOtherInformation: 'questionReaderOtherInformation',
+          accessArrangementCode: 'QNR',
+          questionReaderReasonCode: 'OTH'
         }
       ]
       spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)

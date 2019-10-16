@@ -112,9 +112,9 @@ const controller = {
     let checkWindows
     // Sorting
     const sortingOptions = [
-      { 'key': 'checkWindowName', 'value': 'asc' },
-      { 'key': 'adminStartDate', 'value': 'asc' },
-      { 'key': 'checkStartDate', 'value': 'asc' }
+      { key: 'checkWindowName', value: 'asc' },
+      { key: 'adminStartDate', value: 'asc' },
+      { key: 'checkStartDate', value: 'asc' }
     ]
     const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
     const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
@@ -443,7 +443,7 @@ const controller = {
 
     const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone)
 
-    let validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
+    const validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
     if (validationError.hasError()) {
       res.error = validationError
       return controller.getSceAddSchool(req, res, next)

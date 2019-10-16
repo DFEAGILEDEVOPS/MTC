@@ -206,9 +206,9 @@ describe('check-window.service', () => {
 
   describe('#mergedFormIds', () => {
     it('should merge two arrays and return one', () => {
-      const arr1 = [ 1, 2, 3, 4 ]
-      const arr2 = [ 5, 6 ]
-      const expected = [ 1, 2, 3, 4, 5, 6 ]
+      const arr1 = [1, 2, 3, 4]
+      const arr2 = [5, 6]
+      const expected = [1, 2, 3, 4, 5, 6]
       const result = service.mergedFormIds(arr1, arr2)
       expect(result.toString).toBe(expected.toString)
       expect(result).toBeTruthy()

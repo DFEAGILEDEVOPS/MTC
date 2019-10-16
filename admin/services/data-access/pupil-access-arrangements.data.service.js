@@ -50,7 +50,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
 
   if (isUpdate) {
     params.push({
-      name: `pupil_id`,
+      name: 'pupil_id',
       value: pupilId,
       type: TYPES.Int
     })
@@ -86,7 +86,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     })
     params.push({
       name: `questionReaderReasons_id${idx}`,
-      value: aa.code === 'QNR' ? data['questionReaderReasons_id'] : null,
+      value: aa.code === 'QNR' ? data.questionReaderReasons_id : null,
       type: TYPES.Int
     })
     params.push({
@@ -106,12 +106,12 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     })
     params.push({
       name: `pupilFontSizes_id${idx}`,
-      value: aa['pupilFontSizes_id'] || null,
+      value: aa.pupilFontSizes_id || null,
       type: TYPES.Int
     })
     params.push({
       name: `pupilColourContrasts_id${idx}`,
-      value: aa['pupilColourContrasts_id'] || null,
+      value: aa.pupilColourContrasts_id || null,
       type: TYPES.Int
     })
   })
@@ -286,7 +286,7 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
   ]
   const result = await sqlService.query(sql, params)
   const row = R.head(result)
-  return row && row['pupilColourContrasts_id']
+  return row && row.pupilColourContrasts_id
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, accessArrangementsId) => {
@@ -308,7 +308,7 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
   ]
   const result = await sqlService.query(sql, params)
   const row = R.head(result)
-  return row && row['pupilFontSizes_id']
+  return row && row.pupilFontSizes_id
 }
 
 module.exports = pupilAccessArrangementsDataService

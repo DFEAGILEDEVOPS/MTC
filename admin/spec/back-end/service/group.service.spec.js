@@ -140,7 +140,7 @@ describe('group.service', () => {
 
       it('should update group (including pupils)', async (done) => {
         const schoolId = 123
-        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [2]
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
@@ -150,8 +150,8 @@ describe('group.service', () => {
 
       it('should update group (including pupils) when sent as an object', async (done) => {
         const schoolId = 123
-        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
-        thisGroupMock.pupils = { '2': 2 }
+        const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        thisGroupMock.pupils = { 2: 2 }
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
@@ -160,7 +160,7 @@ describe('group.service', () => {
 
       it('should update group (excluding pupils when they are the same)', async (done) => {
         const schoolId = 123
-        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [3]
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
@@ -170,7 +170,7 @@ describe('group.service', () => {
 
       it('should trim whitespace from name', async (done) => {
         const schoolId = 123
-        let thisGroupMock = JSON.parse(JSON.stringify(groupMock))
+        const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.name = 'Test '
         await service.update(1, thisGroupMock, schoolId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalledWith(thisGroupMock.id, 'Test', schoolId)
@@ -224,7 +224,7 @@ describe('group.service', () => {
     describe('happy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ insertId: 1 }))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 
@@ -246,7 +246,7 @@ describe('group.service', () => {
     describe('unhappy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ insertId: 1 }))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
       })
 

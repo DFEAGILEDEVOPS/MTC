@@ -37,7 +37,7 @@ let pool
  * @return {string | undefined}
  */
 const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
-  logger.debug(`findDataType('${type}'): called`)
+  // logger.debug(`findDataType('${type}'): called`)
   if (type.toUpperCase() === k.toUpperCase()) {
     return k
   }
@@ -172,7 +172,7 @@ async function generateParams (tableName, data) {
       options.length = cacheData.maxLength
     }
 
-    logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
+    // logger.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
@@ -266,15 +266,15 @@ function addParamsToRequestSimple (params, request) {
  * @return {Promise<*>}
  */
 sqlService.query = async (sql, params = [], redisKey) => {
-  logger.debug(`sql.service.query(): ${sql}`)
-  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  // logger.debug(`sql.service.query(): ${sql}`)
+  // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const query = async () => {
     let result = false
     if (redisKey) {
       try {
-        let redisResult = await redisCacheService.get(redisKey)
+        const redisResult = await redisCacheService.get(redisKey)
         result = JSON.parse(redisResult)
       } catch (e) {}
     }
@@ -300,7 +300,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
 function addParamsToRequest (params, request) {
   if (params) {
     for (let index = 0; index < params.length; index++) {
-      let param = params[index]
+      const param = params[index]
       param.value = convertMomentToJsDate(param.value)
       if (!param.type) {
         throw new Error('parameter type invalid')
@@ -313,7 +313,7 @@ function addParamsToRequest (params, request) {
       }
       const opts = param.options ? param.options : options
       if (opts && Object.keys(opts).length) {
-        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+        // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
       }
 
       if (opts.precision) {
@@ -334,8 +334,8 @@ function addParamsToRequest (params, request) {
  * @return {Promise}
  */
 sqlService.modify = async (sql, params = []) => {
-  logger.debug('sql.service.modify(): SQL: ' + sql)
-  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  // logger.debug('sql.service.modify(): SQL: ' + sql)
+  // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const modify = async () => {
@@ -346,12 +346,11 @@ sqlService.modify = async (sql, params = []) => {
 
   const returnValue = {}
   const insertIds = []
-  let rawResponse
 
-  rawResponse = await retry(modify, retryConfig, dbLimitReached)
+  const rawResponse = await retry(modify, retryConfig, dbLimitReached)
 
   if (rawResponse && rawResponse.recordset) {
-    for (let obj of rawResponse.recordset) {
+    for (const obj of rawResponse.recordset) {
       /* TODO remove this strict column name limitation and
         extract column value regardless of name */
       if (obj && obj.SCOPE_IDENTITY) {
@@ -405,7 +404,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     // This will cache all data-types once on the first sql request
     await sqlService.updateDataTypeCache()
   }
-  if (!cache.hasOwnProperty(key)) {
+  if (!{}.hasOwnProperty.call(cache, key)) {
     logger.debug(`sql.service: cache miss for ${key}`)
     return undefined
   }
@@ -423,7 +422,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  */
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]`
@@ -459,7 +458,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
     )
   })
   params = R.flatten(params)
-  logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`

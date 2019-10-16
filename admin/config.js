@@ -5,6 +5,7 @@ const toBool = require('to-bool')
 const sql = require('./config/sql.config')
 const twoMinutesInMilliseconds = 120000
 const thirtySecondsInMilliseconds = 30000
+const authModes = require('./lib/consts/auth-modes')
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -32,17 +33,16 @@ module.exports = {
   Environment: getEnvironment(),
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
-  NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   OVERRIDE_AVAILABILITY_CHECKS: false,
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
-  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
+  OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   PORT: process.env.PORT || '3001',
-  prepareCheckMessageBatchSize: process.env.hasOwnProperty('PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
+  prepareCheckMessageBatchSize: {}.hasOwnProperty.call(process.env, 'PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
-  PupilAppUseCompression: process.env.hasOwnProperty('PUPIL_APP_USE_COMPRESSION') ? toBool(process.env.PUPIL_APP_USE_COMPRESSION) : true,
+  PupilAppUseCompression: {}.hasOwnProperty.call(process.env, 'PUPIL_APP_USE_COMPRESSION') ? toBool(process.env.PUPIL_APP_USE_COMPRESSION) : true,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  WEBSITE_OFFLINE: process.env.hasOwnProperty('WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
+  WEBSITE_OFFLINE: {}.hasOwnProperty.call(process.env, 'WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
@@ -69,7 +69,7 @@ module.exports = {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,
       // DEPRECATED - not supported in MSSQL
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
+      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
@@ -136,5 +136,25 @@ module.exports = {
     Port: process.env.REDIS_PORT || 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
+  },
+  Auth: {
+    mode: process.env.AUTH_MODE || authModes.local, // see ./lib/consts/auth-modes.js for valid options
+    dfeSignIn: {
+      authUrl: process.env.DFE_SIGNON_AUTH_URL,
+      clientId: process.env.DFE_SIGNON_CLIENT_ID,
+      clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
+      clockToleranceSeconds: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
+      issuerDiscoveryTimeoutMs: process.env.DFE_SIGNON_DISCOVERY_TIMEOUT_MS || 10000,
+      openIdScope: process.env.DFE_SIGNON_OPENID_SCOPE || 'openid profile email organisation',
+      userInfoApi: {
+        baseUrl: process.env.DFE_USER_INFO_API_URL,
+        apiSecret: process.env.DFE_USER_INFO_API_SECRET,
+        audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
+      },
+      signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL
+    },
+    ncaTools: {
+      authUrl: process.env.NCA_TOOLS_AUTH_URL
+    }
   }
 }

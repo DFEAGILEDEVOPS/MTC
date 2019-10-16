@@ -28,6 +28,8 @@ const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
+const authModes = require('./lib/consts/auth-modes')
+const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -71,7 +73,7 @@ function sleep (ms) {
  */
 logger.info('ENVIRONMENT_NAME : ' + config.Environment)
 const environmentName = config.Environment
-let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
+let featureTogglesSpecific, featureTogglesDefault
 let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
   featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
@@ -83,7 +85,7 @@ try {
   featureTogglesDefault = require(featureTogglesDefaultPath)
 } catch (err) {}
 
-featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
+const featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
 
 if (featureTogglesMerged) {
   logger.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
@@ -93,6 +95,7 @@ if (featureTogglesMerged) {
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const serviceManager = require('./routes/service-manager')
+const helpdesk = require('./routes/helpdesk')
 const school = require('./routes/school')
 const pupilPin = require('./routes/pupil-pin')
 const restart = require('./routes/restart')
@@ -209,19 +212,34 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-// passport with custom strategy
-passport.use(new CustomStrategy(
-  require('./authentication/nca-tools-authentication-strategy')
-))
-
-// Passport with local strategy
-passport.use(
-  new LocalStrategy({
-    passReqToCallback: true
-  },
-  require('./authentication/local-strategy')
-  )
-)
+if (config.Auth.mode === authModes.dfeSignIn) {
+  dfeSignInStrategy.initialiseAsync()
+    .then((strategy) => {
+      passport.use(authModes.dfeSignIn, strategy)
+    })
+    .catch((error) => {
+      logger.error(`unable to configure passport for dfeSignin:${error.message}`)
+      process.exit(1)
+    })
+} else {
+  // initialise chosen auth strategy only
+  switch (config.Auth.mode) {
+    case authModes.ncaTools:
+      passport.use(authModes.ncaTools, new CustomStrategy(
+        require('./authentication/nca-tools-authentication-strategy')
+      ))
+      break
+    default:
+      passport.use(authModes.local,
+        new LocalStrategy({
+          passReqToCallback: true
+        },
+        require('./authentication/local-strategy')
+        )
+      )
+      break
+  }
+}
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
@@ -251,7 +269,7 @@ app.use(function (req, res, next) {
 // also exclude if url in the csrfExcludedPaths
 const csrf = csurf()
 const csrfExcludedPaths = [
-  '/auth', // disable CSRF for NCA tools
+  '/auth', // disable CSRF for federated auth
   '/sign-in' // disable CSRF for login
 ]
 app.use(function (req, res, next) {
@@ -272,6 +290,7 @@ if (WEBSITE_OFFLINE) {
   app.use('/', index)
   app.use('/test-developer', testDeveloper)
   app.use('/service-manager', serviceManager)
+  app.use('/helpdesk', helpdesk)
   app.use('/school', school)
   app.use('/pupil-pin', pupilPin)
   app.use('/pupils-not-taking-the-check', pupilsNotTakingTheCheck)
@@ -287,14 +306,14 @@ if (WEBSITE_OFFLINE) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  let err = new Error('Not Found')
+  const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
 // error handler
 app.use(function (err, req, res, next) {
-  let errorId = uuidV4()
+  const errorId = uuidV4()
   // set locals, only providing error in development
   // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this

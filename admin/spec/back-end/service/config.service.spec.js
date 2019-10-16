@@ -231,14 +231,16 @@ describe('config service', () => {
   })
 
   describe('#validateConfigDate', () => {
-    const mockData = [ { pupilId: 5,
+    const mockData = [{
+      pupilId: 5,
       schoolId: 18601,
       loadingTime: 1,
       questionTime: 2,
       checkTime: 32,
       accessArrangementCodes: 'CCT',
       fontSizeCode: null,
-      colourContrastCode: null } ]
+      colourContrastCode: null
+    }]
     it('throws if passed null', () => {
       expect(function () { configService.validateConfigData(null) }).toThrowError('Pupil config data is not valid')
     })

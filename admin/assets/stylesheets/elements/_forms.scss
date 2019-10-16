@@ -1,3 +1,12 @@
 .govuk-form-button {
   display: inline;
 }
+
+.govuk-button-as-link {
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+  color: $govuk-link-colour;
+}

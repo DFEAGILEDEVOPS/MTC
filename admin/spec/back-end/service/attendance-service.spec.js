@@ -19,7 +19,7 @@ describe('attendanceService', () => {
     const schoolId = 7
 
     it('makes a call to get the pupils', async (done) => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
@@ -48,7 +48,7 @@ describe('attendanceService', () => {
     })
 
     it('makes a call to lookup the attendance code', async (done) => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
@@ -61,7 +61,7 @@ describe('attendanceService', () => {
     })
 
     it('throws if it is unable to lookup the attendance code provided', async (done) => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(undefined))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
@@ -77,7 +77,7 @@ describe('attendanceService', () => {
     })
 
     it('makes a call to find out if any pupils already have an attendance code', async (done) => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
@@ -90,7 +90,7 @@ describe('attendanceService', () => {
     })
 
     it('it inserts pupils that dont already have an attendance code', async (done) => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
 
@@ -108,7 +108,7 @@ describe('attendanceService', () => {
 
     it('it update pupils that already have an attendance code', async (done) => {
       const pupilAttendanceMock = { pupil_id: 42 }
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([pupilAttendanceMock]))
@@ -123,7 +123,7 @@ describe('attendanceService', () => {
 
     it('it wipes pins for all pupils in batch', async (done) => {
       const pupilAttendanceMock = { pupil_id: 42 }
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([pupilAttendanceMock]))
@@ -136,7 +136,7 @@ describe('attendanceService', () => {
     })
 
     it('throws an error if the if the call to delete restarts throws an error', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
       spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts').and.returnValue(Promise.reject(new Error('a mock error')))
       spyOn(logger, 'error')

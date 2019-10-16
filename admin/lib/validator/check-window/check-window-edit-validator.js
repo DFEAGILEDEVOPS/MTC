@@ -31,12 +31,12 @@ module.exports.validate = (checkWindowData, existingCheckWindow) => {
   const checkEndDateData = R.pick(['checkEndDay', 'checkEndMonth', 'checkEndYear'], checkWindowData)
   checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
 
-  let adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
-    checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
-  let checkStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkStartDay'],
-    checkWindowData['checkStartMonth'], checkWindowData['checkStartYear'])
-  const checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkEndDay'],
-    checkWindowData['checkEndMonth'], checkWindowData['checkEndYear'])
+  let adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData.adminStartDay,
+    checkWindowData.adminStartMonth, checkWindowData.adminStartYear)
+  let checkStartDate = dateService.createUTCFromDayMonthYear(checkWindowData.checkStartDay,
+    checkWindowData.checkStartMonth, checkWindowData.checkStartYear)
+  const checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData.checkEndDay,
+    checkWindowData.checkEndMonth, checkWindowData.checkEndYear)
 
   // Compare date fields
   if (!hasAdminStartDateInPast && moment.utc().isAfter(adminStartDate)) {

@@ -9,7 +9,7 @@ const queueTrigger: AzureFunction = async function (context: Context, submittedC
   const version = submittedCheck.version
   context.log.info(`${functionName}: version:${version} message received for checkCode ${submittedCheck.checkCode}`)
   try {
-    if (version !== '3') {
+    if (version !== 3) {
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }

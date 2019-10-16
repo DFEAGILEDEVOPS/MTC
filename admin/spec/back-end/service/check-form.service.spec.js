@@ -2,7 +2,7 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe xdescribe beforeEach it expect spyOn fail jasmine */
+/* global describe beforeEach it expect spyOn fail jasmine */
 
 const fs = require('fs-extra')
 const R = require('ramda')
@@ -35,14 +35,14 @@ describe('check-form.service', () => {
       { id: 2, name: 'Form 2' },
       { id: 3, name: 'Form 3' }
     ]
-    const seenForms = [ 2 ]
+    const seenForms = [2]
 
     it('it should return a check-form', async () => {
       try {
         const checkForm = await service.allocateCheckForm(availableForms, seenForms)
         expect(typeof checkForm).toBe('object')
-        expect(checkForm.hasOwnProperty('id')).toBe(true)
-        expect(checkForm.hasOwnProperty('name')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'id')).toBe(true)
+        expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
       } catch (error) {
         fail(error)
       }
@@ -125,33 +125,13 @@ describe('check-form.service', () => {
         expect(Array.isArray(questions)).toBeTruthy()
         expect(questions.length).toBe(2)
         questions.forEach((q) => {
-          expect(q.hasOwnProperty('order')).toBeTruthy()
-          expect(q.hasOwnProperty('factor1')).toBeTruthy()
-          expect(q.hasOwnProperty('factor2')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'order')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor1')).toBeTruthy()
+          expect({}.hasOwnProperty.call(q, 'factor2')).toBeTruthy()
         })
       } catch (error) {
         fail(error)
       }
-    })
-  })
-
-  // TODO consider removal when moved to SQL as method under test is questionable
-  xdescribe('#formatCheckFormsAndWindows()', () => {
-    let checkFormDataServiceStub
-
-    beforeEach(() => {
-    })
-
-    it('when sorting by form name it should call appropriate data service method', async (done) => {
-      spyOn()
-      const results = await service.formatCheckFormsAndWindows('name', 'asc')
-      expect(checkFormDataServiceStub, 'sqlFetchSortedActiveFormsByName').toHaveBeenCalled()
-      expect(results[0].name).toBe('MTC0100')
-      expect(results[0].isDeleted).toBe(false)
-      expect(results[0].questions.length).toBe(3)
-      expect(results[0].removeLink).toBe(true)
-      expect(results[0].checkWindows.length).toBe(0)
-      done()
     })
   })
 
@@ -317,7 +297,7 @@ describe('check-form.service', () => {
 
     it('throws an error if the checkWindow.checkStartDate has already passed', async () => {
       // Set up a checkWindow that started 1 day ago
-      let today = moment('2018-06-02T09:00:00').toDate()
+      const today = moment('2018-06-02T09:00:00').toDate()
       const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
       jasmine.clock().mockDate(today)
 

@@ -4,14 +4,7 @@ const R = require('ramda')
 const moment = require('moment')
 const report = require('./report')
 const removeDuplicates = require('./remove-duplicate-anomaly-reports')
-
-function filterInputsForQuestion (questionNumber, factor1, factor2, inputs) {
-  const filteredInputs = R.filter(
-    i => i.sequenceNumber === questionNumber &&
-      i.question === `${factor1}x${factor2}`,
-    inputs)
-  return filteredInputs
-}
+const filterInputsForQuestion = require('./filter-inputs-for-question')
 
 /**
  * Detect inputs before the question was shown
@@ -55,7 +48,7 @@ const detectInputBeforeTheQuestionIsShown = function detectInputBeforeTheQuestio
         addToOutput(data, 'Input received before Question shown',
           input.clientTimestamp,
           `>= ${questionTimerStartedAudit.clientTimestamp}`,
-          `Q${markedAnswer.questionNumber}`)
+          markedAnswer.questionNumber)
       }
     })
   })

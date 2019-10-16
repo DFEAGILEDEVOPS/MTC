@@ -1,3 +1,4 @@
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <%- partial('partials/_name_and_sign_out') %>
@@ -130,6 +131,12 @@
                         </p>
                     <% } %>
                 </li>
+                <% if (user.role === roles.helpdesk) { %>
+                    <li>
+                        <h2 class="govuk-heading-s"><a class="govuk-link" href="#">PINs history</a></h2>
+                        <p>View PINs history</p>
+                    </li>
+                <% } %>
             </ol>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">

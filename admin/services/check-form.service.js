@@ -1,6 +1,5 @@
 'use strict'
 
-const csv = require('fast-csv')
 const fs = require('fs')
 const moment = require('moment')
 
@@ -53,7 +52,7 @@ const checkFormService = {
 
       // We have multiple forms to choose from so we randomly select an unseen form
       const idx = await random.getRandomIntInRange(0, unseenForms.length - 1)
-      return unseenForms[ idx ]
+      return unseenForms[idx]
     } catch (error) {
       throw new Error('Error allocating checkForm: ' + error.message)
     }
@@ -105,60 +104,6 @@ const checkFormService = {
    */
   prepareQuestionData: function (questions) {
     return questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
-  },
-
-  /**
-   * Populate a plain object with data from a CSV file
-   * @param {object} checkForm object
-   * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
-   * @return {Promise}
-   */
-  populateFromFile: function (checkForm, absCsvFile) {
-    if (!checkForm) {
-      throw new Error('Check form argument missing')
-    }
-
-    if (!absCsvFile) {
-      throw new Error('CSV file argument missing')
-    }
-    const checkFormData = []
-
-    return new Promise(function (resolve, reject) {
-      csv.fromPath(absCsvFile, { headers: false, trim: true })
-        .on('readable', function () {
-          if (checkFormService.isRowCountValid(absCsvFile) !== true) {
-            reject(new Error(`Invalid number of lines:`))
-          }
-        })
-        .validate((row) => {
-          if (row && row[0] && row[1]) {
-            if (row[0] < 1 || row[0] > 12 || row[1] < 1 || row[1] > 12) {
-              return false
-            }
-            if (row[0].match(/[^0-9]/) || row[1].match(/[^0-9]/)) {
-              return false
-            }
-          }
-          // We expect 2, and only 2 columns
-          return row.length === 2
-        })
-        .on('data', function (row) {
-          let q = {}
-          q.f1 = parseInt(row[ 0 ], 10)
-          q.f2 = parseInt(row[ 1 ], 10)
-          checkFormData.push(q)
-        })
-        .on('data-invalid', function (row) {
-          reject(new Error(`Row is invalid: [${row[ 0 ]}] [${row[ 1 ]}]`))
-        })
-        .on('end', function () {
-          checkForm.formData = JSON.stringify(checkFormData)
-          resolve(checkForm)
-        })
-        .on('error', function (error) {
-          reject(error)
-        })
-    })
   },
 
   /**
@@ -239,7 +184,7 @@ const checkFormService = {
    */
   // TODO why is there functionality for check windows in the check form service?????
   checkWindowNames: (checkWindows) => {
-    let checkWindowsName = []
+    const checkWindowsName = []
     checkWindows.forEach(cw => {
       checkWindowsName.push(' ' + cw.name)
     })
@@ -292,9 +237,8 @@ const checkFormService = {
    * @returns {boolean}
    */
   isRowCountValid: (file) => {
-    let result
-    let csvData = fs.readFileSync(file)
-    result = csvData.toString().split('\n').map(function (line) {
+    const csvData = fs.readFileSync(file)
+    const result = csvData.toString().split('\n').map(function (line) {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM

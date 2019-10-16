@@ -30,9 +30,9 @@ pupilCensusService.process = async (uploadFile) => {
 pupilCensusService.upload = async (uploadFile) => {
   let stream
   const csvData = await new Promise((resolve, reject) => {
-    let dataArr = []
+    const dataArr = []
     stream = fs.createReadStream(uploadFile.file)
-    csv.fromStream(stream)
+    csv.parseStream(stream)
       .on('data', (data) => {
         // clear extra spaces in empty rows
         const row = data && data.map(r => r.trim())
@@ -124,7 +124,7 @@ pupilCensusService.getUploadedFile = async () => {
   if (!pupilCensus.jobStatusDescription || !pupilCensus.jobStatusCode) {
     throw new Error('Pupil census record does not have a job status reference')
   }
-  let outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? pupilCensus.jobOutput : ''}`
+  const outcome = `${pupilCensus.jobStatusDescription} ${pupilCensus.jobOutput ? pupilCensus.jobOutput : ''}`
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
   pupilCensus.dbErrorText = pupilCensus.errorOutput && pupilCensus.errorOutput.replace(/\n/g, '<br><br>')
