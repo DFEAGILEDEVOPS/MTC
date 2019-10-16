@@ -14,8 +14,14 @@ const authModes = require('../lib/consts/auth-modes')
  */
 const initSignOnAsync = async () => {
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
-  const issuer = await asyncRetry(async () =>
-    Issuer.discover(config.Auth.dfeSignIn.authUrl), asyncRetry.strategies.apiStrategy)
+  let issuer
+  try {
+    issuer = await asyncRetry(async () =>
+      Issuer.discover(config.Auth.dfeSignIn.authUrl), asyncRetry.strategies.apiStrategy)
+  } catch (error) {
+    logger.error(`error discovering dfe signin service:${error.message}`)
+    throw error
+  }
   logger.info('dfe sign on initialised')
   const client = new issuer.Client({
     client_id: config.Auth.dfeSignIn.clientId,

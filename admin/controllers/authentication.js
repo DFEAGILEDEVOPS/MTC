@@ -80,6 +80,7 @@ const getSignOut = (req, res) => {
   req.logout()
 
   req.session.regenerate(function () {
+    // TODO remove hardcoded URL when issue resolved
     const dfeRedirect = 'https://pp-oidc.signin.education.gov.uk/session/end'
     logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {

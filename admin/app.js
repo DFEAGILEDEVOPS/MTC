@@ -219,8 +219,7 @@ if (config.Auth.mode === authModes.dfeSignIn) {
     })
     .catch((error) => {
       logger.error(`unable to configure passport for dfeSignin:${error.message}`)
-      // process.exit?
-      throw error
+      process.exit(1)
     })
 } else {
   // initialise chosen auth strategy only
