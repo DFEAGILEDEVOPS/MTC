@@ -1,5 +1,5 @@
 class CreateMessagePage < SitePrism::Page
-  set_url '/service-manager/service-message'
+  set_url '/service-message'
 
   element :heading, '.govuk-heading-xl', text: 'Create service message'
   element :title, '#serviceMessageTitle'

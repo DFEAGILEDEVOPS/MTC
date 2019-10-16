@@ -23,7 +23,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    res.render('service-manager/service-message/service-message-overview', {
+    res.render('service-message/service-message-overview', {
       breadcrumbs: req.breadcrumbs(),
       serviceMessage
     })
@@ -38,10 +38,10 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getServiceMessageForm: async (req, res, next, err = undefined) => {
-    req.breadcrumbs('Manage service message', '/service-manager/service-message')
+    req.breadcrumbs('Manage service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('service-manager/service-message/service-message-form', {
+    res.render('service-message/service-message-form', {
       err: err || new ValidationError(),
       formData: req.body,
       breadcrumbs: req.breadcrumbs()
@@ -64,7 +64,7 @@ const controller = {
       }
       const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
       req.flash('info', flashMessage)
-      return res.redirect('/service-manager/service-message')
+      return res.redirect('/service-message')
     } catch (error) {
       return next(error)
     }
@@ -81,7 +81,7 @@ const controller = {
     try {
       await administrationMessageService.dropMessage(req.user.id)
       req.flash('info', 'Service message has been successfully removed')
-      return res.redirect('/service-manager/service-message')
+      return res.redirect('/service-message')
     } catch (error) {
       return next(error)
     }
