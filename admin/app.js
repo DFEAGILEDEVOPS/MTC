@@ -28,6 +28,8 @@ const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
 const uuidV4 = require('uuid/v4')
+const authModes = require('./lib/consts/auth-modes')
+const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -210,19 +212,34 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-// passport with custom strategy
-passport.use(new CustomStrategy(
-  require('./authentication/nca-tools-authentication-strategy')
-))
-
-// Passport with local strategy
-passport.use(
-  new LocalStrategy({
-    passReqToCallback: true
-  },
-  require('./authentication/local-strategy')
-  )
-)
+if (config.Auth.mode === authModes.dfeSignIn) {
+  dfeSignInStrategy.initialiseAsync()
+    .then((strategy) => {
+      passport.use(authModes.dfeSignIn, strategy)
+    })
+    .catch((error) => {
+      logger.error(`unable to configure passport for dfeSignin:${error.message}`)
+      process.exit(1)
+    })
+} else {
+  // initialise chosen auth strategy only
+  switch (config.Auth.mode) {
+    case authModes.ncaTools:
+      passport.use(authModes.ncaTools, new CustomStrategy(
+        require('./authentication/nca-tools-authentication-strategy')
+      ))
+      break
+    default:
+      passport.use(authModes.local,
+        new LocalStrategy({
+          passReqToCallback: true
+        },
+        require('./authentication/local-strategy')
+        )
+      )
+      break
+  }
+}
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
@@ -252,7 +269,7 @@ app.use(function (req, res, next) {
 // also exclude if url in the csrfExcludedPaths
 const csrf = csurf()
 const csrfExcludedPaths = [
-  '/auth', // disable CSRF for NCA tools
+  '/auth', // disable CSRF for federated auth
   '/sign-in' // disable CSRF for login
 ]
 app.use(function (req, res, next) {

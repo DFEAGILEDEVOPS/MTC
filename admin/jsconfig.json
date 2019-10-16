@@ -1,9 +1,11 @@
 {
     "compilerOptions": {
-        "target": "es2017",
-        "checkJs": true
+        "target": "es6",
+        "checkJs": true,
+        "module": "commonjs"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/node_modules/*"
     ]
 }

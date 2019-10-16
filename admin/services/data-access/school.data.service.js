@@ -108,6 +108,24 @@ const schoolDataService = {
     const whereClause = 'WHERE dfeNumber IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
+  },
+
+  /**
+   * Find a School by urn
+   * @param urn unique reference number for school
+   * @return {Promise<object>}
+   */
+  sqlFindOneByUrn: async (urn) => {
+    const paramUrn = { name: 'urn', type: TYPES.Int, value: urn }
+    const sql = `
+        SELECT school.*, ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
+        FROM [mtc_admin].school
+        LEFT JOIN [mtc_admin].sce
+          ON sce.school_id = school.id
+        WHERE urn = @urn
+      `
+    const rows = await sqlService.query(sql, [paramUrn])
+    return R.head(rows)
   }
 }
 

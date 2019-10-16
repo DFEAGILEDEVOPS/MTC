@@ -337,6 +337,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
+      spyOn(logger, 'error') // swallow the error message that is expected
       spyOn(restartService, 'markDeleted').and.returnValue(Promise.reject(new Error('error')))
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)

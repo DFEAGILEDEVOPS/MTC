@@ -3,7 +3,6 @@ const router = express.Router()
 const passport = require('passport')
 const R = require('ramda')
 
-const { getCommitId, getBuildNumber } = require('../helpers/healthcheck')
 const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
@@ -13,29 +12,14 @@ const { getAccessibilityStatementPage } = require('../controllers/accessibility-
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
-const {
-  home,
-  getSignIn,
-  postSignIn,
-  getSignOut,
-  getSignInFailure,
-  getUnauthorised
-} = require('../controllers/authentication')
+const authModes = require('../lib/consts/auth-modes')
+const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised } = require('../controllers/authentication')
+const getPing = require('../controllers/ping')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
-
-/* Login validation */
-const passportStrategy = config.NCA_TOOLS_AUTH_URL && config.NCA_TOOLS_AUTH_URL.length > 0 ? 'custom' : 'local'
-router.post('/sign-in',
-  (req, res, next) => {
-    next()
-  },
-  passport.authenticate(passportStrategy, { failureRedirect: '/sign-in-failure' }),
-  (req, res) => postSignIn(req, res)
-)
 
 /* Sign out */
 router.get('/sign-out', isAuthenticated(R.values(roles)), (req, res) => getSignOut(req, res))
@@ -54,47 +38,48 @@ router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 router.get('/cookies', (req, res) => getCookiesPage(req, res))
 /* ccessibility statement */
 router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPage(req, res))
-/* Health check */
-async function getPing (req, res) {
-  // get build number from /build.txt
-  // get git commit from /commit.txt
-  let buildNumber = 'NOT FOUND'
-  let commitId = 'NOT FOUND'
-  try {
-    buildNumber = await getBuildNumber()
-  } catch (error) {
-
-  }
-
-  try {
-    commitId = await getCommitId()
-  } catch (error) {
-
-  }
-
-  res.setHeader('Content-Type', 'application/json')
-  const obj = {
-    Build: buildNumber,
-    Commit: commitId,
-    CurrentServerTime: Date.now()
-  }
-  return res.status(200).send(obj)
-}
 
 router.get('/ping', (req, res) => getPing(req, res))
 
-/* NCA Tools Authentication Endpoint */
-router.post('/auth',
-  function (req, res, next) {
-    // Only allow post requests if NCA TOOLS is enabled
-    if (!config.NCA_TOOLS_AUTH_URL) {
-      return res.status(404).send('Not found')
-    }
-    next()
-  },
-  passport.authenticate('custom', {
-    failureRedirect: '/sign-in-failure'
-  }), (req, res) => postSignIn(req, res)
-)
+const signInFailureRedirect = '/sign-in-failure'
+
+/* Local login submission */
+if (config.Auth.mode === authModes.local) {
+  router.post('/sign-in',
+    (req, res, next) => {
+      next()
+    },
+    passport.authenticate(config.Auth.mode, { failureRedirect: signInFailureRedirect }),
+    (req, res) => postSignIn(req, res)
+  )
+}
+
+/* federated auth callbacks */
+
+/* NCA Tools */
+if (config.Auth.mode === authModes.ncaTools) {
+  router.post('/auth',
+    function (req, res, next) {
+      next()
+    },
+    passport.authenticate(authModes.ncaTools, {
+      failureRedirect: signInFailureRedirect
+    }), (req, res) => postSignIn(req, res)
+  )
+}
+
+/* Dfe Sign-in */
+
+if (config.Auth.mode === authModes.dfeSignIn) {
+  router.get('/auth-dso',
+    (req, res, next) => {
+      next()
+    },
+    passport.authenticate(authModes.dfeSignIn, { failureRedirect: signInFailureRedirect }),
+    (req, res) => postSignIn(req, res)
+  )
+  router.get('/oidc-sign-in', passport.authenticate(authModes.dfeSignIn,
+    { successRedirect: '/', failureRedirect: signInFailureRedirect }))
+}
 
 module.exports = router
