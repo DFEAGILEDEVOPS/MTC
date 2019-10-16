@@ -62,7 +62,7 @@ const controller = {
       if (result && result.hasError && result.hasError()) {
         return controller.getServiceMessageForm(req, res, next, result)
       }
-      const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
+      const flashMessage = serviceMessagePresenter.getFlashMessage()
       req.flash('info', flashMessage)
       return res.redirect('/service-message')
     } catch (error) {
