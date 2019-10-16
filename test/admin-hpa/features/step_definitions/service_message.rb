@@ -29,7 +29,6 @@ Then(/^the service message should be saved$/) do
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]
   expect(db_record['message']).to eql @message[:message]
-  expect(db_record['isDeleted']).to eql false
   redis_record = JSON.parse(REDIS_CLIENT.get('serviceMessage'))
   expect(redis_record['title']).to eql @message[:title]
   expect(redis_record['message']).to eql @message[:message]
@@ -42,28 +41,6 @@ Given(/^I have created a service message$/) do
   step 'the service message should be saved'
 end
 
-When(/^I make changes to the service message$/) do
-  manage_service_message_page.message.click
-  @updated_message = {title: 'Updated Test title' + rand(54544564).to_s, message: 'Updated Test message' + rand(45464).to_s}
-  create_message_page.create_message(@updated_message[:title], @updated_message[:message])
-end
-
-
-Then(/^those changes should be saved$/) do
-  expect(manage_service_message_page).to have_flash_message
-  expect(manage_service_message_page).to have_message
-  expect(manage_service_message_page.message.text).to eql @updated_message[:title]
-  expect(manage_service_message_page).to have_remove_message
-  db_record = SqlDbHelper.get_service_message(@updated_message[:title])
-  expect(db_record['title']).to eql @updated_message[:title]
-  expect(db_record['message']).to eql @updated_message[:message]
-  expect(db_record['isDeleted']).to eql false
-  redis_record = JSON.parse(REDIS_CLIENT.get('serviceMessage'))
-  expect(redis_record['title']).to eql @updated_message[:title]
-  expect(redis_record['message']).to eql @updated_message[:message]
-end
-
-
 When(/^I decide to delete the message$/) do
   manage_service_message_page.remove_message.click
 end
@@ -73,9 +50,7 @@ Then(/^it should be removed from the system$/) do
   expect(manage_service_message_page).to have_flash_message
   expect(manage_service_message_page).to have_no_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
-  expect(db_record['title']).to eql @message[:title]
-  expect(db_record['message']).to eql @message[:message]
-  expect(db_record['isDeleted']).to eql true
+  expect(db_record).to be_nil
   redis_record = REDIS_CLIENT.get('serviceMessage')
   expect(redis_record).to be_nil
 end

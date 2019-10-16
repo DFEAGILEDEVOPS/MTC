@@ -10,11 +10,6 @@ Feature: Service manager message
     When I submit the form with the service message I require
     Then the service message should be saved
 
-  Scenario: Service manager can edit a service message
-    Given I have created a service message
-    When I make changes to the service message
-    Then those changes should be saved
-
   Scenario: Service manager can delete a service message
     Given I have created a service message
     When I decide to delete the message

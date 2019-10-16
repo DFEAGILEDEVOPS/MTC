@@ -9,6 +9,6 @@ const serviceMessagePresenter = {}
  */
 serviceMessagePresenter.getFlashMessage = (requestData) =>
   requestData.isEditView
-    ? 'Service message has been updated' : 'Service message has been created'
+    ? 'Service message has been updated' : 'Service message has successfully been created'
 
 module.exports = serviceMessagePresenter
