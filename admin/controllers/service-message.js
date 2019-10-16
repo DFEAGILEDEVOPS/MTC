@@ -80,7 +80,7 @@ const controller = {
   postRemoveServiceMessage: async (req, res, next) => {
     try {
       await administrationMessageService.dropMessage(req.user.id)
-      req.flash('info', 'Service message has been successfully removed')
+      req.flash('info', 'Service message has successfully been removed')
       return res.redirect('/service-message')
     } catch (error) {
       return next(error)
