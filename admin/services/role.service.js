@@ -48,6 +48,27 @@ const service = {
       throw new Error('roleTitle is required')
     }
     return roleDataService.sqlFindOneByTitle(roleTitle)
+  },
+
+  /**
+   * Provides mapping of dfe sign-in roles to MTC roles.
+   * @returns {string}
+   */
+  mapDfeRoleToMtcRole: (dfeRoleCode) => {
+    const mapping = {
+      mtc_service_manager: 'SERVICE-MANAGER',
+      mtc_headteacher: 'HEADTEACHER',
+      mtc_teacher: 'TEACHER',
+      mtc_helpdesk: 'HELPDESK',
+      mtc_test_developer: 'TEST-DEVELOPER'
+    }
+
+    const role = mapping[dfeRoleCode]
+
+    if (!role) {
+      throw new Error(`Unknown dfe role ${dfeRoleCode}`)
+    }
+    return role
   }
 }
 
