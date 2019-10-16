@@ -95,7 +95,7 @@ controller.getDelete = async (req, res, next) => {
   }
   const flashMessage = { message: `Successfully deleted form ${checkFormName}` }
   req.flash('info', flashMessage)
-  return res.redirect(`/check-form/view-forms`)
+  return res.redirect('/check-form/view-forms')
 }
 
 /**
@@ -106,7 +106,7 @@ controller.getDelete = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getViewFormPage = async (req, res, next) => {
-  req.breadcrumbs(`Upload and view forms`, `/check-form/view-forms`)
+  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
   try {
@@ -179,7 +179,7 @@ controller.getSelectFormPage = async (req, res, next) => {
   }
   const hasAssignedForms = Array.isArray(assignedCheckForms) && assignedCheckForms.length > 0
   res.locals.pageTitle = `${checkWindowData.name} - ${checkWindowData.checkPeriod}`
-  req.breadcrumbs('Assign forms to check windows', `/check-form/assign-forms-to-check-windows`)
+  req.breadcrumbs('Assign forms to check windows', '/check-form/assign-forms-to-check-windows')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('check-form/view-select-forms', {
     breadcrumbs: req.breadcrumbs(),

@@ -77,7 +77,7 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
 businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => {
   const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
   if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
-    throw new Error(`Restarts are not allowed`)
+    throw new Error('Restarts are not allowed')
   }
 }
 
@@ -89,7 +89,7 @@ businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => 
 businessAvailabilityService.determineGroupsEligibility = (checkWindowData) => {
   const areGroupsAllowed = businessAvailabilityService.areGroupsAllowed(checkWindowData)
   if (!areGroupsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
-    throw new Error(`Groups are not allowed`)
+    throw new Error('Groups are not allowed')
   }
 }
 
@@ -101,7 +101,7 @@ businessAvailabilityService.determineGroupsEligibility = (checkWindowData) => {
 businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindowData) => {
   const areAccessArrangementsAllowed = businessAvailabilityService.areAccessArrangementsAllowed(checkWindowData)
   if (!areAccessArrangementsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
-    throw new Error(`Access Arrangements are not allowed`)
+    throw new Error('Access Arrangements are not allowed')
   }
 }
 

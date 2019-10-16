@@ -39,7 +39,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     let controller
     let sandbox
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/pupils-not-taking-the-check/pupils-list'
     }
@@ -180,7 +180,7 @@ describe('pupils-not-taking-the-check controller:', () => {
             body: {
               attendanceCode: '59df7e1c283960b43172ac6c',
               pupil: {
-                _id: [ '595cd5416e5ca13e48ed2518' ]
+                _id: ['595cd5416e5ca13e48ed2518']
               }
             }
           }
@@ -205,7 +205,7 @@ describe('pupils-not-taking-the-check controller:', () => {
             body: {
               attendanceCode: undefined,
               pupil: {
-                _id: [ '595cd5416e5ca13e48ed2518' ]
+                _id: ['595cd5416e5ca13e48ed2518']
               }
             }
           }
@@ -229,7 +229,7 @@ describe('pupils-not-taking-the-check controller:', () => {
             body: {
               attendanceCode: '59df7e1c283960b43172ac6c',
               pupil: {
-                _id: [ '595cd5416e5ca13e48ed2518' ]
+                _id: ['595cd5416e5ca13e48ed2518']
               }
             }
           }

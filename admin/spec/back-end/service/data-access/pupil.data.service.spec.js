@@ -122,7 +122,7 @@ describe('pupil.data.service', () => {
 
   describe('#sqlFindOneByPinAndSchool', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
       service = require('../../../../services/data-access/pupil.data.service')
     })
 

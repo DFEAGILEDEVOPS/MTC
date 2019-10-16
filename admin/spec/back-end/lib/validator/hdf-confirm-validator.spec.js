@@ -24,21 +24,21 @@ describe('HDF confirm validator', function () {
 
     it('requires pupilDetails to be checked', () => {
       requestData.pupilDetails = ''
-      let validationError = hdfConfirmValidator.validate(requestData)
+      const validationError = hdfConfirmValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('confirmBoxes')).toBe(true)
     })
 
     it('requires uniquePins to be checked', () => {
       requestData.uniquePins = ''
-      let validationError = hdfConfirmValidator.validate(requestData)
+      const validationError = hdfConfirmValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('confirmBoxes')).toBe(true)
     })
 
     it('requires staffConfirm to be checked', () => {
       requestData.staffConfirm = ''
-      let validationError = hdfConfirmValidator.validate(requestData)
+      const validationError = hdfConfirmValidator.validate(requestData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('confirmBoxes')).toBe(true)
     })

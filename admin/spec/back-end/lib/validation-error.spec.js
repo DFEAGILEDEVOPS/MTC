@@ -50,7 +50,7 @@ describe('validation error class', function () {
     validationError.addError('foo', 'check your foo')
     validationError.addError('bar', 'check your bar')
     validationError.addError('baz', 'check your baz')
-    let expectedResult = ['foreName', 'foo', 'bar', 'baz']
+    const expectedResult = ['foreName', 'foo', 'bar', 'baz']
     expect(JSON.stringify(validationError.getFields())).toBe(JSON.stringify(expectedResult))
   })
 
@@ -73,14 +73,14 @@ describe('validation error class', function () {
     validationError.addError('dob-month', 'Please check your date of birth')
     validationError.addError('dob-year', 'Please check your date of birth')
     // unique is an array of unique fields e.g. the last one (dob-year here)  will win
-    let unique = validationError.getUniqueFields()
+    const unique = validationError.getUniqueFields()
     expect(unique.length).toBe(1)
   })
 
   it('allows us to sort the unique fields', function () {
-    let arrayToBeSorted = ['three', 'two', 'nine', 'four']
-    let sortOrder = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-    let sorted = ValidationError.sortByFieldOrder(arrayToBeSorted, sortOrder)
+    const arrayToBeSorted = ['three', 'two', 'nine', 'four']
+    const sortOrder = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+    const sorted = ValidationError.sortByFieldOrder(arrayToBeSorted, sortOrder)
     expect(sorted[0]).toBe('two')
     expect(sorted[1]).toBe('three')
     expect(sorted[2]).toBe('four')
@@ -88,9 +88,9 @@ describe('validation error class', function () {
   })
 
   it('does not drop fields when the sort array is a subset of the array to be sorted', function () {
-    let arrayToBeSorted = ['three', 'two', 'nine', 'four']
-    let sortOrder = ['one', 'three', 'four']
-    let sorted = ValidationError.sortByFieldOrder(arrayToBeSorted, sortOrder)
+    const arrayToBeSorted = ['three', 'two', 'nine', 'four']
+    const sortOrder = ['one', 'three', 'four']
+    const sorted = ValidationError.sortByFieldOrder(arrayToBeSorted, sortOrder)
     expect(sorted[0]).toBe('three')
     expect(sorted[1]).toBe('four')
     expect(sorted[2]).toBe('two') // unsorted position

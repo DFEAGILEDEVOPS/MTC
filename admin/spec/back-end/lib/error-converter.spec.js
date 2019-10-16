@@ -37,7 +37,7 @@ describe('ErrorConverter class : fromExpressValidator()', function () {
   })
 
   it('contains all the expected errors', function () {
-    let err = errorConverter.fromExpressValidator(exampleResult)
+    const err = errorConverter.fromExpressValidator(exampleResult)
     Object.keys(exampleResult).map(k => {
       expect(err.isError(k)).toBe(true)
       expect(err.get(k)).toBe(exampleResult[k].msg)

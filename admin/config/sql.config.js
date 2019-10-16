@@ -22,6 +22,6 @@ module.exports = {
   },
   options: {
     appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
-    encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true
+    encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true
   }
 }

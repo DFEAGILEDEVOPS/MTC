@@ -86,7 +86,7 @@ checkStartService.prepareCheck2 = async function (
 
   // Create the checks for each pupil
   const checks = []
-  for (let pupilId of pupilIds) {
+  for (const pupilId of pupilIds) {
     const usedFormIds = usedForms[pupilId]
       ? usedForms[pupilId].map(f => f.id)
       : []
@@ -153,8 +153,8 @@ checkStartService.prepareCheck2 = async function (
   logger.info(`check start service: prepare check batch size is ${config.prepareCheckMessageBatchSize}`)
   const batches = R.splitEvery(config.prepareCheckMessageBatchSize, prepareCheckQueueMessages)
   let batchCount = 1
-  let totalBatches = batches.length
-  for (let batch of batches) {
+  const totalBatches = batches.length
+  for (const batch of batches) {
     logger.info(`check start service: sending batch ${batchCount} of ${totalBatches} for school ${schoolId}`)
     await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
     batchCount += 1
@@ -322,9 +322,9 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId
     throw error
   }
 
-  for (let o of checks) {
+  for (const o of checks) {
     // Pass the isLiveCheck config in to the SPA
-    const pupilConfig = pupilConfigs[ o.pupil_id ]
+    const pupilConfig = pupilConfigs[o.pupil_id]
     pupilConfig.practice = !o.check_isLiveCheck
     pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
 

@@ -82,7 +82,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let school
   let pupils
   let groups = []
-  let groupIds = req.params.groupIds || ''
+  const groupIds = req.params.groupIds || ''
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -175,7 +175,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = `View and print PINs`
+  res.locals.pageTitle = 'View and print PINs'
   req.breadcrumbs(
     isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
@@ -227,7 +227,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = `View and custom print PINs`
+  res.locals.pageTitle = 'View and custom print PINs'
   req.breadcrumbs(
     isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)

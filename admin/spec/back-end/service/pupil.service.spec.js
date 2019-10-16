@@ -51,7 +51,7 @@ describe('pupil service', () => {
         await service.getPrintPupils()
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe(`schoolId is required`)
+        expect(error.message).toBe('schoolId is required')
       }
     })
 

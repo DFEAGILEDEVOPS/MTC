@@ -13,10 +13,8 @@ const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
-const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
-const serviceMessagePresenter = require('../helpers/service-message-presenter')
 
 const featureToggles = require('feature-toggles')
 
@@ -114,9 +112,9 @@ const controller = {
     let checkWindows
     // Sorting
     const sortingOptions = [
-      { 'key': 'checkWindowName', 'value': 'asc' },
-      { 'key': 'adminStartDate', 'value': 'asc' },
-      { 'key': 'checkStartDate', 'value': 'asc' }
+      { key: 'checkWindowName', value: 'asc' },
+      { key: 'adminStartDate', value: 'asc' },
+      { key: 'checkStartDate', value: 'asc' }
     ]
     const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
     const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
@@ -445,7 +443,7 @@ const controller = {
 
     const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone)
 
-    let validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
+    const validationError = await sceSchoolValidator.validate({ urn, schoolName, timezone }, schoolNames, schoolUrns)
     if (validationError.hasError()) {
       res.error = validationError
       return controller.getSceAddSchool(req, res, next)
@@ -460,114 +458,6 @@ const controller = {
 
     req.flash('info', `'${school.name}' added as an MOD school`)
     return res.redirect(`/service-manager/mod-settings?hl=${school.urlSlug}`)
-  },
-
-  /**
-   * Renders manage service message page
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  getServiceMessage: async (req, res, next) => {
-    res.locals.pageTitle = 'Manage service message'
-    req.breadcrumbs(res.locals.pageTitle)
-    let serviceMessage
-    try {
-      serviceMessage = await administrationMessageService.getMessage()
-    } catch (error) {
-      return next(error)
-    }
-    res.render('service-manager/service-message/service-message-overview', {
-      breadcrumbs: req.breadcrumbs(),
-      serviceMessage
-    })
-  },
-
-  /**
-   * Renders submit service message page
-   * @param req
-   * @param res
-   * @param next
-   * @param err
-   * @returns {Promise.<void>}
-   */
-  getServiceMessageForm: async (req, res, next, err = undefined) => {
-    req.breadcrumbs('Manage service message', '/service-manager/service-message')
-    res.locals.pageTitle = 'Create service message'
-    req.breadcrumbs(res.locals.pageTitle)
-    res.render('service-manager/service-message/service-message-form', {
-      err: err || new ValidationError(),
-      formData: req.body,
-      breadcrumbs: req.breadcrumbs(),
-      isEditView: false
-    })
-  },
-
-  /**
-   * Submits service message data
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  postSubmitServiceMessage: async (req, res, next) => {
-    const requestData = req.body
-    try {
-      const result = await administrationMessageService.setMessage(requestData, req.user.id)
-      if (result && result.hasError && result.hasError()) {
-        return requestData.isEditView
-          ? controller.getEditServiceMessage(req, res, next, result) : controller.getServiceMessageForm(req, res, next, result)
-      }
-      const flashMessage = serviceMessagePresenter.getFlashMessage(requestData)
-      req.flash('info', flashMessage)
-      return res.redirect('/service-manager/service-message')
-    } catch (error) {
-      return next(error)
-    }
-  },
-
-  /**
-   * Renders edit service message data page
-   * @param req
-   * @param res
-   * @param next
-   * @param err
-   * @returns {Promise.<void>}
-   */
-  getEditServiceMessage: async (req, res, next, err = undefined) => {
-    req.breadcrumbs('Manage service message', '/service-manager/service-message')
-    res.locals.pageTitle = 'Edit service message'
-    req.breadcrumbs(res.locals.pageTitle)
-    let serviceMessage
-    try {
-      serviceMessage = await administrationMessageService.getMessage()
-    } catch (error) {
-      return next(error)
-    }
-    res.render('service-manager/service-message/service-message-form', {
-      err: err || new ValidationError(),
-      formData: err ? req.body : serviceMessage,
-      breadcrumbs: req.breadcrumbs(),
-      isEditView: true
-    })
-  },
-
-  /**
-   * Removes service message
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  postRemoveServiceMessage: async (req, res, next) => {
-    try {
-      await administrationMessageService.dropMessage(req.user.id)
-      req.flash('info', 'Service message has been successfully removed')
-      return res.redirect('/service-manager/service-message')
-    } catch (error) {
-      return next(error)
-    }
   }
 }
 

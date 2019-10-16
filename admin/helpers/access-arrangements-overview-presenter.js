@@ -16,7 +16,7 @@ accessArrangementsOverviewPresenter.getPresentationData = (pupils, availabilityD
       if (pupil.showDoB && arrangementsLn === 1) {
         arrangementsLn = 2
       }
-      pupil.verticalBarStyle = arrangementsLn > 1 ? `height:${235 - 35 * (7 - arrangementsLn)}px` : `height:0px`
+      pupil.verticalBarStyle = arrangementsLn > 1 ? `height:${235 - 35 * (7 - arrangementsLn)}px` : 'height:0px'
     }
     pupil.hasAAEditDisabled = !availabilityData.canEditArrangements || pupil.hasCompletedCheck || pupil.notTakingCheck
     return pupil

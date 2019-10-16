@@ -18,8 +18,8 @@ module.exports = class ErrorConverter {
    *
    */
   static fromExpressValidator (params) {
-    let validationError = new ValidationError()
-    for (let field in params) {
+    const validationError = new ValidationError()
+    for (const field in params) {
       validationError.addError(params[field].param, params[field].msg)
     }
     return validationError

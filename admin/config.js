@@ -35,14 +35,14 @@ module.exports = {
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   OVERRIDE_AVAILABILITY_CHECKS: false,
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
-  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
+  OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   PORT: process.env.PORT || '3001',
-  prepareCheckMessageBatchSize: process.env.hasOwnProperty('PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
+  prepareCheckMessageBatchSize: {}.hasOwnProperty.call(process.env, 'PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
-  PupilAppUseCompression: process.env.hasOwnProperty('PUPIL_APP_USE_COMPRESSION') ? toBool(process.env.PUPIL_APP_USE_COMPRESSION) : true,
+  PupilAppUseCompression: {}.hasOwnProperty.call(process.env, 'PUPIL_APP_USE_COMPRESSION') ? toBool(process.env.PUPIL_APP_USE_COMPRESSION) : true,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  WEBSITE_OFFLINE: process.env.hasOwnProperty('WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
+  WEBSITE_OFFLINE: {}.hasOwnProperty.call(process.env, 'WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
@@ -69,7 +69,7 @@ module.exports = {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,
       // DEPRECATED - not supported in MSSQL
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
+      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default

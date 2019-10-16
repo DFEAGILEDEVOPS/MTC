@@ -457,4 +457,13 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.get_service_message(title)
+    sql = "SELECT * FROM [mtc_admin].[serviceMessage] WHERE title = '#{title}'"
+    result = SQL_CLIENT.execute(sql)
+    res = result.first
+    result.cancel
+    res
+  end
+
 end

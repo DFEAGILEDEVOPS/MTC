@@ -11,14 +11,14 @@ const fileValidator = require('../../../lib/validator/file-validator.js')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
 
 const pupilCensusUploadMock = {
-  'uuid': 'bfa9ab1b-88ae-46f2-a4ff-726c0567e37c',
-  'field': 'csvPupilCensusFile',
-  'file': 'spec/back-end/files/Pupil-Census-Data.csv',
-  'filename': 'Pupil-Census-Data.csv',
-  'encoding': '7bit',
-  'mimetype': 'text/csv',
-  'truncated': false,
-  'done': true
+  uuid: 'bfa9ab1b-88ae-46f2-a4ff-726c0567e37c',
+  field: 'csvPupilCensusFile',
+  file: 'spec/back-end/files/Pupil-Census-Data.csv',
+  filename: 'Pupil-Census-Data.csv',
+  encoding: '7bit',
+  mimetype: 'text/csv',
+  truncated: false,
+  done: true
 }
 
 const pupilCensusMock = {

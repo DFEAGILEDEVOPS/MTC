@@ -38,7 +38,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
     const serviceMessage = await administrationMessageService.getMessage()
     return res.render('school/school-home', {
-      breadcrumbs: [ { 'name': 'School Home' } ],
+      breadcrumbs: [{ name: 'School Home' }],
       featureEligibilityData,
       hasIncompleteChecks,
       isResultsFeatureAccessible,

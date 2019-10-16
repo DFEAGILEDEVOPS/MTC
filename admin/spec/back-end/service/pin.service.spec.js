@@ -61,33 +61,33 @@ describe('pin.service', () => {
     })
 
     it('Adds identification flags to the pupil when they have the same name', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([ pupil1, pupil2 ]))
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
       spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
       const data = await service.getPupilsWithActivePins(dfeNumber)
       // Because we used the pupil mock we expect the pupils to have the same name, so we need
       // show the dob to differentiate.
-      expect(data[ 0 ].showDoB).toBe(true)
-      expect(data[ 0 ].dateOfBirth).toBe('9 Sep 2008')
-      expect(data[ 1 ].showDoB).toBe(true)
-      expect(data[ 1 ].dateOfBirth).toBe('9 Sep 2008')
+      expect(data[0].showDoB).toBe(true)
+      expect(data[0].dateOfBirth).toBe('9 Sep 2008')
+      expect(data[1].showDoB).toBe(true)
+      expect(data[1].dateOfBirth).toBe('9 Sep 2008')
     })
 
     it('does not add identification flags to the pupil when they have different names', async () => {
       const p1 = R.clone(pupilMock)
       const p2 = R.clone(pupilMock)
       p2.lastName = 'Sherlock'
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([ p1, p2 ]))
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([p1, p2]))
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
       const data = await service.getPupilsWithActivePins(dfeNumber)
-      expect(data[ 0 ].showDoB).toBeUndefined()
-      expect(data[ 1 ].showDoB).toBeUndefined()
+      expect(data[0].showDoB).toBeUndefined()
+      expect(data[1].showDoB).toBeUndefined()
     })
   })
 
   describe('getActiveSchool', () => {
     let service
-    let school = Object.assign({}, schoolMock)
+    const school = Object.assign({}, schoolMock)
     school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
     describe('if pin is valid', () => {
       beforeEach(() => {
@@ -122,7 +122,7 @@ describe('pin.service', () => {
   describe('expirePupilPin', () => {
     describe('for actual users', () => {
       beforeEach(() => {
-        let pupil = Object.assign({}, pupilMock)
+        const pupil = Object.assign({}, pupilMock)
         sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
         sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
         proxyquire('../../../services/pin.service', {
@@ -140,7 +140,7 @@ describe('pin.service', () => {
     })
     describe('for test developer users', () => {
       beforeEach(() => {
-        let pupil = Object.assign({}, pupilMock)
+        const pupil = Object.assign({}, pupilMock)
         pupil.isTestAccount = true
         sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
         sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
@@ -165,16 +165,16 @@ describe('pin.service', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.pin = null
       pupil.pinExpiresAt = null
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([ pupil ])
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([ pupil.id ], schoolId)
+      await pinService.expireMultiplePins([pupil.id], schoolId)
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(0)
     })
     it('it calls updateMultiple method if not empty pin is found', async () => {
       const pupil = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([ pupil ])
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([ pupil.id ], schoolId)
+      await pinService.expireMultiplePins([pupil.id], schoolId)
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
     })
     it('throws an error if schoolId is not provided', async () => {

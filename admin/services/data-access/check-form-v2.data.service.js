@@ -259,12 +259,12 @@ const checkFormV2DataService = {
     const queries = []
 
     params.push({
-      name: `isLiveCheckForm`,
+      name: 'isLiveCheckForm',
       value: isLiveCheckForm ? 1 : 0,
       type: TYPES.Bit
     })
     params.push({
-      name: `checkWindowId`,
+      name: 'checkWindowId',
       value: checkWindowId,
       type: TYPES.Int
     })

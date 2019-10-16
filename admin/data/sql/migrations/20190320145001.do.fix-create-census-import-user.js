@@ -8,10 +8,10 @@ const createLocalUser = `CREATE LOGIN ${config.Sql.PupilCensus.Username} WITH PA
 // TODO test on sql azure
 module.exports.generateSql = function () {
   if (!config.Sql.PupilCensus.Username) {
-    throw new Error(`Missing 'config.Sql.PupilCensus.Username'`)
+    throw new Error('Missing \'config.Sql.PupilCensus.Username\'')
   }
   if (!config.Sql.PupilCensus.Password) {
-    throw new Error(`Missing 'config.Sql.PupilCensus.Password'`)
+    throw new Error('Missing \'config.Sql.PupilCensus.Password\'')
   }
   if (config.Sql.Azure.Scale) {
     return createAzureUser

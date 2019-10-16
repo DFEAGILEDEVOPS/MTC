@@ -33,7 +33,7 @@ describe('restart controller:', () => {
 
   describe('getRestartOverview route', () => {
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/restart/overview',
       session: {
@@ -87,7 +87,7 @@ describe('restart controller:', () => {
 
   describe('getSelectRestartList route', () => {
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/restart/select-restart-list',
       session: {
@@ -142,7 +142,7 @@ describe('restart controller:', () => {
 
   describe('postSubmitRestartList route', () => {
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/restart/overview',
       session: {
@@ -197,7 +197,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -219,7 +219,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }])
+      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }])
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
@@ -238,7 +238,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -256,7 +256,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -274,8 +274,8 @@ describe('restart controller:', () => {
     it('ensures all pupil ids are numeric values before calling recalculateStatusByPupilIds and restart service methods', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      let pupilIds = []
-      let processedPupilIds = []
+      const pupilIds = []
+      const processedPupilIds = []
       for (let i = 0; i <= 40; i++) {
         pupilIds.push(i < 20 ? i : { i })
         processedPupilIds.push(i)
@@ -285,7 +285,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      const restartServiceSpy = spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
+      const restartServiceSpy = spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
       const recalculateStatusByPupilIdsSpy = spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -299,7 +299,7 @@ describe('restart controller:', () => {
 
   describe('postDeleteRestart route', () => {
     let next
-    let goodReqParams = {
+    const goodReqParams = {
       method: 'GET',
       url: '/restart/overview',
       session: {

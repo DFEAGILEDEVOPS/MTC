@@ -15,12 +15,12 @@ const defaultConfiguration = {
  * @param {function(Error):Boolean} retryCondition - predicate function to determine if the function should be retried.  Defaults to true
  */
 const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = defaultConfiguration, retryCondition = defaultRetryCondition) => {
-  let retryPolicy = {}
+  const retryPolicy = {}
   try {
     Object.assign(retryPolicy, retryConfiguration)
-    logger.debug(`asyncRetryHandler: executing retryable method...`)
+    logger.debug('asyncRetryHandler: executing retryable method...')
     const result = await asyncRetryableFunction()
-    logger.debug(`asyncRetryHandler: execution successful.`)
+    logger.debug('asyncRetryHandler: execution successful.')
     return result
   } catch (error) {
     logger.warn(`asyncRetryHandler: method call failed with ${error}`)

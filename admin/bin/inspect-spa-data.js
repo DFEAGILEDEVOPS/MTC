@@ -11,7 +11,7 @@ const optionDefinitions = [
   { name: 'verbose', alias: 'v', type: Boolean },
   { name: 'filter', alias: 'f', type: String },
   { name: 'checkCode', alias: 'c', type: String },
-  { name: 'addRelTiming', alias: 't', type: Boolean, 'description': 'add relative timings' }
+  { name: 'addRelTiming', alias: 't', type: Boolean, description: 'add relative timings' }
 ]
 
 const usage = function () {
@@ -29,7 +29,7 @@ const usage = function () {
 
 function addRelativeTimingsToInputs (inputs) {
   let lastTime, current
-  for (let input of inputs) {
+  for (const input of inputs) {
     if (!input) {
       continue
     }
@@ -65,7 +65,7 @@ function addRelativeTimingsToInputs (inputs) {
 
 function addRelativeTimingsToAudits (audits) {
   let lastTime, current
-  for (let audit of audits) {
+  for (const audit of audits) {
     if (!audit.clientTimestamp) {
       continue
     }

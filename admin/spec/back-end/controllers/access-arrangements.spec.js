@@ -38,7 +38,7 @@ describe('access arrangements controller:', () => {
   })
 
   describe('getOverview route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/access-arrangements/overview'
     }
@@ -78,7 +78,7 @@ describe('access arrangements controller:', () => {
     })
   })
   describe('getSelectAccessArrangements route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'GET',
       url: '/access-arrangements/select-access-arrangements'
     }
@@ -120,7 +120,7 @@ describe('access arrangements controller:', () => {
     })
   })
   describe('postSubmitAccessArrangements route', () => {
-    let reqParams = {
+    const reqParams = {
       method: 'POST',
       url: '/access-arrangements/submit',
       body: {
@@ -205,7 +205,7 @@ describe('access arrangements controller:', () => {
     })
   })
   describe('getEditAccessArrangements route', () => {
-    let reqParams = (urlSlug) => {
+    const reqParams = (urlSlug) => {
       return {
         method: 'GET',
         url: `/access-arrangements/select-access-arrangements/${urlSlug}`,
@@ -245,7 +245,7 @@ describe('access arrangements controller:', () => {
     })
   })
   describe('getDeleteAccessArrangements route', () => {
-    let reqParams = (urlSlug) => {
+    const reqParams = (urlSlug) => {
       return {
         method: 'GET',
         url: `/access-arrangements/delete-access-arrangements/${urlSlug}`,

@@ -367,7 +367,7 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   OUTPUT inserted.ID INTO @output
   VALUES
   `
-  const output = `; SELECT * from @output`
+  const output = '; SELECT * from @output'
   const values = []
   const params = []
 
@@ -376,37 +376,37 @@ pupilDataService.sqlInsertMany = async (pupils) => {
     params.push(
       {
         name: `school_id${i}`,
-        value: pupils[i][ 'school_id' ],
+        value: pupils[i].school_id,
         type: TYPES.Int
       },
       {
         name: `foreName${i}`,
-        value: pupils[i][ 'foreName' ],
+        value: pupils[i].foreName,
         type: TYPES.NVarChar
       },
       {
         name: `lastName${i}`,
-        value: pupils[i][ 'lastName' ],
+        value: pupils[i].lastName,
         type: TYPES.NVarChar
       },
       {
         name: `middleNames${i}`,
-        value: pupils[i][ 'middleNames' ],
+        value: pupils[i].middleNames,
         type: TYPES.NVarChar
       },
       {
         name: `gender${i}`,
-        value: pupils[i][ 'gender' ],
+        value: pupils[i].gender,
         type: TYPES.Char
       },
       {
         name: `upn${i}`,
-        value: pupils[i][ 'upn' ],
+        value: pupils[i].upn,
         type: TYPES.NVarChar
       },
       {
         name: `dateOfBirth${i}`,
-        value: pupils[i][ 'dateOfBirth' ],
+        value: pupils[i].dateOfBirth,
         type: TYPES.DateTimeOffset
       }
     )

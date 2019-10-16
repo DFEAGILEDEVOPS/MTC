@@ -92,9 +92,9 @@ controller.downloadResults = async (req, res, next) => {
     }
   })).catch((error) => next(error))
   pupilsFormatted = pupilsFormatted.filter((p) => p)
-  const pupilStructure = pupilsFormatted[ 0 ]
+  const pupilStructure = pupilsFormatted[0]
   const csvContent = []
-  const csvHeaders = [ 'Full Name', 'Date of Birth' ]
+  const csvHeaders = ['Full Name', 'Date of Birth']
   // Generate the row headers
   pupilStructure.answers.forEach((answer, i) => {
     const question = `Question ${i + 1}`
@@ -106,14 +106,14 @@ controller.downloadResults = async (req, res, next) => {
   // Generate the pupils
   const csvPupils = []
   pupilsFormatted.forEach((p, i) => {
-    csvPupils[ i ] = []
+    csvPupils[i] = []
     Object.keys(p).forEach((k) => {
       if (k === 'answers') {
-        p[ k ].forEach((a) => {
-          Object.keys(a).forEach((ak) => csvPupils[ i ].push(a[ ak ].toString()))
+        p[k].forEach((a) => {
+          Object.keys(a).forEach((ak) => csvPupils[i].push(a[ak].toString()))
         })
       } else {
-        csvPupils[ i ].push(p[ k ])
+        csvPupils[i].push(p[k])
       }
     })
   })
@@ -229,7 +229,7 @@ controller.postConfirmSubmit = async (req, res, next) => {
   }
 
   // Re-validate the hdf form data
-  let hdfFormData = req.session.hdfFormData
+  const hdfFormData = req.session.hdfFormData
   validationError = await hdfValidator.validate(hdfFormData)
   if (validationError.hasError()) {
     return next(new Error('Invalid HDF form data'))
@@ -289,7 +289,7 @@ controller.postDeclarationForm = async (req, res, next) => {
     return next(error)
   }
 
-  let validationError = await hdfValidator.validate(form)
+  const validationError = await hdfValidator.validate(form)
   if (validationError.hasError()) {
     res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)

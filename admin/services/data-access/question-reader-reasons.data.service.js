@@ -50,12 +50,11 @@ questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode = async fun
  * @returns {Promise<void>}
  */
 const init = async () => {
-  let questionReaderReasons
   const sql = `
     SELECT *
     FROM ${sqlService.adminSchema}.[questionReaderReasons]`
 
-  questionReaderReasons = await sqlService.query(sql)
+  const questionReaderReasons = await sqlService.query(sql)
   questionReaderReasons.map(qrr => {
     questionReaderCodes[qrr.code] = qrr.id
   })
