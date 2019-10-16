@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-
 'use strict'
 
 // require('dotenv').config()
 const winston = require('winston')
+const consoleTransport = new winston.transports.Console();
+winston.add(consoleTransport)
 const upnService = require('../../admin/services/upn.service')
 winston.level = 'info'
 const moment = require('moment')
