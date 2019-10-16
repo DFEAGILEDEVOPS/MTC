@@ -29,7 +29,6 @@ Then(/^the service message should be saved$/) do
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]
   expect(db_record['message']).to eql @message[:message]
-  expect(db_record['isDeleted']).to eql false
   redis_record = JSON.parse(REDIS_CLIENT.get('serviceMessage'))
   expect(redis_record['title']).to eql @message[:title]
   expect(redis_record['message']).to eql @message[:message]
@@ -51,9 +50,7 @@ Then(/^it should be removed from the system$/) do
   expect(manage_service_message_page).to have_flash_message
   expect(manage_service_message_page).to have_no_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
-  expect(db_record['title']).to eql @message[:title]
-  expect(db_record['message']).to eql @message[:message]
-  expect(db_record['isDeleted']).to eql true
+  expect(db_record).to be_nil
   redis_record = REDIS_CLIENT.get('serviceMessage')
   expect(redis_record).to be_nil
 end
