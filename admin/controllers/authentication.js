@@ -84,7 +84,6 @@ const getSignOut = (req, res) => {
     dfeUrl.searchParams.append('id_token_hint', req.user.id_token)
     dfeUrl.searchParams.append('post_logout_redirect_uri', `${config.Runtime.externalHost}/sign-out-dso`)
     dfeSignOutUrl = dfeUrl.toString()
-    logger.debug(`dfe signout url is:${dfeSignOutUrl}`)
   }
   req.logout()
 
@@ -121,11 +120,17 @@ const getUnauthorised = (req, res) => {
   }
 }
 
+const getSignedOut = (req, res) => {
+  res.locals.pageTitle = 'Signed Out'
+  res.render('signedOut')
+}
+
 module.exports = {
   home,
   getSignIn,
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getUnauthorised
+  getUnauthorised,
+  getSignedOut
 }
