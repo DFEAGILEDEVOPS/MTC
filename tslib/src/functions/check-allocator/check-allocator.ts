@@ -78,19 +78,18 @@ export class CheckAllocatorV1 {
     }
 
     const pupils = await this._dataService.getPupilsBySchoolUuid(schoolUUID)
-    console.log(`we have ${pupils.length} pupils`)
     const schoolKey = this.redisAllocationsKeyPrefix.concat(schoolUUID)
-    console.log(`calling redis with ${schoolKey}`)
     const existingAllocations = await this._redisService.get(schoolKey)
-    console.log('existing allocations...')
-    console.dir(existingAllocations)
     if (RA.isNilOrEmpty(pupils)) return
 
     for (let pupilIndex = 0; pupilIndex < pupils.length; pupilIndex++) {
       const pupil = pupils[pupilIndex]
-      if (R.includes(pupil, existingAllocations.pupils)) break
+      const match = R.find(R.propEq('id', pupil.id))(existingAllocations.pupils)
+      if (match) continue
       pupil.pin = this._pupilPinGenerator.generate()
       pupil.allocatedForm = this._formAllocator.allocate(pupil.id)
+      existingAllocations.pupils.push(pupil)
     }
+    await this._redisService.setex(schoolKey, existingAllocations, 0)
   }
 }

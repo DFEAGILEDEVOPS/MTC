@@ -6,6 +6,18 @@ let sut: CheckAllocatorV1
 
 let schoolUUID: string
 
+const pupilData = [
+  {
+    id: 123
+  },
+  {
+    id: 456
+  },
+  {
+    id: 789
+  }
+]
+
 const DataServiceMock = jest.fn<ICheckAllocatorDataService, any>(() => ({
   getPupilsBySchoolUuid: jest.fn()
 }))
@@ -61,17 +73,6 @@ describe('check-allocator/v1', () => {
   })
 
   test('it should fetch all pupils within specified school from data service', async () => {
-    const pupilData = [
-      {
-        id: 123
-      },
-      {
-        id: 456
-      },
-      {
-        id: 789
-      }
-    ]
     const existingRedisData = {
       schoolUUID: schoolUUID,
       pupils: []}
@@ -87,17 +88,7 @@ describe('check-allocator/v1', () => {
   })
 
   test('a pupil pin is generated  for each pupil that does not currently have an allocation', async () => {
-    const pupilData = [
-      {
-        id: 123
-      },
-      {
-        id: 456
-      },
-      {
-        id: 789
-      }
-    ]
+
     dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
@@ -111,17 +102,7 @@ describe('check-allocator/v1', () => {
   })
 
   test('a form is allocated for each pupil that does not currently have an allocation', async () => {
-    const pupilData = [
-      {
-        id: 123
-      },
-      {
-        id: 456
-      },
-      {
-        id: 789
-      }
-    ]
+
     dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
@@ -135,17 +116,7 @@ describe('check-allocator/v1', () => {
   })
 
   test('pupils with an existing allocation are not replenished', async () => {
-    const pupilData = [
-      {
-        id: 123
-      },
-      {
-        id: 456
-      },
-      {
-        id: 789
-      }
-    ]
+
     dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
@@ -156,10 +127,14 @@ describe('check-allocator/v1', () => {
       schoolUUID: schoolUUID,
       pupils: [
         {
-          id: 123
+          id: 123,
+          pin: 1234,
+          allocatedForm: undefined
         },
         {
-          id: 456
+          id: 456,
+          pin: 1234,
+          allocatedForm: undefined
         }
       ]
     }
@@ -167,13 +142,19 @@ describe('check-allocator/v1', () => {
       schoolUUID: schoolUUID,
       pupils: [
         {
-          id: 123
+          id: 123,
+          pin: 1234,
+          allocatedForm: undefined
         },
         {
-          id: 456
+          id: 456,
+          pin: 1234,
+          allocatedForm: undefined
         },
         {
-          id: 789
+          id: 789,
+          pin: 1234,
+          allocatedForm: undefined
         }
       ]
     }
@@ -187,7 +168,7 @@ describe('check-allocator/v1', () => {
     expect(pupilPinGeneratorMock.generate).toHaveBeenCalledTimes(1)
     expect(redisServiceMock.get).toHaveBeenCalledWith(redisSchoolKey)
     expect(redisServiceMock.get).toHaveBeenCalledTimes(1)
-    expect(redisServiceMock.setex).toHaveBeenCalledWith(redisSchoolKey, expectedSchoolObjectToBeSet)
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(redisSchoolKey, expectedSchoolObjectToBeSet, 0)
     expect(redisServiceMock.setex).toHaveBeenCalledTimes(1)
   })
 
