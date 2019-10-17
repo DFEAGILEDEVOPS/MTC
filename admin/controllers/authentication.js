@@ -4,6 +4,7 @@ const logger = require('../services/log.service').getLogger()
 const homeRoutes = require('../lib/consts/home-routes')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
+const url = require('url')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
@@ -77,18 +78,22 @@ const postSignIn = (req, res) => {
 }
 
 const getSignOut = (req, res) => {
+  let dfeSignOutUrl
+  if (config.Auth.mode === authModes.dfeSignIn) {
+    const dfeUrl = new url.URL(config.Auth.dfeSignIn.signOutUrl)
+    dfeUrl.searchParams.append('id_token_hint', req.user.id_token)
+    dfeUrl.searchParams.append('post_logout_redirect_uri', `${config.Runtime.externalHost}/sign-out-dso`)
+    dfeSignOutUrl = dfeUrl.toString()
+  }
   req.logout()
 
   req.session.regenerate(function () {
-    const dfeRedirect = config.Auth.dfeSignIn.signOutUrl
-    // TODO remove hardcoded URL when issue resolved
     logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {
       case authModes.ncaTools:
         return res.redirect(config.Auth.ncaTools.authUrl)
       case authModes.dfeSignIn:
-        logger.debug(`redirecting to ${dfeRedirect}`)
-        return res.redirect(dfeRedirect)
+        return res.redirect(dfeSignOutUrl)
       default: //  local
         return res.redirect('/')
     }
@@ -115,11 +120,17 @@ const getUnauthorised = (req, res) => {
   }
 }
 
+const getSignedOut = (req, res) => {
+  res.locals.pageTitle = 'Signed Out'
+  res.render('signedOut')
+}
+
 module.exports = {
   home,
   getSignIn,
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getUnauthorised
+  getUnauthorised,
+  getSignedOut
 }
