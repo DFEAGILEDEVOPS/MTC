@@ -19,5 +19,5 @@
       "methods": null
     }
   ],
-  "scriptFile": "../../tslib/dist/functions/http1.js"
+  "scriptFile": "../../tslib/dist/functions/example/http1.js"
 }
