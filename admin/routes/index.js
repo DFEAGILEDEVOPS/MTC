@@ -13,14 +13,23 @@ const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
-const { home, getSignIn, postSignIn, getSignOut, getSignInFailure, getUnauthorised } = require('../controllers/authentication')
+const {
+  home,
+  getSignIn,
+  postSignIn,
+  getSignOut,
+  getSignInFailure,
+  getUnauthorised,
+  getSignedOut
+} = require('../controllers/authentication')
 const getPing = require('../controllers/ping')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
-
+/* signed out (dfe signin only) */
+router.get('/sign-out-dso', (req, res) => getSignedOut(req, res))
 /* Sign out */
 router.get('/sign-out', isAuthenticated(R.values(roles)), (req, res) => getSignOut(req, res))
 /* Sign in failure */
