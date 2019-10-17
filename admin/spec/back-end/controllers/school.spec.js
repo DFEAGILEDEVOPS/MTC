@@ -97,7 +97,7 @@ describe('school controller:', () => {
         await schoolController.getSchoolLandingPage(req, res, next)
         expect(res.redirect).toHaveBeenCalled()
       })
-      it('should reach redis cache service to fetch a potential service message', async () => {
+      it('should call administrationMessageService.getMessage to fetch a potential service message', async () => {
         spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
         spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
