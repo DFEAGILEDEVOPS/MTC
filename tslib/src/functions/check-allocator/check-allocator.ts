@@ -1,6 +1,7 @@
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
+import * as config from '../../config'
 
 export interface ICheckAllocatorDataService {
   getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<any>>
@@ -90,6 +91,7 @@ export class CheckAllocatorV1 {
       pupil.allocatedForm = this._formAllocator.allocate(pupil.id)
       existingAllocations.pupils.push(pupil)
     }
-    await this._redisService.setex(schoolKey, existingAllocations, 0)
+    await this._redisService.setex(schoolKey, existingAllocations,
+      +config.default.CheckAllocation.ExpiryTimeInSeconds)
   }
 }
