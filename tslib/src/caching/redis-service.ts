@@ -1,12 +1,12 @@
 export interface IRedisService {
-  get (key: string): any
-  setex (key: string, value: string, ttl: number): any
+  get (key: string): Promise<any>
+  setex (key: string, value: string, ttl: number): Promise<any>
 }
 export class RedisService implements IRedisService {
-  get (key: string) {
+  async get (key: string) {
     throw new Error('Method not implemented.')
   }
-  setex (key: string, value: string, ttl: number) {
+  async setex (key: string, value: string, ttl: number) {
     throw new Error('Method not implemented.')
   }
 }
