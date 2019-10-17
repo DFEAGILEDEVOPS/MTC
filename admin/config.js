@@ -156,5 +156,8 @@ module.exports = {
     ncaTools: {
       authUrl: process.env.NCA_TOOLS_AUTH_URL
     }
+  },
+  Runtime: {
+    externalHost: process.env.RUNTIME_EXTERNAL_HOST || 'http://localhost:3001'
   }
 }

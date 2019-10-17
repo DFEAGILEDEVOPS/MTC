@@ -3,6 +3,9 @@
 }
 
 .govuk-button-as-link {
+  &.no-underline {
+    text-decoration: none;
+  }
   background: none;
   border: none;
   padding: 0;
