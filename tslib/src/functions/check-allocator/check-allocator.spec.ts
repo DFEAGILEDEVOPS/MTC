@@ -1,4 +1,4 @@
-import { CheckAllocatorV1, ICheckAllocatorDataService } from './check-allocator'
+import { CheckAllocatorV1, ICheckAllocatorDataService, IPupilPinGenerator, IPupil } from './check-allocator'
 import * as uuid from 'uuid'
 
 let sut: CheckAllocatorV1
@@ -6,12 +6,20 @@ const DataServiceMock = jest.fn<ICheckAllocatorDataService, any>(() => ({
   getPupilsBySchoolUuid: jest.fn()
 }))
 
+const PupilPinGeneratorMock = jest.fn<IPupilPinGenerator, any>(() => ({
+  generate: jest.fn()
+}))
+
 let dataServiceMock: ICheckAllocatorDataService
+let pupilPinGeneratorMock: IPupilPinGenerator
+let schoolUUID: string
 
 describe('check-allocator/v1', () => {
   beforeEach(() => {
     dataServiceMock = new DataServiceMock()
-    sut = new CheckAllocatorV1(dataServiceMock)
+    pupilPinGeneratorMock = new PupilPinGeneratorMock()
+    sut = new CheckAllocatorV1(dataServiceMock, pupilPinGeneratorMock)
+    schoolUUID = uuid.v4()
   })
 
   test('it should be defined', () => {
@@ -35,15 +43,26 @@ describe('check-allocator/v1', () => {
     }
   })
 
-  test('it should fetch all pupils within specified school', async () => {
-    const schoolUuid = uuid.v4()
-    await sut.allocate(schoolUuid)
-    expect(dataServiceMock.getPupilsBySchoolUuid).toHaveBeenCalledWith(schoolUuid)
+  test('it should fetch all pupils within specified school from data service', async () => {
+    await sut.allocate(schoolUUID)
+    expect(dataServiceMock.getPupilsBySchoolUuid).toHaveBeenCalledWith(schoolUUID)
   })
 
-  test('a pupil pin is generated  for each pupil that does not currently have an allocation')
-  test('the school pin is only regenerated on the overnight (wildcard) run')
-  test('a form is allocated for each pupil that does not currently have an allocation')
-  test('a redis entry is created for each replenished allocation')
-  test('the redis entry contains the current timestamp in UTC')
+  test('a pupil pin is generated  for each pupil that does not currently have an allocation', async () => {
+    const schoolPupils = new Array<IPupil>()
+    schoolPupils.push(
+      {
+        id: 123
+      })
+    dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+      return Promise.resolve(schoolPupils)
+    })
+    await sut.allocate(schoolUUID)
+    expect(pupilPinGeneratorMock.generate).toHaveBeenCalledTimes(schoolPupils.length)
+  })
+
+  test.todo('the school pin is only regenerated on the overnight run - separate service?')
+  test.todo('a form is allocated for each pupil that does not currently have an allocation')
+  test.todo('a redis entry is created for each replenished allocation')
+  test.todo('the redis entry contains the current timestamp in UTC')
 })
