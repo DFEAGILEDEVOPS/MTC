@@ -1,0 +1,62 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <span><%= messages.info %></span>
+                </div>
+            <% } %>
+            <% if (err.hasError()) { %>
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        You need to fix the errors on this page before continuing.
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <p>See highlighted errors below.</p>
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <% err.getUniqueFields(['serviceMessageTitle', 'serviceMessageContent']).map(f => { %>
+                                <% const errors = err.get(f) %>
+                                <% if (Array.isArray(errors)) { %>
+                                    <%  errors.map(e => { %>
+                                        <li><a href="#<%= f %>"><%= e %></a></li>
+                                <% }) } else { %>
+                                    <li><a href="#<%= f %>"><%= errors %></a></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            <% } %>
+            <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <form action="/service-message/submit-service-message" id="serviceMessageForm" method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-form-group <%= err.isError('serviceMessageTitle') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Title</label>
+                    <% if (err.isError('serviceMessageTitle')) { %>
+                        <span class="govuk-error-message"><%= err.get('serviceMessageTitle') %></span>
+                    <% } %>
+                    <input type="text"
+                           id="serviceMessageTitle"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
+                           name="serviceMessageTitle"
+                           value="<%= formData['title'] %>"/>
+                    <div class="govuk-!-margin-top-5 govuk-form-group <%= err.isError('serviceMessageContent') ? 'govuk-form-group--error' : '' %>">
+                        <div class="govuk-label govuk-!-font-weight-bold" for="serviceMessageContent">Message</div>
+                        <% if (err.isError('serviceMessageContent')) { %>
+                            <span class="govuk-error-message"> <%= err.get('serviceMessageContent') %></span>
+                        <% } %>
+                        <textarea
+                                class="govuk-textarea govuk-!-width-three-quarters <%= err.isError('serviceMessageContent') ? 'govuk-textarea--error' : '' %>"
+                                name="serviceMessageContent"
+                                id="serviceMessageContent"
+                                rows="4"><%= formData['message'] %></textarea>
+                    </div>
+                </div>
+                <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
+                <a href="/service-message" class="govuk-button govuk-button--secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</main>
