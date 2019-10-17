@@ -1,5 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { CompressionService } from '../index'
+import { CompressionService } from '../../index'
+
+// example function, to be removed when discovery of tslib deployemnt as function apps complete
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   context.log('HTTP trigger function processed a request.')
