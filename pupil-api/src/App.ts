@@ -59,7 +59,7 @@ class App {
     }))
 
      // rate limit requests
-     this.express.use(async (req, res, next) => {
+    this.express.use(async (req, res, next) => {
       try {
         if (!config.RateLimit.Enabled) {
           return next()
