@@ -5,8 +5,8 @@ set -e
 
 # depends on admin modules, so need install first
 cd ../admin
-npm install
+yarn install
 cd ../load-test
-npm install
+yarn install
 node bin/generate-teacher-for-each-school.js
 node bin/generate-pupil-data.js
