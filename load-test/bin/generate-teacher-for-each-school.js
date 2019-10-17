@@ -1,4 +1,6 @@
 const winston = require('winston')
+const consoleTransport = new winston.transports.Console();
+winston.add(consoleTransport)
 const bcrypt = require('bcryptjs')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const TYPES = sqlService.TYPES
