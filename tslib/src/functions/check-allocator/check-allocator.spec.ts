@@ -40,4 +40,10 @@ describe('check-allocator/v1', () => {
     await sut.allocate(schoolUuid)
     expect(dataServiceMock.getPupilsBySchoolUuid).toHaveBeenCalledWith(schoolUuid)
   })
+
+  test('a pupil pin is generated  for each pupil that does not currently have an allocation')
+  test('the school pin is only regenerated on the overnight (wildcard) run')
+  test('a form is allocated for each pupil that does not currently have an allocation')
+  test('a redis entry is created for each replenished allocation')
+  test('the redis entry contains the current timestamp in UTC')
 })
