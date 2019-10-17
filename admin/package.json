@@ -36,7 +36,7 @@
     "dotenv": "^8.1.0",
     "ejs": "^2.6.1",
     "express": "^4.16.2",
-    "express-breadcrumbs": "0.0.2",
+    "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
     "express-busboy": "^7.0.1",
     "express-partials": "^0.3.0",
     "express-session": "^1.15.6",
