@@ -1,4 +1,12 @@
-import { CheckAllocatorV1, ICheckAllocatorDataService, IPupilPinGenerator, ICheckFormAllocator, IDateTimeService } from './check-allocator'
+import {
+  CheckAllocatorV1,
+  ICheckAllocatorDataService,
+  IPupilPinGenerator,
+  ICheckFormAllocator,
+  IDateTimeService,
+  IPupil,
+  ISchoolAllocation
+ } from './check-allocator'
 import * as uuid from 'uuid'
 import { IRedisService } from '../../caching/redis-service'
 import * as config from '../../config'
@@ -7,7 +15,7 @@ let sut: CheckAllocatorV1
 
 let schoolUUID: string
 
-const pupilData = [
+const pupilData: Array<IPupil> = [
   {
     id: 123
   },
@@ -133,7 +141,34 @@ describe('check-allocator/v1', () => {
       }
     })
     await sut.allocate(schoolUUID)
-    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(pupilData.length)
+    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(pupilData.length + 1)
+  })
+
+  test('the top level object is stamped with last utc datetime of last replenishment', async () => {
+
+    dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+      return Promise.resolve(pupilData)
+    })
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        pupils: []
+      }
+    })
+    let persistedRedisObject: ISchoolAllocation = {
+      lastReplenishmentUtc: new Date(),
+      pupils: [],
+      schoolUUID: uuid.v4()
+    }
+    redisServiceMock.setex = jest.fn(async (key: string, value: any, ttl: number) => {
+      persistedRedisObject = value
+    })
+    const millenium = '2000-01-01 00:00'
+    dateTimeServiceMock.utcNow = jest.fn(() => {
+      return new Date(millenium)
+    })
+    await sut.allocate(schoolUUID)
+    expect(persistedRedisObject).toHaveProperty('lastReplenishmentUtc')
+    expect(persistedRedisObject.lastReplenishmentUtc).toEqual(new Date(millenium))
   })
 
   test('only pupils without an existing allocation are replenished', async () => {
@@ -176,7 +211,7 @@ describe('check-allocator/v1', () => {
     const redisSchoolKey = `pupil-allocations:${schoolUUID}`
     expect(checkFormAllocatorMock.allocate).toHaveBeenCalledTimes(1)
     expect(checkFormAllocatorMock.allocate).toHaveBeenCalledWith(789)
-    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
+    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(2)
     expect(pupilPinGeneratorMock.generate).toHaveBeenCalledTimes(1)
     expect(redisServiceMock.get).toHaveBeenCalledWith(redisSchoolKey)
     expect(redisServiceMock.get).toHaveBeenCalledTimes(1)

@@ -5,11 +5,11 @@ import * as config from '../../config'
 import * as moment from 'moment'
 
 export interface ICheckAllocatorDataService {
-  getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<any>>
+  getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>>
 }
 
 export class CheckAllocatorDataService implements ICheckAllocatorDataService {
-  async getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<any>> {
+  async getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>> {
     throw new Error('Method not implemented.')
   }
 }
@@ -47,6 +47,10 @@ export class DateTimeService implements IDateTimeService {
 
 export interface IPupil {
   id: number
+}
+
+export interface IPupilAllocation {
+  id: number
   pin?: number
   allocatedForm?: any,
   allocatedAtUtc: Date
@@ -55,6 +59,7 @@ export interface IPupil {
 export interface ISchoolAllocation {
   schoolUUID: string
   pupils: Array<IPupil>
+  lastReplenishmentUtc: Date
 }
 
 export class CheckAllocatorV1 {
@@ -112,11 +117,15 @@ export class CheckAllocatorV1 {
       const pupil = pupils[pupilIndex]
       const match = R.find(R.propEq('id', pupil.id))(existingAllocations.pupils)
       if (match) continue
-      pupil.pin = this._pupilPinGenerator.generate()
-      pupil.allocatedForm = this._formAllocator.allocate(pupil.id)
-      existingAllocations.pupils.push(pupil)
-      pupil.allocatedAtUtc = this._dateTimeService.utcNow()
+      const pupilAllocation: IPupilAllocation = {
+        id: pupil.id,
+        pin: this._pupilPinGenerator.generate(),
+        allocatedForm: this._formAllocator.allocate(pupil.id),
+        allocatedAtUtc: this._dateTimeService.utcNow()
+      }
+      existingAllocations.pupils.push(pupilAllocation)
     }
+    existingAllocations.lastReplenishmentUtc = this._dateTimeService.utcNow()
     await this._redisService.setex(schoolKey, existingAllocations,
       +config.default.CheckAllocation.ExpiryTimeInSeconds)
   }
