@@ -3,7 +3,7 @@ import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../..
 import { ILogger } from '../../common/ILogger'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
-import checkSchema from '../../message-schemas/complete-check.v1.json'
+import checkSchema from '../../schemas/complete-check.v1.json'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 
