@@ -1,11 +1,11 @@
-import { IAsyncTableService, AsyncTableService } from '../lib/async-table-service'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../typings/message-schemas'
-import { ILogger } from '../lib/ILogger'
+import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../message-schemas'
+import { ILogger } from '../../common/ILogger'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
-import checkSchema from '../messages/complete-check.v1.json'
+import checkSchema from '../../message-schemas/complete-check.v1.json'
 import Moment from 'moment'
-import { ICompressionService, CompressionService } from '../lib/compression-service'
+import { ICompressionService, CompressionService } from '../../common/compression-service'
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: Array<any>

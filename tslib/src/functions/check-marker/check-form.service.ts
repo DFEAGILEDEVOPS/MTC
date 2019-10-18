@@ -1,6 +1,6 @@
 
 import * as mssql from 'mssql'
-import config from '../config'
+import config from '../../config'
 import * as R from 'ramda'
 
 export interface ICheckFormService {

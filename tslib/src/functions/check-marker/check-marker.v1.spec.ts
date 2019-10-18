@@ -1,12 +1,12 @@
-import * as Subject from '../../check-marker/check-marker.v1'
+import * as Subject from './check-marker.v1'
 import uuid = require('uuid')
 import moment = require('moment')
-import { ValidatedCheck } from '../../typings/message-schemas'
-import { IAsyncTableService } from '../../lib/storage-helper'
-import checkSchema from '../../messages/complete-check.v1.json'
-import { ICheckFormService } from '../../lib/check-form.service'
+import { ValidatedCheck } from '../../message-schemas'
+import { IAsyncTableService } from '../../azure/async-table-service'
+import checkSchema from '../../message-schemas/complete-check.v1.json'
+import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
-import { ILogger } from '../../lib/ILogger'
+import { ILogger } from '../../common/ILogger'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -488,13 +488,6 @@ describe('check-marker/v1', () => {
       checkNotificationQueue: []
     }
 
-    let actualTableName: string | undefined
-    let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
-      actualTableName = table
-      actualEntity = entity
-    })
-
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
       return JSON.stringify([
         {
@@ -527,13 +520,6 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
-
-    let actualTableName: string | undefined
-    let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
-      actualTableName = table
-      actualEntity = entity
-    })
 
     await sut.mark(functionBindings, loggerMock)
     expect(functionBindings.checkNotificationQueue.length).toBe(1)

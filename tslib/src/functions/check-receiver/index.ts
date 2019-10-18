@@ -1,5 +1,5 @@
 import { AzureFunction, Context } from '@azure/functions'
-import * as schemas from '../typings/message-schemas'
+import * as schemas from '../../message-schemas'
 import { performance } from 'perf_hooks'
 const functionName = 'check-receiver'
 import V3 from './v3'

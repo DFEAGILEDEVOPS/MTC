@@ -1,5 +1,5 @@
 export { IAsyncTableService, AsyncTableService } from './azure/async-table-service'
-export { ICheckWindowService, CheckWindowService } from './CheckWindowService'
+export { ICheckWindowService, CheckWindowService } from './check-window.service'
 export { ICompressionService, CompressionService } from './common/compression-service'
 export { ILogger } from './common/ILogger'
 export { IRedisService, RedisService } from './caching/redis-service'

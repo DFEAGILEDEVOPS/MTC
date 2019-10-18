@@ -1,10 +1,9 @@
-import * as CheckValidator from '../../check-validator/check-validator.v1'
-import { IAsyncTableService } from '../../../ts-lib/src/async-table-service'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../typings/message-schemas'
-import { ILogger } from '../../../ts-lib/src/ILogger'
-import checkSchema from '../../messages/complete-check.v1.json'
-import * as R from 'ramda'
-import { ICompressionService } from '../../../ts-lib/src/compression-service'
+import * as CheckValidator from './check-validator.v1'
+import { IAsyncTableService } from '../../azure/async-table-service'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../message-schemas'
+import { ILogger } from '../../common/ILogger'
+import checkSchema from '../../message-schemas/complete-check.v1.json'
+import { ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 
@@ -35,7 +34,7 @@ let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
 
 let sut: CheckValidator.CheckValidatorV1
 let loggerMock: ILogger
-let mockCheck
+// let mockCheck
 let tableServiceMock: IAsyncTableService
 let compressionServiceMock: ICompressionService
 
@@ -50,7 +49,7 @@ describe('check-validator/v1', () => {
       checkCode: 'xyz',
       version: 1
     }
-    mockCheck = R.clone(checkSchema)
+    // mockCheck = R.clone(checkSchema)
   })
 
   test('subject under test should be defined', () => {
@@ -196,12 +195,6 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    let actualTableName: string | undefined
-    let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
-      actualTableName = table
-      actualEntity = entity
-    })
     compressionServiceMock.decompress = jest.fn((input: string) => {
       return JSON.stringify(checkSchema)
     })

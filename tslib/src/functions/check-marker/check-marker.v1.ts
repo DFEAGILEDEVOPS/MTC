@@ -1,10 +1,10 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { IAsyncTableService, AsyncTableService } from '../lib/storage-helper'
-import { ValidatedCheck } from '../typings/message-schemas'
+import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
+import { ValidatedCheck } from '../../message-schemas/index'
 import moment from 'moment'
-import { ICheckFormService, CheckFormService } from '../lib/check-form.service'
-import { ILogger } from '../lib/ILogger'
+import { ICheckFormService, CheckFormService } from './check-form.service'
+import { ILogger } from '../../common/ILogger'
 
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
