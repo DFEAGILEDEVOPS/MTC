@@ -1,6 +1,7 @@
-import { CheckAllocatorV1, ICheckAllocatorDataService, IPupilPinGenerator, ICheckFormAllocator } from './check-allocator'
+import { CheckAllocatorV1, ICheckAllocatorDataService, IPupilPinGenerator, ICheckFormAllocator, IDateTimeService } from './check-allocator'
 import * as uuid from 'uuid'
 import { IRedisService } from '../../caching/redis-service'
+import * as config from '../../config'
 
 let sut: CheckAllocatorV1
 
@@ -35,10 +36,15 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   setex: jest.fn()
 }))
 
+const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
+  utcNow: jest.fn()
+}))
+
 let dataServiceMock: ICheckAllocatorDataService
 let pupilPinGeneratorMock: IPupilPinGenerator
 let checkFormAllocatorMock: ICheckFormAllocator
 let redisServiceMock: IRedisService
+let dateTimeServiceMock: IDateTimeService
 
 describe('check-allocator/v1', () => {
   beforeEach(() => {
@@ -47,8 +53,9 @@ describe('check-allocator/v1', () => {
     pupilPinGeneratorMock = new PupilPinGeneratorMock()
     checkFormAllocatorMock = new CheckFormAllocatorMock()
     redisServiceMock = new RedisServiceMock()
+    dateTimeServiceMock = new DateTimeServiceMock()
     sut = new CheckAllocatorV1(dataServiceMock, pupilPinGeneratorMock,
-      checkFormAllocatorMock, redisServiceMock)
+      checkFormAllocatorMock, redisServiceMock, dateTimeServiceMock)
   })
 
   test('it should be defined', () => {
@@ -56,15 +63,15 @@ describe('check-allocator/v1', () => {
   })
 
   test('an error is thrown when school UUID is not a valid UUID', async () => {
-    const invalidUuidValues = [
+    const invalidUUIDvalues = [
       'i am not a UUID', // clearly incorrect
       '64b182f0-04fc-4dac-88c3-', // final section missing
       '64b182f0-04fc-4dac-88c3-dc6fcb1cba5' // one char short
     ]
-    for (let index = 0; index < invalidUuidValues.length; index++) {
-      const invalidUuid = invalidUuidValues[index]
+    for (let index = 0; index < invalidUUIDvalues.length; index++) {
+      const invalidUUID = invalidUUIDvalues[index]
       try {
-        await sut.allocate(invalidUuid)
+        await sut.allocate(invalidUUID)
         fail('an error should have been thrown')
       } catch (error) {
         expect(error.message).toBe('schoolUUID argument was not a v4 UUID')
@@ -87,7 +94,7 @@ describe('check-allocator/v1', () => {
     expect(dataServiceMock.getPupilsBySchoolUuid).toHaveBeenCalledWith(schoolUUID)
   })
 
-  test('a pupil pin is generated  for each pupil that does not currently have an allocation', async () => {
+  test('a pupil pin is generated for each pupil that does not currently have an allocation', async () => {
 
     dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
@@ -115,7 +122,21 @@ describe('check-allocator/v1', () => {
     expect(checkFormAllocatorMock.allocate).toHaveBeenCalledTimes(pupilData.length)
   })
 
-  test('pupils with an existing allocation are not replenished', async () => {
+  test('each allocation is stamped with the current UTC datetime', async () => {
+
+    dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+      return Promise.resolve(pupilData)
+    })
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        pupils: []
+      }
+    })
+    await sut.allocate(schoolUUID)
+    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(pupilData.length)
+  })
+
+  test('only pupils without an existing allocation are replenished', async () => {
 
     dataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
@@ -129,50 +150,40 @@ describe('check-allocator/v1', () => {
         {
           id: 123,
           pin: 1234,
-          allocatedForm: undefined
+          allocatedForm: undefined,
+          allocatedAtUtc: '2001-01-01 00:00'
         },
         {
           id: 456,
           pin: 1234,
-          allocatedForm: undefined
-        }
-      ]
-    }
-    const expectedSchoolObjectToBeSet = {
-      schoolUUID: schoolUUID,
-      pupils: [
-        {
-          id: 123,
-          pin: 1234,
-          allocatedForm: undefined
-        },
-        {
-          id: 456,
-          pin: 1234,
-          allocatedForm: undefined
-        },
-        {
-          id: 789,
-          pin: 1234,
-          allocatedForm: undefined
+          allocatedForm: undefined,
+          allocatedAtUtc: '2001-01-01 00:00'
         }
       ]
     }
     redisServiceMock.get = jest.fn((key) => {
       return Promise.resolve(existingRedisSchoolObject)
     })
+    let redisSetKey
+    let redisSetTtl
+    redisServiceMock.setex = jest.fn((key, value, ttl) => {
+      redisSetKey = key
+      redisSetTtl = ttl
+      return Promise.resolve()
+    })
+
     await sut.allocate(schoolUUID)
     const redisSchoolKey = `pupil-allocations:${schoolUUID}`
     expect(checkFormAllocatorMock.allocate).toHaveBeenCalledTimes(1)
     expect(checkFormAllocatorMock.allocate).toHaveBeenCalledWith(789)
+    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
     expect(pupilPinGeneratorMock.generate).toHaveBeenCalledTimes(1)
     expect(redisServiceMock.get).toHaveBeenCalledWith(redisSchoolKey)
     expect(redisServiceMock.get).toHaveBeenCalledTimes(1)
-    expect(redisServiceMock.setex).toHaveBeenCalledWith(redisSchoolKey, expectedSchoolObjectToBeSet, 0)
+    expect(redisSetKey).toBe(redisSchoolKey)
+    expect(redisSetTtl).toBe(config.default.CheckAllocation.ExpiryTimeInSeconds)
     expect(redisServiceMock.setex).toHaveBeenCalledTimes(1)
   })
 
-  test.todo('a redis entry is created for each replenished allocation')
-  test.todo('the redis entry contains the current timestamp in UTC')
   test.todo('the school pin is only regenerated on the overnight run - separate service?')
 })

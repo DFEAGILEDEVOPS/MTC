@@ -2,6 +2,7 @@ import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import * as config from '../../config'
+import * as moment from 'moment'
 
 export interface ICheckAllocatorDataService {
   getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<any>>
@@ -33,10 +34,27 @@ export class CheckFormAllocator implements ICheckFormAllocator {
   }
 }
 
+export interface IDateTimeService {
+  utcNow (): Date
+}
+
+export class DateTimeService implements IDateTimeService {
+  utcNow (): Date {
+    return moment.utc().toDate()
+  }
+
+}
+
 export interface IPupil {
   id: number
   pin?: number
-  allocatedForm?: any
+  allocatedForm?: any,
+  allocatedAtUtc: Date
+}
+
+export interface ISchoolAllocation {
+  schoolUUID: string
+  pupils: Array<IPupil>
 }
 
 export class CheckAllocatorV1 {
@@ -44,13 +62,15 @@ export class CheckAllocatorV1 {
   private _pupilPinGenerator: IPupilPinGenerator
   private _formAllocator: ICheckFormAllocator
   private _redisService: IRedisService
+  private _dateTimeService: IDateTimeService
   private uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (checkAllocatorDataService?: ICheckAllocatorDataService,
             pupilPinGenerator?: IPupilPinGenerator,
             formAllocator?: ICheckFormAllocator,
-            redisService?: IRedisService) {
+            redisService?: IRedisService,
+            dateTimeService?: IDateTimeService) {
 
     if (checkAllocatorDataService === undefined) {
       checkAllocatorDataService = new CheckAllocatorDataService()
@@ -71,6 +91,11 @@ export class CheckAllocatorV1 {
       redisService = new RedisService()
     }
     this._redisService = redisService
+
+    if (dateTimeService === undefined) {
+      dateTimeService = new DateTimeService()
+    }
+    this._dateTimeService = dateTimeService
   }
 
   async allocate (schoolUUID: string) {
@@ -90,6 +115,7 @@ export class CheckAllocatorV1 {
       pupil.pin = this._pupilPinGenerator.generate()
       pupil.allocatedForm = this._formAllocator.allocate(pupil.id)
       existingAllocations.pupils.push(pupil)
+      pupil.allocatedAtUtc = this._dateTimeService.utcNow()
     }
     await this._redisService.setex(schoolKey, existingAllocations,
       +config.default.CheckAllocation.ExpiryTimeInSeconds)
