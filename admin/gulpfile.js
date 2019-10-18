@@ -19,7 +19,6 @@ const jsBundleFiles = [
   './assets/javascripts/gds-table-sorting.js',
   './assets/javascripts/gds-print-popup.js',
   './assets/javascripts/accessible-autocomplete.min.js',
-  './assets/javascripts/details.polyfill.js',
   './assets/javascripts/util-checkbox.js',
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js',
@@ -37,9 +36,16 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-form.js'
 ]
 
+gulp.task('sass', function () {
+  return gulp.src('./assets/**/*.scss')
+    .pipe(replace('/vendor/govuk-frontend/', `${config.AssetPath}vendor/govuk-frontend/`))
+    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(gulp.dest('./public'))
+})
+
 gulp.task('watch', function () {
-  gulp.watch('./assets/**/*.scss', ['sass'])
-  gulp.watch('./assets/**/*.js', ['bundle-js'])
+  gulp.watch('./assets/**/*.scss', gulp.series('sass'))
+  gulp.watch('./assets/**/*.js', gulp.series('bundle-js'))
 })
 
 gulp.task('bundle-js', function () {
@@ -65,45 +71,45 @@ gulp.task('clean', function () {
 })
 
 gulp.task('copy-images', function () {
-  gulp
+  return gulp
     .src(['./assets/images/*'])
     .pipe(gulp.dest('public/images'))
 })
 
 gulp.task('copy-gds-images', function () {
-  gulp
+  return gulp
     .src(['./node_modules/govuk-frontend/govuk/assets/images/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/images'))
 })
 
 gulp.task('copy-gds-fonts', function () {
-  gulp
+  return gulp
     .src(['./node_modules/govuk-frontend/govuk/assets/fonts/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/fonts'))
 })
 
 gulp.task('copy-pdfs', function () {
-  gulp
+  return gulp
     .src(['./assets/pdfs/*'])
     .pipe(gulp.dest('public/pdfs'))
 })
 
 gulp.task('copy-csv-files', function () {
-  gulp
+  return gulp
     .src(['./assets/csv/*'])
     .pipe(gulp.dest('public/csv'))
 })
 
-gulp.task('realclean', ['clean'], function () {
+gulp.task('realclean', gulp.series('clean'), function () {
   return gulp.src('./node_modules', { read: false })
     .pipe(clean())
 })
 
-gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-gds-images', 'copy-gds-fonts', 'copy-pdfs', 'copy-csv-files'])
-
-gulp.task('sass', function () {
-  return gulp.src('./assets/**/*.scss')
-    .pipe(replace('/vendor/govuk-frontend/', `${config.AssetPath}vendor/govuk-frontend/`))
-    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-    .pipe(gulp.dest('./public'))
-})
+gulp.task('build',
+  gulp.parallel('sass',
+    'bundle-js',
+    'copy-images',
+    'copy-gds-images',
+    'copy-gds-fonts',
+    'copy-pdfs',
+    'copy-csv-files'))
