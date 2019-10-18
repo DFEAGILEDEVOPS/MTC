@@ -29,12 +29,18 @@ const jsBundleFiles = [
   './assets/javascripts/mtc-check-forms.js',
   './assets/javascripts/print-popup.js',
   './assets/javascripts/table-sorting.js',
-  './assets/javascripts/session-expiry.js',
+  './assets/javascripts/session-expiry.js', // here be dragons
   './assets/javascripts/autocomplete.js',
   './assets/javascripts/pupil-access-arrangements-selection.js',
   './assets/javascripts/check-forms.js',
   './assets/javascripts/pupil-form.js'
 ]
+
+/*
+  session-expiry.js contains two strings that are claimed to be global variables.  The `bundlejs` task will replace
+  these strings with values from config during the build.  If config has not loaded correctly the input to `uglify` will
+  be incorrect and `uglify` will bomb-out with this message `{"message":"Unexpected token: punc «,»"}`
+ */
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
