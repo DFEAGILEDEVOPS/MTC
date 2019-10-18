@@ -1,5 +1,5 @@
 import { AzureFunction, Context } from '@azure/functions'
-import { ValidateCheckMessageV1 } from '../../message-schemas'
+import { ValidateCheckMessageV1 } from '../../schemas'
 import { performance } from 'perf_hooks'
 const functionName = 'check-validator'
 import * as V1 from './check-validator.v1'

@@ -1,5 +1,5 @@
 import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../message-schemas'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas'
 import { ILogger } from '../../common/ILogger'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'

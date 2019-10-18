@@ -1,7 +1,7 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
-import { ValidatedCheck } from '../../message-schemas/index'
+import { ValidatedCheck } from '../../schemas/index'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/ILogger'
