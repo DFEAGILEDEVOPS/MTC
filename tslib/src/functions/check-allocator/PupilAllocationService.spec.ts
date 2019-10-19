@@ -1,8 +1,7 @@
 
 import { IPupilAllocation, IPupil } from './IPupil'
-import { IDateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService } from './ICheckFormAllocationService'
-import { all } from 'bluebird'
+import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
+import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
 
 export interface IPupilPinGenerationService {
   generate (): number
@@ -17,17 +16,34 @@ export class PupilPinGenerationService implements IPupilPinGenerationService {
 export class PupilAllocationService {
 
   private _pupilPinGenerationService: IPupilPinGenerationService
-  constructor (pupilPinGenerationService?: IPupilPinGenerationService) {
+  private _checkFormAllocationService: ICheckFormAllocationService
+  private _dateTimeService: IDateTimeService
+
+  constructor (pupilPinGenerationService?: IPupilPinGenerationService,
+    checkFormAllocationService?: ICheckFormAllocationService,
+    dateTimeService?: IDateTimeService) {
+
     if (pupilPinGenerationService === undefined) {
       pupilPinGenerationService = new PupilPinGenerationService()
     }
     this._pupilPinGenerationService = pupilPinGenerationService
+
+    if (checkFormAllocationService === undefined) {
+      checkFormAllocationService = new CheckFormAllocationService()
+    }
+    this._checkFormAllocationService = checkFormAllocationService
+
+    if (dateTimeService === undefined) {
+      dateTimeService = new DateTimeService()
+    }
+    this._dateTimeService = dateTimeService
   }
   async allocate (pupil: IPupil): Promise<IPupilAllocation> {
     const allocation: IPupilAllocation = {
       id: pupil.id,
       pin: this._pupilPinGenerationService.generate(),
-      allocatedAtUtc: new Date('2222-11-11')
+      allocatedForm: this._checkFormAllocationService.allocate(pupil.id),
+      allocatedAtUtc: this._dateTimeService.utcNow()
     }
     return allocation
   }
@@ -38,7 +54,7 @@ const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>((
 }))
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
-  utcNow: jest.fn()
+  utcNow: jest.fn(() => new Date('1970-01-01'))
 }))
 
 const CheckFormAllocationServiceMock = jest.fn<ICheckFormAllocationService, any>(() => ({
@@ -56,7 +72,9 @@ describe('PupilAllocationService', () => {
     pupilPinGenerationServiceMock = new PupilPinGenerationServiceMock()
     dateTimeServiceMock = new DateTimeServiceMock()
     checkFormAllocationServiceMock = new CheckFormAllocationServiceMock()
-    sut = new PupilAllocationService(pupilPinGenerationServiceMock)
+    sut = new PupilAllocationService(pupilPinGenerationServiceMock,
+      checkFormAllocationServiceMock,
+      dateTimeServiceMock)
   })
 
   test('subject should be defined', () => {
@@ -89,6 +107,6 @@ describe('PupilAllocationService', () => {
     expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
     expect(checkFormAllocationServiceMock.allocate).toHaveBeenCalledWith(pupil.id)
     expect(allocation).toBeDefined()
-    expect(allocation.allocatedAtUtc).toBe(expectedTimestamp)
+    expect(allocation.allocatedAtUtc).toStrictEqual(expectedTimestamp)
   })
 })
