@@ -14,7 +14,11 @@ export class PupilPinGenerationService implements IPupilPinGenerationService {
   }
 }
 
-export class PupilAllocationService {
+export interface IPupilAllocationService {
+  allocate (pupil: IPupil): Promise<IPupilAllocation>
+}
+
+export class PupilAllocationService implements IPupilAllocationService {
 
   private _pupilPinGenerationService: IPupilPinGenerationService
   private _checkFormAllocationService: ICheckFormAllocationService
@@ -54,8 +58,9 @@ const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>((
   generate: jest.fn()
 }))
 
+const theSeventies = '1970-01-01 00:00:00'
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
-  utcNow: jest.fn(() => moment('1970-01-01 00:00:00'))
+  utcNow: jest.fn(() => moment(theSeventies))
 }))
 
 const CheckFormAllocationServiceMock = jest.fn<ICheckFormAllocationService, any>(() => ({
@@ -103,7 +108,7 @@ describe('PupilAllocationService', () => {
     let pupil: IPupil = {
       id: 123
     }
-    const expectedTimestamp = moment('1970-01-01 00:00:00')
+    const expectedTimestamp = moment(theSeventies)
     const allocation = await sut.allocate(pupil)
     expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
     expect(checkFormAllocationServiceMock.allocate).toHaveBeenCalledWith(pupil.id)

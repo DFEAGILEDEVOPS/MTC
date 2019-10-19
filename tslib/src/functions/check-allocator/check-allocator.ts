@@ -4,39 +4,25 @@ import { IRedisService, RedisService } from '../../caching/redis-service'
 import * as config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckAllocatorDataService, CheckAllocatorDataService } from './ICheckAllocatorDataService'
-import { IPupilAllocation } from './IPupil'
-import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
-import { IPupilPinGenerationService, PupilPinGenerationService } from './PupilAllocationService.spec'
+import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService.spec'
 
 export class CheckAllocatorV1 {
   private _dataService: ICheckAllocatorDataService
-  private _pupilPinGenerator: IPupilPinGenerationService
-  private _formAllocator: ICheckFormAllocationService
   private _redisService: IRedisService
   private _dateTimeService: IDateTimeService
+  private _pupilAllocationService: IPupilAllocationService
   private uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (checkAllocatorDataService?: ICheckAllocatorDataService,
-            pupilPinGenerator?: IPupilPinGenerationService,
-            formAllocator?: ICheckFormAllocationService,
             redisService?: IRedisService,
-            dateTimeService?: IDateTimeService) {
+            dateTimeService?: IDateTimeService,
+            pupilAllocationService?: IPupilAllocationService) {
 
     if (checkAllocatorDataService === undefined) {
       checkAllocatorDataService = new CheckAllocatorDataService()
     }
     this._dataService = checkAllocatorDataService
-
-    if (pupilPinGenerator === undefined) {
-      pupilPinGenerator = new PupilPinGenerationService()
-    }
-    this._pupilPinGenerator = pupilPinGenerator
-
-    if (formAllocator === undefined) {
-      formAllocator = new CheckFormAllocationService()
-    }
-    this._formAllocator = formAllocator
 
     if (redisService === undefined) {
       redisService = new RedisService()
@@ -47,6 +33,11 @@ export class CheckAllocatorV1 {
       dateTimeService = new DateTimeService()
     }
     this._dateTimeService = dateTimeService
+
+    if (pupilAllocationService === undefined) {
+      pupilAllocationService = new PupilAllocationService()
+    }
+    this._pupilAllocationService = pupilAllocationService
   }
 
   async allocate (schoolUUID: string) {
@@ -61,14 +52,13 @@ export class CheckAllocatorV1 {
 
     for (let pupilIndex = 0; pupilIndex < pupils.length; pupilIndex++) {
       const pupil = pupils[pupilIndex]
-      const match = R.find(R.propEq('id', pupil.id))(existingAllocations.pupils)
-      if (match) continue
-      const pupilAllocation: IPupilAllocation = {
-        id: pupil.id,
-        pin: this._pupilPinGenerator.generate(),
-        allocatedForm: this._formAllocator.allocate(pupil.id),
-        allocatedAtUtc: this._dateTimeService.utcNow()
+      console.log(`count: ${existingAllocations.pupils.length}`)
+      if (existingAllocations.pupils.length > 0) {
+        console.log('finding pupil...')
+        const match = R.find(R.propEq('id', pupil.id))(existingAllocations.pupils)
+        if (match) continue
       }
+      const pupilAllocation = await this._pupilAllocationService.allocate(pupil)
       existingAllocations.pupils.push(pupilAllocation)
     }
     existingAllocations.lastReplenishmentUtc = this._dateTimeService.utcNow()
