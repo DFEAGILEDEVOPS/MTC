@@ -2,6 +2,7 @@
 import { IPupilAllocation, IPupil } from './IPupil'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
+import moment from 'moment'
 
 export interface IPupilPinGenerationService {
   generate (): number
@@ -54,7 +55,7 @@ const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>((
 }))
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
-  utcNow: jest.fn(() => new Date('1970-01-01'))
+  utcNow: jest.fn(() => moment('1970-01-01 00:00:00'))
 }))
 
 const CheckFormAllocationServiceMock = jest.fn<ICheckFormAllocationService, any>(() => ({
@@ -102,7 +103,7 @@ describe('PupilAllocationService', () => {
     let pupil: IPupil = {
       id: 123
     }
-    const expectedTimestamp = new Date('1970-01-01')
+    const expectedTimestamp = moment('1970-01-01 00:00:00')
     const allocation = await sut.allocate(pupil)
     expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
     expect(checkFormAllocationServiceMock.allocate).toHaveBeenCalledWith(pupil.id)
