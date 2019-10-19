@@ -1,12 +1,14 @@
 import {
   CheckAllocatorV1 } from './check-allocator'
-import { ICheckFormAllocationService } from "./ICheckFormAllocationService"
-import { IPupil, ISchoolAllocation } from "./IPupil"
+import { ICheckFormAllocationService } from './ICheckFormAllocationService'
+import { IPupil, ISchoolAllocation } from './IPupil'
 import { ICheckAllocatorDataService } from './ICheckAllocatorDataService'
 import { IDateTimeService } from '../../common/DateTimeService'
 import * as uuid from 'uuid'
 import { IRedisService } from '../../caching/redis-service'
 import * as config from '../../config'
+import { IPupilPinGenerationService } from './PupilAllocationService.spec'
+import moment from 'moment'
 
 let sut: CheckAllocatorV1
 
@@ -152,7 +154,7 @@ describe('check-allocator/v1', () => {
       }
     })
     let persistedRedisObject: ISchoolAllocation = {
-      lastReplenishmentUtc: new Date(),
+      lastReplenishmentUtc: moment(),
       pupils: [],
       schoolUUID: uuid.v4()
     }
@@ -161,11 +163,11 @@ describe('check-allocator/v1', () => {
     })
     const millenium = '2000-01-01 00:00'
     dateTimeServiceMock.utcNow = jest.fn(() => {
-      return new Date(millenium)
+      return moment(millenium)
     })
     await sut.allocate(schoolUUID)
     expect(persistedRedisObject).toHaveProperty('lastReplenishmentUtc')
-    expect(persistedRedisObject.lastReplenishmentUtc).toEqual(new Date(millenium))
+    expect(persistedRedisObject.lastReplenishmentUtc).toEqual(moment(millenium))
   })
 
   test('only pupils without an existing allocation are replenished', async () => {

@@ -6,6 +6,7 @@ import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckAllocatorDataService, CheckAllocatorDataService } from './ICheckAllocatorDataService'
 import { IPupilAllocation } from './IPupil'
 import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
+import { IPupilPinGenerationService, PupilPinGenerationService } from './PupilAllocationService.spec'
 
 export class CheckAllocatorV1 {
   private _dataService: ICheckAllocatorDataService

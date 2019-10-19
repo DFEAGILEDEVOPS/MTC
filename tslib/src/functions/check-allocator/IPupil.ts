@@ -1,14 +1,16 @@
+import { Moment } from 'moment'
+
 export interface IPupil {
-  id: number;
+  id: number
 }
 export interface IPupilAllocation {
-  id: number;
-  pin?: number;
-  allocatedForm?: any;
-  allocatedAtUtc: Date;
+  id: number
+  pin?: number
+  allocatedForm?: any
+  allocatedAtUtc: Moment
 }
 export interface ISchoolAllocation {
-  schoolUUID: string;
-  pupils: Array<IPupil>;
-  lastReplenishmentUtc: Date;
+  schoolUUID: string
+  pupils: Array<IPupil>
+  lastReplenishmentUtc: Moment
 }
