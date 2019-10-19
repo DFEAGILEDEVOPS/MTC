@@ -1,12 +1,9 @@
 import {
-  CheckAllocatorV1,
-  ICheckAllocatorDataService,
-  IPupilPinGenerator,
-  ICheckFormAllocator,
-  IDateTimeService,
-  IPupil,
-  ISchoolAllocation
- } from './check-allocator'
+  CheckAllocatorV1 } from './check-allocator'
+import { ICheckFormAllocationService } from "./ICheckFormAllocationService"
+import { IPupil, ISchoolAllocation } from "./IPupil"
+import { ICheckAllocatorDataService } from './ICheckAllocatorDataService'
+import { IDateTimeService } from '../../common/DateTimeService'
 import * as uuid from 'uuid'
 import { IRedisService } from '../../caching/redis-service'
 import * as config from '../../config'
@@ -31,11 +28,11 @@ const DataServiceMock = jest.fn<ICheckAllocatorDataService, any>(() => ({
   getPupilsBySchoolUuid: jest.fn()
 }))
 
-const PupilPinGeneratorMock = jest.fn<IPupilPinGenerator, any>(() => ({
+const PupilPinGeneratorMock = jest.fn<IPupilPinGenerationService, any>(() => ({
   generate: jest.fn()
 }))
 
-const CheckFormAllocatorMock = jest.fn<ICheckFormAllocator, any>(() => ({
+const CheckFormAllocatorMock = jest.fn<ICheckFormAllocationService, any>(() => ({
   allocate: jest.fn()
 }))
 
@@ -49,8 +46,8 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
 }))
 
 let dataServiceMock: ICheckAllocatorDataService
-let pupilPinGeneratorMock: IPupilPinGenerator
-let checkFormAllocatorMock: ICheckFormAllocator
+let pupilPinGeneratorMock: IPupilPinGenerationService
+let checkFormAllocatorMock: ICheckFormAllocationService
 let redisServiceMock: IRedisService
 let dateTimeServiceMock: IDateTimeService
 

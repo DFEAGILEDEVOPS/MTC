@@ -2,78 +2,23 @@ import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import * as config from '../../config'
-import * as moment from 'moment'
-
-export interface ICheckAllocatorDataService {
-  getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>>
-}
-
-export class CheckAllocatorDataService implements ICheckAllocatorDataService {
-  async getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>> {
-    throw new Error('Method not implemented.')
-  }
-}
-
-export interface IPupilPinGenerator {
-  generate (): number
-}
-
-export class PupilPinGenerator implements IPupilPinGenerator {
-  generate (): number {
-    throw new Error('not implemented')
-  }
-}
-
-export interface ICheckFormAllocator {
-  allocate (pupilId: number): any
-}
-
-export class CheckFormAllocator implements ICheckFormAllocator {
-  allocate (pupilId: number): any {
-    throw new Error('not implemented')
-  }
-}
-
-export interface IDateTimeService {
-  utcNow (): Date
-}
-
-export class DateTimeService implements IDateTimeService {
-  utcNow (): Date {
-    return moment.utc().toDate()
-  }
-
-}
-
-export interface IPupil {
-  id: number
-}
-
-export interface IPupilAllocation {
-  id: number
-  pin?: number
-  allocatedForm?: any,
-  allocatedAtUtc: Date
-}
-
-export interface ISchoolAllocation {
-  schoolUUID: string
-  pupils: Array<IPupil>
-  lastReplenishmentUtc: Date
-}
+import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
+import { ICheckAllocatorDataService, CheckAllocatorDataService } from './ICheckAllocatorDataService'
+import { IPupilAllocation } from './IPupil'
+import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
 
 export class CheckAllocatorV1 {
   private _dataService: ICheckAllocatorDataService
-  private _pupilPinGenerator: IPupilPinGenerator
-  private _formAllocator: ICheckFormAllocator
+  private _pupilPinGenerator: IPupilPinGenerationService
+  private _formAllocator: ICheckFormAllocationService
   private _redisService: IRedisService
   private _dateTimeService: IDateTimeService
   private uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (checkAllocatorDataService?: ICheckAllocatorDataService,
-            pupilPinGenerator?: IPupilPinGenerator,
-            formAllocator?: ICheckFormAllocator,
+            pupilPinGenerator?: IPupilPinGenerationService,
+            formAllocator?: ICheckFormAllocationService,
             redisService?: IRedisService,
             dateTimeService?: IDateTimeService) {
 
@@ -83,12 +28,12 @@ export class CheckAllocatorV1 {
     this._dataService = checkAllocatorDataService
 
     if (pupilPinGenerator === undefined) {
-      pupilPinGenerator = new PupilPinGenerator()
+      pupilPinGenerator = new PupilPinGenerationService()
     }
     this._pupilPinGenerator = pupilPinGenerator
 
     if (formAllocator === undefined) {
-      formAllocator = new CheckFormAllocator()
+      formAllocator = new CheckFormAllocationService()
     }
     this._formAllocator = formAllocator
 
