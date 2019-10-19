@@ -1,4 +1,4 @@
-import { IPupil } from "./IPupil"
+import { IPupil } from './IPupil'
 
 export interface ICheckAllocatorDataService {
   getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>>
