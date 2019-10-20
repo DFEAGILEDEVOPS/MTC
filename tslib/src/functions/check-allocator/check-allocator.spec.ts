@@ -6,6 +6,7 @@ import * as uuid from 'uuid'
 import { IRedisService } from '../../caching/redis-service'
 import * as config from '../../config'
 import moment from 'moment'
+import { IPupilAllocationService } from './PupilAllocationService'
 
 let sut: CheckAllocatorV1
 
@@ -36,10 +37,15 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn()
 }))
 
+const PupilAllocationServiceMock = jest.fn<IPupilAllocationService, any>(() => ({
+  allocate: jest.fn()
+}))
+
 
 let checkAllocationDataServiceMock: ICheckAllocationDataService
 let redisServiceMock: IRedisService
 let dateTimeServiceMock: IDateTimeService
+let pupilAllocationServiceMock: IPupilAllocationService
 
 describe('check-allocator/v1', () => {
   beforeEach(() => {
@@ -47,8 +53,9 @@ describe('check-allocator/v1', () => {
     checkAllocationDataServiceMock = new CheckAllocationDataServiceMock()
     redisServiceMock = new RedisServiceMock()
     dateTimeServiceMock = new DateTimeServiceMock()
+    pupilAllocationServiceMock = new PupilAllocationServiceMock()
     sut = new CheckAllocatorV1(checkAllocationDataServiceMock, redisServiceMock,
-      dateTimeServiceMock)
+      dateTimeServiceMock, pupilAllocationServiceMock)
   })
 
   test('it should be defined', () => {
@@ -86,7 +93,7 @@ describe('check-allocator/v1', () => {
     expect(checkAllocationDataServiceMock.getPupilsBySchoolUuid).toHaveBeenCalledWith(schoolUUID)
   })
 
-  test('an allocation is created for each pupil that does not currently one', async () => {
+  test('an allocation is created for all pupils when none have one', async () => {
 
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
@@ -97,21 +104,23 @@ describe('check-allocator/v1', () => {
       }
     })
     await sut.allocate(schoolUUID)
-    // expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(pupilData.length)
+    expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(pupilData.length)
   })
 
-  test('each allocation is stamped with the current UTC datetime', async () => {
+  test('an allocation is created for only the pupils that do not have one', async () => {
 
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
     redisServiceMock.get = jest.fn(async (key: string) => {
       return {
-        pupils: []
+        pupils: [
+          pupilData[2]
+        ]
       }
     })
     await sut.allocate(schoolUUID)
-    expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
+    expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(pupilData.length - 1)
   })
 
   test('the top level object is stamped with last utc datetime of last replenishment', async () => {
@@ -141,12 +150,12 @@ describe('check-allocator/v1', () => {
     expect(persistedRedisObject.lastReplenishmentUtc).toEqual(moment(millenium))
   })
 
-  test('only pupils without an existing allocation are replenished', async () => {
+  test('the cache is updated with all school pupils', async () => {
 
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
-    const existingRedisSchoolObject = {
+    const existingRedisObject = {
       schoolUUID: schoolUUID,
       pupils: [
         {
@@ -164,7 +173,7 @@ describe('check-allocator/v1', () => {
       ]
     }
     redisServiceMock.get = jest.fn((key) => {
-      return Promise.resolve(existingRedisSchoolObject)
+      return Promise.resolve(existingRedisObject)
     })
     let redisSetKey
     let redisSetTtl
@@ -176,8 +185,8 @@ describe('check-allocator/v1', () => {
 
     await sut.allocate(schoolUUID)
     const redisSchoolKey = `pupil-allocations:${schoolUUID}`
-    // expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(1)
-    // expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledWith(pupilData[2])
+    expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(1)
+    expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledWith(pupilData[2])
     expect(dateTimeServiceMock.utcNow).toHaveBeenCalledTimes(1)
     expect(redisServiceMock.get).toHaveBeenCalledWith(redisSchoolKey)
     expect(redisServiceMock.get).toHaveBeenCalledTimes(1)
