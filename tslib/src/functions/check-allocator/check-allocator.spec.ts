@@ -41,7 +41,6 @@ const PupilAllocationServiceMock = jest.fn<IPupilAllocationService, any>(() => (
   allocate: jest.fn()
 }))
 
-
 let checkAllocationDataServiceMock: ICheckAllocationDataService
 let redisServiceMock: IRedisService
 let dateTimeServiceMock: IDateTimeService
