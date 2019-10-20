@@ -1,58 +1,10 @@
 
-import { IPupilAllocation, IPupil } from './IPupil'
-import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
+import { IPupil } from './IPupil'
+import { IDateTimeService } from '../../common/DateTimeService'
+import { ICheckFormAllocationService } from './ICheckFormAllocationService'
 import moment from 'moment'
-
-export interface IPupilPinGenerationService {
-  generate (): number
-}
-
-export class PupilPinGenerationService implements IPupilPinGenerationService {
-  generate (): number {
-    throw new Error('not implemented')
-  }
-}
-
-export interface IPupilAllocationService {
-  allocate (pupil: IPupil): Promise<IPupilAllocation>
-}
-
-export class PupilAllocationService implements IPupilAllocationService {
-
-  private _pupilPinGenerationService: IPupilPinGenerationService
-  private _checkFormAllocationService: ICheckFormAllocationService
-  private _dateTimeService: IDateTimeService
-
-  constructor (pupilPinGenerationService?: IPupilPinGenerationService,
-    checkFormAllocationService?: ICheckFormAllocationService,
-    dateTimeService?: IDateTimeService) {
-
-    if (pupilPinGenerationService === undefined) {
-      pupilPinGenerationService = new PupilPinGenerationService()
-    }
-    this._pupilPinGenerationService = pupilPinGenerationService
-
-    if (checkFormAllocationService === undefined) {
-      checkFormAllocationService = new CheckFormAllocationService()
-    }
-    this._checkFormAllocationService = checkFormAllocationService
-
-    if (dateTimeService === undefined) {
-      dateTimeService = new DateTimeService()
-    }
-    this._dateTimeService = dateTimeService
-  }
-  async allocate (pupil: IPupil): Promise<IPupilAllocation> {
-    const allocation: IPupilAllocation = {
-      id: pupil.id,
-      pin: this._pupilPinGenerationService.generate(),
-      allocatedForm: this._checkFormAllocationService.allocate(pupil.id),
-      allocatedAtUtc: this._dateTimeService.utcNow()
-    }
-    return allocation
-  }
-}
+import { IPupilPinGenerationService } from './PupilPinGenerationService'
+import { PupilAllocationService } from './PupilAllocationService'
 
 const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>(() => ({
   generate: jest.fn()

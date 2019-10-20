@@ -1,8 +1,8 @@
 export interface ICheckFormAllocationService {
-  allocate (pupilId: number): any
+  allocate (pupilId: number): Promise<any>
 }
 export class CheckFormAllocationService implements ICheckFormAllocationService {
-  allocate (pupilId: number): any {
-    throw new Error('not implemented')
+  allocate (pupilId: number): Promise<any> {
+    return Promise.reject(new Error('not implemented'))
   }
 }
