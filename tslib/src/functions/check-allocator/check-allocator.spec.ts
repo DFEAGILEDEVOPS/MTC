@@ -106,7 +106,7 @@ describe('check-allocator/v1', () => {
     expect(pupilAllocationServiceMock.allocate).toHaveBeenCalledTimes(pupilData.length)
   })
 
-  test('an allocation is created for only the pupils that do not have one', async () => {
+  test('an allocation is only created for pupils that do not currently have one', async () => {
 
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
       return Promise.resolve(pupilData)
@@ -176,6 +176,7 @@ describe('check-allocator/v1', () => {
     })
     let redisSetKey
     let redisSetTtl
+
     redisServiceMock.setex = jest.fn((key, value, ttl) => {
       redisSetKey = key
       redisSetTtl = ttl
