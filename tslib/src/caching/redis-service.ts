@@ -28,9 +28,6 @@ export class RedisService implements IRedisService {
   async get (key: string) {
     try {
       const result = await this._redis.get(key)
-      if (!result) {
-        return false
-      }
       return result
     } catch (err) {
       this._logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
@@ -43,7 +40,6 @@ export class RedisService implements IRedisService {
         value = JSON.stringify(value)
       }
       await this._redis.setex(key, ttl, value)
-      return true
     } catch (err) {
       this._logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
