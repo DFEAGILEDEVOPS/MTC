@@ -3,9 +3,22 @@ import * as config from '../config'
 import * as Logger from '../common/ILogger'
 
 export interface IRedisService {
+  /**
+   *
+   * @param {string} key the unique string key of the redis entry to fetch
+   * @returns {Promise<any | undefined>} an awaitable promise containing the item if it exists, or undefined if it does not
+   */
   get (key: string): Promise<any>
-  setex (key: string, value: string | object, ttl: number): Promise<any>
+  /**
+   *
+   * @param {string} key the unique string key of the redis entry to persist
+   * @param {object | string} value the item to persist in redis cache
+   * @param {number} ttl how long to store the item in seconds
+   * @returns {Promise<void} an awaitable promise
+   */
+  setex (key: string, value: string | object, ttl: number): Promise<void>
 }
+
 export class RedisService implements IRedisService {
   private _redis: Redis.Redis
   private _logger: Logger.ILogger

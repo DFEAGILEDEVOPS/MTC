@@ -5,6 +5,7 @@ import * as config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckAllocationDataService, CheckAllocationDataService } from './ICheckAllocatorDataService'
 import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService'
+import { ILogger } from '../../common/ILogger'
 
 /**
  * Responsible for allocation of pupil check and associated credentials over a specified school.
@@ -20,6 +21,7 @@ export class SchoolCheckAllocationService {
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (
+    logger: ILogger,
     checkAllocatorDataService?: ICheckAllocationDataService,
     redisService?: IRedisService,
     dateTimeService?: IDateTimeService,
@@ -31,7 +33,7 @@ export class SchoolCheckAllocationService {
     this._dataService = checkAllocatorDataService
 
     if (redisService === undefined) {
-      redisService = new RedisService()
+      redisService = new RedisService(logger)
     }
     this._redisService = redisService
 
