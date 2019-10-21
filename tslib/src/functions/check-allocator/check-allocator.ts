@@ -6,6 +6,11 @@ import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckAllocationDataService, CheckAllocationDataService } from './ICheckAllocatorDataService'
 import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService'
 
+/**
+ * Responsible for allocation of pupil check and associated credentials over a specified school.
+ * Only performs an allocation for pupils that do not have an existing allocation.
+ * Used solely by the check-allocator function
+ */
 export class SchoolCheckAllocationService {
   private _dataService: ICheckAllocationDataService
   private _redisService: IRedisService
@@ -41,6 +46,10 @@ export class SchoolCheckAllocationService {
     this._pupilAllocationService = pupilAllocationService
   }
 
+  /**
+   * @description performs check allocation for all pupils within a specified school
+   * @param schoolUUID urlSlug of the school to perform allocation over
+   */
   async allocate (schoolUUID: string) {
     if (!schoolUUID.match(this.uuidV4RegexPattern)) {
       throw new Error('schoolUUID argument was not a v4 UUID')
