@@ -2,7 +2,7 @@
 
 /* global describe expect it */
 
-const getDuration = require('../../service/detections/get-duration')
+const getDuration = require('./get-duration')
 const { isFunction } = require('ramda-adjunct')
 const moment = require('moment')
 

@@ -17,7 +17,15 @@ const dateService = {
       }
       return mts
     } catch (ignore) {}
-  }
+  },
+
+  /**
+   * Get the number of seconds betwen two moment objects, rounded to 1 decimal place
+   * @param { moment.Moment} m1
+   * @param { moment.Moment } m2
+   * @return { String | Number}
+   */
+  getDuration: require('./get-duration')
 }
 
 module.exports = dateService

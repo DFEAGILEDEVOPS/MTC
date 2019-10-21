@@ -8,7 +8,7 @@ const jsFormat = 'Y-MM-DDTHH:mm:ss.SSSZ'
 const report = require('./report')
 const getQuestionTimerStartEvent = require('./get-question-timer-start-event')
 const getAnswer = require('./get-answer')
-const getDuration = require('./get-duration')
+const { getDuration } = require('../../../lib/date.service')
 
 const detectAnswerResponsesAfterCutoff = function (data) {
   if (!RA.isPlainObj(data)) {
