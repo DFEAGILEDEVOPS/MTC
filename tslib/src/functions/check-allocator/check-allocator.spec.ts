@@ -1,14 +1,14 @@
-import { CheckAllocatorV1 } from './check-allocator'
-import { IPupil, ISchoolAllocation } from './IPupil'
-import { ICheckAllocatorDataService as ICheckAllocationDataService } from './ICheckAllocatorDataService'
-import { IDateTimeService } from '../../common/DateTimeService'
 import * as uuid from 'uuid'
-import { IRedisService } from '../../caching/redis-service'
-import * as config from '../../config'
 import moment from 'moment'
+import * as config from '../../config'
+import { SchoolCheckAllocationService } from './check-allocator'
+import { IPupil, ISchoolAllocation } from './IPupil'
+import { ICheckAllocationDataService } from './ICheckAllocatorDataService'
+import { IDateTimeService } from '../../common/DateTimeService'
 import { IPupilAllocationService } from './PupilAllocationService'
+import { IRedisService } from '../../caching/redis-service'
 
-let sut: CheckAllocatorV1
+let sut: SchoolCheckAllocationService
 
 let schoolUUID: string
 
@@ -53,7 +53,7 @@ describe('check-allocator/v1', () => {
     redisServiceMock = new RedisServiceMock()
     dateTimeServiceMock = new DateTimeServiceMock()
     pupilAllocationServiceMock = new PupilAllocationServiceMock()
-    sut = new CheckAllocatorV1(checkAllocationDataServiceMock, redisServiceMock,
+    sut = new SchoolCheckAllocationService(checkAllocationDataServiceMock, redisServiceMock,
       dateTimeServiceMock, pupilAllocationServiceMock)
   })
 
@@ -194,6 +194,4 @@ describe('check-allocator/v1', () => {
     expect(redisSetTtl).toBe(config.default.CheckAllocation.ExpiryTimeInSeconds)
     expect(redisServiceMock.setex).toHaveBeenCalledTimes(1)
   })
-
-  test.todo('the school pin is only regenerated on the overnight run - separate service?')
 })

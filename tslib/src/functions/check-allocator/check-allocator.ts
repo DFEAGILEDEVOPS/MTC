@@ -3,11 +3,11 @@ import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import * as config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
-import { ICheckAllocatorDataService, CheckAllocatorDataService } from './ICheckAllocatorDataService'
+import { ICheckAllocationDataService, CheckAllocationDataService } from './ICheckAllocatorDataService'
 import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService'
 
-export class CheckAllocatorV1 {
-  private _dataService: ICheckAllocatorDataService
+export class SchoolCheckAllocationService {
+  private _dataService: ICheckAllocationDataService
   private _redisService: IRedisService
   private _dateTimeService: IDateTimeService
   private _pupilAllocationService: IPupilAllocationService
@@ -15,13 +15,13 @@ export class CheckAllocatorV1 {
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (
-    checkAllocatorDataService?: ICheckAllocatorDataService,
+    checkAllocatorDataService?: ICheckAllocationDataService,
     redisService?: IRedisService,
     dateTimeService?: IDateTimeService,
     pupilAllocationService?: IPupilAllocationService) {
 
     if (checkAllocatorDataService === undefined) {
-      checkAllocatorDataService = new CheckAllocatorDataService()
+      checkAllocatorDataService = new CheckAllocationDataService()
     }
     this._dataService = checkAllocatorDataService
 

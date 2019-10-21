@@ -1,9 +1,9 @@
 import { IPupil } from './IPupil'
 
-export interface ICheckAllocatorDataService {
+export interface ICheckAllocationDataService {
   getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>>
 }
-export class CheckAllocatorDataService implements ICheckAllocatorDataService {
+export class CheckAllocationDataService implements ICheckAllocationDataService {
   async getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>> {
     throw new Error('Method not implemented.')
   }
