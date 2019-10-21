@@ -1,16 +1,26 @@
-import * as redis from 'ioredis'
+import Redis, { RedisOptions } from 'ioredis'
 
 export interface IRedisService {
   get (key: string): Promise<any>
   setex (key: string, value: string, ttl: number): Promise<any>
-  connect (): void
 }
 export class RedisService implements IRedisService {
-  connect (): void {
-    throw new Error('Method not implemented.')
+  private _redis: Redis.Redis
+
+  constructor (options: RedisOptions) {
+    this._redis = new Redis(options)
   }
+
   async get (key: string) {
-    throw new Error('Method not implemented.')
+    try {
+      const result = await this._redis.get(key)
+      if (!result) {
+        return false
+      }
+      return result
+    } catch (err) {
+      throw err
+    }
   }
   async setex (key: string, value: string, ttl: number) {
     throw new Error('Method not implemented.')
