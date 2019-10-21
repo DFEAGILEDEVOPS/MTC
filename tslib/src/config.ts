@@ -43,12 +43,10 @@ export default {
     PauseMultiplier: parseFloat(optionalValueParser(process.env.RETRY_PAUSE_MULTIPLIER, 1.5))
   },
   Redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_KEY,
-    tls: getEnvironment() === 'Local-Dev' ? undefined : {
-      host: process.env.REDIS_HOST || 'localhost'
-    }
+    Host: process.env.REDIS_HOST || 'localhost',
+    Port: process.env.REDIS_PORT || 6379,
+    Key: process.env.REDIS_KEY,
+    useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   CheckAllocation: {
     ExpiryTimeInSeconds: process.env.CHECK_ALLOCATION_EXPIRY_SECONDS || 15778476 // 6 months
