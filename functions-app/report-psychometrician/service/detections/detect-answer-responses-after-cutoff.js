@@ -8,6 +8,7 @@ const jsFormat = 'Y-MM-DDTHH:mm:ss.SSSZ'
 const report = require('./report')
 const getQuestionTimerStartEvent = require('./get-question-timer-start-event')
 const getAnswer = require('./get-answer')
+const getDuration = require('./get-duration')
 
 const detectAnswerResponsesAfterCutoff = function (data) {
   if (!RA.isPlainObj(data)) {
@@ -23,7 +24,7 @@ const detectAnswerResponsesAfterCutoff = function (data) {
     const questionTimerStartedEvent = getQuestionTimerStartEvent(audits, ma.questionNumber, ma.factor1, ma.factor2)
     const questionTimerTimestamp = R.prop('momentTimestamp', questionTimerStartedEvent)
     if (!moment.isMoment(questionTimerTimestamp)) { return }
-    const cutoff = moment(questionTimerTimestamp).add(6, 'seconds')
+    const cutoff = moment(questionTimerTimestamp).add(6.1, 'seconds')
     const answer = getAnswer(answers, ma.questionNumber)
     if (answer && moment.isMoment(answer.momentTimestamp)) {
       if (answer.momentTimestamp.isAfter(cutoff)) {
@@ -31,7 +32,9 @@ const detectAnswerResponsesAfterCutoff = function (data) {
           'Answer after cutoff',
           answer.clientTimestamp,
           cutoff.format(jsFormat),
-          ma.questionNumber)
+          ma.questionNumber,
+          getDuration(answer.momentTimestamp, cutoff)
+        )
       }
     }
   })
