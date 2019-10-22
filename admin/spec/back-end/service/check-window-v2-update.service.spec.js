@@ -16,7 +16,7 @@ describe('check-window-v2-update.service', () => {
     beforeEach(() => {
       spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue({ id: 1 })
     })
-    it('when validation is successful should process data and perform db insertion', async () => {
+    it('when validation is successful should process data and perform db record update', async () => {
       const validationError = new ValidationError()
       spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
       spyOn(checkWindowV2Service, 'prepareSubmissionData').and.returnValue({ name: 'Check window' })
