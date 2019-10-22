@@ -31,4 +31,23 @@ describe('async-retry', () => {
     const actualCallCount = await retry<number>(func, retryPolicy)
     expect(actualCallCount).toBe(3)
   })
+
+  test.only('function should fail if retries made exceeds configured maximum number of retries', async () => {
+    let callCount = 0
+    const func = (): Promise<number> => {
+      callCount++
+      if (callCount < 4) {
+        return Promise.reject(new Error(`callCount is ${callCount}`))
+      } else {
+        return Promise.resolve(callCount)
+      }
+    }
+    try {
+      await retry<number>(func, retryPolicy)
+      fail('should not have completed')
+    } catch (error) {
+      expect(error.message).toBe('callCount is 3')
+    }
+
+  })
 })
