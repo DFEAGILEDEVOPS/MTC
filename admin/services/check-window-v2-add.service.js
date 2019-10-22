@@ -13,9 +13,9 @@ const checkWindowV2AddService = {}
  * @returns {Promise} db insertion
  */
 checkWindowV2AddService.submit = async (requestData) => {
-  const validationError = checkWindowAddValidator.validate(requestData)
-  if (validationError.hasError()) {
-    throw validationError
+  const checkWindowAddValidationError = checkWindowAddValidator.validate(requestData)
+  if (checkWindowAddValidationError.hasError()) {
+    throw checkWindowAddValidationError
   }
   const activeCheckWindowData = await checkWindowDataService.sqlFindActiveCheckWindow()
   const checkWindowData = checkWindowV2Service.prepareSubmissionData(requestData)
