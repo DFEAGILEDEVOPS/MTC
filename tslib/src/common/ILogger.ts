@@ -19,3 +19,19 @@ export interface ILogger {
    */
   verbose (...args: any[]): void
 }
+
+export class ConsoleLogger implements ILogger {
+  error (...args: any[]): void {
+    console.error(...args)
+  }
+
+  warn (...args: any[]): void {
+    console.warn(...args)
+  }
+  info (...args: any[]): void {
+    console.info(...args)
+  }
+  verbose (...args: any[]): void {
+    console.log(...args)
+  }
+}

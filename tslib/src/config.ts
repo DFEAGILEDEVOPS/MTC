@@ -1,7 +1,6 @@
 
 import 'dotenv/config'
 import * as toBool from './common/to-bool'
-import { RedisService } from './caching/redis-service'
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
