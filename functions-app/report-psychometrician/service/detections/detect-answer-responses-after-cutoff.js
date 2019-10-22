@@ -26,16 +26,15 @@ const detectAnswerResponsesAfterCutoff = function (data) {
     if (!moment.isMoment(questionTimerTimestamp)) { return }
     const cutoff = moment(questionTimerTimestamp).add(6.1, 'seconds')
     const answer = getAnswer(answers, ma.questionNumber)
-    if (answer && moment.isMoment(answer.momentTimestamp)) {
-      if (answer.momentTimestamp.isAfter(cutoff)) {
-        return report(data,
-          'Answer after cutoff',
-          answer.clientTimestamp,
-          cutoff.format(jsFormat),
-          ma.questionNumber,
-          getDuration(answer.momentTimestamp, cutoff)
-        )
-      }
+    if (!answer || !moment.isMoment(answer.momentTimestamp)) { return }
+    if (answer.momentTimestamp.isAfter(cutoff)) {
+      return report(data,
+        'Answer after cutoff',
+        answer.clientTimestamp,
+        cutoff.format(jsFormat),
+        ma.questionNumber,
+        getDuration(answer.momentTimestamp, cutoff)
+      )
     }
   })
   return output.filter(o => RA.isNotNil(o))

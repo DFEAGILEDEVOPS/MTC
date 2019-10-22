@@ -174,7 +174,6 @@ describe('detect answer responses after cutoff', () => {
     expect(r).toBeDefined()
     expect(isArray(r)).toBe(true)
     expect(r.length).toBe(0)
-    console.log(r)
   })
 
   it('reports on multiple answers that are registered after the cutoff', () => {
@@ -246,5 +245,102 @@ describe('detect answer responses after cutoff', () => {
     expect(r.length).toBe(2)
     expect(r[0]['Question number']).toBe(1)
     expect(r[1]['Question number']).toBe(2)
+  })
+
+  it('returns an empty array  if it can\'t find a valid answer', () => {
+    const data = {
+      markedAnswers: {
+        answer: [
+          {
+            id: 1,
+            factor1: 2,
+            factor2: 5,
+            response: '10',
+            isCorrect: true,
+            questionNumber: 1
+          },
+          {
+            id: 2,
+            factor1: 3,
+            factor2: 6,
+            response: '15',
+            isCorrect: false,
+            questionNumber: 2
+          }
+        ]
+      },
+      checkPayload: {
+        config: {
+          loadingTime: 3,
+          questionTime: 6
+        },
+        answers: null, // getAnswer() will return undefined
+        audit: [
+          {
+            'type': 'QuestionTimerStarted',
+            'clientTimestamp': '2019-06-26T11:00:06.000Z',
+            'data': {
+              'sequenceNumber': 1,
+              'question': '2x5'
+            }
+          },
+          {
+            'type': 'QuestionTimerStarted',
+            'clientTimestamp': '2019-06-26T11:00:06.000Z',
+            'data': {
+              'sequenceNumber': 2,
+              'question': '3x6'
+            }
+          }
+        ]
+      }
+    }
+    const r = detectQuestionsAfterCutoff(data)
+    expect(r).toEqual([])
+  })
+
+  it('returns an empty array  if it can\'t find a valid timestamp on the answer', () => {
+    const data = {
+      markedAnswers: {
+        answer: [
+          {
+            id: 1,
+            factor1: 2,
+            factor2: 5,
+            response: '10',
+            isCorrect: true,
+            questionNumber: 1
+          }
+        ]
+      },
+      checkPayload: {
+        config: {
+          loadingTime: 3,
+          questionTime: 6
+        },
+        answers: [
+          {
+            'factor1': 2,
+            'factor2': 5,
+            'answer': '10',
+            'sequenceNumber': 1,
+            'question': '2x5',
+            'clientTimestamp': 'not a real timestamp' // will not add the moment object
+          }
+        ],
+        audit: [
+          {
+            'type': 'QuestionTimerStarted',
+            'clientTimestamp': '2019-06-26T11:00:06.000Z',
+            'data': {
+              'sequenceNumber': 1,
+              'question': '2x5'
+            }
+          }
+        ]
+      }
+    }
+    const r = detectQuestionsAfterCutoff(data)
+    expect(r).toEqual([])
   })
 })
