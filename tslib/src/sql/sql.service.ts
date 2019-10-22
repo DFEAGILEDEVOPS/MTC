@@ -1,4 +1,4 @@
-import { ConnectionPool, config, Request } from 'mssql'
+import { ConnectionPool, config, Request, TYPES } from 'mssql'
 import { ILogger } from '../common/ILogger'
 import retry from './async-retry'
 import { default as mtcConfig } from '../config'
@@ -64,7 +64,7 @@ export class SqlService {
    * Utility service to transform the results before sending to the caller
    * @type {Function}
    */
-  transformQueryResult (data: any) {
+  private transformQueryResult (data: any) {
     const recordSet = R.prop('recordset', data) // returns [o1, o2,  ...]
     if (!recordSet) {
       return []
@@ -79,7 +79,7 @@ export class SqlService {
     return R.map(R.pipe(R.map(this._dateTimeService.convertDateToMoment)), recordSet)
   }
 
-  addParamsToRequestSimple (params: Array<any>, request: Request) {
+  private addParamsToRequestSimple (params: Array<any>, request: Request) {
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -148,7 +148,7 @@ export class SqlService {
  * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
  * @param {{input}} request -  mssql request
  */
-  addParamsToRequest (params: Array<any>, request: Request) {
+  private addParamsToRequest (params: Array<any>, request: Request): void {
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -176,5 +176,27 @@ export class SqlService {
         }
       }
     }
+  }
+
+/**
+ * Find a row by numeric ID
+ * Assumes all table have Int ID datatype
+ * @param {string} table
+ * @param {number} id
+ * @return {Promise<object>}
+ */
+  async findOneById (table: string, id: number): Promise<any> {
+    const paramId = {
+      name: 'id',
+      type: TYPES.Int,
+      value: id
+    }
+    const sql = `
+        SELECT *
+        FROM [mtc_admin].${table}
+        WHERE id = @id
+      `
+    const rows = await this.query(sql, [paramId])
+    return R.head(rows)
   }
 }
