@@ -2,8 +2,8 @@ import * as uuid from 'uuid'
 import moment from 'moment'
 import config from '../../config'
 import { SchoolCheckAllocationService } from './check-allocator'
-import { IPupil, ISchoolAllocation } from './IPupil'
-import { ICheckAllocationDataService } from './ICheckAllocatorDataService'
+import { IPupil, ISchoolAllocation } from './Models'
+import { ICheckAllocationDataService } from './CheckAllocationDataService'
 import { IDateTimeService } from '../../common/DateTimeService'
 import { IPupilAllocationService } from './PupilAllocationService'
 import { IRedisService } from '../../caching/redis-service'
@@ -26,7 +26,9 @@ const pupilData: Array<IPupil> = [
 ]
 
 const CheckAllocationDataServiceMock = jest.fn<ICheckAllocationDataService, any>(() => ({
-  getPupilsBySchoolUuid: jest.fn()
+  getPupilsBySchoolUuid: jest.fn(),
+  getFormsUsedByPupil: jest.fn(),
+  getAllForms: jest.fn()
 }))
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({

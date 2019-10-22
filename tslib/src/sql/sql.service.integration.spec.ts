@@ -1,6 +1,4 @@
 import * as sql from './sql.service'
-import config from '../config'
-import { ConsoleLogger } from '../common/ILogger'
 import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
@@ -9,7 +7,7 @@ let sut: sql.SqlService
 
 describe.skip('SqlService', () => {
   beforeEach(async () => {
-    sut = new sql.SqlService(config.Sql, new ConsoleLogger())
+    sut = new sql.SqlService()
     await sut.init()
   })
 

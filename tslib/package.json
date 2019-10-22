@@ -43,6 +43,7 @@
     "mssql": "^5.1.0",
     "ramda": "^0.26.1",
     "ramda-adjunct": "^2.21.0",
+    "random-number-csprng": "^1.0.2",
     "uuid": "^3.3.3"
   }
 }

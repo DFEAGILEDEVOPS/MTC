@@ -1,7 +1,7 @@
 
-import { IPupil } from './IPupil'
+import { IPupil } from './Models'
 import { IDateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService } from './ICheckFormAllocationService'
+import { ICheckFormAllocationService } from './CheckFormAllocationService'
 import moment from 'moment'
 import { IPupilPinGenerationService } from './PupilPinGenerationService'
 import { PupilAllocationService } from './PupilAllocationService'
