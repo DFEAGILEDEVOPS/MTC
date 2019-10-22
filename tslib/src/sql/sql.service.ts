@@ -1,4 +1,4 @@
-import { ConnectionPool, config, IRequestParameters, Request } from 'mssql'
+import { ConnectionPool, config, Request } from 'mssql'
 import { ILogger } from '../common/ILogger'
 import * as retry from './async-retry'
 import { default as mtcConfig } from '../config'
@@ -75,28 +75,32 @@ export class SqlService {
     if (!recordSet) {
       return []
     }
-    // return R.map(this.convertDateToMoment, recordSet)
+    // TODO remove version property using R.omit()
+    /*
+    return R.map(R.pipe(
+    R.omit(['version']),
+    R.map(convertDateToMoment)
+  ), recordSet)
+    */
     return R.map(R.pipe(R.map(this.convertDateToMoment)), recordSet)
-    // return recordSet
   }
-/*
-  addParamsToRequestSimple (params: IRequestParameters, request: Request) {
+
+  addParamsToRequestSimple (params: Array<any>, request: Request) {
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
-        // TODO support other options
         request.input(param.name, param.type, param.value)
       }
     }
-  } */
+  }
 
-  async query (sql: string, params?: IRequestParameters): Promise<any> {
+  async query (sql: string, params?: Array<any>): Promise<any> {
     // let result
     const query = async () => {
       const request = new Request(this._connectionPool)
-/*       if (params !== undefined) {
+      if (params !== undefined) {
         this.addParamsToRequestSimple(params, request)
-      } */
+      }
       const result = await request.query(sql)
       return this.transformQueryResult(result)
 
