@@ -83,5 +83,8 @@ module.exports = {
   liveCheckEndDateBeforeLiveCheckStartDate: 'Enter a multiplication tables check end date which is after the multiplication tables check start date',
   liveCheckEndDateBeforeAdminStartDate: 'Enter a multiplication tables check end date which is after the administration start date',
   liveCheckEndDateAfterAdminEndDate: 'Enter a multiplication tables check end date which is before the administration end date',
-  liveCheckEndDateNotEqualFamiliarisationCheckEndDate: 'Enter a multiplication tables check end date which is the same as try it out end date'
+  liveCheckEndDateNotEqualFamiliarisationCheckEndDate: 'Enter a multiplication tables check end date which is the same as try it out end date',
+  withinActiveCheckWindowAdminDateRage: 'Enter dates outside of the active check window administration period',
+  withinActiveCheckWindowFamiliarisationDateRage: 'Enter dates outside of the active check window try out check period',
+  withinActiveCheckWindowLiveDateRage: 'Enter dates outside of the active check window live check period'
 }
