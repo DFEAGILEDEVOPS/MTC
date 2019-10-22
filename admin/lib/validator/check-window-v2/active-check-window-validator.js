@@ -28,7 +28,8 @@ activeCheckWindowValidator.validate = (requestData, activeCheckWindow) => {
     'familiarisationCheckStartDate',
     'familiarisationCheckEndDate',
     'checkStartDate',
-    'checkEndDate'], requestData)
+    'checkEndDate'], requestData
+  )
   R.forEach(dt => {
     if (dt.isBetween(activeCheckWindow.adminStartDate, activeCheckWindow.adminEndDate, null, '[]')) {
       validationError.addError('withinActiveCheckWindowAdminDateRage', checkWindowErrorMessages.withinActiveCheckWindowAdminDateRage)
