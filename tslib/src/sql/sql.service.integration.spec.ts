@@ -7,7 +7,7 @@ import * as mssql from 'mssql'
 
 let sut: sql.SqlService
 
-describe.skip('SqlService', () => {
+describe.only('SqlService', () => {
   beforeEach(async () => {
     sut = new sql.SqlService(config.Sql, new ConsoleLogger())
     await sut.init()
