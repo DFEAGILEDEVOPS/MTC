@@ -9,6 +9,7 @@ const pupilRegisterService = require('../services/pupil-register.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const schoolService = require('../services/school.service')
 const resultPageAvailabilityService = require('../services/results-page-availability.service')
+const administrationMessageService = require('../services/administration-message.service')
 const controller = {}
 
 /**
@@ -35,12 +36,14 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
     const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
+    const serviceMessage = await administrationMessageService.getMessage()
     return res.render('school/school-home', {
       breadcrumbs: [{ name: 'School Home' }],
       featureEligibilityData,
       hasIncompleteChecks,
       isResultsFeatureAccessible,
-      schoolName
+      schoolName,
+      serviceMessage
     })
   } catch (error) {
     return next(error)

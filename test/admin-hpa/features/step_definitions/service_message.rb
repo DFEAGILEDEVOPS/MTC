@@ -42,7 +42,7 @@ Given(/^I have created a service message$/) do
 end
 
 When(/^I decide to delete the message$/) do
-  manage_service_message_page.remove_message.click
+  manage_service_message_page.remove_service_message
 end
 
 
@@ -58,4 +58,15 @@ end
 
 Then(/^I should not be able to create another$/) do
   expect(manage_service_message_page.create_message).to be_disabled
+end
+
+When(/^I navigate to school home page as teacher1$/) do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step 'I am logged in'
+end
+
+Then(/^service message is displayed as per design$/) do
+  expect(school_landing_page).to have_service_message
+  expect(school_landing_page.service_message.service_message_heading.text).eql?(@message[:title])
+  expect(school_landing_page.service_message.service_message_text.text).eql?(@message[:message])
 end
