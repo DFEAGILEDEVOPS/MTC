@@ -89,6 +89,11 @@ export class SqlService {
   }
 
   async query (sql: string, params?: Array<any>): Promise<any> {
+    // logger.debug(`sql.service.query(): ${sql}`)
+    // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+    // tslint:disable-next-line: await-promise
+    await this._connectionPool
+
     const query = async () => {
       const request = new Request(this._connectionPool)
       if (params !== undefined) {
@@ -98,7 +103,7 @@ export class SqlService {
       return this.transformQueryResult(result)
 
     }
-    return retry(query, retryConfig, dbLimitReached)
+    return retry<any>(query, retryConfig, dbLimitReached)
   }
 
 /**
@@ -122,7 +127,7 @@ export class SqlService {
     let returnValue: any
     const insertIds = []
 
-    const rawResponse = await retry(modify, retryConfig, dbLimitReached)
+    const rawResponse = await retry<any>(modify, retryConfig, dbLimitReached)
 
     if (rawResponse && rawResponse.recordset) {
       for (const obj of rawResponse.recordset) {

@@ -18,20 +18,24 @@ export interface IRetryPolicy {
  * @param {object} retryConfiguration - the behaviour of the retry policy.  Default settings are provided
  * @param {function(Error):Boolean} retryCondition - predicate function to determine if the function should be retried.  Defaults to true
  */
-const asyncRetryHandler = async (asyncRetryableFunction: () => Promise<any>, retryConfiguration: IRetryPolicy = defaultConfiguration, retryCondition: (error: Error) => Boolean = defaultRetryCondition) => {
+async function asyncRetryHandler<T> (asyncRetryableFunction: () => Promise<T>,
+  retryConfiguration: IRetryPolicy = defaultConfiguration,
+  retryCondition: (error: Error) => Boolean = defaultRetryCondition): Promise<T> {
+  let result: T
   try {
-    const result = await asyncRetryableFunction()
+    result = await asyncRetryableFunction()
     return result
   } catch (error) {
     if (retryConfiguration.attempts > 1 && retryCondition(error)) {
       await pause(retryConfiguration.pauseTimeMs)
       retryConfiguration.attempts --
       retryConfiguration.pauseTimeMs *= retryConfiguration.pauseMultiplier
-      await asyncRetryHandler(asyncRetryableFunction, retryConfiguration, retryCondition)
+      result = await asyncRetryHandler(asyncRetryableFunction, retryConfiguration, retryCondition)
     } else {
       throw error
     }
   }
+  return result
 }
 
 export default asyncRetryHandler
