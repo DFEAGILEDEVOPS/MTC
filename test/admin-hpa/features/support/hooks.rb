@@ -6,7 +6,7 @@ end
 
 Before('@service_manager_message') do
   step 'I am on the manage service message page'
-  manage_service_message_page.remove_message.click if manage_service_message_page.has_remove_message?
+  manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
