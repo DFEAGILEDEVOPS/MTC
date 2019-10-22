@@ -1,6 +1,6 @@
-import { IPupilAllocation, IPupil } from './IPupil'
+import { IPupilAllocation, IPupil } from './Models'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService, CheckFormAllocationService } from './ICheckFormAllocationService'
+import { ICheckFormAllocationService, CheckFormAllocationService } from './CheckFormAllocationService'
 import { IPupilPinGenerationService, PupilPinGenerationService } from './PupilPinGenerationService'
 
 export interface IPupilAllocationService {
