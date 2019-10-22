@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
-import * as config from '../../config'
+import config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
 import { ICheckAllocationDataService, CheckAllocationDataService } from './ICheckAllocatorDataService'
 import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService'
@@ -70,6 +70,6 @@ export class SchoolCheckAllocationService {
     }
     allocationCache.lastReplenishmentUtc = this._dateTimeService.utcNow()
     await this._redisService.setex(schoolKey, allocationCache,
-      +config.default.CheckAllocation.ExpiryTimeInSeconds)
+      +config.CheckAllocation.ExpiryTimeInSeconds)
   }
 }

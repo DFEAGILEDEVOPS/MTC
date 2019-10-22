@@ -1,6 +1,6 @@
 import * as uuid from 'uuid'
 import moment from 'moment'
-import * as config from '../../config'
+import config from '../../config'
 import { SchoolCheckAllocationService } from './check-allocator'
 import { IPupil, ISchoolAllocation } from './IPupil'
 import { ICheckAllocationDataService } from './ICheckAllocatorDataService'
@@ -36,7 +36,9 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn(),
-  formatIso8601: jest.fn()
+  formatIso8601: jest.fn(),
+  convertDateToMoment: jest.fn(),
+  convertMomentToJsDate: jest.fn()
 }))
 
 const PupilAllocationServiceMock = jest.fn<IPupilAllocationService, any>(() => ({
@@ -193,7 +195,7 @@ describe('check-allocator/v1', () => {
     expect(redisServiceMock.get).toHaveBeenCalledWith(redisSchoolKey)
     expect(redisServiceMock.get).toHaveBeenCalledTimes(1)
     expect(redisSetKey).toBe(redisSchoolKey)
-    expect(redisSetTtl).toBe(config.default.CheckAllocation.ExpiryTimeInSeconds)
+    expect(redisSetTtl).toBe(config.CheckAllocation.ExpiryTimeInSeconds)
     expect(redisServiceMock.setex).toHaveBeenCalledTimes(1)
   })
 })

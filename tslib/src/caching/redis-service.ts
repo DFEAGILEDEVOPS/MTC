@@ -1,5 +1,5 @@
 import Redis, { RedisOptions } from 'ioredis'
-import * as config from '../config'
+import config from '../config'
 import * as Logger from '../common/ILogger'
 
 export interface IRedisService {
@@ -26,13 +26,13 @@ export class RedisService implements IRedisService {
   constructor (logger: Logger.ILogger) {
     this._logger = logger
     const options: RedisOptions = {
-      port: +config.default.Redis.Port,
-      host: config.default.Redis.Host,
-      password: config.default.Redis.Key
+      port: +config.Redis.Port,
+      host: config.Redis.Host,
+      password: config.Redis.Key
     }
-    if (config.default.Redis.useTLS) {
+    if (config.Redis.useTLS) {
       options.tls = {
-        host: config.default.Redis.Host
+        host: config.Redis.Host
       }
     }
     this._redis = new Redis(options)
