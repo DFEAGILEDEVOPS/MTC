@@ -12,7 +12,10 @@ const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>((
 
 const theSeventies = '1970-01-01 00:00:00'
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
-  utcNow: jest.fn(() => moment(theSeventies))
+  utcNow: jest.fn(() => moment(theSeventies)),
+  convertDateToMoment: jest.fn(),
+  convertMomentToJsDate: jest.fn(),
+  formatIso8601: jest.fn()
 }))
 
 const CheckFormAllocationServiceMock = jest.fn<ICheckFormAllocationService, any>(() => ({

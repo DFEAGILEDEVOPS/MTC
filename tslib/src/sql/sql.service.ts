@@ -1,10 +1,9 @@
 import { ConnectionPool, config, Request } from 'mssql'
 import { ILogger } from '../common/ILogger'
-import * as retry from './async-retry'
+import retry from './async-retry'
 import { default as mtcConfig } from '../config'
-import { Moment } from 'moment'
-import moment = require('moment')
 import * as R from 'ramda'
+import { DateTimeService, IDateTimeService } from '../common/DateTimeService'
 
 const retryConfig = {
   attempts: mtcConfig.DatabaseRetry.MaxRetryAttempts,
@@ -28,11 +27,17 @@ export class SqlService {
   private _connectionPool: ConnectionPool
   private _mssqlConfig: config
   private _logger: ILogger
+  private _dateTimeService: IDateTimeService
 
-  constructor (mssqlConfig: config, logger: ILogger) {
+  constructor (mssqlConfig: config, logger: ILogger, dateTimeService?: IDateTimeService) {
     this._mssqlConfig = mssqlConfig
     this._connectionPool = new ConnectionPool(this._mssqlConfig)
     this._logger = logger
+
+    if (dateTimeService === undefined) {
+      dateTimeService = new DateTimeService()
+    }
+    this._dateTimeService = dateTimeService
   }
 
   async init (): Promise<void> {
@@ -55,17 +60,6 @@ export class SqlService {
     return this._connectionPool.close()
   }
 
-/**
- * Convert Date to Moment object
- * Useful for converting Data during UPDATES and INSERTS
- */
-  convertDateToMoment (d: Date | Moment): Moment {
-    if (d instanceof Date && moment(d, moment.ISO_8601).isValid()) {
-      return moment.utc(d)
-    }
-    return d as Moment
-  }
-
   /**
    * Utility service to transform the results before sending to the caller
    * @type {Function}
@@ -82,7 +76,7 @@ export class SqlService {
     R.map(convertDateToMoment)
   ), recordSet)
     */
-    return R.map(R.pipe(R.map(this.convertDateToMoment)), recordSet)
+    return R.map(R.pipe(R.map(this._dateTimeService.convertDateToMoment)), recordSet)
   }
 
   addParamsToRequestSimple (params: Array<any>, request: Request) {
@@ -95,7 +89,6 @@ export class SqlService {
   }
 
   async query (sql: string, params?: Array<any>): Promise<any> {
-    // let result
     const query = async () => {
       const request = new Request(this._connectionPool)
       if (params !== undefined) {
@@ -105,6 +98,83 @@ export class SqlService {
       return this.transformQueryResult(result)
 
     }
-    return retry.default(query, retryConfig, dbLimitReached)
+    return retry(query, retryConfig, dbLimitReached)
+  }
+
+/**
+ * Modify data in SQL Server via mssql library.
+ * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
+ */
+  async modify (sql: string, params: []) {
+    // logger.debug('sql.service.modify(): SQL: ' + sql)
+    // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+    // tslint:disable-next-line: await-promise
+    await this._connectionPool
+
+    const modify = async () => {
+      const request = new Request(this._connectionPool)
+      this.addParamsToRequest(params, request)
+      return request.query(sql)
+    }
+
+    let returnValue: any
+    const insertIds = []
+
+    const rawResponse = await retry(modify, retryConfig, dbLimitReached)
+
+    if (rawResponse && rawResponse.recordset) {
+      for (const obj of rawResponse.recordset) {
+        /* TODO remove this strict column name limitation and
+          extract column value regardless of name */
+        if (obj && obj.SCOPE_IDENTITY) {
+          insertIds.push(obj.SCOPE_IDENTITY)
+        }
+      }
+    }
+
+    if (insertIds.length === 1) {
+      returnValue.insertId = R.head(insertIds)
+    } else if (insertIds.length > 1) {
+      returnValue.insertIds = insertIds
+    }
+
+    return returnValue
+  }
+
+/**
+ * Add parameters to an SQL request
+ * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
+ * @param {{input}} request -  mssql request
+ */
+  addParamsToRequest (params: Array<any>, request: Request) {
+    if (params) {
+      for (let index = 0; index < params.length; index++) {
+        const param = params[index]
+        param.value = this._dateTimeService.convertMomentToJsDate(param.value)
+        if (!param.type) {
+          throw new Error('parameter type invalid')
+        }
+        const options: any = {}
+        if (R.pathEq(['type', 'name'], 'Decimal', param) ||
+          R.pathEq(['type', 'name'], 'Numeric', param)) {
+          options.precision = param.precision || 28
+          options.scale = param.scale || 5
+        }
+        const opts = param.options ? param.options : options
+        if (opts && Object.keys(opts).length) {
+          // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+        }
+
+        if (opts.precision) {
+          request.input(param.name, param.type(opts.precision, opts.scale), param.value)
+        } else if (opts.length) {
+          request.input(param.name, param.type(opts.length), param.value)
+        } else {
+          request.input(param.name, param.type, param.value)
+        }
+      }
+    }
   }
 }
