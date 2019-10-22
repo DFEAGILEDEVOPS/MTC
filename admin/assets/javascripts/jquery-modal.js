@@ -5,8 +5,14 @@
  */
 /* global $ */
 $(function () {
+  var modalForm = document.querySelector('#js-modal-form')
+  var hasModalForm = modalForm && modalForm.length > 0
   function startModal (e) {
     $('.modal-link').on('click', function (e) {
+      if (hasModalForm) {
+        toggleShowHideModal(e)
+        return
+      }
       if ($('#js-modal-confirmation-button').is('button')) {
         $('#js-modal-confirmation-button').attr('onclick', 'window.location.replace(' + '\'' + $(this)[0].href + '\'' + ')')
       } else {
@@ -18,6 +24,11 @@ $(function () {
       toggleShowHideModal(e)
       if (!$('#js-modal-confirmation-button').is('button')) {
         $('#js-modal-confirmation-button').attr('href', '')
+      }
+    })
+    $('#js-modal-confirmation-button').on('click', function (e) {
+      if (hasModalForm) {
+        modalForm.submit()
       }
     })
     $('#js-modal-overlay').on('click', function (e) {

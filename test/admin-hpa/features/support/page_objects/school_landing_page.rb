@@ -37,5 +37,10 @@ class SchoolLandingPage < SitePrism::Page
   element :related, '#subsection-title'
   element :guidance, 'aside.app-related-items nav li a', text: 'Guidance'
 
+  section :service_message, '.govuk-warning-message' do
+    element :service_message_heading, '.govuk-heading-l'
+    element :service_message_text, '.govuk-body'
+  end
+
 end
 
