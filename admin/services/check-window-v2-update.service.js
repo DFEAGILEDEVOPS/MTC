@@ -22,7 +22,7 @@ checkWindowV2UpdateService.submit = async (requestData) => {
     throw checkWindowAddValidationError
   }
   const activeCheckWindowData = await checkWindowDataService.sqlFindActiveCheckWindow()
-  const checkWindowData = checkWindowV2Service.prepareSubmissionData(requestData, checkWindow.id)
+  const checkWindowData = checkWindowV2Service.prepareSubmissionData(requestData, activeCheckWindowData.id)
   const activeCheckWindowValidationError = activeCheckWindowValidator.validate(checkWindowData, activeCheckWindowData)
   if (activeCheckWindowValidationError.hasError()) {
     throw activeCheckWindowValidationError
