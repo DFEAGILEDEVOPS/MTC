@@ -4,11 +4,12 @@
   "version": "0.1.0",
   "license": "GPL-3.0",
   "scripts": {
-    "copy": "yarn run gulp",
+    "build": "yarn sync && yarn run gulp",
     "sync": "node ./sync-tslib-deps.js",
-    "prestart": "yarn copy && yarn sync && func extensions install",
+    "prestart": "yarn build && func extensions install",
     "start:host": "func start",
-    "start": "yarn start:host"
+    "start": "yarn start:host",
+    "clean": "rm -rf ./dist"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",

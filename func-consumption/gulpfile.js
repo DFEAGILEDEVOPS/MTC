@@ -6,18 +6,11 @@ const yarn = require('gulp-yarn')
 const rimraf = require('rimraf')
 
 function clean (cb) {
-  rimraf('./gulpdist', (error) => {
+  rimraf('./dist', (error) => {
     if (error) {
-      throw error
+      console.error(error)
     }
-    console.log('deleted gulpdist')
-    rimraf('./yarndist', (error) => {
-      if (error) {
-        throw error
-      }
-      console.log('deleted yarndist')
-      cb()
-    })
+    cb(error)
   })
 }
 
@@ -25,7 +18,7 @@ function compileTslib (cb) {
   const proj = ts.createProject('../tslib/tsconfig.json')
   proj.src()
     .pipe(proj())
-    .js.pipe(dest('./gulpdist'))
+    .js.pipe(dest('./dist'))
   cb()
 }
 
