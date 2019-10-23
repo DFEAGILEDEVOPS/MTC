@@ -29,7 +29,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminStartDateDisabled as false if adminStartDate is today', () => {
+    it('should have adminStartDateDisabled as false if admin start date is today', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuid(),
@@ -52,7 +52,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminStartDateDisabled as true if adminStartDate is yesterday', () => {
+    it('should have adminStartDateDisabled as true if admin start date is yesterday', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuid(),
@@ -74,7 +74,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminEndDateDisabled as false if adminEndDate is today', () => {
+    it('should have adminEndDateDisabled as false if admin end date is today', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuid(),
@@ -96,7 +96,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeTruthy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminEndDateDisabled as true if adminEndDateDisabled is yesterday', () => {
+    it('should have adminEndDateDisabled as true if admin end date is yesterday', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuid(),
