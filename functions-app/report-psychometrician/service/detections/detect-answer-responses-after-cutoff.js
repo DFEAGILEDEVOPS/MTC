@@ -24,7 +24,7 @@ const detectAnswerResponsesAfterCutoff = function (data) {
     const questionTimerStartedEvent = getQuestionTimerStartEvent(audits, ma.questionNumber, ma.factor1, ma.factor2)
     const questionTimerTimestamp = R.prop('momentTimestamp', questionTimerStartedEvent)
     if (!moment.isMoment(questionTimerTimestamp)) { return }
-    const cutoff = moment(questionTimerTimestamp).add(6.1, 'seconds')
+    const cutoff = moment(questionTimerTimestamp).add(6.3, 'seconds')
     const answer = getAnswer(answers, ma.questionNumber)
     if (!answer || !moment.isMoment(answer.momentTimestamp)) { return }
     if (answer.momentTimestamp.isAfter(cutoff)) {
