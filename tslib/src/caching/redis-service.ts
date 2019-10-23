@@ -6,9 +6,9 @@ export interface IRedisService {
   /**
    *
    * @param {string} key the unique string key of the redis entry to fetch
-   * @returns {Promise<any | undefined>} an awaitable promise containing the item if it exists, or undefined if it does not
+   * @returns {Promise<any | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
-  get (key: string): Promise<any>
+  get (key: string): Promise<any | null>
   /**
    *
    * @param {string} key the unique string key of the redis entry to persist
@@ -23,8 +23,13 @@ export class RedisService implements IRedisService {
   private _redis: Redis.Redis
   private _logger: Logger.ILogger
 
-  constructor (logger: Logger.ILogger) {
+  constructor (logger?: Logger.ILogger) {
+
+    if (logger === undefined) {
+      logger = new Logger.ConsoleLogger()
+    }
     this._logger = logger
+
     const options: RedisOptions = {
       port: +config.Redis.Port,
       host: config.Redis.Host,
@@ -38,7 +43,7 @@ export class RedisService implements IRedisService {
     this._redis = new Redis(options)
   }
 
-  async get (key: string) {
+  async get (key: string): Promise<any | null> {
     try {
       const result = await this._redis.get(key)
       return result
@@ -47,7 +52,7 @@ export class RedisService implements IRedisService {
       throw err
     }
   }
-  async setex (key: string, value: string | object, ttl: number) {
+  async setex (key: string, value: string | object, ttl: number): Promise<void> {
     try {
       if (typeof value === 'object') {
         value = JSON.stringify(value)

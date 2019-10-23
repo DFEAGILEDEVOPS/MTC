@@ -27,7 +27,6 @@ export class SqlService {
   private _connectionPool: ConnectionPool
   private _logger: ILogger
   private _dateTimeService: IDateTimeService
-  private _initialised = false
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
     this._connectionPool = new ConnectionPool(mtcConfig.Sql)
@@ -44,9 +43,11 @@ export class SqlService {
   }
 
   async init (): Promise<void> {
+    if (this._connectionPool.connecting || this._connectionPool.connected) {
+      this._logger.warn('connection pool already initialised')
+    }
     try {
       await this._connectionPool.connect()
-      this._initialised = true
     } catch (error) {
       this._logger.error('Pool Connection Error:', error)
       throw error
@@ -61,7 +62,6 @@ export class SqlService {
       this._logger.warn('The connection pool is not initialised')
       return Promise.resolve()
     }
-    this._initialised = false
     return this._connectionPool.close()
   }
 
@@ -193,7 +193,7 @@ export class SqlService {
   }
 
   private ensureInitialised (): void {
-    if (this._initialised === false) {
+    if (this._connectionPool.connecting === false || this._connectionPool.connected === false) {
       throw new Error('SqlService must be initialised before use')
     }
   }

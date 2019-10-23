@@ -12,7 +12,7 @@
     "watch:all": "yarn jest --watchAll",
     "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist",
-    "test:coverage": "yarn jest --coverage"
+    "coverage": "yarn jest --coverage"
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "devDependencies": {
