@@ -1,7 +1,7 @@
 'use strict'
 
 const logger = require('../log.service').getLogger()
-const pause = (duration) => new Promise(res => setTimeout(res, duration), noReject => undefined)
+const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 const defaultRetryCondition = () => true
 const defaultConfiguration = {
   attempts: 3,
@@ -16,10 +16,11 @@ const defaultConfiguration = {
  */
 const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = defaultConfiguration, retryCondition = defaultRetryCondition) => {
   const retryPolicy = {}
+  let result
   try {
     Object.assign(retryPolicy, retryConfiguration)
     logger.debug('asyncRetryHandler: executing retryable method...')
-    const result = await asyncRetryableFunction()
+    result = await asyncRetryableFunction()
     logger.debug('asyncRetryHandler: execution successful.')
     return result
   } catch (error) {
@@ -30,8 +31,10 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
       retryPolicy.attempts -= 1
       retryPolicy.pauseTimeMs *= retryConfiguration.pauseMultiplier
       logger.info(`asyncRetryHandler: pause passed. attempts left:${retryPolicy.attempts}`)
-      await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryCondition)
+      result = await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryCondition)
+      return result
     } else {
+      logger.error('max retry count exceeded, failing...')
       throw error
     }
   }
