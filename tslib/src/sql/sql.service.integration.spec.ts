@@ -6,7 +6,7 @@ import moment = require('moment')
 
 let sut: sql.SqlService
 
-describe.only('SqlService', () => {
+describe.skip('SqlService', () => {
   beforeEach(async () => {
     sut = new sql.SqlService()
     await sut.init()
