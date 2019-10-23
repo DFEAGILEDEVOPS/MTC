@@ -5,37 +5,7 @@ import { ValidatedCheck } from '../../schemas/index'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/ILogger'
-
-export interface ICheckMarkerFunctionBindings {
-  receivedCheckTable: Array<any>
-  checkNotificationQueue: Array<any>
-}
-
-declare interface Answer {
-  factor1: number
-  factor2: number
-  answer: string
-  sequenceNumber: number
-  question: string
-  clientTimestamp: string
-}
-
-declare interface CheckFormQuestion {
-  f1: number
-  f2: number
-}
-
-declare interface MarkingData {
-  answers: Array<Answer>
-  formQuestions: Array<CheckFormQuestion>
-  results: any
-}
-
-declare interface Mark {
-  mark: number
-  maxMarks: number
-  processedAt: Date
-}
+import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './Models'
 
 export class CheckMarkerV1 {
 
@@ -86,13 +56,12 @@ export class CheckMarkerV1 {
     try {
       parsedAnswersJson = JSON.parse(validatedCheck.answers)
     } catch (error) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
-      return
+      logger.error(error)
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
     }
 
     if (!RA.isArray(parsedAnswersJson)) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
-      return
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
     }
 
     const checkCode = validatedCheck.RowKey
@@ -101,14 +70,12 @@ export class CheckMarkerV1 {
     try {
       rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
       logger.error(error)
-      return
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
     }
 
     if (R.isNil(rawCheckForm)) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
-      return
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
     }
 
     let checkForm: any
@@ -116,13 +83,12 @@ export class CheckMarkerV1 {
     try {
       checkForm = JSON.parse(rawCheckForm)
     } catch (error) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm data is not valid JSON')
-      return
+      logger.error(error)
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm data is not valid JSON')
     }
 
     if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
-      return
+      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
     }
 
     const toReturn: MarkingData = {

@@ -2,10 +2,11 @@ import * as sql from './sql.service'
 import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
+import moment = require('moment')
 
 let sut: sql.SqlService
 
-describe.skip('SqlService', () => {
+describe.only('SqlService', () => {
   beforeEach(async () => {
     sut = new sql.SqlService()
     await sut.init()
@@ -65,5 +66,35 @@ describe.skip('SqlService', () => {
     const school = result[0]
     expect(RA.isObj(school)).toBe(true)
     expect(school.id).toEqual(schoolId)
+  })
+
+  test('datetime is stored with hundred millisecond accuracy', async () => {
+    const isoDateTimeValue = '2000-01-01T15:00:00.123'
+    const dateToModify = new Date(isoDateTimeValue)
+    const sql = `UPDATE mtc_admin.[attendanceCode] SET createdAt=@createdAt
+      WHERE code=@code`
+    const params = [
+      {
+        name: 'createdAt',
+        type: mssql.DateTimeOffset,
+        value: dateToModify
+      },
+      {
+        name: 'code',
+        type: mssql.Char,
+        value: 'ABSNT'
+      }
+    ]
+    await sut.modify(sql, params)
+    const result = await sut.query(`SELECT createdAt FROM
+      mtc_admin.attendanceCode WHERE code='ABSNT'`)
+    expect(result).toBeDefined()
+    const record = result[0]
+    expect(record.createdAt).toBeDefined()
+    expect(isMoment(record.createdAt)).toBe(true)
+    const dbValueAsMoment = moment(record.createdAt)
+    const datesAreSame = dbValueAsMoment.isSame(moment(isoDateTimeValue))
+    expect(datesAreSame).toBe(true)
+    expect(dbValueAsMoment.milliseconds()).toBe(123)
   })
 })

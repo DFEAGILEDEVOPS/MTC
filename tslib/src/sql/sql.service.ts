@@ -119,7 +119,7 @@ export class SqlService {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-  async modify (sql: string, params: []) {
+  async modify (sql: string, params: Array<any>) {
     // logger.debug('sql.service.modify(): SQL: ' + sql)
     // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
     this.ensureInitialised()
@@ -166,7 +166,6 @@ export class SqlService {
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
-        param.value = this._dateTimeService.convertMomentToJsDate(param.value)
         if (!param.type) {
           throw new Error('parameter type invalid')
         }
@@ -193,9 +192,10 @@ export class SqlService {
   }
 
   private ensureInitialised (): void {
-    if (this._connectionPool.connecting === false || this._connectionPool.connected === false) {
+    return
+/*     if (this._connectionPool.connecting === false || this._connectionPool.connected === false) {
       throw new Error('SqlService must be initialised before use')
-    }
+    } */
   }
 
 /**
