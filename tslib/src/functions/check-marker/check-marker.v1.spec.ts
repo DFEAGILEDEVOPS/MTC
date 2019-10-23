@@ -7,6 +7,7 @@ import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
 import { ILogger } from '../../common/ILogger'
 import checkSchema from '../../schemas/complete-check.v1.json'
+import { ICheckMarkerFunctionBindings } from './Models'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -47,7 +48,7 @@ describe('check-marker/v1', () => {
 
   test('error is thrown when receivedCheck reference is not found', async () => {
     try {
-      const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+      const functionBindings: ICheckMarkerFunctionBindings = {
         receivedCheckTable: [],
         checkNotificationQueue: []
       }
@@ -71,7 +72,7 @@ describe('check-marker/v1', () => {
       answers: ''
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -102,7 +103,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify({ foo: 1 })
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -133,7 +134,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(checkSchema.answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -168,7 +169,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(checkSchema.answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -203,7 +204,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(checkSchema.answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -239,7 +240,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(checkSchema.answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -302,7 +303,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -365,7 +366,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -428,7 +429,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -483,7 +484,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
@@ -516,7 +517,7 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify({ foo: 1 })
     }
 
-    const functionBindings: Subject.ICheckMarkerFunctionBindings = {
+    const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: []
     }
