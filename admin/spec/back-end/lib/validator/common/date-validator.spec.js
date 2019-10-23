@@ -82,6 +82,11 @@ describe('New check window date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
       expect(addErrorSpy.calls.argsFor(1)).toEqual(['adminEndDateInThePast', true])
     })
+    it('does not call addError with adminEndYearWrong and adminEndDateInThePast messages if the admin end year is today', () => {
+      validationData.year = moment.utc().format('YYYY')
+      dateValidator.validate(validationError, validationData)
+      expect(validationError.addError).not.toHaveBeenCalled()
+    })
     it('calls addError with adminEndDay message if the admin end day exceeds the maximum for the specific month', () => {
       validationData.day = '30'
       validationData.month = '02'

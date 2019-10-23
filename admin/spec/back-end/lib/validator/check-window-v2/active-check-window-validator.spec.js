@@ -74,7 +74,6 @@ describe('Active check window validator', function () {
   })
   it('returns no validation error if active check window urlSlug matches the requestData urlSlug', () => {
     const requestData = {
-      urlSlug: 'abc',
       adminStartDate: moment.utc().add(10, 'days'),
       adminEndDate: moment.utc().add(20, 'days'),
       familiarisationCheckStartDate: moment.utc().add(12, 'days'),
@@ -82,7 +81,8 @@ describe('Active check window validator', function () {
       checkStartDate: moment.utc().add(13, 'days'),
       checkEndDate: moment.utc().add(16, 'days')
     }
-    const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow)
+    const urlSlug = 'abc'
+    const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow, urlSlug)
     expect(validationError.hasError()).toBeFalsy()
   })
 })

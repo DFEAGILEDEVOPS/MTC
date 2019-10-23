@@ -11,15 +11,16 @@ const activeCheckWindowValidator = {}
  * Validates check window data against active check window
  * @param {Object} requestData
  * @param {Object} activeCheckWindow
+ * @param {String} currentUrlSlug
  * @returns {Object} validation error
  */
-activeCheckWindowValidator.validate = (requestData, activeCheckWindow) => {
+activeCheckWindowValidator.validate = (requestData, activeCheckWindow, currentUrlSlug = undefined) => {
   const validationError = new ValidationError()
   if (!activeCheckWindow || Object.keys(activeCheckWindow).length === 0) {
     return validationError
   }
   // Return if editing the current active check window
-  if (R.equals(activeCheckWindow.urlSlug, requestData.urlSlug)) {
+  if (R.equals(activeCheckWindow.urlSlug, currentUrlSlug)) {
     return validationError
   }
   const requestDates = R.pick([

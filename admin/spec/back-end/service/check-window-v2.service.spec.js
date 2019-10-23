@@ -201,6 +201,7 @@ describe('check-window-v2.service', () => {
       expect(checkWindowData.checkStartDate).toBeDefined()
       expect(checkWindowData.checkEndDate).toBeDefined()
       expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(6)
+      expect(checkWindowData.adminEndDate.format('HH:mm:ss')).toBe('23:59:59')
       expect(checkWindowData.checkEndDate.format('HH:mm:ss')).toBe('23:59:59')
       expect(checkWindowData.familiarisationCheckEndDate.format('HH:mm:ss')).toBe('23:59:59')
     })

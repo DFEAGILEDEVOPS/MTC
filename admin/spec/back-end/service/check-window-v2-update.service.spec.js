@@ -88,8 +88,8 @@ describe('check-window-v2-update.service', () => {
       spyOn(activeCheckWindowValidator, 'validate').and.returnValue(validationError2)
       spyOn(checkWindowV2UpdateService, 'getValidationConfig')
       spyOn(checkWindowDataService, 'sqlUpdate')
-      spyOn(checkWindowV2Service, 'getCheckWindow')
-      const requestData = {}
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1 })
+      const requestData = { checkWindowUrlSlug: 'abc' }
       try {
         await checkWindowV2UpdateService.submit(requestData)
         fail()
