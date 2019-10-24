@@ -3,6 +3,7 @@
 const R = require('ramda')
 const RA = require('ramda-adjunct')
 
+const dateService = require('../../../services/date.service')
 const checkWindowErrorMessages = require('../../errors/check-window-v2')
 const ValidationError = require('../../validation-error')
 
@@ -33,13 +34,13 @@ activeCheckWindowValidator.validate = (requestData, activeCheckWindow, currentUr
     'checkEndDate'], requestData
   )
   R.forEach(dt => {
-    if (dt.isBetween(activeCheckWindow.adminStartDate, activeCheckWindow.adminEndDate, null, '[]')) {
+    if (dateService.isBetween(dt, activeCheckWindow.adminStartDate, activeCheckWindow.adminEndDate, null, true)) {
       validationError.addError('withinActiveCheckWindowAdminDateRage', checkWindowErrorMessages.withinActiveCheckWindowAdminDateRage)
     }
-    if (dt.isBetween(activeCheckWindow.familiarisationCheckStartDate, activeCheckWindow.familiarisationCheckEndDate, null, '()')) {
+    if (dateService.isBetween(dt, activeCheckWindow.familiarisationCheckStartDate, activeCheckWindow.familiarisationCheckEndDate, null, true)) {
       validationError.addError('withinActiveCheckWindowFamiliarisationDateRage', checkWindowErrorMessages.withinActiveCheckWindowFamiliarisationDateRage)
     }
-    if (dt.isBetween(activeCheckWindow.checkStartDate, activeCheckWindow.checkEndDate, null, '()')) {
+    if (dateService.isBetween(dt, activeCheckWindow.checkStartDate, activeCheckWindow.checkEndDate, null, true)) {
       validationError.addError('withinActiveCheckWindowLiveDateRage', checkWindowErrorMessages.withinActiveCheckWindowLiveDateRage)
     }
   }, R.values(requestDates))

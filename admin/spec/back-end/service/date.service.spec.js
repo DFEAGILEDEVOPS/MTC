@@ -255,7 +255,22 @@ describe('date service', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatFileName(date)).toBe('2010-12-31-1410')
     })
-
     invalidInputTests('formatUKDate')
+  })
+  describe('#isBetween', () => {
+    it('is exclusive by default', () => {
+      var testDate = moment('2016-10-30')
+      var startDate = moment('2016-10-30')
+      var endDate = moment('2016-12-30')
+      const result = dateService.isBetween(testDate, startDate, endDate)
+      expect(result).toBeFalsy()
+    })
+    it('is inclusive when inclusivity (5th) parameter is set to true', () => {
+      var testDate = moment('2016-10-30')
+      var startDate = moment('2016-10-30')
+      var endDate = moment('2016-12-30')
+      const result = dateService.isBetween(testDate, startDate, endDate, null, true)
+      expect(result).toBeTruthy()
+    })
   })
 })
