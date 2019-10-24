@@ -8,7 +8,8 @@ const detections = {
   detectLowBattery: require('./detections/detect-low-battery'),
   detectChecksThatTookTooLong: require('./detections/detect-check-took-too-long'),
   detectInputBeforeTheQuestionIsShown: require('./detections/detect-input-before-question-is-shown'),
-  detectInputAfterTheTimerHasCompleted: require('./detections/detect-input-after-the-timer-has-completed')
+  detectInputAfterTheTimerHasCompleted: require('./detections/detect-input-after-the-timer-has-completed'),
+  detectAnswersAfterTheCutoff: require('./detections/detect-answer-responses-after-cutoff')
 }
 
 const rowToDataTransformations = {
