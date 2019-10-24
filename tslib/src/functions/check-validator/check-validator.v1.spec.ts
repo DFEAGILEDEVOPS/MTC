@@ -1,5 +1,5 @@
 import * as CheckValidator from './check-validator.v1'
-import { IAsyncTableService } from '../../azure/async-table-service'
+import { IAsyncTableService } from '../../azure/storage-helper'
 import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/Models'
 import { ILogger } from '../../common/ILogger'
 import checkSchema from '../../schemas/complete-check.v1.json'

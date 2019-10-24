@@ -2,7 +2,7 @@ import * as Subject from './check-marker.v1'
 import uuid = require('uuid')
 import moment = require('moment')
 import { ValidatedCheck } from '../../schemas/Models'
-import { IAsyncTableService } from '../../azure/async-table-service'
+import { IAsyncTableService } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
 import { ILogger } from '../../common/ILogger'
