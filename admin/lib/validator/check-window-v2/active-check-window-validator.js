@@ -34,13 +34,13 @@ activeCheckWindowValidator.validate = (requestData, activeCheckWindow, currentUr
     'checkEndDate'], requestData
   )
   R.forEach(dt => {
-    if (dateService.isBetween(dt, activeCheckWindow.adminStartDate, activeCheckWindow.adminEndDate, null, true)) {
+    if (dateService.isBetweenInclusive(dt, activeCheckWindow.adminStartDate, activeCheckWindow.adminEndDate)) {
       validationError.addError('withinActiveCheckWindowAdminDateRage', checkWindowErrorMessages.withinActiveCheckWindowAdminDateRage)
     }
-    if (dateService.isBetween(dt, activeCheckWindow.familiarisationCheckStartDate, activeCheckWindow.familiarisationCheckEndDate, null, true)) {
+    if (dateService.isBetweenInclusive(dt, activeCheckWindow.familiarisationCheckStartDate, activeCheckWindow.familiarisationCheckEndDate)) {
       validationError.addError('withinActiveCheckWindowFamiliarisationDateRage', checkWindowErrorMessages.withinActiveCheckWindowFamiliarisationDateRage)
     }
-    if (dateService.isBetween(dt, activeCheckWindow.checkStartDate, activeCheckWindow.checkEndDate, null, true)) {
+    if (dateService.isBetweenInclusive(dt, activeCheckWindow.checkStartDate, activeCheckWindow.checkEndDate)) {
       validationError.addError('withinActiveCheckWindowLiveDateRage', checkWindowErrorMessages.withinActiveCheckWindowLiveDateRage)
     }
   }, R.values(requestDates))

@@ -156,17 +156,15 @@ const dateService = {
   },
 
   /**
-   * Checks if a moment date is between a given timeframe with additional parameters
+   * Checks if a moment date is inclusively between a given time frame
    * @param {object} date
    * @param {object} startDate
    * @param {object} endDate
-   * @param {null|string} granularity
-   * @param {boolean} isInclusive
+   * @param {string | null} granularity
    * @returns {boolean}
    */
-  isBetween: function (date, startDate, endDate, granularity = null, isInclusive = false) {
-    const inclusivity = isInclusive ? '[]' : '()'
-    return date.isBetween(startDate, endDate, granularity, inclusivity)
+  isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
+    return date.isBetween(startDate, endDate, granularity, '[]')
   }
 }
 
