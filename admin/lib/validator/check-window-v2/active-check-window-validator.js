@@ -1,6 +1,7 @@
 'use strict'
 
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 
 const checkWindowErrorMessages = require('../../errors/check-window-v2')
 const ValidationError = require('../../validation-error')
@@ -16,7 +17,7 @@ const activeCheckWindowValidator = {}
  */
 activeCheckWindowValidator.validate = (requestData, activeCheckWindow, currentUrlSlug = undefined) => {
   const validationError = new ValidationError()
-  if (!activeCheckWindow || Object.keys(activeCheckWindow).length === 0) {
+  if (RA.isNilOrEmpty(activeCheckWindow)) {
     return validationError
   }
   // Return if editing the current active check window
