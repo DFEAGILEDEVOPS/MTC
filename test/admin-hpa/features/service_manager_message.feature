@@ -1,7 +1,6 @@
 @service_manager_message
 Feature: Service manager message
 
-  @local
   Scenario: Service manager can manage service messages
     Given I am on the manage service message page
     Then it should match the design

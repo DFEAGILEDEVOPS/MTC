@@ -56,7 +56,8 @@ describe('#anomaly-file-report.service', () => {
         'Question number': null,
         QuestionReader: 0,
         NextBetweenQuestions: 0,
-        InputAssistance: 0
+        InputAssistance: 0,
+        TimestampDifference: null
       })
     })
   })

@@ -17,7 +17,7 @@ class AdminPage < SitePrism::Page
   element :mod_schools_settings_text, 'p', text: 'Set timezones, convert and remove school listed as MOD'
   element :school_page_settings_text, 'p', text: 'Change the settings within the school pages'
   element :manage_service_message, 'a', text: 'Manage service message'
-  element :manage_service_message_text, 'p', text: 'Add or delete a service message for schools'
+  element :manage_service_message_text, 'p', text: 'Add or delete a global service message for the school homepage'
 
 
   element :manage_access_arrangements, "a", text: 'Manage access arrangements'

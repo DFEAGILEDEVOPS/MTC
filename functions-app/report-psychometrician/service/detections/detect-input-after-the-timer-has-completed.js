@@ -2,13 +2,12 @@
 
 const RA = require('ramda-adjunct')
 const R = require('ramda')
-const moment = require('moment')
 
 const report = require('./report')
 const filterInputsForQuestion = require('./filter-inputs-for-question')
 const removeDuplicates = require('./remove-duplicate-anomaly-reports')
 const getQuestionTimerEndEvent = require('./get-question-timer-end-event')
-const dateFormat = 'Y-MM-DDTHH:mm:ss.SSSZ'
+const dateService = require('../../../lib/date.service')
 
 const detectInputAfterTimerHasCompleted = function (data) {
   const anomalyReports = []
@@ -39,15 +38,10 @@ const detectInputAfterTimerHasCompleted = function (data) {
       addToOutput(data, 'QuestionTimerCancelledEvent missing its timestamp', null, null, markedAnswer.questionNumber)
       return
     }
-    let questionTimerEndedAt
-    try {
-      questionTimerEndedAt = moment(tsString, dateFormat, true)
-      if (!questionTimerEndedAt.isValid()) {
-        addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #1', tsString, 'Valid ts', markedAnswer.questionNumber)
-        return
-      }
-    } catch (ignore) {
-      addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid #2', tsString, 'Valid ts', markedAnswer.questionNumber)
+    const questionTimerEndedAt = dateService.convertIsoStringToMoment(tsString)
+    if (!questionTimerEndedAt) {
+      addToOutput(data, 'QuestionTimerCancelledEvent timestamp is not valid', tsString, 'Valid ts', markedAnswer.questionNumber)
+      return
     }
 
     // If there are any inputs after `questionTimerCancelled` for this question it's an anomaly
@@ -64,15 +58,10 @@ const detectInputAfterTimerHasCompleted = function (data) {
         addToOutput(data, 'input timestamp is missing', input.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
         return
       }
-      let inputTimestamp
-      try {
-        inputTimestamp = moment(input.clientTimestamp, dateFormat, true)
-        if (!inputTimestamp.isValid()) {
-          addToOutput(data, 'input timestamp is not valid #1', input.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
-          return
-        }
-      } catch (ignore) {
-        addToOutput(data, 'input timestamp is not valid #2', input.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
+
+      const inputTimestamp = dateService.convertIsoStringToMoment(ts)
+      if (!inputTimestamp) {
+        addToOutput(data, 'input timestamp is not valid', input.clientTimestamp, 'Valid ts', markedAnswer.questionNumber)
         return
       }
 
