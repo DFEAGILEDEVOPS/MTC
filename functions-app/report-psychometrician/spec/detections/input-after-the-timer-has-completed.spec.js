@@ -71,7 +71,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('QuestionTimerCancelledEvent timestamp is not valid #1')
+    expect(r[0]['Message']).toBe('QuestionTimerCancelledEvent timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -240,7 +240,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('input timestamp is not valid #1')
+    expect(r[0]['Message']).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -279,7 +279,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('input timestamp is not valid #1')
+    expect(r[0]['Message']).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
