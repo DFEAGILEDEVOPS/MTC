@@ -39,12 +39,12 @@ checkWindowV2UpdateService.submit = async (requestData) => {
 checkWindowV2UpdateService.getValidationConfig = (checkWindow) => {
   const config = {}
   const currentDate = moment.utc()
-  config.adminStartDateDisabled = currentDate.isSameOrAfter(checkWindow.adminStartDate)
-  config.adminEndDateDisabled = currentDate.isSameOrAfter(checkWindow.adminEndDate)
-  config.familiarisationCheckStartDateDisabled = currentDate.isSameOrAfter(checkWindow.familiarisationCheckStartDate)
-  config.familiarisationCheckEndDateDisabled = currentDate.isSameOrAfter(checkWindow.familiarisationCheckEndDate)
-  config.liveCheckStartDateDisabled = currentDate.isSameOrAfter(checkWindow.checkStartDate)
-  config.liveCheckEndDateDisabled = currentDate.isSameOrAfter(checkWindow.checkEndDate)
+  config.adminStartDateDisabled = currentDate.isAfter(checkWindow.adminStartDate, 'days')
+  config.adminEndDateDisabled = currentDate.isAfter(checkWindow.adminEndDate, 'days')
+  config.familiarisationCheckStartDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckStartDate, 'days')
+  config.familiarisationCheckEndDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckEndDate, 'days')
+  config.liveCheckStartDateDisabled = currentDate.isAfter(checkWindow.checkStartDate, 'days')
+  config.liveCheckEndDateDisabled = currentDate.isAfter(checkWindow.checkEndDate, 'days')
   return config
 }
 

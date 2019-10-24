@@ -121,6 +121,26 @@ describe('check-window-v2-update.service', () => {
       }
       expect(result).toEqual(config)
     })
+    it('should return no disabled attributes if all dates are set to the current date', () => {
+      const checkWindow = {
+        adminStartDate: moment.utc(),
+        adminEndDate: moment.utc(),
+        familiarisationCheckStartDate: moment.utc(),
+        familiarisationCheckEndDate: moment.utc(),
+        checkStartDate: moment.utc(),
+        checkEndDate: moment.utc()
+      }
+      const result = checkWindowV2UpdateService.getValidationConfig(checkWindow)
+      const config = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: false
+      }
+      expect(result).toEqual(config)
+    })
     it('should return a disabled attribute if it is in the past back to the caller', () => {
       const checkWindow = {
         adminStartDate: moment.utc().subtract(1, 'days'),
