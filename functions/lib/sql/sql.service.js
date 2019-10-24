@@ -301,9 +301,8 @@ sqlService.modify = async function modify (sql, params = []) {
 
   const returnValue = {}
   const insertIds = []
-  let rawResponse
 
-  rawResponse = await retry(modify, retryConfig, dbLimitReached)
+  const rawResponse = await retry(modify, retryConfig, dbLimitReached)
 
   if (rawResponse && rawResponse.recordset) {
     for (const obj of rawResponse.recordset) {
@@ -364,7 +363,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     // This will cache all data-types once on the first sql request
     await sqlService.updateDataTypeCache()
   }
-  if (!cache.hasOwnProperty(key)) {
+  if (!Object.prototype.hasOwnProperty.call(cache, key)) {
     return undefined
   }
   const cacheData = cache[key]

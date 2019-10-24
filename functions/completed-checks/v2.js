@@ -8,7 +8,7 @@ const compressionService = require('../lib/compression.service')
 const functionName = 'completed-checks:v2'
 
 function validate (message) {
-  if (!message.hasOwnProperty('archive')) {
+  if (!Object.prototype.hasOwnProperty.call(message, 'archive')) {
     throw new Error('V2 Message is missing \'archive\' property')
   }
 }
