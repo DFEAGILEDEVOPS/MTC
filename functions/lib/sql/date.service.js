@@ -94,7 +94,7 @@ const dateService = {
    */
   formatCheckPeriod: function (startDate, endDate) {
     let startYear = ' ' + startDate.format('YYYY')
-    let endYear = ' ' + endDate.format('YYYY')
+    const endYear = ' ' + endDate.format('YYYY')
 
     if (startYear === endYear) {
       startYear = ''

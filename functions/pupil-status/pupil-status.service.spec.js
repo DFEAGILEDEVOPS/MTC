@@ -11,8 +11,8 @@ describe('pupil-status.service', () => {
     verbose: () => {},
     error: () => {}
   }
-  let logPrefix = 'logPrefix'
-  let checkData = []
+  const logPrefix = 'logPrefix'
+  const checkData = []
   for (let i = 0; i < 300; i++) {
     checkData.push({ id: i + 1, isLiveCheck: i < 200, pupilId: i + 1, checkCode: `checkCode${i + 1}` })
   }
@@ -27,7 +27,7 @@ describe('pupil-status.service', () => {
       expect(azureStorageHelper.addMessageToQueue).toHaveBeenCalledTimes(2)
     })
     it('calls addMessageToQueue for pupil-status queue with version 2 and 100 checks', async () => {
-      let processedCheckData = []
+      const processedCheckData = []
       for (let i = 0; i < 300; i++) {
         processedCheckData.push({ pupilId: i + 1, checkCode: `checkCode${i + 1}` })
       }

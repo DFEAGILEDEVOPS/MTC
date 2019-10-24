@@ -9,7 +9,7 @@ const functionName = 'completed-checks:v2'
 
 function validate (message) {
   if (!message.hasOwnProperty('archive')) {
-    throw new Error(`V2 Message is missing 'archive' property`)
+    throw new Error('V2 Message is missing \'archive\' property')
   }
 }
 

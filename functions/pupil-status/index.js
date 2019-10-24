@@ -40,7 +40,7 @@ module.exports = async function (context, pupilStatusMessage) {
     case 2:
       try {
         meta = await v2.process(context, pupilStatusMessage)
-        for (let msg of pupilStatusMessage.messages) {
+        for (const msg of pupilStatusMessage.messages) {
           context.bindings.pupilEventsTable.push({
             PartitionKey: msg.checkCode,
             RowKey: uuid(),
