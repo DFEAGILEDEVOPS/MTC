@@ -1,5 +1,5 @@
 import { AzureFunction, Context } from '@azure/functions'
-import { MarkCheckMessageV1 } from '../../schemas'
+import { MarkCheckMessageV1 } from '../../schemas/Models'
 import { performance } from 'perf_hooks'
 import * as V1 from './check-marker.v1'
 import { ICheckMarkerFunctionBindings } from './Models'
