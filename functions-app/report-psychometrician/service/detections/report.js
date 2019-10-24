@@ -10,7 +10,8 @@ const report = function report (data,
   message,
   testedValue = null,
   expectedValue = null,
-  questionNumber = null) {
+  questionNumber = null,
+  tsDiff = null) {
   const checkCode = R.prop('checkCode', data)
   const checkStartDate = getCheckStartedDate(R.prop('checkStartedAt', data), R.prop('checkPayload', data))
   const mark = R.prop('mark', data)
@@ -30,6 +31,7 @@ const report = function report (data,
     Message: message,
     'Tested Value': testedValue,
     'Expected Value': expectedValue,
+    'TimestampDifference': tsDiff,
     'Question number': questionNumber
   }
 }
