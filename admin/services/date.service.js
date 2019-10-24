@@ -157,9 +157,9 @@ const dateService = {
 
   /**
    * Checks if a moment date is inclusively between a given time frame
-   * @param {object} date
-   * @param {object} startDate
-   * @param {object} endDate
+   * @param {Moment} date
+   * @param {Moment} startDate
+   * @param {Moment} endDate
    * @param {string | null} granularity
    * @returns {boolean}
    */
