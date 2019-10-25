@@ -33,7 +33,8 @@ const CheckAllocationDataServiceMock = jest.fn<ICheckAllocationDataService, any>
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
-  setex: jest.fn()
+  setex: jest.fn(),
+  drop: jest.fn()
 }))
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
