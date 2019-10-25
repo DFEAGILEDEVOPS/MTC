@@ -9,13 +9,13 @@ import { ICompressionService, CompressionService } from '../../common/compressio
 const requiredSubmittedCheckProperties = [
   'answers',
   'audit',
+  'checkCode'
   'config',
   'inputs',
   'pupil',
   'questions',
   'school',
   'tokens',
-  'checkCode'
 ]
 
 export interface ICheckValidatorFunctionBindings {
