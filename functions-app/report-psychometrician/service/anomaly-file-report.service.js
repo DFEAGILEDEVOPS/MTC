@@ -10,7 +10,8 @@ const detections = {
   detectInputBeforeTheQuestionIsShown: require('./detections/detect-input-before-question-is-shown'),
   detectInputAfterTheTimerHasCompleted: require('./detections/detect-input-after-the-timer-has-completed'),
   detectAnswersAfterTheCutoff: require('./detections/detect-answer-responses-after-cutoff'),
-  detectPupilPrefsAfterCheckStart: require('./detections/detect-pupil-prefs-after-check-start')
+  detectPupilPrefsAfterCheckStart: require('./detections/detect-pupil-prefs-after-check-start'),
+  detectDuplicateAnswerError: require('./detections/detect-duplicate-answer-events')
 }
 
 const rowToDataTransformations = {
