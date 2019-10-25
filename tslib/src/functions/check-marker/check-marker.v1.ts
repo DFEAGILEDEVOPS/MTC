@@ -5,7 +5,7 @@ import { ValidatedCheck } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
-import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './marker-models'
+import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './models'
 
 export class CheckMarkerV1 {
 
