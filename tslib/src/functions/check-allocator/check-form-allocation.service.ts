@@ -1,17 +1,15 @@
 import * as rng from 'random-number-csprng'
 
 export interface ICheckFormAllocationService {
-  allocate (pupilId: number): Promise<any>
+  allocate (pupilId: number): Promise<number>
 }
 
 export class CheckFormAllocationService implements ICheckFormAllocationService {
-  allocate (pupilId: number): Promise<any> {
-    const allocation = this.allocateInternal([1, 2, 3, 4], [])
-    return Promise.resolve(allocation)
-    // TODO...
-    // 1. get all forms
-    // 2. get used forms
-    // 3. pass ids from both to internal...
+  async allocate (pupilId: number): Promise<number> {
+    // TODO next line is nonsense, and only there to stop tslint complaining about the method i dont want to comment out
+    // because the jsdoc comments make it painful to block comment out 🙃
+    await this.takenFromAdminApp([5], [5])
+    throw new Error('not implemented')
   }
 
   /**
@@ -20,7 +18,7 @@ export class CheckFormAllocationService implements ICheckFormAllocationService {
    * @param {Array.<number>} usedFormIds - the set of all form ids already used by the pupil
    * @return {Promise<object>} - one of the available forms
    */
-  private async allocateInternal (availableFormIds: Array<number>, usedFormIds: Array<number>) {
+  private async takenFromAdminApp (availableFormIds: Array<number>, usedFormIds: Array<number>): Promise<number> {
     if (!Array.isArray(availableFormIds)) {
       throw new Error('availableForms is not an array')
     }
