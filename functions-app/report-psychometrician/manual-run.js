@@ -14,7 +14,7 @@ async function main () {
   const v2 = require('./v2')
   await v2.process(mockContext.log)
   const end = getUnixTimeNow()
-  const timeTakenSeconds = (end - start) / 60
+  const timeTakenSeconds = (end - start)
   console.log('Manual run completed in ', displayTime(timeTakenSeconds))
 }
 
