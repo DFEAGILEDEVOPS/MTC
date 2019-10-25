@@ -1,6 +1,6 @@
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
-import * as Logger from '../common/ILogger'
+import * as Logger from '../common/logger'
 
 export interface IRedisService {
   /**
