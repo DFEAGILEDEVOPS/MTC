@@ -12,6 +12,8 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   drop: jest.fn()
 }))
 
+const redisCheckWindowKey = 'activeCheckWindow'
+
 let sut: CheckWindowService
 let redisServiceMock: IRedisService
 let checkWindowDataServiceMock: ICheckWindowDataService
@@ -44,10 +46,12 @@ describe('check-window.service', () => {
         id: 1
       })
     })
+    const twentyFourHoursInSeconds = 86400
     const window = await sut.getActiveCheckWindow()
     expect(window).toBeDefined()
     expect(redisServiceMock.get).toHaveBeenCalledWith('activeCheckWindow')
-    expect(redisServiceMock.setex).toHaveBeenCalled()
+    expect(redisServiceMock.setex)
+      .toHaveBeenCalledWith(redisCheckWindowKey, { id: 1 }, twentyFourHoursInSeconds)
     expect(checkWindowDataServiceMock.getActiveCheckWindow).toHaveBeenCalled()
   })
 

@@ -10,6 +10,7 @@ export interface ICheckWindowService {
 export class CheckWindowService {
   private _redisService: IRedisService
   private _checkWindowDataService: ICheckWindowDataService
+  private _twentyFourHoursInSeconds = 86400
 
   constructor (redisService?: IRedisService, checkWindowDataService?: ICheckWindowDataService) {
     if (redisService === undefined) {
@@ -29,7 +30,7 @@ export class CheckWindowService {
       const window = await this._checkWindowDataService.getActiveCheckWindow()
       // TODO prefer set and forget, it's not the callers issue if it fails
       // remove await and override tslint rule???
-      await this._redisService.setex('activeCheckWindow', window, 24)
+      await this._redisService.setex('activeCheckWindow', window, this._twentyFourHoursInSeconds)
       return window
     }
     return cachedWindow
