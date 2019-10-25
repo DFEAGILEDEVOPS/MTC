@@ -1,6 +1,6 @@
 
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/Models'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/ILogger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'

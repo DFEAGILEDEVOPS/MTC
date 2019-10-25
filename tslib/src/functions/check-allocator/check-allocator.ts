@@ -3,8 +3,8 @@ import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
-import { ICheckAllocationDataService, CheckAllocationDataService } from './CheckAllocationDataService'
-import { IPupilAllocationService, PupilAllocationService } from './PupilAllocationService'
+import { ICheckAllocationDataService, CheckAllocationDataService } from './check-allocation.data.service'
+import { IPupilAllocationService, PupilAllocationService } from './pupil-allocation.service'
 import { ILogger } from '../../common/ILogger'
 
 /**

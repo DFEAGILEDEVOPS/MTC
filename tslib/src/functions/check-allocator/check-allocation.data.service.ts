@@ -1,4 +1,4 @@
-import { IPupil } from './Models'
+import { IPupil } from './models'
 import { SqlService } from '../../sql/sql.service'
 import mssql from 'mssql'
 

@@ -1,10 +1,10 @@
 
-import { IPupil } from './Models'
+import { IPupil } from './models'
 import { IDateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService } from './CheckFormAllocationService'
+import { ICheckFormAllocationService } from './check-form-allocation.service'
 import moment from 'moment'
-import { IPupilPinGenerationService } from './PupilPinGenerationService'
-import { PupilAllocationService } from './PupilAllocationService'
+import { IPupilPinGenerationService } from './pupil-pin-generation.service'
+import { PupilAllocationService } from './pupil-allocation.service'
 
 const PupilPinGenerationServiceMock = jest.fn<IPupilPinGenerationService, any>(() => ({
   generate: jest.fn()

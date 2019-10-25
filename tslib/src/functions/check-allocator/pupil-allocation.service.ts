@@ -1,7 +1,7 @@
-import { IPupilAllocation, IPupil } from './Models'
+import { IPupilAllocation, IPupil } from './models'
 import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
-import { ICheckFormAllocationService, CheckFormAllocationService } from './CheckFormAllocationService'
-import { IPupilPinGenerationService, PupilPinGenerationService } from './PupilPinGenerationService'
+import { ICheckFormAllocationService, CheckFormAllocationService } from './check-form-allocation.service'
+import { IPupilPinGenerationService, PupilPinGenerationService } from './pupil-pin-generation.service'
 
 export interface IPupilAllocationService {
   allocate (pupil: IPupil): Promise<IPupilAllocation>

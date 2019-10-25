@@ -1,5 +1,5 @@
 import { Context } from '@azure/functions'
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from '../../schemas/Models'
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from '../../schemas/models'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
 const tableService = new az.AsyncTableService()
