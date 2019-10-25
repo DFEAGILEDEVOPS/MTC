@@ -1,6 +1,6 @@
 
-import { IPupil } from './models'
-import { IDateTimeService } from '../../common/DateTimeService'
+import { IPupil } from './allocation-models'
+import { IDateTimeService } from '../../common/datetime.service'
 import { ICheckFormAllocationService } from './check-form-allocation.service'
 import moment from 'moment'
 import { IPupilPinGenerationService } from './pupil-pin-generation.service'

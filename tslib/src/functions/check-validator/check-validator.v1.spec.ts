@@ -1,7 +1,7 @@
 import * as CheckValidator from './check-validator.v1'
 import { IAsyncTableService } from '../../azure/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/models'
-import { ILogger } from '../../common/ILogger'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/common-models'
+import { ILogger } from '../../common/logger'
 import checkSchema from '../../schemas/complete-check.v1.json'
 import { ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
@@ -129,7 +129,7 @@ describe('check-validator/v1', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.validationError).toBe('submitted check is missing the following properties: answers,audit,config,inputs,pupil,questions,school,tokens,checkCode')
+    expect(actualEntity.validationError).toBe('submitted check is missing the following properties: answers,audit,checkCode,config,inputs,pupil,questions,school,tokens')
     expect(actualEntity.isValid).toBe(false)
   })
 

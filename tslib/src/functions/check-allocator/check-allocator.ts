@@ -2,10 +2,10 @@ import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import config from '../../config'
-import { IDateTimeService, DateTimeService } from '../../common/DateTimeService'
+import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 import { ICheckAllocationDataService, CheckAllocationDataService } from './check-allocation.data.service'
 import { IPupilAllocationService, PupilAllocationService } from './pupil-allocation.service'
-import { ILogger } from '../../common/ILogger'
+import { ILogger } from '../../common/logger'
 
 /**
  * Responsible for allocation of pupil check and associated credentials over a specified school.

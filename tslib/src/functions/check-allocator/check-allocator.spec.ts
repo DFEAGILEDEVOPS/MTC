@@ -2,12 +2,12 @@ import * as uuid from 'uuid'
 import moment from 'moment'
 import config from '../../config'
 import { SchoolCheckAllocationService } from './check-allocator'
-import { IPupil, ISchoolAllocation } from './models'
+import { IPupil, ISchoolAllocation } from './allocation-models'
 import { ICheckAllocationDataService } from './check-allocation.data.service'
-import { IDateTimeService } from '../../common/DateTimeService'
+import { IDateTimeService } from '../../common/datetime.service'
 import { IPupilAllocationService } from './pupil-allocation.service'
 import { IRedisService } from '../../caching/redis-service'
-import { ConsoleLogger } from '../../common/ILogger'
+import { ConsoleLogger } from '../../common/logger'
 
 let sut: SchoolCheckAllocationService
 
