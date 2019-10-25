@@ -1,7 +1,7 @@
 'use strict'
 
 const logger = require('../log.service').getLogger()
-const pause = (duration) => new Promise(res => setTimeout(res, duration), noReject => undefined)
+const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 const defaultRetryCondition = () => true
 const defaultConfiguration = {
   attempts: 3,
