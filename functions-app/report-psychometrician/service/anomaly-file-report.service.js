@@ -9,7 +9,8 @@ const detections = {
   detectChecksThatTookTooLong: require('./detections/detect-check-took-too-long'),
   detectInputBeforeTheQuestionIsShown: require('./detections/detect-input-before-question-is-shown'),
   detectInputAfterTheTimerHasCompleted: require('./detections/detect-input-after-the-timer-has-completed'),
-  detectAnswersAfterTheCutoff: require('./detections/detect-answer-responses-after-cutoff')
+  detectAnswersAfterTheCutoff: require('./detections/detect-answer-responses-after-cutoff'),
+  detectPupilPrefsAfterCheckStart: require('./detections/detect-pupil-prefs-after-check-start')
 }
 
 const rowToDataTransformations = {

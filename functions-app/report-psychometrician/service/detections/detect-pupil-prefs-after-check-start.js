@@ -8,7 +8,7 @@ const dateService = require('../../../lib/date.service')
 const report = require('./report')
 const removeDuplicates = require('./remove-duplicate-anomaly-reports')
 
-const detectPupilPrefsApiSuccessDuringCheck = function (data) {
+const detectPupilPrefsAfterCheckStart = function (data) {
   if (!isPlainObj(data)) {
     throw new TypeError('data should be an object')
   }
@@ -37,4 +37,4 @@ const detectPupilPrefsApiSuccessDuringCheck = function (data) {
   return removeDuplicates(output.filter(o => isNotNilOrEmpty(o)))
 }
 
-module.exports = detectPupilPrefsApiSuccessDuringCheck
+module.exports = detectPupilPrefsAfterCheckStart

@@ -4,20 +4,20 @@
 
 const { isFunction, isArray } = require('ramda-adjunct')
 
-const detectPupilPrefsApiSuccessDuringCheck = require('../../service/detections/pupil-prefs-api-success-during-check')
+const detectPupilPrefsAfterCheckStart = require('../../service/detections/detect-pupil-prefs-after-check-start')
 
-describe('detectPupilPrefsApiSuccessDuringCheck', () => {
+describe('detectPupilPrefsAfterCheckStart', () => {
   it('is defined', () => {
-    expect(detectPupilPrefsApiSuccessDuringCheck).toBeDefined()
+    expect(detectPupilPrefsAfterCheckStart).toBeDefined()
   })
 
   it('is a function', () => {
-    expect(isFunction(detectPupilPrefsApiSuccessDuringCheck)).toBeTrue()
+    expect(isFunction(detectPupilPrefsAfterCheckStart)).toBeTrue()
   })
 
   it('takes a single `data` argument', () => {
     try {
-      detectPupilPrefsApiSuccessDuringCheck() // missing arg
+      detectPupilPrefsAfterCheckStart() // missing arg
       fail()
     } catch (error) {
       expect(error.message).toBe('data should be an object')
@@ -40,7 +40,7 @@ describe('detectPupilPrefsApiSuccessDuringCheck', () => {
         ]
       }
     }
-    const r = detectPupilPrefsApiSuccessDuringCheck(mockData)
+    const r = detectPupilPrefsAfterCheckStart(mockData)
     expect(isArray(r)).toBeTrue()
     expect(r.length).toBe(1) // duplicates suppressed
     expect(r[0].Message).toBe('Check disrupted by PupilPrefsAPICallSucceeded event')
@@ -58,7 +58,7 @@ describe('detectPupilPrefsApiSuccessDuringCheck', () => {
         ]
       }
     }
-    const r = detectPupilPrefsApiSuccessDuringCheck(mockData)
+    const r = detectPupilPrefsAfterCheckStart(mockData)
     expect(r).toEqual([])
   })
 })
