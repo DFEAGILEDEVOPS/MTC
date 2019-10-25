@@ -42,7 +42,7 @@ describe('detectPupilPrefsApiSuccessDuringCheck', () => {
     }
     const r = detectPupilPrefsApiSuccessDuringCheck(mockData)
     expect(isArray(r)).toBeTrue()
-    expect(r.length).toBe(1) // duplicates supressed
+    expect(r.length).toBe(1) // duplicates suppressed
     expect(r[0].Message).toBe('Check disrupted by PupilPrefsAPICallSucceeded event')
   })
 
