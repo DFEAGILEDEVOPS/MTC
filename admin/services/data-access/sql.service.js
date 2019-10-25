@@ -395,7 +395,7 @@ sqlService.findOneById = async (table, id) => {
  * It's okay if the table name has square brackets around it like '[pupil]'
  * @param {string} table
  * @param {string} column
- * @return {Promise<TYPE>}
+ * @return {Promise<>}
  *
  */
 sqlService.getCacheEntryForColumn = async function (table, column) {
@@ -572,7 +572,7 @@ sqlService.update = async function (tableName, data) {
 /**
  * Helper function useful for constructing parameterised WHERE clauses
  * @param {Array} ary
- * @param {Tedious.TYPE} type
+ * @param {Object} type
  * @return {Promise<{params: Array, paramIdentifiers: Array}>}
  */
 sqlService.buildParameterList = (ary, type) => {
