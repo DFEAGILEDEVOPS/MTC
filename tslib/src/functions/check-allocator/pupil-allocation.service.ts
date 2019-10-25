@@ -1,4 +1,4 @@
-import { IPupilAllocation, IPupil } from './allocation-models'
+import { IPupilAllocation, IPupil } from './models'
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 import { ICheckFormAllocationService, CheckFormAllocationService } from './check-form-allocation.service'
 import { IPupilPinGenerationService, PupilPinGenerationService } from './pupil-pin-generation.service'
