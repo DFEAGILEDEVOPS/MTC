@@ -114,7 +114,7 @@ describe('check-allocator/v1', () => {
 
   test('an allocation is only created for pupils that do not currently have one', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn((schoolUUID: string) => {
       return Promise.resolve(pupilData)
     })
     redisServiceMock.get = jest.fn(async (key: string) => {
