@@ -8,7 +8,8 @@ const CheckWindowDataServiceMock = jest.fn<ICheckWindowDataService, any>(() => (
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
-  setex: jest.fn()
+  setex: jest.fn(),
+  drop: jest.fn()
 }))
 
 let sut: CheckWindowService
