@@ -29,4 +29,13 @@ function yarnInstall (cb) {
   cb()
 }
 
-exports.default = series(clean, yarnInstall, compileTslib)
+function deleteSpecFiles (cb) {
+  rimraf('./dist/**/*.spec.ts', (error) => {
+    if (error) {
+      console.error(error)
+    }
+    cb(error)
+  })
+}
+
+exports.default = series(clean, yarnInstall, compileTslib, deleteSpecFiles)
