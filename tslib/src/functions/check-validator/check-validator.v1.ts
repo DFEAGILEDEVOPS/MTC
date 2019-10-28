@@ -1,11 +1,22 @@
-import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas'
-import { ILogger } from '../../common/ILogger'
-import * as R from 'ramda'
+
+import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
+import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/models'
+import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
-import checkSchema from '../../schemas/complete-check.v1.json'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
+
+const requiredSubmittedCheckProperties = [
+  'answers',
+  'audit',
+  'checkCode',
+  'config',
+  'inputs',
+  'pupil',
+  'questions',
+  'school',
+  'tokens'
+]
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: Array<any>
@@ -85,12 +96,10 @@ export class CheckValidatorV1 {
   }
 
   private validateCheckStructure (check: object) {
-    const allProperties = Object.getOwnPropertyNames(checkSchema)
     const errorMessagePrefix = 'submitted check is missing the following properties:'
     const missingProperties: string[] = []
-    const requiredProperties = R.without(['version'], allProperties)
-    for (let index = 0; index < requiredProperties.length; index++) {
-      const propertyName = requiredProperties[index]
+    for (let index = 0; index < requiredSubmittedCheckProperties.length; index++) {
+      const propertyName = requiredSubmittedCheckProperties[index]
       if (!check.hasOwnProperty(propertyName)) {
         missingProperties.push(propertyName)
       }

@@ -2,7 +2,7 @@
 
 const logger = require('../log.service').getLogger()
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
-const defaultRetryCondition = () => true
+const defaultRetryPredicate = () => true
 const defaultConfiguration = {
   attempts: 3,
   pauseTimeMs: 5000,
@@ -12,26 +12,24 @@ const defaultConfiguration = {
 /**
  * @param {function} asyncRetryableFunction - the function to execute with retry behaviour
  * @param {object} retryConfiguration - the behaviour of the retry policy.  Default settings are provided
- * @param {function(Error):Boolean} retryCondition - predicate function to determine if the function should be retried.  Defaults to true
+ * @param {function(Error):Boolean} retryPredicate - predicate function to determine if the function should be retried.  Defaults to true
  */
-const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = defaultConfiguration, retryCondition = defaultRetryCondition) => {
+const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = defaultConfiguration, retryPredicate = defaultRetryPredicate) => {
   const retryPolicy = {}
   try {
     Object.assign(retryPolicy, retryConfiguration)
-    logger.debug('asyncRetryHandler: executing retryable method...')
     const result = await asyncRetryableFunction()
-    logger.debug('asyncRetryHandler: execution successful.')
     return result
   } catch (error) {
     logger.warn(`asyncRetryHandler: method call failed with ${error}`)
-    if (retryPolicy.attempts > 1 && retryCondition(error)) {
-      logger.debug(`asyncRetryHandler: pausing for ${retryPolicy.pauseTimeMs}...`)
+    if (retryPolicy.attempts > 1 && retryPredicate(error)) {
       await pause(retryPolicy.pauseTimeMs)
       retryPolicy.attempts -= 1
       retryPolicy.pauseTimeMs *= retryConfiguration.pauseMultiplier
-      logger.info(`asyncRetryHandler: pause passed. attempts left:${retryPolicy.attempts}`)
-      await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryCondition)
+      const result = await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryPredicate)
+      return result
     } else {
+      logger.error('max retry count exceeded, failing...')
       throw error
     }
   }
