@@ -1,9 +1,9 @@
 import { ConnectionPool, Request, TYPES } from 'mssql'
-import { ILogger, ConsoleLogger } from '../common/ILogger'
+import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
 import { default as mtcConfig } from '../config'
 import * as R from 'ramda'
-import { DateTimeService, IDateTimeService } from '../common/DateTimeService'
+import { DateTimeService, IDateTimeService } from '../common/datetime.service'
 
 const retryConfig = {
   attempts: mtcConfig.DatabaseRetry.MaxRetryAttempts,

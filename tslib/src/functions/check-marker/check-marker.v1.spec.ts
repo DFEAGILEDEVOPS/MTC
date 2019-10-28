@@ -1,13 +1,13 @@
 import * as Subject from './check-marker.v1'
 import uuid = require('uuid')
 import moment = require('moment')
-import { ValidatedCheck } from '../../schemas'
-import { IAsyncTableService } from '../../azure/async-table-service'
+import { ValidatedCheck } from '../../schemas/models'
+import { IAsyncTableService } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
-import { ILogger } from '../../common/ILogger'
+import { ILogger } from '../../common/logger'
+import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
-import { ICheckMarkerFunctionBindings } from './Models'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
