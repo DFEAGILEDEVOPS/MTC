@@ -30,44 +30,67 @@ export interface IRedisService {
  * Redis.Redis has 194 members, so this avoids having to declare them all on a mock
  */
 export interface IRedisDataService {
-  get (key: string): Promise<string | null>
+  get (key: string): Promise<any | null>
   setex (key: string, seconds: number, value: any): Promise<any>
   pipeline (commands?: string[][]): Pipeline
 }
 
+// type RedisCacheItemType = Record<'string' | 'object' | 'number', string>
+
+export class RedisCacheItemMetadata {
+  constructor (type: string, ttl?: number) {
+    this.type = type
+    this.ttl = ttl
+  }
+  type: string
+  ttl: number | undefined
+}
+
+export class RedisCacheItem {
+  constructor (meta: RedisCacheItemMetadata, value: string) {
+    this._meta = meta
+    this.value = value
+  }
+  _meta: RedisCacheItemMetadata
+  value: string
+}
+
 export class RedisService implements IRedisService {
 
-  private _redis: IRedisDataService
+  private _redis: Redis.Redis
   private _logger: Logger.ILogger
 
-  constructor (redis?: IRedisDataService, logger?: Logger.ILogger) {
-
-    if (logger === undefined) {
-      logger = new Logger.ConsoleLogger()
+  constructor () {
+    const options: RedisOptions = {
+      port: Number(config.Redis.Port),
+      host: config.Redis.Host,
+      password: config.Redis.Key
     }
-    this._logger = logger
-
-    if (redis === undefined) {
-      const options: RedisOptions = {
-        port: Number(config.Redis.Port),
-        host: config.Redis.Host,
-        password: config.Redis.Key
+    if (config.Redis.useTLS) {
+      options.tls = {
+        host: config.Redis.Host
       }
-      if (config.Redis.useTLS) {
-        options.tls = {
-          host: config.Redis.Host
-        }
-      }
-      this._redis = new Redis(options)
-    } else {
-      this._redis = redis
     }
+    this._redis = new Redis(options)
+    this._logger = new Logger.ConsoleLogger()
   }
 
   async get (key: string): Promise<any | null> {
     try {
-      const result = await this._redis.get(key)
-      return result
+      const cacheEntry = await this._redis.get(key)
+      if (cacheEntry === null) return Promise.resolve(null)
+      const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
+      switch (cacheItem._meta.type) {
+        case 'string':
+          return cacheItem.value
+        case 'number':
+          return Number(cacheItem.value)
+        case 'object':
+          const hydratedObject = JSON.parse(cacheItem.value)
+          return hydratedObject
+        default:
+          throw new Error(`unsupported cache item type:${cacheItem._meta.type}`)
+      }
     } catch (err) {
       this._logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
       throw err
@@ -87,12 +110,33 @@ export class RedisService implements IRedisService {
    * @param value
    * @param ttl
    */
-  async setex (key: string, value: string | object, ttl: number): Promise<void> {
+  async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
     try {
-      if (typeof value === 'object') {
-        value = JSON.stringify(value)
+      let dataType = typeof(value)
+      let cacheItemDataType: string = ''
+      switch (dataType) {
+        case 'string':
+          cacheItemDataType = 'string'
+          break
+        case 'number':
+          cacheItemDataType = 'number'
+          break
+        case 'object':
+          cacheItemDataType = 'object'
+          value = JSON.stringify(value)
+          break
+        default:
+          throw new Error(`unsupported data type ${dataType}`)
       }
-      await this._redis.setex(key, ttl, value)
+      const storageItem: RedisCacheItem = {
+        _meta: {
+          type: cacheItemDataType,
+          ttl: ttl
+        },
+        value: value.toString()
+      }
+      console.dir(storageItem)
+      await this._redis.setex(key, ttl, storageItem)
     } catch (err) {
       this._logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
