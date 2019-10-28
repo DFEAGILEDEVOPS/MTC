@@ -1,11 +1,11 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { IAsyncTableService, AsyncTableService } from '../../azure/async-table-service'
-import { ValidatedCheck } from '../../schemas/index'
+import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
+import { ValidatedCheck } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
-import { ILogger } from '../../common/ILogger'
-import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './Models'
+import { ILogger } from '../../common/logger'
+import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './models'
 
 export class CheckMarkerV1 {
 
