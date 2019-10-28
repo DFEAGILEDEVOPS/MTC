@@ -99,15 +99,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  // always store as object with associated type metadata
   /**
-   * `{
-   *   _meta: {
-   *      type: object | string | number| array,
-   *      ttl: number
-   *    },
-   *   value:
-   *  }
    * @param key
    * @param value
    * @param ttl
