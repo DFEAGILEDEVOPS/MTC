@@ -7,11 +7,6 @@ import { ICheckAllocationDataService } from './check-allocation.data.service'
 import { IDateTimeService } from '../../common/datetime.service'
 import { IPupilAllocationService } from './pupil-allocation.service'
 import { IRedisService } from '../../caching/redis-service'
-import { ConsoleLogger } from '../../common/logger'
-
-let sut: SchoolCheckAllocationService
-
-let schoolUUID: string
 
 const pupilData: Array<IPupil> = [
   {
@@ -48,6 +43,8 @@ const PupilAllocationServiceMock = jest.fn<IPupilAllocationService, any>(() => (
   allocate: jest.fn()
 }))
 
+let sut: SchoolCheckAllocationService
+let schoolUUID: string
 let checkAllocationDataServiceMock: ICheckAllocationDataService
 let redisServiceMock: IRedisService
 let dateTimeServiceMock: IDateTimeService
@@ -60,7 +57,7 @@ describe('check-allocator/v1', () => {
     redisServiceMock = new RedisServiceMock()
     dateTimeServiceMock = new DateTimeServiceMock()
     pupilAllocationServiceMock = new PupilAllocationServiceMock()
-    sut = new SchoolCheckAllocationService(new ConsoleLogger(), checkAllocationDataServiceMock, redisServiceMock,
+    sut = new SchoolCheckAllocationService(checkAllocationDataServiceMock, redisServiceMock,
       dateTimeServiceMock, pupilAllocationServiceMock)
   })
 

@@ -5,7 +5,6 @@ import config from '../../config'
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 import { ICheckAllocationDataService, CheckAllocationDataService } from './check-allocation.data.service'
 import { IPupilAllocationService, PupilAllocationService } from './pupil-allocation.service'
-import { ILogger } from '../../common/logger'
 
 /**
  * Responsible for allocation of pupil check and associated credentials over a specified school.
@@ -21,7 +20,6 @@ export class SchoolCheckAllocationService {
   private redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (
-    logger: ILogger,
     checkAllocatorDataService?: ICheckAllocationDataService,
     redisService?: IRedisService,
     dateTimeService?: IDateTimeService,
@@ -33,7 +31,7 @@ export class SchoolCheckAllocationService {
     this._dataService = checkAllocatorDataService
 
     if (redisService === undefined) {
-      redisService = new RedisService(logger)
+      redisService = new RedisService()
     }
     this._redisService = redisService
 
@@ -52,7 +50,7 @@ export class SchoolCheckAllocationService {
    * @description performs check allocation for all pupils within a specified school
    * @param schoolUUID urlSlug of the school to perform allocation over
    */
-  async allocate (schoolUUID: string) {
+  async allocate (schoolUUID: string): Promise<void> {
     if (!schoolUUID.match(this.uuidV4RegexPattern)) {
       throw new Error('schoolUUID argument was not a v4 UUID')
     }
@@ -60,7 +58,7 @@ export class SchoolCheckAllocationService {
     const pupils = await this._dataService.getPupilsBySchoolUuid(schoolUUID)
     if (RA.isNilOrEmpty(pupils)) return
     const schoolKey = this.redisAllocationsKeyPrefix.concat(schoolUUID)
-    const allocationCache = await this._redisService.get(schoolKey)
+    let allocationCache = await this._redisService.get(schoolKey)
 
     for (let pupilIndex = 0; pupilIndex < pupils.length; pupilIndex++) {
       const pupil = pupils[pupilIndex]

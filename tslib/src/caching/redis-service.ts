@@ -1,4 +1,4 @@
-import Redis, { RedisOptions } from 'ioredis'
+import Redis, { RedisOptions, Pipeline } from 'ioredis'
 import config from '../config'
 import * as Logger from '../common/logger'
 
@@ -8,7 +8,7 @@ export interface IRedisService {
    * @param {string} key the unique string key of the redis entry to fetch
    * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
-  get (key: string): Promise<string | null>
+  get (key: string): Promise<any | null>
   /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
    * @param {string} key the unique string key of the redis entry to persist
@@ -25,19 +25,29 @@ export interface IRedisService {
   drop (keys: Array<string>): Promise<void>
 }
 
+/**
+ * exists purely to support mocking of ioredis Redis.Redis interface for unit tests
+ * Redis.Redis has 194 members, so this avoids having to declare them all on a mock
+ */
+export interface IRedisDataService {
+  get (key: string): Promise<string | null>
+  setex (key: string, seconds: number, value: any): Promise<any>
+  pipeline (commands?: string[][]): Pipeline
+}
+
 export class RedisService implements IRedisService {
 
-  private _redis: Redis.Redis
+  private _redis: IRedisDataService
   private _logger: Logger.ILogger
 
-  constructor (logger?: Logger.ILogger, ioRedis?: Redis.Redis) {
+  constructor (redis?: IRedisDataService, logger?: Logger.ILogger) {
 
     if (logger === undefined) {
       logger = new Logger.ConsoleLogger()
     }
     this._logger = logger
 
-    if (ioRedis === undefined) {
+    if (redis === undefined) {
       const options: RedisOptions = {
         port: Number(config.Redis.Port),
         host: config.Redis.Host,
@@ -50,11 +60,11 @@ export class RedisService implements IRedisService {
       }
       this._redis = new Redis(options)
     } else {
-      this._redis = ioRedis
+      this._redis = redis
     }
   }
 
-  async get (key: string): Promise<string | null> {
+  async get (key: string): Promise<any | null> {
     try {
       const result = await this._redis.get(key)
       return result
