@@ -196,7 +196,7 @@ const sqlService = {
       confusing when checking data manually, as many GUIs (e.g. DBeaver) will then show
       the datetime with the server's TZ offset.
     */
-    DateTimeOffset: mssql.DateTime,
+    DateTimeOffset: mssql.DateTimeOffset,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
     Int: mssql.Int,
