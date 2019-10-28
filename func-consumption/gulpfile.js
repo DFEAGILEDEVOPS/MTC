@@ -30,7 +30,7 @@ function yarnInstall (cb) {
 }
 
 function deleteSpecFiles (cb) {
-  rimraf('./dist/**/*.spec.ts', (error) => {
+  rimraf('./dist/**/**/*.spec.js', (error) => {
     if (error) {
       console.error(error)
     }

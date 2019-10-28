@@ -6,9 +6,9 @@ export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
    * @param {string} key the unique string key of the redis entry to fetch
-   * @returns {Promise<any | null>} an awaitable promise containing the item if it exists, or undefined if it does not
+   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
-  get (key: string): Promise<any | null>
+  get (key: string): Promise<string | null>
   /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
    * @param {string} key the unique string key of the redis entry to persist
@@ -39,7 +39,7 @@ export class RedisService implements IRedisService {
 
     if (ioRedis === undefined) {
       const options: RedisOptions = {
-        port: +config.Redis.Port,
+        port: Number(config.Redis.Port),
         host: config.Redis.Host,
         password: config.Redis.Key
       }
@@ -54,7 +54,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async get (key: string): Promise<any | null> {
+  async get (key: string): Promise<string | null> {
     try {
       const result = await this._redis.get(key)
       return result
@@ -64,6 +64,19 @@ export class RedisService implements IRedisService {
     }
   }
 
+  // always store as object with associated type metadata
+  /**
+   * `{
+   *   _meta: {
+   *      type: object | string | number| array,
+   *      ttl: number
+   *    },
+   *   value:
+   *  }
+   * @param key
+   * @param value
+   * @param ttl
+   */
   async setex (key: string, value: string | object, ttl: number): Promise<void> {
     try {
       if (typeof value === 'object') {
