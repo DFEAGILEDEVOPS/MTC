@@ -77,7 +77,9 @@ export class RedisService implements IRedisService {
 
   async get (key: string): Promise<any | null> {
     try {
+      console.log(`getting ${key}`)
       const cacheEntry = await this._redis.get(key)
+      console.log(cacheEntry)
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem._meta.type) {
@@ -135,8 +137,8 @@ export class RedisService implements IRedisService {
         },
         value: value.toString()
       }
-      console.dir(storageItem)
-      await this._redis.setex(key, ttl, storageItem)
+      const storageItemString = JSON.stringify(storageItem)
+      await this._redis.setex(key, ttl, storageItemString)
     } catch (err) {
       this._logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
