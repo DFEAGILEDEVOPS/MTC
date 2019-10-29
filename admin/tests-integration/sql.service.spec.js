@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail xit spyOn */
+/* global describe beforeAll it expect fail spyOn */
 
 const moment = require('moment')
 const R = require('ramda')
