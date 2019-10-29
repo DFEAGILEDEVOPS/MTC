@@ -197,6 +197,8 @@ const sqlService = {
       the datetime with the server's TZ offset.
     */
     DateTimeOffset: mssql.DateTimeOffset,
+    DateTime: mssql.DateTime,
+    DateTime2: mssql.DateTime2,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
     Int: mssql.Int,
