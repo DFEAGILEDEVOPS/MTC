@@ -205,7 +205,7 @@ describe('sql.service:integration', () => {
     }
   })
 
-  it('should store UTC timezone when provided with a given timezone offset as moment object', async () => {
+  it('should normalise a non UTC offset to UTC when stored as moment', async () => {
     const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00', moment.ISO_8601, true)
     const updatedAtParam = {
       name: 'updatedAt',
@@ -240,7 +240,6 @@ describe('sql.service:integration', () => {
       expect(results.length).toBe(1)
       const row = results[0]
       expect(row.tDateTime).toBeDefined()
-      console.log('expected:', updatedAtDate.toISOString())
       expect(Object.keys(response).length).toBeGreaterThan(0)
       expect(row.tDateTime.toISOString()).toBe('2017-12-01T23:00:00.000Z')
     } catch (err) {
@@ -249,7 +248,7 @@ describe('sql.service:integration', () => {
     }
   })
 
-  it('should store UTC timezone when provided with a given timezone offset as plain date object', async () => {
+  it('should normalise a non UTC offset to UTC when stored as plain date object', async () => {
     const updatedAtDate = new Date('2017-12-01T15:00:00.000-08:00')
     const updatedAtParam = {
       name: 'updatedAt',
