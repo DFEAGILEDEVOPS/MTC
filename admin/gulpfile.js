@@ -28,6 +28,7 @@ const jsBundleFiles = [
   './assets/javascripts/mtc-autocomplete.js',
   './assets/javascripts/mtc-check-forms.js',
   './assets/javascripts/print-popup.js',
+  './assets/javascripts/step-by-step-navigation.js',
   './assets/javascripts/table-sorting.js',
   './assets/javascripts/session-expiry.js', // here be dragons
   './assets/javascripts/autocomplete.js',

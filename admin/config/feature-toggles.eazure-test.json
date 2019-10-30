@@ -8,5 +8,6 @@
   "dependencyTracking": true,
   "accessArrangements": true,
   "newCheckWindow": true,
-  "newCheckForm": true
+  "newCheckForm": true,
+  "schoolHomeViewV2": false
 }
