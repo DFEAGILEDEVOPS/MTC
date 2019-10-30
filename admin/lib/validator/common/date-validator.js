@@ -49,7 +49,7 @@ dateValidator.validate = (validationError, dateData) => {
   }
 
   // UTC Date
-  if (utcDate && currentDate.isAfter(utcDate)) {
+  if (utcDate && currentDate.isAfter(utcDate, 'days')) {
     validationError.addError(dateData.dateInThePast, true)
   }
   return validationError
