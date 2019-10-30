@@ -126,7 +126,7 @@
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-2"><a class="govuk-link" href="">Pupil status</a></h2>
                     <p class="govuk-body-m">
                         View the pupil status after they have taken te check
-                        <% if (!hasIncompleteChecks) { %>
+                        <% if (hasIncompleteChecks) { %>
                         <p class="govuk-!-margin-bottom-6 govuk-!-margin-top-0">
                             <strong class="warning-banner">INCOMPLETE</strong>
                             <span class="govuk-!-font-size-14 govuk-font-greyed-out">Ensure all pupils have successfully completed the check</span>
