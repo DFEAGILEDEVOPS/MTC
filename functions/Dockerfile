@@ -9,7 +9,7 @@ COPY . .
 
 RUN apt-get update && \
     apt-get install libunwind8 && \
-    curl -O https://dot.net/v1/dotnet-install.sh && \
+    curl -LO https://dot.net/v1/dotnet-install.sh && \
     source dotnet-install.sh --channel 2.2 && \
     rm dotnet-install.sh && \
     npm i -g azure-functions-core-tools@core --unsafe-perm true && \
