@@ -12,7 +12,7 @@ RUN apt-get update && \
     curl -LO https://dot.net/v1/dotnet-install.sh && \
     source dotnet-install.sh --channel 2.2 && \
     rm dotnet-install.sh && \
-    npm i -g azure-functions-core-tools@core && \
+    npm i -g azure-functions-core-tools@core --unsafe-perm true && \
     func extensions install
 
 RUN yarn install
