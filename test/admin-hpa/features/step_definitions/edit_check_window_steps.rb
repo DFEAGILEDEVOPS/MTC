@@ -17,13 +17,13 @@ And(/^I create new check window with valid data$/) do
   @check_window_hash = {check_name: @check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_mon: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year,
+                        admin_start_year: @admin_start_date.year + 5,
                         check_start_day: @check_start_date.day,
                         check_start_mon: @check_start_date.month,
-                        check_start_year: @check_start_date.year,
+                        check_start_year: @check_start_date.year + 5,
                         check_end_day: @check_end_date.day,
                         check_end_mon: @check_end_date.month,
-                        check_end_year: @check_end_date.year
+                        check_end_year: @check_end_date.year + 5
   }
   @page.enter_details(@check_window_hash)
   @page.save_changes.click
@@ -161,7 +161,7 @@ When(/^I submit a valid change$/) do
   @check_window_hash[:check_name] = 'Updated' + @check_window_hash[:check_name]
   @check_window_hash[:admin_end_day] = @admin_end_date.day
   @check_window_hash[:admin_end_month] = @admin_end_date.month
-  @check_window_hash[:admin_end_year] = @admin_end_date.year
+  @check_window_hash[:admin_end_year] = @admin_end_date.year + 5
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
 end
