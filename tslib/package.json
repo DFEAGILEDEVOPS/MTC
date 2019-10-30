@@ -45,5 +45,12 @@
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
     "uuid": "^3.3.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
   }
 }
