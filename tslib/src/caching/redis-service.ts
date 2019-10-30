@@ -77,9 +77,7 @@ export class RedisService implements IRedisService {
 
   async get (key: string): Promise<any | null> {
     try {
-      console.log(`getting ${key}`)
       const cacheEntry = await this._redis.get(key)
-      console.log(cacheEntry)
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem._meta.type) {
@@ -138,7 +136,7 @@ export class RedisService implements IRedisService {
   }
 
   async drop (keys: string[]): Promise<void> {
-    if (Array.isArray(keys) && keys.length === 0) {
+    if (keys.length === 0) {
       return Promise.resolve()
     }
     const pipeline = this._redis.pipeline()

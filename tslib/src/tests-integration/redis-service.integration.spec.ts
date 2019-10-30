@@ -4,11 +4,7 @@ import config from '../config'
 
 let sut: RedisService
 let ioRedis: Redis.Redis
-const redisKeyPrefix = 'INTEGRATION_TEST_'
-
-const buildRedisKey = (postfix: string): string => {
-  return `${redisKeyPrefix}${postfix}`
-}
+const redisItemKey = 'INTEGRATION_TEST'
 
 describe('RedisService', () => {
 
@@ -26,9 +22,9 @@ describe('RedisService', () => {
     ioRedis = new Redis(options)
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     sut = new RedisService()
-    // TODO drop everything prefixed with INTEGRATION_TEST_
+    await sut.drop([redisItemKey])
   })
 
   test('should be defined', () => {
@@ -37,9 +33,8 @@ describe('RedisService', () => {
 
   test('setex: stores a string with expected metadata', async () => {
     const cachedValue = 'the string'
-    const dataKey = buildRedisKey('the-data-key')
-    const ttl = 123
-    await sut.setex(dataKey, cachedValue, ttl)
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
       _meta: {
         type: 'string',
@@ -47,7 +42,7 @@ describe('RedisService', () => {
       },
       value: cachedValue
     }
-    const actualStoredItemString = await ioRedis.get(dataKey)
+    const actualStoredItemString = await ioRedis.get(redisItemKey)
     if (!actualStoredItemString) {
       throw new Error('no item found with specified key')
     }
@@ -57,9 +52,8 @@ describe('RedisService', () => {
 
   test('setex: stores a number with expected metadata', async () => {
     const cachedValue = 0
-    const dataKey = 'the-data-key'
-    const ttl = 123
-    await sut.setex(dataKey, cachedValue, ttl)
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
       _meta: {
         type: 'number',
@@ -67,7 +61,7 @@ describe('RedisService', () => {
       },
       value: cachedValue.toString()
     }
-    const actualStoredItemString = await ioRedis.get(dataKey)
+    const actualStoredItemString = await ioRedis.get(redisItemKey)
     if (!actualStoredItemString) {
       throw new Error('no item found with specified key')
     }
@@ -82,9 +76,8 @@ describe('RedisService', () => {
         baz: 123
       }
     }
-    const dataKey = 'the-data-key'
-    const ttl = 123
-    await sut.setex(dataKey, cachedValue, ttl)
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
       _meta: {
         type: 'object',
@@ -92,7 +85,7 @@ describe('RedisService', () => {
       },
       value: JSON.stringify(cachedValue)
     }
-    const actualStoredItemString = await ioRedis.get(dataKey)
+    const actualStoredItemString = await ioRedis.get(redisItemKey)
     if (!actualStoredItemString) {
       throw new Error('no item found with specified key')
     }
@@ -100,5 +93,48 @@ describe('RedisService', () => {
     expect(storedItemAsObject).toEqual(expectedObjectToStore)
   })
 
-  test.todo('unsupported data type scenario')
+  test('get: string preservation intact on retrieval', async () => {
+    const cachedValue = 'the string'
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
+    const actual = await sut.get(redisItemKey)
+    expect(actual).toBe(cachedValue)
+  })
+
+  test('get: number preservation intact on retrieval', async () => {
+    const cachedValue = 123456
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
+    const actual = await sut.get(redisItemKey)
+    expect(actual).toBe(cachedValue)
+  })
+
+  test('get: object preservation intact on retrieval', async () => {
+    const cachedValue = {
+      foo: 'bar',
+      bar: {
+        baz: 123
+      }
+    }
+    const ttl = 12345
+    await sut.setex(redisItemKey, cachedValue, ttl)
+    const actual = await sut.get(redisItemKey)
+    expect(actual).toStrictEqual(cachedValue)
+  })
+
+  test('drop: removes all specified items from cache', async () => {
+    const cacheKeys = [
+      `${redisItemKey}_foo`,
+      `${redisItemKey}_bar`,
+      `${redisItemKey}_baz`,
+      `${redisItemKey}_qux`
+    ]
+    for (let index = 0; index < cacheKeys.length; index++) {
+      const key = cacheKeys[index]
+      await sut.setex(key, { id: index }, 12345)
+    }
+    await sut.drop(cacheKeys)
+    const foundKeys = await ioRedis.keys(`${redisItemKey}:*`)
+    expect(foundKeys.length).toBe(0)
+  })
 })
