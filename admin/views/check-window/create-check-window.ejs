@@ -65,16 +65,19 @@
                         <div class="govuk-body disabled-check-window-field"><%= checkWindowData.checkWindowName %></div>
                     <% } %>
                 </div>
-                <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
+                <div class="inline-group <%= error.isError('withinActiveCheckWindowAdminDateRage') || error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
                 error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
                 error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear') ||
-                error.isError('adminStartDateAfterAdminEndDate') ||error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
-                error.isError('adminEndDateBeforeAdminStartDate') ||error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
+                error.isError('adminStartDateAfterAdminEndDate') || error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
+                error.isError('adminEndDateBeforeAdminStartDate') || error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
                         ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold">
                         School administration period
                         <% if (!checkWindowData.adminPeriodDisabled) { %>
                             <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                        <% } %>
+                        <% if (error.isError('withinActiveCheckWindowAdminDateRage')) { %>
+                            <span id="withinActiveCheckWindowAdminDateRage" class="govuk-error-message"><%= errorMessage.withinActiveCheckWindowAdminDateRage %></span>
                         <% } %>
                         <% if (error.isError('adminStartDateInThePast')) { %>
                             <span class="govuk-error-message"><%= errorMessage.adminStartDateInThePast %></span>
@@ -229,7 +232,7 @@
                         <div class="govuk-body disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDateFormatted %></div>
                     <% } %>
                     </div>
-                    <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
+                    <div class="inline-group <%= error.isError('withinActiveCheckWindowFamiliarisationDateRage') || error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
                     error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
                     error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear') ||
                     error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate') ||error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') || error.isError('familiarisationCheckStartDateBeforeAdminStartDate') ||
@@ -239,6 +242,9 @@
                             Try it out period
                             <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
                                 <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                            <% } %>
+                            <% if (error.isError('withinActiveCheckWindowFamiliarisationDateRage')) { %>
+                                <span id="withinActiveCheckWindowFamiliarisationDateRage" class="govuk-error-message"><%= errorMessage.withinActiveCheckWindowFamiliarisationDateRage %></span>
                             <% } %>
                             <% if (error.isError('familiarisationCheckStartDateInThePast')) { %>
                                 <span class="govuk-error-message"><%= errorMessage.familiarisationCheckStartDateInThePast %></span>
@@ -396,7 +402,7 @@
                         <span class="govuk-body disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDateFormatted %></span>
                     <% } %>
                     </div>
-                    <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
+                    <div class="inline-group <%= error.isError('withinActiveCheckWindowLiveDateRage') || error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
                     error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
                     error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear') ||
                     error.isError('liveCheckStartDateAfterLiveCheckEndDate') ||error.isError('liveCheckStartDateBeforeAdminStartDate') || error.isError('liveCheckEndDateAfterAdminEndDate') ||
@@ -407,6 +413,9 @@
                             Multiplication tables check period
                             <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
                                 <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                            <% } %>
+                            <% if (error.isError('withinActiveCheckWindowLiveDateRage')) { %>
+                                <span id="withinActiveCheckWindowLiveDateRage" class="govuk-error-message"><%= errorMessage.withinActiveCheckWindowLiveDateRage %></span>
                             <% } %>
                             <% if (error.isError('liveCheckStartDateInThePast')) { %>
                                 <span class="govuk-error-message"><%= errorMessage.liveCheckStartDateInThePast %></span>
@@ -570,6 +579,29 @@
                 <a href="/check-window/manage-check-windows" class="govuk-button govuk-button--secondary">Cancel</a>
                 <% } %>
             </form>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <details class="govuk-details" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                    <span class="govuk-details__summary-text">
+                                      Help with check window
+                                    </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                    To be added.
+                                </div>
+                            </details>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
         </div>
     </div>
 </main>
