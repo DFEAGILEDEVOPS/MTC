@@ -21,11 +21,11 @@ Feature:
     When I enter dates that are in the past
     Then I should see error messages stating the dates must be in the future
 
-  Scenario: All End dates must be at least a day after all the start dates
+  Scenario: All End dates must same or after all the start dates
     Given I previously created a check window
     And I decide to edit it
     When I enter end dates that are on the same day as the start date
-    Then I should see error messages stating the end dates must be at least one day after the start dates
+    Then I should see it updated in the list of check windows
 
   Scenario: Admin start date must be before the start date for familiarisation and live check
     Given I previously created a check window
