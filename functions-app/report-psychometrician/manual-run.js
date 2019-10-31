@@ -7,4 +7,7 @@ async function main () {
 }
 
 main()
-  .then(() => console.log('all done'))
+  .then(() => {
+    console.log('all done')
+    process.exit(0) // prevent the open DB connections from failing to terminate
+  })
