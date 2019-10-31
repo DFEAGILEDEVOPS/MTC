@@ -7,8 +7,8 @@ export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
    * @param {string} key the unique string key of the redis entry to fetch
-   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    * @throws when the data type of the retrieved value is unsupported
+   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
   get (key: string): Promise<any | null>
   /**
@@ -16,6 +16,7 @@ export interface IRedisService {
    * @param {string} key the unique string key of the redis entry to persist
    * @param {object | string} value the item to persist in redis cache
    * @param {number} ttl how long to store the item in seconds
+   * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
   setex (key: string, value: string | object, ttl: number): Promise<void>
