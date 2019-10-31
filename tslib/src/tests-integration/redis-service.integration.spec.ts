@@ -27,6 +27,10 @@ describe('RedisService', () => {
     await sut.drop([redisItemKey])
   })
 
+  afterAll(() => {
+    ioRedis.disconnect()
+  })
+
   test('should be defined', () => {
     expect(sut).toBeDefined()
   })
