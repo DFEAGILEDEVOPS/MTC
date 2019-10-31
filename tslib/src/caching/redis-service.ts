@@ -38,12 +38,10 @@ export interface IRedisDataService {
 // type RedisCacheItemType = Record<'string' | 'object' | 'number', string>
 
 export class RedisCacheItemMetadata {
-  constructor (type: string, ttl?: number) {
+  constructor (type: RedisItemDataType) {
     this.type = type
-    this.ttl = ttl
   }
-  type: string
-  ttl: number | undefined
+  type: RedisItemDataType
 }
 
 export class RedisCacheItem {
@@ -53,6 +51,12 @@ export class RedisCacheItem {
   }
   _meta: RedisCacheItemMetadata
   value: string
+}
+
+export enum RedisItemDataType {
+  string = 'string',
+  number = 'number',
+  object = 'object'
 }
 
 export class RedisService implements IRedisService {
@@ -81,11 +85,11 @@ export class RedisService implements IRedisService {
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem._meta.type) {
-        case 'string':
+        case RedisItemDataType.string:
           return cacheItem.value
-        case 'number':
+        case RedisItemDataType.number:
           return Number(cacheItem.value)
-        case 'object':
+        case RedisItemDataType.object:
           const hydratedObject = JSON.parse(cacheItem.value)
           return hydratedObject
         default:
@@ -105,16 +109,16 @@ export class RedisService implements IRedisService {
   async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
     try {
       let dataType = typeof(value)
-      let cacheItemDataType: string = ''
+      let cacheItemDataType: RedisItemDataType
       switch (dataType) {
         case 'string':
-          cacheItemDataType = 'string'
+          cacheItemDataType = RedisItemDataType.string
           break
         case 'number':
-          cacheItemDataType = 'number'
+          cacheItemDataType = RedisItemDataType.number
           break
         case 'object':
-          cacheItemDataType = 'object'
+          cacheItemDataType = RedisItemDataType.object
           value = JSON.stringify(value)
           break
         default:
@@ -122,8 +126,7 @@ export class RedisService implements IRedisService {
       }
       const storageItem: RedisCacheItem = {
         _meta: {
-          type: cacheItemDataType,
-          ttl: ttl
+          type: cacheItemDataType
         },
         value: value.toString()
       }
@@ -137,7 +140,7 @@ export class RedisService implements IRedisService {
 
   async drop (keys: string[]): Promise<void> {
     if (keys.length === 0) {
-      return Promise.resolve()
+      return
     }
     const pipeline = this._redis.pipeline()
     keys.forEach(c => {
