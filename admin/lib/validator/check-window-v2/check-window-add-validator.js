@@ -203,7 +203,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
 
   // Compare date fields
   // Admin start date
-  if (adminStartDate && adminStartDate.isSameOrAfter(adminEndDate)) {
+  if (adminStartDate && adminStartDate.isAfter(adminEndDate, 'days')) {
     validationError.addError('adminStartDateAfterAdminEndDate', true)
   }
   if (adminStartDate && adminStartDate.isAfter(familiarisationCheckStartDate)) {
@@ -213,7 +213,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     validationError.addError('adminStartDateAfterLiveCheckStartDate', true)
   }
   // Admin end date
-  if (adminEndDate && adminEndDate.isSameOrBefore(adminStartDate)) {
+  if (adminEndDate && adminEndDate.isBefore(adminStartDate, 'days')) {
     validationError.addError('adminEndDateBeforeAdminStartDate', true)
   }
   if (adminEndDate && adminEndDate.isBefore(liveCheckEndDate)) {
@@ -223,46 +223,46 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     validationError.addError('adminEndDateBeforeFamiliarisationCheckEndDate', true)
   }
   // Familiarisation check start date
-  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isSameOrAfter(liveCheckStartDate)) {
+  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isAfter(liveCheckStartDate)) {
     validationError.addError('familiarisationCheckStartDateAfterLiveCheckStartDate', true)
   }
-  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isSameOrAfter(familiarisationCheckEndDate)) {
+  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isAfter(familiarisationCheckEndDate, 'days')) {
     validationError.addError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate', true)
   }
   if (familiarisationCheckStartDate && familiarisationCheckStartDate.isBefore(adminStartDate)) {
     validationError.addError('familiarisationCheckStartDateBeforeAdminStartDate', true)
   }
   // Familiarisation check end date
-  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(adminStartDate)) {
+  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(adminStartDate, 'days')) {
     validationError.addError('familiarisationCheckEndDateBeforeAdminStartDate', true)
   }
   if (familiarisationCheckEndDate && familiarisationCheckEndDate.isAfter(adminEndDate)) {
     validationError.addError('familiarisationCheckEndDateAfterAdminEndDate', true)
   }
-  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isSameOrBefore(familiarisationCheckStartDate)) {
+  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(familiarisationCheckStartDate, 'days')) {
     validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
   }
   if (familiarisationCheckEndDate && !familiarisationCheckEndDate.isSame(liveCheckEndDate)) {
     validationError.addError('familiarisationCheckEndDateNotEqualLiveCheckEndDate', true)
   }
   // Live check start date
-  if (liveCheckStartDate && liveCheckStartDate.isSameOrAfter(liveCheckEndDate)) {
+  if (liveCheckStartDate && liveCheckStartDate.isAfter(liveCheckEndDate, 'days')) {
     validationError.addError('liveCheckStartDateAfterLiveCheckEndDate', true)
   }
   if (liveCheckStartDate && liveCheckStartDate.isBefore(adminStartDate)) {
     validationError.addError('liveCheckStartDateBeforeAdminStartDate', true)
   }
-  if (liveCheckStartDate && liveCheckStartDate.isSameOrBefore(familiarisationCheckStartDate)) {
+  if (liveCheckStartDate && liveCheckStartDate.isBefore(familiarisationCheckStartDate)) {
     validationError.addError('liveCheckStartDateBeforeFamiliarisationCheckStartDate', true)
   }
   // Live check end date
-  if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate)) {
+  if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate, 'days')) {
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
   if (liveCheckEndDate && liveCheckEndDate.isAfter(adminEndDate)) {
     validationError.addError('liveCheckEndDateAfterAdminEndDate', true)
   }
-  if (liveCheckEndDate && liveCheckEndDate.isSameOrBefore(liveCheckStartDate)) {
+  if (liveCheckEndDate && liveCheckEndDate.isBefore(liveCheckStartDate, 'days')) {
     validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
   }
   if (liveCheckEndDate && !liveCheckEndDate.isSame(familiarisationCheckEndDate)) {
