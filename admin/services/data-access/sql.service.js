@@ -190,13 +190,9 @@ const sqlService = {
     BigInt: mssql.BigInt,
     Bit: mssql.Bit,
     Char: mssql.Char,
-    /*
-      Using mssql.DateTimeOffset would store both a local and UTC version of the datetime
-      The UTC value seems to always be returned by sqlService.query, but this can be
-      confusing when checking data manually, as many GUIs (e.g. DBeaver) will then show
-      the datetime with the server's TZ offset.
-    */
-    DateTimeOffset: mssql.DateTime,
+    DateTimeOffset: mssql.DateTimeOffset,
+    DateTime: mssql.DateTime,
+    DateTime2: mssql.DateTime2,
     Decimal: mssql.Decimal,
     Float: mssql.Float,
     Int: mssql.Int,
