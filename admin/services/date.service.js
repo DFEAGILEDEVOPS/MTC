@@ -153,6 +153,18 @@ const dateService = {
 
   formatFileName: function (date) {
     return moment(date).format(filenameFriendly)
+  },
+
+  /**
+   * Checks if a moment date is inclusively between a given time frame
+   * @param {moment.Moment} date
+   * @param {moment.Moment} startDate
+   * @param {moment.Moment} endDate
+   * @param {string | null} granularity
+   * @returns {boolean}
+   */
+  isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
+    return date.isBetween(startDate, endDate, granularity, '[]')
   }
 }
 
