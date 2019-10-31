@@ -9,42 +9,42 @@ export interface ICheckWindowService {
 }
 
 export class CheckWindowService {
-  private _redisService: IRedisService
-  private _checkWindowDataService: ICheckWindowDataService
-  private _logger: ILogger
-  private _twentyFourHoursInSeconds = 86400
+  private redisService: IRedisService
+  private checkWindowDataService: ICheckWindowDataService
+  private logger: ILogger
+  private twentyFourHoursInSeconds = 86400
 
   constructor (redisService?: IRedisService, checkWindowDataService?: ICheckWindowDataService, logger?: ILogger) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }
-    this._redisService = redisService
+    this.redisService = redisService
 
     if (checkWindowDataService === undefined) {
       checkWindowDataService = new CheckWindowDataService()
     }
-    this._checkWindowDataService = checkWindowDataService
+    this.checkWindowDataService = checkWindowDataService
 
     if (logger === undefined) {
       logger = new ConsoleLogger()
     }
-    this._logger = logger
+    this.logger = logger
   }
 
   async getActiveCheckWindow (): Promise<ICheckWindow> {
     let cachedWindow
     try {
-      cachedWindow = await this._redisService.get('activeCheckWindow')
+      cachedWindow = await this.redisService.get('activeCheckWindow')
     } catch (error) {
-      this._logger.error(error)
+      this.logger.error(error)
     }
     if (!cachedWindow) {
-      const window = await this._checkWindowDataService.getActiveCheckWindow()
+      const window = await this.checkWindowDataService.getActiveCheckWindow()
       try {
         // tslint:disable-next-line: no-floating-promises
-        this._redisService.setex('activeCheckWindow', window, this._twentyFourHoursInSeconds)
+        this.redisService.setex('activeCheckWindow', window, this.twentyFourHoursInSeconds)
       } catch (error) {
-        this._logger.error(error)
+        this.logger.error(error)
       }
       return window
     }

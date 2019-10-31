@@ -7,10 +7,10 @@ export interface ICheckWindowDataService {
 
 export class CheckWindowDataService implements ICheckWindowDataService {
 
-  private _sqlService: SqlService
+  private sqlService: SqlService
 
   constructor () {
-    this._sqlService = new SqlService()
+    this.sqlService = new SqlService()
   }
 
   getActiveCheckWindow (): Promise<ICheckWindow> {
@@ -18,6 +18,6 @@ export class CheckWindowDataService implements ICheckWindowDataService {
     FROM [mtc_admin].checkWindow
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
-    return this._sqlService.query(sql)
+    return this.sqlService.query(sql)
   }
 }

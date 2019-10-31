@@ -61,8 +61,8 @@ export enum RedisItemDataType {
 
 export class RedisService implements IRedisService {
 
-  private _redis: Redis.Redis
-  private _logger: Logger.ILogger
+  private redis: Redis.Redis
+  private logger: Logger.ILogger
 
   constructor () {
     const options: RedisOptions = {
@@ -75,13 +75,13 @@ export class RedisService implements IRedisService {
         host: config.Redis.Host
       }
     }
-    this._redis = new Redis(options)
-    this._logger = new Logger.ConsoleLogger()
+    this.redis = new Redis(options)
+    this.logger = new Logger.ConsoleLogger()
   }
 
   async get (key: string): Promise<any | null> {
     try {
-      const cacheEntry = await this._redis.get(key)
+      const cacheEntry = await this.redis.get(key)
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem._meta.type) {
@@ -96,7 +96,7 @@ export class RedisService implements IRedisService {
           throw new Error(`unsupported cache item type:${cacheItem._meta.type}`)
       }
     } catch (err) {
-      this._logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
+      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
       throw err
     }
   }
@@ -131,9 +131,9 @@ export class RedisService implements IRedisService {
         value: value.toString()
       }
       const storageItemString = JSON.stringify(storageItem)
-      await this._redis.setex(key, ttl, storageItemString)
+      await this.redis.setex(key, ttl, storageItemString)
     } catch (err) {
-      this._logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
+      this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
     }
   }
@@ -142,7 +142,7 @@ export class RedisService implements IRedisService {
     if (keys.length === 0) {
       return
     }
-    const pipeline = this._redis.pipeline()
+    const pipeline = this.redis.pipeline()
     keys.forEach(c => {
       pipeline.del(c)
     })

@@ -19,10 +19,10 @@ export interface ICheckAllocationDataService {
 
 export class CheckAllocationDataService implements ICheckAllocationDataService {
 
-  private _sqlService: SqlService
+  private sqlService: SqlService
 
   constructor () {
-    this._sqlService = new SqlService()
+    this.sqlService = new SqlService()
   }
 
   async getFormsUsedByPupil (pupilUUID: string): Promise<any[]> {
@@ -39,6 +39,6 @@ export class CheckAllocationDataService implements ICheckAllocationDataService {
         type: mssql.UniqueIdentifier,
         value: schoolUUID
       }]
-    return this._sqlService.query(sql, params)
+    return this.sqlService.query(sql, params)
   }
 }
