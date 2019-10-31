@@ -1,6 +1,7 @@
-import Redis, { RedisOptions, Pipeline } from 'ioredis'
+import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
 import * as Logger from '../common/logger'
+import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
 
 export interface IRedisService {
   /**
@@ -23,40 +24,6 @@ export interface IRedisService {
    * @returns {Promise<void>}
    */
   drop (keys: Array<string>): Promise<void>
-}
-
-/**
- * exists purely to support mocking of ioredis Redis.Redis interface for unit tests
- * Redis.Redis has 194 members, so this avoids having to declare them all on a mock
- */
-export interface IRedisDataService {
-  get (key: string): Promise<any | null>
-  setex (key: string, seconds: number, value: any): Promise<any>
-  pipeline (commands?: string[][]): Pipeline
-}
-
-// type RedisCacheItemType = Record<'string' | 'object' | 'number', string>
-
-export class RedisCacheItemMetadata {
-  constructor (type: RedisItemDataType) {
-    this.type = type
-  }
-  type: RedisItemDataType
-}
-
-export class RedisCacheItem {
-  constructor (meta: RedisCacheItemMetadata, value: string) {
-    this._meta = meta
-    this.value = value
-  }
-  _meta: RedisCacheItemMetadata
-  value: string
-}
-
-export enum RedisItemDataType {
-  string = 'string',
-  number = 'number',
-  object = 'object'
 }
 
 export class RedisService implements IRedisService {
@@ -84,7 +51,7 @@ export class RedisService implements IRedisService {
       const cacheEntry = await this.redis.get(key)
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
-      switch (cacheItem._meta.type) {
+      switch (cacheItem.meta.type) {
         case RedisItemDataType.string:
           return cacheItem.value
         case RedisItemDataType.number:
@@ -93,7 +60,7 @@ export class RedisService implements IRedisService {
           const hydratedObject = JSON.parse(cacheItem.value)
           return hydratedObject
         default:
-          throw new Error(`unsupported cache item type:${cacheItem._meta.type}`)
+          throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
     } catch (err) {
       this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
@@ -125,7 +92,7 @@ export class RedisService implements IRedisService {
           throw new Error(`unsupported data type ${dataType}`)
       }
       const storageItem: RedisCacheItem = {
-        _meta: {
+        meta: {
           type: cacheItemDataType
         },
         value: value.toString()
