@@ -58,8 +58,13 @@ export class RedisService implements IRedisService {
         case RedisItemDataType.number:
           return Number(cacheItem.value)
         case RedisItemDataType.object:
-          const hydratedObject = JSON.parse(cacheItem.value)
-          return hydratedObject
+          try {
+            const hydratedObject = JSON.parse(cacheItem.value)
+            return hydratedObject
+          } catch (e) {
+            this.logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
+            throw e
+          }
         default:
           throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
