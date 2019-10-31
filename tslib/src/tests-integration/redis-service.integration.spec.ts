@@ -36,7 +36,7 @@ describe('RedisService', () => {
     const ttl = 12345
     await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
-      _meta: {
+      meta: {
         type: 'string'
       },
       value: cachedValue
@@ -54,7 +54,7 @@ describe('RedisService', () => {
     const ttl = 12345
     await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
-      _meta: {
+      meta: {
         type: 'number'
       },
       value: cachedValue.toString()
@@ -77,7 +77,7 @@ describe('RedisService', () => {
     const ttl = 12345
     await sut.setex(redisItemKey, cachedValue, ttl)
     const expectedObjectToStore = {
-      _meta: {
+      meta: {
         type: 'object'
       },
       value: JSON.stringify(cachedValue)
