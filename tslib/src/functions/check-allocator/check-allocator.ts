@@ -58,7 +58,7 @@ export class SchoolCheckAllocationService {
     const pupils = await this._dataService.getPupilsBySchoolUuid(schoolUUID)
     if (RA.isNilOrEmpty(pupils)) return
     const schoolKey = this.redisAllocationsKeyPrefix.concat(schoolUUID)
-    let allocationCache = await this._redisService.get(schoolKey)
+    const allocationCache = await this._redisService.get(schoolKey)
 
     for (let pupilIndex = 0; pupilIndex < pupils.length; pupilIndex++) {
       const pupil = pupils[pupilIndex]
