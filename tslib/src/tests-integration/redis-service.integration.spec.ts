@@ -27,8 +27,9 @@ describe('RedisService', () => {
     await sut.drop([redisItemKey])
   })
 
-  afterAll(() => {
-    ioRedis.disconnect()
+  afterAll(async () => {
+    const response = await ioRedis.quit()
+    console.log(`redis quit response:${response}`)
   })
 
   test('should be defined', () => {

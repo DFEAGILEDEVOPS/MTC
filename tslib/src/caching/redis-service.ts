@@ -26,6 +26,11 @@ export interface IRedisService {
    * @returns {Promise<void>}
    */
   drop (keys: Array<string>): Promise<void>
+  /**
+   * @description cleans up the underlying redis client implementation
+   * @returns void
+   */
+  quit (): Promise<string>
 }
 
 export class RedisService implements IRedisService {
@@ -75,11 +80,6 @@ export class RedisService implements IRedisService {
     }
   }
 
-  /**
-   * @param key
-   * @param value
-   * @param ttl
-   */
   async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
     try {
       let dataType = typeof(value)
@@ -121,5 +121,9 @@ export class RedisService implements IRedisService {
       pipeline.del(c)
     })
     return pipeline.exec()
+  }
+
+  quit (): Promise<string> {
+    return this.redis.quit()
   }
 }
