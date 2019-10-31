@@ -13,8 +13,8 @@
     "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist",
     "coverage": "yarn jest --coverage",
-    "tests:integration": "yarn jest --config ./src/tests-integration/jest.integration.config.js",
-    "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js --detectOpenHandles"
+    "tests:integration": "yarn jest --config ./src/tests-integration/jest.integration.config.js --detectOpenHandles",
+    "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js"
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "devDependencies": {
