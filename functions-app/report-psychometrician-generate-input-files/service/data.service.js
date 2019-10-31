@@ -82,7 +82,8 @@ const dataService = {
                           LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
                  WHERE chk.isLiveCheck = 1
                    AND cs.code = 'CMP'`
-    await psychometricianDataService.setLogger(this.logger).streamReport(fileNameWithPath, sql)
+    psychometricianDataService.setLogger(this.logger)
+    await psychometricianDataService.streamReport(fileNameWithPath, sql)
     return fileNameWithPath
   },
   /**

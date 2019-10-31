@@ -14,7 +14,7 @@ const psychometricianDataService = {
    * @param fileNameWithPath
    * @return {Promise}
    */
-  streamReport: async function (fileNameWithPath, sql) {
+  streamReport: function (fileNameWithPath, sql) {
     return new Promise(async resolve => {
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.createWriteStream({ headers: true })
@@ -57,8 +57,10 @@ const psychometricianDataService = {
        */
       const doneFunc = (data) => {
         csvStream.end(function () {
-          console.log('streamReport(): file complete')
-          resolve(data)
+          stream.end(function () {
+            console.log('streamReport(): file complete')
+            resolve(data)
+          })
         })
       }
 
