@@ -11,3 +11,7 @@ main()
     console.log('all done')
     process.exit(0) // prevent the open DB connections from failing to terminate
   })
+  .catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
