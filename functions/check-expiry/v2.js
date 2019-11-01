@@ -80,7 +80,7 @@ async function sqlClearCheckIdField (pupilRestartIds) {
   if (pupilRestartIds.length === 0) {
     return
   }
-  const update = `UPDATE [mtc_admin].[pupilRestart] SET check_id = null`
+  const update = 'UPDATE [mtc_admin].[pupilRestart] SET check_id = null'
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilRestartIds, TYPES.Int)
   const sql = [update, 'WHERE id IN (', paramIdentifiers.join(', '), ')'].join(' ')
   return sqlService.modify(sql, params)

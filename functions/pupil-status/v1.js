@@ -3,11 +3,11 @@
 const pupilStatusService = require('./pupil-status.service')
 
 async function process (context, pupilStatusMessage) {
-  if (!pupilStatusMessage.hasOwnProperty('pupilId')) {
+  if (!Object.prototype.hasOwnProperty.call(pupilStatusMessage, 'pupilId')) {
     throw new Error('pupil-status: Invalid message. Missing pupilId.')
   }
 
-  if (!pupilStatusMessage.hasOwnProperty('checkCode')) {
+  if (!Object.prototype.hasOwnProperty.call(pupilStatusMessage, 'checkCode')) {
     throw new Error('pupil-status: Invalid message. Missing checkCode.')
   }
 

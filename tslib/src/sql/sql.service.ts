@@ -24,45 +24,45 @@ const dbLimitReached = (error: SqlServerError) => {
 
 export class SqlService {
 
-  private _connectionPool: ConnectionPool
-  private _logger: ILogger
-  private _dateTimeService: IDateTimeService
+  private connectionPool: ConnectionPool
+  private logger: ILogger
+  private dateTimeService: IDateTimeService
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
-    this._connectionPool = new ConnectionPool(mtcConfig.Sql)
+    this.connectionPool = new ConnectionPool(mtcConfig.Sql)
 
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
     }
-    this._dateTimeService = dateTimeService
+    this.dateTimeService = dateTimeService
 
     if (logger === undefined) {
       logger = new ConsoleLogger()
     }
-    this._logger = logger
+    this.logger = logger
   }
 
   async init (): Promise<void> {
-    if (this._connectionPool.connecting || this._connectionPool.connected) {
-      this._logger.warn('connection pool already initialised')
+    if (this.connectionPool.connecting || this.connectionPool.connected) {
+      this.logger.warn('connection pool already initialised')
     }
     try {
-      await this._connectionPool.connect()
+      await this.connectionPool.connect()
     } catch (error) {
-      this._logger.error('Pool Connection Error:', error)
+      this.logger.error('Pool Connection Error:', error)
       throw error
     }
-    this._connectionPool.on('error', (error: Error) => {
-      this._logger.error('SQL Pool Error:', error)
+    this.connectionPool.on('error', (error: Error) => {
+      this.logger.error('SQL Pool Error:', error)
     })
   }
 
   close (): Promise<void> {
-    if (!this._connectionPool) {
-      this._logger.warn('The connection pool is not initialised')
+    if (!this.connectionPool) {
+      this.logger.warn('The connection pool is not initialised')
       return Promise.resolve()
     }
-    return this._connectionPool.close()
+    return this.connectionPool.close()
   }
 
   /**
@@ -81,7 +81,7 @@ export class SqlService {
     R.map(convertDateToMoment)
   ), recordSet)
     */
-    return R.map(R.pipe(R.map(this._dateTimeService.convertDateToMoment)), recordSet)
+    return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
   private addParamsToRequestSimple (params: Array<any>, request: Request) {
@@ -99,10 +99,10 @@ export class SqlService {
     this.ensureInitialised()
 
     // tslint:disable-next-line: await-promise
-    await this._connectionPool
+    await this.connectionPool
 
     const query = async () => {
-      const request = new Request(this._connectionPool)
+      const request = new Request(this.connectionPool)
       if (params !== undefined) {
         this.addParamsToRequestSimple(params, request)
       }
@@ -125,10 +125,10 @@ export class SqlService {
     this.ensureInitialised()
 
     // tslint:disable-next-line: await-promise
-    await this._connectionPool
+    await this.connectionPool
 
     const modify = async () => {
-      const request = new Request(this._connectionPool)
+      const request = new Request(this.connectionPool)
       this.addParamsToRequest(params, request)
       return request.query(sql)
     }

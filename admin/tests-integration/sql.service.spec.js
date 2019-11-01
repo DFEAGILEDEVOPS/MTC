@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail xit spyOn */
+/* global describe beforeAll it expect fail spyOn */
 
 const moment = require('moment')
 const R = require('ramda')
@@ -205,27 +205,29 @@ describe('sql.service:integration', () => {
     }
   })
 
-  xit('should store the timezone offset with the datetime value', async () => {
-    const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00')
+  it('should normalise a non UTC offset to UTC when stored as moment', async () => {
+    const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00', moment.ISO_8601, true)
     const updatedAtParam = {
       name: 'updatedAt',
-      type: TYPES.DateTimeOffset,
-      value: updatedAtDate.toISOString()
+      type: TYPES.DateTime2,
+      value: updatedAtDate
     }
-    const idParam = {
-      name: 'id',
-      type: TYPES.Int,
-      value: 1
-    }
-    const updateSql = 'UPDATE Settings SET questionTimeLimit=5, updatedAt=@updatedAt WHERE id=@id'
+    const insertSql = 'INSERT INTO mtc_admin.integrationTest (tDateTime) VALUES (@updatedAt);SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]'
+    let response
     try {
-      await sql.modify(updateSql, [updatedAtParam, idParam])
+      response = await sql.modify(insertSql, [updatedAtParam])
     } catch (err) {
       console.log(err)
       fail(err)
       return
     }
-    const selectSql = 'SELECT updatedAt FROM Settings WHERE id=@id'
+    const { insertId } = response
+    const selectSql = 'SELECT * FROM mtc_admin.integrationTest WHERE id=@id'
+    const idParam = {
+      name: 'id',
+      type: TYPES.Int,
+      value: insertId
+    }
     let results
     try {
       results = await sql.query(selectSql, [idParam])
@@ -237,13 +239,53 @@ describe('sql.service:integration', () => {
     try {
       expect(results.length).toBe(1)
       const row = results[0]
-      expect(row.updatedAt).toBeDefined()
-      const actualDateTime = moment(row.updatedAt)
-      const utcOffset = moment.parseZone(actualDateTime).utcOffset()
-      console.log('utcOffset:', utcOffset)
-      console.log('actual:', actualDateTime)
-      console.log('expected:', updatedAtDate)
-      expect(actualDateTime.toISOString()).toBe(updatedAtDate.toISOString())
+      expect(row.tDateTime).toBeDefined()
+      expect(Object.keys(response).length).toBeGreaterThan(0)
+      expect(row.tDateTime.toISOString()).toBe('2017-12-01T23:00:00.000Z')
+    } catch (err) {
+      console.log(err)
+      fail(err)
+    }
+  })
+
+  it('should normalise a non UTC offset to UTC when stored as plain date object', async () => {
+    const updatedAtDate = new Date('2017-12-01T15:00:00.000-08:00')
+    const updatedAtParam = {
+      name: 'updatedAt',
+      type: TYPES.DateTime2,
+      value: updatedAtDate
+    }
+    const insertSql = 'INSERT INTO mtc_admin.integrationTest (tDateTime) VALUES (@updatedAt);SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]'
+    let response
+    try {
+      response = await sql.modify(insertSql, [updatedAtParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+      return
+    }
+    const { insertId } = response
+    const selectSql = 'SELECT * FROM mtc_admin.integrationTest WHERE id=@id'
+    const idParam = {
+      name: 'id',
+      type: TYPES.Int,
+      value: insertId
+    }
+    let results
+    try {
+      results = await sql.query(selectSql, [idParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+      return
+    }
+    try {
+      expect(results.length).toBe(1)
+      const row = results[0]
+      expect(row.tDateTime).toBeDefined()
+      console.log('expected:', updatedAtDate.toISOString())
+      expect(Object.keys(response).length).toBeGreaterThan(0)
+      expect(row.tDateTime.toISOString()).toBe('2017-12-01T23:00:00.000Z')
     } catch (err) {
       console.log(err)
       fail(err)

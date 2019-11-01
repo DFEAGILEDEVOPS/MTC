@@ -6,17 +6,27 @@ const config = require('../../config')
 const logger = require('../../services/log.service').getLogger()
 
 const adminConfig = {
-  appName: config.Sql.Application.Name,
-  userName: config.Sql.Migrator.Username,
-  password: config.Sql.Migrator.Password,
   server: config.Sql.Server,
-  debug: true,
   options: {
     database: 'master',
     encrypt: config.Sql.Encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
     port: config.Sql.Port,
     connectTimeout: config.Sql.Migrator.Timeout
+  },
+  authentication: {
+    type: 'default',
+    options: {
+      userName: config.Sql.Migrator.Username,
+      password: config.Sql.Migrator.Password
+    }
+  },
+  appName: config.Sql.Application.Name,
+  debug: {
+    packet: false,
+    data: true,
+    payload: false,
+    token: false
   }
 }
 
