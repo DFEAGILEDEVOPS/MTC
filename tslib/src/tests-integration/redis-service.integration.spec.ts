@@ -29,7 +29,8 @@ describe('RedisService', () => {
 
   afterAll(async () => {
     const response = await ioRedis.quit()
-    console.log(`redis quit response:${response}`)
+    console.log(`redis:quit:${response}`)
+    await new Promise(resolve => setTimeout(resolve, 3000))
   })
 
   test('should be defined', () => {
