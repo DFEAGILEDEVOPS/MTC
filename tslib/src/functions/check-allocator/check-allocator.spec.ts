@@ -7,6 +7,7 @@ import { ICheckAllocationDataService } from './check-allocation.data.service'
 import { IDateTimeService } from '../../common/datetime.service'
 import { IPupilAllocationService } from './pupil-allocation.service'
 import { IRedisService } from '../../caching/redis-service'
+import { RedisServiceMock } from '../../caching/redis-service.mock'
 
 const pupilData: Array<IPupil> = [
   {
@@ -24,12 +25,6 @@ const CheckAllocationDataServiceMock = jest.fn<ICheckAllocationDataService, any>
   getPupilsBySchoolUuid: jest.fn(),
   getFormsUsedByPupil: jest.fn(),
   getAllForms: jest.fn()
-}))
-
-const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
-  get: jest.fn(),
-  setex: jest.fn(),
-  drop: jest.fn()
 }))
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({

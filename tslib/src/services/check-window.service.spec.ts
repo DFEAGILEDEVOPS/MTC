@@ -1,15 +1,10 @@
 import { CheckWindowService } from './check-window.service'
 import { ICheckWindowDataService } from './data/check-window.data.service'
 import { IRedisService } from '../caching/redis-service'
+import { RedisServiceMock } from '../caching/redis-service.mock'
 
 const CheckWindowDataServiceMock = jest.fn<ICheckWindowDataService, any>(() => ({
   getActiveCheckWindow: jest.fn()
-}))
-
-const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
-  get: jest.fn(),
-  setex: jest.fn(),
-  drop: jest.fn()
 }))
 
 const redisCheckWindowKey = 'activeCheckWindow'
