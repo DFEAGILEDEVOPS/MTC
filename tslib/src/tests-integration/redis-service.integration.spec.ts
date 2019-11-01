@@ -27,9 +27,14 @@ describe('RedisService', () => {
     await sut.drop([redisItemKey])
   })
 
+  afterEach(async () => {
+    const response = await sut.quit()
+    console.log(`redisService.quit:${response}`)
+  })
+
   afterAll(async () => {
     const response = await ioRedis.quit()
-    console.log(`redis:quit:${response}`)
+    console.log(`ioRedis.quit:${response}`)
     await new Promise(resolve => setTimeout(resolve, 3000))
   })
 
