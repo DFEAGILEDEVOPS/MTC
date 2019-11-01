@@ -374,7 +374,7 @@ psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
  * @return {string|number}
  */
 psUtilService.getScore = function (markedAnswer) {
-  if (!markedAnswer.hasOwnProperty('isCorrect')) {
+  if (!Object.prototype.hasOwnProperty.call(markedAnswer, 'isCorrect')) {
     return 'error'
   }
   return markedAnswer.isCorrect ? 1 : 0
@@ -533,7 +533,7 @@ psUtilService.getAccessArrangements = function (config) {
   }
   const values = []
   for (const k in props) {
-    if (config.hasOwnProperty(k) && config[k]) {
+    if (Object.prototype.hasOwnProperty.call(config, k) && config[k]) {
       values.push(props[k])
     }
   }

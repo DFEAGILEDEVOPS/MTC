@@ -15,7 +15,7 @@ const psychometricianDataService = {
    * @return {Promise}
    */
   streamReport: function (fileNameWithPath, sql) {
-    return new Promise(async resolve => {
+    return new Promise(async resolve => { // eslint-disable-line no-async-promise-executor
       const stream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       const csvStream = csv.format({ headers: true })
       csvStream.pipe(stream)
