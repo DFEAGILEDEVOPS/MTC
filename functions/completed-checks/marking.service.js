@@ -32,7 +32,7 @@ markingService.mark = async function (completedCheckMessage, check) {
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
-  for (let question of formData) {
+  for (const question of formData) {
     const currentIndex = questionNumber - 1
     const answerRecord = completedCheckMessage.answers[currentIndex]
     const answer = (answerRecord && answerRecord.answer) || ''
