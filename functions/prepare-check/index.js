@@ -39,7 +39,7 @@ module.exports = async function (context, prepareCheckMessage) {
     case 2:
       try {
         meta = await v2.process(context, prepareCheckMessage)
-        for (let msg of prepareCheckMessage.messages) {
+        for (const msg of prepareCheckMessage.messages) {
           context.bindings[outputProp].push({
             PartitionKey: msg.checkCode,
             RowKey: uuid(),
