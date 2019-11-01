@@ -68,12 +68,11 @@ sqlUtil.sqlFindAccessArrangementsCodesWithIds = async function (ids) {
  * @returns {Array}
  */
 const init = async () => {
-  let accessArrangements
   const sql = `
     SELECT *
     FROM ${schema}.[accessArrangements]`
 
-  accessArrangements = await sqlService.query(sql)
+  const accessArrangements = await sqlService.query(sql)
   accessArrangements.map(aa => {
     accessArrangementCodes[aa.code] = { id: aa.id, code: aa.code }
   })
