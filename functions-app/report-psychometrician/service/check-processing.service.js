@@ -120,21 +120,29 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
   const anomalyOutputStream = fs.createWriteStream(path.join(newTmpDir, 'anomalyReport.csv'), { mode: 0o600 })
   const psReportOutputStream = fs.createWriteStream(path.join(newTmpDir, 'psychometricReport.csv'), { mode: 0o600 })
   // ... and 2 CSV streams to pipe into them
-  const anomalyCsvStream = csv.createWriteStream({ headers: true })
-  const psReportCsvStream = csv.createWriteStream({ headers: true })
+  const anomalyCsvStream = csv.format({ headers: true })
+  const psReportCsvStream = csv.format({ headers: true })
   psReportCsvStream.pipe(psReportOutputStream)
   anomalyCsvStream.pipe(anomalyOutputStream)
+  let anomalyEndDetected = false
+  let psReportEndDetected = false
+
+  function waitForEnd (predicate, cb) {
+    if (predicate()) {
+      cb()
+    } else {
+      setTimeout(waitForEnd, 250, predicate, cb)
+    }
+  }
 
   return new Promise((resolve, reject) => {
     // Open the input file for reading
     const inputStream = fs.createReadStream(filename)
       .on('error', error => {
         console.error(`${functionName}: Error reading CSV: ${error}`)
-        psReportCsvStream.end(() => {
-          anomalyCsvStream.end(() => {
-            reject(error)
-          })
-        })
+        psReportCsvStream.end()
+        anomalyCsvStream.end()
+        reject(error)
       })
 
     // read the csv
@@ -173,12 +181,18 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
         const end = performance.now()
         const durationInMinutes = Math.floor((end - start) / 1000)
         psReportCsvStream.end()
-        psReportOutputStream.end()
         anomalyCsvStream.end()
-        anomalyOutputStream.end()
         meta.durationInMins = Math.floor(durationInMinutes / 1000)
-        setTimeout(() => { resolve(meta) }, 5000)
       })
+
+    anomalyCsvStream.on('end', function () {
+      anomalyEndDetected = true
+    })
+
+    psReportCsvStream.on('end', function () {
+      psReportEndDetected = true
+      waitForEnd(() => anomalyEndDetected && psReportEndDetected, () => { resolve(meta) })
+    })
   })
 }
 
