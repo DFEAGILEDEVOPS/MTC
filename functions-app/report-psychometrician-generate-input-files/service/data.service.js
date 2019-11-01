@@ -15,7 +15,7 @@ const dataService = {
    * @return {Promise<string>}
    */
   generateCheckDataForPsychometricianReport: async function generateCheckDataForPsychometricianReport (directory) {
-    const baseFilename = `custom-check-data.csv`
+    const baseFilename = 'custom-check-data.csv'
     const fileNameWithPath = `${directory}${path.sep}${baseFilename}`
     const sql = `SELECT
                      chk.id as checkId,

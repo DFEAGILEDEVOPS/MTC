@@ -480,14 +480,14 @@ psUtilService.getInputMethod = function (inputs) {
     const eventType = R.prop('eventType', input)
     switch (eventType) {
       case 'keydown':
-        types['key'] += 1
+        types.key += 1
         break
       case 'touch':
-        types['touch'] += 1
+        types.touch += 1
         break
       case 'mousedown':
       case 'click':
-        types['mouse'] += 1
+        types.mouse += 1
         break
       default:
         if (eventType) {
@@ -496,13 +496,13 @@ psUtilService.getInputMethod = function (inputs) {
     }
   })
 
-  if (types['key'] && !types['mouse'] && !types['touch']) {
+  if (types.key && !types.mouse && !types.touch) {
     return 'k'
-  } else if (types['mouse'] && !types['key'] && !types['touch']) {
+  } else if (types.mouse && !types.key && !types.touch) {
     return 'm'
-  } else if (types['touch'] && !types['key'] && !types['mouse']) {
+  } else if (types.touch && !types.key && !types.mouse) {
     return 't'
-  } else if (!types['key'] && !types['mouse'] && !types['touch']) {
+  } else if (!types.key && !types.mouse && !types.touch) {
     return ''
   } else {
     return 'x' // combination

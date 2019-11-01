@@ -84,9 +84,9 @@ const psychometricianReportService = {
 
     // This returns the full path + filename of the ps report
     try {
-      this.logger(`Generating psychometrician report...`)
+      this.logger('Generating psychometrician report...')
       psychometricianReportFilename = await this.generatePsychometricianReport(newTmpDir)
-      this.logger(`Generating psychometrician report: done`)
+      this.logger('Generating psychometrician report: done')
     } catch (error) {
       this.logger.error(`${functionName}: Failed to generate psychometrician report: ${error.message}`)
       throw error
