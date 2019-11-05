@@ -87,4 +87,29 @@ redisCacheService.drop = async (caches = []) => {
   return true
 }
 
+/**
+ * @param {[{key:string, value:object}]} batch a dictionary of items to add to redis
+ * @param {number} ttl time to expiry in seconds, optional.
+ * @returns {Promise<void>}
+ */
+redisCacheService.addBatch = async (batch, ttl = 0) => {
+  if (!Array.isArray(batch)) {
+    throw new Error('batch is not an array')
+  }
+  redisConnect()
+  const multi = redis.multi()
+  for (let index = 0; index < batch.length; index++) {
+    const item = batch[index]
+    if (typeof item.value === 'object') {
+      item.value = JSON.stringify(item.value)
+    }
+    if (ttl > 0) {
+      multi.setex(item.key, ttl, item.value)
+    } else {
+      multi.set(item.key, item.value)
+    }
+  }
+  return multi.exec()
+}
+
 module.exports = redisCacheService
