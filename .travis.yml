@@ -42,6 +42,7 @@ install:
 - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
 - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
 - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
+- cd ${TRAVIS_BUILD_DIR}/tslib && travis_retry yarn install --frozen-lockfile
 - cd ${TRAVIS_BUILD_DIR}/test/admin-hpa && gem install bundler --conservative && bundle
   install
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && gem install bundler --conservative && bundle
@@ -52,5 +53,6 @@ install:
 script:
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 - cd ${TRAVIS_BUILD_DIR}/admin && yarn sql-integration-test
+- cd ${TRAVIS_BUILD_DIR}/tslib && yarn tests:integration
 after_script:
 - docker-compose -f docker-compose.yml -f docker-compose.functions.yml down

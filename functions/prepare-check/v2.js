@@ -26,7 +26,7 @@ async function process (context, v2Message) {
   const batch = new azure.TableBatch()
 
   let processCount = 0
-  for (let preparedCheck of v2Message.messages) {
+  for (const preparedCheck of v2Message.messages) {
     context.log.verbose(`prepare-check: v2 process(): checkCode: ${preparedCheck.checkCode}`)
     batch.insertEntity(prepareEntity(preparedCheck))
     processCount += 1
@@ -36,7 +36,7 @@ async function process (context, v2Message) {
 
   if (batchResult.response.isSuccessful !== true) {
     context.error('prepare-check: v2 process(): there were one or more errors in the batch', batchResult.result)
-    for (let result of batchResult.result) {
+    for (const result of batchResult.result) {
       if (result.error) {
         context.log.error(`prepare-check: v2 process(): error in checkCode ${result.entity.checkCode}: ${result.error}`)
       }

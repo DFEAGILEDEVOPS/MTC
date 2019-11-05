@@ -8,30 +8,30 @@ export interface IPupilAllocationService {
 }
 
 export class PupilAllocationService implements IPupilAllocationService {
-  private _pupilPinGenerationService: IPupilPinGenerationService
-  private _checkFormAllocationService: ICheckFormAllocationService
-  private _dateTimeService: IDateTimeService
+  private pupilPinGenerationService: IPupilPinGenerationService
+  private checkFormAllocationService: ICheckFormAllocationService
+  private dateTimeService: IDateTimeService
 
   constructor (pupilPinGenerationService?: IPupilPinGenerationService, checkFormAllocationService?: ICheckFormAllocationService, dateTimeService?: IDateTimeService) {
     if (pupilPinGenerationService === undefined) {
       pupilPinGenerationService = new PupilPinGenerationService()
     }
-    this._pupilPinGenerationService = pupilPinGenerationService
+    this.pupilPinGenerationService = pupilPinGenerationService
     if (checkFormAllocationService === undefined) {
       checkFormAllocationService = new CheckFormAllocationService()
     }
-    this._checkFormAllocationService = checkFormAllocationService
+    this.checkFormAllocationService = checkFormAllocationService
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
     }
-    this._dateTimeService = dateTimeService
+    this.dateTimeService = dateTimeService
   }
   async allocate (pupil: IPupil): Promise<IPupilAllocation> {
     const allocation: IPupilAllocation = {
       id: pupil.id,
-      pin: this._pupilPinGenerationService.generate(),
-      allocatedForm: await this._checkFormAllocationService.allocate(pupil.id),
-      allocatedAtUtc: this._dateTimeService.utcNow()
+      pin: this.pupilPinGenerationService.generate(),
+      allocatedForm: await this.checkFormAllocationService.allocate(pupil.id),
+      allocatedAtUtc: this.dateTimeService.utcNow()
     }
     return allocation
   }

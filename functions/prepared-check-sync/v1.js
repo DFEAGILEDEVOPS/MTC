@@ -14,7 +14,7 @@ v1.process = async function process (context, preparedCheckSyncMessage) {
   const { checkCode } = preparedCheckSyncMessage
   context.log('prepared-check-sync: message received', checkCode)
   const checkCodes = await checkDataService.sqlFindActiveCheckCodesByCheckCode(checkCode)
-  for (let currentCheckCode of checkCodes) {
+  for (const currentCheckCode of checkCodes) {
     try {
       await v1.updatePreparedChecks(context, currentCheckCode)
       context.log('prepared-check-sync: prepared check updated for check code:', currentCheckCode)
@@ -67,7 +67,7 @@ v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangemen
   if (newCheckConfig.fontSizeCode) {
     delete newCheckConfig.fontSizeCode
   }
-  let aaConfig = {
+  const aaConfig = {
     audibleSounds: false,
     inputAssistance: false,
     numpadRemoval: false,
@@ -81,7 +81,7 @@ v1.getUpdatedConfig = async function (preparedCheckConfig, pupilAccessArrangemen
   }
   const fontSizeAccessArrangement = pupilAccessArrangements.find(aa => aa.pupilFontSizeCode)
   const colourContrastAccessArrangement = pupilAccessArrangements.find(aa => aa.pupilColourContrastCode)
-  const accessArrangementsIds = pupilAccessArrangements.map(aa => aa['accessArrangements_id'])
+  const accessArrangementsIds = pupilAccessArrangements.map(aa => aa.accessArrangements_id)
   let pupilAccessArrangementsCodes
   try {
     pupilAccessArrangementsCodes = await accessArrangementsSqlUtil.sqlFindAccessArrangementsCodesWithIds(accessArrangementsIds)
