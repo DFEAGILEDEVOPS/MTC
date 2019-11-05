@@ -78,6 +78,9 @@
     "xregexp": "^4.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3",
     "@types/moment": "^2.13.0",
     "@types/node": "^12.7.12",
     "@types/ramda": "^0.26.33",
@@ -91,6 +94,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-concat": "^2.6.1",
     "gulp-replace": "^1.0.0",

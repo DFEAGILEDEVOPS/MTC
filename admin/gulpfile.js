@@ -1,6 +1,7 @@
 'use strict'
 
 const gulp = require('gulp')
+const babel = require('gulp-babel')
 const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
@@ -60,10 +61,9 @@ gulp.task('bundle-js', function () {
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER))
     .pipe(replace('SESSION_EXPIRATION_TIME', config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS))
-    .pipe(uglify({
-      ie8: true
-    }).on('error', function (e) {
-      winston.error(e)
+    .pipe(babel({
+      presets: ['@babel/preset-env'],
+      sourceType: 'unambiguous'
     }))
     .pipe(gulp.dest('./public/javascripts/'))
 })
