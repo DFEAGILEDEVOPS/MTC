@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const redisService = require('../../../services/redis-cache.service')
+const redisService = require('./redis-cache.service')
 
 const service = {
   /**
@@ -18,7 +18,7 @@ const service = {
       const check = checks[index]
       const preparedCheck = constructPreparedCheck(check)
       const cacheKey = buildKey(check.schoolPin, check.pupilPin)
-      batch.add({
+      batch.push({
         key: cacheKey,
         value: preparedCheck
       })
