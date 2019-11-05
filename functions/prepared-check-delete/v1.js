@@ -18,13 +18,13 @@ const v1 = {
 }
 
 function validateMessage (queueMessage) {
-  if (!queueMessage.hasOwnProperty('checkCode')) {
+  if (!Object.prototype.hasOwnProperty.call(queueMessage, 'checkCode')) {
     throw new Error('missing checkCode')
   }
-  if (!queueMessage.hasOwnProperty('reason')) {
+  if (!Object.prototype.hasOwnProperty.call(queueMessage, 'reason')) {
     throw new Error('missing reason')
   }
-  if (!queueMessage.hasOwnProperty('actionedByUserId')) {
+  if (!Object.prototype.hasOwnProperty.call(queueMessage, 'actionedByUserId')) {
     throw new Error('missing actionedByUserId')
   }
 }

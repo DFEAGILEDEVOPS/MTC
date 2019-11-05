@@ -33,18 +33,18 @@ const v1 = {
     const azureBlobService = azureStorageHelper.getPromisifiedAzureBlobService()
     await azureBlobService.deleteContainerAsync('census')
 
-    const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta['insertCount']} inserted to pupil table, ${pupilMeta['errorCount']} rows containing errors`
+    const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
 
-    if (stagingInsertCount !== pupilMeta['insertCount']) {
-      const errorOutput = pupilMeta['errorText']
+    if (stagingInsertCount !== pupilMeta.insertCount) {
+      const errorOutput = pupilMeta.errorText
       await jobDataService.sqlUpdateStatus(pool, jobUrlSlug, 'CWR', jobOutput, errorOutput)
-      context.log.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta['insertCount']} rows inserted to pupil table`)
+      context.log.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
-      const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta['insertCount']} rows inserted to pupil table`
+      const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
       await jobDataService.sqlUpdateStatus(pool, jobUrlSlug, 'COM', jobOutput)
     }
 
-    return pupilMeta['insertCount']
+    return pupilMeta.insertCount
   }
 }
 

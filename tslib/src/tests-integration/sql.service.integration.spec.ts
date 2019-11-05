@@ -1,4 +1,4 @@
-import * as sql from './sql.service'
+import * as sql from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
@@ -6,7 +6,7 @@ import moment = require('moment')
 
 let sut: sql.SqlService
 
-describe.skip('SqlService', () => {
+describe('SqlService', () => {
   beforeEach(async () => {
     sut = new sql.SqlService()
     await sut.init()

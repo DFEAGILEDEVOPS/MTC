@@ -201,7 +201,7 @@ function findAuditEvent (payload, auditEventType) {
     throw new Error(`${functionName}: No matching audit events found`)
   }
   const logEntry = logEntries[0]
-  if (!logEntry.hasOwnProperty('clientTimestamp')) {
+  if (!Object.prototype.hasOwnProperty.call(logEntry, 'clientTimestamp')) {
     throw new Error(`${functionName}: No \`clientTimestamp\` property found`)
   }
   return logEntry

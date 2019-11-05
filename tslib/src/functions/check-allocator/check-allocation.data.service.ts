@@ -15,39 +15,14 @@ export interface ICheckAllocationDataService {
    * @returns an array of form ids
    */
   getFormsUsedByPupil (pupilUUID: string): Promise<Array<any>>
-  /**
-   * @description gets all available check forms
-   * @returns an array of form ids
-   */
-  getAllForms (): Promise<Array<any>>
-}
-
-export interface ICheckWindowDataService {
-  getActiveCheckWindowId (): number
 }
 
 export class CheckAllocationDataService implements ICheckAllocationDataService {
 
-  private _sqlService: SqlService
-  // TODO implement check window data service
-  private checkWindowId = 1
+  private sqlService: SqlService
 
   constructor () {
-    this._sqlService = new SqlService()
-  }
-
-  // TODO cache
-  async getAllForms (): Promise<any[]> {
-    const sql = `SELECT cf.id FROM mtc_admin.checkForm cf
-    INNER JOIN mtc_admin.checkFormWindow cfw ON cf.id = cfw.checkForm_id
-    WHERE cfw.checkWindow_id=@checkWindowId AND cf.isDeleted=0`
-    const params = [
-      {
-        name: '@checkWindowId',
-        type: mssql.Int,
-        value: this.checkWindowId
-      }]
-    return this._sqlService.query(sql, params)
+    this.sqlService = new SqlService()
   }
 
   async getFormsUsedByPupil (pupilUUID: string): Promise<any[]> {
@@ -64,6 +39,6 @@ export class CheckAllocationDataService implements ICheckAllocationDataService {
         type: mssql.UniqueIdentifier,
         value: schoolUUID
       }]
-    return this._sqlService.query(sql, params)
+    return this.sqlService.query(sql, params)
   }
 }

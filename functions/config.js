@@ -10,7 +10,7 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  REDIS_CACHING: process.env.hasOwnProperty('REDIS_CACHING') ? toBool(process.env.REDIS_CACHING) : false,
+  REDIS_CACHING: Object.prototype.hasOwnProperty.call(process.env, 'REDIS_CACHING') ? toBool(process.env.REDIS_CACHING) : false,
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
@@ -18,7 +18,7 @@ module.exports = {
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || oneMinuteInMilliseconds,
     connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
-    Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
+    Encrypt: Object.prototype.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
@@ -31,7 +31,7 @@ module.exports = {
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: Object.prototype.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
