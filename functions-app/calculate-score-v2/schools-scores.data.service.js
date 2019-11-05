@@ -9,7 +9,7 @@ const { TYPES } = sqlService
  * @return {Promise<object>}
  */
 module.exports.sqlExecuteGetSchoolScores = async (checkWindowId, schoolId) => {
-  const sql = `EXEC [mtc_admin].[spGetPupilsResults] @checkwindowId = @checkWindowId, @schoolId = @schoolId`
+  const sql = 'EXEC [mtc_admin].[spGetPupilsResults] @checkwindowId = @checkWindowId, @schoolId = @schoolId'
   const params = [
     {
       name: 'checkWindowId',
@@ -30,7 +30,7 @@ module.exports.sqlExecuteGetSchoolScores = async (checkWindowId, schoolId) => {
  * @return {Promise<object>}
  */
 module.exports.sqlFindSchoolIds = async () => {
-  const sql = `SELECT id FROM [mtc_admin].[school]`
+  const sql = 'SELECT id FROM [mtc_admin].[school]'
   const params = []
   const result = await sqlService.query(sql, params)
   return R.map(i => i.id, result)

@@ -23,14 +23,14 @@ gaCode=${GA_CODE:-"null"}
 websiteOffline=${WEBSITE_OFFLINE:-"false"}
 submitsToCheckReceiver=${SUBMITS_TO_CHECK_RECEIVER:-"false"}
 
-if [ $gaCode == "null" ]
+if [[ gaCode == "null" ]]
 then
     gaCodeParsed="null"
 else
     gaCodeParsed="\"$gaCode\""
 fi
 applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY:-"null"}
-if [ $applicationInsightsCode == "null" ]
+if [[ applicationInsightsCode == "null" ]]
 then
     applicationInsightsCodeParsed="null"
 else

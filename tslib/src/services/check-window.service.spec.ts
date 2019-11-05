@@ -29,6 +29,9 @@ describe('check-window.service', () => {
         id: 1
       })
     })
+    redisServiceMock.setex = jest.fn(() => {
+      return Promise.resolve()
+    })
     const window = await sut.getActiveCheckWindow()
     expect(window).toBeDefined()
     expect(redisServiceMock.get).toHaveBeenCalledWith('activeCheckWindow')
@@ -40,6 +43,9 @@ describe('check-window.service', () => {
       return Promise.resolve({
         id: 1
       })
+    })
+    redisServiceMock.setex = jest.fn(() => {
+      return Promise.resolve()
     })
     const twentyFourHoursInSeconds = 86400
     const window = await sut.getActiveCheckWindow()

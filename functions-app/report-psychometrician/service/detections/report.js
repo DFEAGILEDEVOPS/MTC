@@ -31,7 +31,7 @@ const report = function report (data,
     Message: message,
     'Tested Value': testedValue,
     'Expected Value': expectedValue,
-    'TimestampDifference': tsDiff,
+    TimestampDifference: tsDiff,
     'Question number': questionNumber
   }
 }

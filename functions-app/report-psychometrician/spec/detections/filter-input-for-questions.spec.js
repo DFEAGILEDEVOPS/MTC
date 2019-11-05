@@ -21,18 +21,18 @@ describe('filter input for questions', () => {
       2,
       [
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '4x2',
-          'sequenceNumber': 1
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '4x2',
+          sequenceNumber: 1
         },
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '3x3',
-          'sequenceNumber': 2
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '3x3',
+          sequenceNumber: 2
         }
       ]
     )
@@ -47,18 +47,18 @@ describe('filter input for questions', () => {
       2,
       [
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '4x2',
-          'sequenceNumber': 1
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '4x2',
+          sequenceNumber: 1
         },
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '3x3',
-          'sequenceNumber': 1
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '3x3',
+          sequenceNumber: 1
         }
       ]
     )
@@ -73,18 +73,18 @@ describe('filter input for questions', () => {
       2,
       [
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '4x2',
-          'sequenceNumber': 1
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '4x2',
+          sequenceNumber: 1
         },
         {
-          'input': '',
-          'eventType': '',
-          'clientTimestamp': '',
-          'question': '4x2',
-          'sequenceNumber': 2
+          input: '',
+          eventType: '',
+          clientTimestamp: '',
+          question: '4x2',
+          sequenceNumber: 2
         }
       ]
     )

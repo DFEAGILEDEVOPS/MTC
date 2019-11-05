@@ -7,36 +7,36 @@ const { clone } = require('ramda')
 
 const answers = [
   {
-    'factor1': 11,
-    'factor2': 3,
-    'answer': '33',
-    'sequenceNumber': 1,
-    'question': '11x3',
-    'clientTimestamp': '2019-06-26T11:01:56.193Z'
+    factor1: 11,
+    factor2: 3,
+    answer: '33',
+    sequenceNumber: 1,
+    question: '11x3',
+    clientTimestamp: '2019-06-26T11:01:56.193Z'
   },
   {
-    'factor1': 5,
-    'factor2': 10,
-    'answer': '50',
-    'sequenceNumber': 2,
-    'question': '5x10',
-    'clientTimestamp': '2019-06-26T11:02:01.346Z'
+    factor1: 5,
+    factor2: 10,
+    answer: '50',
+    sequenceNumber: 2,
+    question: '5x10',
+    clientTimestamp: '2019-06-26T11:02:01.346Z'
   },
   {
-    'factor1': 12,
-    'factor2': 2,
-    'answer': '24',
-    'sequenceNumber': 3,
-    'question': '12x2',
-    'clientTimestamp': '2019-06-26T11:02:08.944Z'
+    factor1: 12,
+    factor2: 2,
+    answer: '24',
+    sequenceNumber: 3,
+    question: '12x2',
+    clientTimestamp: '2019-06-26T11:02:08.944Z'
   },
   {
-    'factor1': 3,
-    'factor2': 6,
-    'answer': '18',
-    'sequenceNumber': 4,
-    'question': '3x6',
-    'clientTimestamp': '2019-06-26T11:02:15.734Z'
+    factor1: 3,
+    factor2: 6,
+    answer: '18',
+    sequenceNumber: 4,
+    question: '3x6',
+    clientTimestamp: '2019-06-26T11:02:15.734Z'
   }
 ]
 
