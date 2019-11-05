@@ -96,15 +96,15 @@ describe('checkProcessingService', () => {
 
   describe('filterNils', () => {
     it('removes `undefined` from arrays', () => {
-      const res = service.filterNils([ undefined ], contextMock)
+      const res = service.filterNils([undefined], contextMock)
       expect(res).toEqual([])
     })
     it('removes multiple `undefined`s from arrays', () => {
-      const res = service.filterNils([ undefined, undefined ], contextMock)
+      const res = service.filterNils([undefined, undefined], contextMock)
       expect(res).toEqual([])
     })
     it('removes multiple `undefined`s from arrays, but not objects', () => {
-      const res = service.filterNils([ undefined, undefined, { length: 0 } ], contextMock)
+      const res = service.filterNils([undefined, undefined, { length: 0 }], contextMock)
       expect(res).toEqual([{ length: 0 }])
     })
   })
