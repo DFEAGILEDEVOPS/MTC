@@ -1,4 +1,3 @@
-
 import { ICheckWindow } from '../schemas/check-window'
 import { IRedisService, RedisService } from '../caching/redis-service'
 import { ICheckWindowDataService, CheckWindowDataService } from './data/check-window.data.service'
@@ -40,12 +39,9 @@ export class CheckWindowService {
     }
     if (!cachedWindow) {
       const window = await this.checkWindowDataService.getActiveCheckWindow()
-      try {
-        // tslint:disable-next-line: no-floating-promises
-        this.redisService.setex('activeCheckWindow', window, this.twentyFourHoursInSeconds)
-      } catch (error) {
-        this.logger.error(error)
-      }
+      // tslint:disable-next-line: no-floating-promises
+      this.redisService.setex('activeCheckWindow', window, this.twentyFourHoursInSeconds)
+        .catch((error) => this.logger.error(error))
       return window
     }
     return cachedWindow
