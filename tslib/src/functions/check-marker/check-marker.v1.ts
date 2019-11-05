@@ -9,20 +9,20 @@ import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './models'
 
 export class CheckMarkerV1 {
 
-  private _tableService: IAsyncTableService
-  private _sqlService: ICheckFormService
+  private tableService: IAsyncTableService
+  private sqlService: ICheckFormService
 
   constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
-      this._tableService = new AsyncTableService()
+      this.tableService = new AsyncTableService()
     } else {
-      this._tableService = tableService
+      this.tableService = tableService
     }
 
     if (sqlService === undefined) {
-      this._sqlService = new CheckFormService()
+      this.sqlService = new CheckFormService()
     } else {
-      this._sqlService = sqlService
+      this.sqlService = sqlService
     }
   }
 
@@ -68,7 +68,7 @@ export class CheckMarkerV1 {
     let rawCheckForm
 
     try {
-      rawCheckForm = await this._sqlService.getCheckFormDataByCheckCode(checkCode)
+      rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
       return this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
@@ -124,7 +124,7 @@ export class CheckMarkerV1 {
     receivedCheck.mark = mark.mark
     receivedCheck.markedAt = mark.processedAt
     receivedCheck.maxMarks = mark.maxMarks
-    return this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
   private findValidatedCheck (receivedCheckRef: Array<any>): ValidatedCheck {
@@ -137,6 +137,6 @@ export class CheckMarkerV1 {
   private async updateReceivedCheckWithMarkingError (receivedCheck: ValidatedCheck, markingError: string) {
     receivedCheck.markError = markingError
     receivedCheck.markedAt = moment().toDate()
-    return this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 }

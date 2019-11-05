@@ -24,20 +24,20 @@ export interface ICheckValidatorFunctionBindings {
 }
 
 export class CheckValidatorV1 {
-  private _tableService: IAsyncTableService
-  private _compressionService: ICompressionService
+  private tableService: IAsyncTableService
+  private compressionService: ICompressionService
 
   constructor (tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
-      this._tableService = tableService
+      this.tableService = tableService
     } else {
-      this._tableService = new AsyncTableService()
+      this.tableService = new AsyncTableService()
     }
 
     if (compressionService !== undefined) {
-      this._compressionService = compressionService
+      this.compressionService = compressionService
     } else {
-      this._compressionService = new CompressionService()
+      this.compressionService = new CompressionService()
     }
   }
 
@@ -48,7 +48,7 @@ export class CheckValidatorV1 {
     let checkData
     try {
       this.detectArchive(receivedCheck)
-      const decompressedString = this._compressionService.decompress(receivedCheck.archive)
+      const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
       this.validateCheckStructure(checkData)
     } catch (error) {
@@ -72,14 +72,14 @@ export class CheckValidatorV1 {
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = true
     receivedCheck.answers = JSON.stringify(checkData.answers)
-    await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
   private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheck) {
     receivedCheck.validationError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false
-    await this._tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
   private findReceivedCheck (receivedCheckRef: Array<any>): any {
