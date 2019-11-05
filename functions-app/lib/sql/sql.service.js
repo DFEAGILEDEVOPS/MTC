@@ -382,7 +382,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     // This will cache all data-types once on the first sql request
     await sqlService.updateDataTypeCache()
   }
-  if (!cache.hasOwnProperty(key)) {
+  if (!Object.prototype.hasOwnProperty.call(cache, key)) {
     return undefined
   }
   const cacheData = cache[key]

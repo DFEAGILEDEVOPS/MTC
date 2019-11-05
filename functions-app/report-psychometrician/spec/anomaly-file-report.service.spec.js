@@ -30,22 +30,26 @@ describe('#anomaly-file-report.service', () => {
       checkFormName: 'MTC100',
       pupilLoginDate: '2018-02-11T15:42:18.062Z',
       checkStartedAt: '2018-02-11T15:42:38.787Z',
-      markedAnswers: JSON.stringify({ answer: [
-        { id: 1,
-          factor1: 2,
-          factor2: 5,
-          response: '10',
-          isCorrect: true,
-          questionNumber: 1
-        }
-      ] })
+      markedAnswers: JSON.stringify({
+        answer: [
+          {
+            id: 1,
+            factor1: 2,
+            factor2: 5,
+            response: '10',
+            isCorrect: true,
+            questionNumber: 1
+          }
+        ]
+      })
     }
   })
 
   describe('#detectAnomalies', () => {
     it('detects wrong number of answers', () => {
       const res = anomalyFileReportService.detectAnomalies(row, mockContext)
-      expect(res[0]).toEqual({ 'Attempt ID': '763AD270-278D-4221-886C-23FF7E5E5736',
+      expect(res[0]).toEqual({
+        'Attempt ID': '763AD270-278D-4221-886C-23FF7E5E5736',
         Date: '11/02/2018',
         Mark: '14 out of 25',
         Device: 'Other ',

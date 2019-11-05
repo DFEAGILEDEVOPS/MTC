@@ -27,7 +27,7 @@ const psychometricianReportCacheDataService = {
     OUTPUT inserted.ID INTO @output
     VALUES
     `
-    const output = `; SELECT * from @output`
+    const output = '; SELECT * from @output'
     const values = []
     const params = []
     for (let i = 0; i < dataObjects.length; i++) {
@@ -35,12 +35,12 @@ const psychometricianReportCacheDataService = {
       params.push(
         {
           name: `checkId${i}`,
-          value: dataObjects[i]['check_id'],
+          value: dataObjects[i].check_id,
           type: TYPES.Int
         },
         {
           name: `data${i}`,
-          value: JSON.stringify(dataObjects[i]['jsonData']),
+          value: JSON.stringify(dataObjects[i].jsonData),
           type: TYPES.NVarChar
         }
       )
