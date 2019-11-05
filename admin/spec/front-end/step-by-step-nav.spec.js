@@ -164,7 +164,7 @@ describe('A stepnav module', function () {
   })
 
   afterEach(function () {
-    document.innerHTML = ``
+    document.innerHTML = ''
     window.sessionStorage.clear()
   })
 
