@@ -41,7 +41,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('QuestionTimerCancelled event not found for question')
+    expect(r[0].Message).toBe('QuestionTimerCancelled event not found for question')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -71,7 +71,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('QuestionTimerCancelledEvent timestamp is not valid')
+    expect(r[0].Message).toBe('QuestionTimerCancelledEvent timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -101,7 +101,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('QuestionTimerCancelledEvent missing its timestamp')
+    expect(r[0].Message).toBe('QuestionTimerCancelledEvent missing its timestamp')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -128,18 +128,18 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '',
-            'question': '3x3',
-            'sequenceNumber': 2
+            input: '',
+            eventType: '',
+            clientTimestamp: '',
+            question: '3x3',
+            sequenceNumber: 2
           },
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '',
-            'question': '3x3',
-            'sequenceNumber': 2
+            input: '',
+            eventType: '',
+            clientTimestamp: '',
+            question: '3x3',
+            sequenceNumber: 2
           }
         ]
       },
@@ -155,7 +155,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('QuestionTimerCancelledEvent missing its timestamp')
+    expect(r[0].Message).toBe('QuestionTimerCancelledEvent missing its timestamp')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -174,18 +174,18 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '',
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '',
+            question: '1x10',
+            sequenceNumber: 1
           },
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '',
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '',
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },
@@ -201,7 +201,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('input timestamp is missing')
+    expect(r[0].Message).toBe('input timestamp is missing')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -220,11 +220,11 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': 'error not a date',
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: 'error not a date',
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },
@@ -240,7 +240,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('input timestamp is not valid')
+    expect(r[0].Message).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -259,11 +259,11 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '2019-12-327T12:12:12.121Z', // Dec 32 is just wrong
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '2019-12-327T12:12:12.121Z', // Dec 32 is just wrong
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },
@@ -279,7 +279,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('input timestamp is not valid')
+    expect(r[0].Message).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
   })
 
@@ -298,11 +298,11 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '2040-12-31T13:12:00.777Z', // 2040
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '2040-12-31T13:12:00.777Z', // 2040
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },
@@ -336,11 +336,11 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '2019-06-27T12:46:25.672Z', // 1/1000 of a second over the limit
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '2019-06-27T12:46:25.672Z', // 1/1000 of a second over the limit
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },
@@ -356,7 +356,7 @@ describe('input after the timer has completed', () => {
         ]
       }
     })
-    expect(r[0]['Message']).toBe('Input received after timer cut-off')
+    expect(r[0].Message).toBe('Input received after timer cut-off')
     expect(r[0]['Question number']).toBe(1)
     expect(r[0]['Tested Value']).toEqual('2019-06-27T12:46:25.672Z')
     expect(r[0]['Expected Value']).toEqual('2019-06-27T12:46:25.671Z')
@@ -377,18 +377,18 @@ describe('input after the timer has completed', () => {
         ],
         inputs: [
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '2019-06-27T12:46:25.672Z', // 1/1000 of a second over the limit
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '2019-06-27T12:46:25.672Z', // 1/1000 of a second over the limit
+            question: '1x10',
+            sequenceNumber: 1
           },
           {
-            'input': '',
-            'eventType': '',
-            'clientTimestamp': '2019-06-27T12:46:25.673Z', // 2/1000 of a second over the limit
-            'question': '1x10',
-            'sequenceNumber': 1
+            input: '',
+            eventType: '',
+            clientTimestamp: '2019-06-27T12:46:25.673Z', // 2/1000 of a second over the limit
+            question: '1x10',
+            sequenceNumber: 1
           }
         ]
       },

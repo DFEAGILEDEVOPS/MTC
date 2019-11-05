@@ -23,7 +23,7 @@ describe('check took too long', () => {
     // 10 * (3 + 6) , no QR = 90
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {
@@ -48,7 +48,7 @@ describe('check took too long', () => {
   it('does not report when the check is under time', () => {
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {
@@ -70,7 +70,7 @@ describe('check took too long', () => {
     // 10 * (3 + 6) + (2.5 * 10), with QR = 115
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {
@@ -96,7 +96,7 @@ describe('check took too long', () => {
     // 10 * (3 + 6) + (2.5 * 10), with QR = 115
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {
@@ -117,7 +117,7 @@ describe('check took too long', () => {
   it('does not report when the checkStarted time is missing', () => {
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {
@@ -136,7 +136,7 @@ describe('check took too long', () => {
   it('does not report when the check completed time is missing', () => {
     const data = {
       markedAnswers: {
-        answer: [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       },
       checkPayload: {
         config: {

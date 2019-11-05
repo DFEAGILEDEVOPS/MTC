@@ -20,10 +20,10 @@ function validateSqlConfig (config) {
     ex('Server')
   }
   if (typeof config.requestTimeout !== 'number') {
-    throw new Error(`requestTimeout must be a number`)
+    throw new Error('requestTimeout must be a number')
   }
   if (typeof config.connectionTimeout !== 'number') {
-    throw new Error(`connectionTimeout must be a number`)
+    throw new Error('connectionTimeout must be a number')
   }
 }
 
