@@ -217,101 +217,104 @@ describe('psychometricians-report.service', () => {
         checkFormName: 'MTC100',
         pupilLoginDate: '2018-02-11T15:42:18.062Z',
         checkStartedAt: '2018-02-11T15:42:38.787Z',
-        markedAnswers: JSON.stringify({ answer: [
-          { id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ] })
+        markedAnswers: JSON.stringify({
+          answer: [
+            {
+              id: 1,
+              factor1: 2,
+              factor2: 5,
+              response: '10',
+              isCorrect: true,
+              questionNumber: 1
+            }
+          ]
+        })
       }
     })
 
     it('outputs the ForeName', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Forename']).toBe('Penelope')
+      expect(out.Forename).toBe('Penelope')
     })
 
     it('outputs the Surname', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Surname']).toBe('Pitstop')
+      expect(out.Surname).toBe('Pitstop')
     })
 
     it('outputs the PupilID', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['PupilId']).toBe('Y883121301222')
+      expect(out.PupilId).toBe('Y883121301222')
     })
 
     it('outputs the gender', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Gender']).toBe('F')
+      expect(out.Gender).toBe('F')
     })
 
     it('outputs the dateOfBirth', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['DOB']).toBe('21/06/1923')
+      expect(out.DOB).toBe('21/06/1923')
     })
 
     it('outputs the FormMark', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['FormMark']).toBe(14)
+      expect(out.FormMark).toBe(14)
     })
 
     it('outputs the questionTime config', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['QDisplayTime']).toBe(6)
+      expect(out.QDisplayTime).toBe(6)
     })
 
     it('outputs the PauseLength config', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['PauseLength']).toBe(3)
+      expect(out.PauseLength).toBe(3)
     })
 
     it('outputs the Access Arrangements', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['AccessArr']).toBe('[3][5]')
+      expect(out.AccessArr).toBe('[3][5]')
     })
 
     it('outputs the Restart Reason', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['RestartReason']).toBe(3)
+      expect(out.RestartReason).toBe(3)
     })
 
     it('outputs the Restart Count', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['RestartNumber']).toBe(1)
+      expect(out.RestartNumber).toBe(1)
     })
 
     it('outputs the reason for not taking the check', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['ReasonNotTakingCheck']).toBe(6)
+      expect(out.ReasonNotTakingCheck).toBe(6)
     })
 
     it('outputs the PupilStatus', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['PupilStatus']).toBe('Not taking the check')
+      expect(out.PupilStatus).toBe('Not taking the check')
     })
 
     it('outputs the device type', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['DeviceType']).toBe('desktop')
+      expect(out.DeviceType).toBe('desktop')
     })
 
     it('outputs the device model', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['DeviceTypeModel']).toBe('Other')
+      expect(out.DeviceTypeModel).toBe('Other')
     })
 
     it('outputs the device ID', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['DeviceId']).toBe('5c1809a2107ed421b7cf67ae7b120d90ce510cd5')
+      expect(out.DeviceId).toBe('5c1809a2107ed421b7cf67ae7b120d90ce510cd5')
     })
 
     it('outputs the browser type', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['BrowserType']).toBe('Safari 12.1.2 / Mac OS X 10.14.6')
+      expect(out.BrowserType).toBe('Safari 12.1.2 / Mac OS X 10.14.6')
     })
 
     it('outputs the school name', () => {
@@ -321,7 +324,7 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the school estab code', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Estab']).toBe('1999')
+      expect(out.Estab).toBe('1999')
     })
 
     it('outputs the school URN', () => {
@@ -336,7 +339,7 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the attempt ID', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['AttemptId']).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
+      expect(out.AttemptId).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
     })
 
     it('outputs the Form ID', () => {
@@ -346,102 +349,102 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the test date', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['TestDate']).toBe('20180211')
+      expect(out.TestDate).toBe('20180211')
     })
 
     it('outputs the test start timestamp', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['TimeStart']).toBe('3:42:38 pm')
+      expect(out.TimeStart).toBe('3:42:38 pm')
     })
 
     it('outputs the test end timestamp', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['TimeComplete']).toBe('3:43:26 pm')
+      expect(out.TimeComplete).toBe('3:43:26 pm')
     })
 
     it('outputs the time taken', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['TimeTaken']).toBe('00:00:48')
+      expect(out.TimeTaken).toBe('00:00:48')
     })
 
     it('outputs the question id', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1ID']).toBe('2 x 5')
+      expect(out.Q1ID).toBe('2 x 5')
     })
 
     it('outputs the response', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1Response']).toBe('10')
+      expect(out.Q1Response).toBe('10')
     })
 
     it('outputs the inputs methods used by the pupil', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1InputMethods']).toBe('k')
+      expect(out.Q1InputMethods).toBe('k')
     })
 
     it('outputs the user inputs from the pupil', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1K']).toBe('k[1], k[0], k[Enter]')
+      expect(out.Q1K).toBe('k[1], k[0], k[Enter]')
     })
 
     it('outputs the score', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1Sco']).toBe(1)
+      expect(out.Q1Sco).toBe(1)
     })
 
     it('outputs the response time taken by the pupil', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1ResponseTime']).toBe(0.109)
+      expect(out.Q1ResponseTime).toBe(0.109)
     })
 
     it('outputs the TimeOut flag', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1TimeOut']).toBe(0)
+      expect(out.Q1TimeOut).toBe(0)
     })
 
     it('outputs the TimeOutResponse flag', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1TimeOutResponse']).toBe('')
+      expect(out.Q1TimeOutResponse).toBe('')
     })
 
     it('outputs the TimeOutSco flag', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1TimeOutSco']).toBe('')
+      expect(out.Q1TimeOutSco).toBe('')
     })
 
     it('outputs the load time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1tLoad']).toBe('2018-02-11T15:42:24.003Z')
+      expect(out.Q1tLoad).toBe('2018-02-11T15:42:24.003Z')
     })
 
     it('outputs the time of the first key', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1tFirstKey']).toBe('2018-02-11T15:42:42.191Z')
+      expect(out.Q1tFirstKey).toBe('2018-02-11T15:42:42.191Z')
     })
 
     it('outputs the time of the last key', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1tLastKey']).toBe('2018-02-11T15:42:42.300Z')
+      expect(out.Q1tLastKey).toBe('2018-02-11T15:42:42.300Z')
     })
 
     it('outputs the overall time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1OverallTime']).toBe(18.297)
+      expect(out.Q1OverallTime).toBe(18.297)
     })
 
     it('outputs the recall time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1RecallTime']).toBe(18.188)
+      expect(out.Q1RecallTime).toBe(18.188)
     })
 
     it('outputs the reader start time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1ReaderStart']).toBe('')
+      expect(out.Q1ReaderStart).toBe('')
     })
 
     it('outputs the reader end time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out['Q1ReaderEnd']).toBe('')
+      expect(out.Q1ReaderEnd).toBe('')
     })
   })
 })

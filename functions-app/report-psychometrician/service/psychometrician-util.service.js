@@ -374,7 +374,7 @@ psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
  * @return {string|number}
  */
 psUtilService.getScore = function (markedAnswer) {
-  if (!markedAnswer.hasOwnProperty('isCorrect')) {
+  if (!Object.prototype.hasOwnProperty.call(markedAnswer, 'isCorrect')) {
     return 'error'
   }
   return markedAnswer.isCorrect ? 1 : 0
@@ -480,14 +480,14 @@ psUtilService.getInputMethod = function (inputs) {
     const eventType = R.prop('eventType', input)
     switch (eventType) {
       case 'keydown':
-        types['key'] += 1
+        types.key += 1
         break
       case 'touch':
-        types['touch'] += 1
+        types.touch += 1
         break
       case 'mousedown':
       case 'click':
-        types['mouse'] += 1
+        types.mouse += 1
         break
       default:
         if (eventType) {
@@ -496,13 +496,13 @@ psUtilService.getInputMethod = function (inputs) {
     }
   })
 
-  if (types['key'] && !types['mouse'] && !types['touch']) {
+  if (types.key && !types.mouse && !types.touch) {
     return 'k'
-  } else if (types['mouse'] && !types['key'] && !types['touch']) {
+  } else if (types.mouse && !types.key && !types.touch) {
     return 'm'
-  } else if (types['touch'] && !types['key'] && !types['mouse']) {
+  } else if (types.touch && !types.key && !types.mouse) {
     return 't'
-  } else if (!types['key'] && !types['mouse'] && !types['touch']) {
+  } else if (!types.key && !types.mouse && !types.touch) {
     return ''
   } else {
     return 'x' // combination
@@ -533,7 +533,7 @@ psUtilService.getAccessArrangements = function (config) {
   }
   const values = []
   for (const k in props) {
-    if (config.hasOwnProperty(k) && config[k]) {
+    if (Object.prototype.hasOwnProperty.call(config, k) && config[k]) {
       values.push(props[k])
     }
   }

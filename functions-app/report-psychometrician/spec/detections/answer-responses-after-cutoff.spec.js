@@ -71,36 +71,36 @@ describe('detect answer responses after cutoff', () => {
         },
         answers: [
           {
-            'factor1': 2,
-            'factor2': 5,
-            'answer': '10',
-            'sequenceNumber': 1,
-            'question': '2x5',
-            'clientTimestamp': '2019-06-26T11:00:10.000Z' // way over time
+            factor1: 2,
+            factor2: 5,
+            answer: '10',
+            sequenceNumber: 1,
+            question: '2x5',
+            clientTimestamp: '2019-06-26T11:00:10.000Z' // way over time
           }
         ],
         audit: [{
-          'type': 'QuestionRendered',
-          'clientTimestamp': '2019-06-26T11:00:00.000Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '1x110'
+          type: 'QuestionRendered',
+          clientTimestamp: '2019-06-26T11:00:00.000Z',
+          data: {
+            sequenceNumber: 1,
+            question: '1x110'
           }
         },
         {
-          'type': 'QuestionTimerStarted',
-          'clientTimestamp': '2019-06-26T11:00:00.001Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '2x5'
+          type: 'QuestionTimerStarted',
+          clientTimestamp: '2019-06-26T11:00:00.001Z',
+          data: {
+            sequenceNumber: 1,
+            question: '2x5'
           }
         },
         {
-          'type': 'QuestionTimerCancelled',
-          'clientTimestamp': '2019-06-26T11:00:06.002Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '1x110'
+          type: 'QuestionTimerCancelled',
+          clientTimestamp: '2019-06-26T11:00:06.002Z',
+          data: {
+            sequenceNumber: 1,
+            question: '1x110'
           }
         }
         ]
@@ -135,36 +135,36 @@ describe('detect answer responses after cutoff', () => {
         },
         answers: [
           {
-            'factor1': 2,
-            'factor2': 5,
-            'answer': '10',
-            'sequenceNumber': 1,
-            'question': '2x5',
-            'clientTimestamp': '2019-06-26T11:00:06.001Z'
+            factor1: 2,
+            factor2: 5,
+            answer: '10',
+            sequenceNumber: 1,
+            question: '2x5',
+            clientTimestamp: '2019-06-26T11:00:06.001Z'
           }
         ],
         audit: [{
-          'type': 'QuestionRendered',
-          'clientTimestamp': '2019-06-26T11:00:00.000Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '1x110'
+          type: 'QuestionRendered',
+          clientTimestamp: '2019-06-26T11:00:00.000Z',
+          data: {
+            sequenceNumber: 1,
+            question: '1x110'
           }
         },
         {
-          'type': 'QuestionTimerStarted',
-          'clientTimestamp': '2019-06-26T11:00:00.001Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '2x5'
+          type: 'QuestionTimerStarted',
+          clientTimestamp: '2019-06-26T11:00:00.001Z',
+          data: {
+            sequenceNumber: 1,
+            question: '2x5'
           }
         },
         {
-          'type': 'QuestionTimerCancelled',
-          'clientTimestamp': '2019-06-26T11:00:06.002Z',
-          'data': {
-            'sequenceNumber': 1,
-            'question': '2x5'
+          type: 'QuestionTimerCancelled',
+          clientTimestamp: '2019-06-26T11:00:06.002Z',
+          data: {
+            sequenceNumber: 1,
+            question: '2x5'
           }
         }
         ]
@@ -205,37 +205,37 @@ describe('detect answer responses after cutoff', () => {
         },
         answers: [
           {
-            'factor1': 2,
-            'factor2': 5,
-            'answer': '10',
-            'sequenceNumber': 1,
-            'question': '2x5',
-            'clientTimestamp': '2019-06-26T11:00:10.000Z' // way over time
+            factor1: 2,
+            factor2: 5,
+            answer: '10',
+            sequenceNumber: 1,
+            question: '2x5',
+            clientTimestamp: '2019-06-26T11:00:10.000Z' // way over time
           },
           {
-            'factor1': 3,
-            'factor2': 6,
-            'answer': '15',
-            'sequenceNumber': 2,
-            'question': '3x6',
-            'clientTimestamp': '2019-06-26T11:00:13.000Z' // over time
+            factor1: 3,
+            factor2: 6,
+            answer: '15',
+            sequenceNumber: 2,
+            question: '3x6',
+            clientTimestamp: '2019-06-26T11:00:13.000Z' // over time
           }
         ],
         audit: [
           {
-            'type': 'QuestionTimerStarted',
-            'clientTimestamp': '2019-06-26T11:00:00.001Z',
-            'data': {
-              'sequenceNumber': 1,
-              'question': '2x5'
+            type: 'QuestionTimerStarted',
+            clientTimestamp: '2019-06-26T11:00:00.001Z',
+            data: {
+              sequenceNumber: 1,
+              question: '2x5'
             }
           },
           {
-            'type': 'QuestionTimerStarted',
-            'clientTimestamp': '2019-06-26T11:00:06.000Z',
-            'data': {
-              'sequenceNumber': 2,
-              'question': '3x6'
+            type: 'QuestionTimerStarted',
+            clientTimestamp: '2019-06-26T11:00:06.000Z',
+            data: {
+              sequenceNumber: 2,
+              question: '3x6'
             }
           }
         ]
@@ -277,19 +277,19 @@ describe('detect answer responses after cutoff', () => {
         answers: null, // getAnswer() will return undefined
         audit: [
           {
-            'type': 'QuestionTimerStarted',
-            'clientTimestamp': '2019-06-26T11:00:06.000Z',
-            'data': {
-              'sequenceNumber': 1,
-              'question': '2x5'
+            type: 'QuestionTimerStarted',
+            clientTimestamp: '2019-06-26T11:00:06.000Z',
+            data: {
+              sequenceNumber: 1,
+              question: '2x5'
             }
           },
           {
-            'type': 'QuestionTimerStarted',
-            'clientTimestamp': '2019-06-26T11:00:06.000Z',
-            'data': {
-              'sequenceNumber': 2,
-              'question': '3x6'
+            type: 'QuestionTimerStarted',
+            clientTimestamp: '2019-06-26T11:00:06.000Z',
+            data: {
+              sequenceNumber: 2,
+              question: '3x6'
             }
           }
         ]
@@ -320,21 +320,21 @@ describe('detect answer responses after cutoff', () => {
         },
         answers: [
           {
-            'factor1': 2,
-            'factor2': 5,
-            'answer': '10',
-            'sequenceNumber': 1,
-            'question': '2x5',
-            'clientTimestamp': 'not a real timestamp' // will not add the moment object
+            factor1: 2,
+            factor2: 5,
+            answer: '10',
+            sequenceNumber: 1,
+            question: '2x5',
+            clientTimestamp: 'not a real timestamp' // will not add the moment object
           }
         ],
         audit: [
           {
-            'type': 'QuestionTimerStarted',
-            'clientTimestamp': '2019-06-26T11:00:06.000Z',
-            'data': {
-              'sequenceNumber': 1,
-              'question': '2x5'
+            type: 'QuestionTimerStarted',
+            clientTimestamp: '2019-06-26T11:00:06.000Z',
+            data: {
+              sequenceNumber: 1,
+              question: '2x5'
             }
           }
         ]
