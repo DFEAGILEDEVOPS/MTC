@@ -30,12 +30,12 @@ describe('detectPupilPrefsAfterCheckStart', () => {
         audit: [
           { type: 'CheckStarted', clientTimestamp: '2019-09-17T11:33:55.123Z' },
           {
-            'type': 'PupilPrefsAPICallSucceeded',
-            'clientTimestamp': '2019-09-17T11:33:55.124Z'
+            type: 'PupilPrefsAPICallSucceeded',
+            clientTimestamp: '2019-09-17T11:33:55.124Z'
           },
           {
-            'type': 'PupilPrefsAPICallSucceeded',
-            'clientTimestamp': '2019-09-17T11:33:55.125Z'
+            type: 'PupilPrefsAPICallSucceeded',
+            clientTimestamp: '2019-09-17T11:33:55.125Z'
           }
         ]
       }
@@ -52,8 +52,8 @@ describe('detectPupilPrefsAfterCheckStart', () => {
         audit: [
           { type: 'CheckStarted', clientTimestamp: '2019-09-17T11:33:55.123Z' },
           {
-            'type': 'PupilPrefsAPICallSucceeded',
-            'clientTimestamp': '2019-09-17T11:33:55.122Z'
+            type: 'PupilPrefsAPICallSucceeded',
+            clientTimestamp: '2019-09-17T11:33:55.122Z'
           }
         ]
       }
