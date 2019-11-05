@@ -65,6 +65,11 @@ gulp.task('bundle-js', function () {
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
     }))
+    .pipe(uglify({
+      ie8: true
+    }).on('error', function (e) {
+      winston.error(e)
+    }))
     .pipe(gulp.dest('./public/javascripts/'))
 })
 
