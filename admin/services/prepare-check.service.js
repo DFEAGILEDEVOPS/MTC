@@ -14,10 +14,11 @@ const service = {
       throw new Error('checks is not an array')
     }
     const preparedChecks = checks.map(check => {
+      const preparedCheck = constructPreparedCheck(check)
       return {
         key: buildKey(check.schoolPin, check.pupilPin),
-        value: constructPreparedCheck(check),
-        ttl: secondsBetweenNowAndPinExpiryTime(check.pinExpiresAt)
+        value: preparedCheck,
+        ttl: secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
       }
     })
     return redisService.setMany(preparedChecks)
@@ -32,7 +33,8 @@ const service = {
 function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
   const a = moment()
   const b = moment(pinExpiry)
-  return a.diff(b, 'seconds')
+  const differenceInSeconds = b.diff(a, 'seconds')
+  return differenceInSeconds
 }
 
 /**

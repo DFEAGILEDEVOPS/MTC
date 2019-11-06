@@ -79,4 +79,16 @@ describe('prepare-check.service', () => {
     expect(cachedObject.updatedAt).toBeDefined()
     expect(cachedObject.pinValidFrom).toBeDefined()
   })
+
+  it('should cache each item with the expected ttl', async () => {
+    let ttl
+    const fullTestRunToleranceInSeconds = 60
+    const fiveHoursInSeconds = 18000
+    spyOn(redisService, 'setMany').and.callFake((items) => {
+      ttl = items[0].ttl
+    })
+    await sut.prepareChecks([check])
+    expect(ttl).toBeGreaterThan(fiveHoursInSeconds - fullTestRunToleranceInSeconds)
+    expect(ttl).toBeLessThanOrEqual(fiveHoursInSeconds)
+  })
 })

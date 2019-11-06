@@ -104,11 +104,13 @@ redisCacheService.setMany = async (items) => {
       item.value = JSON.stringify(item.value)
     }
     if (item.ttl !== undefined) {
+      logger.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
       multi.setex(item.key, item.ttl, item.value)
     } else {
       multi.set(item.key, item.value)
     }
   }
+  logger.info('REDIS (multi:exec)')
   return multi.exec()
 }
 
