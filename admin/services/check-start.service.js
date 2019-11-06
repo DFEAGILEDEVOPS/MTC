@@ -23,7 +23,6 @@ const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 const prepareCheckService = require('./prepare-check.service')
 const featureToggles = require('feature-toggles')
-const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksToRedis')
 
 const checkStartService = {}
 
@@ -137,23 +136,24 @@ checkStartService.prepareCheck2 = async function (
   let pupilChecks
   try {
     pupilChecks = await checkStartService
-      .createPupilChecksForPreparation(newCheckIds, schoolId)
+      .createPupilCheckPayloads(newCheckIds, schoolId)
   } catch (error) {
     logger.error('Unable to prepare check messages', error)
     throw error
   }
+  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksToRedis')
 
   if (prepareCheckServiceEnabled) {
     prepareCheckService.prepareChecks(pupilChecks)
   } else {
-    prepareChecksForTableStorage(pupilChecks)
+    sendChecksToTableStorage(pupilChecks)
   }
 
   // Store the `config` section from the preparedCheckMessages into the DB
   return this.storeCheckConfigs(pupilChecks, newChecks)
 }
 
-async function prepareChecksForTableStorage (pupilChecks, schoolId) {
+async function sendChecksToTableStorage (pupilChecks, schoolId) {
   // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
   // for Azure Queues of 64Kb
   // Get the queue name
@@ -276,7 +276,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.createPupilChecksForPreparation = async function (checkIds, schoolId) {
+checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId) {
   if (!checkIds) {
     throw new Error('checkIds is not defined')
   }
