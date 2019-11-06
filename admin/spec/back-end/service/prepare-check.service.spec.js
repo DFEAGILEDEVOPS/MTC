@@ -53,7 +53,7 @@ describe('prepare-check.service', () => {
     let actualKey
     check.schoolPin = 'schoolPin'
     check.pupilPin = 'pupilPin'
-    spyOn(redisService, 'addBatch').and.callFake((batch, ttl) => {
+    spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
       actualKey = batch[0].key
     })
     await sut.prepareChecks([check])
@@ -62,7 +62,7 @@ describe('prepare-check.service', () => {
 
   it('should cache each item with the expected structure', async () => {
     let cachedObject
-    spyOn(redisService, 'addBatch').and.callFake((batch, ttl) => {
+    spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
       cachedObject = batch[0].value
     })
     await sut.prepareChecks([check])
@@ -76,5 +76,6 @@ describe('prepare-check.service', () => {
     expect(cachedObject.schoolId).toBe(check.school.id)
     expect(cachedObject.tokens).toBe(check.tokens)
     expect(cachedObject.updatedAt).toBeDefined()
+    expect(cachedObject.pinValidFrom).toBeDefined()
   })
 })

@@ -47,7 +47,8 @@ function constructPreparedCheck (check) {
     school: check.school,
     schoolId: check.school.id,
     tokens: check.tokens,
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    pinValidFrom: new Date()
   }
   return entity
 }
