@@ -21,6 +21,9 @@ const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
+const prepareCheckService = require('./prepare-check.service')
+const featureToggles = require('feature-toggles')
+const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksToRedis')
 
 const checkStartService = {}
 
@@ -131,27 +134,34 @@ checkStartService.prepareCheck2 = async function (
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
 
-  // Prepare a bunch of messages ready to be inserted into the queue
-  let prepareCheckQueueMessages
+  let pupilChecks
   try {
-    prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
-      newCheckIds,
-      schoolId
-    )
+    pupilChecks = await checkStartService
+      .createPupilChecksForPreparation(newCheckIds, schoolId)
   } catch (error) {
     logger.error('Unable to prepare check messages', error)
     throw error
   }
 
+  if (prepareCheckServiceEnabled) {
+    prepareCheckService.prepareChecks(pupilChecks)
+  } else {
+    prepareChecksForTableStorage(pupilChecks)
+  }
+
+  // Store the `config` section from the preparedCheckMessages into the DB
+  return this.storeCheckConfigs(pupilChecks, newChecks)
+}
+
+async function prepareChecksForTableStorage (pupilChecks, schoolId) {
+  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
+  // for Azure Queues of 64Kb
   // Get the queue name
   const prepareCheckQueueName = queueNameService.getName(
     queueNameService.NAMES.PREPARE_CHECK
   )
-
-  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
-  // for Azure Queues of 64Kb
   logger.info(`check start service: prepare check batch size is ${config.prepareCheckMessageBatchSize}`)
-  const batches = R.splitEvery(config.prepareCheckMessageBatchSize, prepareCheckQueueMessages)
+  const batches = R.splitEvery(config.prepareCheckMessageBatchSize, pupilChecks)
   let batchCount = 1
   const totalBatches = batches.length
   for (const batch of batches) {
@@ -159,9 +169,6 @@ checkStartService.prepareCheck2 = async function (
     await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
     batchCount += 1
   }
-
-  // Store the `config` section from the preparedCheckMessages into the DB
-  await this.storeCheckConfigs(prepareCheckQueueMessages, newChecks)
 }
 
 checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
@@ -229,7 +236,6 @@ checkStartService.initialisePupilCheck = async function (
 
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
-
   return checkData
 }
 
@@ -270,7 +276,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkIds, schoolId) {
+checkStartService.createPupilChecksForPreparation = async function (checkIds, schoolId) {
   if (!checkIds) {
     throw new Error('checkIds is not defined')
   }

@@ -9,22 +9,18 @@ const service = {
    * @param {[{object}]} checks the pupil checks to prepare
    * @returns {Promise<void>}
    */
-  prepareChecks: async (checks) => {
+  prepareChecks: (checks) => {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
-    const batch = []
-    for (let index = 0; index < checks.length; index++) {
-      const check = checks[index]
-      const preparedCheck = constructPreparedCheck(check)
-      const cacheKey = buildKey(check.schoolPin, check.pupilPin)
-      batch.push({
-        key: cacheKey,
-        value: preparedCheck
-      })
-      const ttl = secondsBetweenNowAnd4pm()
-      return redisService.addBatch(batch, ttl)
-    }
+    const preparedChecks = checks.map(check => {
+      return {
+        key: buildKey(check.schoolPin, check.pupilPin),
+        value: constructPreparedCheck(check)
+      }
+    })
+    const ttl = secondsBetweenNowAnd4pm()
+    return redisService.setMany(preparedChecks, ttl)
   }
 }
 
