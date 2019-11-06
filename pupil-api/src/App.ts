@@ -15,6 +15,8 @@ import { rateLimit } from './helpers/rate-limit'
 import config from './config'
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
+import * as R from 'ramda'
+import * as featureToggles from 'feature-toggles'
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -27,8 +29,40 @@ class App {
     this.express = express()
     this.middleware()
     this.routes()
-
+    this.featureToggles()
     appInsights.startInsightsIfConfigured().catch(e => logger.error(e))
+  }
+
+  private featureToggles (): void {
+    /**
+     * Load feature toggles
+     */
+    logger.info('ENVIRONMENT_NAME : ' + config.Environment)
+    const environmentName = config.Environment
+    let featureTogglesSpecific: string
+    let featureTogglesDefault: string
+    let featureTogglesSpecificPath: string
+    let featureTogglesDefaultPath: string
+    try {
+      featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
+      featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
+    } catch (err) {
+      logger.warn('error loading feature toggles:', err.message)
+    }
+
+    try {
+      featureTogglesDefaultPath = './config/feature-toggles.default'
+      featureTogglesDefault = require(featureTogglesDefaultPath)
+    } catch (err) {
+      logger.warn('error loading feature toggles:', err.message)
+    }
+
+    const featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
+
+    if (featureTogglesMerged) {
+      logger.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
+      featureToggles.load(featureTogglesMerged)
+    }
   }
 
   // Configure Express middleware.

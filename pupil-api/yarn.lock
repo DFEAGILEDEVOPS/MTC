@@ -2291,6 +2291,11 @@ feature-policy@0.3.0:
   resolved "https://registry.yarnpkg.com/feature-policy/-/feature-policy-0.3.0.tgz#7430e8e54a40da01156ca30aaec1a381ce536069"
   integrity sha512-ZtijOTFN7TzCujt1fnNhfWPFPSHeZkesff9AXZj+UEjYBynWNUIYpC87Ve4wHzyexQsImicLu7WsC2LHq7/xrQ==
 
+feature-toggles@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/feature-toggles/-/feature-toggles-1.4.0.tgz#8134e76eac3483f1a034b857c15c850762beac63"
+  integrity sha1-gTTnbqw0g/GgNLhXwVyFB2K+rGM=
+
 fecha@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/fecha/-/fecha-2.3.3.tgz#948e74157df1a32fd1b12c3a3c3cdcb6ec9d96cd"
