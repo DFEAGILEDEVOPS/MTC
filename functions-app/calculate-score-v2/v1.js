@@ -23,7 +23,7 @@ async function calculateSchoolResults (context) {
 
   // Terminate execution if a check window is not within the calculation period
   if (!liveCheckWindow || !liveCheckWindow.id) {
-    context.log.error(`calculate-score-v2 v1: Live check window not found`)
+    context.log.error('calculate-score-v2 v1: Live check window not found')
     return
   }
 
@@ -31,7 +31,7 @@ async function calculateSchoolResults (context) {
 
   // Terminate execution if no school ids are found
   if (!schoolIds || !Array.isArray(schoolIds) || schoolIds.length === 0) {
-    context.log.error(`calculate-score-v2 v1: school ids not found`)
+    context.log.error('calculate-score-v2 v1: school ids not found')
     return
   }
 

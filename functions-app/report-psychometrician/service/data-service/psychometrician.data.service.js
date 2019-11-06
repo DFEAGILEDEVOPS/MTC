@@ -118,7 +118,7 @@ const psychometricianDataService = {
    * @return {Promise<*>}
    */
   sqlFindAnswersByCheckIds: async (checkIds) => {
-    const select = `SELECT * FROM [mtc_admin].[answer] WHERE check_id IN`
+    const select = 'SELECT * FROM [mtc_admin].[answer] WHERE check_id IN'
     const whereParams = sqlService.buildParameterList(checkIds, TYPES.Int)
     const sql = [select, '(', whereParams.paramIdentifiers, ')'].join(' ')
     const results = await sqlService.query(sql, whereParams.params)

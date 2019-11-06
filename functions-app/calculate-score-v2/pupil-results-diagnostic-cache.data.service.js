@@ -33,7 +33,7 @@ module.exports.sqlInsert = async (schoolId, rawPayload) => {
  * @return {Promise<object>}
  */
 module.exports.sqlDelete = async () => {
-  const sql = `DELETE FROM [mtc_admin].pupilResultsDiagnosticCache`
+  const sql = 'DELETE FROM [mtc_admin].pupilResultsDiagnosticCache'
   const params = []
   return sqlService.query(sql, params)
 }
