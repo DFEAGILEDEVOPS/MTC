@@ -4,7 +4,7 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "echo running && gulp scripts assets",
+    "build": " tsc -b --v && gulp json",
     "coverage": "yarn jest --coverage",
     "lint": "standard && tslint --project .",
     "start": "yarn run build && node ./dist/index.js",
@@ -45,7 +45,6 @@
     "@types/node": "^12.7.12",
     "@types/string": "0.0.29",
     "gulp": "^4.0.2",
-    "gulp-typescript": "5.0.1",
     "jest": "^24.9.0",
     "node-mocks-http": "^1.7.0",
     "standard": "^14.3.1",

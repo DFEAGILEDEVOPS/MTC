@@ -46,16 +46,14 @@ class App {
     try {
       featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
       featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
-    } catch (err) {
-      logger.warn('error loading feature toggles:', err.message)
-    }
+    // tslint:disable-next-line: no-empty
+    } catch (ignore) {} // missing feature files throw intentionally
 
     try {
       featureTogglesDefaultPath = './config/feature-toggles.default'
       featureTogglesDefault = require(featureTogglesDefaultPath)
-    } catch (err) {
-      logger.warn('error loading feature toggles:', err.message)
-    }
+    // tslint:disable-next-line: no-empty
+    } catch (ignore) {} // missing feature files throw intentionally
 
     const featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
 
