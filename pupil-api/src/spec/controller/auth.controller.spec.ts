@@ -5,7 +5,7 @@
 import { default as authController } from '../../controllers/auth.controller'
 import * as httpMocks from 'node-mocks-http'
 import logger from '../../services/log.service'
-import { pupilAuthenticationService } from '../../services/pupil-authentication.service'
+import { pupilAuthenticationService } from '../../services/pupil-auth.service'
 
 describe('auth controller', () => {
   describe('route /auth', () => {

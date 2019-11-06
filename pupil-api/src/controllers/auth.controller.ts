@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import logger from '../services/log.service'
 
 import * as apiResponse from './api-response'
-import { pupilAuthenticationService } from '../services/pupil-authentication.service'
+import { pupilAuthenticationService } from '../services/pupil-auth.service'
 
 class AuthController {
   async postAuth (req: Request, res: Response) {

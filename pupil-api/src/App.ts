@@ -44,13 +44,13 @@ class App {
     let featureTogglesSpecificPath: string
     let featureTogglesDefaultPath: string
     try {
-      featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
+      featureTogglesSpecificPath = './feature-toggles/feature-toggles.' + environmentName
       featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
     // tslint:disable-next-line: no-empty
     } catch (ignore) {} // missing feature files throw intentionally
 
     try {
-      featureTogglesDefaultPath = './config/feature-toggles.default'
+      featureTogglesDefaultPath = './feature-toggles/feature-toggles.default'
       featureTogglesDefault = require(featureTogglesDefaultPath)
     // tslint:disable-next-line: no-empty
     } catch (ignore) {} // missing feature files throw intentionally
