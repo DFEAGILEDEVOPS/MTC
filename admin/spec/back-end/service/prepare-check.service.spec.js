@@ -3,6 +3,7 @@
 /* global describe it expect beforeEach spyOn fail */
 const sut = require('../../../services/prepare-check.service')
 const redisService = require('../../../services/redis-cache.service')
+const moment = require('moment')
 
 let check
 
@@ -13,7 +14,7 @@ describe('prepare-check.service', () => {
       pupilPin: 'pupil-pin',
       pupil: {
         checkCode: 'checkCode',
-        pinExpiresAt: new Date(),
+        pinExpiresAt: moment().add(5, 'hours').toDate(),
         id: 123
       },
       school: {

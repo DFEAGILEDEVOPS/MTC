@@ -16,17 +16,22 @@ const service = {
     const preparedChecks = checks.map(check => {
       return {
         key: buildKey(check.schoolPin, check.pupilPin),
-        value: constructPreparedCheck(check)
+        value: constructPreparedCheck(check),
+        ttl: secondsBetweenNowAndPinExpiryTime(check.pinExpiresAt)
       }
     })
-    const ttl = secondsBetweenNowAnd4pm()
-    return redisService.setMany(preparedChecks, ttl)
+    return redisService.setMany(preparedChecks)
   }
 }
 
-function secondsBetweenNowAnd4pm () {
+/**
+ *
+ * @param {Date} pinExpiry
+ * @returns {number} number of seconds between now and the pin expiry time
+ */
+function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
   const a = moment()
-  const b = moment().startOf('16:00')
+  const b = moment(pinExpiry)
   return a.diff(b, 'seconds')
 }
 

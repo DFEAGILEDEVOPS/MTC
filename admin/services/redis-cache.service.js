@@ -89,11 +89,10 @@ redisCacheService.drop = async (caches = []) => {
 
 /**
  * @description set many items in one atomic operation, with optional expiry
- * @param {[{key:string, value:object}]} items a dictionary of items to add to redis
- * @param {number} ttl time to expiry in seconds, optional.
+ * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
  * @returns {Promise<void>}
  */
-redisCacheService.setMany = async (items, ttl = undefined) => {
+redisCacheService.setMany = async (items) => {
   if (!Array.isArray(items)) {
     throw new Error('items is not an array')
   }
@@ -104,8 +103,8 @@ redisCacheService.setMany = async (items, ttl = undefined) => {
     if (typeof item.value === 'object') {
       item.value = JSON.stringify(item.value)
     }
-    if (ttl !== undefined) {
-      multi.setex(item.key, ttl, item.value)
+    if (item.ttl !== undefined) {
+      multi.setex(item.key, item.ttl, item.value)
     } else {
       multi.set(item.key, item.value)
     }
