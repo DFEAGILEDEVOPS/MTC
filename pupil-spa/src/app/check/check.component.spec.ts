@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpModule } from '@angular/http';
 
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
@@ -44,7 +43,7 @@ describe('CheckComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [ HttpModule ],
+      imports: [ ],
       declarations: [ CheckComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
       providers: [
