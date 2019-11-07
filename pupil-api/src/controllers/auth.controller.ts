@@ -20,7 +20,7 @@ export class AuthController {
     const mode = this.useRedisAuth ? 'redis' : 'table storage'
     logger.info(`auth mode:${mode}`)
     if (this.useRedisAuth) {
-      this.redisAuthService = new RedisPupilAuthenticationService(new RedisService())
+      this.redisAuthService = new RedisPupilAuthenticationService()
     }
   }
 
@@ -42,6 +42,7 @@ export class AuthController {
       } else {
         data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
       }
+      console.log(typeof data)
       apiResponse.sendJson(res, data)
     } catch (error) {
       logger.error('Failed to authenticate pupil: ', error)

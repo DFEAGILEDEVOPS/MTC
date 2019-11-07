@@ -1,4 +1,4 @@
-import { IRedisService, RedisService } from './redis.service'
+import { IRedisService, BasicRedisService } from './redis.service'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin: string, pupilPin: string): Promise<object>
@@ -8,9 +8,9 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
 
   private redisService: IRedisService
 
-  constructor (redisService: IRedisService) {
+  constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
-      redisService = new RedisService()
+      redisService = new BasicRedisService()
     }
     this.redisService = redisService
   }
@@ -21,12 +21,11 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const cacheItem = await this.redisService.get(cacheKey)
-    console.log('cache item is...')
-    console.dir(cacheItem)
     if (!cacheItem) {
       return null
     }
-    return cacheItem
+    const hydratedCacheItem = JSON.parse(cacheItem)
+    return hydratedCacheItem
   }
 
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
