@@ -32,7 +32,7 @@ window.GOVUK.getCurrentLocation = function () {
       // Prevent FOUC, remove class hiding content
       element.classList.remove('js-hidden')
 
-      rememberShownStep = Object.values(element.attributes).filter(x => x.name.indexOf('data-remember') >= 0).length
+      rememberShownStep = Object.keys(element.attributes).map(e => element.attributes[e]).filter(x => x.name.indexOf('data-remember') >= 0).length
       const steps = document.querySelector(`#${element.id}`).querySelectorAll('.js-step')
       const totalSteps = document.querySelector(`#${element.id}`).querySelectorAll('.js-panel').length
 
@@ -78,7 +78,7 @@ window.GOVUK.getCurrentLocation = function () {
         const insertEl = document.createElement('div')
         insertEl.classList.add('app-step-nav__controls')
         insertEl.innerHTML = '<button aria-expanded="false" class="app-step-nav__button app-step-nav__button--controls js-step-controls-button">' + actions.showAllText + '</button>'
-        element.before(insertEl)
+        element.insertBefore(insertEl, element.childNodes[0])
       }
 
       function addAriaControlsAttrForShowHideAllButton () {
@@ -93,11 +93,11 @@ window.GOVUK.getCurrentLocation = function () {
       }
 
       function setAllStepsShownState (isShown) {
-        steps.forEach(function (step) {
-          const stepView = new StepView(step)
+        for (let i = 0; i < steps.length; i++) {
+          const stepView = new StepView(steps[i])
           stepView.preventHashUpdate()
           stepView.setIsShown(isShown)
-        })
+        }
       }
 
       function showLinkedStep () {
@@ -105,7 +105,7 @@ window.GOVUK.getCurrentLocation = function () {
         if (rememberShownStep) {
           step = getStepForAnchor()
         } else {
-          step = Array.from(steps).filter(x => x.matches('[data-show]'))
+          step = Array.prototype.slice.call(steps).filter(x => x.matches('[data-show]'))
         }
         if (step && step.length) {
           step.forEach(s => {
@@ -129,8 +129,8 @@ window.GOVUK.getCurrentLocation = function () {
 
       function bindToggleForSteps () {
         const togglePanels = element.querySelectorAll('.js-toggle-panel')
-        togglePanels.forEach(tp => {
-          tp.addEventListener('click', function (event) {
+        for (let i = 0; i < togglePanels.length; i++) {
+          togglePanels[i].addEventListener('click', function (event) {
             const step = event.target.closest('.js-step')
 
             const stepView = new StepView(step)
@@ -138,7 +138,7 @@ window.GOVUK.getCurrentLocation = function () {
 
             setShowHideAllText()
           })
-        })
+        }
       }
 
       function loadFromSessionStorage (key) {
