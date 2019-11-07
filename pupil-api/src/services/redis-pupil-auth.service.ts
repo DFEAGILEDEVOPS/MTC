@@ -1,9 +1,7 @@
-import Redis, { RedisOptions } from 'ioredis'
-import config from '../config'
 import { IRedisService, RedisService } from './redis.service'
 
 export interface IPupilAuthenticationService {
-  authenticate (schoolPin: string, pupilPin: number): Promise<object>
+  authenticate (schoolPin: string, pupilPin: string): Promise<object>
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
@@ -17,9 +15,16 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     this.redisService = redisService
   }
 
-  async authenticate (schoolPin: string, pupilPin: number): Promise<object> {
-    await this.redisService.get(`preparedCheck:${schoolPin}:${pupilPin}`)
+  async authenticate (schoolPin: string, pupilPin: string): Promise<object> {
+    if (schoolPin.length === 0 || pupilPin.length === 0) {
+      throw new Error('schoolPin and pupilPin cannot be an empty string')
+    }
+    await this.redisService.get(this.buildCacheKey(schoolPin, pupilPin))
     return Promise.resolve({})
+  }
+
+  private buildCacheKey (schoolPin: string, pupilPin: string): string {
+    return `preparedCheck:${schoolPin}:${pupilPin}`
   }
 
 }
