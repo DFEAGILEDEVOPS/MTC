@@ -20,6 +20,8 @@ const pinGenerationDataService = require('../../../services/data-access/pin-gene
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
+const prepareCheckService = require('../../../services/prepare-check.service')
+const featureToggles = require('feature-toggles')
 
 const checkFormMock = {
   id: 100,
@@ -74,7 +76,7 @@ describe('check-start.service', () => {
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
+      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessageAsync')
       spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
@@ -141,6 +143,13 @@ describe('check-start.service', () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
+    })
+
+    it('uses prepare check service when toggle enabled', async () => {
+      spyOn(featureToggles, 'isFeatureEnabled').and.returnValue(true)
+      spyOn(prepareCheckService, 'prepareChecks')
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(prepareCheckService.prepareChecks).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -269,7 +278,7 @@ describe('check-start.service', () => {
 
       it('throws an error if the check form allocation IDs are not supplied', async () => {
         try {
-          await checkStartService.prepareCheckQueueMessages()
+          await checkStartService.createPupilCheckPayloads()
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('checkIds is not defined')
@@ -278,7 +287,7 @@ describe('check-start.service', () => {
 
       it('throws an error if the check form allocation ID param is not an array', async () => {
         try {
-          await checkStartService.prepareCheckQueueMessages({})
+          await checkStartService.createPupilCheckPayloads({})
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('checkIds must be an array')
@@ -286,19 +295,19 @@ describe('check-start.service', () => {
       })
 
       it('makes a call to fetch the check form allocations from the db', async () => {
-        await checkStartService.prepareCheckQueueMessages([1], 1)
+        await checkStartService.createPupilCheckPayloads([1], 1)
         expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
       })
 
       it('prepares the question data', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
       })
       it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(5)
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
         expect(Object.keys(res[0].tokens)).toContain('checkSubmit')
@@ -309,7 +318,7 @@ describe('check-start.service', () => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
       })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
-        const res = await checkStartService.prepareCheckQueueMessages([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
         expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
       })
