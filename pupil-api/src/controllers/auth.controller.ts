@@ -3,15 +3,20 @@ import logger from '../services/log.service'
 import * as apiResponse from './api-response'
 import { pupilAuthenticationService } from '../services/pupil-auth.service'
 import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service'
-import * as featureToggles from 'feature-toggles'
 import { RedisService } from '../services/redis.service'
+import { FeatureService, IFeatureService } from '../services/feature.service'
 
-class AuthController {
+export class AuthController {
   private useRedisAuth: boolean
   private redisAuthService: RedisPupilAuthenticationService
+  private featureService: IFeatureService
 
-  constructor () {
-    this.useRedisAuth = featureToggles.isFeatureEnabled('preparedChecksInRedis')
+  constructor (featureService?: IFeatureService) {
+    if (featureService === undefined) {
+      featureService = new FeatureService()
+    }
+    this.featureService = featureService
+    this.useRedisAuth = this.featureService.redisAuthMode()
     const mode = this.useRedisAuth ? 'redis' : 'table storage'
     logger.info(`auth mode:${mode}`)
     if (this.useRedisAuth) {
@@ -30,7 +35,7 @@ class AuthController {
     let data
     try {
       if (this.useRedisAuth) {
-        data = this.redisAuthService.authenticate(pupilPin, schoolPin)
+        data = await this.redisAuthService.authenticate(pupilPin, schoolPin)
         if (data === null) {
           return apiResponse.unauthorised(res)
         }
@@ -44,5 +49,3 @@ class AuthController {
     }
   }
 }
-
-export default new AuthController()

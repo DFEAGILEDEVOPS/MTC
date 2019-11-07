@@ -1,12 +1,14 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-import * as authController from '../controllers/auth.controller'
+import { AuthController } from '../controllers/auth.controller'
 
 export class AuthRouter {
   router: Router
+  authController: AuthController
 
   constructor () {
+    this.authController = new AuthController()
     this.router = Router()
     this.init()
   }
@@ -14,7 +16,7 @@ export class AuthRouter {
   public init () {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
-      return authController.default.postAuth(req, res)
+      return this.authController.postAuth(req, res)
     })
   }
 }
