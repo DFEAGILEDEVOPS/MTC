@@ -1,5 +1,5 @@
-import { RedisPupilAuthenticationService } from '../../services/redis-pupil-authentication.service'
-import { RedisServiceMock, IRedisService } from '../../services/redis.service'
+import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
+import { RedisServiceMock, IRedisService } from './redis.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService

@@ -2,7 +2,7 @@
 
 /* global describe beforeEach */
 
-import { pupilAuthenticationService } from '../../services/pupil-auth.service'
+import { pupilAuthenticationService } from './pupil-auth.service'
 import * as moment from 'moment'
 
 describe('pupilAuthenticationService', () => {

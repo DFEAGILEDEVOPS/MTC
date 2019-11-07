@@ -4,7 +4,7 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": " tsc -b --v && gulp json",
+    "build": "tsc -b --v && gulp json",
     "coverage": "yarn jest --coverage",
     "lint": "standard && tslint --project .",
     "start": "yarn run build && node ./dist/index.js",
