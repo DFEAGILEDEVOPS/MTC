@@ -1,8 +1,15 @@
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
-import { RedisServiceMock, IRedisService } from './redis.service'
+import { IRedisService } from './redis.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
+
+const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
+  get: jest.fn(),
+  setex: jest.fn(),
+  drop: jest.fn(),
+  quit: jest.fn()
+}))
 
 describe('redis-pupil-auth.service', () => {
 

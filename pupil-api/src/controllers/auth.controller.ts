@@ -12,7 +12,8 @@ class AuthController {
 
   constructor () {
     this.useRedisAuth = featureToggles.isFeatureEnabled('preparedChecksInRedis')
-    logger.info('auth mode:', this.useRedisAuth ? 'redis' : 'table storage')
+    const mode = this.useRedisAuth ? 'redis' : 'table storage'
+    logger.info(`auth mode:${mode}`)
     if (this.useRedisAuth) {
       this.redisAuthService = new RedisPupilAuthenticationService(new RedisService())
     }
