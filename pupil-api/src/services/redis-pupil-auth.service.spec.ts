@@ -48,4 +48,27 @@ describe('redis-pupil-auth.service', () => {
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
   })
+
+  test('the check payload should be returned if item found in cache', async () => {
+    const expectedPayload = {
+      foo: 'bar'
+    }
+    redisServiceMock.get = jest.fn((key: string) => {
+      return Promise.resolve(expectedPayload)
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    const payload = await sut.authenticate(schoolPin, pupilPin)
+    expect(payload).toEqual(expectedPayload)
+  })
+
+  test('null should be returned if item not found in cache', async () => {
+    redisServiceMock.get = jest.fn((key: string) => {
+      return Promise.resolve(undefined)
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    const payload = await sut.authenticate(schoolPin, pupilPin)
+    expect(payload).toBeNull()
+  })
 })
