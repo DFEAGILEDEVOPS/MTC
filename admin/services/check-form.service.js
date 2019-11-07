@@ -5,7 +5,6 @@ const moment = require('moment')
 
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
-const checkWindowService = require('../services/check-window.service')
 const config = require('../config')
 const random = require('../lib/random-generator')
 
@@ -104,65 +103,6 @@ const checkFormService = {
    */
   prepareQuestionData: function (questions) {
     return questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
-  },
-
-  /**
-   * Return a view friendly list of check-forms and their linked windows.
-   * @param sortField
-   * @param sortDirection
-   * @returns {Promise.<*>}
-   */
-  formatCheckFormsAndWindows: async (sortField, sortDirection) => {
-    let formData
-    let sortByWindow = false
-    let sortDescending = false
-
-    if (sortField !== 'name') {
-      sortByWindow = true
-    }
-
-    if (sortDirection !== 'asc') {
-      sortDescending = true
-    }
-
-    if (sortByWindow) {
-      formData = await checkFormDataService.sqlFetchSortedActiveFormsByWindow(null, sortDescending)
-    } else {
-      formData = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, sortDescending)
-    }
-
-    if (formData.length > 0) {
-      for (let index = 0; index < formData.length; index++) {
-        const form = formData[index]
-        form.removeLink = true
-        const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms([form.id])
-        if (checkWindows.length > 0) {
-          form.checkWindows = checkWindows.map(cw => cw.name)
-          form.removeLink = moment(form.checkStartDate).isAfter(moment())
-        } else {
-          form.checkWindows = []
-        }
-      }
-      // TODO - why on earth does a service have a view concern inside it?
-      // TODO - this must be moved to the view
-      formData.forEach(f => {
-        f.checkWindows = f.checkWindows.join('<br>')
-      })
-
-      // TODO rereview server side sorting after SQL move.
-      if (sortField === 'window') {
-        formData = formData.sort((a, b) => {
-          if (a.checkWindows === b.checkWindows) {
-            return 0
-          } else if (sortDirection === 'asc') {
-            return a.checkWindows < b.checkWindows ? 1 : -1
-          } else {
-            return a.checkWindows < b.checkWindows ? -1 : 1
-          }
-        })
-      }
-    }
-    return formData
   },
 
   /**

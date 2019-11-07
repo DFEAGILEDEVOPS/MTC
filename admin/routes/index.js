@@ -10,7 +10,7 @@ const { getPrivacyPage } = require('../controllers/privacy')
 const { getCookiesPage } = require('../controllers/cookies')
 const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
-const checkFormController = require('../controllers/check-form')
+const testDeveloperController = require('../controllers/test-developer')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
 const {
@@ -37,7 +37,7 @@ router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */
 router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 /* Test developer routing */
-router.get('/test-developer', isAuthenticated(roles.testDeveloper), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
+router.get('/test-developer', isAuthenticated(roles.testDeveloper), (req, res, next) => testDeveloperController.getTestDeveloperHomePage(req, res, next))
 /* Service manager routing */
 router.get('/service-manager', isAuthenticated(roles.serviceManager), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
