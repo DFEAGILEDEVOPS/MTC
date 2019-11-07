@@ -27,13 +27,12 @@ const service = {
 
 /**
  *
- * @param {Date} pinExpiry
+ * @param {moment.Moment} pinExpiry
  * @returns {number} number of seconds between now and the pin expiry time
  */
 function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
-  const a = moment()
-  const b = moment(pinExpiry)
-  const differenceInSeconds = b.diff(a, 'seconds')
+  const now = moment()
+  const differenceInSeconds = pinExpiry.diff(now, 'seconds')
   return differenceInSeconds
 }
 
@@ -47,7 +46,7 @@ function constructPreparedCheck (check) {
     checkCode: check.pupil.checkCode,
     config: check.config,
     createdAt: new Date(),
-    pinExpiresAt: moment(check.pupil.pinExpiresAt).toDate(),
+    pinExpiresAt: moment(check.pupil.pinExpiresAt),
     pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], check.pupil),
     pupilId: check.pupil.id,
     questions: check.questions,
