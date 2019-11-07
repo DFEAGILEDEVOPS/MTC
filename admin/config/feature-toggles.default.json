@@ -9,5 +9,5 @@
   "accessArrangements": true,
   "newCheckWindow": true,
   "newCheckForm": true,
-  "prepareChecksToRedis": true
+  "prepareChecksToRedis": false
 }

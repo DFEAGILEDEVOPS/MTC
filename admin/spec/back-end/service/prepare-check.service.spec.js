@@ -77,7 +77,6 @@ describe('prepare-check.service', () => {
     expect(cachedObject.schoolId).toBe(check.school.id)
     expect(cachedObject.tokens).toBe(check.tokens)
     expect(cachedObject.updatedAt).toBeDefined()
-    expect(cachedObject.pinValidFrom).toBeDefined()
   })
 
   it('should cache each item with the expected ttl', async () => {
