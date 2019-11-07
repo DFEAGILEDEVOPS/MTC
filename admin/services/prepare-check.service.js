@@ -45,7 +45,7 @@ function constructPreparedCheck (check) {
   const entity = {
     checkCode: check.pupil.checkCode,
     config: check.config,
-    createdAt: new Date(),
+    createdAt: moment(),
     pinExpiresAt: moment(check.pupil.pinExpiresAt),
     pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], check.pupil),
     pupilId: check.pupil.id,
@@ -53,8 +53,7 @@ function constructPreparedCheck (check) {
     school: check.school,
     schoolId: check.school.id,
     tokens: check.tokens,
-    updatedAt: new Date(),
-    pinValidFrom: new Date()
+    updatedAt: moment()
   }
   return entity
 }
