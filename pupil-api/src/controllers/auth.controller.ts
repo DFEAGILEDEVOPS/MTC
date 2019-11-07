@@ -35,7 +35,7 @@ export class AuthController {
     let data
     try {
       if (this.useRedisAuth) {
-        data = await this.redisAuthService.authenticate(pupilPin, schoolPin)
+        data = await this.redisAuthService.authenticate(schoolPin, pupilPin)
         if (data === null) {
           return apiResponse.unauthorised(res)
         }

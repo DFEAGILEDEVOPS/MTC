@@ -19,7 +19,10 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     if (schoolPin.length === 0 || pupilPin.length === 0) {
       throw new Error('schoolPin and pupilPin cannot be an empty string')
     }
-    const cacheItem = await this.redisService.get(this.buildCacheKey(schoolPin, pupilPin))
+    const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
+    const cacheItem = await this.redisService.get(cacheKey)
+    console.log('cache item is...')
+    console.dir(cacheItem)
     if (!cacheItem) {
       return null
     }
