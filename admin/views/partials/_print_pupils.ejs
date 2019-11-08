@@ -1,7 +1,8 @@
 <main class="govuk-main-wrapper only-print" id="main-content" role="main">
+<!--<main class="govuk-main-wrapper" id="main-content" role="main">-->
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <img class="sta-horizontal-logo govuk-!-margin-bottom-5" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
+            <img class="sta-horizontal-logo govuk-!-margin-bottom-5" width="200" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
             <h3 class="govuk-heading-m">Multiplication Table Check <%= pinEnv !== 'live' ? '- Try it out' : '' %></h3>
             <ul class="govuk-list govuk-list--bullet" role="listbox">
                 <li class="govuk-!-font-size-14" role="listitem">Please cut out and distribute to pupils</li>
@@ -16,8 +17,11 @@
                 <% for (let i = 0; i < pupils.length; i++) { %>
                     <tr class="page pupil-<%= pupils[i].id %>">
                         <td class="line-empty"></td>
-                        <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'MTC' : 'Try it out') %></span></td>
+                        <td class="line-checktype-start"><span><%= (pinEnv === 'live' ? 'MTC' : 'Try it out') %></span></td>
                         <td class="line-content">
+                            <% if (pinEnv !== 'live') { %>
+                            <div class="watermark govuk-!-font-size-80">Try it out</div>
+                            <% } %>
                             <div class="pupil-content">
                             <span class="fullname"><%=
                                     `${pupils[i].foreName} ${pupils[i].showMiddleNames
@@ -33,12 +37,12 @@
                                 <% } %>
                             </div>
                             <div class="pin-content">
-                                <span class="govuk-label">School Password:</span>
+                                <span class="pin-text">School Password:</span>
                                 <span class="pin-information"><%= (
                                             !!school ? school.pin : 'No active password'
                                     ) %></span>
                                 <span class="separator"></span>
-                                <label class="govuk-label">PIN:</label>
+                                <label class="pin-text">PIN:</label>
                                 <span class="pin-information"><%= pupils[i].pin %></span>
                             </div>
                             <% if (qrDataURL) { %>
@@ -46,6 +50,8 @@
                             <% } %>
                             <div class="url"><%= url %></div>
                         </td>
+                        <td class="line-checktype-end"><div><%- (pinEnv === 'live' ? 'MTC' : 'Do not use in official MTC') %></div></td>
+                        <td class="line-empty"></td>
                     </tr>
                 <% } %>
                 </table>

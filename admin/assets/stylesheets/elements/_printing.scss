@@ -32,7 +32,7 @@
     border-bottom: 1px dashed govuk-colour("black");
     text-align: center;
     vertical-align: middle;
-    margin-bottom: -1px;
+    //margin-bottom: -1px;
     font-size: 14px;
   }
   table {
@@ -43,7 +43,7 @@
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
-    display: inline-table;
+    //display: inline-table;
     width: 100%;
 
     /*
@@ -61,7 +61,7 @@
     strong {
       font-size: medium;
     }
-    &.line-checktype {
+    &.line-checktype-start {
       vertical-align: middle;
       padding: 0;
       border-left: 1px solid govuk-colour("black");
@@ -76,6 +76,23 @@
         font-weight: bold;
         width: 16px;
         white-space: nowrap;
+      }
+    }
+    &.line-checktype-end {
+      vertical-align: middle;
+      padding: 0;
+      border-left: 1px solid govuk-colour("black");
+      border-right: 1px solid govuk-colour("black");
+
+      div {
+        writing-mode: vertical-rl;
+        -ms-writing-mode: tb-rl;
+        transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        height: govuk-em(105px, $govuk-root-font-size);
+        font-weight: bold;
+        width: 28px;
+        white-space: normal;
       }
     }
     &.line-empty {
@@ -102,11 +119,11 @@
     margin-bottom: govuk-em(-20px, $govuk-root-font-size);
   }
   .pin-information {
-    font-size: 26px;
+    font-size: 36px;
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0 0 govuk-em(4px, $govuk-root-font-size) govuk-em(5px, $govuk-root-font-size);
+    margin: 0 0 govuk-em(-1px, $govuk-root-font-size) govuk-em(5px, $govuk-root-font-size);
     width: auto;
     line-height: 1;
   }
@@ -120,9 +137,14 @@
   .pin-content {
     text-align: left;
     font-size: 12px;
-    margin-top: govuk-em(20px, $govuk-root-font-size);
+    width: 10px;
+    margin-top: govuk-em(30px, $govuk-root-font-size);
 	  display: flex;
     align-items: flex-end;
+    &.pin-text {
+      white-space: normal;
+      font-size: 2px;
+    }
   }
   .qr {
     position: relative;
@@ -136,7 +158,13 @@
     }
   }
   .url {
+    margin-top: govuk-em(5px, $govuk-root-font-size);
     font-size: 14px;
     float: left;
+  }
+  .watermark {
+    position: absolute;
+    opacity: 0.1;
+    width: govuk-em(125px, $govuk-root-font-size);
   }
 }
