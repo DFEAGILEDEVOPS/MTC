@@ -1,6 +1,7 @@
 'use strict'
 
 const gulp = require('gulp')
+const babel = require('gulp-babel')
 const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
@@ -28,6 +29,7 @@ const jsBundleFiles = [
   './assets/javascripts/mtc-autocomplete.js',
   './assets/javascripts/mtc-check-forms.js',
   './assets/javascripts/print-popup.js',
+  './assets/javascripts/step-by-step-navigation.js',
   './assets/javascripts/table-sorting.js',
   './assets/javascripts/session-expiry.js', // here be dragons
   './assets/javascripts/autocomplete.js',
@@ -59,6 +61,10 @@ gulp.task('bundle-js', function () {
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER))
     .pipe(replace('SESSION_EXPIRATION_TIME', config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS))
+    .pipe(babel({
+      presets: ['@babel/preset-env'],
+      sourceType: 'unambiguous'
+    }))
     .pipe(uglify({
       ie8: true
     }).on('error', function (e) {
