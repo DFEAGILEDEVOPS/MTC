@@ -39,7 +39,6 @@ import 'core-js/es6/set';
 
 /** Evergreen browsers require these. **/
 import 'core-js/es6/reflect';
-import 'core-js/es7/reflect';
 
 import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
 
