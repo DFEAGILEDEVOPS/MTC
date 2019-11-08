@@ -37,8 +37,7 @@ const service = {
         logger.debug(`looking up school by URN:${dfeUser.organisation.urn}`)
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
-          // should we throw? as user in teacher role cannot continue without school...
-          logger.warn(`school not found with URN:${dfeUser.organisation.urn}`)
+          throw new Error(`school not found with URN:${dfeUser.organisation.urn}`)
         }
       } else {
         throw new Error('user.organisation or user.organisation.urn not found on dfeUser object')
