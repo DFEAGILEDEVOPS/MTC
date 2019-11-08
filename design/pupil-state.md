@@ -26,6 +26,7 @@ parts of the codebase/user journey process will need refactoring to support the 
 - pin generation: when the check record is created we will need to update `pupil.currentCheckId` with the id of the newly created check record.
 - check complete: once the submitted check is validated & marked the check notifier needs to set `pupil.checkComplete` to `true` and change `check.checkStatus_id` to complete.
 - restart requested: when teacher creates restart we set `pupil.restartAvailable` to `true` and `pupil.currentCheckId` to `NULL`, indicating that a pin can now be generated for this pupil.
+- attendance set: when teacher marks pupil as not attending we set `pupil.attendanceId` to the `pupilRestart.id` of the newly created pupil attendance record.
 
 ## check expiry & restart counts
 
