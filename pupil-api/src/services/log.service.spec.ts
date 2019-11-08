@@ -1,8 +1,8 @@
 'use strict'
 /* global describe expect it beforeEach */
 
-import { Logger } from '../../services/log.service'
-import config from '../../config'
+import { Logger } from './log.service'
+import config from '../config'
 
 describe('logger class', () => {
   it('can initialise', () => {

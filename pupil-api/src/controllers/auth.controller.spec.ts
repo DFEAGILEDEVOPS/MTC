@@ -2,10 +2,15 @@
 
 /* global describe spyOn */
 
-import { default as authController } from '../../controllers/auth.controller'
+import { AuthController } from './auth.controller'
 import * as httpMocks from 'node-mocks-http'
-import logger from '../../services/log.service'
-import { pupilAuthenticationService } from '../../services/pupil-authentication.service'
+import logger from '../services/log.service'
+import { pupilAuthenticationService } from '../services/pupil-auth.service'
+import { FeatureService, IFeatureService } from '../services/feature.service'
+
+const FeatureServiceMock = jest.fn<IFeatureService, any>(() => ({
+  redisAuthMode: jest.fn()
+}))
 
 describe('auth controller', () => {
   describe('route /auth', () => {
@@ -13,11 +18,15 @@ describe('auth controller', () => {
     let res
     let mockResponse = {}
     let mockErrorResponse = new Error('mock error')
+    let authController: AuthController
+    let featureService: IFeatureService
 
     beforeEach(() => {
       req = createMockRequest('application/json')
       req.body = { schoolPin: 'pin1', pupilPin: 'pin2' }
       res = httpMocks.createResponse()
+      featureService = new FeatureServiceMock()
+      authController = new AuthController(featureService)
     })
 
     it('returns an 400 error if the request is not JSON', async () => {
@@ -43,7 +52,10 @@ describe('auth controller', () => {
       expect(res.statusCode).toBe(200)
     })
 
-    it('makes a call to the authentication service', async () => {
+    it('makes a call to the authentication service if redis not enabled', async () => {
+      featureService.redisAuthMode = jest.fn(() => {
+        return false
+      })
       spyOn(pupilAuthenticationService, 'authenticate').and.returnValue(Promise.resolve(mockResponse))
       req.body = { schoolPin: 'pin1', pupilPin: 'pin2' }
       await authController.postAuth(req, res)
