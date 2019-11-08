@@ -61,8 +61,10 @@
     strong {
       font-size: medium;
     }
-    &.line-checktype-start {
+    &.line-checktype-1 {
       vertical-align: middle;
+      background-color: govuk-colour("black");
+      color: govuk-colour("white");
       padding: 0;
       border-left: 1px solid govuk-colour("black");
       border-right: 1px solid govuk-colour("black");
@@ -78,7 +80,7 @@
         white-space: nowrap;
       }
     }
-    &.line-checktype-end {
+    &.line-checktype-2 {
       vertical-align: middle;
       padding: 0;
       border-left: 1px solid govuk-colour("black");
