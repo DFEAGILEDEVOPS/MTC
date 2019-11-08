@@ -56,16 +56,19 @@ const service = {
     let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.providerUserId)
     if (!userRecord) {
       // create user record, as this is their first visit to MTC
-      const user = {
+      const userToCreateInDb = {
         identifier: dfeUser.providerUserId,
         displayName: dfeUser.displayName,
-        role_id: roleRecord.id
+        role_id: roleRecord.id,
+        school_id: dfeUser.schoolId
       }
+      console.log('user to create in db....')
+      console.dir(userToCreateInDb)
       if (schoolRecord) {
-        user.school_id = schoolRecord.id
+        userToCreateInDb.school_id = schoolRecord.id
       }
-      await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(user.identifier)
+      await userDataService.sqlCreate(userToCreateInDb)
+      userRecord = await userDataService.sqlFindOneByIdentifier(userToCreateInDb.identifier)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }

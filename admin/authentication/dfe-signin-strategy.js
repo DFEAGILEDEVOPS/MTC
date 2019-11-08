@@ -25,7 +25,8 @@ const initSignOnAsync = async () => {
   logger.info('dfe sign on initialised')
   const client = new issuer.Client({
     client_id: config.Auth.dfeSignIn.clientId,
-    client_secret: config.Auth.dfeSignIn.clientSecret
+    client_secret: config.Auth.dfeSignIn.clientSecret,
+    post_logout_redirect_uri: `${config.Runtime.externalHost}/sign-out-dso`
   })
   if (config.Auth.dfeSignIn.clockToleranceSeconds && config.Auth.dfeSignIn.clockToleranceSeconds > 0) {
     client.CLOCK_TOLERANCE = config.Auth.dfeSignIn.clockToleranceSeconds
@@ -34,7 +35,8 @@ const initSignOnAsync = async () => {
   return new Strategy({
     client,
     params: {
-      scope: config.Auth.dfeSignIn.openIdScope
+      scope: config.Auth.dfeSignIn.openIdScope,
+      redirect_uri: `${config.Runtime.externalHost}/auth-dso`
     }
   }, async (tokenset, authUserInfo, done) => {
     try {
