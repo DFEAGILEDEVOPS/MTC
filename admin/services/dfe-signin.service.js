@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('./../config')
-const logger = require('./log.service').getLogger()
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
@@ -34,7 +33,6 @@ const service = {
     // lookup school if in teacher or headteacher role
     if (dfeUser.role === roles.teacher || dfeUser.role === roles.headTeacher) {
       if (dfeUser.organisation && dfeUser.organisation.urn) {
-        logger.debug(`looking up school by URN:${dfeUser.organisation.urn}`)
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
           throw new Error(`school not found with URN:${dfeUser.organisation.urn}`)
@@ -61,8 +59,6 @@ const service = {
         role_id: roleRecord.id,
         school_id: dfeUser.schoolId
       }
-      console.log('user to create in db....')
-      console.dir(userToCreateInDb)
       if (schoolRecord) {
         userToCreateInDb.school_id = schoolRecord.id
       }
