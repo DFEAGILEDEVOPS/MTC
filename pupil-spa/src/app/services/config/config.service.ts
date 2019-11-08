@@ -1,7 +1,7 @@
-import { throwError as observableThrowError,  Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { default as connectivityErrorMessages} from '../connectivity-service/connectivity-error-messages';
 
 /**
  * Declaration of config class
@@ -28,29 +28,29 @@ export interface IAppConfig {
 
 export class AppConfig implements IAppConfig {
   readonly applicationInsightsInstrumentationKey: string;
-  readonly authURL: string;
   readonly authPingURL: string;
+  readonly authURL: string;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
   readonly checkSubmissionApiErrorDelay: number;
   readonly checkSubmissionAPIErrorMaxAttempts: number;
-  readonly googleAnalyticsTrackingCode: string;
-  readonly production: boolean;
-  readonly submissionPendingViewMinDisplay: number;
+  readonly connectivityCheckEnabled: boolean;
   readonly connectivityCheckViewMinDisplay: number;
-  readonly supportNumber: string;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
+  readonly googleAnalyticsTrackingCode: string;
+  readonly production: boolean;
   readonly pupilPrefsAPIErrorDelay: number;
   readonly pupilPrefsAPIErrorMaxAttempts: number;
-  readonly websiteOffline: boolean;
-  readonly testPupilConnectionQueueName: string;
-  readonly testPupilConnectionQueueUrl: string;
-  readonly testPupilConnectionQueueToken: string;
+  readonly submissionPendingViewMinDisplay: number;
+  readonly submitsToCheckReceiver: boolean;
+  readonly supportNumber: string;
   readonly testPupilConnectionDelay: number;
   readonly testPupilConnectionMaxAttempts: number;
-  readonly connectivityCheckEnabled: boolean;
-  readonly submitsToCheckReceiver: boolean;
+  readonly testPupilConnectionQueueName: string;
+  readonly testPupilConnectionQueueToken: string;
+  readonly testPupilConnectionQueueUrl: string;
+  readonly websiteOffline: boolean;
 }
 
 /**
@@ -86,6 +86,8 @@ export function loadConfigMockService(): Function {
 @Injectable()
 export class AppConfigService {
 
+  errorMessages = [];
+
   constructor(private http: HttpClient) {
   }
 
@@ -93,15 +95,20 @@ export class AppConfigService {
    * Parse the config file through http, throw a Server error if unavailable
    */
   public load(): Promise<Boolean> {
-    return new Promise((resolve, reject) => {
-      this.http.get('/public/config.json').pipe(catchError((error: any): any => {
-        reject(true);
-        return observableThrowError('Server error');
-      })).subscribe((envResponse: any) => {
-        const t = new AppConfig();
-        APP_CONFIG = Object.assign(t, envResponse);
-        resolve(true);
-      });
+    return new Promise(async (resolve, reject) => {
+      await this.http.get('/public/config.json', { observe: 'response' })
+        .pipe(first())
+        .toPromise()
+        .then(data => {
+          const t = new AppConfig();
+          console.log('data ', data)
+          APP_CONFIG = Object.assign(t, data.body);
+          return resolve(true);
+        })
+        .catch(() => {
+          this.errorMessages.push(connectivityErrorMessages.pupilAuthError);
+          return reject(false);
+        });
     });
   }
 }
