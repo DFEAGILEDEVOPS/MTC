@@ -10,12 +10,12 @@ should we have a bit flag on the check table, that we can set when check receive
 expiry flag would help with distinction on whether some havent been received in time, or whether we can still wait.
 how do we deal with multiple processing of a complete check?
 
-## expire-prepared-checks function
+## expire-prepared-checks function (DONE)
 
 redis & cosmos table API support TTL on rows.  This would be a much cleaner implementation.
 - still using table storage.  test expiry time on 2mil prepared checks
 
-## check-expiry function
+## check-expiry function (DONE)
 
 potential query optimisation to have better way to flag the expiry of the restart.
 

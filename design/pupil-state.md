@@ -15,7 +15,17 @@ references when related events occur.  For example - when a pin is generated for
   - is this essential? could we not allow a restart even if not logged in? as recording login to sql is expensive
 - not attending: pupil will not be taking the check
 - not received: the pupil logged in but a submitted check was never received. (allows 24 hours for a submitted check to be processed and marked as received) requires a restart.
+  - will not be a formal 'state'.  will be a transient fixture either in redis, or inferred from dates on check record.
 - check expired: no login was recorded.  the check was never used.  does not require a restart
+  - to be retired.  we can infer that it has expired from creation date
+
+## events where modifications will be required
+
+parts of the codebase/user journey process will need refactoring to support the pupil state changes:
+
+- pin generation: when the check record is created we will need to update `pupil.currentCheckId` with the id of the newly created check record.
+- check complete: once the submitted check is validated & marked the check notifier needs to set `pupil.checkComplete` to `true` and change `check.checkStatus_id` to complete.
+- restart requested: when teacher creates restart we set `pupil.restartAvailable` to `true` and `pupil.currentCheckId` to `NULL`, indicating that a pin can now be generated for this pupil.
 
 ## check expiry & restart counts
 
