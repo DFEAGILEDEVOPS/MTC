@@ -60,7 +60,7 @@ describe('dfe-signin.service', () => {
   it('does look up school if teacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
-    spyOn(schoolDataService, 'sqlFindOneByUrn')
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
@@ -71,7 +71,7 @@ describe('dfe-signin.service', () => {
   it('does look up school if headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_headteacher'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2 }))
-    spyOn(schoolDataService, 'sqlFindOneByUrn')
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
@@ -82,7 +82,7 @@ describe('dfe-signin.service', () => {
   it('does not look up school if not teacher or headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
-    spyOn(schoolDataService, 'sqlFindOneByUrn')
+    spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
