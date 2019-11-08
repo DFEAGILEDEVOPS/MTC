@@ -65,7 +65,7 @@ const service = {
         user.school_id = schoolRecord.id
       }
       await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
+      userRecord = await userDataService.sqlFindOneByIdentifier(user.identifier)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
