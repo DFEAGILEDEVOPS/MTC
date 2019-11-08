@@ -133,10 +133,7 @@ export class RedisService implements IRedisService {
 
   async get (key: string): Promise<any | null> {
     try {
-      console.log('cache key:', key)
       const cacheEntry = await this.redis.get(key)
-      console.log('cache entry')
-      console.dir(cacheEntry)
       if (cacheEntry === null) return Promise.resolve(null)
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem.meta.type) {

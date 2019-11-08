@@ -42,7 +42,6 @@ export class AuthController {
       } else {
         data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
       }
-      console.log(typeof data)
       apiResponse.sendJson(res, data)
     } catch (error) {
       logger.error('Failed to authenticate pupil: ', error)
