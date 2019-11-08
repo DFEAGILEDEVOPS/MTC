@@ -122,7 +122,7 @@ const getUnauthorised = (req, res) => {
 
 const getSignedOut = (req, res) => {
   res.locals.pageTitle = 'Signed Out'
-  res.render('signedOut')
+  res.render('signedout')
 }
 
 module.exports = {

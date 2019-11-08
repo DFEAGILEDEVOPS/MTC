@@ -9,5 +9,6 @@
   "accessArrangements": true,
   "newCheckWindow": true,
   "newCheckForm": true,
-  "prepareChecksToRedis": false
+  "prepareChecksToRedis": false,
+  "schoolHomeViewV2": false
 }
