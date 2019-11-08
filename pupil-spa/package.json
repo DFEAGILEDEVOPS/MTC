@@ -19,31 +19,32 @@
     "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
-    "@angular/animations": "^5.2.9",
-    "@angular/common": "^5.2.9",
-    "@angular/compiler": "^5.2.9",
-    "@angular/core": "^5.2.9",
-    "@angular/forms": "^5.2.9",
-    "@angular/http": "^5.2.9",
-    "@angular/platform-browser": "^5.2.9",
-    "@angular/platform-browser-dynamic": "^5.2.9",
-    "@angular/platform-server": "^5.2.9",
-    "@angular/router": "^5.2.9",
-    "angulartics2": "5.3.0",
+    "@angular/animations": "^6.1.10",
+    "@angular/common": "^6.1.10",
+    "@angular/compiler": "^6.1.10",
+    "@angular/core": "^6.1.10",
+    "@angular/forms": "^6.1.10",
+    "@angular/http": "^6.1.10",
+    "@angular/platform-browser": "^6.1.10",
+    "@angular/platform-browser-dynamic": "^6.1.10",
+    "@angular/platform-server": "^6.1.10",
+    "@angular/router": "^6.1.10",
+    "angulartics2": "7.5.2",
     "applicationinsights-js": "^1.0.18",
     "bluebird": "^3.5.2",
     "core-js": "^2.5.3",
     "dotenv": "^8.0.0",
     "lz-string": "https://github.com/pieroxy/lz-string#1.4.4",
-    "ngx-logger": "^2.0.2",
-    "rxjs": "^5.5.2",
-    "zone.js": "^0.8.20"
+    "ngx-logger": "4",
+    "rxjs": "^6.5.3",
+    "rxjs-compat": "^6.5.3",
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.6.0",
-    "@angular/cli": "^6.0.0",
-    "@angular/compiler-cli": "^5.2.9",
-    "@angular/language-service": "^5.2.9",
+    "@angular/cli": "^6.2.9",
+    "@angular/compiler-cli": "^6.1.10",
+    "@angular/language-service": "^6.1.10",
     "@types/applicationinsights-js": "^1.0.5",
     "@types/jasmine": "^2.8.6",
     "@types/jasminewd2": "^2.0.3",
@@ -69,6 +70,6 @@
     "sass-loader": "^6.0.7",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
-    "typescript": "2.4.2"
+    "typescript": "2.9.2"
   }
 }

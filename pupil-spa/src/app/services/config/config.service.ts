@@ -1,7 +1,7 @@
+import { throwError as observableThrowError,  Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
 
 /**
  * Declaration of config class
@@ -94,10 +94,10 @@ export class AppConfigService {
    */
   public load(): Promise<Boolean> {
     return new Promise((resolve, reject) => {
-      this.http.get('/public/config.json').catch((error: any): any => {
+      this.http.get('/public/config.json').pipe(catchError((error: any): any => {
         reject(true);
-        return Observable.throw('Server error');
-      }).subscribe((envResponse: any) => {
+        return observableThrowError('Server error');
+      })).subscribe((envResponse: any) => {
         const t = new AppConfig();
         APP_CONFIG = Object.assign(t, envResponse);
         resolve(true);

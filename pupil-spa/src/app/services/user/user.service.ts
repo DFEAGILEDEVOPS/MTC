@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
-import 'rxjs/add/operator/toPromise';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
 const questionsDataKey = 'questions';

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { AuditService } from '../audit/audit.service';
 import { UtteranceStarted, UtteranceEnded, QuestionReadingStarted, QuestionReadingEnded } from '../audit/auditEntry';
