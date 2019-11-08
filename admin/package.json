@@ -78,6 +78,8 @@
     "xregexp": "^4.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "@types/moment": "^2.13.0",
     "@types/node": "^12.7.12",
     "@types/ramda": "^0.26.33",
@@ -85,6 +87,7 @@
     "command-line-args": "^5.0.2",
     "csv-string": "^3.1.5",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-concat": "^2.6.1",
     "gulp-replace": "^1.0.0",
