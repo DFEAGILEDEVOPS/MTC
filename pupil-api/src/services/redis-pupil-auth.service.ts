@@ -1,4 +1,5 @@
 import { IRedisService, BasicRedisService } from './redis.service'
+import * as azureQueueService from './azure-queue.service'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin: string, pupilPin: string): Promise<object>
@@ -25,6 +26,13 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       return null
     }
     const hydratedCacheItem = JSON.parse(cacheItem)
+      // Emit a successful login to the queue
+    const pupilLoginMessage = {
+      checkCode: hydratedCacheItem.checkCode,
+      loginAt: new Date(),
+      version: 1
+    }
+    azureQueueService.addMessage('pupil-login', pupilLoginMessage)
     return hydratedCacheItem
   }
 
