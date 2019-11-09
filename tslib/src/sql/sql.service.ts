@@ -15,6 +15,38 @@ declare class SqlServerError extends Error {
   number?: number
 }
 
+export interface ISqlService {
+  /**
+   * @description initialises the sql connection pool
+   */
+  init (): Promise<void>
+  /**
+   * @description closes the sql connection pool
+   */
+  close (): Promise<void>
+  /**
+   * @description execute a sql statement to retrieve data
+   * @param sql the SQL query to execute
+   * @param params any parameters included in the sql statement
+   * @returns a resultset. typically as an array
+   */
+  query (sql: string, params: Array<any>): Promise<any>
+  /**
+   * @description execute a DDL statement to modify data
+   * @param sql the SQL statement to execute
+   * @param params any parameters included in the sql statement
+   * @returns number of rows modified, if any
+   */
+  modify (sql: string, params: Array<any>): Promise<any>
+  /**
+   * @description helper function that performs a sql select to obtain one record
+   * @param table the name of the table to search
+   * @param id the id of the record, which must be named `id`
+   * @returns a single row, if found
+   */
+  findOneById (table: string, id: number): Promise<any>
+}
+
 const connectionLimitReachedErrorCode = 10928
 
 const dbLimitReached = (error: SqlServerError) => {
@@ -119,7 +151,7 @@ export class SqlService {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-  async modify (sql: string, params: Array<any>) {
+  async modify (sql: string, params: Array<any>): Promise<any> {
     // logger.debug('sql.service.modify(): SQL: ' + sql)
     // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
     this.ensureInitialised()
