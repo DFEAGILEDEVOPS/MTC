@@ -67,14 +67,14 @@
       border-left: 1px solid govuk-colour("black");
       border-right: 1px solid govuk-colour("black");
 
-      span {
+      div {
         writing-mode: vertical-rl;
         -ms-writing-mode: tb-rl;
         transform: rotate(180deg);
         -ms-transform: rotate(180deg);
         height: govuk-em(65px, $govuk-root-font-size);
         font-weight: bold;
-        width: 16px;
+        width: 6px;
         white-space: nowrap;
       }
     }
@@ -91,8 +91,13 @@
         -ms-transform: rotate(180deg);
         height: govuk-em(105px, $govuk-root-font-size);
         font-weight: bold;
-        width: 28px;
         white-space: normal;
+        &.start {
+          width: 6px;
+        }
+        &.end {
+          width: 12px;
+        }
       }
     }
     &.line-empty {
