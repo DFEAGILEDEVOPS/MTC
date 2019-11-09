@@ -1,29 +1,6 @@
-import { ICheckNotificationMessage, CheckNotificationType } from './check-notification-message'
+import { CheckNotificationType } from './check-notification-message'
+import { ICheckNotifierDataService, CheckNotifier } from './check-notifier.v1'
 
-export class CheckNotifier {
-  private checkNotifierDataService: ICheckNotifierDataService
-
-  constructor (checkNotifierDataService?: ICheckNotifierDataService) {
-    if (checkNotifierDataService === undefined) {
-      checkNotifierDataService = new CheckNotifierDataService()
-    }
-    this.checkNotifierDataService = checkNotifierDataService
-  }
-
-  async notify (notification: ICheckNotificationMessage) {
-    return this.checkNotifierDataService.updateCheckAsComplete(notification.checkCode)
-  }
-}
-
-export class CheckNotifierDataService implements ICheckNotifierDataService {
-  updateCheckAsComplete (checkCode: string): Promise<void> {
-    throw new Error('Method not implemented.')
-  }
-}
-
-export interface ICheckNotifierDataService {
-  updateCheckAsComplete (checkCode: string): Promise<void>
-}
 
 const CheckNotifierDataServiceMock = jest.fn<ICheckNotifierDataService, any>(() => ({
   updateCheckAsComplete: jest.fn()
