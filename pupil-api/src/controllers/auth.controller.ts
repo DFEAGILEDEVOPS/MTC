@@ -1,10 +1,29 @@
 import { Request, Response } from 'express'
 import logger from '../services/log.service'
-
 import * as apiResponse from './api-response'
-import { pupilAuthenticationService } from '../services/pupil-authentication.service'
+import { pupilAuthenticationService } from '../services/pupil-auth.service'
+import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import { RedisService } from '../services/redis.service'
+import { FeatureService, IFeatureService } from '../services/feature.service'
 
-class AuthController {
+export class AuthController {
+  private useRedisAuth: boolean
+  private redisAuthService: RedisPupilAuthenticationService
+  private featureService: IFeatureService
+
+  constructor (featureService?: IFeatureService) {
+    if (featureService === undefined) {
+      featureService = new FeatureService()
+    }
+    this.featureService = featureService
+    this.useRedisAuth = this.featureService.redisAuthMode()
+    const mode = this.useRedisAuth ? 'redis' : 'table storage'
+    logger.info(`auth mode:${mode}`)
+    if (this.useRedisAuth) {
+      this.redisAuthService = new RedisPupilAuthenticationService()
+    }
+  }
+
   async postAuth (req: Request, res: Response) {
     const contentType = req.get('Content-Type')
     if (!req.is('application/json')) {
@@ -13,9 +32,16 @@ class AuthController {
     }
 
     const { pupilPin, schoolPin } = req.body
-
+    let data
     try {
-      const data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+      if (this.useRedisAuth) {
+        data = await this.redisAuthService.authenticate(schoolPin, pupilPin)
+        if (data === null) {
+          return apiResponse.unauthorised(res)
+        }
+      } else {
+        data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+      }
       apiResponse.sendJson(res, data)
     } catch (error) {
       logger.error('Failed to authenticate pupil: ', error)
@@ -23,5 +49,3 @@ class AuthController {
     }
   }
 }
-
-export default new AuthController()
