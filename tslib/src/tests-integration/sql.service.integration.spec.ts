@@ -9,11 +9,11 @@ let sut: sql.SqlService
 describe('SqlService', () => {
   beforeEach(async () => {
     sut = new sql.SqlService()
-    await sut.init()
+    // await sut.init()
   })
 
   afterEach(async () => {
-    await sut.close()
+    // await sut.close()
   })
 
   test('should be defined', () => {

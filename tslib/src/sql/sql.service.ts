@@ -1,51 +1,36 @@
-import { ConnectionPool, Request, TYPES } from 'mssql'
-import { ILogger, ConsoleLogger } from '../common/logger'
+import { Request, TYPES, ConnectionPool } from 'mssql'
+import { ILogger } from '../common/logger'
 import retry from './async-retry'
-import { default as mtcConfig } from '../config'
+import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
 
 const retryConfig = {
-  attempts: mtcConfig.DatabaseRetry.MaxRetryAttempts,
-  pauseTimeMs: mtcConfig.DatabaseRetry.InitialPauseMs,
-  pauseMultiplier: mtcConfig.DatabaseRetry.PauseMultiplier
+  attempts: config.DatabaseRetry.MaxRetryAttempts,
+  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
+  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
 
 declare class SqlServerError extends Error {
   number?: number
 }
 
-export interface ISqlService {
-  /**
-   * @description initialises the sql connection pool
-   */
-  init (): Promise<void>
-  /**
-   * @description closes the sql connection pool
-   */
-  close (): Promise<void>
-  /**
-   * @description execute a sql statement to retrieve data
-   * @param sql the SQL query to execute
-   * @param params any parameters included in the sql statement
-   * @returns a resultset. typically as an array
-   */
-  query (sql: string, params: Array<any>): Promise<any>
-  /**
-   * @description execute a DDL statement to modify data
-   * @param sql the SQL statement to execute
-   * @param params any parameters included in the sql statement
-   * @returns number of rows modified, if any
-   */
-  modify (sql: string, params: Array<any>): Promise<any>
-  /**
-   * @description helper function that performs a sql select to obtain one record
-   * @param table the name of the table to search
-   * @param id the id of the record, which must be named `id`
-   * @returns a single row, if found
-   */
-  findOneById (table: string, id: number): Promise<any>
-}
+/**
+ * static class for serving single instance of a connection pool
+ */
+class ConnectionPoolService {
+  private static pool: ConnectionPool
+  private static initialisationLock: boolean
+
+  static async getInstance (): Promise<ConnectionPool> {
+    if (!this.initialisationLock === true) {
+      this.initialisationLock = true
+      this.pool = new ConnectionPool(config.Sql)
+      await this.pool.connect()
+    }
+    return this.pool
+  }
+ }
 
 const connectionLimitReachedErrorCode = 10928
 
@@ -56,45 +41,14 @@ const dbLimitReached = (error: SqlServerError) => {
 
 export class SqlService {
 
-  private connectionPool: ConnectionPool
-  private logger: ILogger
   private dateTimeService: IDateTimeService
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
-    this.connectionPool = new ConnectionPool(mtcConfig.Sql)
 
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
     }
     this.dateTimeService = dateTimeService
-
-    if (logger === undefined) {
-      logger = new ConsoleLogger()
-    }
-    this.logger = logger
-  }
-
-  async init (): Promise<void> {
-    if (this.connectionPool.connecting || this.connectionPool.connected) {
-      this.logger.warn('connection pool already initialised')
-    }
-    try {
-      await this.connectionPool.connect()
-    } catch (error) {
-      this.logger.error('Pool Connection Error:', error)
-      throw error
-    }
-    this.connectionPool.on('error', (error: Error) => {
-      this.logger.error('SQL Pool Error:', error)
-    })
-  }
-
-  close (): Promise<void> {
-    if (!this.connectionPool) {
-      this.logger.warn('The connection pool is not initialised')
-      return Promise.resolve()
-    }
-    return this.connectionPool.close()
   }
 
   /**
@@ -126,15 +80,9 @@ export class SqlService {
   }
 
   async query (sql: string, params?: Array<any>): Promise<any> {
-    // logger.debug(`sql.service.query(): ${sql}`)
-    // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
-    this.ensureInitialised()
-
-    // tslint:disable-next-line: await-promise
-    await this.connectionPool
 
     const query = async () => {
-      const request = new Request(this.connectionPool)
+      const request = new Request(await ConnectionPoolService.getInstance())
       if (params !== undefined) {
         this.addParamsToRequestSimple(params, request)
       }
@@ -152,15 +100,9 @@ export class SqlService {
  * @return {Promise}
  */
   async modify (sql: string, params: Array<any>): Promise<any> {
-    // logger.debug('sql.service.modify(): SQL: ' + sql)
-    // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-    this.ensureInitialised()
-
-    // tslint:disable-next-line: await-promise
-    await this.connectionPool
 
     const modify = async () => {
-      const request = new Request(this.connectionPool)
+      const request = new Request(await ConnectionPoolService.getInstance())
       this.addParamsToRequest(params, request)
       return request.query(sql)
     }
@@ -223,13 +165,6 @@ export class SqlService {
     }
   }
 
-  private ensureInitialised (): void {
-    return
-/*     if (this._connectionPool.connecting === false || this._connectionPool.connected === false) {
-      throw new Error('SqlService must be initialised before use')
-    } */
-  }
-
 /**
  * Find a row by numeric ID
  * Assumes all table have Int ID datatype
@@ -238,7 +173,6 @@ export class SqlService {
  * @return {Promise<object>}
  */
   async findOneById (table: string, id: number): Promise<any> {
-    this.ensureInitialised()
     const paramId = {
       name: 'id',
       type: TYPES.Int,
