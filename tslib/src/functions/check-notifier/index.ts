@@ -1,6 +1,7 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ICheckNotificationMessage } from './check-notification-message'
+import { CheckNotifier } from './check-notifier.v1'
 const functionName = 'check-notifier'
 
 const serviceBusTrigger: AzureFunction = async function (context: Context, checkNotification: ICheckNotificationMessage): Promise<void> {
@@ -12,6 +13,8 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, check
       // dead letter the message as currently we only support v1
       throw new Error(`Message schema version:${version} unsupported`)
     }
+    const notifier = new CheckNotifier()
+    await notifier.notify(checkNotification)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
