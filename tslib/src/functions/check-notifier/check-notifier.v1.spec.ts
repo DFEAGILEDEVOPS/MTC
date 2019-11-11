@@ -1,7 +1,6 @@
 import { CheckNotificationType } from './check-notification-message'
 import { ICheckNotifierDataService, CheckNotifier } from './check-notifier.v1'
 
-
 const CheckNotifierDataServiceMock = jest.fn<ICheckNotifierDataService, any>(() => ({
   updateCheckAsComplete: jest.fn()
 }))
