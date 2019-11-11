@@ -1,6 +1,7 @@
 import { ICheckNotificationMessage } from './check-notification-message'
-import { SqlService } from '../../sql/sql.service'
 import * as mssql from 'mssql'
+import { CheckNotifierDataService } from './check-notifier.data.service'
+import { ICheckNotifierDataService } from './ICheckNotifierDataService'
 
 export class CheckNotifier {
   private checkNotifierDataService: ICheckNotifierDataService
@@ -26,32 +27,4 @@ export enum CheckStatus {
   NotReceived = 6
 }
 
-export class CheckNotifierDataService implements ICheckNotifierDataService {
-  private sqlService: SqlService
 
-  constructor () {
-    this.sqlService = new SqlService()
-  }
-  updateCheckAsComplete (checkCode: string): Promise<void> {
-    const sql = `UPDATE [mtc_admin].[check]
-                  SET checkStatus_id=@checkStatusId
-                  WHERE checkCode=@checkCode`
-    const params = [
-      {
-        type: mssql.Int,
-        name: 'checkStatusId',
-        value: CheckStatus.Complete
-      },
-      {
-        type: mssql.UniqueIdentifier,
-        name: 'checkCode',
-        value: checkCode
-      }
-    ]
-    return this.sqlService.modify(sql, params)
-  }
-}
-
-export interface ICheckNotifierDataService {
-  updateCheckAsComplete (checkCode: string): Promise<void>
-}
