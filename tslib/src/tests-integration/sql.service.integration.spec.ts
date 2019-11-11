@@ -11,6 +11,10 @@ describe('SqlService', () => {
     sut = new sql.SqlService()
   })
 
+  afterAll(async () => {
+    await sut.closePool()
+  })
+
   test('should be defined', () => {
     expect(sut).toBeDefined()
   })

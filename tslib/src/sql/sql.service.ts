@@ -1,9 +1,10 @@
-import { Request, TYPES, ConnectionPool } from 'mssql'
+import { Request, TYPES, ConnectionPool, Transaction } from 'mssql'
 import { ILogger } from '../common/logger'
 import retry from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
+import { types } from '@babel/core'
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -52,10 +53,21 @@ export class SqlService {
   }
 
   /**
+   * Closes all connections within a pool.
+   * Do not use this in regular services.
+   */
+  async closePool (): Promise<void> {
+
+    const pool = await ConnectionPoolService.getInstance()
+    await pool.close()
+  }
+
+  /**
    * Utility service to transform the results before sending to the caller
    * @type {Function}
    */
   private transformQueryResult (data: any) {
+
     const recordSet = R.prop('recordset', data) // returns [o1, o2,  ...]
     if (!recordSet) {
       return []
@@ -71,6 +83,7 @@ export class SqlService {
   }
 
   private addParamsToRequestSimple (params: Array<any>, request: Request) {
+
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -93,12 +106,12 @@ export class SqlService {
     return retry<any>(query, retryConfig, dbLimitReached)
   }
 
-/**
- * Modify data in SQL Server via mssql library.
- * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
- */
+  /**
+   * Modify data in SQL Server via mssql library.
+   * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+   * @param {array} params - Array of parameters for SQL statement
+   * @return {Promise}
+   */
   async modify (sql: string, params: Array<any>): Promise<any> {
 
     const modify = async () => {
@@ -131,12 +144,39 @@ export class SqlService {
     return returnValue
   }
 
-/**
- * Add parameters to an SQL request
- * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
- * @param {{input}} request -  mssql request
- */
+  /**
+   * Modify data in SQL Server via mssql library.
+   * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+   * @param {array} params - Array of parameters for SQL statement
+   * @return {Promise}
+   */
+  async modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any> {
+
+    const transaction = new Transaction(await ConnectionPoolService.getInstance())
+    await transaction.begin()
+    for (let index = 0; index < requests.length; index++) {
+      const request = requests[index]
+      const modify = async () => {
+        const req = new Request(transaction)
+        this.addParamsToRequest(request.params, req)
+        return req.query(request.sql)
+      }
+      try {
+        await retry<any>(modify, retryConfig, dbLimitReached)
+      } catch (error) {
+        await transaction.rollback()
+      }
+    }
+    await transaction.commit()
+  }
+
+  /**
+   * Add parameters to an SQL request
+   * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
+   * @param {{input}} request -  mssql request
+   */
   private addParamsToRequest (params: Array<any>, request: Request): void {
+
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -165,14 +205,15 @@ export class SqlService {
     }
   }
 
-/**
- * Find a row by numeric ID
- * Assumes all table have Int ID datatype
- * @param {string} table
- * @param {number} id
- * @return {Promise<object>}
- */
+  /**
+   * Find a row by numeric ID
+   * Assumes all table have Int ID datatype
+   * @param {string} table
+   * @param {number} id
+   * @return {Promise<object>}
+   */
   async findOneById (table: string, id: number): Promise<any> {
+
     const paramId = {
       name: 'id',
       type: TYPES.Int,
@@ -186,4 +227,9 @@ export class SqlService {
     const rows = await this.query(sql, [paramId])
     return R.head(rows)
   }
+}
+
+export interface ITransactionRequest {
+  sql: string
+  params: Array<any>
 }
