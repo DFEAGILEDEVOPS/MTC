@@ -4,7 +4,6 @@ import retry from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
-import { types } from '@babel/core'
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,

@@ -1,7 +1,5 @@
 import { ICheckNotificationMessage } from './check-notification-message'
-import * as mssql from 'mssql'
-import { CheckNotifierDataService } from './check-notifier.data.service'
-import { ICheckNotifierDataService } from './ICheckNotifierDataService'
+import { CheckNotifierDataService, ICheckNotifierDataService } from './check-notifier.data.service'
 
 export class CheckNotifier {
   private checkNotifierDataService: ICheckNotifierDataService
@@ -26,5 +24,3 @@ export enum CheckStatus {
   Collected = 5,
   NotReceived = 6
 }
-
-
