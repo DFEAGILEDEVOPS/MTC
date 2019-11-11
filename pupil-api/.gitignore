@@ -57,3 +57,5 @@ data/files/*
 
 # ignore typescript output folder
 dist
+
+feature-toggles.Local-Dev.json

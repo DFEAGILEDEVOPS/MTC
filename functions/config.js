@@ -60,5 +60,6 @@ module.exports = {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
-  Environment: getEnvironment()
+  Environment: getEnvironment(),
+  DeletePreparedChecksFromTableStorageOnCheckStarted: process.env.DELETE_PREPARED_CHECKS_ON_CHECK_STARTED || true
 }
