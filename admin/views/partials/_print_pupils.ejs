@@ -52,7 +52,7 @@
                             <% } %>
                             <div class="url"><%= url %></div>
                         </td>
-                        <td class="line-checktype <%= checkTypeClass %>"><div><%= pinSlipsEndText %></div></td>
+                        <td class="line-checktype <%= checkTypeClass %>"><div <% if (pinEnv !== 'live') { %> class="try-it-out-end-line" <% } %> ><%= pinSlipsEndText %></div></td>
                         <td class="line-empty"></td>
                     </tr>
                 <% } %>

@@ -66,8 +66,8 @@
       border-left: 1px solid govuk-colour("black");
       border-right: 1px solid govuk-colour("black");
       -webkit-print-color-adjust: exact;
-      min-width: 5px;
-      width: 6px;
+      min-width: 15px;
+      width: 16px;
       &.live {
         background-color: govuk-colour("black");
         color: govuk-colour("white");
@@ -82,6 +82,10 @@
           height: govuk-em(105px, $govuk-root-font-size);
           font-weight: bold;
           white-space: normal;
+         &.try-it-out-end-line {
+           min-width: 30px;
+           width: 31px;
+         }
         }
       }
       div {
