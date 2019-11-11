@@ -1,3 +1,4 @@
+
 export interface ICheckNotificationMessage {
   notificationType: CheckNotificationType
   checkCode: string
