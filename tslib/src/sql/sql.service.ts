@@ -30,7 +30,7 @@ class ConnectionPoolService {
     }
     return this.pool
   }
- }
+}
 
 const connectionLimitReachedErrorCode = 10928
 
