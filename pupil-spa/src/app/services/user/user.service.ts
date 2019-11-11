@@ -34,7 +34,7 @@ export class UserService {
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
           this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
-          this.storageService.setItem(accessTokenKey, data[tokenKey]['jwt']['token']);
+          this.storageService.setItem(accessTokenKey, data[tokenKey] && data[tokenKey]['jwt'] && data[tokenKey]['jwt']['token']);
           this.storageService.setItem(tokenKey, data[tokenKey]);
 
           resolve();
