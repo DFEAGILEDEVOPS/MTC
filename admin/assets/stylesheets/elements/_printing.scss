@@ -33,6 +33,7 @@
     text-align: center;
     vertical-align: middle;
     font-size: 14px;
+    margin-bottom: -1px;
   }
   table {
     border-collapse: collapse;
@@ -42,6 +43,7 @@
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
+    display: inline-table;
     width: 100%;
 
     /*
@@ -101,6 +103,7 @@
     }
     &.line-content {
       padding-right: govuk-em(20px, $govuk-root-font-size);
+      max-width: 350px;
     }
   }
   .pupil-content {
@@ -164,7 +167,8 @@
     float: right;
   }
   .watermark {
-    position: absolute;
+    position: relative;
+    margin-bottom: -85px;
     opacity: 0.1;
     width: govuk-em(125px, $govuk-root-font-size);
   }
