@@ -126,4 +126,37 @@ describe('SqlService', () => {
     const result = await sut.query(sql, params)
     expect(result).toEqual([])
   })
+
+  test('modifyWithTransaction: commits all statements in the batch when no errors are raised', async () => {
+    const uuid = v4()
+    const requests = new Array<sql.ITransactionRequest>()
+    requests.push({
+      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
+              VALUES ('${uuid}', 'check', 'INSERT')`,
+      params: []
+    })
+    requests.push({
+      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
+      VALUES ('${uuid}', 'check', @operation)`,
+      params: [{
+        name: 'operation',
+        type: mssql.NVarChar,
+        value: 'DELETE'
+      }]
+    })
+    try {
+      await sut.modifyWithTransaction(requests)
+    } catch (error) {
+      fail('an error should not have been thrown')
+    }
+    const sql = 'SELECT * FROM mtc_admin.auditLog WHERE rowData=@rowData'
+    const params: Array<sql.ISqlParameter> = [{
+      name: 'rowData',
+      type: mssql.NVarChar,
+      value: uuid
+    }]
+    const result = await sut.query(sql, params)
+    expect(RA.isArray(result)).toBe(true)
+    expect(result.length).toBe(2)
+  })
 })
