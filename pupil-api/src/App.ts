@@ -27,7 +27,6 @@ class App {
     this.express = express()
     this.middleware()
     this.routes()
-
     appInsights.startInsightsIfConfigured().catch(e => logger.error(e))
   }
 

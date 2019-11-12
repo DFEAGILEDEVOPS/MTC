@@ -1,15 +1,10 @@
 'use strict'
 
-const moment = require('moment-timezone')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
-const checkWindowErrorMessages = require('../lib/errors/check-window')
-const checkWindowService = require('../services/check-window.service')
-const sortingAttributesService = require('../services/sorting-attributes.service')
+
 const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
-const checkWindowAddService = require('../services/check-window-add.service')
-const checkWindowEditService = require('../services/check-window-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
@@ -100,42 +95,6 @@ const controller = {
   },
 
   /**
-   * View manage check windows.
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  getCheckWindows: async (req, res, next) => {
-    res.locals.pageTitle = 'Manage check windows'
-    req.breadcrumbs(res.locals.pageTitle)
-    let checkWindows
-    // Sorting
-    const sortingOptions = [
-      { key: 'checkWindowName', value: 'asc' },
-      { key: 'adminStartDate', value: 'asc' },
-      { key: 'checkStartDate', value: 'asc' }
-    ]
-    const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
-    const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-    const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-
-    // Get all check windows
-    try {
-      checkWindows = await checkWindowService.getAllCheckWindows(sortField, sortDirection)
-    } catch (error) {
-      return next(error)
-    }
-
-    res.render('service-manager/check-windows', {
-      breadcrumbs: req.breadcrumbs(),
-      checkWindowList: checkWindows,
-      htmlSortDirection,
-      arrowSortDirection
-    })
-  },
-
-  /**
    * View upload pupil census.
    * @param req
    * @param res
@@ -202,116 +161,6 @@ const controller = {
     }
     req.flash('info', 'Pupil data successfully removed')
     res.redirect('/service-manager/upload-pupil-census')
-  },
-
-  /**
-   * Add window check form.
-   * @param req
-   * @param res
-   * @returns {Promise.<void>}
-   */
-
-  getCheckWindowForm: async (req, res) => {
-    req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
-    res.locals.pageTitle = 'Create check window'
-    res.render('service-manager/check-window-form', {
-      checkWindowData: {},
-      error: new ValidationError(),
-      breadcrumbs: req.breadcrumbs(),
-      actionName: 'Create',
-      currentYear: moment().format('YYYY')
-    })
-  },
-
-  /**
-   * Edit check window form.
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-
-  getCheckWindowEditForm: async (req, res, next) => {
-    req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
-    res.locals.pageTitle = 'Edit check window'
-    let checkWindowData
-    try {
-      checkWindowData = await checkWindowService.getCheckWindowEditForm(req.params.id)
-    } catch (error) {
-      return next(error)
-    }
-    res.render('service-manager/check-window-form', {
-      error: new ValidationError(),
-      breadcrumbs: req.breadcrumbs(),
-      checkWindowData,
-      successfulPost: false,
-      actionName: 'Edit',
-      currentYear: moment().format('YYYY')
-    })
-  },
-
-  /**
-   * Submit check window (add/edit).
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  submitCheckWindow: async (req, res, next) => {
-    const requestData = req.body
-    let flashMessage
-    let actionName
-    try {
-      if (!requestData.urlSlug) {
-        actionName = 'Add'
-        await checkWindowAddService.process(requestData)
-        flashMessage = `${requestData.checkWindowName} has been created`
-      } else {
-        actionName = 'Edit'
-        await checkWindowEditService.process(requestData)
-        flashMessage = 'Changes have been saved'
-      }
-    } catch (error) {
-      if (error.name === 'ValidationError') {
-        res.locals.pageTitle = actionName + ' check window'
-        const checkWindowData = await checkWindowService.getSubmittedCheckWindowData(requestData)
-        return res.render('service-manager/check-window-form', {
-          error: error || new ValidationError(),
-          errorMessage: checkWindowErrorMessages,
-          breadcrumbs: req.breadcrumbs(),
-          checkWindowData: checkWindowData,
-          successfulPost: false,
-          actionName,
-          currentYear: moment().format('YYYY')
-        })
-      }
-      return next(error)
-    }
-    req.flash('info', flashMessage)
-    return res.redirect('/service-manager/check-windows')
-  },
-
-  /**
-   * Soft delete a check window by id.
-   * @deprecated
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<*>}
-   */
-  removeCheckWindow: async (req, res, next) => {
-    if (!req.params.checkWindowId) {
-      return res.redirect('/service-manager/check-windows')
-    }
-    let result
-    try {
-      result = await checkWindowService.markDeleted(req.params.checkWindowId)
-    } catch (error) {
-      return next(error)
-    }
-    const { type, message } = result
-    req.flash(type, message)
-    return res.redirect('/service-manager/check-windows')
   },
 
   /**

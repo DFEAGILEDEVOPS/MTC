@@ -33,11 +33,11 @@ function onError (error: NodeJS.ErrnoException): void {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`)
       process.exit(1)
-      break
+    // tslint:disable-next-line: no-switch-case-fall-through
     case 'EADDRINUSE':
       console.error(`${bind} is already in use`)
       process.exit(1)
-      break
+    // tslint:disable-next-line: no-switch-case-fall-through
     default:
       throw error
   }

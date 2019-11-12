@@ -87,4 +87,31 @@ redisCacheService.drop = async (caches = []) => {
   return true
 }
 
+/**
+ * @description set many items in one atomic operation, with optional expiry
+ * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
+ * @returns {Promise<void>}
+ */
+redisCacheService.setMany = async (items) => {
+  if (!Array.isArray(items)) {
+    throw new Error('items is not an array')
+  }
+  redisConnect()
+  const multi = redis.multi()
+  for (let index = 0; index < items.length; index++) {
+    const item = items[index]
+    if (typeof item.value === 'object') {
+      item.value = JSON.stringify(item.value)
+    }
+    if (item.ttl !== undefined) {
+      logger.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
+      multi.setex(item.key, item.ttl, item.value)
+    } else {
+      multi.set(item.key, item.value)
+    }
+  }
+  logger.info('REDIS (multi:exec)')
+  return multi.exec()
+}
+
 module.exports = redisCacheService

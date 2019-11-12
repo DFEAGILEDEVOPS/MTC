@@ -8,5 +8,7 @@
   "dependencyTracking": true,
   "accessArrangements": true,
   "newCheckWindow": true,
-  "newCheckForm": true
+  "newCheckForm": true,
+  "prepareChecksToRedis": false,
+  "schoolHomeViewV2": false
 }

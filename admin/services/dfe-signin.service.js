@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('./../config')
-const logger = require('./log.service').getLogger()
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
@@ -34,11 +33,9 @@ const service = {
     // lookup school if in teacher or headteacher role
     if (dfeUser.role === roles.teacher || dfeUser.role === roles.headTeacher) {
       if (dfeUser.organisation && dfeUser.organisation.urn) {
-        logger.debug(`looking up school by URN:${dfeUser.organisation.urn}`)
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
-          // should we throw? as user in teacher role cannot continue without school...
-          logger.warn(`school not found with URN:${dfeUser.organisation.urn}`)
+          throw new Error(`school not found with URN:${dfeUser.organisation.urn}`)
         }
       } else {
         throw new Error('user.organisation or user.organisation.urn not found on dfeUser object')
@@ -56,16 +53,17 @@ const service = {
     let userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.providerUserId)
     if (!userRecord) {
       // create user record, as this is their first visit to MTC
-      const user = {
+      const userToCreateInDb = {
         identifier: dfeUser.providerUserId,
         displayName: dfeUser.displayName,
-        role_id: roleRecord.id
+        role_id: roleRecord.id,
+        school_id: dfeUser.schoolId
       }
       if (schoolRecord) {
-        user.school_id = schoolRecord.id
+        userToCreateInDb.school_id = schoolRecord.id
       }
-      await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
+      await userDataService.sqlCreate(userToCreateInDb)
+      userRecord = await userDataService.sqlFindOneByIdentifier(userToCreateInDb.identifier)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
