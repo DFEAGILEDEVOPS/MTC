@@ -29,4 +29,18 @@ describe('check-notifier/v1', () => {
     expect(dataServiceMock.updateCheckAsComplete).toHaveBeenCalledTimes(1)
     expect(dataServiceMock.updateCheckAsComplete).toHaveBeenCalledWith('code')
   })
+
+  test('checkInvalid notification should throw an error, as not yet implemented', async () => {
+    try {
+      await sut.notify({
+        notificationType: CheckNotificationType.checkInvalid,
+        checkCode: 'code',
+        version: 1
+      })
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error.message).toBe('not yet implemented')
+      expect(dataServiceMock.updateCheckAsComplete).not.toHaveBeenCalled()
+    }
+  })
 })

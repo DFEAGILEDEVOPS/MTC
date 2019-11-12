@@ -102,13 +102,13 @@ describe('SqlService', () => {
     const uuid = v4()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
-      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
-              VALUES ('${uuid}', 'check', 'INSERT')`,
+      sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
+              VALUES ('${uuid}')`,
       params: []
     })
     requests.push({
       sql: `INSERT INTO non.existent (colname)
-              VALUES ('data')`,
+              VALUES ('should error')`,
       params: []
     })
     try {
@@ -117,7 +117,7 @@ describe('SqlService', () => {
     } catch (error) {
       expect(error.message).toBeDefined()
     }
-    const sql = 'SELECT * FROM mtc_admin.auditLog WHERE rowData=@rowData'
+    const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@rowData'
     const params: Array<sql.ISqlParameter> = [{
       name: 'rowData',
       type: mssql.NVarChar,
@@ -131,27 +131,27 @@ describe('SqlService', () => {
     const uuid = v4()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
-      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
-              VALUES ('${uuid}', 'check', 'INSERT')`,
+      sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
+              VALUES ('${uuid}')`,
       params: []
     })
     requests.push({
-      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
-      VALUES ('${uuid}', 'check', @operation)`,
+      sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
+      VALUES (@uuid)`,
       params: [{
-        name: 'operation',
+        name: 'uuid',
         type: mssql.NVarChar,
-        value: 'DELETE'
+        value: uuid
       }]
     })
     try {
       await sut.modifyWithTransaction(requests)
     } catch (error) {
-      fail('an error should not have been thrown')
+      fail(`an error should not have been thrown:${error.message}`)
     }
-    const sql = 'SELECT * FROM mtc_admin.auditLog WHERE rowData=@rowData'
+    const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@uuid'
     const params: Array<sql.ISqlParameter> = [{
-      name: 'rowData',
+      name: 'uuid',
       type: mssql.NVarChar,
       value: uuid
     }]

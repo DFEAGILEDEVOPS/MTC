@@ -1,4 +1,4 @@
-import { ICheckNotificationMessage } from './check-notification-message'
+import { ICheckNotificationMessage, CheckNotificationType } from './check-notification-message'
 import { CheckNotifierDataService, ICheckNotifierDataService } from './check-notifier.data.service'
 
 export class CheckNotifier {
@@ -12,7 +12,12 @@ export class CheckNotifier {
   }
 
   async notify (notification: ICheckNotificationMessage) {
-    return this.checkNotifierDataService.updateCheckAsComplete(notification.checkCode)
+    switch (notification.notificationType) {
+      case CheckNotificationType.checkInvalid:
+        throw new Error('not yet implemented')
+      case CheckNotificationType.checkComplete:
+        return this.checkNotifierDataService.updateCheckAsComplete(notification.checkCode)
+    }
   }
 }
 
