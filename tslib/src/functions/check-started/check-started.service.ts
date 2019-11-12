@@ -10,7 +10,7 @@ export class CheckStartedService {
   private redisService: IRedisService
 
   constructor (redisService?: IRedisService) {
-    if (redisService === undefined){
+    if (redisService === undefined) {
       redisService = new RedisService()
     }
     this.redisService = redisService
