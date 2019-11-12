@@ -10,12 +10,12 @@
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "yarn genconfig && ng build",
     "test": "yarn genconfig && ng test",
-    "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
+    "test-single": "yarn sass && yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
     "copygovukelements": "node tools/copyGovukElements",
-    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
+    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && yarn sass",
     "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
