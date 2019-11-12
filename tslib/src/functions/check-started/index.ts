@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ICheckStartedMessage, CheckStartedService } from './check-started.service'
+import { ICheckStartedMessage, CheckStartedService, ICheckStartedFunctionBindings } from './check-started.service'
 const functionName = 'check-started'
 
 const queueTrigger: AzureFunction = async function (context: Context, checkStartedMessage: ICheckStartedMessage): Promise<void> {
@@ -13,7 +13,7 @@ const queueTrigger: AzureFunction = async function (context: Context, checkStart
       throw new Error(`Message schema version:${version} unsupported`)
     }
     const checkStartedService = new CheckStartedService()
-    await checkStartedService.process(checkStartedMessage.checkCode)
+    await checkStartedService.process(checkStartedMessage, context.bindings as ICheckStartedFunctionBindings)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
