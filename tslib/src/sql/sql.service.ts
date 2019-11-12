@@ -1,5 +1,5 @@
 import { Request, TYPES, ConnectionPool, Transaction } from 'mssql'
-import { ILogger } from '../common/logger'
+import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
@@ -42,6 +42,7 @@ const dbLimitReached = (error: SqlServerError) => {
 export class SqlService {
 
   private dateTimeService: IDateTimeService
+  private logger: ILogger
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
 
@@ -49,6 +50,11 @@ export class SqlService {
       dateTimeService = new DateTimeService()
     }
     this.dateTimeService = dateTimeService
+
+    if (logger === undefined) {
+      logger = new ConsoleLogger()
+    }
+    this.logger = logger
   }
 
   /**
@@ -58,7 +64,9 @@ export class SqlService {
   async closePool (): Promise<void> {
 
     const pool = await ConnectionPoolService.getInstance()
+    this.logger.info('closing connection pool..')
     await pool.close()
+    this.logger.info('connection pool closed.')
   }
 
   /**
@@ -81,7 +89,7 @@ export class SqlService {
     return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
-  private addParamsToRequestSimple (params: Array<any>, request: Request) {
+  private addParamsToRequestSimple (params: Array<ISqlParameter>, request: Request) {
 
     if (params) {
       for (let index = 0; index < params.length; index++) {
@@ -91,7 +99,7 @@ export class SqlService {
     }
   }
 
-  async query (sql: string, params?: Array<any>): Promise<any> {
+  async query (sql: string, params?: Array<ISqlParameter>): Promise<any> {
 
     const query = async () => {
       const request = new Request(await ConnectionPoolService.getInstance())
@@ -111,7 +119,7 @@ export class SqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modify (sql: string, params: Array<any>): Promise<any> {
+  async modify (sql: string, params: Array<ISqlParameter>): Promise<any> {
 
     const modify = async () => {
       const request = new Request(await ConnectionPoolService.getInstance())
@@ -163,7 +171,10 @@ export class SqlService {
       try {
         await retry<any>(modify, retryConfig, dbLimitReached)
       } catch (error) {
+        this.logger.error(`error thrown from statement within transaction:${request.sql}`)
+        this.logger.error('rolling back transaction...')
         await transaction.rollback()
+        throw error
       }
     }
     await transaction.commit()
@@ -174,7 +185,7 @@ export class SqlService {
    * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
    * @param {{input}} request -  mssql request
    */
-  private addParamsToRequest (params: Array<any>, request: Request): void {
+  private addParamsToRequest (params: Array<ISqlParameter>, request: Request): void {
 
     if (params) {
       for (let index = 0; index < params.length; index++) {
@@ -228,7 +239,16 @@ export class SqlService {
   }
 }
 
+export interface ISqlParameter {
+  name: string
+  value: any
+  type: any
+  precision?: number
+  scale?: number
+  options?: any
+}
+
 export interface ITransactionRequest {
   sql: string
-  params: Array<any>
+  params: Array<ISqlParameter>
 }

@@ -3,6 +3,7 @@ import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
 import moment = require('moment')
+import v4 from 'uuid'
 
 let sut: sql.SqlService
 
@@ -95,5 +96,34 @@ describe('SqlService', () => {
     const datesAreSame = dbValueAsMoment.isSame(moment(isoDateTimeValue))
     expect(datesAreSame).toBe(true)
     expect(dbValueAsMoment.milliseconds()).toBe(123)
+  })
+
+  test('modifyWithTransaction: rolls back all statements in the batch upon failure', async () => {
+    const uuid = v4()
+    const requests = new Array<sql.ITransactionRequest>()
+    requests.push({
+      sql: `INSERT INTO mtc_admin.auditLog (rowData, tableName, operation)
+              VALUES ('${uuid}', 'check', 'INSERT')`,
+      params: []
+    })
+    requests.push({
+      sql: `INSERT INTO non.existent (colname)
+              VALUES ('data')`,
+      params: []
+    })
+    try {
+      await sut.modifyWithTransaction(requests)
+      fail('an error should have been thrown due to transaction failure')
+    } catch (error) {
+      expect(error.message).toBeDefined()
+    }
+    const sql = 'SELECT * FROM mtc_admin.auditLog WHERE rowData=@rowData'
+    const params: Array<sql.ISqlParameter> = [{
+      name: 'rowData',
+      type: mssql.NVarChar,
+      value: uuid
+    }]
+    const result = await sut.query(sql, params)
+    expect(result).toEqual([])
   })
 })
