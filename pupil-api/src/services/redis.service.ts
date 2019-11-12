@@ -32,62 +32,6 @@ export interface IRedisService {
   quit (): Promise<string>
 }
 
-export class BasicRedisService implements IRedisService {
-  private redis: Redis.Redis
-  private logger: Logger
-
-  constructor () {
-    this.logger = new Logger()
-    const options: RedisOptions = {
-      port: +config.Redis.Port,
-      host: config.Redis.Host,
-      password: config.Redis.Key
-    }
-    if (config.Redis.useTLS) {
-      options.tls = {
-        host: config.Redis.Host
-      }
-    }
-    this.redis = new Redis(options)
-  }
-
-  async get (key: string): Promise<any | null> {
-    try {
-      const result = await this.redis.get(key)
-      return result
-    } catch (err) {
-      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
-      throw err
-    }
-  }
-  async setex (key: string, value: string | object, ttl: number): Promise<void> {
-    try {
-      if (typeof value === 'object') {
-        value = JSON.stringify(value)
-      }
-      await this.redis.setex(key, ttl, value)
-    } catch (err) {
-      this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
-      throw err
-    }
-  }
-
-  async drop (keys: string[]): Promise<void> {
-    if (keys.length === 0) {
-      return
-    }
-    const pipeline = this.redis.pipeline()
-    keys.forEach(c => {
-      pipeline.del(c)
-    })
-    return pipeline.exec()
-  }
-
-  quit (): Promise<string> {
-    return this.redis.quit()
-  }
-}
-
 /**
  * enhanced redis service which stores items with type metadata.
  * Not used within Pupil API yet.

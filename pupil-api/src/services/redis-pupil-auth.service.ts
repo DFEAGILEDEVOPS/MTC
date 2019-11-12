@@ -1,4 +1,4 @@
-import { IRedisService, BasicRedisService } from './redis.service'
+import { IRedisService, RedisService } from './redis.service'
 import * as azureQueueService from './azure-queue.service'
 
 export interface IPupilAuthenticationService {
@@ -12,7 +12,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
-      redisService = new BasicRedisService()
+      redisService = new RedisService()
     }
     this.redisService = redisService
   }
