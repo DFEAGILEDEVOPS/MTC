@@ -15,7 +15,7 @@
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
     "copygovukelements": "node tools/copyGovukElements",
-    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && yarn sass",
+    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
     "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
