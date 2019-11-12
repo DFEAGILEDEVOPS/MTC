@@ -1,6 +1,19 @@
+import { IRedisService, RedisService } from '../../caching/redis-service'
+
 export class CheckStartedService {
-  async process (): Promise<void> {
-    throw new Error('not implemented')
+
+  private redisService: IRedisService
+
+  constructor (redisService?: IRedisService) {
+    if (redisService === undefined){
+      redisService = new RedisService()
+    }
+    this.redisService = redisService
+  }
+
+  async process (checkCode: string): Promise<void> {
+    const preparedCheckKey = await this.redisService.get(checkCode)
+    await this.redisService.drop([preparedCheckKey])
   }
 }
 export interface ICheckStartedMessage {

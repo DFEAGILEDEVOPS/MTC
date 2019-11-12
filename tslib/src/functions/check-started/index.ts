@@ -13,7 +13,7 @@ const queueTrigger: AzureFunction = async function (context: Context, checkStart
       throw new Error(`Message schema version:${version} unsupported`)
     }
     const checkStartedService = new CheckStartedService()
-    await checkStartedService.process()
+    await checkStartedService.process(checkStartedMessage.checkCode)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
