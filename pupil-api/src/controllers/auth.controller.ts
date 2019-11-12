@@ -1,9 +1,8 @@
 import { Request, Response } from 'express'
 import logger from '../services/log.service'
 import * as apiResponse from './api-response'
-import { pupilAuthenticationService } from '../services/pupil-auth.service'
+import { pupilAuthenticationService } from '../services/azure-pupil-auth.service'
 import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service'
-import { RedisService } from '../services/redis.service'
 import { FeatureService, IFeatureService } from '../services/feature.service'
 
 export class AuthController {

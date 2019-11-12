@@ -8,6 +8,7 @@ export interface IPupilAuthenticationService {
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
 
   private redisService: IRedisService
+  private eightHoursInSeconds: number = 28800
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
@@ -33,7 +34,13 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       version: 1
     }
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
+    const checkStartedLookupKey = this.buildCheckStartedLookupKey(hydratedCacheItem.checkCode)
+    await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
     return hydratedCacheItem
+  }
+
+  private buildCheckStartedLookupKey (checkCode: string) {
+    return `check-started-check-lookup:${checkCode}`
   }
 
   private buildCacheKey (schoolPin: string, pupilPin: string): string {

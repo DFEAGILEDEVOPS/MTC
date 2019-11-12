@@ -5,7 +5,7 @@
 import { AuthController } from './auth.controller'
 import * as httpMocks from 'node-mocks-http'
 import logger from '../services/log.service'
-import { pupilAuthenticationService } from '../services/pupil-auth.service'
+import { pupilAuthenticationService } from '../services/azure-pupil-auth.service'
 import { FeatureService, IFeatureService } from '../services/feature.service'
 
 const FeatureServiceMock = jest.fn<IFeatureService, any>(() => ({

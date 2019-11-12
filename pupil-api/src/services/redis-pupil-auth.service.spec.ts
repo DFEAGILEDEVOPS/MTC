@@ -69,6 +69,22 @@ describe('redis-pupil-auth.service', () => {
     expect(payload).toEqual(expectedPayload)
   })
 
+  test('a lookup link should be added to redis for check-started function', async () => {
+    const expectedPayload = {
+      checkCode: 'the-check-code'
+    }
+    redisServiceMock.get = jest.fn((key: string) => {
+      return Promise.resolve(JSON.stringify(expectedPayload))
+    })
+    const eightHoursInSeconds = 28800
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    const preparedCheckKey = `preparedCheck:${schoolPin}:${pupilPin}`
+    const checkStartedKey = `check-started-check-lookup:${expectedPayload.checkCode}`
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(checkStartedKey, preparedCheckKey, eightHoursInSeconds)
+  })
+
   test('null should be returned if item not found in cache', async () => {
     redisServiceMock.get = jest.fn((key: string) => {
       return Promise.resolve(undefined)
