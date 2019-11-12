@@ -13,7 +13,7 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
     this.sqlService = new SqlService()
   }
 
-  async updateCheckAsComplete (checkCode: string): Promise<void> {
+  updateCheckAsComplete (checkCode: string): Promise<void> {
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -43,6 +43,6 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
         checkCodeParam
       ]
     }
-    await this.sqlService.modifyWithTransaction([checkRequest, pupilRequest])
+    return this.sqlService.modifyWithTransaction([checkRequest, pupilRequest])
   }
 }
