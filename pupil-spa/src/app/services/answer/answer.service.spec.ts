@@ -81,7 +81,6 @@ describe('AnswerService', () => {
     service.setAnswer(answer);
     expect(auditServiceAddEntrySpy).toHaveBeenCalled();
     const auditArg = auditServiceAddEntrySpy.calls.mostRecent().args[0];
-    console.log('auditArg', auditArg)
     expect(auditArg.type).toBe('DuplicateAnswerError');
     expect(auditArg.data['factor1']).toBe(9);
     expect(auditArg.data['factor2']).toBe(8);

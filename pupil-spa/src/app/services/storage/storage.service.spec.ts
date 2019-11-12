@@ -65,7 +65,7 @@ describe('StorageService', () => {
       expect(data).toBeTruthy();
       expect(data).toEqual(value);
     });
-    
+
     it('returns string item when key provided and item exists', () => {
       const key = 'answers';
       const value = 'foo-bar';
@@ -151,9 +151,9 @@ describe('StorageService', () => {
       ];
 
       items.forEach((item) => {
-        let { value } = item
+        let { value } = item;
         if (value !== 'foo-bar') {
-          value = JSON.stringify(value)
+          value = JSON.stringify(value);
         }
         localStorage.setItem(item.key, value);
       });
