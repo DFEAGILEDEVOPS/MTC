@@ -101,7 +101,6 @@ export class AppConfigService {
         .toPromise()
         .then(data => {
           const t = new AppConfig();
-          console.log('data ', data)
           APP_CONFIG = Object.assign(t, data.body);
           return resolve(true);
         })
