@@ -22,21 +22,20 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       throw new Error('schoolPin and pupilPin cannot be an empty string')
     }
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
-    const cacheItem = await this.redisService.get(cacheKey)
-    if (!cacheItem) {
+    const preparedCheckEntry = await this.redisService.get(cacheKey)
+    if (!preparedCheckEntry) {
       return null
     }
-    const hydratedCacheItem = JSON.parse(cacheItem)
       // Emit a successful login to the queue
     const pupilLoginMessage = {
-      checkCode: hydratedCacheItem.checkCode,
+      checkCode: preparedCheckEntry.checkCode,
       loginAt: new Date(),
       version: 1
     }
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
-    const checkStartedLookupKey = this.buildCheckStartedLookupKey(hydratedCacheItem.checkCode)
+    const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheckEntry.checkCode)
     await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
-    return hydratedCacheItem
+    return preparedCheckEntry
   }
 
   private buildCheckStartedLookupKey (checkCode: string) {
