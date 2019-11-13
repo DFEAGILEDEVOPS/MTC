@@ -21,51 +21,85 @@ const redisConnect = () => {
   }
 }
 
+function prepareCacheEntry (value) {
+  const dataType = typeof value
+  let cacheItemDataType
+  switch (dataType) {
+    case 'string':
+      cacheItemDataType = 'string'
+      break
+    case 'number':
+      cacheItemDataType = 'number'
+      break
+    case 'object':
+      cacheItemDataType = 'object'
+      value = JSON.stringify(value)
+      break
+    default:
+      throw new Error(`unsupported data type ${dataType}`)
+  }
+  const storageItem = {
+    meta: {
+      type: cacheItemDataType
+    },
+    value: value.toString()
+  }
+  return JSON.stringify(storageItem)
+}
+
 const redisCacheService = {
 
   /**
-   * Returns the data from a Redis key entry
-   * @param redisKey - the full Redis key to get
-   * @returns {String}
-   */
-  get: async function (redisKey) {
+ * Returns the data from a Redis key entry
+ * @param key - the full Redis key to get
+ * @returns {Promise<any>}
+ */
+  get: async function (key) {
     redisConnect()
     try {
-      const result = await redis.get(redisKey)
-      if (!result) {
-        this.logger.info(`REDIS (get): \`${redisKey}\` is not set`)
-        return false
+      const cacheEntry = await redis.get(key)
+      if (cacheEntry === null) return null
+      const cacheItem = JSON.parse(cacheEntry)
+      switch (cacheItem.meta.type) {
+        case 'string':
+          return cacheItem.value
+        case 'number':
+          return Number(cacheItem.value)
+        case 'object':
+          try {
+            const hydratedObject = JSON.parse(cacheItem.value)
+            return hydratedObject
+          } catch (e) {
+            this.logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
+            throw e
+          }
+        default:
+          throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
-      this.logger.info(`REDIS (get): Retrieved \`${redisKey}\``)
-      return result
     } catch (err) {
-      this.logger.error(`REDIS (get): Error getting \`redisKey\`: ${err.message}`)
+      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
       throw err
     }
   },
 
   /**
-   * Stores data for a Redis key
-   * @param redisKey - the full Redis key to set
-   * @param data - string data to insert
-   * @param options - object that contains set options
-   * @returns {Boolean}
-   */
-  set: async function (redisKey, data, options) {
+ * Stores data for a Redis key
+ * @param key {string} - the redis key to set
+ * @param value {any} - data to insert
+ * @param ttl {number} - optional. time to expiry in seconds
+ * @returns {Promise<void>}
+ */
+  set: async function (key, value, ttl = undefined) {
     redisConnect()
     try {
-      if (typeof data === 'object') {
-        data = JSON.stringify(data)
-      }
-      if (options && options.expires) {
-        await redis.set(redisKey, data, 'ex', options.expires)
+      const storageItemString = prepareCacheEntry(value)
+      if (ttl) {
+        await redis.setex(key, ttl, storageItemString)
       } else {
-        await redis.set(redisKey, data)
+        await redis.set(key, storageItemString)
       }
-      this.logger.info(`REDIS (set): Stored \`${redisKey}\``)
-      return true
     } catch (err) {
-      this.logger.error(`REDIS (set): Error setting \`redisKey\`: ${err.message}`)
+      this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
       throw err
     }
   },
@@ -90,6 +124,31 @@ const redisCacheService = {
     await pipeline.exec()
     this.logger.info(`REDIS (drop): Dropped \`${caches.join('`, `')}\``)
     return true
+  },
+
+  /**
+ * @description set many items in one atomic operation, with optional expiry
+ * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
+ * @returns {Promise<void>}
+ */
+  setMany: async function (items) {
+    if (!Array.isArray(items)) {
+      throw new Error('items is not an array')
+    }
+    redisConnect()
+    const multi = redis.multi()
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index]
+      const storageItem = prepareCacheEntry(item.value)
+      if (item.ttl !== undefined) {
+        this.logger.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
+        multi.setex(item.key, item.ttl, storageItem)
+      } else {
+        multi.set(item.key, storageItem)
+      }
+    }
+    this.logger.info('REDIS (multi:exec)')
+    return multi.exec()
   }
 }
 

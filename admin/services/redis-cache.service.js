@@ -32,7 +32,7 @@ redisCacheService.get = async key => {
   redisConnect()
   try {
     const cacheEntry = await redis.get(key)
-    if (cacheEntry === null) return Promise.resolve(null)
+    if (cacheEntry === null) return null
     const cacheItem = JSON.parse(cacheEntry)
     switch (cacheItem.meta.type) {
       case 'string':
