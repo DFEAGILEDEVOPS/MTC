@@ -22,6 +22,7 @@ require 'azure/storage/table'
 require 'azure/storage/queue'
 require 'azure/storage/blob'
 require_relative '../../features/support/azure_blob_helper'
+require 'redis'
 
 require_relative 'helpers'
 include Helpers
@@ -119,3 +120,22 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
 AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
+
+
+redis_key = ENV['REDIS_KEY'] || ''
+redis_port =  ENV['REDIS_PORT'] || 6379
+
+if ENV['DOCKER'] == 'true'
+  redis_host = 'redis'
+else
+  redis_host = ENV['REDIS_HOST'] || 'localhost'
+end
+
+if azure_test == 'true'
+  REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
+else
+  REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
+end
+
+# clear redis cache before run
+REDIS_CLIENT.flushall
