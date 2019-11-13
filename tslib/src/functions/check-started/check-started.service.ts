@@ -1,5 +1,5 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
-import v4 from 'uuid'
+import v4 from 'uuid/v4'
 
 export interface ICheckStartedFunctionBindings {
   checkStartedTable: Array<any>
@@ -17,13 +17,18 @@ export class CheckStartedService {
   }
 
   async process (checkStartedMessage: ICheckStartedMessage, functionBindings: ICheckStartedFunctionBindings): Promise<void> {
-    const preparedCheckKey = await this.redisService.get(checkStartedMessage.checkCode)
-    await this.redisService.drop([preparedCheckKey])
+    const cacheLookupKey = this.buildCacheKey(checkStartedMessage.checkCode)
+    const preparedCheckKey = await this.redisService.get(cacheLookupKey)
     functionBindings.checkStartedTable.push({
       PartitionKey: checkStartedMessage.checkCode,
       RowKey: v4(),
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })
+    return this.redisService.drop([preparedCheckKey])
+  }
+
+  private buildCacheKey (checkCode: string): string {
+    return `check-started-check-lookup:${checkCode}`
   }
 }
 export interface ICheckStartedMessage {

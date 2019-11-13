@@ -26,13 +26,14 @@ describe('check-started.service', () => {
       clientCheckStartedAt: new Date(),
       version: 1
     }
+    const cacheLookupKey = `check-started-check-lookup:${message.checkCode}`
     const preparedCheckKey = 'prepared-check-key'
 
     redisServiceMock.get = jest.fn(async (key: string) => {
       return preparedCheckKey
     })
     await sut.process(message, functionBindings)
-    expect(redisServiceMock.get).toHaveBeenCalledWith(message.checkCode)
+    expect(redisServiceMock.get).toHaveBeenCalledWith(cacheLookupKey)
     expect(redisServiceMock.drop).toHaveBeenCalledWith([preparedCheckKey])
   })
 
@@ -50,6 +51,4 @@ describe('check-started.service', () => {
     await sut.process(message, functionBindings)
     expect(functionBindings.checkStartedTable.length).toBe(1)
   })
-
-  test.todo('key format matches that set by pupil-api')
 })
