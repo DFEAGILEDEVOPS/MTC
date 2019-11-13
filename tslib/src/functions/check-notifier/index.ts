@@ -11,7 +11,9 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, check
   try {
     if (version !== 1) {
       // dead letter the message as currently we only support v1
-      throw new Error(`Message schema version:${version} unsupported`)
+      const message = `Message schema version:${version} unsupported`
+      context.log.error(message)
+      throw new Error(message)
     }
     const notifier = new CheckNotifier()
     await notifier.notify(checkNotification)
