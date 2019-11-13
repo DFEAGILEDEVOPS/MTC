@@ -31,6 +31,21 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
   if (isEmpty(pupilData.lastName.trim()) || pupilData.lastName.length > 128) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameRequired)
   }
+  // Forename Alias validation
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.foreNameAlias) && !isEmpty(pupilData.foreNameAlias)) {
+    validationError.addError('foreNameAlias', addPupilErrorMessages.foreNameAliasInvalidCharacters)
+  }
+  if (pupilData.foreNameAlias.length > 128) {
+    validationError.addError('foreNameAlias', addPupilErrorMessages.foreNameAliasMaxLengthExceeded)
+  }
+
+  // Lastname Alias validation
+  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.lastNameAlias) && !isEmpty(pupilData.lastNameAlias)) {
+    validationError.addError('lastNameAlias', addPupilErrorMessages.lastNameAliasInvalidCharacters)
+  }
+  if (pupilData.lastNameAlias.length > 128) {
+    validationError.addError('lastNameAlias', addPupilErrorMessages.lastNameAliasMaxLengthExceeded)
+  }
   // DoB Day Validation
   if (!isInt(pupilData['dob-day'], { min: 1, max: 31 })) {
     validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
