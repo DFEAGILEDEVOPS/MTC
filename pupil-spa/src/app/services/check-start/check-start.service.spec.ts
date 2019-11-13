@@ -47,13 +47,12 @@ describe('CheckStartService', () => {
   it('submit should call azure queue service successfully and audit successful call', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
-    // spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.resolve());
     let actualPayload;
     spyOn(azureQueueService, 'addMessage').and
     .callFake((queueName, url, token, payload, retryConfig) => {
       actualPayload = payload;
-      return Promise.resolve();
-    })
+      return;
+    });
     await checkStartService.submit();
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckStartedAPICallSucceeded');

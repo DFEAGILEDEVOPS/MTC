@@ -1,4 +1,4 @@
-'use strict'
+\'use strict'
 
 /* global describe it expect beforeEach spyOn fail */
 
