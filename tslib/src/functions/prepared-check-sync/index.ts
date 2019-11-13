@@ -1,16 +1,21 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
+import { PreparedCheckSyncService } from './prepared-check-sync.service.spec'
 const functionName = 'prepared-check-sync'
 
 const queueTrigger: AzureFunction = async function (context: Context, preparedCheckSyncMessage: IPreparedCheckSyncMessage): Promise<void> {
   const start = performance.now()
   const version = preparedCheckSyncMessage.version
-  context.log.info(`${functionName}: version:${version} message received for checkCode ${preparedCheckSyncMessage.checkCode}`)
+  context.log.info(`${functionName}: version:${version} message received`)
+  if (version !== 1) {
+    // dead letter the message
+    const message = `Message schema version:${version} unsupported`
+    context.log.error(message)
+    throw new Error(message)
+  }
   try {
-    if (version !== 1) {
-      // dead letter the message as we no longer support below v3
-      throw new Error(`Message schema version:${version} unsupported`)
-    }
+    const prepCheckSyncService = new PreparedCheckSyncService()
+    await prepCheckSyncService.process()
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
@@ -23,7 +28,3 @@ const queueTrigger: AzureFunction = async function (context: Context, preparedCh
 }
 
 export default queueTrigger
-
-export interface IPreparedCheckSyncMessage {
-  version: number
-}
