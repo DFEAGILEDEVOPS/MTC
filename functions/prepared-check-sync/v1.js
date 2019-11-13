@@ -10,7 +10,7 @@ const preparedCheckSchemaValidator = require('../lib/prepared-check-schema-valid
 
 const v1 = {}
 
-v1.process = async function process (context, preparedCheckSyncMessage) {
+v1.process = async function (context, preparedCheckSyncMessage) {
   const { checkCode } = preparedCheckSyncMessage
   context.log('prepared-check-sync: message received', checkCode)
   const checkCodes = await checkDataService.sqlFindActiveCheckCodesByCheckCode(checkCode)

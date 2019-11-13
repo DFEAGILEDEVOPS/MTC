@@ -4,7 +4,7 @@ const pinGenerationDataService = require('../services/data-access/pin-generation
 const preparedCheckSyncService = {}
 
 preparedCheckSyncService.addMessages = async (urlSlug) => {
-  const results = await pinGenerationDataService.sqlFindActivePinRecordsByUrlSlug(urlSlug)
+  const results = await pinGenerationDataService.sqlFindActivePinRecordsByPupilUrlSlug(urlSlug)
   // Sync existing preparedCheck(s) when 1 or more active pins exist
   if (results.length > 0) {
     const checkCodes = results.map(r => r.checkCode)
