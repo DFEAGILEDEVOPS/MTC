@@ -36,7 +36,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
 
     // update TTL to 30 minutes now it's been collected...
-    await this.redisService.setex(cacheKey, cacheItem, +config.RedisPreparedCheckExpiryInSeconds)
+    await this.redisService.setex(cacheKey, cacheItem, config.RedisPreparedCheckExpiryInSeconds)
     return hydratedCacheItem
   }
 
