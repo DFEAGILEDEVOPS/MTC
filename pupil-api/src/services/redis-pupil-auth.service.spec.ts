@@ -61,7 +61,7 @@ describe('redis-pupil-auth.service', () => {
       foo: 'bar'
     }
     redisServiceMock.get = jest.fn((key: string) => {
-      return Promise.resolve(JSON.stringify(expectedPayload))
+      return Promise.resolve(expectedPayload)
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
@@ -74,7 +74,7 @@ describe('redis-pupil-auth.service', () => {
       checkCode: 'the-check-code'
     }
     redisServiceMock.get = jest.fn((key: string) => {
-      return Promise.resolve(JSON.stringify(expectedPayload))
+      return Promise.resolve(expectedPayload)
     })
     const eightHoursInSeconds = 28800
     const schoolPin = 'abc12def'
