@@ -17,19 +17,15 @@ class AzureTableHelper
   end
 
   #### -- Enable below method when new check process is enabled
+
   # def self.wait_for_prepared_check(school_password, pin)
   #   p school_password, pin
   #   found = false
   #   begin
   #     retries ||= 0
   #     sleep 2
-  #     REDIS_CLIENT.keys.each do |key|
-  #       if key.include?("#{pin}")
-  #         puts "PREPARE CHECK KEY IN REDIS IS : #{key}"
-  #         found = true
-  #       end
-  #     end
-  #     if !found
+  #     result = REDIS_CLIENT.get("preparedCheck:#{school_password}:#{pin}")
+  #     if (result.nil?)
   #       fail "Pin not found in redis"
   #     end
   #   rescue

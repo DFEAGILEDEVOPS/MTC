@@ -24,20 +24,14 @@ class AzureTableHelper
   #   begin
   #     retries ||= 0
   #     sleep 2
-  #     REDIS_CLIENT.keys.each do |key|
-  #       if key.include?("#{pin}")
-  #         puts "PREPARE CHECK KEY IN REDIS IS : #{key}"
-  #         found = true
-  #       end
-  #     end
-  #     if !found
+  #     result = REDIS_CLIENT.get("preparedCheck:#{school_password}:#{pin}")
+  #     if (result.nil?)
   #       fail "Pin not found in redis"
   #     end
   #   rescue
   #     retry if (retries += 1) < 120
   #   end
   # end
-
 
   def self.get_pupil_feedback(check_code)
     query = { :filter => "checkCode eq '#{check_code}'" }
