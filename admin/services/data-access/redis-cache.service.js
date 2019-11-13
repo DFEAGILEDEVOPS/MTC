@@ -1,6 +1,6 @@
 const Redis = require('ioredis')
-const config = require('../config')
-const logger = require('./log.service').getLogger()
+const config = require('../../config')
+const logger = require('../log.service').getLogger()
 
 const redisConfig = {
   port: config.Redis.Port,

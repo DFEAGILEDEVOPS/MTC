@@ -2,7 +2,7 @@
 
 /* global describe, beforeEach ,it, expect spyOn fail */
 const administrationMessageDataService = require('../../../services/data-access/administration-message.data.service')
-const redisCacheService = require('../../../services/redis-cache.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const emptyFieldsValidator = require('../../../lib/validator/common/empty-fields-validators')
 const ValidationError = require('../../../lib/validation-error')

@@ -3,7 +3,7 @@
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const sceDataService = {}
-const redisCacheService = require('../redis-cache.service')
+const redisCacheService = require('./redis-cache.service')
 const sceSpecificLeaCode = 702
 
 /**

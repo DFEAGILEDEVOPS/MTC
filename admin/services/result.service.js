@@ -1,5 +1,5 @@
 const resultDataService = require('../services/data-access/result.data.service')
-const redisCacheService = require('../services/redis-cache.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 
 const resultService = {}
 

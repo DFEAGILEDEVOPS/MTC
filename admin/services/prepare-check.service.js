@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const redisService = require('./redis-cache.service')
+const redisService = require('./data-access/redis-cache.service')
 
 const service = {
   /**

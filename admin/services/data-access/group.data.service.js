@@ -4,7 +4,7 @@ const groupDataService = {}
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
-const redisCacheService = require('../redis-cache.service')
+const redisCacheService = require('./redis-cache.service')
 
 /**
  * Get active groups (non-soft-deleted).
