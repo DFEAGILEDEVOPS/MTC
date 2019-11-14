@@ -30,6 +30,12 @@ export interface IRedisService {
    * @returns void
    */
   quit (): Promise<string>
+  /**
+   * @description set expiry on a redis item
+   * @param key key of the item to update TTL on
+   * @param ttl the expiry time in seconds
+   */
+  expire (key: string, ttl: number): Promise<void>
 }
 
 /**
@@ -147,6 +153,10 @@ export class RedisService implements IRedisService {
 
   quit (): Promise<string> {
     return this.redis.quit()
+  }
+
+  expire (key: string, ttl: number): Promise<void> {
+    return this.redis.expire(key, ttl)
   }
 }
 

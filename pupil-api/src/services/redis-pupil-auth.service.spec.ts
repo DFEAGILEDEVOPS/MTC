@@ -1,5 +1,6 @@
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
+import { stringLiteral } from '@babel/types'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
@@ -8,7 +9,8 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
   setex: jest.fn(),
   drop: jest.fn(),
-  quit: jest.fn()
+  quit: jest.fn(),
+  expire: jest.fn()
 }))
 
 describe('redis-pupil-auth.service', () => {
@@ -97,6 +99,7 @@ describe('redis-pupil-auth.service', () => {
 
   test('redis item TTL should be set to 30 minutes from now', async () => {
     const thirtyMinutesInSeconds = 1800
+    const eightHoursInSeconds = 28800
     const expectedPayload = {
       foo: 'bar'
     }
@@ -104,14 +107,20 @@ describe('redis-pupil-auth.service', () => {
     redisServiceMock.get = jest.fn((key: string) => {
       return Promise.resolve(JSON.stringify(expectedPayload))
     })
-    let actualTtlSet: number
+    let actualLookupKeyExpiryValue: number
     redisServiceMock.setex = jest.fn((key: string, value: string | object, ttl: number) => {
-      actualTtlSet = ttl
+      actualLookupKeyExpiryValue = ttl
+      return Promise.resolve()
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn((key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
       return Promise.resolve()
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     await sut.authenticate(schoolPin, pupilPin)
-    expect(actualTtlSet).toEqual(thirtyMinutesInSeconds)
+    expect(actualLookupKeyExpiryValue).toEqual(eightHoursInSeconds)
+    expect(actualPreparedCheckExpiryValue).toEqual(thirtyMinutesInSeconds)
   })
 })
