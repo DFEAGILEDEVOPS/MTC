@@ -569,7 +569,7 @@ sqlService.update = async function (tableName, data) {
  * Helper function useful for constructing parameterised WHERE clauses
  * @param {Array} ary
  * @param {Object} type
- * @return {Promise<{params: Array, paramIdentifiers: Array}>}
+ * @return {{paramIdentifiers: *, params: *}}
  */
 sqlService.buildParameterList = (ary, type) => {
   const params = []
