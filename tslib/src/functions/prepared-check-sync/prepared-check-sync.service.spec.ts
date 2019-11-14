@@ -107,12 +107,63 @@ describe('prepared-check-sync.service', () => {
     expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, preparedCheck, originalTTL)
   })
 
-  test.todo('error is thrown if preparedCheck is not found')
-  test.todo('error is thrown if ttl is not found')
+  test('error is thrown if preparedCheck is not found', async () => {
+    const originalTTL = 300
+    const pupilUUID = 'pupilUUID'
+    const checkRef = {
+      checkCode: 'checkCode',
+      pupilPin: '1234',
+      schoolPin: 'abc12def'
+    }
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+      return [checkRef]
+    })
+
+    redisServiceMock.ttl = jest.fn(async (key: string) => {
+      return originalTTL
+    })
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return null
+    })
+
+    try {
+      await sut.process(pupilUUID)
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error.message).toBe(`unable to find preparedCheck. checkCode:${checkRef.checkCode}`)
+    }
+  })
+
+  test('error is thrown if ttl is not found', async () => {
+    const pupilUUID = 'pupilUUID'
+    const checkRef = {
+      checkCode: 'checkCode',
+      pupilPin: '1234',
+      schoolPin: 'abc12def'
+    }
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+      return [checkRef]
+    })
+
+    redisServiceMock.ttl = jest.fn(async (key: string) => {
+      return null
+    })
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        pupilPin: 1234,
+        schoolPin: 'abc34def'
+      }
+    })
+
+    try {
+      await sut.process(pupilUUID)
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error.message).toBe(`no TTL found on preparedCheck. checkCode:${checkRef.checkCode}`)
+    }
+  })
 })
 
-describe('prepared-check-merge.service', () => {
-  test.todo('updated and merged prepared checks are persisted back to redis')
-  test.todo('access arrangements are looked up in sql and error thrown if not found')
-  test.todo('access arrangement codes are looked up in sql and error thrown if not found')
-})
+
