@@ -14,6 +14,11 @@ Before("not @event_auditing", "not @feedback", "not @local_storage") do
   end
 end
 
+Before("@new_check_process") do
+  p 'Skipping this scenario until prepareChecksToRedis is set to true by default'
+  skip_this_scenario
+end
+
 Before('@4_digit') do
   skip_this_scenario if AUTH == '5'
 end
