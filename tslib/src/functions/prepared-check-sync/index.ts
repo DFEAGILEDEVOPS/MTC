@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PreparedCheckSyncService } from "./prepared-check-sync.service"
+import { PreparedCheckSyncService, IPreparedCheckSyncMessage } from './prepared-check-sync.service'
 const functionName = 'prepared-check-sync'
 
 const queueTrigger: AzureFunction = async function (context: Context, preparedCheckSyncMessage: IPreparedCheckSyncMessage): Promise<void> {
@@ -15,7 +15,7 @@ const queueTrigger: AzureFunction = async function (context: Context, preparedCh
   }
   try {
     const prepCheckSyncService = new PreparedCheckSyncService()
-    await prepCheckSyncService.process()
+    await prepCheckSyncService.process(preparedCheckSyncMessage.pupilUUID)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error

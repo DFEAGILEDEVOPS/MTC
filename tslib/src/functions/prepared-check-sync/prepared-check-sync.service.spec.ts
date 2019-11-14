@@ -1,13 +1,13 @@
 import { PreparedCheckSyncService } from './prepared-check-sync.service'
 import { IPreparedCheckMergeService } from './prepared-check-merge.service'
-import { IPreparedCheckSyncDataService } from './prepared-check-sync.data.service'
+import { IPreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
 
 let sut: PreparedCheckSyncService
 let dataServiceMock: IPreparedCheckSyncDataService
 let mergeServiceMock: IPreparedCheckMergeService
 
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
-  getCurrentChecksByPupilUuid: jest.fn(),
+  getActiveCheckReferencesByPupilUuid: jest.fn(),
   getAccessArrangementsCodesById: jest.fn(),
   getAccessArrangementsByCheckCode: jest.fn()
 }))
@@ -30,7 +30,7 @@ describe('prepared-check-sync.service', () => {
 
   test('active checks for pupil are looked up in redis and error thrown if none found', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getCurrentChecksByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
       return []
     })
 
@@ -38,21 +38,56 @@ describe('prepared-check-sync.service', () => {
       await sut.process(pupilUUID)
       fail('error should have been thrown')
     } catch (error) {
-      expect(dataServiceMock.getCurrentChecksByPupilUuid).toHaveBeenCalled()
+      expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
       expect(error.message).toBe(`no checks found for pupil UUID:${pupilUUID}`)
     }
   })
 
-  test('each active check is processed', async () => {
+  test('each active check is sent to the merger service', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getCurrentChecksByPupilUuid = jest.fn(async (pupilUUID: string) => {
-      return ['check1', 'check2']
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+      const refs: Array<IActiveCheckReference> = [
+        {
+          checkCode: 'checkCode',
+          pupilPin: '1234',
+          schoolPin: 'abc12def'
+        },
+        {
+          checkCode: 'checkCode',
+          pupilPin: '1234',
+          schoolPin: 'abc12def'
+        },
+        {
+          checkCode: 'checkCode',
+          pupilPin: '1234',
+          schoolPin: 'abc12def'
+        }
+      ]
+      return refs
     })
     await sut.process(pupilUUID)
-    expect(mergeServiceMock.merge).toHaveBeenCalledTimes(2)
+    expect(mergeServiceMock.merge).toHaveBeenCalledTimes(3)
   })
 
+  test('merged config is submitted back to redis', async () => {
+    const pupilUUID = 'pupilUUID'
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+      const refs: Array<IActiveCheckReference> = [
+        {
+          checkCode: 'checkCode',
+          pupilPin: '1234',
+          schoolPin: 'abc12def'
+        }
+      ]
+      return refs
+    })
+    await sut.process(pupilUUID)
+    expect(redisServiceMock.setex).toHaveBeenCalled()
+  })
+})
+
+describe('prepared-check-merge.service', () => {
+  test.todo('updated and merged prepared checks are persisted back to redis')
   test.todo('access arrangements are looked up in sql and error thrown if not found')
   test.todo('access arrangement codes are looked up in sql and error thrown if not found')
-  test.todo('merged config is submitted back to redis')
 })

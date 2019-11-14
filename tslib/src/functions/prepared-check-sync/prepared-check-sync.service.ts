@@ -15,7 +15,7 @@ export class PreparedCheckSyncService {
     this.mergeService = mergeService
   }
   async process (pupilUUID: string): Promise<void> {
-    const checksToUpdate = await this.dataService.getCurrentChecksByPupilUuid(pupilUUID)
+    const checksToUpdate = await this.dataService.getActiveCheckReferencesByPupilUuid(pupilUUID)
     if (checksToUpdate.length === 0) {
       throw new Error(`no checks found for pupil UUID:${pupilUUID}`)
     }
