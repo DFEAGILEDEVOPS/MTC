@@ -1,18 +1,35 @@
-import { ConnectionPool, Request, TYPES } from 'mssql'
+import { Request, TYPES, ConnectionPool, Transaction } from 'mssql'
 import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
-import { default as mtcConfig } from '../config'
+import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
 
 const retryConfig = {
-  attempts: mtcConfig.DatabaseRetry.MaxRetryAttempts,
-  pauseTimeMs: mtcConfig.DatabaseRetry.InitialPauseMs,
-  pauseMultiplier: mtcConfig.DatabaseRetry.PauseMultiplier
+  attempts: config.DatabaseRetry.MaxRetryAttempts,
+  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
+  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
 
 declare class SqlServerError extends Error {
   number?: number
+}
+
+/**
+ * static class for serving single instance of a connection pool
+ */
+class ConnectionPoolService {
+  private static pool: ConnectionPool
+  private static initialisationLock: boolean
+
+  static async getInstance (): Promise<ConnectionPool> {
+    if (!this.initialisationLock === true) {
+      this.initialisationLock = true
+      this.pool = new ConnectionPool(config.Sql)
+      await this.pool.connect()
+    }
+    return this.pool
+  }
 }
 
 const connectionLimitReachedErrorCode = 10928
@@ -24,12 +41,10 @@ const dbLimitReached = (error: SqlServerError) => {
 
 export class SqlService {
 
-  private connectionPool: ConnectionPool
-  private logger: ILogger
   private dateTimeService: IDateTimeService
+  private logger: ILogger
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
-    this.connectionPool = new ConnectionPool(mtcConfig.Sql)
 
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
@@ -42,27 +57,16 @@ export class SqlService {
     this.logger = logger
   }
 
-  async init (): Promise<void> {
-    if (this.connectionPool.connecting || this.connectionPool.connected) {
-      this.logger.warn('connection pool already initialised')
-    }
-    try {
-      await this.connectionPool.connect()
-    } catch (error) {
-      this.logger.error('Pool Connection Error:', error)
-      throw error
-    }
-    this.connectionPool.on('error', (error: Error) => {
-      this.logger.error('SQL Pool Error:', error)
-    })
-  }
+  /**
+   * Closes all connections within a pool.
+   * Do not use this in regular services.
+   */
+  async closePool (): Promise<void> {
 
-  close (): Promise<void> {
-    if (!this.connectionPool) {
-      this.logger.warn('The connection pool is not initialised')
-      return Promise.resolve()
-    }
-    return this.connectionPool.close()
+    const pool = await ConnectionPoolService.getInstance()
+    this.logger.info('closing connection pool..')
+    await pool.close()
+    this.logger.info('connection pool closed.')
   }
 
   /**
@@ -70,6 +74,7 @@ export class SqlService {
    * @type {Function}
    */
   private transformQueryResult (data: any) {
+
     const recordSet = R.prop('recordset', data) // returns [o1, o2,  ...]
     if (!recordSet) {
       return []
@@ -84,7 +89,8 @@ export class SqlService {
     return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
-  private addParamsToRequestSimple (params: Array<any>, request: Request) {
+  private addParamsToRequestSimple (params: Array<ISqlParameter>, request: Request) {
+
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -93,16 +99,10 @@ export class SqlService {
     }
   }
 
-  async query (sql: string, params?: Array<any>): Promise<any> {
-    // logger.debug(`sql.service.query(): ${sql}`)
-    // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
-    this.ensureInitialised()
-
-    // tslint:disable-next-line: await-promise
-    await this.connectionPool
+  async query (sql: string, params?: Array<ISqlParameter>): Promise<any> {
 
     const query = async () => {
-      const request = new Request(this.connectionPool)
+      const request = new Request(await ConnectionPoolService.getInstance())
       if (params !== undefined) {
         this.addParamsToRequestSimple(params, request)
       }
@@ -113,22 +113,16 @@ export class SqlService {
     return retry<any>(query, retryConfig, dbLimitReached)
   }
 
-/**
- * Modify data in SQL Server via mssql library.
- * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
- * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
- */
-  async modify (sql: string, params: Array<any>) {
-    // logger.debug('sql.service.modify(): SQL: ' + sql)
-    // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
-    this.ensureInitialised()
-
-    // tslint:disable-next-line: await-promise
-    await this.connectionPool
+  /**
+   * Modify data in SQL Server via mssql library.
+   * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+   * @param {array} params - Array of parameters for SQL statement
+   * @return {Promise}
+   */
+  async modify (sql: string, params: Array<ISqlParameter>): Promise<any> {
 
     const modify = async () => {
-      const request = new Request(this.connectionPool)
+      const request = new Request(await ConnectionPoolService.getInstance())
       this.addParamsToRequest(params, request)
       return request.query(sql)
     }
@@ -157,12 +151,42 @@ export class SqlService {
     return returnValue
   }
 
-/**
- * Add parameters to an SQL request
- * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
- * @param {{input}} request -  mssql request
- */
-  private addParamsToRequest (params: Array<any>, request: Request): void {
+  /**
+   * Modify data in SQL Server via mssql library.
+   * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+   * @param {array} params - Array of parameters for SQL statement
+   * @return {Promise}
+   */
+  async modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any> {
+
+    const transaction = new Transaction(await ConnectionPoolService.getInstance())
+    await transaction.begin()
+    for (let index = 0; index < requests.length; index++) {
+      const request = requests[index]
+      const modify = async () => {
+        const req = new Request(transaction)
+        this.addParamsToRequest(request.params, req)
+        return req.query(request.sql)
+      }
+      try {
+        await retry<any>(modify, retryConfig, dbLimitReached)
+      } catch (error) {
+        this.logger.error(`error thrown from statement within transaction:${request.sql}`)
+        this.logger.error('rolling back transaction...')
+        await transaction.rollback()
+        throw error
+      }
+    }
+    await transaction.commit()
+  }
+
+  /**
+   * Add parameters to an SQL request
+   * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
+   * @param {{input}} request -  mssql request
+   */
+  private addParamsToRequest (params: Array<ISqlParameter>, request: Request): void {
+
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
@@ -191,22 +215,15 @@ export class SqlService {
     }
   }
 
-  private ensureInitialised (): void {
-    return
-/*     if (this._connectionPool.connecting === false || this._connectionPool.connected === false) {
-      throw new Error('SqlService must be initialised before use')
-    } */
-  }
-
-/**
- * Find a row by numeric ID
- * Assumes all table have Int ID datatype
- * @param {string} table
- * @param {number} id
- * @return {Promise<object>}
- */
+  /**
+   * Find a row by numeric ID
+   * Assumes all table have Int ID datatype
+   * @param {string} table
+   * @param {number} id
+   * @return {Promise<object>}
+   */
   async findOneById (table: string, id: number): Promise<any> {
-    this.ensureInitialised()
+
     const paramId = {
       name: 'id',
       type: TYPES.Int,
@@ -220,4 +237,18 @@ export class SqlService {
     const rows = await this.query(sql, [paramId])
     return R.head(rows)
   }
+}
+
+export interface ISqlParameter {
+  name: string
+  value: any
+  type: any
+  precision?: number
+  scale?: number
+  options?: any
+}
+
+export interface ITransactionRequest {
+  sql: string
+  params: Array<ISqlParameter>
 }

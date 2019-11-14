@@ -6,6 +6,7 @@ import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './models'
+import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
 
 export class CheckMarkerV1 {
 
@@ -32,18 +33,22 @@ export class CheckMarkerV1 {
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
     functionBindings.checkNotificationQueue = []
     if (markingData === undefined) {
-      functionBindings.checkNotificationQueue.push({
+      const notification: ICheckNotificationMessage = {
         checkCode: validatedCheck.RowKey,
-        type: 'unmarkable'
-      })
+        notificationType: CheckNotificationType.checkInvalid,
+        version: 1
+      }
+      functionBindings.checkNotificationQueue.push(notification)
       return
     }
     const results = this.markCheck(markingData)
     await this.persistMark(results, validatedCheck)
-    functionBindings.checkNotificationQueue.push({
+    const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
-      type: 'marked'
-    })
+      notificationType: CheckNotificationType.checkComplete,
+      version: 1
+    }
+    functionBindings.checkNotificationQueue.push(notification)
   }
 
   private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck, logger: ILogger): Promise<MarkingData | void> {
