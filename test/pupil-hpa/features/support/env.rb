@@ -12,6 +12,7 @@ require 'numbers_in_words'
 require 'mongo'
 require 'waitutil'
 require 'tiny_tds'
+require 'redis'
 require 'webdrivers'
 require 'show_me_the_cookies'
 require 'httparty'
@@ -120,7 +121,6 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
 AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
-
 
 redis_key = ENV['REDIS_KEY'] || ''
 redis_port =  ENV['REDIS_PORT'] || 6379
