@@ -22,5 +22,3 @@ export interface IActiveCheckReference {
   schoolPin: string
   pupilPin: string
 }
-
-export interface IPreparedCheck {}

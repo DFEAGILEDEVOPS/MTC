@@ -30,6 +30,11 @@ export interface IRedisService {
    * @returns void
    */
   quit (): Promise<string>
+  /**
+   * @description returns the ttl of a given entry
+   * @returns number | null the ttl in seconds
+   */
+  ttl (key: string): Promise<number | null>
 }
 
 export class BasicRedisService implements IRedisService {
@@ -85,6 +90,10 @@ export class BasicRedisService implements IRedisService {
 
   quit (): Promise<string> {
     return this.redis.quit()
+  }
+
+  ttl (key: string): Promise<number | null> {
+    return this.redis.ttl(key)
   }
 }
 
@@ -203,6 +212,10 @@ export class RedisService implements IRedisService {
 
   quit (): Promise<string> {
     return this.redis.quit()
+  }
+
+  ttl (key: string): Promise<number | null> {
+    return this.redis.ttl(key)
   }
 }
 

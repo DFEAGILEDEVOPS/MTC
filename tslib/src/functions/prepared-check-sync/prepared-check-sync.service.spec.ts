@@ -1,10 +1,13 @@
 import { PreparedCheckSyncService } from './prepared-check-sync.service'
-import { IPreparedCheckMergeService } from './prepared-check-merge.service'
+import { IPreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
 import { IPreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
+import { IRedisService } from '../../caching/redis-service'
+import { RedisServiceMock } from '../../caching/redis-service.mock'
 
 let sut: PreparedCheckSyncService
 let dataServiceMock: IPreparedCheckSyncDataService
 let mergeServiceMock: IPreparedCheckMergeService
+let redisServiceMock: IRedisService
 
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
   getActiveCheckReferencesByPupilUuid: jest.fn(),
@@ -19,9 +22,10 @@ const PreparedCheckMergeServiceMock = jest.fn<IPreparedCheckMergeService, any>((
 describe('prepared-check-sync.service', () => {
 
   beforeEach(() => {
+    redisServiceMock = new RedisServiceMock()
     dataServiceMock = new PreparedCheckSyncDataServiceMock()
     mergeServiceMock = new PreparedCheckMergeServiceMock()
-    sut = new PreparedCheckSyncService(dataServiceMock, mergeServiceMock)
+    sut = new PreparedCheckSyncService(dataServiceMock, mergeServiceMock, redisServiceMock)
   })
 
   test('subject should be defined', () => {
@@ -69,21 +73,30 @@ describe('prepared-check-sync.service', () => {
     expect(mergeServiceMock.merge).toHaveBeenCalledTimes(3)
   })
 
-  test('merged config is submitted back to redis', async () => {
+  test('merged config is submitted back to redis with TTL preserved', async () => {
     const pupilUUID = 'pupilUUID'
+    const activeCheckReference = {
+      checkCode: 'checkCode',
+      pupilPin: '1234',
+      schoolPin: 'abc12def'
+    }
     dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
-      const refs: Array<IActiveCheckReference> = [
-        {
-          checkCode: 'checkCode',
-          pupilPin: '1234',
-          schoolPin: 'abc12def'
-        }
-      ]
-      return refs
+      return [activeCheckReference]
     })
+
+    const preparedCheck: IPreparedCheck = {
+      pupilPin: 1234,
+      schoolPin: 'abc34def'
+    }
+    mergeServiceMock.merge = jest.fn(async (preparedCheck: any) => {
+      return preparedCheck
+    })
+
     await sut.process(pupilUUID)
-    expect(redisServiceMock.setex).toHaveBeenCalled()
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(preparedCheck)
   })
+
+  test.todo('TTL of preparedCheck is preserved')
 })
 
 describe('prepared-check-merge.service', () => {
