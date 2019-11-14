@@ -2,26 +2,26 @@
 
 const moment = require('moment-timezone')
 const R = require('ramda')
-const logger = require('./log.service').getLogger()
+const logger = require('../log.service').getLogger()
 
-const azureQueueService = require('../services/azure-queue.service')
-const checkDataService = require('../services/data-access/check.data.service')
-const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
-const checkFormDataService = require('../services/data-access/check-form.data.service')
-const checkFormService = require('../services/check-form.service')
-const checkStartDataService = require('../services/data-access/check-start.data.service')
-const checkStateService = require('../services/check-state.service')
-const checkWindowDataService = require('../services/data-access/check-window.data.service')
-const config = require('../config')
-const configService = require('../services/config.service')
-const dateService = require('../services/date.service')
-const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
-const pinGenerationService = require('../services/pin-generation.service')
-const pinGenerationV2Service = require('../services/pin-generation-v2.service')
-const queueNameService = require('../services/queue-name-service')
-const sasTokenService = require('../services/sas-token.service')
-const setValidationService = require('../services/set-validation.service')
-const prepareCheckService = require('./prepare-check.service')
+const azureQueueService = require('../azure-queue.service')
+const checkDataService = require('../data-access/check.data.service')
+const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
+const checkFormDataService = require('../data-access/check-form.data.service')
+const checkFormService = require('../check-form.service')
+const checkStartDataService = require('./data-access/check-start.data.service')
+const checkStateService = require('../check-state.service')
+const checkWindowDataService = require('../data-access/check-window.data.service')
+const config = require('../../config')
+const configService = require('../config.service')
+const dateService = require('../date.service')
+const pinGenerationDataService = require('../data-access/pin-generation.data.service')
+const pinGenerationService = require('../pin-generation.service')
+const pinGenerationV2Service = require('../pin-generation-v2.service')
+const queueNameService = require('../queue-name-service')
+const sasTokenService = require('../sas-token.service')
+const setValidationService = require('../set-validation.service')
+const prepareCheckService = require('../prepare-check.service')
 const featureToggles = require('feature-toggles')
 
 const checkStartService = {}
@@ -130,10 +130,8 @@ checkStartService.prepareCheck2 = async function (
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
     // 2020 prep: update the pupil status fields
-    if (isLiveCheck) {
-      const pupilsAndChecks = newChecks.map(check => { return { checkId: check.id, pupilId: check.pupil_id } })
-      await checkStartDataService.updatePupilState(schoolId, pupilsAndChecks)
-    }
+    const pupilsAndChecks = newChecks.map(check => { return { checkId: check.id, pupilId: check.pupil_id } })
+    await checkStartDataService.updatePupilState(schoolId, pupilsAndChecks)
 
     // Send a batch of messages for all the pupils requesting a status change
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })

@@ -4,23 +4,23 @@
 
 const moment = require('moment')
 
-const azureQueueService = require('../../../services/azure-queue.service')
-const checkDataService = require('../../../services/data-access/check.data.service')
-const checkFormAllocationDataService = require('../../../services/data-access/check-form-allocation.data.service')
-const checkFormDataService = require('../../../services/data-access/check-form.data.service')
-const checkFormService = require('../../../services/check-form.service')
-const checkStartDataService = require('../../../services/data-access/check-start.data.service')
-const checkStartService = require('../../../services/check-start.service')
-const checkStateService = require('../../../services/check-state.service')
-const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
-const checkWindowMock = require('../mocks/check-window-2')
-const configService = require('../../../services/config.service')
-const logger = require('../../../services/log.service.js').getLogger()
-const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
-const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const sasTokenService = require('../../../services/sas-token.service')
-const prepareCheckService = require('../../../services/prepare-check.service')
+const azureQueueService = require('../azure-queue.service')
+const checkDataService = require('../data-access/check.data.service')
+const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
+const checkFormDataService = require('../data-access/check-form.data.service')
+const checkFormService = require('../check-form.service')
+const checkStartDataService = require('./data-access/check-start.data.service')
+const checkStartService = require('./check-start.service')
+const checkStateService = require('../check-state.service')
+const checkWindowDataService = require('../data-access/check-window.data.service')
+const checkWindowMock = require('../../spec/back-end/mocks/check-window-2')
+const configService = require('../config.service')
+const logger = require('../log.service.js').getLogger()
+const pinGenerationDataService = require('../data-access/pin-generation.data.service')
+const pinGenerationV2Service = require('../pin-generation-v2.service')
+const pupilDataService = require('../data-access/pupil.data.service')
+const sasTokenService = require('../sas-token.service')
+const prepareCheckService = require('../prepare-check.service')
 const featureToggles = require('feature-toggles')
 
 const checkFormMock = {
@@ -67,7 +67,7 @@ describe('check-start.service', () => {
     { id: 3, checkCode: '3A', pupil_id: 3 }
   ]
 
-  describe('#preparecheck2', () => {
+  describe('#prepareCheck2', () => {
     beforeEach(() => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(checkFormService, 'getAllFormsForCheckWindowByType').and.returnValue(Promise.resolve([]))
@@ -87,6 +87,7 @@ describe('check-start.service', () => {
           3: configService.getBaseConfig()
         })
       spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
+      spyOn(checkStartDataService, 'updatePupilState')
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -259,8 +260,8 @@ describe('check-start.service', () => {
   })
 
   describe('#prepareCheckQueueMessages', () => {
-    const mockCheckFormAllocationLive = require('../mocks/check-form-allocation')
-    const mockCheckFormAllocationFamiliarisation = require('../mocks/check-form-allocation-familiarisation')
+    const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
+    const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {

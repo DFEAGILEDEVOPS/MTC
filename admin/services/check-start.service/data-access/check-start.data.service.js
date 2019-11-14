@@ -1,5 +1,5 @@
 'use strict'
-const sqlService = require('./sql.service')
+const sqlService = require('../../data-access/sql.service')
 const R = require('ramda')
 
 const checkStartDataService = {

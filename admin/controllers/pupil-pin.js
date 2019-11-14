@@ -10,7 +10,7 @@ const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
-const checkStartService = require('../services/check-start.service')
+const checkStartService = require('../services/check-start.service/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
 

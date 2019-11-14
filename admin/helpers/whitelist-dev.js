@@ -1,7 +1,7 @@
 'use strict'
 
 const config = require('../config')
-const logger = require('./log.service').getLogger()
+const logger = require('../services/log.service').getLogger()
 
 /**
  * Optional environment variables

@@ -3,7 +3,7 @@
 /* global describe beforeEach it expect jasmine spyOn */
 const httpMocks = require('node-mocks-http')
 
-const checkStartService = require('../../../services/check-start.service')
+const checkStartService = require('../../../services/check-start.service/check-start.service')
 const dateService = require('../../../services/date.service')
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
