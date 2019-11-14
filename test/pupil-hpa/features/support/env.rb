@@ -23,6 +23,7 @@ require 'azure/storage/table'
 require 'azure/storage/queue'
 require 'azure/storage/blob'
 require_relative '../../features/support/azure_blob_helper'
+require 'redis'
 
 require_relative 'helpers'
 include Helpers
@@ -135,3 +136,6 @@ if azure_test == 'true'
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
 end
+
+# clear redis cache before run
+REDIS_CLIENT.flushall
