@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PreparedCheckSyncService } from './prepared-check-sync.service.spec'
+import { PreparedCheckSyncService } from "./prepared-check-sync.service"
 const functionName = 'prepared-check-sync'
 
 const queueTrigger: AzureFunction = async function (context: Context, preparedCheckSyncMessage: IPreparedCheckSyncMessage): Promise<void> {
