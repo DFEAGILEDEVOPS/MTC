@@ -73,30 +73,42 @@ describe('prepared-check-sync.service', () => {
     expect(mergeServiceMock.merge).toHaveBeenCalledTimes(3)
   })
 
-  test('merged config is submitted back to redis with TTL preserved', async () => {
+  test('updated check is submitted back to redis with TTL preserved', async () => {
+    const originalTTL = 300
     const pupilUUID = 'pupilUUID'
     const activeCheckReference = {
       checkCode: 'checkCode',
       pupilPin: '1234',
       schoolPin: 'abc12def'
     }
+    const cacheKey = `preparedCheck:${activeCheckReference.schoolPin}:${activeCheckReference.pupilPin}`
     dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
       return [activeCheckReference]
+    })
+
+    redisServiceMock.ttl = jest.fn(async (key: string) => {
+      return originalTTL
     })
 
     const preparedCheck: IPreparedCheck = {
       pupilPin: 1234,
       schoolPin: 'abc34def'
     }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return preparedCheck
+    })
+
     mergeServiceMock.merge = jest.fn(async (preparedCheck: any) => {
       return preparedCheck
     })
 
     await sut.process(pupilUUID)
-    expect(redisServiceMock.setex).toHaveBeenCalledWith(preparedCheck)
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, preparedCheck, originalTTL)
   })
 
-  test.todo('TTL of preparedCheck is preserved')
+  test.todo('error is thrown if preparedCheck is not found')
+  test.todo('error is thrown if ttl is not found')
 })
 
 describe('prepared-check-merge.service', () => {

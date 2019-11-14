@@ -1,6 +1,7 @@
 import { RedisService } from '../caching/redis-service'
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
+import uuid from 'uuid'
 
 let sut: RedisService
 let ioRedis: Redis.Redis
@@ -28,13 +29,11 @@ describe('RedisService', () => {
   })
 
   afterEach(async () => {
-    const response = await sut.quit()
-    console.log(`redisService.quit:${response}`)
+    await sut.quit()
   })
 
   afterAll(async () => {
-    const response = await ioRedis.quit()
-    console.log(`ioRedis.quit:${response}`)
+    await ioRedis.quit()
     await new Promise(resolve => setTimeout(resolve, 3000))
   })
 

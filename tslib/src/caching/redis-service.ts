@@ -12,6 +12,19 @@ export interface IRedisService {
    */
   get (key: string): Promise<any | null>
   /**
+   * @description insert or ovewrite an item in the cache, which lives indefinitely
+   * @param {string} key the unique string key of the redis entry to persist
+   * @param {object | string} value the item to persist in redis cache
+   * @throws when the incoming item datatype is not supported and when the setex redis operation fails
+   * @returns {Promise<void} an awaitable promise
+   */
+  set (key: string, value: string | object): Promise<void>
+  /**
+   * @description drop a series of items from the cache
+   * @param {Array<string>} keys an array of keys to invalidate
+   * @returns {Promise<void>}
+   */
+  /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
    * @param {string} key the unique string key of the redis entry to persist
    * @param {object | string} value the item to persist in redis cache
@@ -31,6 +44,12 @@ export interface IRedisService {
    * @returns void
    */
   quit (): Promise<string>
+  /**
+   * @description get the TTL of an existing item in the cache
+   * @param key the key of the item in the cache
+   * @returns the TTL in seconds or null if the item is not found
+   */
+  ttl (key: string): Promise<number | null>
 }
 
 export class RedisService implements IRedisService {
@@ -50,25 +69,6 @@ export class RedisService implements IRedisService {
       }
     }
     this.redis = new Redis(options)
-   /* this.redis
-     .on('connect', () => {
-      this.logger.info('redis:connect')
-    })
-    .on('ready', () => {
-      this.logger.info('redis:ready')
-    })
-    .on('error', (e) => {
-      this.logger.info('redis:ready', e)
-    })
-    .on('close', () => {
-      this.logger.info('redis:close')
-    })
-    .on('reconnecting', () => {
-      this.logger.info('redis:reconnecting')
-    })
-    .on('end', () => {
-      this.logger.info('redis:end')
-    }) */
     this.logger = new Logger.ConsoleLogger()
   }
 
@@ -99,34 +99,49 @@ export class RedisService implements IRedisService {
     }
   }
 
+  prepareForStorage (value: string | object | number): any {
+    let dataType = typeof(value)
+    let cacheItemDataType: RedisItemDataType
+    switch (dataType) {
+      case 'string':
+        cacheItemDataType = RedisItemDataType.string
+        break
+      case 'number':
+        cacheItemDataType = RedisItemDataType.number
+        break
+      case 'object':
+        cacheItemDataType = RedisItemDataType.object
+        value = JSON.stringify(value)
+        break
+      default:
+        throw new Error(`unsupported data type ${dataType}`)
+    }
+    const storageItem: RedisCacheItem = {
+      meta: {
+        type: cacheItemDataType
+      },
+      value: value.toString()
+    }
+    const storageItemString = JSON.stringify(storageItem)
+    return storageItemString
+  }
+
   async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
     try {
-      let dataType = typeof(value)
-      let cacheItemDataType: RedisItemDataType
-      switch (dataType) {
-        case 'string':
-          cacheItemDataType = RedisItemDataType.string
-          break
-        case 'number':
-          cacheItemDataType = RedisItemDataType.number
-          break
-        case 'object':
-          cacheItemDataType = RedisItemDataType.object
-          value = JSON.stringify(value)
-          break
-        default:
-          throw new Error(`unsupported data type ${dataType}`)
-      }
-      const storageItem: RedisCacheItem = {
-        meta: {
-          type: cacheItemDataType
-        },
-        value: value.toString()
-      }
-      const storageItemString = JSON.stringify(storageItem)
-      await this.redis.setex(key, ttl, storageItemString)
+      const storageItem = this.prepareForStorage(value)
+      await this.redis.setex(key, ttl, storageItem)
     } catch (err) {
       this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
+      throw err
+    }
+  }
+
+  async set (key: string, value: string | number | object): Promise<void> {
+    try {
+      const storageItem = this.prepareForStorage(value)
+      await this.redis.set(key, storageItem)
+    } catch (err) {
+      this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
       throw err
     }
   }
@@ -144,5 +159,9 @@ export class RedisService implements IRedisService {
 
   quit (): Promise<string> {
     return this.redis.quit()
+  }
+
+  ttl (key: string): Promise<number | null> {
+    return this.redis.ttl(key)
   }
 }
