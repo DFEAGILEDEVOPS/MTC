@@ -34,5 +34,6 @@ export default {
     Threshold: parseInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
     Duration: parseInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
-  }
+  },
+  RedisPreparedCheckExpiryInSeconds: parseInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800
 }

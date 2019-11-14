@@ -8,6 +8,7 @@ import * as R from 'ramda'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
+import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -499,9 +500,9 @@ describe('check-marker/v1', () => {
 
     await sut.mark(functionBindings, loggerMock)
     expect(functionBindings.checkNotificationQueue.length).toBe(1)
-    const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
+    const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBeDefined()
-    expect(notificationQueueMessage.type).toBe('marked')
+    expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkComplete)
   })
 
   test('check notification is dispatched when marking unsuccessful', async () => {
@@ -524,8 +525,8 @@ describe('check-marker/v1', () => {
 
     await sut.mark(functionBindings, loggerMock)
     expect(functionBindings.checkNotificationQueue.length).toBe(1)
-    const notificationQueueMessage = R.head(functionBindings.checkNotificationQueue)
+    const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBe(checkCode)
-    expect(notificationQueueMessage.type).toBe('unmarkable')
+    expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
   })
 })

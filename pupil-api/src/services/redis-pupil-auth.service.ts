@@ -1,5 +1,6 @@
 import { IRedisService, RedisService } from './redis.service'
 import * as azureQueueService from './azure-queue.service'
+import config from '../config'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin: string, pupilPin: string): Promise<object>
@@ -26,7 +27,8 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     if (!preparedCheckEntry) {
       return null
     }
-      // Emit a successful login to the queue
+
+    // Emit a successful login to the queue
     const pupilLoginMessage = {
       checkCode: preparedCheckEntry.checkCode,
       loginAt: new Date(),
@@ -35,6 +37,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
     const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheckEntry.checkCode)
     await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
+    await this.redisService.setex(cacheKey, preparedCheckEntry, config.RedisPreparedCheckExpiryInSeconds)
     return preparedCheckEntry
   }
 
