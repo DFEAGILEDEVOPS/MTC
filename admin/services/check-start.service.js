@@ -129,6 +129,12 @@ checkStartService.prepareCheck2 = async function (
     // Request the pupil status be re-computed
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
+    // 2020 prep: update the pupil status fields
+    if (isLiveCheck) {
+      const pupilsAndChecks = newChecks.map(check => { return { checkId: check.id, pupilId: check.pupil_id } })
+      await checkStartDataService.updatePupilState(schoolId, pupilsAndChecks)
+    }
+
     // Send a batch of messages for all the pupils requesting a status change
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
