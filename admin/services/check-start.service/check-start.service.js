@@ -64,7 +64,7 @@ const checkStartService = {
  * @param { number } dfeNumber - school dfeNumber that the teachers works at
  * @param { number } schoolId - school ID that the teacher works at
  * @param { boolean } isLiveCheck
- * @param { string } schoolTimezone - e.g 'Europe/London'
+ * @param { null | string } schoolTimezone - e.g 'Europe/London'
  * @return { Promise<void> }
  */
 checkStartService.prepareCheck2 = async function (
@@ -91,7 +91,7 @@ checkStartService.prepareCheck2 = async function (
   await this.validatePupilsAreStillEligible(pupils, pupilIds, dfeNumber)
 
   // Find the check window we are working in
-  const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
+  const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
