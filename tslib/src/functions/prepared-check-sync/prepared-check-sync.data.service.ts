@@ -2,7 +2,7 @@
 export interface IPreparedCheckSyncDataService {
   getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]>
   getAccessArrangementsCodesById (aaIds: Array<number>): Promise<Array<string>>
-  getAccessArrangementsByCheckCode (checkCode: string): Promise<any>
+  getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>>
 }
 
 export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataService {
@@ -12,7 +12,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
   getAccessArrangementsCodesById (aaIds: number[]): Promise<string[]> {
     throw new Error('Method not implemented.')
   }
-  getAccessArrangementsByCheckCode (checkCode: string): Promise<any> {
+  getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>> {
     throw new Error('Method not implemented.')
   }
 }

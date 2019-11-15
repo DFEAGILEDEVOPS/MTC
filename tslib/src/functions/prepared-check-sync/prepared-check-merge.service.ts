@@ -1,6 +1,6 @@
 import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService } from './prepared-check-sync.data.service'
-import { Context } from '@azure/functions'
 import * as R from 'ramda'
+
 export interface IPreparedCheckMergeService {
   merge (preparedCheck: any): Promise<IPreparedCheck>
 }
@@ -12,18 +12,20 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
     }
     this.dataService = dataService
   }
-  async merge (preparedCheck: any): Promise<IPreparedCheck> {
-    await this.dataService.getAccessArrangementsByCheckCode('x')
-    throw new Error('not implemented')
+  async merge (preparedCheck: IPreparedCheck): Promise<IPreparedCheck> {
+    const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
+    if (newAaConfig.length === 0) {
+      throw new Error(`no access arrangements found by checkCode:${preparedCheck.checkCode}`)
+    }
+    return this.updateAccessArrangements(preparedCheck, newAaConfig)
   }
 
-  async updateAccessArrangements (existingCheckConfig: any, pupilAccessArrangements: any, context: Context) {
-    const newCheckConfig = JSON.parse(existingCheckConfig)
-    if (newCheckConfig.colourContrastCode) {
-      delete newCheckConfig.colourContrastCode
+  private async updateAccessArrangements (preparedCheck: IPreparedCheck, newAccessArrangements: any) {
+    if (preparedCheck.colourContrastCode) {
+      delete preparedCheck.colourContrastCode
     }
-    if (newCheckConfig.fontSizeCode) {
-      delete newCheckConfig.fontSizeCode
+    if (preparedCheck.fontSizeCode) {
+      delete preparedCheck.fontSizeCode
     }
     const aaConfig = {
       audibleSounds: false,
@@ -36,39 +38,41 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       fontSizeCode: undefined,
       colourContrastCode: undefined
     }
-    if (!pupilAccessArrangements || pupilAccessArrangements.length === 0) {
-      return R.merge(newCheckConfig, aaConfig)
+    if (!newAccessArrangements || newAccessArrangements.length === 0) {
+      return R.merge(preparedCheck, aaConfig)
     }
-    const fontSizeAccessArrangement = pupilAccessArrangements.find((aa: any) => aa.pupilFontSizeCode)
-    const colourContrastAccessArrangement = pupilAccessArrangements.find((aa: any) => aa.pupilColourContrastCode)
-    const accessArrangementsIds = pupilAccessArrangements.map((aa: any) => aa.accessArrangements_id)
-    let pupilAccessArrangementsCodes
+    const fontSizeAa = newAccessArrangements.find((aa: any) => aa.pupilFontSizeCode)
+    const colourContrastAa = newAccessArrangements.find((aa: any) => aa.pupilColourContrastCode)
+    const newAaIds = newAccessArrangements.map((aa: any) => aa.accessArrangements_id)
+    let aaCodes
     try {
-      pupilAccessArrangementsCodes = await this.dataService.getAccessArrangementsCodesById(accessArrangementsIds)
+      aaCodes = await this.dataService.getAccessArrangementsCodesById(newAaIds)
     } catch (error) {
-      context.log.error(`prepared-check-sync: ERROR: unable to fetch pupil access arrangements codes for accessArrangementsIds ${accessArrangementsIds}`)
       throw error
     }
-    pupilAccessArrangementsCodes.forEach(code => {
+    if (aaCodes.length === 0) {
+      throw new Error('no access arrangement codes found')
+    }
+    aaCodes.forEach(code => {
       if (code === AccessArrangementCodes.AUDIBLE_SOUNDS) aaConfig.audibleSounds = true
       if (code === AccessArrangementCodes.INPUT_ASSISTANCE) aaConfig.inputAssistance = true
       if (code === AccessArrangementCodes.NUMPAD_REMOVAL) aaConfig.numpadRemoval = true
       if (code === AccessArrangementCodes.FONT_SIZE) {
         aaConfig.fontSize = true
       }
-      if (fontSizeAccessArrangement && fontSizeAccessArrangement.pupilFontSizeCode) {
-        aaConfig.fontSizeCode = fontSizeAccessArrangement.pupilFontSizeCode
+      if (fontSizeAa && fontSizeAa.pupilFontSizeCode) {
+        aaConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
       }
       if (code === AccessArrangementCodes.COLOUR_CONTRAST) {
         aaConfig.colourContrast = true
       }
-      if (colourContrastAccessArrangement && colourContrastAccessArrangement.pupilColourContrastCode) {
-        aaConfig.colourContrastCode = colourContrastAccessArrangement.pupilColourContrastCode
+      if (colourContrastAa && colourContrastAa.pupilColourContrastCode) {
+        aaConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
       }
       if (code === AccessArrangementCodes.QUESTION_READER) aaConfig.questionReader = true
       if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) aaConfig.nextBetweenQuestions = true
     })
-    return R.merge(newCheckConfig, aaConfig)
+    return R.merge(preparedCheck, aaConfig)
   }
 }
 
@@ -86,4 +90,15 @@ export interface IPreparedCheck {
   schoolPin: string
   pupilPin: number
   checkCode: string
+  colourContrastCode?: string
+  fontSizeCode?: string
+  questionTime: number
+  loadingTime: number
+  audibleSounds: boolean
+  inputAssistance: boolean
+  numpadRemoval: boolean
+  fontSize: boolean
+  colourContrast: boolean
+  questionReader: boolean
+  speechSynthesis: boolean
 }
