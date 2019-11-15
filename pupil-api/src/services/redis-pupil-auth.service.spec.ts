@@ -78,4 +78,24 @@ describe('redis-pupil-auth.service', () => {
     const payload = await sut.authenticate(schoolPin, pupilPin)
     expect(payload).toBeNull()
   })
+
+  test('redis item TTL should be set to 30 minutes from now', async () => {
+    const thirtyMinutesInSeconds = 1800
+    const expectedPayload = {
+      foo: 'bar'
+    }
+
+    redisServiceMock.get = jest.fn((key: string) => {
+      return Promise.resolve(JSON.stringify(expectedPayload))
+    })
+    let actualTtlSet: number
+    redisServiceMock.setex = jest.fn((key: string, value: string | object, ttl: number) => {
+      actualTtlSet = ttl
+      return Promise.resolve()
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(actualTtlSet).toEqual(thirtyMinutesInSeconds)
+  })
 })

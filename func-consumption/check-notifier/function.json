@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "checkNotification",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "check-notification",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/functions/check-notifier/index.js"
+}
