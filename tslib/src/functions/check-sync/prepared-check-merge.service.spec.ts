@@ -54,18 +54,6 @@ describe('prepared-check-merge.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('access arrangements are looked up in sql and error thrown if not found', async () => {
-    dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
-      return []
-    })
-    try {
-      await sut.merge(preparedCheck)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error.message).toBe(`no access arrangements found by checkCode:${preparedCheck.checkCode}`)
-    }
-  })
-
   test('access arrangement codes are looked up in sql and error thrown if not found', async () => {
     dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
       return [aaConfig]

@@ -31,12 +31,9 @@ export class PreparedCheckSyncService {
 
   async process (pupilUUID: string): Promise<void> {
     const checkReferences = await this.dataService.getActiveCheckReferencesByPupilUuid(pupilUUID)
-    console.log('check references...')
-    console.dir(checkReferences)
     if (checkReferences.length === 0) {
       throw new Error(`no checks found for pupil UUID:${pupilUUID}`)
     }
-    this.logger.info(`found ${checkReferences.length} checks`)
     for (let index = 0; index < checkReferences.length; index++) {
       const ref = checkReferences[index]
       this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
