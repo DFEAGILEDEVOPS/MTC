@@ -46,7 +46,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
     const newAaIds = newAccessArrangements.map((aa: any) => aa.accessArrangements_id)
     let aaCodes
     try {
-      aaCodes = await this.dataService.getAccessArrangementsCodesById(newAaIds)
+      aaCodes = await this.dataService.getAccessArrangementsCodesByIds(newAaIds)
     } catch (error) {
       throw error
     }

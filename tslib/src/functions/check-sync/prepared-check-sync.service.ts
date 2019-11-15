@@ -1,14 +1,16 @@
 import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
 import { IPreparedCheckMergeService, PreparedCheckMergeService } from './prepared-check-merge.service'
 import { IRedisService, RedisService } from '../../caching/redis-service'
+import { ILogger, ConsoleLogger } from '../../common/logger'
 
 export class PreparedCheckSyncService {
   private dataService: IPreparedCheckSyncDataService
   private mergeService: IPreparedCheckMergeService
   private redisService: IRedisService
+  private logger: ILogger
 
   constructor (dataService?: IPreparedCheckSyncDataService, mergeService?: IPreparedCheckMergeService,
-    redisService?: IRedisService) {
+    redisService?: IRedisService, logger?: ILogger) {
     if (dataService === undefined) {
       dataService = new PreparedCheckSyncDataService()
     }
@@ -21,19 +23,27 @@ export class PreparedCheckSyncService {
       redisService = new RedisService()
     }
     this.redisService = redisService
+    if (logger === undefined) {
+      logger = new ConsoleLogger()
+    }
+    this.logger = logger
   }
 
   async process (pupilUUID: string): Promise<void> {
     const checkReferences = await this.dataService.getActiveCheckReferencesByPupilUuid(pupilUUID)
+    console.log('check references...')
+    console.dir(checkReferences)
     if (checkReferences.length === 0) {
       throw new Error(`no checks found for pupil UUID:${pupilUUID}`)
     }
+    this.logger.info(`found ${checkReferences.length} checks`)
     for (let index = 0; index < checkReferences.length; index++) {
       const ref = checkReferences[index]
+      this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
       const preparedCheck = await this.redisService.get(cacheKey)
       if (preparedCheck === null) {
-        throw new Error(`unable to find preparedCheck. checkCode:${ref.checkCode}`)
+        throw new Error(`unable to find preparedCheck with cacheKey:${cacheKey}`)
       }
       const ttl = await this.redisService.ttl(cacheKey)
       if (ttl === null) {

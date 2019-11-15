@@ -11,7 +11,7 @@ const redisPreparedChecks = featureToggles.isFeatureEnabled('prepareChecksToRedi
 
 if (redisPreparedChecks) {
   sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
-  sbQueueClient = sbClient.createQueueClient('prepared-check-sync')
+  sbQueueClient = sbClient.createQueueClient('check-sync')
   sbQueueSender = sbQueueClient.createSender()
 }
 
@@ -19,8 +19,10 @@ const preparedCheckSyncService = {}
 
 const redisEnabledBehaviour = async (pupilUrlSlug) => {
   await sbQueueSender.send({
-    pupilUUID: pupilUrlSlug,
-    version: 1
+    body: {
+      pupilUUID: pupilUrlSlug,
+      version: 1
+    }
   })
 }
 

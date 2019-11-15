@@ -11,7 +11,7 @@ let redisServiceMock: IRedisService
 
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
   getActiveCheckReferencesByPupilUuid: jest.fn(),
-  getAccessArrangementsCodesById: jest.fn(),
+  getAccessArrangementsCodesByIds: jest.fn(),
   getAccessArrangementsByCheckCode: jest.fn()
 }))
 

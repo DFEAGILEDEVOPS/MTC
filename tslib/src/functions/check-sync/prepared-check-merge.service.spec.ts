@@ -6,7 +6,7 @@ let dataServiceMock: IPreparedCheckSyncDataService
 
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
   getActiveCheckReferencesByPupilUuid: jest.fn(),
-  getAccessArrangementsCodesById: jest.fn(),
+  getAccessArrangementsCodesByIds: jest.fn(),
   getAccessArrangementsByCheckCode: jest.fn()
 }))
 
@@ -70,7 +70,7 @@ describe('prepared-check-merge.service', () => {
     dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
       return [aaConfig]
     })
-    dataServiceMock.getAccessArrangementsCodesById = jest.fn(async (newAaIds: number[]) => {
+    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (newAaIds: number[]) => {
       return []
     })
     try {
@@ -82,14 +82,14 @@ describe('prepared-check-merge.service', () => {
   })
 
   test.skip('creates a new config based on the new aa settings and the config supplied', async () => {
-    dataServiceMock.getAccessArrangementsCodesById = jest.fn(async (ids: number[]) => {
+    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (ids: number[]) => {
       return ['FTS', 'CCT']
     })
     dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
       return pupilAccessArrangements
     })
     const config = await sut.merge(preparedCheck)
-    expect(dataServiceMock.getAccessArrangementsCodesById).toHaveBeenCalled()
+    expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalled()
     expect(config.fontSize).toBeTruthy()
     expect(config.fontSizeCode).toBe('RGL')
     expect(config.colourContrast).toBeTruthy()
