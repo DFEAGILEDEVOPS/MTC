@@ -1,3 +1,4 @@
 {
-  "prepareChecksToRedis": true
+  "prepareChecksToRedis": true,
+  "pupilRegisterV2": true
 }
