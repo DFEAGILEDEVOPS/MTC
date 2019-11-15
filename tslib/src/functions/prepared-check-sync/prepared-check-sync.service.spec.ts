@@ -90,9 +90,24 @@ describe('prepared-check-sync.service', () => {
       return originalTTL
     })
 
+    const aaConfig = {
+      audibleSounds: false,
+      inputAssistance: false,
+      numpadRemoval: false,
+      fontSize: false,
+      colourContrast: false,
+      questionReader: false,
+      nextBetweenQuestions: false
+    }
+
     const preparedCheck: IPreparedCheck = {
+      schoolPin: 'abc12def',
       pupilPin: 1234,
-      schoolPin: 'abc34def'
+      checkCode: 'check-code',
+      questionTime: 5,
+      loadingTime: 5,
+      speechSynthesis: false,
+      ...aaConfig
     }
 
     redisServiceMock.get = jest.fn(async (key: string) => {
@@ -165,5 +180,3 @@ describe('prepared-check-sync.service', () => {
     }
   })
 })
-
-

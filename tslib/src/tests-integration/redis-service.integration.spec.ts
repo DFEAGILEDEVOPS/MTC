@@ -1,7 +1,6 @@
 import { RedisService } from '../caching/redis-service'
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
-import uuid from 'uuid'
 
 let sut: RedisService
 let ioRedis: Redis.Redis
