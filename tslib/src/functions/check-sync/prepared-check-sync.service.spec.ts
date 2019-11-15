@@ -146,7 +146,7 @@ describe('prepared-check-sync.service', () => {
       await sut.process(pupilUUID)
       fail('error should have been thrown')
     } catch (error) {
-      expect(error.message).toBe(`unable to find preparedCheck. checkCode:${checkRef.checkCode}`)
+      expect(error.message).toBe(`unable to find preparedCheck in redis. checkCode:${checkRef.checkCode}`)
     }
   })
 

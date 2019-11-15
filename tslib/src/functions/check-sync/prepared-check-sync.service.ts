@@ -43,7 +43,7 @@ export class PreparedCheckSyncService {
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
       const preparedCheck = await this.redisService.get(cacheKey)
       if (preparedCheck === null) {
-        throw new Error(`unable to find preparedCheck with cacheKey:${cacheKey}`)
+        throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
       }
       const ttl = await this.redisService.ttl(cacheKey)
       if (ttl === null) {
