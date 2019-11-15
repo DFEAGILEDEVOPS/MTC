@@ -15,7 +15,8 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
   async merge (preparedCheck: IPreparedCheck): Promise<IPreparedCheck> {
     const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
     if (newAaConfig.length === 0) {
-      throw new Error(`no access arrangements found by checkCode:${preparedCheck.checkCode}`)
+      // throw new Error(`no access arrangements found by checkCode:${preparedCheck.checkCode}`)
+      return this.updateAccessArrangements(preparedCheck, [])
     }
     return this.updateAccessArrangements(preparedCheck, newAaConfig)
   }

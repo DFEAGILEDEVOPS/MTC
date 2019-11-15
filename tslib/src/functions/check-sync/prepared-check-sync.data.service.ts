@@ -55,10 +55,6 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     const result1 = results[0]
     const result2 = results[1]
     const refs = new Array<IActiveCheckReference>()
-    console.log('result1...')
-    console.dir(result1)
-    console.log('result2...')
-    console.dir(result2)
     if (result1.length === 1) {
       refs.push(result1[0])
     }
