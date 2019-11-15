@@ -5,7 +5,12 @@ const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
 const service = {
-  getPupilRegister: async function (schoolId) {
+  /**
+   * Get list of pupils with groups
+   * @param schoolId
+   * @returns {Promise<any>}
+   */
+  getPupilRegister: function (schoolId) {
     const sql = `
       SELECT
          p.id as pupilId,
@@ -26,7 +31,6 @@ const service = {
     const params = [
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ]
-
     return sqlService.query(sql, params)
   }
 }
