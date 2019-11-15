@@ -1,5 +1,4 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 
 import { QuestionService } from './question.service';
 import { StorageService } from '../storage/storage.service';
@@ -27,7 +26,7 @@ describe('QuestionService', () => {
       }
     });
     TestBed.configureTestingModule({
-      imports: [ HttpModule ],
+      imports: [ ],
       providers: [
         QuestionService,
         { provide: StorageService, useValue: mockStorageService },

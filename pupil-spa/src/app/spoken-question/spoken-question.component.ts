@@ -6,7 +6,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 import { StorageService } from '../services/storage/storage.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({

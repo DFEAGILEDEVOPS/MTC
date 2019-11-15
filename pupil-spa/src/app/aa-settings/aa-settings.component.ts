@@ -21,7 +21,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   public formSubmitted = false;
   public validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
 
-  @ViewChild('inputAssistantForm') public inputAssistantForm: NgForm;
+  @ViewChild('inputAssistantForm', { static: true }) public inputAssistantForm: NgForm;
 
   constructor(
     private router: Router,

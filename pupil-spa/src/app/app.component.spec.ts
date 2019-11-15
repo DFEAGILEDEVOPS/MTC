@@ -25,7 +25,7 @@ describe('AppComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ])
+        Angulartics2Module.forRoot()
       ]
   }).compileComponents();
   }));
