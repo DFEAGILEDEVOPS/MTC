@@ -59,3 +59,26 @@ And(/^I should see the correct response headers$/) do
   expect(@response.headers['x-xss-protection']).to eql '1; mode=block'
   expect(@response.headers['content-type']).to eql 'application/json; charset=utf-8'
 end
+
+
+Given(/^I have generated a pin for a pupil$/) do
+  step 'I add a pupil'
+  step 'I login to the admin app with teacher1'
+  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  @before_login = REDIS_CLIENT.ttl("preparedCheck:#{@pupil_credentials[:school_password]}:#{@pupil_credentials[:pin]}")
+end
+
+
+When(/^I make a request to login$/) do
+  @response = RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  @after_login = REDIS_CLIENT.ttl("preparedCheck:#{@pupil_credentials[:school_password]}:#{@pupil_credentials[:pin]}")
+end
+
+Then(/^I should see the expiry time change to (\d+) minutes$/) do |value|
+  expect(@before_login).to be > value.to_i
+  expect(@after_login/60).to be <= value.to_i
+  expect(@after_login/60).to be > value.to_i - 3
+end
