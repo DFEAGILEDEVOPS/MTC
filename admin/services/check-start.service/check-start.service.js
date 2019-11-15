@@ -21,7 +21,6 @@ const checkFormAllocationDataService = require('../data-access/check-form-alloca
 const checkFormDataService = require('../data-access/check-form.data.service')
 const checkFormService = require('../check-form.service')
 const checkStateService = require('../check-state.service')
-const checkWindowDataService = require('../data-access/check-window.data.service')
 
 const configService = require('../config.service')
 const dateService = require('../date.service')
@@ -65,6 +64,7 @@ const checkStartService = {
  * @param { number } schoolId - school ID that the teacher works at
  * @param { boolean } isLiveCheck
  * @param { null | string } schoolTimezone - e.g 'Europe/London'
+ * @param { {id: number} } checkWindow
  * @return { Promise<void> }
  */
 checkStartService.prepareCheck2 = async function (
@@ -72,7 +72,8 @@ checkStartService.prepareCheck2 = async function (
   dfeNumber,
   schoolId,
   isLiveCheck,
-  schoolTimezone = null
+  schoolTimezone = null,
+  checkWindow
 ) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
@@ -90,19 +91,17 @@ checkStartService.prepareCheck2 = async function (
   // This validation will throw on a failed validation, so don't trap it.
   await this.validatePupilsAreStillEligible(pupils, pupilIds, dfeNumber)
 
-  // Find the check window we are working in (from redis)
-  const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
-
   // Find the set of all forms allocated to a check window
+  // Just returns objects with an ID property
   const allForms = await checkStartDataService.sqlFindAllFormsAssignedToCheckWindow(
     checkWindow.id,
     isLiveCheck
   )
 
   // Find all used forms for each pupil, so we make sure they do not
-  // get allocated the same form twice.  Just returns objects with an `id` field
+  // get allocated the same form twice.  Just returns minimal form objects (id an name)
   // to keep the data overhead down.
-  const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
+  const usedForms = await checkStartDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
   // Create the checks for each pupil
   const checks = []
@@ -212,7 +211,6 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
 
 /**
  * Return a new pupil check object. Saving the data is handled in a batch process by the caller
- * @private
  * @param {number} pupilId
  * @param {object} checkWindow
  * @param { {id: number}[] } availableForms

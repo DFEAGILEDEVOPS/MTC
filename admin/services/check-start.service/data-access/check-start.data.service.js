@@ -93,6 +93,32 @@ const checkStartDataService = {
     ]
 
     return sqlService.query(sql, params)
+  },
+
+  sqlFindAllFormsUsedByPupils: async function (pupilIds) {
+    const select = `SELECT
+    f.id,
+    f.name,
+    c.pupil_id
+  FROM 
+    [mtc_admin].[check] c INNER JOIN
+    [mtc_admin].[checkForm] f ON c.checkForm_id = f.id
+  WHERE
+    f.isDeleted <> 1
+  `
+    const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
+    const andClause = 'AND pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
+    const sql = [select, andClause].join(' ')
+    const results = await sqlService.query(sql, where.params)
+    const byPupil = {}
+    results.forEach(x => {
+      if (byPupil[x.pupil_id]) {
+        byPupil[x.pupil_id].push(x)
+      } else {
+        byPupil[x.pupil_id] = [x]
+      }
+    })
+    return byPupil
   }
 }
 

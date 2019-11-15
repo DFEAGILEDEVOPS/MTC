@@ -12,7 +12,6 @@ const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
 const checkStateService = require('../check-state.service')
-const checkWindowDataService = require('../data-access/check-window.data.service')
 const checkWindowMock = require('../../spec/back-end/mocks/check-window-2')
 const configService = require('../config.service')
 const logger = require('../log.service.js').getLogger()
@@ -70,9 +69,8 @@ describe('check-start.service', () => {
   describe('#prepareCheck2', () => {
     beforeEach(() => {
       spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
-      spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+      spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
@@ -92,7 +90,7 @@ describe('check-start.service', () => {
 
     it('throws an error if the pupilIds are not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, true)
+        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds is required')
@@ -101,7 +99,7 @@ describe('check-start.service', () => {
 
     it('throws an error if the schoolId is not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, true)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('schoolId is required')
@@ -111,7 +109,7 @@ describe('check-start.service', () => {
     it('throws an error if provided with pupilIds that are not a part of the school', async () => {
       try {
         spyOn(logger, 'error')
-        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true)
+        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Validation failed')
@@ -119,29 +117,29 @@ describe('check-start.service', () => {
     })
 
     it('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     it('calls initialisePupilCheck to randomly select a check form', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(azureQueueService.addMessageAsync).toHaveBeenCalledTimes(2)
     })
 
     it('adds config to the database', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
@@ -149,7 +147,7 @@ describe('check-start.service', () => {
     it('uses prepare check service when toggle enabled', async () => {
       spyOn(featureToggles, 'isFeatureEnabled').and.returnValue(true)
       spyOn(prepareCheckService, 'prepareChecks')
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(prepareCheckService.prepareChecks).toHaveBeenCalledTimes(1)
     })
   })
