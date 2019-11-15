@@ -4,7 +4,7 @@ const moment = require('moment')
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
-const redisCacheService = require('../redis-cache.service')
+const redisCacheService = require('./redis-cache.service')
 
 const table = '[checkWindow]'
 

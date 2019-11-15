@@ -1,8 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactComponent } from './contact.component';
-import { Component } from '@angular/core';
-import { PrivacyComponent } from '../privacy/privacy.component';
+import {Component, Input} from '@angular/core';
+
+@Component({
+  selector: 'app-header',
+  template: ''
+})
+export class MockAppHeaderComponent {
+}
+
+@Component({
+  selector: 'app-breadcrumbs',
+  template: ''
+})
+export class MockAppBreadcrumbsComponent {
+  @Input() breadcrumbs: any[];
+}
+
+@Component({
+  selector: 'app-footer',
+  template: ''
+})
+class MockAppFooterComponent {
+}
 
 describe('ContactComponent', () => {
   let component: ContactComponent;
@@ -25,25 +46,3 @@ describe('ContactComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-@Component({
-  selector: 'app-header',
-  template: ''
-})
-class MockAppHeaderComponent {
-}
-
-@Component({
-  selector: 'app-breadcrumbs',
-  template: '',
-  inputs: ['breadcrumbs']
-})
-class MockAppBreadcrumbsComponent {
-}
-
-@Component({
-  selector: 'app-footer',
-  template: ''
-})
-class MockAppFooterComponent {
-}

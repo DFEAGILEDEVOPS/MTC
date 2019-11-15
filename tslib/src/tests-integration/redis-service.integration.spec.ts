@@ -1,6 +1,7 @@
 import { RedisService } from '../caching/redis-service'
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
+import * as uuid from 'uuid/v4'
 
 let sut: RedisService
 let ioRedis: Redis.Redis
@@ -33,7 +34,10 @@ describe('RedisService', () => {
 
   afterAll(async () => {
     await ioRedis.quit()
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    // give redis time to cleanly shutdown before jest complains about
+    // active handles remaining after test completion...
+    const waitForRedisToShutdown = new Promise(resolve => setTimeout(resolve, 3000))
+    await waitForRedisToShutdown
   })
 
   test('should be defined', () => {
@@ -142,5 +146,11 @@ describe('RedisService', () => {
     await sut.drop(cacheKeys)
     const foundKeys = await ioRedis.keys(`${redisItemKey}:*`)
     expect(foundKeys.length).toBe(0)
+  })
+
+  test('returns null when redis item is not found', async () => {
+    const randomCacheKey = uuid.default()
+    const response = await sut.get(randomCacheKey)
+    expect(response).toBeUndefined()
   })
 })

@@ -5,7 +5,7 @@ require('dotenv').config()
 const csv = require('fast-csv')
 const fs = require('fs')
 const sqlService = require('../services/data-access/sql.service')
-const redisCacheService = require('../services/redis-cache.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 const { TYPES } = sqlService
 
 function readCSV (csvPath) {

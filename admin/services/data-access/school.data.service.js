@@ -4,7 +4,7 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 const config = require('../../config')
-const redisCacheService = require('../redis-cache.service')
+const redisCacheService = require('./redis-cache.service')
 
 const table = '[school]'
 

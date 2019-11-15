@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
-import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
@@ -11,8 +10,7 @@ export class FeedbackService {
   feedbackAPIErrorDelay;
   feedbackAPIErrorMaxAttempts;
 
-  constructor(private http: Http,
-              private storageService: StorageService,
+  constructor(private storageService: StorageService,
               private tokenService: TokenService,
               private azureQueueService: AzureQueueService) {
     const {

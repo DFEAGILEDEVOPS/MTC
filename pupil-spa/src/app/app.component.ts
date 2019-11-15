@@ -53,7 +53,7 @@ export class AppComponent {
     this.routeService.setup();
 
     if (APP_CONFIG.websiteOffline) {
-      this.router.navigate(['/service-unavailable'])
+      this.router.navigate(['/service-unavailable']);
     }
   }
 }

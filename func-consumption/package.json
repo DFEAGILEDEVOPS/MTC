@@ -10,7 +10,8 @@
     "clean": "rm -rf ./dist",
     "prestart": "yarn build && func extensions install",
     "start:host": "func start",
-    "start": "yarn start:host"
+    "start": "yarn start:host",
+    "start:dev": "yarn build && yarn start"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",

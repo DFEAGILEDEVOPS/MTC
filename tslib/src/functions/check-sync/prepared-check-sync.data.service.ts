@@ -16,8 +16,6 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
   }
 
   async getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]> {
-    // TODO remove when static connection pool is in master
-    await this.sqlService.init()
     const results = await Promise.all([
       this.sqlService.query(`
       SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin

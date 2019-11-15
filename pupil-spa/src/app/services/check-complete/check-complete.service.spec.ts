@@ -79,6 +79,7 @@ describe('CheckCompleteService', () => {
     let capturedMessage;
     spyOn(azureQueueService, 'addMessage').and.callFake((queueName, url, token, message, retryConfig) => {
       capturedMessage = message;
+      return Promise.resolve({});
     });
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
