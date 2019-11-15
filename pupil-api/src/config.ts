@@ -7,10 +7,10 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
-function parseToInt (value: string | undefined, radix: number | undefined): number | boolean {
-  if (value === undefined) return false
+function parseToInt (value: string | undefined, radix: number | undefined): number | undefined {
+  if (value === undefined) return
   const result = parseInt(value, radix)
-  if (isNaN(result)) return false
+  if (isNaN(result)) return
   return result
 }
 
@@ -42,5 +42,5 @@ export default {
     Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
   },
-  RedisPreparedCheckExpiryInSeconds: parseInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800
+  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800
 }
