@@ -60,17 +60,19 @@ describe('SpeechService', () => {
     it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
-      spyOn(window, 'setTimeout').and.callFake((fun, time) => {
+      // @ts-ignore
+      spyOn(window, 'setTimeout').and.callFake( (fun, time) => {
+        // @ts-ignore
         fun();
       });
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
-      spyOn(window.speechSynthesis, 'speak').and.callFake((utterance) => {
+      spyOn(window.speechSynthesis, 'speak').and.callFake((utterance: SpeechSynthesisUtterance) => {
         // call the onstart and onend function if they exist
         if (utterance.onstart && typeof utterance.onstart === 'function') {
-          utterance.onstart();
+          utterance.onstart(null);
         }
         if (utterance.onend && typeof utterance.onend === 'function') {
-          utterance.onend();
+          utterance.onend(null);
         }
       });
       await service.speak('9 times 9');
@@ -88,17 +90,19 @@ describe('SpeechService', () => {
     it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
+      // @ts-ignore
       spyOn(window, 'setTimeout').and.callFake((fun, time) => {
+        // @ts-ignore
         fun();
       });
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
-      spyOn(window.speechSynthesis, 'speak').and.callFake((utterance) => {
+      spyOn(window.speechSynthesis, 'speak').and.callFake((utterance: SpeechSynthesisUtterance) => {
         // call the onstart and onend function if they exist
         if (utterance.onstart && typeof utterance.onstart === 'function') {
-          utterance.onstart();
+          utterance.onstart(null);
         }
         if (utterance.onend && typeof utterance.onend === 'function') {
-          utterance.onend();
+          utterance.onend(null);
         }
       });
       await service.speak('9 times 9');

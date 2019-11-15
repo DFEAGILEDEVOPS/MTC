@@ -7,8 +7,8 @@ import { QuestionService } from '../services/question/question.service';
   styleUrls: ['./sound.component.scss']
 })
 export class SoundComponent implements OnInit {
-  @ViewChild('endOfQuestionSound') public endOfQuestionSound: ElementRef;
-  @ViewChild('timeRunningOutAlertSound') public timeRunningOutAlertSound: ElementRef;
+  @ViewChild('endOfQuestionSound', { static: true }) public endOfQuestionSound: ElementRef;
+  @ViewChild('timeRunningOutAlertSound', { static: true }) public timeRunningOutAlertSound: ElementRef;
 
   constructor(private questionService: QuestionService) {
   }

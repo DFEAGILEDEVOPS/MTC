@@ -11,10 +11,10 @@ import { APP_CONFIG } from '../services/config/config.service';
 export class WebsiteOfflineComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private router: Router) { }
-  
+
   ngOnInit() {
     if (!APP_CONFIG.websiteOffline) {
-      this.router.navigate(['/'])
+      this.router.navigate(['/']);
     }
   }
 

@@ -48,7 +48,7 @@ describe('CheckStartService', () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
     spyOn(azureQueueService, 'addMessage')
-      .and.returnValue(Promise.resolve());
+      .and.returnValue(Promise.resolve({}));
     await checkStartService.submit();
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckStartedAPICallSucceeded');

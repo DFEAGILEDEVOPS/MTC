@@ -3,9 +3,7 @@ import { AppConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
-import { Observable } from 'rxjs/Observable';
+import { of, throwError } from 'rxjs';
 
 describe('AppConfigService', () => {
   let service: AppConfigService;
@@ -27,7 +25,7 @@ describe('AppConfigService', () => {
   });
 
   it('loads data from the config json file',  async (done) => {
-    spyOn(http, 'get').and.returnValue(Observable.of({}));
+    spyOn(http, 'get').and.returnValue(of({}));
     try {
       const loadResult = await service.load();
       expect(loadResult).toBe(true);
@@ -38,7 +36,7 @@ describe('AppConfigService', () => {
   });
 
   it('throws a server error if the config json file does not exist',  async (done) => {
-    spyOn(http, 'get').and.returnValue(Observable.throw('error'));
+    spyOn(http, 'get').and.returnValue(throwError('error'));
     try {
       const loadResult = await service.load();
       fail();
