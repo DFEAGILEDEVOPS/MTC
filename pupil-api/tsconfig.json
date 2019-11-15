@@ -6,7 +6,8 @@
     "allowJs": false,
     "allowUnreachableCode": false,
     "alwaysStrict": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true
   },
   "include": [
     "src/**/*.ts",

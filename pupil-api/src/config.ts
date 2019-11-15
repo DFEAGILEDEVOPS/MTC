@@ -7,6 +7,13 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
+function parseToInt (value: string | undefined, radix: number | undefined): number | boolean {
+  if (value === undefined) return false
+  const result = parseInt(value, radix)
+  if (isNaN(result)) return false
+  return result
+}
+
 export default {
   AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
   Environment: getEnvironment(),
@@ -31,8 +38,8 @@ export default {
     useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   RateLimit: {
-    Threshold: parseInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
-    Duration: parseInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
+    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
+    Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
   }
 }

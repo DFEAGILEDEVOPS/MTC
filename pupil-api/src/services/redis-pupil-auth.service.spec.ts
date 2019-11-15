@@ -8,7 +8,8 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
   setex: jest.fn(),
   drop: jest.fn(),
-  quit: jest.fn()
+  quit: jest.fn(),
+  ttl: jest.fn()
 }))
 
 describe('redis-pupil-auth.service', () => {
@@ -23,7 +24,7 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('it should call redis:get with correct key format', async () => {
-    let actualKey: string
+    let actualKey = ''
     redisServiceMock.get = jest.fn((key: string) => {
       actualKey = key
       return Promise.resolve()
@@ -76,6 +77,6 @@ describe('redis-pupil-auth.service', () => {
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const payload = await sut.authenticate(schoolPin, pupilPin)
-    expect(payload).toBeNull()
+    expect(payload).toBeUndefined()
   })
 })
