@@ -26,7 +26,6 @@ const service = {
            [mtc_admin].[pupil] p LEFT JOIN
            [mtc_admin].[group] g ON (p.group_id = g.id)
       WHERE p.school_id = @schoolId
-      ORDER BY p.lastName, p.foreName
      `
     const params = [
       { name: 'schoolId', value: schoolId, type: TYPES.Int }

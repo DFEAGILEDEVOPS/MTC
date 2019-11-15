@@ -2,6 +2,7 @@
 
 const pupilRegisterV2DataService = require('./data-access/pupil-register-v2.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
+const tableSorting = require('../helpers/table-sorting')
 
 const pupilRegisterV2Service = {
   /**
@@ -21,7 +22,7 @@ const pupilRegisterV2Service = {
         group: d.groupName
       }
     })
-    pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
+    pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
     return pupilRegister
   }
 }
