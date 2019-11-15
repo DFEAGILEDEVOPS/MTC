@@ -5,21 +5,24 @@ const R = require('ramda')
 const logger = require('../log.service').getLogger()
 const featureToggles = require('feature-toggles')
 
+// Libraries used
+const config = require('../../config')
+
 // To be deprecated
 const azureQueueService = require('../azure-queue.service')
 
 // moved
 const setValidationService = require('./set-validation.service')
+const checkStartDataService = require('./data-access/check-start.data.service')
 
-// to moved to the module
+// to be moved to the module
 const checkDataService = require('../data-access/check.data.service')
 const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
 const checkFormDataService = require('../data-access/check-form.data.service')
 const checkFormService = require('../check-form.service')
-const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStateService = require('../check-state.service')
 const checkWindowDataService = require('../data-access/check-window.data.service')
-const config = require('../../config')
+
 const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
@@ -78,7 +81,7 @@ checkStartService.prepareCheck2 = async function (
     throw new Error('schoolId is required')
   }
 
-  const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
+  const pupils = await checkStartDataService.sqlFindPupilsEligibleForPinGenerationById(
     schoolId,
     pupilIds,
     isLiveCheck

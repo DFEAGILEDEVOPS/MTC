@@ -78,7 +78,7 @@ describe('check-start.service', () => {
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessageAsync')
-      spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
+      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
       spyOn(configService, 'getBatchConfig').and.returnValue(
         {
@@ -118,9 +118,9 @@ describe('check-start.service', () => {
       }
     })
 
-    it('calls getPupilsEligibleForPinGenerationById to find pupils', async () => {
+    it('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
-      expect(pinGenerationV2Service.getPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
+      expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     it('calls initialisePupilCheck to randomly select a check form', async () => {

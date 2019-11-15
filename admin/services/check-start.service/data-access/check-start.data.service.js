@@ -1,5 +1,6 @@
 'use strict'
 const sqlService = require('../../data-access/sql.service')
+const { TYPES } = sqlService
 const R = require('ramda')
 
 const checkStartDataService = {
@@ -43,6 +44,28 @@ const checkStartDataService = {
     )
     const inserts = R.join('\n', R.map(R.prop('sql'), sqls))
     return sqlService.modifyWithTransaction(inserts, params)
+  },
+
+  /** Retrieve a list of pupils eligible for pin generation
+   *
+   * @param {number} schoolId
+   * @param {number[]} pupilIds
+   * @param {boolean} isLiveCheck
+   * @return {Promise<*>}
+   */
+  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
+    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
+    const select = `SELECT *
+                    FROM [mtc_admin].[${view}]`
+    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
+    const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
+    params.push({
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    })
+    const sql = [select, whereClause].join(' ')
+    return sqlService.query(sql, params)
   }
 }
 

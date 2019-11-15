@@ -43,16 +43,6 @@ describe('pin-generation-v2.service', () => {
     })
   })
 
-  describe('#getPupilsEligibleForPinGenerationById', () => {
-    it('makes a call to the data service', async () => {
-      spyOn(pinGenerationDataService, 'sqlFindPupilsEligibleForPinGenerationById')
-      const schoolId = 42
-      const pupilIds = [1, 2, 3]
-      await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(schoolId, pupilIds)
-      expect(pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
-    })
-  })
-
   describe('#checkAndUpdateRestarts', () => {
     it('returns early if there arent any restarts', async () => {
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById')
