@@ -38,6 +38,8 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-form.js'
 ]
 
+const jsPupilRegister = ['./assets/javascripts/pupil-register.js']
+
 /*
   session-expiry.js contains two strings that are claimed to be global variables.  The `bundlejs` task will replace
   these strings with values from config during the build.  If config has not loaded correctly the input to `uglify` will
@@ -61,6 +63,21 @@ gulp.task('bundle-js', function () {
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER))
     .pipe(replace('SESSION_EXPIRATION_TIME', config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS))
+    .pipe(babel({
+      presets: ['@babel/preset-env'],
+      sourceType: 'unambiguous'
+    }))
+    .pipe(uglify({
+      ie8: true
+    }).on('error', function (e) {
+      winston.error(e)
+    }))
+    .pipe(gulp.dest('./public/javascripts/'))
+})
+
+gulp.task('pupil-register-js', function () {
+  return gulp.src(jsPupilRegister)
+    .pipe(concat('pupil-register.js'))
     .pipe(babel({
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
@@ -120,6 +137,7 @@ gulp.task('realclean', gulp.series('clean'), function () {
 gulp.task('build',
   gulp.parallel('sass',
     'bundle-js',
+    'pupil-register-js',
     'copy-images',
     'copy-gds-images',
     'copy-gds-fonts',
