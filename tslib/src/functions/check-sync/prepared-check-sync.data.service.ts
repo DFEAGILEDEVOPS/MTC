@@ -16,41 +16,43 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
   }
 
   async getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]> {
+    const liveCheckSql = `
+    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
+      FROM [mtc_admin].[check] chk
+    INNER JOIN [mtc_admin].checkStatus cs
+      ON cs.id = chk.checkStatus_id
+    INNER JOIN mtc_admin.pupil p
+      ON p.id = chk.pupil_id
+    INNER JOIN [mtc_admin].school s
+      ON s.id = p.school_id
+    INNER JOIN [mtc_admin].checkPin cp
+      ON chk.id = cp.check_id
+    INNER JOIN [mtc_admin].pin pn
+      ON cp.pin_id = pn.id
+    WHERE chk.isLiveCheck = 1
+      AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
+      AND p.urlSlug='${pupilUUID}'
+    ORDER BY chk.createdAt DESC`
+    const tioCheckSql = `
+    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
+      FROM [mtc_admin].[check] chk
+    INNER JOIN [mtc_admin].checkStatus cs
+      ON cs.id = chk.checkStatus_id
+    INNER JOIN mtc_admin.pupil p
+      ON p.id = chk.pupil_id
+    INNER JOIN [mtc_admin].school s
+      ON s.id = p.school_id
+    INNER JOIN [mtc_admin].checkPin cp
+      ON chk.id = cp.check_id
+    INNER JOIN [mtc_admin].pin pn
+      ON cp.pin_id = pn.id
+    WHERE chk.isLiveCheck = 0
+      AND cs.code != 'EXP'
+      AND p.urlSlug='${pupilUUID}'
+    ORDER BY chk.createdAt DESC`
     const results = await Promise.all([
-      this.sqlService.query(`
-      SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
-        FROM [mtc_admin].[check] chk
-      INNER JOIN [mtc_admin].checkStatus cs
-        ON cs.id = chk.checkStatus_id
-      INNER JOIN mtc_admin.pupil p
-        ON p.id = chk.pupil_id
-      INNER JOIN [mtc_admin].school s
-        ON s.id = p.school_id
-      INNER JOIN [mtc_admin].checkPin cp
-        ON chk.id = cp.check_id
-      INNER JOIN [mtc_admin].pin pn
-        ON cp.pin_id = pn.id
-      WHERE chk.isLiveCheck = 1
-        AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
-        AND p.urlSlug='${pupilUUID}'
-      ORDER BY chk.createdAt DESC`),
-      this.sqlService.query(`
-      SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
-        FROM [mtc_admin].[check] chk
-      INNER JOIN [mtc_admin].checkStatus cs
-        ON cs.id = chk.checkStatus_id
-      INNER JOIN mtc_admin.pupil p
-        ON p.id = chk.pupil_id
-      INNER JOIN [mtc_admin].school s
-        ON s.id = p.school_id
-      INNER JOIN [mtc_admin].checkPin cp
-        ON chk.id = cp.check_id
-      INNER JOIN [mtc_admin].pin pn
-        ON cp.pin_id = pn.id
-      WHERE chk.isLiveCheck = 0
-        AND cs.code != 'EXP'
-        AND p.urlSlug='${pupilUUID}'
-      ORDER BY chk.createdAt DESC`)
+      this.sqlService.query(liveCheckSql),
+      this.sqlService.query(tioCheckSql)
     ])
     const result1 = results[0]
     const result2 = results[1]

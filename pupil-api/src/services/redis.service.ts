@@ -1,4 +1,4 @@
-import Redis, { RedisOptions } from 'ioredis'
+import * as Redis from 'ioredis'
 import config from '../config'
 import { Logger } from './log.service'
 
@@ -54,7 +54,7 @@ export class RedisService implements IRedisService {
   private logger: Logger
 
   constructor () {
-    const options: RedisOptions = {
+    const options: Redis.RedisOptions = {
       port: Number(config.Redis.Port),
       host: config.Redis.Host,
       password: config.Redis.Key
@@ -146,7 +146,7 @@ export class RedisService implements IRedisService {
     return this.redis.ttl(key)
   }
 
-  expire (key: string, ttl: number): Promise<void> {
+  expire (key: string, ttl: number): Promise<any> {
     return this.redis.expire(key, ttl)
   }
 }
