@@ -90,15 +90,18 @@ checkStartService.prepareCheck2 = async function (
   // This validation will throw on a failed validation, so don't trap it.
   await this.validatePupilsAreStillEligible(pupils, pupilIds, dfeNumber)
 
-  // Find the check window we are working in
+  // Find the check window we are working in (from redis)
   const checkWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
 
-  // Find all used forms for each pupil, so we make sure they do not
-  // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindowByType(
+  // Find the set of all forms allocated to a check window
+  const allForms = await checkStartDataService.sqlFindAllFormsAssignedToCheckWindow(
     checkWindow.id,
     isLiveCheck
   )
+
+  // Find all used forms for each pupil, so we make sure they do not
+  // get allocated the same form twice.  Just returns objects with an `id` field
+  // to keep the data overhead down.
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
   // Create the checks for each pupil
@@ -212,9 +215,11 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
  * @private
  * @param {number} pupilId
  * @param {object} checkWindow
- * @param {Array.<Object>} availableForms
+ * @param { {id: number}[] } availableForms
  * @param {Array.<number>} usedFormIds
  * @param {boolean} isLiveCheck
+ * @param {number} schoolId
+ * @param {null | String} schoolTimezone
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
 checkStartService.initialisePupilCheck = async function (

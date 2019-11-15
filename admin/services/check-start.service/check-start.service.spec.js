@@ -69,8 +69,9 @@ describe('check-start.service', () => {
 
   describe('#prepareCheck2', () => {
     beforeEach(() => {
+      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve(checkWindowMock))
-      spyOn(checkFormService, 'getAllFormsForCheckWindowByType').and.returnValue(Promise.resolve([]))
+      spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
@@ -78,7 +79,6 @@ describe('check-start.service', () => {
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessageAsync')
-      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
       spyOn(configService, 'getBatchConfig').and.returnValue(
         {

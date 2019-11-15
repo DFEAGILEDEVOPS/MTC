@@ -66,6 +66,33 @@ const checkStartDataService = {
     })
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
+  },
+
+  sqlFindAllFormsAssignedToCheckWindow: (windowId, isLiveCheck) => {
+    const sql = `
+      SELECT
+        cf.id
+      FROM [mtc_admin].[checkForm] cf
+      LEFT JOIN [mtc_admin].[checkFormWindow] cfw ON (cf.id = cfw.checkForm_id)
+      LEFT JOIN [mtc_admin].[checkWindow] cw ON (cfw.checkWindow_id = cw.id)
+      WHERE cf.isDeleted = 0
+      AND cw.id = @windowId
+      AND isLiveCheckForm = @isLiveCheckForm`
+
+    const params = [
+      {
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      },
+      {
+        name: 'isLiveCheckForm',
+        value: isLiveCheck ? 1 : 0,
+        type: TYPES.Bit
+      }
+    ]
+
+    return sqlService.query(sql, params)
   }
 }
 
