@@ -6,10 +6,6 @@ import { StorageService } from '../storage/storage.service';
 import * as mockLoginResponseBody from '../../login.userService.response.mock.json';
 import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
 
-const shouldNotExecute = () => {
-  expect('this code').toBe('not executed');
-};
-
 let userService: UserService;
 let storageService: StorageService;
 const pupilDataKey = 'pupil';
@@ -50,8 +46,8 @@ describe('UserService', () => {
           expect(storageService.setItem)
             .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
         },
-        (err) => {
-          shouldNotExecute();
+        (error) => {
+          fail(error);
         });
 
       const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
@@ -71,8 +67,8 @@ describe('UserService', () => {
         (err) => {
           expect(err).toBeTruthy();
         }
-      ).catch((err) => {
-        shouldNotExecute();
+      ).catch((error) => {
+        fail(error);
       });
 
       expect(storageService.setItem).not.toHaveBeenCalled();

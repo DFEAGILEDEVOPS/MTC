@@ -1,9 +1,31 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { AccessibilityStatementComponent } from './accessibility-statement.component';
 import { RouterTestingModule } from '@angular/router/testing';
+
+@Component({
+  selector: 'app-header',
+  template: ''
+})
+export class MockAppHeaderComponent {
+}
+
+@Component({
+  selector: 'app-breadcrumbs',
+  template: ''
+})
+export class MockAppBreadcrumbsComponent {
+  @Input() breadcrumbs: any[];
+}
+
+@Component({
+  selector: 'app-footer',
+  template: ''
+})
+export class MockAppFooterComponent {
+}
 
 describe('AccessibilityStatementComponent', () => {
   let component: AccessibilityStatementComponent;
@@ -30,25 +52,3 @@ describe('AccessibilityStatementComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-@Component({
-  selector: 'app-header',
-  template: ''
-})
-class MockAppHeaderComponent {
-}
-
-@Component({
-  selector: 'app-breadcrumbs',
-  template: '',
-  inputs: ['breadcrumbs']
-})
-class MockAppBreadcrumbsComponent {
-}
-
-@Component({
-  selector: 'app-footer',
-  template: ''
-})
-class MockAppFooterComponent {
-}

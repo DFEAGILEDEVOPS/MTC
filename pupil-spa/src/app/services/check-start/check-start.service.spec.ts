@@ -50,9 +50,9 @@ describe('CheckStartService', () => {
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
     let actualPayload;
     spyOn(azureQueueService, 'addMessage').and
-    .callFake((queueName, url, token, payload, retryConfig) => {
+    .callFake(async (queueName, url, token, payload, retryConfig) => {
       actualPayload = payload;
-      return;
+      return {};
     });
     await checkStartService.submit();
     expect(addEntrySpy).toHaveBeenCalledTimes(2);

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { AuditService } from '../audit/audit.service';
 import { UtteranceStarted, UtteranceEnded, QuestionReadingStarted, QuestionReadingEnded } from '../audit/auditEntry';
@@ -169,7 +169,8 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label, *[speak="true"]';
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label'
+      + ', *[speak="true"]';
 
     const clonedElement = this.removeUnspokenElements(nativeElement);
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { RegisterInputService } from './registerInput.service';
@@ -27,7 +26,7 @@ describe('RegisterInputService', () => {
     mockStorageServiceSpy = spyOn(mockStorageService, 'setItem');
 
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [],
       providers: [
         TestRegisterInputService,
         {provide: StorageService, useValue: mockStorageService}

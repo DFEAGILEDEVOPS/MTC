@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
-import 'rxjs/add/operator/toPromise';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
 const questionsDataKey = 'questions';
@@ -34,7 +34,7 @@ export class UserService {
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
           this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
-          this.storageService.setItem(accessTokenKey, data[tokenKey]['jwt']['token']);
+          this.storageService.setItem(accessTokenKey, data[tokenKey] && data[tokenKey]['jwt'] && data[tokenKey]['jwt']['token']);
           this.storageService.setItem(tokenKey, data[tokenKey]);
 
           resolve();

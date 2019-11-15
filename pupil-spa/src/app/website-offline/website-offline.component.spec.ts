@@ -5,6 +5,20 @@ import { ActivatedRoute } from '@angular/router';
 import { WebsiteOfflineComponent } from './website-offline.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
+@Component({
+  selector: 'app-header',
+  template: ''
+})
+export class MockAppHeaderComponent {
+}
+
+@Component({
+  selector: 'app-footer',
+  template: ''
+})
+export class MockAppFooterComponent {
+}
+
 describe('WebsiteOfflineComponent', () => {
   let component: WebsiteOfflineComponent;
   let fixture: ComponentFixture<WebsiteOfflineComponent>;
@@ -31,16 +45,3 @@ describe('WebsiteOfflineComponent', () => {
   });
 });
 
-@Component({
-  selector: 'app-header',
-  template: ''
-})
-class MockAppHeaderComponent {
-}
-
-@Component({
-  selector: 'app-footer',
-  template: ''
-})
-class MockAppFooterComponent {
-}

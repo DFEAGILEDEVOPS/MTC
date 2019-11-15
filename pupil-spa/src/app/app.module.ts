@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -114,62 +113,61 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
+    AAColoursComponent,
+    AAFontsComponent,
+    AASettingsComponent,
     AccessibilityStatementComponent,
     AppComponent,
     BreadcrumbsComponent,
     CheckCompleteComponent,
     CheckComponent,
+    ConnectivityCheckComponent,
+    ConnectivityErrorComponent,
     ContactComponent,
-    FooterComponent,
     FeedbackComponent,
     FeedbackThanksComponent,
+    FooterComponent,
     HeaderComponent,
+    IdleModalComponent,
     InstructionsComponent,
     LoadingComponent,
     LoginComponent,
+    LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
+    OutOfTimeComponent,
+    PageModificationsComponent,
     PracticeQuestionComponent,
     PrivacyComponent,
     QuestionComponent,
+    QuestionsIntroComponent,
+    SessionExpiredComponent,
     SoundComponent,
     SpokenPracticeQuestionComponent,
     SpokenQuestionComponent,
     SubmissionFailedComponent,
     SubmissionPendingComponent,
+    SvgArrowComponent,
+    SvgClockComponent,
+    SvgCrownComponent,
+    SvgGirlComponent,
+    SvgLoadingComponent,
+    SvgWarningComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
-    QuestionsIntroComponent,
-    AAFontsComponent,
-    AAColoursComponent,
-    AASettingsComponent,
-    OutOfTimeComponent,
-    PageModificationsComponent,
-    SvgCrownComponent,
-    SvgWarningComponent,
-    SvgLoadingComponent,
-    SvgArrowComponent,
-    SvgGirlComponent,
-    SvgClockComponent,
-    IdleModalComponent,
-    SessionExpiredComponent,
-    WebsiteOfflineComponent,
-    LoginFailureComponent,
-    ConnectivityCheckComponent,
-    ConnectivityErrorComponent
+    WebsiteOfflineComponent
   ],
   imports: [
+    BrowserModule,
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: false} // <-- debugging purposes only
     ),
     FormsModule,
     ReactiveFormsModule,
-    BrowserModule,
-    HttpModule,
     HttpClientModule,
-    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics], {
+    Angulartics2Module.forRoot({
       pageTracking: {
         excludedRoutes: [
           'check',
