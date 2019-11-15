@@ -22,8 +22,7 @@ const pupilRegisterV2Service = {
         group: d.groupName
       }
     })
-    pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
-    return pupilRegister
+    return pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
   }
 }
 
