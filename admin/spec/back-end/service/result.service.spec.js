@@ -2,7 +2,7 @@
 /* global describe, it, expect spyOn fail */
 
 const resultDataService = require('../../../services/data-access/result.data.service')
-const redisCacheService = require('../../../services/redis-cache.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {

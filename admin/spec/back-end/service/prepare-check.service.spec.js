@@ -2,7 +2,7 @@
 
 /* global describe it expect beforeEach spyOn fail */
 const sut = require('../../../services/prepare-check.service')
-const redisService = require('../../../services/redis-cache.service')
+const redisService = require('../../../services/data-access/redis-cache.service')
 const moment = require('moment')
 
 let check
