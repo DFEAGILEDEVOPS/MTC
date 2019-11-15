@@ -5,6 +5,10 @@ ALTER TABLE mtc_admin.pupil ALTER COLUMN foreName [NVARCHAR](128) NULL;
 ALTER TABLE mtc_admin.pupil ALTER COLUMN lastName [NVARCHAR](128) NULL;
 ALTER TABLE mtc_admin.pupil ALTER COLUMN middleNames [NVARCHAR](128) NULL;
 ALTER TABLE mtc_admin.[pupil]
+ALTER COLUMN foreNameAlias ADD MASKED WITH (FUNCTION = 'default()');
+ALTER TABLE mtc_admin.[pupil]
+ALTER COLUMN lastNameAlias ADD MASKED WITH (FUNCTION = 'default()');
+ALTER TABLE mtc_admin.[pupil]
 ALTER COLUMN foreName ADD MASKED WITH (FUNCTION = 'default()');
 ALTER TABLE mtc_admin.[pupil]
 ALTER COLUMN middleNames ADD MASKED WITH (FUNCTION = 'default()');
