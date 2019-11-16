@@ -12,6 +12,8 @@ describe('pupil-prefs.service', () => {
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
   })
+
+  test.todo('infer table updates from batch inputs')
 })
 
 export class PupilPrefsService {
