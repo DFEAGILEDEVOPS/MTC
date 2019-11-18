@@ -31,7 +31,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
       ON cp.pin_id = pn.id
     WHERE chk.isLiveCheck = 1
       AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
-      AND p.urlSlug='${pupilUUID}'
+      AND p.urlSlug = @pupilUUID
     ORDER BY chk.createdAt DESC`
     const tioCheckSql = `
     SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
@@ -48,11 +48,16 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
       ON cp.pin_id = pn.id
     WHERE chk.isLiveCheck = 0
       AND cs.code != 'EXP'
-      AND p.urlSlug='${pupilUUID}'
+      AND p.urlSlug = @pupilUUID
     ORDER BY chk.createdAt DESC`
+    const pupilUuidParam = {
+      name: 'pupilUUID',
+      type: TYPES.NVarChar,
+      value: pupilUUID
+    }
     const results = await Promise.all([
-      this.sqlService.query(liveCheckSql),
-      this.sqlService.query(tioCheckSql)
+      this.sqlService.query(liveCheckSql, [pupilUuidParam]),
+      this.sqlService.query(tioCheckSql, [pupilUuidParam])
     ])
     const result1 = results[0]
     const result2 = results[1]
