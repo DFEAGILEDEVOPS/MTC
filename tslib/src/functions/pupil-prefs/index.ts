@@ -9,7 +9,7 @@ const queueTrigger: AzureFunction = async function (context: Context, pupilPrefs
   context.log.info(`${functionName}: version:${version} message received for checkCode ${pupilPrefsMessage.checkCode}`)
   try {
     if (version !== 1) {
-      // dead letter the message as we no longer support below v3
+      // dead letter the message as we only support v1
       throw new Error(`Message schema version:${version} unsupported`)
     }
     const prefsService = new PupilPrefsService()

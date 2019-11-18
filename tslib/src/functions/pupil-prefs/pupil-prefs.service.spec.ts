@@ -31,9 +31,7 @@ describe('pupil-prefs.service', () => {
       return Promise.resolve()
     })
     const update: IPupilPreferenceUpdate = {
-      accessArrangementCode: 'AB1',
       checkCode: 'check-code',
-      preferenceCode: 'CD1',
       preferences: {
         colourContrastCode: 'FTS',
         fontSizeCode: 'CCT'
@@ -44,15 +42,43 @@ describe('pupil-prefs.service', () => {
     expect(dataUpdates.length).toBe(2)
   })
 
-  test('infer table updates from batch inputs', async () => {
+  test('colour contrast only update makes relevant data change', async () => {
 
+    let dataUpdates: Array<IPupilPreferenceDataUpdate> = []
+    dataServiceMock.updatePupilPreferences = jest.fn((updates) => {
+      dataUpdates = updates
+      return Promise.resolve()
+    })
     const update: IPupilPreferenceUpdate = {
-      accessArrangementCode: 'AB1',
       checkCode: 'check-code',
-      preferenceCode: 'CD1',
-      preferences: {}
+      preferences: {
+        colourContrastCode: 'FTS'
+      }
     }
     await sut.update(update)
+    expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
+    expect(dataUpdates.length).toBe(1)
+    expect(dataUpdates[0].prefTable).toBe('[pupilColourContrasts]')
+    expect(dataUpdates[0].prefField).toBe('pupilColourContrasts_id')
   })
-  test.todo('infer field updates from batch inputs')
+
+  test('colour contrast only update makes relevant data change', async () => {
+
+    let dataUpdates: Array<IPupilPreferenceDataUpdate> = []
+    dataServiceMock.updatePupilPreferences = jest.fn((updates) => {
+      dataUpdates = updates
+      return Promise.resolve()
+    })
+    const update: IPupilPreferenceUpdate = {
+      checkCode: 'check-code',
+      preferences: {
+        fontSizeCode: 'CCT'
+      }
+    }
+    await sut.update(update)
+    expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
+    expect(dataUpdates.length).toBe(1)
+    expect(dataUpdates[0].prefTable).toBe('[pupilFontSizes]')
+    expect(dataUpdates[0].prefField).toBe('pupilfontSizes_id')
+  })
 })

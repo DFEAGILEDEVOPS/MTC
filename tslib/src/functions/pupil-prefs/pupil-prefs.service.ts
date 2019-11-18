@@ -47,8 +47,6 @@ export interface IPupilPreferenceUpdate {
     fontSizeCode?: string
     colourContrastCode?: string
   }
-  preferenceCode: string
-  accessArrangementCode: string
 }
 
 export interface IPupilPreferenceDataUpdate {
