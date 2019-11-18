@@ -264,6 +264,8 @@ const postEditPupil = async (req, res, next) => {
     id: pupil.id,
     foreName: req.body.foreName,
     middleNames: req.body.middleNames,
+    foreNameAlias: req.body.foreNameAlias,
+    lastNameAlias: req.body.lastNameAlias,
     lastName: req.body.lastName,
     upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
     gender: req.body.gender,
