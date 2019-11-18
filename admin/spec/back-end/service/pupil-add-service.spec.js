@@ -30,6 +30,8 @@ describe('pupil-add-service', () => {
       upn: 'L860100210012',
       foreName: 'test',
       lastName: 'test',
+      foreNameAlias: 'test',
+      lastNameAlias: 'test',
       middleNames: '',
       gender: 'M',
       'dob-month': '6',

@@ -12,6 +12,12 @@ module.exports.addPupil = {
   lastNameRequired: 'Enter a last name in no more than 128 characters',
   lastNameInvalidCharacters: 'Enter a last name without special characters',
 
+  foreNameAliasMaxLengthExceeded: 'Enter a first name alias in no more than 128 characters',
+  foreNameAliasInvalidCharacters: 'Enter a first name alias without special characters',
+
+  lastNameAliasMaxLengthExceeded: 'Enter a last name alias in no more than 128 characters',
+  lastNameAliasInvalidCharacters: 'Enter a last name alias without special characters',
+
   dobRequired: 'Enter a date of birth',
   dobInvalidChars: 'Enter a date of birth in the specified format',
   dobOutOfRange: 'Enter a valid date of birth',
