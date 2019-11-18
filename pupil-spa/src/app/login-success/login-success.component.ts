@@ -47,7 +47,9 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.pupil = new Pupil;
     this.pupil.firstName = pupilData.firstName;
+    this.pupil.firstNameAlias = pupilData.firstNameAlias;
     this.pupil.lastName = pupilData.lastName;
+    this.pupil.lastNameAlias = pupilData.lastNameAlias;
     this.pupil.dob = pupilData.dob;
     this.school = new School;
     this.school.name = schoolData.name;

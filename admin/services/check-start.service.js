@@ -342,6 +342,8 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         id: o.pupil_id,
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
+        firstNameAlias: o.pupil_foreNameAlias,
+        lastNameAlias: o.pupil_lastNameAlias,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,
