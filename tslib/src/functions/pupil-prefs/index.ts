@@ -1,5 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
+import { PupilPrefsService } from './pupil-prefs.service'
 const functionName = 'pupil-prefs'
 
 const queueTrigger: AzureFunction = async function (context: Context, pupilPrefsMessage: any): Promise<void> {
@@ -7,11 +8,14 @@ const queueTrigger: AzureFunction = async function (context: Context, pupilPrefs
   const version = pupilPrefsMessage.version
   context.log.info(`${functionName}: version:${version} message received for checkCode ${pupilPrefsMessage.checkCode}`)
   try {
-    if (version !== 3) {
+    if (version !== 1) {
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    // await V3.process(context, pupilPrefsMessage)
+    const prefsService = new PupilPrefsService()
+    await prefsService.update(pupilPrefsMessage)
+    context.bindings.checkSyncQueue = []
+    context.bindings.checkSyncQueue.push(pupilPrefsMessage.checkCode)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error

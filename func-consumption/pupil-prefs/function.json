@@ -7,6 +7,14 @@
       "direction": "in",
       "queueName": "pupil-prefs",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkSyncQueue",
+      "queueName": "check-sync",
+      "connection": "ServiceBusConnection"
     }
-  ]
+  ],
+  "scriptFile": "../dist/functions/pupil-prefs/index.js"
 }
