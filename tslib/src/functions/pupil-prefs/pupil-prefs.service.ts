@@ -5,7 +5,7 @@ export class PupilPrefsService {
 
   private dataService: IPupilPrefsDataService
 
-  constructor(pupilPrefsDataService?: IPupilPrefsDataService) {
+  constructor (pupilPrefsDataService?: IPupilPrefsDataService) {
     if (pupilPrefsDataService === undefined) {
       pupilPrefsDataService = new PupilPrefsDataService()
     }
