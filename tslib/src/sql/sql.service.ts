@@ -158,7 +158,7 @@ export class SqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modifyWithTransactionSeries (requests: Array<ITransactionRequest>): Promise<any> {
+  async modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any> {
 
     const transaction = new Transaction(await ConnectionPoolService.getInstance())
     await transaction.begin()
@@ -187,7 +187,7 @@ export class SqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any> {
+  async modifyWithTransactionParallel (requests: Array<ITransactionRequest>): Promise<any> {
 
     const transaction = new Transaction(await ConnectionPoolService.getInstance())
     const tasks = new Array<any>()
