@@ -1,16 +1,44 @@
 import { TYPES } from 'mssql'
 import { SqlService, ITransactionRequest } from '../../sql/sql.service'
 
+const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
+  updatePupilPreferences: jest.fn()
+}))
+
 let sut: PupilPrefsService
+let dataServiceMock: IPupilPrefsDataService
 
 describe('pupil-prefs.service', () => {
 
   beforeEach(() => {
-    sut = new PupilPrefsService()
+    dataServiceMock = new PupilPrefsDataServiceMock()
+    sut = new PupilPrefsService(dataServiceMock)
   })
 
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
+  })
+
+  test('all updates should be sent in one call to data service', async () => {
+    let dataUpdates: Array<IPupilPreferenceDataUpdate> = []
+    dataServiceMock.updatePupilPreferences = jest.fn(async (dataUpdates) => {
+      dataUpdates = dataUpdates
+    })
+    const updates: Array<IPupilPreferenceUpdate> = [
+      {
+        accessArrangementCode: 'AB1',
+        checkCode: 'check-code',
+        preferenceCode: 'CD1'
+      },
+      {
+        accessArrangementCode: 'AB1',
+        checkCode: 'check-code',
+        preferenceCode: 'CD1'
+      }
+    ]
+    await sut.update(updates)
+    expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
+    expect(dataUpdates.length).toBe(1)
   })
 
   test.todo('infer table updates from batch inputs')
