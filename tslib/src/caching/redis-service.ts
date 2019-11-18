@@ -50,25 +50,6 @@ export class RedisService implements IRedisService {
       }
     }
     this.redis = new Redis(options)
-   /* this.redis
-     .on('connect', () => {
-      this.logger.info('redis:connect')
-    })
-    .on('ready', () => {
-      this.logger.info('redis:ready')
-    })
-    .on('error', (e) => {
-      this.logger.info('redis:ready', e)
-    })
-    .on('close', () => {
-      this.logger.info('redis:close')
-    })
-    .on('reconnecting', () => {
-      this.logger.info('redis:reconnecting')
-    })
-    .on('end', () => {
-      this.logger.info('redis:end')
-    }) */
     this.logger = new Logger.ConsoleLogger()
   }
 

@@ -17,7 +17,6 @@ export class CheckStartedService {
   }
 
   async process (checkStartedMessage: ICheckStartedMessage, functionBindings: ICheckStartedFunctionBindings): Promise<void> {
-    console.dir(functionBindings)
     const cacheLookupKey = this.buildCacheKey(checkStartedMessage.checkCode)
     const preparedCheckKey = await this.redisService.get(cacheLookupKey)
     functionBindings.checkStartedTable = []

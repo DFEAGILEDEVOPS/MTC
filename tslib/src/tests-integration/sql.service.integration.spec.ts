@@ -157,7 +157,6 @@ describe('SqlService', () => {
     }]
     const result = await sut.query(sql, params)
     expect(RA.isArray(result)).toBe(true)
-    console.dir(result)
     expect(result.length).toBe(2)
   })
 })
