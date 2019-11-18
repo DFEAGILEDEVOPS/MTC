@@ -25,6 +25,8 @@ const pupilAddService = {
       foreName: reqBody.foreName,
       lastName: reqBody.lastName,
       middleNames: reqBody.middleNames,
+      foreNameAlias: reqBody.foreNameAlias,
+      lastNameAlias: reqBody.lastNameAlias,
       gender: reqBody.gender,
       'dob-month': reqBody['dob-month'],
       'dob-day': reqBody['dob-day'],
