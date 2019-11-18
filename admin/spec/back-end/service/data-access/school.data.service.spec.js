@@ -6,7 +6,7 @@ const sinon = require('sinon')
 const moment = require('moment')
 const schoolMock = require('../../mocks/school')
 const sqlService = require('../../../../services/data-access/sql.service')
-const redisCacheService = require('../../../../services/redis-cache.service')
+const redisCacheService = require('../../../../services/data-access/redis-cache.service')
 const responseMock = require('../../mocks/sql-modify-response')
 
 describe('school.data.service', () => {

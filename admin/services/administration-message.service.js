@@ -1,7 +1,7 @@
 'use strict'
 
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
-const redisCacheService = require('./redis-cache.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 

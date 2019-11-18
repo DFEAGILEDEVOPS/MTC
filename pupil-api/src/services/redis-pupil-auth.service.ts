@@ -1,4 +1,4 @@
-import { IRedisService, BasicRedisService } from './redis.service'
+import { IRedisService, RedisService } from './redis.service'
 import * as azureQueueService from './azure-queue.service'
 import config from '../config'
 
@@ -9,10 +9,11 @@ export interface IPupilAuthenticationService {
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
 
   private redisService: IRedisService
+  private eightHoursInSeconds: number = 28800
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
-      redisService = new BasicRedisService()
+      redisService = new RedisService()
     }
     this.redisService = redisService
   }
@@ -22,22 +23,26 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       throw new Error('schoolPin and pupilPin cannot be an empty string')
     }
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
-    const cacheItem = await this.redisService.get(cacheKey)
-    if (!cacheItem) {
+    const preparedCheckEntry = await this.redisService.get(cacheKey)
+    if (!preparedCheckEntry) {
       return null
     }
-    const hydratedCacheItem = JSON.parse(cacheItem)
+
     // Emit a successful login to the queue
     const pupilLoginMessage = {
-      checkCode: hydratedCacheItem.checkCode,
+      checkCode: preparedCheckEntry.checkCode,
       loginAt: new Date(),
       version: 1
     }
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
+    const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheckEntry.checkCode)
+    await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
+    await this.redisService.expire(cacheKey, config.RedisPreparedCheckExpiryInSeconds)
+    return preparedCheckEntry
+  }
 
-    // update TTL to 30 minutes now it's been collected...
-    await this.redisService.setex(cacheKey, cacheItem, config.RedisPreparedCheckExpiryInSeconds)
-    return hydratedCacheItem
+  private buildCheckStartedLookupKey (checkCode: string) {
+    return `check-started-check-lookup:${checkCode}`
   }
 
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
