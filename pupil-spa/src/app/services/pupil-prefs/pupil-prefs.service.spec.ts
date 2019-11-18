@@ -1,7 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { APP_INITIALIZER } from '@angular/core';
-import { HttpModule, XHRBackend } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { PupilPrefsService } from './pupil-prefs.service';
 import { StorageService } from '../storage/storage.service';
@@ -27,7 +25,7 @@ describe('PupilPrefsService', () => {
   beforeEach(() => {
 
     const injector = TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [],
       providers: [
         AppConfigService,
         {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
@@ -37,8 +35,7 @@ describe('PupilPrefsService', () => {
         TokenService,
         AuditService,
         { provide: StorageService, useClass: StorageServiceMock },
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        {provide: XHRBackend, useClass: MockBackend}
+        { provide: QuestionService, useClass: QuestionServiceMock }
       ]
     });
     azureQueueService = injector.get(AzureQueueService);

@@ -1,5 +1,5 @@
 import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';

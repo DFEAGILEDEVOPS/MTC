@@ -30,62 +30,12 @@ export interface IRedisService {
    * @returns void
    */
   quit (): Promise<string>
-}
-
-export class BasicRedisService implements IRedisService {
-  private redis: Redis.Redis
-  private logger: Logger
-
-  constructor () {
-    this.logger = new Logger()
-    const options: RedisOptions = {
-      port: +config.Redis.Port,
-      host: config.Redis.Host,
-      password: config.Redis.Key
-    }
-    if (config.Redis.useTLS) {
-      options.tls = {
-        host: config.Redis.Host
-      }
-    }
-    this.redis = new Redis(options)
-  }
-
-  async get (key: string): Promise<any | null> {
-    try {
-      const result = await this.redis.get(key)
-      return result
-    } catch (err) {
-      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
-      throw err
-    }
-  }
-  async setex (key: string, value: string | object, ttl: number): Promise<void> {
-    try {
-      if (typeof value === 'object') {
-        value = JSON.stringify(value)
-      }
-      await this.redis.setex(key, ttl, value)
-    } catch (err) {
-      this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
-      throw err
-    }
-  }
-
-  async drop (keys: string[]): Promise<void> {
-    if (keys.length === 0) {
-      return
-    }
-    const pipeline = this.redis.pipeline()
-    keys.forEach(c => {
-      pipeline.del(c)
-    })
-    return pipeline.exec()
-  }
-
-  quit (): Promise<string> {
-    return this.redis.quit()
-  }
+  /**
+   * @description set expiry on a redis item
+   * @param key key of the item to update TTL on
+   * @param ttl the expiry time in seconds
+   */
+  expire (key: string, ttl: number): Promise<void>
 }
 
 /**
@@ -134,7 +84,7 @@ export class RedisService implements IRedisService {
   async get (key: string): Promise<any | null> {
     try {
       const cacheEntry = await this.redis.get(key)
-      if (cacheEntry === null) return Promise.resolve(null)
+      if (cacheEntry === null) return undefined
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem.meta.type) {
         case RedisItemDataType.string:
@@ -203,6 +153,10 @@ export class RedisService implements IRedisService {
 
   quit (): Promise<string> {
     return this.redis.quit()
+  }
+
+  expire (key: string, ttl: number): Promise<void> {
+    return this.redis.expire(key, ttl)
   }
 }
 
