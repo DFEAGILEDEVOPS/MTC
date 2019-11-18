@@ -26,10 +26,10 @@
                             <% } %>
                             <div class="pupil-content">
                             <span class="fullname"><%=
-                                    `${pupils[i].foreName} ${pupils[i].showMiddleNames
+                                    `${pupils[i].foreNameAlias || pupils[i].foreName} ${pupils[i].showMiddleNames
                                             ? pupils[i].middleNames
                                             : ''
-                                    } ${pupils[i].lastName}` %>
+                                    } ${pupils[i].lastNameAlias || pupils[i].lastName}` %>
                                 <% if (pupils[i].group) { %>
                                     (<%= pupils[i].group %>)
                                 <% } %>
