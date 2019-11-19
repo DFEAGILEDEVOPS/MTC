@@ -164,15 +164,15 @@ module.exports = {
     connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
   },
   FeatureToggles: {
-    accessArrangements: process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS || true,
-    groupCreate: process.env.FEATURE_TOGGLE_GROUP_CREATE || true,
-    groupEdit: process.env.FEATURE_TOGGLE_GROUP_EDIT || true,
-    groupRemove: process.env.FEATURE_TOGGLE_GROUP_REMOVE || true,
-    newCheckForm: process.env.FEATURE_TOGGLE_NEW_CHECK_FORM || true,
-    newCheckWindow: process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW || true,
-    prepareChecksInRedis: process.env.FEATURE_TOGGLE_PREPARE_CHECKS_IN_REDIS || false,
-    pupilEdit: process.env.FEATURE_TOGGLE_PUPIL_EDIT || true,
-    pupilRegisterV2: process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2 || false,
-    schoolHomeViewV2: process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2 || false
+    accessArrangements: toBool(process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS) || true,
+    groupCreate: toBool(process.env.FEATURE_TOGGLE_GROUP_CREATE) || true,
+    groupEdit: toBool(process.env.FEATURE_TOGGLE_GROUP_EDIT) || true,
+    groupRemove: toBool(process.env.FEATURE_TOGGLE_GROUP_REMOVE) || true,
+    newCheckForm: toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) || true,
+    newCheckWindow: toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) || true,
+    prepareChecksInRedis: toBool(process.env.FEATURE_TOGGLE_PREPARE_CHECKS_IN_REDIS) || false,
+    pupilEdit: toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) || true,
+    pupilRegisterV2: toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) || false,
+    schoolHomeViewV2: toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) || false
   }
 }
