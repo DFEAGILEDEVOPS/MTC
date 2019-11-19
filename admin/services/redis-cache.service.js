@@ -67,7 +67,7 @@ redisCacheService.set = async (redisKey, data) => {
 
 /**
  * Drops any supplied caches - so they can be re-queried
- * @param caches - A single string or array of strings
+ * @param {string | Array} caches - A single string or array of strings
  * @returns {Promise<Boolean>}
  */
 redisCacheService.drop = async (caches = []) => {
