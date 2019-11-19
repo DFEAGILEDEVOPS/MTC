@@ -72,7 +72,7 @@ const paramName = (s) => '@' + s
  * Prefix a string with '@' and its index
  * @param idx
  * @param s
- * @return {string}
+ * @return {function(): string}
  */
 const paramNameWithIdx = R.curry((idx, s) => '@' + s + idx)
 
