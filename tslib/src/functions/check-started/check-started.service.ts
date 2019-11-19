@@ -25,7 +25,10 @@ export class CheckStartedService {
       RowKey: v4(),
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })
-    return this.redisService.drop([preparedCheckKey])
+    const preparedCheck = await this.redisService.get(preparedCheckKey)
+    if (preparedCheck.config.practice === false) {
+      return this.redisService.drop([preparedCheckKey])
+    }
   }
 
   private buildCacheKey (checkCode: string): string {

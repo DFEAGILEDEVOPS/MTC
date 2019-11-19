@@ -29,13 +29,11 @@ describe('RedisService', () => {
   })
 
   afterEach(async () => {
-    const response = await sut.quit()
-    console.log(`redisService.quit:${response}`)
+    await sut.quit()
   })
 
   afterAll(async () => {
-    const response = await ioRedis.quit()
-    console.log(`ioRedis.quit:${response}`)
+    await ioRedis.quit()
     // give redis time to cleanly shutdown before jest complains about
     // active handles remaining after test completion...
     const waitForRedisToShutdown = new Promise(resolve => setTimeout(resolve, 3000))
