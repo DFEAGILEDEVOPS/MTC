@@ -70,8 +70,8 @@ const paramName = (s) => '@' + s
 
 /**
  * Prefix a string with '@' and its index
- * @param idx
- * @param s
+ * @param {number} idx
+ * @param {string} s
  * @return {function(): string}
  */
 const paramNameWithIdx = R.curry((idx, s) => '@' + s + idx)
@@ -79,7 +79,7 @@ const paramNameWithIdx = R.curry((idx, s) => '@' + s + idx)
 /**
  * Return a function that takes the keys from an object joins them together into a list
  * of sql parameter identifiers.
- * @type {Function}
+ * @return {function()}
  */
 const createParamIdentifiers = R.compose(
   R.join(' , '),
