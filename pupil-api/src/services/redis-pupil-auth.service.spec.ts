@@ -101,7 +101,7 @@ describe('redis-pupil-auth.service', () => {
     expect(payload).toBeNull()
   })
 
-  test('redis item TTL should be set to 30 minutes from now if a live check', async () => {
+  test('redis item TTL should be set to 30 minutes from now if config.practice is defined and false', async () => {
     const thirtyMinutesInSeconds = 1800
     const eightHoursInSeconds = 28800
     const expectedPayload = {
@@ -128,11 +128,59 @@ describe('redis-pupil-auth.service', () => {
     expect(actualPreparedCheckExpiryValue).toEqual(thirtyMinutesInSeconds)
   })
 
-  test('no redis expiry is set if a practice check', async () => {
+  test('no redis expiry is set if config.practice is true', async () => {
 
     const expectedPayload = {
       config: {
         practice: true
+      }
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
+  })
+
+  test('no redis expiry is set if config.practice does not exist', async () => {
+
+    const expectedPayload = {
+      config: {}
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
+  })
+
+  test('no redis expiry is set if config.practice is undefined', async () => {
+
+    const expectedPayload = {
+      config: {
+        practice: undefined
       }
     }
 
