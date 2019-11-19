@@ -37,7 +37,9 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     azureQueueService.addMessage('pupil-login', pupilLoginMessage)
     const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheckEntry.checkCode)
     await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
-    await this.redisService.expire(cacheKey, config.RedisPreparedCheckExpiryInSeconds)
+    if (preparedCheckEntry.config.practice === false) {
+      await this.redisService.expire(cacheKey, config.RedisPreparedCheckExpiryInSeconds)
+    }
     return preparedCheckEntry
   }
 
