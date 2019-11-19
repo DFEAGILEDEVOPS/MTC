@@ -13,6 +13,7 @@ const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
+const pupilNamePresenter = require('../helpers/pupil-name-presenter')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -27,11 +28,13 @@ const getGeneratePinsOverview = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let pupilsPresentationData
   let checkWindowData
   let availabilityData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
+    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
@@ -53,7 +56,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils,
+    pupilsPresentationData,
     pupilAppURL: config.PUPIL_APP_URL
   })
 }
