@@ -160,11 +160,17 @@ async function sqlInsertPayload (payload, checkId) {
  */
 async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
-  const sql = `UPDATE ${schema}.${checkTable}
+  const sql = `UPDATE [mtc_admin].[check]
                SET checkStatus_id =
                   (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP'),
                receivedByServerAt = @receivedByServerAt
-               WHERE checkCode = @checkCode`
+               WHERE checkCode = @checkCode;
+               
+               UPDATE  [mtc_admin].[pupil] 
+               SET checkComplete = 1
+               WHERE
+                id = (SELECT TOP 1 pupil_id from [mtc_admin].[check] where checkCode = @checkCode);
+               `
 
   const params = [
     {
@@ -180,7 +186,7 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   ]
 
   try {
-    const res = await sqlService.modify(sql, params)
+    const res = await sqlService.modifyWithTransaction(sql, params)
     if (res.rowsModified === 0) {
       logger(`${functionName}: updateAdminDatabaseForCheckStarted(): no rows modified.  This may be a bad checkCode ${checkCode}`)
     }
