@@ -1,13 +1,22 @@
 import * as RateLimit from 'ioredis-ratelimit'
 import * as Redis from 'ioredis'
-
 import config from '../config'
-const redisOptions = { tls: config.Redis.useTLS, password: null }
-if (config.Redis.Key) {
-  redisOptions.password = config.Redis.Key
+
+const options: Redis.RedisOptions = {
+  port: Number(config.Redis.Port),
+  host: config.Redis.Host
 }
+if (config.Redis.Key) {
+  options.password = config.Redis.Key
+}
+if (config.Redis.useTLS) {
+  options.tls = {
+    host: config.Redis.Host
+  }
+}
+
 const rateLimit = RateLimit({
-  client: new Redis(config.Redis.Port, config.Redis.Host, redisOptions),
+  client: new Redis(options),
   key: (req) => {
     return 'ratelimit::' + req.ip
   },

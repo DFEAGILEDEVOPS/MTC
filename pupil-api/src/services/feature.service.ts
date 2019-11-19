@@ -25,10 +25,10 @@ export class FeatureService implements IFeatureService {
      */
     logger.info('ENVIRONMENT_NAME : ' + config.Environment)
     const environmentName = config.Environment
-    let featureTogglesSpecific: string
-    let featureTogglesDefault: string
-    let featureTogglesSpecificPath: string
-    let featureTogglesDefaultPath: string
+    let featureTogglesSpecific = ''
+    let featureTogglesDefault = ''
+    let featureTogglesSpecificPath = ''
+    let featureTogglesDefaultPath = ''
     try {
       featureTogglesSpecificPath = '../feature-toggles/feature-toggles.' + environmentName
       featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
