@@ -14,7 +14,7 @@ When(/^I update with valid pupil data$/) do
   dob = calculate_age(9)
   @updated_upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, first_name_alias: pupil_name, last_name_alias: pupil_name, upn: @updated_upn, male: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @updated_details_hash[:upn]=@upn if @page == edit_pupil_page
   @updated_upn = @upn if @page == edit_pupil_page
   @page.enter_details(@updated_details_hash)
@@ -39,7 +39,7 @@ end
 Then(/^I should see validation errors when i submit with the following names$/) do |table|
   table.raw.flatten.each do |value|
     @upn = UpnGenerator.generate unless @page == edit_pupil_page
-    @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
+    @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
     @page.save_changes.click if @page == edit_pupil_page
@@ -50,6 +50,10 @@ Then(/^I should see validation errors when i submit with the following names$/) 
     expect(@page.error_messages.map{|message| message.text}).to include 'Enter a middle name without special characters'
     expect(@page.error_summary.last_name.text).to eql "Enter a last name without special characters"
     expect(@page.error_messages.map{|message| message.text}).to include "Enter a last name without special characters"
+    expect(@page.error_summary.first_name_alias.text).to eql "Enter a first name alias without special characters"
+    expect(@page.error_messages.map{|message| message.text}).to include "Enter a first name alias without special characters"
+    expect(@page.error_summary.last_name_alias.text).to eql "Enter a last name alias without special characters"
+    expect(@page.error_messages.map{|message| message.text}).to include "Enter a last name alias without special characters"
   end
 end
 

@@ -10,5 +10,6 @@
   "newCheckWindow": true,
   "newCheckForm": true,
   "prepareChecksToRedis": false,
-  "schoolHomeViewV2": false
+  "schoolHomeViewV2": false,
+  "pupilRegisterV2": false
 }
