@@ -1,0 +1,13 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "preparedCheckSyncMessage",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "check-sync",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/functions/check-sync/index.js"
+}

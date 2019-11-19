@@ -159,5 +159,8 @@ module.exports = {
   },
   Runtime: {
     externalHost: process.env.RUNTIME_EXTERNAL_HOST || 'http://localhost:3001'
+  },
+  ServiceBus: {
+    connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
   }
 }

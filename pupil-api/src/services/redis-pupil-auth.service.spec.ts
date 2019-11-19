@@ -10,6 +10,7 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   setex: jest.fn(),
   drop: jest.fn(),
   quit: jest.fn(),
+  ttl: jest.fn(),
   expire: jest.fn()
 }))
 
@@ -98,7 +99,7 @@ describe('redis-pupil-auth.service', () => {
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const payload = await sut.authenticate(schoolPin, pupilPin)
-    expect(payload).toBeNull()
+    expect(payload).toBeUndefined()
   })
 
   test('redis item TTL should be set to 30 minutes from now if config.practice is defined and false', async () => {
