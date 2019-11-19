@@ -162,5 +162,17 @@ module.exports = {
   },
   ServiceBus: {
     connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
+  },
+  Behaviours: {
+    accessArrangements: process.env.BEHAVIOUR_ACCESS_ARRANGEMENTS || true,
+    groupCreate: process.env.BEHAVIOUR_GROUP_CREATE || true,
+    groupEdit: process.env.BEHAVIOUR_GROUP_EDIT || true,
+    groupRemove: process.env.BEHAVIOUR_GROUP_REMOVE || true,
+    newCheckForm: process.env.BEHAVIOUR_NEW_CHECK_FORM || true,
+    newCheckWindow: process.env.BEHAVIOUR_NEW_CHECK_WINDOW || true,
+    prepareChecksInRedis: process.env.BEHAVIOUR_PREPARE_CHECKS_IN_REDIS || false,
+    pupilEdit: process.env.BEHAVIOUR_PUPIL_EDIT || true,
+    pupilRegisterV2: process.env.BEHAVIOUR_PUPIL_REGISTER_V2 || false,
+    schoolHomeViewV2: process.env.BEHAVIOUR_SCHOOL_HOME_VIEW_V2 || false
   }
 }
