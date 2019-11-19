@@ -22,7 +22,6 @@ const piping = require('piping')
 const path = require('path')
 const partials = require('express-partials')
 const passport = require('passport')
-const R = require('ramda')
 const session = require('express-session')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
@@ -68,29 +67,9 @@ function sleep (ms) {
   }
 })()
 
-/**
- * Load feature toggles
- */
 logger.info('ENVIRONMENT_NAME : ' + config.Environment)
-const environmentName = config.Environment
-let featureTogglesSpecific, featureTogglesDefault
-let featureTogglesSpecificPath, featureTogglesDefaultPath
-try {
-  featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
-  featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
-} catch (err) {}
-
-try {
-  featureTogglesDefaultPath = './config/feature-toggles.default'
-  featureTogglesDefault = require(featureTogglesDefaultPath)
-} catch (err) {}
-
-const featureTogglesMerged = R.mergeRight(featureTogglesDefault, featureTogglesSpecific)
-
-if (featureTogglesMerged) {
-  logger.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
-  featureToggles.load(featureTogglesMerged)
-}
+// Load feature toggles
+featureToggles.load(config.FeatureToggles)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
