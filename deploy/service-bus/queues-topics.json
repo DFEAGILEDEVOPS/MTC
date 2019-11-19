@@ -3,6 +3,7 @@
     "check-completion",
     "check-marking",
     "check-notification",
+    "check-sync",
     "check-validation"
   ]
 }

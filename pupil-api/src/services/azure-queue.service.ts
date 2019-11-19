@@ -4,7 +4,7 @@ import logger from './log.service'
 let azureQueueService // cache the queueService for repeated use
 
 export function addMessage (queueName: string, payload: object, queueService?: any) {
-  if (queueName === null || queueName.length < 1) {
+  if (queueName.length < 1) {
     throw new Error('Missing queueName')
   }
 

@@ -3,7 +3,7 @@ import * as azureQueueService from './azure-queue.service'
 import config from '../config'
 
 export interface IPupilAuthenticationService {
-  authenticate (schoolPin: string, pupilPin: string): Promise<object>
+  authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined>
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
@@ -18,14 +18,14 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     this.redisService = redisService
   }
 
-  async authenticate (schoolPin: string, pupilPin: string): Promise<object> {
+  async authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined> {
     if (schoolPin.length === 0 || pupilPin.length === 0) {
       throw new Error('schoolPin and pupilPin cannot be an empty string')
     }
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
     if (!preparedCheckEntry) {
-      return null
+      return
     }
 
     // Emit a successful login to the queue

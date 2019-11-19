@@ -1,4 +1,4 @@
-import Redis, { RedisOptions } from 'ioredis'
+import * as Redis from 'ioredis'
 import config from '../config'
 import { Logger } from './log.service'
 
@@ -36,6 +36,12 @@ export interface IRedisService {
    * @param ttl the expiry time in seconds
    */
   expire (key: string, ttl: number): Promise<void>
+  /**
+   * @description get the TTL of an existing item in the cache
+   * @param key the key of the item in the cache
+   * @returns the TTL in seconds or null if the item is not found
+   */
+  ttl (key: string): Promise<number | null>
 }
 
 /**
@@ -48,7 +54,7 @@ export class RedisService implements IRedisService {
   private logger: Logger
 
   constructor () {
-    const options: RedisOptions = {
+    const options: Redis.RedisOptions = {
       port: Number(config.Redis.Port),
       host: config.Redis.Host,
       password: config.Redis.Key
@@ -59,25 +65,6 @@ export class RedisService implements IRedisService {
       }
     }
     this.redis = new Redis(options)
-   /* this.redis
-     .on('connect', () => {
-      this.logger.info('redis:connect')
-    })
-    .on('ready', () => {
-      this.logger.info('redis:ready')
-    })
-    .on('error', (e) => {
-      this.logger.info('redis:ready', e)
-    })
-    .on('close', () => {
-      this.logger.info('redis:close')
-    })
-    .on('reconnecting', () => {
-      this.logger.info('redis:reconnecting')
-    })
-    .on('end', () => {
-      this.logger.info('redis:end')
-    }) */
     this.logger = new Logger()
   }
 
@@ -155,7 +142,11 @@ export class RedisService implements IRedisService {
     return this.redis.quit()
   }
 
-  expire (key: string, ttl: number): Promise<void> {
+  ttl (key: string): Promise<number | null> {
+    return this.redis.ttl(key)
+  }
+
+  expire (key: string, ttl: number): Promise<any> {
     return this.redis.expire(key, ttl)
   }
 }
