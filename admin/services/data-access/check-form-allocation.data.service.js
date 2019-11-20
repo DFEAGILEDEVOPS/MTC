@@ -17,6 +17,8 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,
+      pupil.foreNameAlias as pupil_foreNameAlias,
+      pupil.lastNameAlias as pupil_lastNameAlias,
       pupil.dateOfBirth as pupil_dateOfBirth,
       pupil.jwtToken as pupil_jwtToken,
       checkForm.id as checkForm_id,

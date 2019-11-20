@@ -37,8 +37,8 @@ if (formData.urlSlug) {
                 </div>
 
                 <div class="govuk-form-group <%= err.isError('middleNames') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="middleNames">Middle name(s)<span
-                                class="label-optional">(optional)</span>
+                    <label class="govuk-label govuk-!-font-weight-bold" for="middleNames">Middle names<span
+                                class="label-optional"> (optional)</span>
                         <% if (err.isError('middleNames')) { %>
                         <span class="govuk-error-message"><%= err.get('middleNames') %></span>
                         <% } %>
@@ -65,7 +65,7 @@ if (formData.urlSlug) {
 
                 <div class="govuk-form-group <%= err.isError('foreNameAlias') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="foreNameAlias">First name also known as<span
-                                class="label-optional">(optional)</span>
+                                class="label-optional"> (optional)</span>
                         <% if (err.isError('foreNameAlias')) { %>
                             <span class="govuk-error-message"><%= err.get('foreNameAlias') %></span>
                         <% } %>
@@ -79,7 +79,7 @@ if (formData.urlSlug) {
 
                 <div class="govuk-form-group <%= err.isError('lastNameAlias') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="lastNameAlias">Last name also known as<span
-                                class="label-optional">(optional)</span>
+                                class="label-optional"> (optional)</span>
                         <% if (err.isError('lastNameAlias')) { %>
                             <span class="govuk-error-message"><%= err.get('lastNameAlias') %></span>
                         <% } %>
