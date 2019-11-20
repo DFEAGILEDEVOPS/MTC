@@ -28,6 +28,17 @@ describe('result.service', () => {
       }
       expect(redisCacheService.get).not.toHaveBeenCalled()
     })
+    it('returns undefined if parsing the redis response fails', async () => {
+      spyOn(redisCacheService, 'get')
+      const schoolId = 1
+      let result
+      try {
+        result = await resultService.getPupilResultData(schoolId)
+      } catch (error) {
+        fail()
+      }
+      expect(result).toBeUndefined()
+    })
   })
   describe('getSchoolScore', () => {
     it('calls sqlFindSchoolScoreBySchoolIdAndCheckWindowId when school id and check window id are provided and returns a valid score number', async () => {

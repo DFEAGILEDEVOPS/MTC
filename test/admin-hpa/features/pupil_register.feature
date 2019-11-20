@@ -51,3 +51,7 @@ Feature:
     When I am on the Pupil Register page
     Then these pupils should be highlighted in red
 
+  Scenario: Pupil count is displayed on the pupil register page
+    Given I am logged in
+    When I am on the Pupil Register page
+    Then I should see a count of pupils in the school
