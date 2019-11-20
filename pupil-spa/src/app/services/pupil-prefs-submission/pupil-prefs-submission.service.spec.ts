@@ -72,7 +72,8 @@ describe('PupilPrefsSubmissionService', () => {
           fontSizeCode: 'LRG',
           colourContrastCode: 'YOB'
         },
-        checkCode: 'checkCode'
+        checkCode: 'checkCode',
+        version: 1
       };
       const retryConfig = {
         errorDelay: pupilPrefsSubmissionService.pupilPrefsAPIErrorDelay,
