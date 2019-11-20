@@ -19,6 +19,7 @@ class PupilRegisterPage < SitePrism::Page
   end
 
   section :pupil_list, '#register-pupils' do
+    element :pupil_count, '.govuk-table__caption'
     sections :pupil_row, 'tbody tr' do
       element :names, 'td:nth-child(1)'
       element :edited_pupil, '.govuk-highlight-item'
