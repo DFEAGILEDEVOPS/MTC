@@ -5,6 +5,7 @@
 require('dotenv').config()
 const config = require('../config')
 const Redis = require('ioredis')
+const readline = require('readline')
 
 const redisConfig = {
   port: config.Redis.Port,
@@ -17,11 +18,24 @@ if (config.Redis.useTLS) {
   redisConfig.tls = { host: config.Redis.Host }
 }
 
-const redis = new Redis(redisConfig)
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
 
-const flusAll = async () => {
+const flushAll = async () => {
+  const redis = new Redis(redisConfig)
   await redis.flushall()
   redis.quit()
 }
 
-flusAll()
+rl.question(`This will delete ALL data from the redis instance ${config.Redis.Host}.  Are you sure? Y/N `, (answer) => {
+  // TODO: Log the answer in a database
+  if (answer === 'Y') {
+    rl.close()
+    flushAll()
+  } else {
+    console.log('aborting...')
+    process.exit()
+  }
+})

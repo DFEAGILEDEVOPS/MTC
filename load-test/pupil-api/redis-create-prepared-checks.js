@@ -5,7 +5,7 @@
 require('dotenv').config()
 const redis = require('../services/redis.service')
 const { performance } = require('perf_hooks')
-const exampleCheck = require('../pupil-api/preparedCheck')
+const exampleCheck = require('./preparedCheck')
 
 const createChecks = async () => {
   const oneHourTtl = 3600
