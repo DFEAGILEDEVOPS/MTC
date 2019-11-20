@@ -140,13 +140,11 @@ redisCacheService.setMany = async (items) => {
     const item = items[index]
     const storageItem = prepareCacheEntry(item.value)
     if (item.ttl !== undefined) {
-      console.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
       multi.setex(item.key, item.ttl, storageItem)
     } else {
       multi.set(item.key, storageItem)
     }
   }
-  console.info('REDIS (multi:exec)')
   return multi.exec()
 }
 
