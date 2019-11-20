@@ -164,15 +164,15 @@ module.exports = {
     connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
   },
   FeatureToggles: {
-    accessArrangements: toBool(process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS) || true,
-    groupCreate: toBool(process.env.FEATURE_TOGGLE_GROUP_CREATE) || true,
-    groupEdit: toBool(process.env.FEATURE_TOGGLE_GROUP_EDIT) || true,
-    groupRemove: toBool(process.env.FEATURE_TOGGLE_GROUP_REMOVE) || true,
-    newCheckForm: toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) || true,
-    newCheckWindow: toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) || true,
-    prepareChecksInRedis: toBool(process.env.FEATURE_TOGGLE_PREPARE_CHECKS_IN_REDIS) || false,
-    pupilEdit: toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) || true,
-    pupilRegisterV2: toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) || false,
-    schoolHomeViewV2: toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) || false
+    accessArrangements: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_ACCESS_ARRANGEMENTS') ? toBool(process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS) : true,
+    groupCreate: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_CREATE') ? toBool(process.env.FEATURE_TOGGLE_GROUP_CREATE) : true,
+    groupEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_EDIT') ? toBool(process.env.FEATURE_TOGGLE_GROUP_EDIT) : true,
+    groupRemove: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_REMOVE') ? toBool(process.env.FEATURE_TOGGLE_GROUP_REMOVE) : true,
+    newCheckForm: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_FORM') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) : true,
+    newCheckWindow: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_WINDOW') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) : true,
+    prepareChecksInRedis: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PREPARE_CHECKS_IN_REDIS') ? toBool(process.env.FEATURE_TOGGLE_PREPARE_CHECKS_IN_REDIS) : false,
+    pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
+    pupilRegisterV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_REGISTER_V2') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) : false,
+    schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : false
   }
 }

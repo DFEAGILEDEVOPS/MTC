@@ -141,7 +141,7 @@ checkStartService.prepareCheck2 = async function (
     logger.error('Unable to prepare check messages', error)
     throw error
   }
-  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksToRedis')
+  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksInRedis')
 
   if (prepareCheckServiceEnabled) {
     prepareCheckService.prepareChecks(pupilChecks)
