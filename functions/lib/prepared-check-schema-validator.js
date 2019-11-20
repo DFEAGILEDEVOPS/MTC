@@ -13,7 +13,7 @@ preparedCheckSchemaValidator.validateMessage = function (message) {
 }
 
 preparedCheckSchemaValidator.validatePupil = function (pupil) {
-  const pupilProperties = ['firstName', 'firstNameAlias', 'lastName', 'lastNameAlias', 'dob', 'checkCode']
+  const pupilProperties = ['firstName', 'lastName', 'dob', 'checkCode']
   preparedCheckSchemaValidator.schemaValidator(pupil, pupilProperties, 'pupil')
 }
 
