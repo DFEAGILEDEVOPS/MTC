@@ -47,7 +47,8 @@ export class PupilPrefsSubmissionService {
         fontSizeCode: null,
         colourContrastCode: null
       },
-      checkCode: pupil.checkCode
+      checkCode: pupil.checkCode,
+      version: 1
     };
     if (fontSetting) {
       payload.preferences.fontSizeCode = fontSetting.code;
