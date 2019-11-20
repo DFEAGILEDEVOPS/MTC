@@ -28,13 +28,11 @@ const getGeneratePinsOverview = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
-  let pupilsPresentationData
   let checkWindowData
   let availabilityData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData[`${pinEnv}PinsAvailable`]) {
       return res.render('availability/section-unavailable', {
@@ -56,7 +54,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupilsPresentationData,
+    pupils,
     pupilAppURL: config.PUPIL_APP_URL
   })
 }
@@ -186,6 +184,7 @@ const getViewAndPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let pupilsPresentationData
   let school
   let error
   let qrDataURL
@@ -201,6 +200,7 @@ const getViewAndPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
+    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
@@ -213,7 +213,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   return res.render('pupil-pin/view-and-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
-    pupils,
+    pupils: pupilsPresentationData,
     date,
     error,
     helplineNumber,
@@ -238,6 +238,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let pupilsPresentationData
   let groups
   let school
   let error
@@ -254,6 +255,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
+    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (pupils.length > 0) {
@@ -267,7 +269,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   return res.render('pupil-pin/view-and-custom-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
-    pupils,
+    pupils: pupilsPresentationData,
     groups,
     date,
     error,
