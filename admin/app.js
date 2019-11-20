@@ -69,6 +69,7 @@ function sleep (ms) {
 
 logger.info('ENVIRONMENT_NAME : ' + config.Environment)
 // Load feature toggles
+logger.info('Loading feature toggles from: ', config.FeatureToggles)
 featureToggles.load(config.FeatureToggles)
 
 const index = require('./routes/index')

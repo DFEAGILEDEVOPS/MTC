@@ -24,6 +24,7 @@ export class FeatureService implements IFeatureService {
      */
     logger.info('ENVIRONMENT_NAME : ' + config.Environment)
     featureToggles.load(config.FeatureToggles)
+    logger.info('Loading feature toggles from: ', config.FeatureToggles)
     initialised = true
   }
 }
