@@ -32,19 +32,14 @@ describe('prepared-check-sync.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('active checks for pupil are looked up in redis and error thrown if none found', async () => {
+  test('active checks for pupil are looked up and returns early if none found', async () => {
     const pupilUUID = 'pupilUUID'
     dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
       return []
     })
-
-    try {
-      await sut.process(pupilUUID)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
-      expect(error.message).toBe(`no checks found for pupil UUID:${pupilUUID}`)
-    }
+    await sut.process(pupilUUID)
+    expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
+    expect(redisServiceMock.setex).not.toHaveBeenCalled()
   })
 
   test('each active check is sent to the merger service', async () => {

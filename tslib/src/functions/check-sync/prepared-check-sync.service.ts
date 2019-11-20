@@ -32,7 +32,7 @@ export class PreparedCheckSyncService {
   async process (pupilUUID: string): Promise<void> {
     const checkReferences = await this.dataService.getActiveCheckReferencesByPupilUuid(pupilUUID)
     if (checkReferences.length === 0) {
-      throw new Error(`no checks found for pupil UUID:${pupilUUID}`)
+      return
     }
     for (let index = 0; index < checkReferences.length; index++) {
       const ref = checkReferences[index]
