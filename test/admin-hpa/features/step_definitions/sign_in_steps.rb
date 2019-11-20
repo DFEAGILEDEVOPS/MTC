@@ -30,7 +30,8 @@ end
 
 Given(/^I am logged in$/) do
   sign_in_page.load
-  sign_in_page.login('teacher1', 'password')
+  @user = 'teacher1'
+  sign_in_page.login(@user, 'password')
 end
 
 Then(/^I should be taken to the school landing page$/) do
