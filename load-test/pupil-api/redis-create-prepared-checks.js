@@ -8,7 +8,7 @@ const { performance } = require('perf_hooks')
 const exampleCheck = require('./preparedCheck')
 
 const createChecks = async () => {
-  const oneHourTtl = 3600
+  const twoHoursInSeconds = 7200
   const schoolPinIndexBase = 10
   const schoolPinIndexLimit = 50
   let itemsCreated = 0
@@ -21,7 +21,7 @@ const createChecks = async () => {
       const cacheItem = {
         key: cacheKey,
         value: exampleCheck,
-        ttl: oneHourTtl
+        ttl: twoHoursInSeconds
       }
       preparedChecks.push(cacheItem)
       itemsCreated++
