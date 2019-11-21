@@ -7,7 +7,7 @@ let sbClient
 let sbQueueClient
 let sbQueueSender
 
-const redisPreparedChecks = featureToggles.isFeatureEnabled('prepareChecksToRedis')
+const redisPreparedChecks = featureToggles.isFeatureEnabled('prepareChecksInRedis')
 
 if (redisPreparedChecks) {
   sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)

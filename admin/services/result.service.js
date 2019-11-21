@@ -14,7 +14,11 @@ resultService.getPupilResultData = async (schoolId) => {
   }
   const redisKey = `result:${schoolId}`
   const result = await redisCacheService.get(redisKey)
-  return JSON.parse(result)
+  let parseResult
+  try {
+    parseResult = JSON.parse(result)
+  } catch (ignore) {}
+  return parseResult
 }
 
 /**

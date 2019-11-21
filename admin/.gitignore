@@ -42,7 +42,7 @@ check-development-app.iml
 
 # Derived files
 public/stylesheets/application*.css
-public/javascripts/app.js
+public/javascripts/*.js
 public/pdfs
 public/images
 public/images/*

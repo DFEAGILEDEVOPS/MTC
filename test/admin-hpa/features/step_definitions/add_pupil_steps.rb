@@ -31,7 +31,9 @@ end
 
 When(/^I submit the form without the completing mandatory fields$/) do
   @page.enter_details({
-                        middle_name: 'Middle'
+                        middle_name: 'Middle',
+                        first_name_alias: 'First Alias',
+                        last_name_alias: 'Last Alias'
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -180,7 +182,7 @@ end
 When(/^I have submitted invalid pupil details$/) do
   today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', first_name_alias: 's', last_name_alias: 'e', upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -193,7 +195,7 @@ end
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -208,6 +210,8 @@ Then(/^I can see add pupil page as per the design$/) do
   expect(@page).to have_first_name
   expect(@page).to have_middle_name
   expect(@page).to have_last_name
+  expect(@page).to have_first_name_alias
+  expect(@page).to have_last_name_alias
   expect(@page).to have_upn
   expect(@page).to have_day
   expect(@page).to have_month
@@ -282,7 +286,7 @@ When(/^I attempt to enter names that are more than (\d+) characters long$/) do |
   dob = calculate_age(9)
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   @long_name = ('F' * (number.to_i + 1))
-  @details_hash = {first_name: @long_name, middle_name: @long_name, last_name: @long_name, female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @details_hash = {first_name: @long_name, middle_name: @long_name, last_name: @long_name, first_name_alias: @long_name, last_name_alias: @long_name, female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page

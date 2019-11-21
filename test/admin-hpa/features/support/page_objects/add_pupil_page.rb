@@ -6,6 +6,8 @@ class AddPupilPage < SitePrism::Page
   element :first_name, 'input[name="foreName"]'
   element :middle_name, 'input[name="middleNames"]'
   element :last_name, 'input[name="lastName"]'
+  element :first_name_alias, 'input[name="foreNameAlias"]'
+  element :last_name_alias, 'input[name="lastNameAlias"]'
   element :upn, 'input[name="upn"]'
   element :day, '#dob-day'
   element :month, '#dob-month'
@@ -31,6 +33,8 @@ class AddPupilPage < SitePrism::Page
     first_name.set hash.fetch(:first_name, '')
     middle_name.set hash.fetch(:middle_name, '')
     last_name.set hash.fetch(:last_name, '')
+    first_name_alias.set hash.fetch(:first_name_alias, '')
+    last_name_alias.set hash.fetch(:last_name_alias, '')
     upn.set hash.fetch(:upn, '')
     day.set hash.fetch(:day, '')
     month.set hash.fetch(:month, '')
