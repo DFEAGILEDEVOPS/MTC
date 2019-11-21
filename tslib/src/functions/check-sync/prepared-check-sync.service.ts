@@ -43,12 +43,13 @@ export class PreparedCheckSyncService {
         throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
       }
       const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
-      const updatedPreparedCheck = await this.mergeService.merge(preparedCheck.config, newAaConfig)
+      const updatedConfig = await this.mergeService.merge(preparedCheck.config, newAaConfig)
+      preparedCheck.config = updatedConfig
       const ttl = await this.redisService.ttl(cacheKey)
       if (ttl === null) {
         throw new Error(`no TTL found on preparedCheck. checkCode:${ref.checkCode}`)
       }
-      await this.redisService.setex(cacheKey, updatedPreparedCheck, ttl)
+      await this.redisService.setex(cacheKey, preparedCheck, ttl)
     }
   }
 

@@ -90,7 +90,11 @@ describe('prepared-check-sync.service', () => {
       return originalTTL
     })
 
-    const aaConfig = {
+    const checkConfig: ICheckConfig = {
+      questionTime: 5,
+      loadingTime: 5,
+      speechSynthesis: false,
+      practice: false,
       audibleSounds: false,
       inputAssistance: false,
       numpadRemoval: false,
@@ -100,24 +104,22 @@ describe('prepared-check-sync.service', () => {
       nextBetweenQuestions: false
     }
 
-    const checkConfig: ICheckConfig = {
-      questionTime: 5,
-      loadingTime: 5,
-      speechSynthesis: false,
-      practice: false,
-      ...aaConfig
-    }
-
     redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        config: checkConfig
+      }
+    })
+
+    mergeServiceMock.merge = jest.fn(async (checkConfig: any) => {
       return checkConfig
     })
 
-    mergeServiceMock.merge = jest.fn(async (preparedCheck: any) => {
-      return preparedCheck
-    })
+    const expected = {
+      config: checkConfig
+    }
 
     await sut.process(pupilUUID)
-    expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, checkConfig, originalTTL)
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, expected, originalTTL)
   })
 
   test('error is thrown if preparedCheck is not found', async () => {

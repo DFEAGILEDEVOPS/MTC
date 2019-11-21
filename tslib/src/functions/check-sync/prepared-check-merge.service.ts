@@ -15,7 +15,7 @@ export class PreparedCheckMergeDataService implements IPreparedCheckMergeDataSer
   private static aaCodes = new Array<IAccessArrangementCode>()
   private sqlService: SqlService
 
-  constructor() {
+  constructor () {
     this.sqlService = new SqlService()
   }
   async getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<string[]> {
@@ -42,7 +42,7 @@ export interface IPreparedCheckMergeService {
 export class PreparedCheckMergeService implements IPreparedCheckMergeService {
 
   private dataService: IPreparedCheckMergeDataService
-  constructor(dataService?: IPreparedCheckMergeDataService) {
+  constructor (dataService?: IPreparedCheckMergeDataService) {
     if (dataService === undefined) {
       dataService = new PreparedCheckMergeDataService()
     }
@@ -55,7 +55,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
     if (oldConfig.fontSizeCode) {
       delete oldConfig.fontSizeCode
     }
-    const aaConfig = {
+    const baseConfig = {
       audibleSounds: false,
       inputAssistance: false,
       numpadRemoval: false,
@@ -67,7 +67,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       colourContrastCode: undefined
     }
     if (!newConfig || newConfig.length === 0) {
-      return R.merge(oldConfig, aaConfig)
+      return R.merge(oldConfig, baseConfig)
     }
     const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
     const colourContrastAa = newConfig.find((aa: any) => aa.pupilColourContrastCode)
@@ -82,25 +82,25 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       throw new Error('no access arrangement codes found')
     }
     aaCodes.forEach(code => {
-      if (code === AccessArrangementCodes.AUDIBLE_SOUNDS) aaConfig.audibleSounds = true
-      if (code === AccessArrangementCodes.INPUT_ASSISTANCE) aaConfig.inputAssistance = true
-      if (code === AccessArrangementCodes.NUMPAD_REMOVAL) aaConfig.numpadRemoval = true
+      if (code === AccessArrangementCodes.AUDIBLE_SOUNDS) baseConfig.audibleSounds = true
+      if (code === AccessArrangementCodes.INPUT_ASSISTANCE) baseConfig.inputAssistance = true
+      if (code === AccessArrangementCodes.NUMPAD_REMOVAL) baseConfig.numpadRemoval = true
       if (code === AccessArrangementCodes.FONT_SIZE) {
-        aaConfig.fontSize = true
+        baseConfig.fontSize = true
       }
       if (fontSizeAa && fontSizeAa.pupilFontSizeCode) {
-        aaConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
+        baseConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
       }
       if (code === AccessArrangementCodes.COLOUR_CONTRAST) {
-        aaConfig.colourContrast = true
+        baseConfig.colourContrast = true
       }
       if (colourContrastAa && colourContrastAa.pupilColourContrastCode) {
-        aaConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
+        baseConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
       }
-      if (code === AccessArrangementCodes.QUESTION_READER) aaConfig.questionReader = true
-      if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) aaConfig.nextBetweenQuestions = true
+      if (code === AccessArrangementCodes.QUESTION_READER) baseConfig.questionReader = true
+      if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) baseConfig.nextBetweenQuestions = true
     })
-    return R.merge(oldConfig, aaConfig)
+    return R.merge(oldConfig, baseConfig)
   }
 }
 
