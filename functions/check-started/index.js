@@ -5,7 +5,6 @@ const process = require('process')
 const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
 const { TYPES } = sqlService
-const config = require('../config')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
