@@ -1,5 +1,6 @@
 import { SqlService, ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
+import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 export class PupilPrefsService {
 
@@ -12,7 +13,7 @@ export class PupilPrefsService {
     this.dataService = pupilPrefsDataService
   }
 
-  update (preferenceUpdate: IPupilPreferenceUpdate): Promise<void> {
+  async update (preferenceUpdate: IPupilPreferenceUpdate, functionBindings: IPupilPrefsFunctionBindings): Promise<void> {
 
     const dataUpdates = new Array<IPupilPreferenceDataUpdate>()
 
@@ -37,7 +38,14 @@ export class PupilPrefsService {
       }
       dataUpdates.push(fontSizeDataUpdate)
     }
-    return this.dataService.updatePupilPreferences(dataUpdates)
+    await this.dataService.updatePupilPreferences(dataUpdates)
+    const pupilUUID = await this.dataService.getPupilUUIDByCheckCode(preferenceUpdate.checkCode)
+    console.log('GUY:pupilUUID:', pupilUUID)
+    functionBindings.checkSyncQueue = []
+    functionBindings.checkSyncQueue.push({
+      pupilUUID: pupilUUID,
+      version: 1
+    })
   }
 }
 
@@ -59,9 +67,11 @@ export interface IPupilPreferenceDataUpdate {
 
 export interface IPupilPrefsDataService {
   updatePupilPreferences (dataUpdates: Array<IPupilPreferenceDataUpdate>): Promise<void>
+  getPupilUUIDByCheckCode (checkCode: string): Promise<any>
 }
 
 export class PupilPrefsDataService implements IPupilPrefsDataService {
+
   private sqlService: SqlService
 
   constructor () {
@@ -73,6 +83,27 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
       return this.buildUpdateRequest(upd)
     })
     return this.sqlService.modifyWithTransaction(requests)
+  }
+
+  // TODO why not add a lookup to redis on check creation to avoid sql hits?
+  async getPupilUUIDByCheckCode (checkCode: string): Promise<any> {
+    const sql = `
+      SELECT p.urlSlug as pupilUUID FROM [mtc_admin].[pupil] p
+        INNER JOIN [mtc_admin].[check] c ON c.pupil_id = p.id
+        WHERE c.checkCode=@checkCode`
+    const params = [
+      {
+        name: 'checkCode',
+        type: TYPES.UniqueIdentifier,
+        value: checkCode
+      }
+    ]
+    const result = await this.sqlService.query(sql, params)
+    if (result.length === 1) {
+      console.log('GUY: ARRAY HAS 1')
+      console.log('GUY: pupilUUID is:', result[0].pupilUUID)
+      return result[0].pupilUUID
+    }
   }
 
   private buildUpdateRequest (dataUpdate: IPupilPreferenceDataUpdate): ITransactionRequest {

@@ -56,7 +56,4 @@ export class PreparedCheckSyncService {
   }
 }
 
-export interface IPreparedCheckSyncMessage {
-  version: number
-  pupilUUID: string
-}
+

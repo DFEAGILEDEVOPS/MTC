@@ -5,13 +5,18 @@ import {
   IPupilPreferenceDataUpdate,
   IPupilPreferenceUpdate
 } from './pupil-prefs.service'
+import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
-  updatePupilPreferences: jest.fn()
+  updatePupilPreferences: jest.fn(),
+  getPupilUUIDByCheckCode: jest.fn()
 }))
 
 let sut: PupilPrefsService
 let dataServiceMock: IPupilPrefsDataService
+let functionBindings: IPupilPrefsFunctionBindings = {
+  checkSyncQueue: []
+}
 
 describe('pupil-prefs.service', () => {
 
@@ -37,7 +42,7 @@ describe('pupil-prefs.service', () => {
         fontSizeCode: 'CCT'
       }
     }
-    await sut.update(update)
+    await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
     expect(dataUpdates.length).toBe(2)
   })
@@ -55,7 +60,7 @@ describe('pupil-prefs.service', () => {
         colourContrastCode: 'FTS'
       }
     }
-    await sut.update(update)
+    await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
     expect(dataUpdates.length).toBe(1)
     expect(dataUpdates[0].prefTable).toBe('[pupilColourContrasts]')
@@ -75,7 +80,7 @@ describe('pupil-prefs.service', () => {
         fontSizeCode: 'CCT'
       }
     }
-    await sut.update(update)
+    await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
     expect(dataUpdates.length).toBe(1)
     expect(dataUpdates[0].prefTable).toBe('[pupilFontSizes]')
