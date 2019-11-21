@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# allows a build task to fail fast if the relevant Github PR label is not present
+
 PR_ID=14135
 PR_URL="https://api.github.com/repos/dfeagiledevops/mtc/pulls/$PR_ID"
 echo "looking up PR at $PR_URL"
