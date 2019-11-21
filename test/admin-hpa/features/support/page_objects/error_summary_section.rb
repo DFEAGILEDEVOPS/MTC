@@ -11,6 +11,8 @@ class ErrorSummary < SitePrism::Section
   element :hdf_confirm, 'a[href="#confirmBoxes"]'
   element :middle_name, 'a[href="#middleNames"]'
   element :last_name, 'a[href="#lastName"]'
+  element :first_name_alias, 'a[href="#foreNameAlias"]'
+  element :last_name_alias, 'a[href="#lastNameAlias"]'
   elements :upn, 'a[href="#upn"]'
   element :job_title, 'a[href="#jobTitle"]'
 

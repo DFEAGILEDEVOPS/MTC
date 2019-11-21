@@ -42,5 +42,8 @@ export default {
     Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
   },
-  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800
+  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800,
+  FeatureToggles: {
+    preparedChecksInRedis: toBool(process.env.FEATURE_TOGGLE_PREPARED_CHECKS_IN_REDIS) || false
+  }
 }

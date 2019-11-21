@@ -1,0 +1,147 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.info %>
+                </div>
+            <% } %>
+            <% if (incompletePupils && incompletePupils.length > 0) { %>
+                <div class="govuk-warning-message govuk-!-margin-bottom-7">
+                    <%= incompletePupils.length %> <%= incompletePupils.length > 1 ? 'pupils have' : 'pupil has'  %> an Incomplete status
+                </div>
+            <% } %>
+            <%- partial('partials/_readonly', {availabilityData}) %>
+            <h1 class="govuk-heading-xl">Pupil register</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                This list is taken from your school's census. Review your list and add pupils, if required.
+                If a pupil is not going to participate, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
+            </p>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      What does each status mean?
+    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <dl class="govuk-panel-list">
+                        <dt>
+                            <div><strong>Not started</strong></div>
+                            <div>This is the default status when a pupil has been added to the school’s register.</div>
+                            <div>
+                                This status will show when:
+                                <ul class="govuk-list govuk-list--bullet">
+                                    <li>A PIN has yet to be generated for pupil to start the check</li>
+                                    <li>A PIN has expired before use</li>
+                                </ul>
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>PIN generated</strong></div>
+                            <div>A PIN has been generated for a pupil and has not expired or been used.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Logged in</strong></div>
+                            <div>A PIN has been used to login to the system, but the pupil has yet to start the check (clicked the check start button).</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Check started</strong></div>
+                            <div>The start button on the main questions has been clicked by the pupil, but the check has not been completed.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Restart</strong></div>
+                            <div>A restart has been selected for a pupil. If Restart is removed the status returns to the pupil's previous state.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Not taking the check</strong></div>
+                            <div>A reason for "not taking the check" has been applied to the pupil. If removed the pupil returns to the previous state.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Incomplete</strong></div>
+                            <div>The pupil has started the check but the time allowed has lapsed without a record of submission.
+                                A restart for the pupil will be required to complete the check.
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Complete</strong></div>
+                            <div>Pupil has completed the check successfully.</div>
+                        </dt>
+                    </dl>
+                </div>
+            </details>
+            <a href="/pupil-register/pupil/add/" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-right-2" data-module="govuk-button">
+                Add pupil
+            </a>
+            <a href="/pupil-register/pupil/add-batch-pupils/" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-form-button" data-module="govuk-button">
+                Add multiple pupils
+            </a>
+            <table id="register-pupils" class="govuk-table govuk-spacious">
+                <caption class="govuk-body govuk-table__caption">List of available pupils (<%= pupils.length || 0 %>)</caption>
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                        <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                <% pupils.forEach((p) => { %>
+                    <tr class="govuk-table__row">
+                        <td scope="row"
+                        <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell govuk-highlight-item"<% } %>
+                        >
+                            <div class="govuk-highlight-wrapper">
+                                <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed) { %>
+                                    <a class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
+                                <% } else { %>
+                                    <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
+                                <% } %>
+                                <% if (p.showDoB) { %>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell"><%= p.group %></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Pupils not taking the check</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Access arrangements</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>
+<script src="/javascripts/pupil-register.js"></script>

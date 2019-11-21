@@ -13,6 +13,7 @@ const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
+const pupilNamePresenter = require('../helpers/pupil-name-presenter')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -183,6 +184,7 @@ const getViewAndPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let pupilsPresentationData
   let school
   let error
   let qrDataURL
@@ -198,6 +200,7 @@ const getViewAndPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
+    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
@@ -210,7 +213,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   return res.render('pupil-pin/view-and-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
-    pupils,
+    pupils: pupilsPresentationData,
     date,
     error,
     helplineNumber,
@@ -235,6 +238,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let pupilsPresentationData
   let groups
   let school
   let error
@@ -251,6 +255,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
+    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (pupils.length > 0) {
@@ -264,7 +269,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   return res.render('pupil-pin/view-and-custom-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
-    pupils,
+    pupils: pupilsPresentationData,
     groups,
     date,
     error,

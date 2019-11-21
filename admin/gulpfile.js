@@ -73,6 +73,21 @@ gulp.task('bundle-js', function () {
     .pipe(gulp.dest('./public/javascripts/'))
 })
 
+gulp.task('bundle-func-calls-js', function () {
+  return gulp.src(['./assets/javascripts/pupil-register.js'])
+    .pipe(concat('pupil-register.js'))
+    .pipe(babel({
+      presets: ['@babel/preset-env'],
+      sourceType: 'unambiguous'
+    }))
+    .pipe(uglify({
+      ie8: true
+    }).on('error', function (e) {
+      winston.error(e)
+    }))
+    .pipe(gulp.dest('./public/javascripts/'))
+})
+
 gulp.task('clean', function () {
   return gulp.src([
     'public/javascripts/app.js',
@@ -120,6 +135,7 @@ gulp.task('realclean', gulp.series('clean'), function () {
 gulp.task('build',
   gulp.parallel('sass',
     'bundle-js',
+    'bundle-func-calls-js',
     'copy-images',
     'copy-gds-images',
     'copy-gds-fonts',
