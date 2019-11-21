@@ -64,6 +64,11 @@ describe('prepared-check-sync.service', () => {
       ]
       return refs
     })
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        checkCode: 'checkCode'
+      }
+    })
     await sut.process(pupilUUID)
     expect(mergeServiceMock.merge).toHaveBeenCalledTimes(3)
   })

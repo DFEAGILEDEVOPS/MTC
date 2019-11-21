@@ -15,7 +15,7 @@ export class PreparedCheckMergeDataService implements IPreparedCheckMergeDataSer
   private static aaCodes = new Array<IAccessArrangementCode>()
   private sqlService: SqlService
 
-  constructor () {
+  constructor() {
     this.sqlService = new SqlService()
   }
   async getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<string[]> {
@@ -42,25 +42,18 @@ export interface IPreparedCheckMergeService {
 export class PreparedCheckMergeService implements IPreparedCheckMergeService {
 
   private dataService: IPreparedCheckMergeDataService
-  constructor (dataService?: IPreparedCheckMergeDataService) {
+  constructor(dataService?: IPreparedCheckMergeDataService) {
     if (dataService === undefined) {
       dataService = new PreparedCheckMergeDataService()
     }
     this.dataService = dataService
   }
-  async merge (existingCheckConfig: ICheckConfig, newAaConfig: any): Promise<ICheckConfig> {
-    if (newAaConfig.length === 0) {
-      return this.updateAccessArrangements(existingCheckConfig, [])
+  async merge (oldConfig: ICheckConfig, newConfig: any): Promise<ICheckConfig> {
+    if (oldConfig.colourContrastCode) {
+      delete oldConfig.colourContrastCode
     }
-    return this.updateAccessArrangements(existingCheckConfig, newAaConfig)
-  }
-
-  private async updateAccessArrangements (checkConfig: ICheckConfig, newAccessArrangements: any) {
-    if (checkConfig.colourContrastCode) {
-      delete checkConfig.colourContrastCode
-    }
-    if (checkConfig.fontSizeCode) {
-      delete checkConfig.fontSizeCode
+    if (oldConfig.fontSizeCode) {
+      delete oldConfig.fontSizeCode
     }
     const aaConfig = {
       audibleSounds: false,
@@ -73,12 +66,12 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       fontSizeCode: undefined,
       colourContrastCode: undefined
     }
-    if (!newAccessArrangements || newAccessArrangements.length === 0) {
-      return R.merge(checkConfig, aaConfig)
+    if (!newConfig || newConfig.length === 0) {
+      return R.merge(oldConfig, aaConfig)
     }
-    const fontSizeAa = newAccessArrangements.find((aa: any) => aa.pupilFontSizeCode)
-    const colourContrastAa = newAccessArrangements.find((aa: any) => aa.pupilColourContrastCode)
-    const newAaIds = newAccessArrangements.map((aa: any) => aa.accessArrangements_id)
+    const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
+    const colourContrastAa = newConfig.find((aa: any) => aa.pupilColourContrastCode)
+    const newAaIds = newConfig.map((aa: any) => aa.accessArrangements_id)
     let aaCodes
     try {
       aaCodes = await this.dataService.getAccessArrangementsCodesByIds(newAaIds)
@@ -107,7 +100,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       if (code === AccessArrangementCodes.QUESTION_READER) aaConfig.questionReader = true
       if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) aaConfig.nextBetweenQuestions = true
     })
-    return R.merge(checkConfig, aaConfig)
+    return R.merge(oldConfig, aaConfig)
   }
 }
 

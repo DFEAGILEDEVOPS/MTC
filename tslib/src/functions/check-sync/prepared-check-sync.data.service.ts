@@ -15,7 +15,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
 
   async getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]> {
     const liveCheckSql = `
-    SELECT TOP 1 chk.checkCode
+    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
       FROM [mtc_admin].[check] chk
     INNER JOIN [mtc_admin].checkStatus cs
       ON cs.id = chk.checkStatus_id
@@ -32,7 +32,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
       AND p.urlSlug = @pupilUUID
     ORDER BY chk.createdAt DESC`
     const tioCheckSql = `
-    SELECT TOP 1 chk.checkCode
+    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
       FROM [mtc_admin].[check] chk
     INNER JOIN [mtc_admin].checkStatus cs
       ON cs.id = chk.checkStatus_id

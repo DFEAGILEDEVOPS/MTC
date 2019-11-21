@@ -49,12 +49,12 @@ describe('prepared-check-merge.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('if no new AA config passed in, existing config preserved', async () => {
+  test('if no new AA config passed in, defaults are returned', async () => {
     checkConfig.colourContrast = true
     checkConfig.fontSize = true
     const actualConfig = await sut.merge(checkConfig, [])
-    expect(actualConfig.colourContrast).toBe(true)
-    expect(actualConfig.fontSize).toBe(true)
+    expect(actualConfig.colourContrast).toBe(false)
+    expect(actualConfig.fontSize).toBe(false)
   })
 
   test('creates a new config based on the new aa settings and the config supplied', async () => {
