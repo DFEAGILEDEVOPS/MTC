@@ -8,6 +8,7 @@ const concat = require('gulp-concat')
 const clean = require('gulp-clean')
 const replace = require('gulp-replace')
 const winston = require('winston')
+const merge = require('merge-stream')
 require('dotenv').config()
 
 const config = require('./config')
@@ -74,18 +75,25 @@ gulp.task('bundle-js', function () {
 })
 
 gulp.task('bundle-func-calls-js', function () {
-  return gulp.src(['./assets/javascripts/pupil-register.js'])
-    .pipe(concat('pupil-register.js'))
-    .pipe(babel({
-      presets: ['@babel/preset-env'],
-      sourceType: 'unambiguous'
-    }))
-    .pipe(uglify({
-      ie8: true
-    }).on('error', function (e) {
-      winston.error(e)
-    }))
-    .pipe(gulp.dest('./public/javascripts/'))
+  const viewJS = [
+    'pupil-register.js',
+    'pupil-pin.js'
+  ]
+  const tasks = viewJS.map(v => {
+    return gulp.src([`./assets/javascripts/${v}`])
+      .pipe(concat(v))
+      .pipe(babel({
+        presets: ['@babel/preset-env'],
+        sourceType: 'unambiguous'
+      }))
+      .pipe(uglify({
+        ie8: true
+      }).on('error', function (e) {
+        winston.error(e)
+      }))
+      .pipe(gulp.dest('./public/javascripts/'))
+  })
+  return merge(tasks)
 })
 
 gulp.task('clean', function () {

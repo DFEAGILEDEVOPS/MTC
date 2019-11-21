@@ -49,6 +49,7 @@ const pupilRegisterService = {
         lastName: d.lastName,
         middleNames: d.middleNames,
         dateOfBirth: d.dateOfBirth,
+        upn: d.upn,
         group: d.groupName,
         outcome: pupilRegisterService.getProcessStatus(
           d.pupilStatusCode,

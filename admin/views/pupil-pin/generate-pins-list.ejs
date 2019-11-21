@@ -40,14 +40,15 @@
                     <% pupils.forEach( (pupil, index) => { %>
                         <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
                             <td scope="row">
-                                <label for="pupil-<%= pupil.id %>">
-                                    <%= pupil.fullName %>
+                                <label id="pupilName" for="pupil-<%= pupil.id %>">
+                                    </span><%= pupil.fullName %>
                                 </label>
                                 <% if (pupil.showDoB) { %>
                                     <div class="govuk-font-greyed-out govuk-!-font-size-16">
                                         Date of birth: <%= pupil.dateOfBirth %>
                                     </div>
                                 <% } %>
+                                <input type="hidden" id="pupilUpn" name="pupilUpn" value="<%= pupil.upn %>"/>
                             </td>
                             <td>
                                 <div class="multiple-choice-mtc">
@@ -89,11 +90,4 @@
         </div>
     </div>
 </main>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    window.MTCAdmin.tableSort.applySorting(window.document, 'generatePins', {
-      sortNullsLast: false,
-      ignoredStrings: []
-    })
-  })
-</script>
+<script src="/javascripts/pupil-pin.js"></script>
