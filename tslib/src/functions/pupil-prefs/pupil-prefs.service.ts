@@ -40,7 +40,6 @@ export class PupilPrefsService {
     }
     await this.dataService.updatePupilPreferences(dataUpdates)
     const pupilUUID = await this.dataService.getPupilUUIDByCheckCode(preferenceUpdate.checkCode)
-    console.log('GUY:pupilUUID:', pupilUUID)
     functionBindings.checkSyncQueue = []
     functionBindings.checkSyncQueue.push({
       pupilUUID: pupilUUID,
@@ -100,8 +99,6 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
     ]
     const result = await this.sqlService.query(sql, params)
     if (result.length === 1) {
-      console.log('GUY: ARRAY HAS 1')
-      console.log('GUY: pupilUUID is:', result[0].pupilUUID)
       return result[0].pupilUUID
     }
   }

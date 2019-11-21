@@ -7,8 +7,6 @@ const functionName = 'pupil-prefs'
 const queueTrigger: AzureFunction = async function (context: Context, pupilPrefsMessage: any): Promise<void> {
   const start = performance.now()
   const version = pupilPrefsMessage.version
-  context.log('GUY: pupil prefs message...')
-  console.dir(pupilPrefsMessage)
   context.log.info(`${functionName}: version:${version} message received for checkCode ${pupilPrefsMessage.checkCode}`)
   try {
     if (version !== 1) {

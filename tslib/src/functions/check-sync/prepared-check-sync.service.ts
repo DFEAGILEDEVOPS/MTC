@@ -55,5 +55,3 @@ export class PreparedCheckSyncService {
     return `preparedCheck:${checkReference.schoolPin}:${checkReference.pupilPin}`
   }
 }
-
-
