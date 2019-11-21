@@ -32,7 +32,7 @@ describe('auth controller', () => {
     res = httpMocks.createResponse()
     featureService = new FeatureServiceMock()
     redisPupilAuthService = new RedisPupilAuthServiceMock()
-    authController = new AuthController(featureService)
+    authController = new AuthController(featureService, redisPupilAuthService)
   })
 
   it('returns an 400 error if the request is not JSON', async () => {
