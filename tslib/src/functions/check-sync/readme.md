@@ -15,7 +15,7 @@ for each check...
   - seek fontsize setting
   - seek contrast setting
   - construct array of ids for codes
-  - get array of codes from database *this could use redis*
+  - get array of codes from database
   - loops codes to initialise the following settings in default config
     - audible sounds flag
     - input assistance flag
