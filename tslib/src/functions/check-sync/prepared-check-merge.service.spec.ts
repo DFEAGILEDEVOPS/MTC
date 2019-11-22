@@ -1,13 +1,11 @@
-import { PreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
-import { IPreparedCheckSyncDataService } from './prepared-check-sync.data.service'
+import { PreparedCheckMergeService, ICheckConfig, IPreparedCheckMergeDataService } from './prepared-check-merge.service'
+import { PreparedCheckSyncDataService } from './prepared-check-sync.data.service'
 
 let sut: PreparedCheckMergeService
-let dataServiceMock: IPreparedCheckSyncDataService
+let dataServiceMock: IPreparedCheckMergeDataService
 
-const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
-  getActiveCheckReferencesByPupilUuid: jest.fn(),
-  getAccessArrangementsCodesByIds: jest.fn(),
-  getAccessArrangementsByCheckCode: jest.fn()
+const PreparedCheckMergeDataServiceMock = jest.fn<IPreparedCheckMergeDataService, any>(() => ({
+  getAccessArrangementsCodesByIds: jest.fn()
 }))
 
 const aaConfig = {
@@ -20,13 +18,11 @@ const aaConfig = {
   nextBetweenQuestions: false
 }
 
-const preparedCheck: IPreparedCheck = {
-  schoolPin: 'abc12def',
-  pupilPin: 1234,
-  checkCode: 'check-code',
+const checkConfig: ICheckConfig = {
   questionTime: 5,
   loadingTime: 5,
   speechSynthesis: false,
+  practice: true,
   ...aaConfig
 }
 
@@ -46,7 +42,7 @@ const pupilAccessArrangements = [
 describe('prepared-check-merge.service', () => {
 
   beforeEach(() => {
-    dataServiceMock = new PreparedCheckSyncDataServiceMock()
+    dataServiceMock = new PreparedCheckMergeDataServiceMock()
     sut = new PreparedCheckMergeService(dataServiceMock)
   })
 
@@ -54,29 +50,25 @@ describe('prepared-check-merge.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('access arrangement codes are looked up in sql and error thrown if not found', async () => {
-    dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
-      return [aaConfig]
-    })
-    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (newAaIds: number[]) => {
-      return []
-    })
-    try {
-      await sut.merge(preparedCheck)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error.message).toBe('no access arrangement codes found')
-    }
+  test('if no new AA config passed in, defaults are returned', async () => {
+    checkConfig.colourContrast = true
+    checkConfig.fontSize = true
+    const actualConfig = await sut.merge(checkConfig, [])
+    expect(actualConfig.colourContrast).toBe(false)
+    expect(actualConfig.fontSize).toBe(false)
   })
 
-  test.skip('creates a new config based on the new aa settings and the config supplied', async () => {
+  test.skip('examine data', async () => {
+    const ds = new PreparedCheckSyncDataService()
+    const data = await ds.getAccessArrangementsByCheckCode('B5438EE9-D8D6-45E0-B4E9-644AFA33ED69')
+    console.dir(data)
+  })
+
+  test('creates a new config based on the new aa settings and the config supplied', async () => {
     dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (ids: number[]) => {
       return ['FTS', 'CCT']
     })
-    dataServiceMock.getAccessArrangementsByCheckCode = jest.fn(async (checkCode: string) => {
-      return pupilAccessArrangements
-    })
-    const config = await sut.merge(preparedCheck)
+    const config = await sut.merge(checkConfig, pupilAccessArrangements)
     expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalled()
     expect(config.fontSize).toBeTruthy()
     expect(config.fontSizeCode).toBe('RGL')

@@ -1,5 +1,5 @@
 import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
-import { IPreparedCheckMergeService, PreparedCheckMergeService } from './prepared-check-merge.service'
+import { IPreparedCheckMergeService, PreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
 
@@ -16,7 +16,7 @@ export class PreparedCheckSyncService {
     }
     this.dataService = dataService
     if (mergeService === undefined) {
-      mergeService = new PreparedCheckMergeService(this.dataService)
+      mergeService = new PreparedCheckMergeService()
     }
     this.mergeService = mergeService
     if (redisService === undefined) {
@@ -32,31 +32,28 @@ export class PreparedCheckSyncService {
   async process (pupilUUID: string): Promise<void> {
     const checkReferences = await this.dataService.getActiveCheckReferencesByPupilUuid(pupilUUID)
     if (checkReferences.length === 0) {
-      throw new Error(`no checks found for pupil UUID:${pupilUUID}`)
+      return
     }
     for (let index = 0; index < checkReferences.length; index++) {
       const ref = checkReferences[index]
       this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
-      const preparedCheck = await this.redisService.get(cacheKey)
+      const preparedCheck: IPreparedCheck | null = await this.redisService.get(cacheKey)
       if (preparedCheck === null) {
         throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
       }
+      const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
+      const updatedConfig = await this.mergeService.merge(preparedCheck.config, newAaConfig)
+      preparedCheck.config = updatedConfig
       const ttl = await this.redisService.ttl(cacheKey)
       if (ttl === null) {
         throw new Error(`no TTL found on preparedCheck. checkCode:${ref.checkCode}`)
       }
-      const updatedPreparedCheck = await this.mergeService.merge(preparedCheck)
-      await this.redisService.setex(cacheKey, updatedPreparedCheck, ttl)
+      await this.redisService.setex(cacheKey, preparedCheck, ttl)
     }
   }
 
   buildPreparedCheckCacheKey (checkReference: IActiveCheckReference): string {
     return `preparedCheck:${checkReference.schoolPin}:${checkReference.pupilPin}`
   }
-}
-
-export interface IPreparedCheckSyncMessage {
-  version: number
-  pupilUUID: string
 }
