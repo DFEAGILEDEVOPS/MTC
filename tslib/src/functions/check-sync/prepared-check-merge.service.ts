@@ -1,33 +1,61 @@
-import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService } from './prepared-check-sync.data.service'
 import * as R from 'ramda'
+import moment = require('moment')
+import { SqlService } from '../../sql/sql.service'
+
+export interface IPreparedCheckMergeDataService {
+  getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<Array<string>>
+}
+
+interface IAccessArrangementCode {
+  id: number
+  code: string
+}
+
+export class PreparedCheckMergeDataService implements IPreparedCheckMergeDataService {
+  private static aaCodes = new Array<IAccessArrangementCode>()
+  private sqlService: SqlService
+
+  constructor () {
+    this.sqlService = new SqlService()
+  }
+  async getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<string[]> {
+    if (PreparedCheckMergeDataService.aaCodes.length === 0) {
+      await this.initCodes()
+    }
+    return Object.keys(PreparedCheckMergeDataService.aaCodes).filter((code: any) =>
+      PreparedCheckMergeDataService.aaCodes[code] && aaIds.includes(PreparedCheckMergeDataService.aaCodes[code].id)
+    )
+  }
+
+  private async initCodes (): Promise<void> {
+    const sql = 'SELECT id, code FROM [mtc_admin].[accessArrangements]'
+    const codes = await this.sqlService.query(sql)
+    codes.map((aa: any) => {
+      PreparedCheckMergeDataService.aaCodes[aa.code] = { id: aa.id, code: aa.code }
+    })
+  }
+}
 
 export interface IPreparedCheckMergeService {
-  merge (preparedCheck: any): Promise<IPreparedCheck>
+  merge (preparedCheck: any, newAaConfig: any): Promise<ICheckConfig>
 }
 export class PreparedCheckMergeService implements IPreparedCheckMergeService {
-  private dataService: IPreparedCheckSyncDataService
-  constructor (dataService?: IPreparedCheckSyncDataService) {
+
+  private dataService: IPreparedCheckMergeDataService
+  constructor (dataService?: IPreparedCheckMergeDataService) {
     if (dataService === undefined) {
-      dataService = new PreparedCheckSyncDataService()
+      dataService = new PreparedCheckMergeDataService()
     }
     this.dataService = dataService
   }
-  async merge (preparedCheck: IPreparedCheck): Promise<IPreparedCheck> {
-    const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
-    if (newAaConfig.length === 0) {
-      return this.updateAccessArrangements(preparedCheck, [])
+  async merge (oldConfig: ICheckConfig, newConfig: any): Promise<ICheckConfig> {
+    if (oldConfig.colourContrastCode) {
+      delete oldConfig.colourContrastCode
     }
-    return this.updateAccessArrangements(preparedCheck, newAaConfig)
-  }
-
-  private async updateAccessArrangements (preparedCheck: IPreparedCheck, newAccessArrangements: any) {
-    if (preparedCheck.colourContrastCode) {
-      delete preparedCheck.colourContrastCode
+    if (oldConfig.fontSizeCode) {
+      delete oldConfig.fontSizeCode
     }
-    if (preparedCheck.fontSizeCode) {
-      delete preparedCheck.fontSizeCode
-    }
-    const aaConfig = {
+    const baseConfig = {
       audibleSounds: false,
       inputAssistance: false,
       numpadRemoval: false,
@@ -38,12 +66,12 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       fontSizeCode: undefined,
       colourContrastCode: undefined
     }
-    if (!newAccessArrangements || newAccessArrangements.length === 0) {
-      return R.merge(preparedCheck, aaConfig)
+    if (!newConfig || newConfig.length === 0) {
+      return R.merge(oldConfig, baseConfig)
     }
-    const fontSizeAa = newAccessArrangements.find((aa: any) => aa.pupilFontSizeCode)
-    const colourContrastAa = newAccessArrangements.find((aa: any) => aa.pupilColourContrastCode)
-    const newAaIds = newAccessArrangements.map((aa: any) => aa.accessArrangements_id)
+    const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
+    const colourContrastAa = newConfig.find((aa: any) => aa.pupilColourContrastCode)
+    const newAaIds = newConfig.map((aa: any) => aa.accessArrangements_id)
     let aaCodes
     try {
       aaCodes = await this.dataService.getAccessArrangementsCodesByIds(newAaIds)
@@ -54,25 +82,25 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       throw new Error('no access arrangement codes found')
     }
     aaCodes.forEach(code => {
-      if (code === AccessArrangementCodes.AUDIBLE_SOUNDS) aaConfig.audibleSounds = true
-      if (code === AccessArrangementCodes.INPUT_ASSISTANCE) aaConfig.inputAssistance = true
-      if (code === AccessArrangementCodes.NUMPAD_REMOVAL) aaConfig.numpadRemoval = true
+      if (code === AccessArrangementCodes.AUDIBLE_SOUNDS) baseConfig.audibleSounds = true
+      if (code === AccessArrangementCodes.INPUT_ASSISTANCE) baseConfig.inputAssistance = true
+      if (code === AccessArrangementCodes.NUMPAD_REMOVAL) baseConfig.numpadRemoval = true
       if (code === AccessArrangementCodes.FONT_SIZE) {
-        aaConfig.fontSize = true
+        baseConfig.fontSize = true
       }
       if (fontSizeAa && fontSizeAa.pupilFontSizeCode) {
-        aaConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
+        baseConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
       }
       if (code === AccessArrangementCodes.COLOUR_CONTRAST) {
-        aaConfig.colourContrast = true
+        baseConfig.colourContrast = true
       }
       if (colourContrastAa && colourContrastAa.pupilColourContrastCode) {
-        aaConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
+        baseConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
       }
-      if (code === AccessArrangementCodes.QUESTION_READER) aaConfig.questionReader = true
-      if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) aaConfig.nextBetweenQuestions = true
+      if (code === AccessArrangementCodes.QUESTION_READER) baseConfig.questionReader = true
+      if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) baseConfig.nextBetweenQuestions = true
     })
-    return R.merge(preparedCheck, aaConfig)
+    return R.merge(oldConfig, baseConfig)
   }
 }
 
@@ -87,18 +115,64 @@ export enum AccessArrangementCodes {
 }
 
 export interface IPreparedCheck {
-  schoolPin: string
-  pupilPin: number
   checkCode: string
-  colourContrastCode?: string
-  fontSizeCode?: string
-  questionTime: number
-  loadingTime: number
+  config: ICheckConfig
+  createdAt: moment.Moment
+  pinExpiresAt: moment.Moment
+  pupil: {
+    firstName: string,
+    lastName: string,
+    dob: string,
+    checkCode: string
+  }
+  pupilId: number
+  questions: Array<ICheckQuestion>
+  school: {
+    id: number,
+    name: string,
+    uuid: string
+  }
+  schoolId: number
+  tokens: {
+    checkStarted: {
+      token: string
+      url: string
+    },
+    pupilPreferences: {
+      token: string
+      url: string
+    },
+    pupilFeedback: {
+      token: string
+      url: string
+    },
+    jwt: {
+      token: string
+    }
+  },
+  updatedAt: moment.Moment
+}
+
+export interface ICheckQuestion {
+  order: number
+  factor1: number
+  factor2: number
+}
+
+export interface ICheckConfig {
   audibleSounds: boolean
-  inputAssistance: boolean
-  numpadRemoval: boolean
-  fontSize: boolean
+  checkTime?: number
   colourContrast: boolean
+  colourContrastCode?: string
+  compressCompletedCheck?: boolean
+  fontSize: boolean
+  fontSizeCode?: string
+  inputAssistance: boolean
+  loadingTime: number
+  nextBetweenQuestions: boolean
+  numpadRemoval: boolean
+  practice: boolean
   questionReader: boolean
-  speechSynthesis: boolean
+  questionTime: number
+  speechSynthesis?: boolean
 }
