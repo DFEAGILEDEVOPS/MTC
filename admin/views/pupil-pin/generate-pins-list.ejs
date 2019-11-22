@@ -17,7 +17,7 @@
             <% if (pupils && pupils.length > 0) { %>
             <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off" id="pupilListForm">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-                <table class="govuk-table govuk-spacious govuk-!-margin-bottom-9" id="generatePins" role="listbox" aria-label="Select pupils.">
+                <table class="govuk-table govuk-spacious govuk-!-margin-bottom-9" id="generatePins" name="filterablePupislList" role="listbox" aria-label="Select pupils.">
                     <caption class="govuk-body govuk-table__caption">List of available pupils</caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
@@ -41,7 +41,7 @@
                         <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
                             <td scope="row">
                                 <label id="pupilName" for="pupil-<%= pupil.id %>">
-                                    </span><%= pupil.fullName %>
+                                    <%= pupil.fullName %>
                                 </label>
                                 <% if (pupil.showDoB) { %>
                                     <div class="govuk-font-greyed-out govuk-!-font-size-16">

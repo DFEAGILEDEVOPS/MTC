@@ -12,7 +12,7 @@ if (!window.MTCAdmin) {
     if ($('.filter-name').length > 0) {
       $('#search-name').on('change keyup', function () {
         var input = $.trim($(this).val()).toLowerCase()
-        var selAllTr = 'table > tbody > tr'
+        var selAllTr = 'table[name="filterablePupislList"] > tbody > tr'
         if (input.length === 0) {
           $(selAllTr).each(function () {
             $(this).removeClass('filter-hidden-name')

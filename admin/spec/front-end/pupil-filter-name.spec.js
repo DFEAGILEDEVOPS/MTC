@@ -11,7 +11,7 @@ describe('pupil filter name module', function () {
             <input class="govuk-input" id="search-name" type="text" name="search-name">
         </span>
     </div>
-    <table id="register-pupils" class="govuk-table govuk-spacious">
+    <table id="register-pupils" name="filterablePupislList" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">List of available pupils (11)</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
@@ -222,5 +222,27 @@ describe('pupil filter name module', function () {
     searchInput.dispatchEvent(ev)
     const result = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
     expect(result.length).toEqual(0)
+  })
+  it('returns results even if pupil upns are not detected as hidden inputs within rows', function () {
+    const searchInput = document.getElementById('search-name')
+    document.querySelectorAll('#pupilUpn').forEach(function (a) {
+      a.remove()
+    })
+    const ev = new Event('change')
+    searchInput.value = 'Brewer'
+    searchInput.dispatchEvent(ev)
+    const result = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
+    expect(result.length).toEqual(1)
+  })
+  it('returns results even if pupil names are not detected and only upns are available', function () {
+    const searchInput = document.getElementById('search-name')
+    document.querySelectorAll('#pupilName').forEach(function (a) {
+      a.remove()
+    })
+    const ev = new Event('change')
+    searchInput.value = 'G801200001010'
+    searchInput.dispatchEvent(ev)
+    const result = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
+    expect(result.length).toEqual(1)
   })
 })
