@@ -1,11 +1,12 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import config from '../../config'
+import { HttpRequest } from '@azure/functions'
 
 export interface IPupilAuthFunctionBindings {
   pupilLoginQueue: Array<any>
 }
 
-export class PupilAuthenticationService {
+export class PupilAuthService {
 
   private redisService: IRedisService
   private eightHoursInSeconds: number = 28800
@@ -15,6 +16,31 @@ export class PupilAuthenticationService {
       redisService = new RedisService()
     }
     this.redisService = redisService
+  }
+
+  async authenticate2 (req: HttpRequest, bindings: IPupilAuthFunctionBindings): Promise<any> {
+    if (req.method === 'OPTIONS') {
+      return {
+        body: '',
+        headers:
+        {
+          'Access-Control-Allow-Methods' : 'POST,OPTIONS',
+          'allow' : 'POST,OPTIONS'
+        },
+        status: 200
+      }
+    }
+
+    const noAuth = {
+      status: 401
+    }
+
+    if (req.body === undefined) return noAuth
+    if (req.body.schoolPin === undefined) return noAuth
+    if (req.body.pupilPin === undefined) return noAuth
+
+    const cacheKey = this.buildCacheKey(req.body.schoolPin, req.body.pupilPin)
+    await this.redisService.get(cacheKey)
   }
 
   async authenticate (schoolPin: string, pupilPin: string, bindings: IPupilAuthFunctionBindings): Promise<object | undefined> {

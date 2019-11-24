@@ -1,10 +1,23 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { PupilAuthenticationService, IPupilAuthFunctionBindings } from './pupil-auth.service'
+import { PupilAuthService, IPupilAuthFunctionBindings } from './pupil-auth.service'
 
-const pupilAuthService = new PupilAuthenticationService()
+const pupilAuthService = new PupilAuthService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+
+  if (req.method === 'OPTIONS') {
+    context.res = {
+      body: '',
+      headers:
+      {
+        'Access-Control-Allow-Methods' : 'POST,OPTIONS',
+        'allow' : 'POST,OPTIONS'
+      },
+      status: 200
+    }
+    return
+  }
 
   if (!req.body || !req.body.pupilPin || !req.body.schoolPin) {
     context.res = {
