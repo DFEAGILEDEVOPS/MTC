@@ -14,7 +14,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   }
   const pupilPin = req.body.pupilPin
   const schoolPin = req.body.schoolPin
-  const check = pupilAuthService.authenticate(schoolPin, pupilPin, context.bindings as IPupilAuthFunctionBindings)
+  const check = await pupilAuthService.authenticate(schoolPin, pupilPin, context.bindings as IPupilAuthFunctionBindings)
   if (!check) {
     context.res = {
       status: 401
@@ -23,7 +23,10 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   } else {
     context.res = {
       status: 200,
-      body: check
+      body: check,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
   }
 }
