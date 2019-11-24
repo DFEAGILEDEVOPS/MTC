@@ -32,27 +32,27 @@ describe('pupil-auth.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('short circuit if request body missing', async () => {
+  test('401 returned if request body missing', async () => {
     req.body = undefined
-    const res = await sut.authenticate2(req, bindings)
+    const res = await sut.authenticate2(bindings, req)
     expect(redisMock.get).not.toHaveBeenCalled()
     expect(res).toBeDefined()
     expect(res.status).toBeDefined()
     expect(res.status).toBe(401)
   })
 
-  test('short circuit if pupilPin missing', async () => {
+  test('401 returned if pupilPin missing', async () => {
     req.body.pupilPin = undefined
-    const res = await sut.authenticate2(req, bindings)
+    const res = await sut.authenticate2(bindings, req)
     expect(redisMock.get).not.toHaveBeenCalled()
     expect(res).toBeDefined()
     expect(res.status).toBeDefined()
     expect(res.status).toBe(401)
   })
 
-  test('short circuit if schoolPin missing', async () => {
+  test('401 returned if schoolPin missing', async () => {
     req.body.schoolPin = undefined
-    const res = await sut.authenticate2(req, bindings)
+    const res = await sut.authenticate2(bindings, req)
     expect(redisMock.get).not.toHaveBeenCalled()
     expect(res).toBeDefined()
     expect(res.status).toBeDefined()
@@ -61,7 +61,7 @@ describe('pupil-auth.service', () => {
 
   test('options method returns relevant info', async () => {
     req.method = 'OPTIONS'
-    const res = await sut.authenticate2(req, bindings)
+    const res = await sut.authenticate2(bindings, req)
     expect(res.body).toBe('')
     expect(res.headers).toStrictEqual({
       'Access-Control-Allow-Methods' : 'POST,OPTIONS',
@@ -71,15 +71,78 @@ describe('pupil-auth.service', () => {
   })
 
   test('post method attempts redis lookup of preparedCheck', async () => {
-    await sut.authenticate2(req, bindings)
+    await sut.authenticate2(bindings, req)
     const expectedKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
     expect(redisMock.get).toHaveBeenCalledWith(expectedKey)
   })
 
   test('invalid credentials returns 401', async () => {
-    await sut.authenticate2(req, bindings)
-    expect(redisMock.get).toHaveBeenCalled()
+    const res = await sut.authenticate2(bindings, req)
+    expect(res.status).toBe(401)
   })
-  test.todo('valid credentials returns 200')
-  test.todo('valid credentials returns 200')
+
+  test('valid credentials returns 200', async () => {
+    const preparedCheck = {
+      checkCode: 'abc',
+      config: {
+        practice: false
+      }
+    }
+    redisMock.get = jest.fn(async (key) => {
+      return preparedCheck
+    })
+    const res = await sut.authenticate2(bindings, req)
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual(preparedCheck)
+  })
+
+  test('when prepared check found, lookup key is added to redis', async () => {
+    const preparedCheck = {
+      checkCode: 'abc',
+      config: {
+        practice: false
+      }
+    }
+    redisMock.get = jest.fn(async (key) => {
+      return preparedCheck
+    })
+    const preparedCheckKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
+    const lookupKey = `check-started-check-lookup:${preparedCheck.checkCode}`
+    await sut.authenticate2(bindings, req)
+    expect(redisMock.setex).toHaveBeenCalledWith(lookupKey, preparedCheckKey, 28800)
+  })
+
+  test('expire if live check', async () => {
+    const preparedCheck = {
+      checkCode: 'abc',
+      config: {
+        practice: false
+      }
+    }
+    redisMock.get = jest.fn(async (key) => {
+      return preparedCheck
+    })
+    const expectedKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
+    await sut.authenticate2(bindings, req)
+    expect(redisMock.expire).toHaveBeenCalledWith(expectedKey, 1800)
+  })
+
+  test('pupilLogin message is put on the queue', async () => {
+    const preparedCheck = {
+      checkCode: 'abc',
+      config: {
+        practice: false
+      }
+    }
+    redisMock.get = jest.fn(async (key) => {
+      return preparedCheck
+    })
+    const res = await sut.authenticate2(bindings, req)
+    expect(res.status).toBe(200)
+    expect(bindings.pupilLoginQueue.length).toBe(1)
+    const pupilLoginMessage = bindings.pupilLoginQueue[0]
+    expect(pupilLoginMessage.checkCode).toBe(preparedCheck.checkCode)
+    expect(pupilLoginMessage.loginAt).toBeDefined()
+    expect(pupilLoginMessage.version).toBe(1)
+  })
 })

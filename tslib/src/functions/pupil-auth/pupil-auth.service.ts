@@ -18,7 +18,7 @@ export class PupilAuthService {
     this.redisService = redisService
   }
 
-  async authenticate2 (req: HttpRequest, bindings: IPupilAuthFunctionBindings): Promise<any> {
+  async authenticate2 (bindings: IPupilAuthFunctionBindings, req: HttpRequest): Promise<any> {
     if (req.method === 'OPTIONS') {
       return {
         body: '',
@@ -40,7 +40,28 @@ export class PupilAuthService {
     if (req.body.pupilPin === undefined) return noAuth
 
     const cacheKey = this.buildCacheKey(req.body.schoolPin, req.body.pupilPin)
-    await this.redisService.get(cacheKey)
+    const preparedCheck = await this.redisService.get(cacheKey)
+    if (!preparedCheck) return noAuth
+
+    const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheck.checkCode)
+    await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
+
+    if (preparedCheck.config.practice === false) {
+      await this.redisService.expire(cacheKey, config.PreparedCheckExpiryAfterLoginSeconds)
+    }
+
+    const pupilLoginMessage = {
+      checkCode: preparedCheck.checkCode,
+      loginAt: new Date(),
+      version: 1
+    }
+    bindings.pupilLoginQueue = []
+    bindings.pupilLoginQueue.push(pupilLoginMessage)
+
+    return {
+      status: 200,
+      body: preparedCheck
+    }
   }
 
   async authenticate (schoolPin: string, pupilPin: string, bindings: IPupilAuthFunctionBindings): Promise<object | undefined> {
