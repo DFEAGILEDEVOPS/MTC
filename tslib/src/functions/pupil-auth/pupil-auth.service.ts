@@ -18,16 +18,17 @@ export class PupilAuthService {
     this.redisService = redisService
   }
 
-  async authenticate2 (bindings: IPupilAuthFunctionBindings, req: HttpRequest): Promise<any> {
+  async authenticate (bindings: IPupilAuthFunctionBindings, req: HttpRequest): Promise<any> {
     if (req.method === 'OPTIONS') {
       return {
         body: '',
         headers:
         {
           'Access-Control-Allow-Methods' : 'POST,OPTIONS',
-          'allow' : 'POST,OPTIONS'
+          'Access-Control-Allow-Headers' : 'content-type',
+          'Access-Control-Allow-Origin' : 'http://localhost:4200'
         },
-        status: 200
+        status: 204
       }
     }
 
@@ -65,32 +66,6 @@ export class PupilAuthService {
         'Content-Type': 'application/json'
       }
     }
-  }
-
-  async authenticate (schoolPin: string, pupilPin: string, bindings: IPupilAuthFunctionBindings): Promise<object | undefined> {
-    if (schoolPin.length === 0 || pupilPin.length === 0) {
-      throw new Error('schoolPin and pupilPin cannot be an empty string')
-    }
-    const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
-    const preparedCheckEntry = await this.redisService.get(cacheKey)
-    if (!preparedCheckEntry) {
-      return
-    }
-
-    // Emit a successful login to the queue
-    const pupilLoginMessage = {
-      checkCode: preparedCheckEntry.checkCode,
-      loginAt: new Date(),
-      version: 1
-    }
-    bindings.pupilLoginQueue = []
-    bindings.pupilLoginQueue.push(pupilLoginMessage)
-    const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheckEntry.checkCode)
-    await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
-    if (preparedCheckEntry.config.practice === false) {
-      await this.redisService.expire(cacheKey, config.PreparedCheckExpiryAfterLoginSeconds)
-    }
-    return preparedCheckEntry
   }
 
   private buildCheckStartedLookupKey (checkCode: string) {
