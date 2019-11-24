@@ -145,4 +145,21 @@ describe('pupil-auth.service', () => {
     expect(pupilLoginMessage.loginAt).toBeDefined()
     expect(pupilLoginMessage.version).toBe(1)
   })
+
+  test('content type is set to JSON when returning prepared check', async () => {
+    const preparedCheck = {
+      checkCode: 'abc',
+      config: {
+        practice: false
+      }
+    }
+    redisMock.get = jest.fn(async (key) => {
+      return preparedCheck
+    })
+    const res = await sut.authenticate2(bindings, req)
+    expect(res.status).toBe(200)
+    expect(res.headers).toStrictEqual({
+      'Content-Type': 'application/json'
+    })
+  })
 })

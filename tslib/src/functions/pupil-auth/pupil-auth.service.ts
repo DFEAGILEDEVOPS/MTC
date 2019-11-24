@@ -60,7 +60,10 @@ export class PupilAuthService {
 
     return {
       status: 200,
-      body: preparedCheck
+      body: preparedCheck,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
   }
 

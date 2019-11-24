@@ -5,7 +5,14 @@ import { PupilAuthService, IPupilAuthFunctionBindings } from './pupil-auth.servi
 const pupilAuthService = new PupilAuthService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-  return pupilAuthService.authenticate2(context.bindings as IPupilAuthFunctionBindings, context.req)
+  if (context.req === undefined) {
+    context.res = {
+      status: 401
+    }
+    return
+  }
+  const response = await pupilAuthService.authenticate2(context.bindings as IPupilAuthFunctionBindings, context.req)
+  context.res = response
 }
 
 export default httpTrigger
