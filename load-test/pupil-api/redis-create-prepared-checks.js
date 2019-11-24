@@ -32,7 +32,7 @@ const createChecks = async () => {
   const end = performance.now()
   const durationInMilliseconds = end - start
   redis.quit()
-  console.log(`${itemsCreated} preparedCheck entries added to redis in ${durationInMilliseconds} ms`)
+  console.log(`${itemsCreated} preparedCheck entries added to redis in ${durationInMilliseconds} ms, with TTL of ${twoHoursInSeconds / 60} minutes`)
 }
 
 createChecks()

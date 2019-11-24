@@ -1,0 +1,27 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "pupilLoginQueue",
+      "queueName": "pupil-login",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/functions/pupil-auth/index.js"
+}
