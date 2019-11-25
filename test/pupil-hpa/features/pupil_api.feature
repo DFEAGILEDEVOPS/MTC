@@ -11,3 +11,11 @@ Feature: Pupil Api
     Given I make a request with invalid credentials
     Then I should get a 401
     And I should see a unauthorised response
+
+  @new_check_process
+  Scenario: Redis expiry time is set to 30 mins after login
+    Given I have generated a pin for a pupil
+    When I make a request to login
+    Then I should see the expiry time change to 30 minutes
+
+

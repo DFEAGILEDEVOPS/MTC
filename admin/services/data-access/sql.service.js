@@ -8,7 +8,7 @@ const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
 const config = require('../../config')
-const redisCacheService = require('../redis-cache.service')
+const redisCacheService = require('./redis-cache.service')
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,

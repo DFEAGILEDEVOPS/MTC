@@ -30,8 +30,8 @@ Then(/^the service message should be saved$/) do
   expect(db_record['title']).to eql @message[:title]
   expect(db_record['message']).to eql @message[:message]
   redis_record = JSON.parse(REDIS_CLIENT.get('serviceMessage'))
-  expect(redis_record['title']).to eql @message[:title]
-  expect(redis_record['message']).to eql @message[:message]
+  expect(JSON.parse(redis_record['value'])['title']).to eql @message[:title]
+  expect(JSON.parse(redis_record['value'])['message']).to eql @message[:message]
 end
 
 

@@ -42,7 +42,7 @@ describe('AuditService', () => {
         return null;
       });
 
-      spyOn(mockStorageService, 'setItem').and.callFake((key, value) => {
+      spyOn(mockStorageService, 'setItem').and.callFake((key, value: AuditEntry[]) => {
         entries = value;
       });
 
@@ -61,7 +61,7 @@ describe('AuditService', () => {
       const expectedAuditEntries = new Array<AuditEntry>(firstEntry, secondEntry, thirdEntry);
       let actualAuditEntries = new Array<AuditEntry>();
 
-      spyOn(mockStorageService, 'setItem').and.callFake((key, value) => {
+      spyOn(mockStorageService, 'setItem').and.callFake((key, value: AuditEntry[]) => {
         actualAuditEntries = value;
       });
 
@@ -76,7 +76,6 @@ describe('AuditService', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(3);
       expect(actualAuditEntries.length).toEqual(3);
       expect(actualAuditEntries).toEqual(expectedAuditEntries);
-
     });
   });
 });

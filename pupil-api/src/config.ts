@@ -7,6 +7,13 @@ const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
+function parseToInt (value: string | undefined, radix: number | undefined): number | undefined {
+  if (value === undefined) return
+  const result = parseInt(value, radix)
+  if (isNaN(result)) return
+  return result
+}
+
 export default {
   AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
   Environment: getEnvironment(),
@@ -26,13 +33,17 @@ export default {
   },
   Redis: {
     Host: process.env.REDIS_HOST || 'localhost',
-    Port: process.env.REDIS_PORT || 6379,
+    Port: parseToInt(process.env.REDIS_PORT, 10) || 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   RateLimit: {
-    Threshold: parseInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
-    Duration: parseInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
+    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
+    Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
+  },
+  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800,
+  FeatureToggles: {
+    preparedChecksInRedis: toBool(process.env.FEATURE_TOGGLE_PREPARED_CHECKS_IN_REDIS) || false
   }
 }

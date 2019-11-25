@@ -1,0 +1,20 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "checkStartedMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "check-started",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "name": "checkStartedTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "checkStartedEvents",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/functions/check-started/index.js"
+}

@@ -77,3 +77,10 @@ end
 Then(/^I should see a toggle that explains each status$/) do
   expect(pupil_register_page).to have_pupil_status_explanation
 end
+
+
+Then(/^I should see a count of pupils in the school$/) do
+  school_id = SqlDbHelper.find_teacher(@user)['school_id']
+  db_count = SqlDbHelper.list_of_pupils_from_school(school_id).size
+  expect(pupil_register_page.pupil_list.pupil_count.text).to eql "List of available pupils (#{db_count})"
+end

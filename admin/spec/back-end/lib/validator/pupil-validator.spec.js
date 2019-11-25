@@ -18,6 +18,8 @@ describe('pupil validator', function () {
       urlSlug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722',
       foreName: 'John',
       lastName: 'Smith',
+      foreNameAlias: 'J',
+      lastNameAlias: 'S',
       middleNames: '',
       upn: 'H801200001001',
       'dob-day': '01',
@@ -235,6 +237,96 @@ describe('pupil validator', function () {
           expect(validationError.isError('lastName')).toBe(true)
           expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameInvalidCharacters)
         }
+        done()
+      })
+    })
+
+    describe('then foreNameAlias', () => {
+      it('is optional', async (done) => {
+        req.body = getBody()
+        req.body.foreNameAlias = ''
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('foreNameAlias')).toBe(false)
+        done()
+      })
+
+      it('allows latin1 hyphen apostrophe and a space', async (done) => {
+        req.body = getBody()
+        req.body.foreNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('foreNameAlias')).toBe(false)
+        done()
+      })
+
+      it('does not allow punctuation in the middlename', async (done) => {
+        req.body = getBody()
+        for (const char of notAllowed()) {
+          req.body.foreNameAlias = 'Réne' + char
+          const schoolId = 2
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.hasError()).toBe(true)
+          expect(validationError.isError('foreNameAlias')).toBe(true)
+          expect(validationError.get('foreNameAlias')).toBe(pupilErrors.addPupil.foreNameAliasInvalidCharacters)
+        }
+        done()
+      })
+
+      it('foreNameAlias can include numbers', async (done) => {
+        req.body = getBody()
+        req.body.foreNameAlias = 'Smithy99'
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('foreNameAlias')).toBe(false)
+        done()
+      })
+    })
+
+    describe('then lastNameAlias', () => {
+      it('is optional', async (done) => {
+        req.body = getBody()
+        req.body.lastNameAlias = ''
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('lastNameAlias')).toBe(false)
+        done()
+      })
+
+      it('allows latin1 hyphen apostrophe and a space', async (done) => {
+        req.body = getBody()
+        req.body.lastNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('lastNameAlias')).toBe(false)
+        done()
+      })
+
+      it('does not allow punctuation in the middlename', async (done) => {
+        req.body = getBody()
+        for (const char of notAllowed()) {
+          req.body.lastNameAlias = 'Réne' + char
+          const schoolId = 2
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.hasError()).toBe(true)
+          expect(validationError.isError('lastNameAlias')).toBe(true)
+          expect(validationError.get('lastNameAlias')).toBe(pupilErrors.addPupil.lastNameAliasInvalidCharacters)
+        }
+        done()
+      })
+
+      it('lastNameAlias can include numbers', async (done) => {
+        req.body = getBody()
+        req.body.lastNameAlias = 'Smithy99'
+        const schoolId = 2
+        const validationError = await pupilValidator.validate(req.body, schoolId)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('lastNameAlias')).toBe(false)
         done()
       })
     })

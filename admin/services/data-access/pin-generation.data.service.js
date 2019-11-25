@@ -113,7 +113,7 @@ const serviceToExport = {
     return { insertId: insertedIds }
   },
 
-  sqlFindActivePinRecordsByUrlSlug: async (urlSlug) => {
+  sqlFindActivePinRecordsByPupilUrlSlug: async (urlSlug) => {
     const view = 'vewPupilsWithActivePins'
     const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
     const sql = `SELECT *

@@ -2,7 +2,7 @@
 /* global describe, it, expect spyOn fail */
 
 const resultDataService = require('../../../services/data-access/result.data.service')
-const redisCacheService = require('../../../services/redis-cache.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
@@ -27,6 +27,17 @@ describe('result.service', () => {
         expect(error.message).toBe('school id not found')
       }
       expect(redisCacheService.get).not.toHaveBeenCalled()
+    })
+    it('returns undefined if parsing the redis response fails', async () => {
+      spyOn(redisCacheService, 'get')
+      const schoolId = 1
+      let result
+      try {
+        result = await resultService.getPupilResultData(schoolId)
+      } catch (error) {
+        fail()
+      }
+      expect(result).toBeUndefined()
     })
   })
   describe('getSchoolScore', () => {

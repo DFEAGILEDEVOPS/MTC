@@ -1,5 +1,5 @@
 const resultDataService = require('../services/data-access/result.data.service')
-const redisCacheService = require('../services/redis-cache.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 
 const resultService = {}
 
@@ -14,7 +14,11 @@ resultService.getPupilResultData = async (schoolId) => {
   }
   const redisKey = `result:${schoolId}`
   const result = await redisCacheService.get(redisKey)
-  return JSON.parse(result)
+  let parseResult
+  try {
+    parseResult = JSON.parse(result)
+  } catch (ignore) {}
+  return parseResult
 }
 
 /**

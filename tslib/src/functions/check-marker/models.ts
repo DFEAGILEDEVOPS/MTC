@@ -1,7 +1,9 @@
+
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
   checkNotificationQueue: Array<any>
 }
+
 export interface Answer {
   factor1: number
   factor2: number

@@ -1,5 +1,6 @@
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
+import { stringLiteral } from '@babel/types'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
@@ -8,7 +9,9 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
   setex: jest.fn(),
   drop: jest.fn(),
-  quit: jest.fn()
+  quit: jest.fn(),
+  ttl: jest.fn(),
+  expire: jest.fn()
 }))
 
 describe('redis-pupil-auth.service', () => {
@@ -24,9 +27,8 @@ describe('redis-pupil-auth.service', () => {
 
   test('it should call redis:get with correct key format', async () => {
     let actualKey: string
-    redisServiceMock.get = jest.fn((key: string) => {
+    redisServiceMock.get = jest.fn(async (key: string) => {
       actualKey = key
-      return Promise.resolve()
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
@@ -58,15 +60,36 @@ describe('redis-pupil-auth.service', () => {
 
   test('the check payload should be returned if item found in cache', async () => {
     const expectedPayload = {
-      foo: 'bar'
+      config: {
+        practice: true
+      }
     }
-    redisServiceMock.get = jest.fn((key: string) => {
-      return Promise.resolve(JSON.stringify(expectedPayload))
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const payload = await sut.authenticate(schoolPin, pupilPin)
     expect(payload).toEqual(expectedPayload)
+  })
+
+  test('a lookup link should be added to redis for check-started function', async () => {
+    const expectedPayload = {
+      checkCode: 'the-check-code',
+      config: {
+        practice: true
+      }
+    }
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    const eightHoursInSeconds = 28800
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    const preparedCheckKey = `preparedCheck:${schoolPin}:${pupilPin}`
+    const checkStartedKey = `check-started-check-lookup:${expectedPayload.checkCode}`
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(checkStartedKey, preparedCheckKey, eightHoursInSeconds)
   })
 
   test('null should be returned if item not found in cache', async () => {
@@ -76,6 +99,106 @@ describe('redis-pupil-auth.service', () => {
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const payload = await sut.authenticate(schoolPin, pupilPin)
-    expect(payload).toBeNull()
+    expect(payload).toBeUndefined()
+  })
+
+  test('redis item TTL should be set to 30 minutes from now if config.practice is defined and false', async () => {
+    const thirtyMinutesInSeconds = 1800
+    const eightHoursInSeconds = 28800
+    const expectedPayload = {
+      config: {
+        practice: false
+      }
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(actualLookupKeyExpiryValue).toEqual(eightHoursInSeconds)
+    expect(actualPreparedCheckExpiryValue).toEqual(thirtyMinutesInSeconds)
+  })
+
+  test('no redis expiry is set if config.practice is true', async () => {
+
+    const expectedPayload = {
+      config: {
+        practice: true
+      }
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
+  })
+
+  test('no redis expiry is set if config.practice does not exist', async () => {
+
+    const expectedPayload = {
+      config: {}
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
+  })
+
+  test('no redis expiry is set if config.practice is undefined', async () => {
+
+    const expectedPayload = {
+      config: {
+        practice: undefined
+      }
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    let actualLookupKeyExpiryValue: number
+    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
+      actualLookupKeyExpiryValue = ttl
+    })
+    let actualPreparedCheckExpiryValue: number
+    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+      actualPreparedCheckExpiryValue = ttl
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
   })
 })

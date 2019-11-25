@@ -162,7 +162,7 @@ checkStartService.prepareCheck2 = async function (
     logger.error('Unable to prepare check messages', error)
     throw error
   }
-  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksToRedis')
+  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksInRedis')
 
   if (prepareCheckServiceEnabled) {
     prepareCheckService.prepareChecks(pupilChecks)
@@ -362,8 +362,8 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
       pupilPin: o.pupil_pin,
       pupil: {
         id: o.pupil_id,
-        firstName: o.pupil_foreName,
-        lastName: o.pupil_lastName,
+        firstName: o.pupil_foreNameAlias || o.pupil_foreName,
+        lastName: o.pupil_lastNameAlias || o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,

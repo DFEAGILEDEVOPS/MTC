@@ -83,7 +83,7 @@ describe('LoginSuccessComponent', () => {
 
   it('asks the user to confirm their details', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.notice .aa-copy-size').textContent).toMatch(/Do not press 'Next' if this is not you,/);
+    expect(compiled.querySelector('.notice .aa-copy-size').textContent).toMatch(/Do not press ‘Next’ if this is not you,/);
   });
 
   describe('for no access arrangements', () => {

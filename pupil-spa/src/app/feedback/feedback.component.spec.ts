@@ -1,8 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  HttpModule,
-  Http
-} from '@angular/http';
 import { Router } from '@angular/router';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { StorageService } from '../services/storage/storage.service';
@@ -30,7 +26,7 @@ describe('FeedbackComponent', () => {
 
     const injector = TestBed.configureTestingModule({
       declarations: [ FeedbackComponent ],
-      imports: [HttpModule],
+      imports: [],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: QUEUE_STORAGE_TOKEN },
