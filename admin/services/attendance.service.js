@@ -52,6 +52,8 @@ const attendanceService = {
       await pupilAttendanceDataService.sqlInsertBatch(inserts, attendanceCode.id, userId)
     }
 
+    // TODO: update this method to handle pin expiry in the same way that `restartTransactionForPupils` does
+    // and then remove `expireMultiplePupils`
     await pinService.expireMultiplePins(pupilIds, schoolId)
   },
 
