@@ -84,9 +84,6 @@ restartService.restart = async (
     throw new Error('One of the pupils is not eligible for a restart')
   }
 
-  // await pinService.expireMultiplePins(pupilsList, schoolId)
-
-  // const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
   const restartData = {}
   pupilsList.forEach(pupilId => {
     restartData[pupilId] = {

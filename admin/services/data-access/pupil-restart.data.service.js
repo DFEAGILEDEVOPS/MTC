@@ -115,27 +115,6 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 }
 
 /**
- * Find restart reason id
- * @return {Promise<*>}
- */
-pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
-  const sql = `
-  SELECT TOP 1 id
-  FROM ${sqlService.adminSchema}.[pupilRestartReason]
-  WHERE code = @code`
-  const params = [
-    {
-      name: 'code',
-      value: code,
-      type: TYPES.Char
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  const obj = R.head(result)
-  return R.prop('id', obj)
-}
-
-/**
  * Mark an existing pupil restart as deleted
  * @param restartId
  * @param userId

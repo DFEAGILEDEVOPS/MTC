@@ -113,7 +113,6 @@ describe('restart.service', () => {
       const schoolId = 42
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
-      spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ ok: 1, n: 1 })
       spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([{ id: 1, urlSlug: 'anc-def' }])
       let results
@@ -129,7 +128,6 @@ describe('restart.service', () => {
       const schoolId = 42
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(false)
-      spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue(null)
       try {
         await restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
