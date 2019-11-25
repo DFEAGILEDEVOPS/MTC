@@ -78,7 +78,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
  * @param {string} restartData.classDisruptionInformation
  * @param {string} restartData.didNotCompleteInformation
  * @param {string} restartData.furtherInformation
- * @return {Promise<void>}
+ * @return {Promise<*>}
  */
 module.exports.restartTransactionForPupils = async function restartTransactionForPupils (restartData) {
   /**
