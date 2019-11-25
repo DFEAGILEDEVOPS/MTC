@@ -20,7 +20,7 @@ export class PupilAuthService {
   private redisService: IRedisService
   private eightHoursInSeconds: number = 28800
 
-  constructor (redisService?: IRedisService) {
+  constructor(redisService?: IRedisService) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }
@@ -60,13 +60,13 @@ export class PupilAuthService {
       await this.redisService.expire(cacheKey, config.PupilAuth.PreparedCheckExpiryAfterLoginSeconds)
     }
 
-/*     const pupilLoginMessage = {
+    const pupilLoginMessage = {
       checkCode: preparedCheck.checkCode,
       loginAt: new Date(),
       version: 1
     }
     bindings.pupilLoginQueue = []
-    bindings.pupilLoginQueue.push(pupilLoginMessage) */
+    bindings.pupilLoginQueue.push(pupilLoginMessage)
 
     return {
       status: 200,
@@ -76,7 +76,8 @@ export class PupilAuthService {
         'Access-Control-Allow-Methods': 'POST,OPTIONS',
         'Access-Control-Allow-Headers': 'content-type',
         'Access-Control-Allow-Origin': config.PupilAuth.CorsWhitelist
-      }
+      },
+      isRaw: true
     }
   }
 
