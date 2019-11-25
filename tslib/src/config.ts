@@ -49,5 +49,9 @@ export default {
   },
   CheckAllocation: {
     ExpiryTimeInSeconds: process.env.CHECK_ALLOCATION_EXPIRY_SECONDS || 15778476 // 6 months
+  },
+  PupilAuth: {
+    PreparedCheckExpiryAfterLoginSeconds: parseInt(optionalValueParser(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
+    CorsWhitelist: process.env.CORS_WHITELIST || ''
   }
 }
