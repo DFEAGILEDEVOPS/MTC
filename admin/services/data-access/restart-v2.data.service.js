@@ -155,7 +155,8 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
   `
 
   const allParams = checkParams.concat(pupilRestartParams).concat(pupilParams)
-  return sqlService.modifyWithTransactionAndResponse(sql, allParams)
+  const res = await sqlService.modifyWithTransactionAndResponse(sql, allParams)
+  return Array.isArray(res.response) ? res.response : []
 }
 
 /**
