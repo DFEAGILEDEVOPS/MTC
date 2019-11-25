@@ -95,8 +95,6 @@ restartService.restart = async (
       furtherInformation: restartFurtherInfo
     }
   })
-  //   return pupilRestartDataService.sqlCreate(pupilRestartData)
-  // }))
   // const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
   const checkData = await restartDataService.getLiveCheckDataByPupilId(pupilsList)
 

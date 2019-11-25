@@ -3,19 +3,9 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 
-const table = '[pupilRestart]'
 const pupilRestartDataService = {}
 
 /** SQL METHODS **/
-
-/**
- * Create a new pupil restart.
- * @param {object} data
- * @return  Promise<{ 'insertId': <number>, rowsModified: <number> }>
- */
-pupilRestartDataService.sqlCreate = async (data) => {
-  return sqlService.create(table, data)
-}
 
 /**
  * Returns number of restarts specified by pupil id
