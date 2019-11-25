@@ -102,7 +102,6 @@ restartService.restart = async (
 
   // Add the current check id into the restart data, so we can pass it into the data service
   checkData.forEach(check => {
-    console.log('checkData.forEach ', check)
     if (check.checkId) {
       restartData[check.pupilId].currentCheckId = check.checkId
     }

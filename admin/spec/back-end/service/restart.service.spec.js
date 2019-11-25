@@ -1,19 +1,22 @@
-const sinon = require('sinon')
-const moment = require('moment')
+'use strict'
+
 const azureQueueService = require('../../../services/azure-queue.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const schoolDataService = require('../../../services/data-access/school.data.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
 const checkStateService = require('../../../services/check-state.service')
-const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
-const pinService = require('../../../services/pin.service')
-const restartService = require('../../../services/restart.service')
+const moment = require('moment')
 const pinValidator = require('../../../lib/validator/pin-validator')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
+const restartDataService = require('../../../services/data-access/restart-v2.data.service')
+const restartService = require('../../../services/restart.service')
+const schoolDataService = require('../../../services/data-access/school.data.service')
+const sinon = require('sinon')
+
 const pupilMock = require('../mocks/pupil')
-const schoolMock = require('../mocks/school')
-const startedCheckMock = require('../mocks/check-started')
 const pupilRestartMock = require('../mocks/pupil-restart')
 const restartCodesMock = require('../mocks/restart-codes')
+const schoolMock = require('../mocks/school')
+const startedCheckMock = require('../mocks/check-started')
 
 /* global describe, it, expect, beforeEach, afterEach, spyOn, fail */
 
@@ -109,32 +112,51 @@ describe('restart.service', () => {
         expect(error.message).toBe('Missing parameter: `schoolId`')
       }
     })
-    it('it should call create if the pupil can be restarted', async () => {
+
+    it('it should call restartTransactionForPupils if the pupil can be restarted', async () => {
       const schoolId = 42
-      spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
-      spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ ok: 1, n: 1 })
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([{ id: 1, urlSlug: 'anc-def' }])
+      spyOn(restartDataService, 'getLiveCheckDataByPupilId').and.returnValue(
+        Promise.resolve([
+          {
+            checkId: 1,
+            pupilId: 1,
+            pupilPin: 1234,
+            schoolPin: 'abc12def'
+          },
+          {
+            checkId: 2,
+            pupilId: 2,
+            pupilPin: 5678,
+            schoolPin: 'abc12def'
+          }
+        ])
+      )
+      spyOn(restartDataService, 'restartTransactionForPupils').and.returnValue(Promise.resolve(
+        [
+          { id: 1, urlSlug: 'abc-def' },
+          { id: 2, urlSlug: 'def-hij' }
+        ]
+      ))
       let results
       try {
-        results = await restartService.restart([pupilMock.id, pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
+        results = await restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
       } catch (error) {
-        expect(error).toBeUndefined()
+        fail(error)
       }
-      expect(pupilRestartDataService.sqlCreate).toHaveBeenCalledTimes(2)
-      expect(results.length).toBe(1)
+      expect(restartDataService.restartTransactionForPupils).toHaveBeenCalledTimes(1)
+      expect(results.length).toBe(2)
     })
+
     it('it should throw an error if the pupil cannot be restarted', async () => {
       const schoolId = 42
-      spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(false)
-      spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue(null)
       try {
         await restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('One of the pupils is not eligible for a restart')
       }
-      expect(pupilRestartDataService.sqlCreate).toHaveBeenCalledTimes(0)
     })
   })
 

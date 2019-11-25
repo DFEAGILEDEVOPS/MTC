@@ -148,7 +148,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
      ${pupilRestartSqls.join('\n')}
     
      UPDATE [mtc_admin].[pupil] 
-        SET restartAvailable = 1, checkComplete = 0, currentCheckId = NULL         
+        SET restartAvailable = 1, checkComplete = 0, currentCheckId = NULL
         WHERE id IN (${pupilIdentifiers.join(', ')});
      
      SELECT id, urlSlug FROM [mtc_admin].[pupil] where id in (${pupilIdentifiers.join(', ')});
