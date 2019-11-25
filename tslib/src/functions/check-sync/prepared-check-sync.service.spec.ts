@@ -1,5 +1,5 @@
 import { PreparedCheckSyncService } from './prepared-check-sync.service'
-import { IPreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
+import { IPreparedCheckMergeService, ICheckConfig } from './prepared-check-merge.service'
 import { IPreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
@@ -32,19 +32,14 @@ describe('prepared-check-sync.service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('active checks for pupil are looked up in redis and error thrown if none found', async () => {
+  test('active checks for pupil are looked up and returns early if none found', async () => {
     const pupilUUID = 'pupilUUID'
     dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
       return []
     })
-
-    try {
-      await sut.process(pupilUUID)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
-      expect(error.message).toBe(`no checks found for pupil UUID:${pupilUUID}`)
-    }
+    await sut.process(pupilUUID)
+    expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
+    expect(redisServiceMock.setex).not.toHaveBeenCalled()
   })
 
   test('each active check is sent to the merger service', async () => {
@@ -69,6 +64,11 @@ describe('prepared-check-sync.service', () => {
       ]
       return refs
     })
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        checkCode: 'checkCode'
+      }
+    })
     await sut.process(pupilUUID)
     expect(mergeServiceMock.merge).toHaveBeenCalledTimes(3)
   })
@@ -90,7 +90,11 @@ describe('prepared-check-sync.service', () => {
       return originalTTL
     })
 
-    const aaConfig = {
+    const checkConfig: ICheckConfig = {
+      questionTime: 5,
+      loadingTime: 5,
+      speechSynthesis: false,
+      practice: false,
       audibleSounds: false,
       inputAssistance: false,
       numpadRemoval: false,
@@ -100,26 +104,22 @@ describe('prepared-check-sync.service', () => {
       nextBetweenQuestions: false
     }
 
-    const preparedCheck: IPreparedCheck = {
-      schoolPin: 'abc12def',
-      pupilPin: 1234,
-      checkCode: 'check-code',
-      questionTime: 5,
-      loadingTime: 5,
-      speechSynthesis: false,
-      ...aaConfig
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return {
+        config: checkConfig
+      }
+    })
+
+    mergeServiceMock.merge = jest.fn(async (checkConfig: any) => {
+      return checkConfig
+    })
+
+    const expected = {
+      config: checkConfig
     }
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return preparedCheck
-    })
-
-    mergeServiceMock.merge = jest.fn(async (preparedCheck: any) => {
-      return preparedCheck
-    })
-
     await sut.process(pupilUUID)
-    expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, preparedCheck, originalTTL)
+    expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, expected, originalTTL)
   })
 
   test('error is thrown if preparedCheck is not found', async () => {

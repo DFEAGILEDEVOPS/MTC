@@ -3,12 +3,10 @@ import { TYPES } from 'mssql'
 
 export interface IPreparedCheckSyncDataService {
   getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]>
-  getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<Array<string>>
   getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>>
 }
 
 export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataService {
-  private static aaCodes = new Array<IAccessArrangementCode>()
   private sqlService: SqlService
 
   constructor () {
@@ -71,18 +69,10 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     return refs
   }
 
-  async getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<string[]> {
-    if (PreparedCheckSyncDataService.aaCodes.length === 0) {
-      await this.initCodes()
-    }
-    return Object.keys(PreparedCheckSyncDataService.aaCodes).filter((code: any) =>
-      PreparedCheckSyncDataService.aaCodes[code] && aaIds.includes(PreparedCheckSyncDataService.aaCodes[code].id)
-    )
-  }
-
   async getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>> {
     const sql = `
-    SELECT pAA.*, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
+    SELECT pAA.accessArrangements_id,
+    pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
     FROM [mtc_admin].[pupilAccessArrangements] pAA
     LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
       ON pAA.pupilFontSizes_id = pfs.id
@@ -103,19 +93,6 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     ]
     return this.sqlService.query(sql, params)
   }
-
-  private async initCodes (): Promise<void> {
-    const sql = 'SELECT id, code FROM [mtc_admin].[accessArrangements]'
-    const codes = await this.sqlService.query(sql)
-    codes.map((aa: any) => {
-      PreparedCheckSyncDataService.aaCodes[aa.code] = { id: aa.id, code: aa.code }
-    })
-  }
-}
-
-interface IAccessArrangementCode {
-  id: number
-  code: string
 }
 
 export interface IActiveCheckReference {
