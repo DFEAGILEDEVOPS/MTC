@@ -167,7 +167,7 @@ checkStartService.prepareCheck2 = async function (
   if (prepareCheckServiceEnabled) {
     prepareCheckService.prepareChecks(pupilChecks)
   } else {
-    sendChecksToTableStorage(pupilChecks)
+    sendChecksToTableStorage(pupilChecks, schoolId)
   }
 
   // Store the `config` section from the preparedCheckMessages into the DB
