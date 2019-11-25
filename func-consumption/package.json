@@ -3,6 +3,9 @@
   "description": "runtime host for functions defined in tslib that are designed to run on a consumption plan in Azure",
   "version": "0.1.0",
   "license": "GPL-3.0",
+  "engines": {
+    "node": ">= 10.14.1"
+  },
   "scripts": {
     "build": "yarn sync && yarn run gulp",
     "rebuild": "yarn clean && yarn build",
