@@ -60,13 +60,13 @@ export class PupilAuthService {
       await this.redisService.expire(cacheKey, config.PupilAuth.PreparedCheckExpiryAfterLoginSeconds)
     }
 
-    const pupilLoginMessage = {
+/*     const pupilLoginMessage = {
       checkCode: preparedCheck.checkCode,
       loginAt: new Date(),
       version: 1
     }
     bindings.pupilLoginQueue = []
-    bindings.pupilLoginQueue.push(pupilLoginMessage)
+    bindings.pupilLoginQueue.push(pupilLoginMessage) */
 
     return {
       status: 200,
