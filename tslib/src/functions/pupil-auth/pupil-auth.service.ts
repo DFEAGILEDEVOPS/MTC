@@ -1,9 +1,18 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import config from '../../config'
-import { HttpRequest } from '@azure/functions'
+import { HttpRequest, HttpMethod } from '@azure/functions'
 
 export interface IPupilAuthFunctionBindings {
   pupilLoginQueue: Array<any>
+}
+
+export interface IHttpResponse {
+  body?: any
+  status: number
+  headers: {
+    [key: string]: string;
+  }
+  method: HttpMethod
 }
 
 export class PupilAuthService {
@@ -24,9 +33,9 @@ export class PupilAuthService {
         body: '',
         headers:
         {
-          'Access-Control-Allow-Methods' : 'POST,OPTIONS',
-          'Access-Control-Allow-Headers' : 'content-type',
-          'Access-Control-Allow-Origin' : config.PupilAuth.CorsWhitelist
+          'Access-Control-Allow-Methods': 'POST,OPTIONS',
+          'Access-Control-Allow-Headers': 'content-type',
+          'Access-Control-Allow-Origin': config.PupilAuth.CorsWhitelist
         },
         status: 204
       }
@@ -63,7 +72,10 @@ export class PupilAuthService {
       status: 200,
       body: preparedCheck,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'content-type',
+        'Access-Control-Allow-Origin': config.PupilAuth.CorsWhitelist
       }
     }
   }

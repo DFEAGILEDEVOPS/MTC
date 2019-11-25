@@ -147,7 +147,7 @@ describe('pupil-auth.service', () => {
     expect(pupilLoginMessage.version).toBe(1)
   })
 
-  test('content type is set to JSON when returning prepared check', async () => {
+  test('expected headers are set when returning prepared check', async () => {
     const preparedCheck = {
       checkCode: 'abc',
       config: {
@@ -160,7 +160,10 @@ describe('pupil-auth.service', () => {
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
     expect(res.headers).toStrictEqual({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Methods': 'POST,OPTIONS',
+      'Access-Control-Allow-Headers': 'content-type',
+      'Access-Control-Allow-Origin': ''
     })
   })
 })
