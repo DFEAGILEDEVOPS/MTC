@@ -365,6 +365,31 @@ sqlService.modify = async (sql, params = []) => {
 }
 
 /**
+ * Return the response from the query
+ * @param {String} sql
+ * @param {Array} params
+ * @return {Promise<{response?: Array}>}
+ */
+sqlService.modifyWithResponse = async (sql, params = []) => {
+  await pool
+
+  const modify = async () => {
+    const request = new mssql.Request(pool)
+    addParamsToRequest(params, request)
+    return request.query(sql)
+  }
+
+  const rawResponse = await retry(modify, retryConfig, dbLimitReached)
+
+  const returnValue = {}
+
+  if (rawResponse.recordset) {
+    returnValue.response = rawResponse.recordset
+  }
+  return returnValue
+}
+
+/**
  * Find a row by numeric ID
  * Assumes all table have Int ID datatype
  * @param {string} table
@@ -569,18 +594,21 @@ sqlService.update = async function (tableName, data) {
  * Helper function useful for constructing parameterised WHERE clauses
  * @param {Array} ary
  * @param {Object} type
+ * @param {String} prefix
+ * @param {Number} index
  * @return {{paramIdentifiers: *, params: *}}
  */
-sqlService.buildParameterList = (ary, type) => {
+sqlService.buildParameterList = (ary, type, prefix = 'p', index = 0) => {
   const params = []
   const paramIdentifiers = []
   for (let i = 0; i < ary.length; i++) {
+    const paramIndex = i + index
     params.push({
-      name: `p${i}`,
+      name: `${prefix}${paramIndex}`,
       type,
-      value: ary[i]
+      value: ary[paramIndex]
     })
-    paramIdentifiers.push(`@p${i}`)
+    paramIdentifiers.push(`@${prefix}${paramIndex}`)
   }
   return {
     params,
@@ -620,5 +648,45 @@ BEGIN CATCH
 END CATCH
   `
   return sqlService.modify(wrappedSQL, params)
+}
+
+/**
+ * Return the response from the query
+ * @param {String[]} sqlStatements statements
+ * @param {Array} params
+ * @return {Promise<{response?: Array}>}
+ */
+sqlService.modifyWithTransactionAndResponse = async (sqlStatements, params) => {
+  const wrappedSQL = `
+  BEGIN TRY
+  BEGIN TRANSACTION
+    ${sqlStatements}
+ COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+  IF (@@TRANCOUNT > 0)
+   BEGIN
+      ROLLBACK TRANSACTION
+      PRINT 'Error detected, all changes reversed'
+   END
+  DECLARE @ErrorMessage NVARCHAR(4000);
+    DECLARE @ErrorSeverity INT;
+    DECLARE @ErrorState INT;
+
+    SELECT @ErrorMessage = ERROR_MESSAGE(),
+           @ErrorSeverity = ERROR_SEVERITY(),
+           @ErrorState = ERROR_STATE();
+
+    -- Use RAISERROR inside the CATCH block to return
+    -- error information about the original error that
+    -- caused execution to jump to the CATCH block.
+    RAISERROR (@ErrorMessage, -- Message text.
+               @ErrorSeverity, -- Severity.
+               @ErrorState -- State.
+               );
+END CATCH
+`
+  return sqlService.modifyWithResponse(wrappedSQL, params)
 }
 module.exports = sqlService

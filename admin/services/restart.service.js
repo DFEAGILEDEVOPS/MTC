@@ -8,8 +8,8 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
-const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
+const restartDataService = require('./data-access/restart-v2.data.service')
 const config = require('../config')
 const azureQueueService = require('../services/azure-queue.service')
 
@@ -78,27 +78,40 @@ restartService.restart = async (
   if (!schoolId) {
     throw new Error('Missing parameter: `schoolId`')
   }
-  await pinService.expireMultiplePins(pupilsList, schoolId)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
   if (!canAllPupilsRestart) {
     throw new Error('One of the pupils is not eligible for a restart')
   }
-  const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
-  await Promise.all(pupilsList.map(async pupilId => {
-    const pupilRestartData = {
+
+  // await pinService.expireMultiplePins(pupilsList, schoolId)
+
+  // const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
+  const restartData = {}
+  pupilsList.forEach(pupilId => {
+    restartData[pupilId] = {
       pupil_id: pupilId,
       recordedByUser_id: userName,
-      pupilRestartReason_id: restartReasonId,
+      pupilRestartReasonCode: restartReasonCode,
       classDisruptionInformation: classDisruptionInfo,
       didNotCompleteInformation: didNotCompleteInfo,
-      furtherInformation: restartFurtherInfo,
-      createdAt: moment.utc()
+      furtherInformation: restartFurtherInfo
     }
-    return pupilRestartDataService.sqlCreate(pupilRestartData)
-  }))
-  const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
-  return pupilInfo.map(p => { return { urlSlug: p.urlSlug } })
+  })
+  //   return pupilRestartDataService.sqlCreate(pupilRestartData)
+  // }))
+  // const pupilInfo = await pupilDataService.sqlFindByIds(pupilsList, schoolId)
+  const checkData = await restartDataService.getLiveCheckDataByPupilId(pupilsList)
+
+  // Add the current check id into the restart data, so we can pass it into the data service
+  checkData.forEach(check => {
+    console.log('checkData.forEach ', check)
+    if (check.checkId) {
+      restartData[check.pupilId].currentCheckId = check.checkId
+    }
+  })
+  const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
+  return pupilData.map(p => { return { urlSlug: p.urlSlug } })
 }
 
 /**

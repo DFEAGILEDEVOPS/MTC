@@ -16,14 +16,14 @@ describe('sql.service:integration', () => {
 
   describe('should permit', () => {
     it('select query with no parameters', async () => {
-      const settingsRows = await sql.query('SELECT * FROM Settings')
+      const settingsRows = await sql.query('SELECT * FROM [mtc_admin].[settings]')
       expect(settingsRows).toBeDefined()
       expect(settingsRows.length).toBe(1)
     })
 
     it('select query with parameters', async () => {
       const id = { name: 'id', type: TYPES.Int, value: 1 }
-      const settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
+      const settingsRows = await sql.query('SELECT * FROM [mtc_admin].[settings] WHERE id=@id', [id])
       expect(settingsRows).toBeDefined()
       expect(settingsRows.length).toBe(1)
     })
@@ -32,7 +32,7 @@ describe('sql.service:integration', () => {
   describe('should not permit', () => {
     it('delete operation to mtc application user', async () => {
       try {
-        await sql.query('DELETE FROM Settings')
+        await sql.query('DELETE FROM [mtc_admin].[settings]')
         fail('DELETE operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
@@ -49,10 +49,10 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('ALTER TABLE operation to mtc application user', async () => {
+    it('the ALTER TABLE operation to mtc application user', async () => {
       try {
-        await sql.query('ALTER TABLE [mtc_admin].settings DROP COLUMN checkTimeLimit')
-        fail('ALTER TABLE operation should not have succeeded')
+        await sql.query('ALTER TABLE [mtc_admin].[settings] DROP COLUMN checkTimeLimit')
+        fail('the ALTER TABLE operation should not have succeeded')
       } catch (error) {
         expect(error).toBeDefined()
       }
@@ -142,7 +142,7 @@ describe('sql.service:integration', () => {
   })
 
   it('should transform the results arrays into a JSON array', async () => {
-    await sql.query('SELECT * FROM Settings')
+    await sql.query('SELECT * FROM [mtc_admin].[settings]')
     const actual = await sql.query('SELECT * FROM Settings')
     expect(actual).toBeDefined()
     expect(actual.length).toBe(1)
@@ -546,6 +546,86 @@ describe('sql.service:integration', () => {
       } catch (error) {
         expect(error.message).toBeDefined()
       }
+    })
+  })
+
+  describe('#modifyWithResponse', () => {
+    it('returns the response', async () => {
+      const stm = `
+        INSERT INTO [mtc_admin].[integrationTest]
+            (tNVarcharMax) VALUES ('modifyWithResponse test');
+        SELECT * FROM [mtc_admin].[integrationTest] WHERE id = SCOPE_IDENTITY();
+      `
+      const result = await sql.modifyWithResponse(stm)
+      expect(result.response).not.toBeUndefined()
+      expect(result.response[0].tNvarCharMax).toBe('modifyWithResponse test')
+      expect(result.response[0].id).toBeGreaterThan(1)
+      expect(result.response[0].tNvarchar).toBeNull()
+    })
+    it('returns output clauses', async () => {
+      const stm = `
+        INSERT INTO [mtc_admin].[integrationTest] (tNvarCharMax)
+        OUTPUT inserted.id, inserted.tNvarCharMax, inserted.tNvarchar
+        VALUES ('modifyWithResponse output test');
+      `
+      const result = await sql.modifyWithResponse(stm)
+      expect(result.response).not.toBeUndefined()
+      expect(result.response[0].tNvarCharMax).toBe('modifyWithResponse output test')
+      expect(result.response[0].id).toBeGreaterThan(1)
+      expect(result.response[0].tNvarchar).toBeNull()
+    })
+  })
+
+  describe('#modifyTransactionWithResponse', () => {
+    it('returns the response', async () => {
+      const stm = `
+        DECLARE @a Integer,
+                @b Integer;
+        
+        INSERT INTO [mtc_admin].[integrationTest] (tNVarCharMax)
+        VALUES (@text1);
+        
+        SET @a = SCOPE_IDENTITY();
+        
+        INSERT INTO [mtc_admin].[integrationTest] (tNVarCharMax)
+        VALUES (@text2);
+        
+        SET @b = SCOPE_IDENTITY();
+        
+        SELECT * FROM [mtc_admin].[integrationTest] WHERE id IN (@a, @b);  
+      `
+      const params = [
+        { name: 'text1', value: 'modifyTransactionWithResponse response #1', type: TYPES.NVarChar },
+        { name: 'text2', value: 'modifyTransactionWithResponse response #2', type: TYPES.NVarChar }
+      ]
+      const result = await sql.modifyWithTransactionAndResponse(stm, params)
+
+      expect(result.response).not.toBeUndefined()
+      expect(result.response[0].tNvarCharMax).toBe(params[0].value)
+      expect(result.response[0].id).toBeGreaterThan(1)
+      expect(result.response[0].tNvarchar).toBeNull()
+      expect(result.response[1].tNvarCharMax).toBe(params[1].value)
+      expect(result.response[1].id).toBeGreaterThan(1)
+      expect(result.response[1].tNvarchar).toBeNull()
+    })
+
+    it('rolls back on error', async () => {
+      const stm = `
+        INSERT INTO [mtc_admin].[integrationTest] (tDecimal) VALUES (10.51);
+        -- This will fail and cause rollback
+        INSERT INTO [mtc_admin].[integrationTest] (tDecimal) VALUES ('not a decimal');
+      `
+      try {
+        await sql.modifyWithTransactionAndResponse(stm)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Error converting data type varchar to numeric.')
+      }
+
+      // check that the 1st insert does not exist
+      const stm1 = 'select * from [mtc_admin].[integrationTest] where tDecimal = 10.51'
+      const result = await sql.query(stm1)
+      expect(result).toEqual([])
     })
   })
 })

@@ -62,20 +62,22 @@ pinService.expireMultiplePins = async (pupilIds, schoolId) => {
   if (!schoolId) {
     throw new Error('Missing parameter: `schoolId`')
   }
-  const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
-  let pupilData = []
-  pupils.forEach(p => {
-    if (p.pin || p.pinExpiresAt) pupilData.push(p)
-  })
-  if (pupilData.length === 0) return
-  const currentTimeStamp = moment.utc()
-  pupilData = pupilData.map(p => {
-    p.pin = null
-    p.pinExpiresAt = currentTimeStamp
-    return p
-  })
-  const data = pupilData.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
-  return pupilDataService.sqlUpdatePinsBatch(data)
+  // const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
+  // let pupilData = []
+  // pupils.forEach(p => {
+  //   if (p.pin || p.pinExpiresAt) pupilData.push(p)
+  // })
+  // if (pupilData.length === 0) return
+  // const currentTimeStamp = moment.utc()
+  // pupilData = pupilData.map(p => {
+  //   p.pin = null
+  //   p.pinExpiresAt = currentTimeStamp
+  //   return p
+  // })
+  // const data = pupilData.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  // return pupilDataService.sqlUpdatePinsBatch(data)
+
+  // Expire pins in the DB
 }
 
 module.exports = pinService

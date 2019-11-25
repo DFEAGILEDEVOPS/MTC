@@ -11,7 +11,7 @@ const pupilRestartDataService = {}
 /**
  * Create a new pupil restart.
  * @param {object} data
- * @return  { insertId: <number>, rowsModified: <number> }
+ * @return  Promise<{ 'insertId': <number>, rowsModified: <number> }>
  */
 pupilRestartDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
@@ -116,7 +116,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 
 /**
  * Find restart reason id
- * @return {Promise<string>}
+ * @return {Promise<*>}
  */
 pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
   const sql = `
