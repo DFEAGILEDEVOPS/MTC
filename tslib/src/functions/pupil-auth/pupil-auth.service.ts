@@ -26,7 +26,7 @@ export class PupilAuthService {
         {
           'Access-Control-Allow-Methods' : 'POST,OPTIONS',
           'Access-Control-Allow-Headers' : 'content-type',
-          'Access-Control-Allow-Origin' : 'http://localhost:4200'
+          'Access-Control-Allow-Origin' : config.PupilAuth.CorsWhitelist
         },
         status: 204
       }
@@ -48,7 +48,7 @@ export class PupilAuthService {
     await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
 
     if (preparedCheck.config.practice === false) {
-      await this.redisService.expire(cacheKey, config.PreparedCheckExpiryAfterLoginSeconds)
+      await this.redisService.expire(cacheKey, config.PupilAuth.PreparedCheckExpiryAfterLoginSeconds)
     }
 
     const pupilLoginMessage = {

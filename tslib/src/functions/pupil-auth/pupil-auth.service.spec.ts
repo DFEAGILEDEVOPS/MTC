@@ -65,7 +65,8 @@ describe('pupil-auth.service', () => {
     expect(res.body).toBe('')
     expect(res.headers).toStrictEqual({
       'Access-Control-Allow-Methods' : 'POST,OPTIONS',
-      'allow' : 'POST,OPTIONS'
+      'Access-Control-Allow-Headers' : 'content-type',
+      'Access-Control-Allow-Origin' : ''
     })
     expect(res.status).toBe(204)
   })
