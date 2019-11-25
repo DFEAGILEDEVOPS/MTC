@@ -12,6 +12,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     return
   }
   const response = await pupilAuthService.authenticate(context.bindings as IPupilAuthFunctionBindings, context.req)
+  context.log.info(`response...`)
+  context.log.info(JSON.stringify(response, null, 2))
   context.res = response
 }
 
