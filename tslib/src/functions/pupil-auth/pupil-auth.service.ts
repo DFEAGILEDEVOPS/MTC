@@ -79,5 +79,4 @@ export class PupilAuthService {
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
     return `preparedCheck:${schoolPin}:${pupilPin}`
   }
-
 }
