@@ -200,7 +200,7 @@ const getViewAndPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    if (pupils.length > 0) {
+    if (Array.isArray(pupils) && pupils.length > 0) {
       pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
     school = await pinService.getActiveSchool(req.user.School)
@@ -256,7 +256,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
-    if (pupils.length > 0) {
+    if (Array.isArray(pupils) && pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
       pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
