@@ -129,7 +129,7 @@
         <hashTree>
           <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="School Pin Counter" enabled="true">
             <stringProp name="CounterConfig.start">10</stringProp>
-            <stringProp name="CounterConfig.end">50</stringProp>
+            <stringProp name="CounterConfig.end">15</stringProp>
             <stringProp name="CounterConfig.incr">1</stringProp>
             <stringProp name="CounterConfig.name">schoolPinIndex</stringProp>
             <stringProp name="CounterConfig.format"></stringProp>
@@ -143,7 +143,7 @@
           <hashTree>
             <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Pupil Pin Counter" enabled="true">
               <stringProp name="CounterConfig.start">1000</stringProp>
-              <stringProp name="CounterConfig.end">9999</stringProp>
+              <stringProp name="CounterConfig.end">2000</stringProp>
               <stringProp name="CounterConfig.incr">1</stringProp>
               <stringProp name="CounterConfig.name">pupilPinIndex</stringProp>
               <stringProp name="CounterConfig.format"></stringProp>
@@ -167,7 +167,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${__P(pupilFunctionRoute,/api/pupil-auth)}</stringProp>
+              <stringProp name="HTTPSampler.path">/api/pupil-auth?code=${__P(authToken,none)}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
