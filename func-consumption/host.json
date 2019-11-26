@@ -8,9 +8,16 @@
           "dynamicThrottlesEnabled": false,
           "hsts": {
               "isEnabled": true,
-              "maxAge": "31536000",
+              "maxAge": "150",
               "includeSubDomains": true,
               "preload": true
+          },
+          "customHeaders": {
+              "X-Content-Type-Options": "nosniff",
+              "X-Frame-Options": "SAMEORIGIN",
+              "X-Download-Options": "noopen",
+              "X-XSS-Protection": "1; mode=block",
+              "X-DNS-Prefetch-Control": "off"
           }
       }
   }
