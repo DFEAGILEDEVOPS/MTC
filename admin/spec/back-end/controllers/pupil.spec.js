@@ -10,6 +10,7 @@ const azureFileDataService = require('../../../services/data-access/azure-file.d
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const pupilAgeReasonService = require('../../../services/pupil-age-reason.service')
+const pupilRegisterCachingService = require('../../../services/pupil-register-caching.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
@@ -104,6 +105,7 @@ describe('pupil controller:', () => {
       nextSpy = sandbox.spy()
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      spyOn(pupilRegisterCachingService, 'setPupilRegisterCache')
     })
 
     afterEach(() => { sandbox.restore() })
@@ -126,6 +128,11 @@ describe('pupil controller:', () => {
       it('redirects to the pupil register page', async (done) => {
         await controller(req, res, nextSpy)
         expect(res.statusCode).toBe(302)
+        done()
+      })
+      it('calls pupilRegisterCachingService.setPupilRegisterCache if pupil has been successfully added', async (done) => {
+        await controller(req, res, nextSpy)
+        expect(pupilRegisterCachingService.setPupilRegisterCache).toHaveBeenCalled()
         done()
       })
     })
@@ -470,7 +477,27 @@ describe('pupil controller:', () => {
       expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilAgeReasonService.refreshPupilAgeReason).not.toHaveBeenCalled()
     })
-
+    it('calls pupilRegisterCachingService.setPupilRegisterCache if pupil has been successfully edited', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
+      spyOn(pupilRegisterCachingService, 'setPupilRegisterCache')
+      spyOn(pupilValidator, 'validate').and.returnValue(new ValidationError())
+      spyOn(pupilDataService, 'sqlUpdate')
+      spyOn(res, 'redirect')
+      // As we do not want to run any more of the controller code than we need to we can trigger an
+      // exception to bail out early, which saves mocking the remaining calls.
+      await controller(req, res, next)
+      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
+      expect(pupilAgeReasonService.refreshPupilAgeReason).toHaveBeenCalled()
+      expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
+      expect(pupilRegisterCachingService.setPupilRegisterCache).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      done()
+    })
     // TODO - this method requires further coverage
   })
 })

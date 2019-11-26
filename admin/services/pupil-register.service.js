@@ -1,10 +1,12 @@
 'use strict'
 
 const pupilStatusService = require('../services/pupil.status.service')
+const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
 const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 
 const pupilRegisterService = {
   /**
@@ -41,7 +43,16 @@ const pupilRegisterService = {
    * @return {Promise<*>}
    */
   getPupilRegister: async function (schoolId) {
-    const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
+    const pupilRegisterRedisKey = `school:${schoolId}`
+    let cachedPupilRegisterData
+    const result = await redisCacheService.get(pupilRegisterRedisKey)
+    try {
+      cachedPupilRegisterData = JSON.parse(result)
+      if (cachedPupilRegisterData) {
+        return cachedPupilRegisterData
+      }
+    } catch (ignore) {}
+    const pupilRegisterData = await pupilRegisterCachingService.setPupilRegisterCache(schoolId, pupilRegisterDataService.getPupilRegister)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
         urlSlug: d.urlSlug,
@@ -58,7 +69,7 @@ const pupilRegisterService = {
       }
     })
     pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
-    return pupilRegister
+      return pupilRegister
   },
 
   /**

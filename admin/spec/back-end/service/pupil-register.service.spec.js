@@ -2,6 +2,7 @@
 
 /* global describe expect it beforeEach spyOn */
 
+const pupilRegisterCachingService = require('../../../services/pupil-register-caching.service')
 const pupilRegisterService = require('../../../services/pupil-register.service')
 const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
@@ -48,12 +49,12 @@ describe('pupil-register.service', () => {
 
   describe('#getPupilRegister', () => {
     beforeEach(() => {
-      spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
+      spyOn(pupilRegisterCachingService, 'setPupilRegisterCache').and.returnValue([])
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
     })
-    it('calls the data service to get the raw data', async () => {
+    it('calls the pupil register cache service to get the raw data', async () => {
       await pupilRegisterService.getPupilRegister(42)
-      expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
+      expect(pupilRegisterCachingService.setPupilRegisterCache).toHaveBeenCalled()
     })
     it('calls the pupil identification flag service', async () => {
       await pupilRegisterService.getPupilRegister(42)

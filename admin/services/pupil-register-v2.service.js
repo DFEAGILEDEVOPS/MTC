@@ -1,7 +1,9 @@
 'use strict'
 
+const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
 const pupilRegisterV2DataService = require('./data-access/pupil-register-v2.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 const tableSorting = require('../helpers/table-sorting')
 
 const pupilRegisterV2Service = {
@@ -11,7 +13,16 @@ const pupilRegisterV2Service = {
    * @return {Promise<*>}
    */
   getPupilRegister: async function (schoolId) {
-    const pupilRegisterData = await pupilRegisterV2DataService.getPupilRegister(schoolId)
+    const pupilRegisterRedisKey = `school:${schoolId}`
+    let cachedPupilRegisterData
+    const result = await redisCacheService.get(pupilRegisterRedisKey)
+    try {
+      cachedPupilRegisterData = JSON.parse(result)
+      if (cachedPupilRegisterData) {
+        return cachedPupilRegisterData
+      }
+    } catch (ignore) {}
+    const pupilRegisterData = await pupilRegisterCachingService.setPupilRegisterCache(schoolId, pupilRegisterV2DataService.getPupilRegister)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
         urlSlug: d.urlSlug,
