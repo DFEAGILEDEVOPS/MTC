@@ -3,10 +3,14 @@
   "description": "runtime host for functions defined in tslib that are designed to run on a consumption plan in Azure",
   "version": "0.1.0",
   "license": "GPL-3.0",
+  "engines": {
+    "node": ">= 10.14.1"
+  },
   "scripts": {
-    "build": "yarn sync && yarn run gulp",
+    "build": "yarn sync && yarn run gulp && yarn delete-specs",
     "rebuild": "yarn clean && yarn build",
     "sync": "node ./sync-tslib-deps.js && yarn install",
+    "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
     "prestart": "yarn build && func extensions install",
     "start:host": "func start",

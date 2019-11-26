@@ -4,6 +4,7 @@
     "check-marking",
     "check-notification",
     "check-sync",
-    "check-validation"
+    "check-validation",
+    "pupil-login"
   ]
 }
