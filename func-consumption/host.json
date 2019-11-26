@@ -3,8 +3,8 @@
     "extensions": {
       "http": {
           "routePrefix": "api",
-          "maxOutstandingRequests": 2000,
-          "maxConcurrentRequests": 1000,
+          "maxOutstandingRequests": -1,
+          "maxConcurrentRequests": -1,
           "dynamicThrottlesEnabled": false,
           "hsts": {
               "isEnabled": true,
