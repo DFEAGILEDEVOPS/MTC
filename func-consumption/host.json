@@ -8,7 +8,7 @@
           "dynamicThrottlesEnabled": false,
           "hsts": {
               "isEnabled": true,
-              "maxAge": "150",
+              "maxAge": "43200",
               "includeSubDomains": true,
               "preload": true
           },
