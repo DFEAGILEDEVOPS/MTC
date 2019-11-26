@@ -163,7 +163,9 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   const sql = `UPDATE [mtc_admin].[check]
                SET checkStatus_id =
                   (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP'),
-               receivedByServerAt = @receivedByServerAt
+                receivedByServerAt = @receivedByServerAt,
+                complete = 1,
+                completedAt = CURRENT_TIMESTAMP
                WHERE checkCode = @checkCode;
                
                UPDATE  [mtc_admin].[pupil] 

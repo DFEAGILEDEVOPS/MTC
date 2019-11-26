@@ -257,5 +257,32 @@ checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
 checkDataService.sqlUpdate = async function (checkData) {
   return sqlService.update('[check]', checkData)
 }
+//
+// /**
+//  * Return check data for a check status calculation
+//  * @param {Number} checkId
+//  * @return {Promise<{id: number, complete: number, payload: string, pinExpiresAt: object}>}
+//  */
+// checkDataService.getCheckDataForStateCalc = async function (checkId) {
+//   const sql = `SELECT
+//         c.id,
+//         c.pupilLoginDate,
+//         c.startedAt,
+//         c.receivedByServerAt,
+//         c.complete,
+//         cr.payload,
+//         cp.pinExpiresAt
+//     FROM
+//         [mtc_admin].[check] c LEFT JOIN
+//         [mtc_admin].[checkResult] cr ON (c.id = cr.check_id) LEFT JOIN
+//         [mtc_admin].[checkPin] cp on (c.id = cp.check_id)
+//     WHERE
+//         c.id = 1;
+//     `
+//   const params = [
+//     { name: 'checkId', value: checkId, type: sqlService.TYPES.Int }
+//   ]
+//   return sqlService.query(sql, params)
+// }
 
 module.exports = checkDataService

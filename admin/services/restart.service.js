@@ -103,6 +103,7 @@ restartService.restart = async (
       restartData[check.pupilId].currentCheckId = check.checkId
     }
   })
+  // Prepared Check delete...
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
 }
@@ -210,7 +211,8 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   // would refer to the restart itself, and not the pupil.
   if (restart.check_id) {
     const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
-    await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
+    // await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
+    // const newCheckStatus = checkStateService.
     await azureQueueService.addMessageAsync('prepared-check-delete', {
       version: 1,
       checkCode: check.checkCode,
