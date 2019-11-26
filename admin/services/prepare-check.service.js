@@ -13,16 +13,29 @@ const service = {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
-    const preparedChecks = checks.map(check => {
+    const lookupKeys = []
+    const cacheItems = checks.map(check => {
       const preparedCheck = constructPreparedCheck(check)
+      const preparedCheckKey = buildKey(check.schoolPin, check.pupilPin)
+      const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
+      lookupKeys.push({
+        key: buildLookupKey(check.checkCode),
+        value: preparedCheckKey,
+        ttl: ttl
+      })
       return {
-        key: buildKey(check.schoolPin, check.pupilPin),
+        key: preparedCheckKey,
         value: preparedCheck,
-        ttl: secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
+        ttl: ttl
       }
     })
-    return redisService.setMany(preparedChecks)
+    cacheItems.push(...lookupKeys)
+    return redisService.setMany(cacheItems)
   }
+}
+
+function buildLookupKey (checkCode) {
+  return `check-started-check-lookup:${checkCode}`
 }
 
 /**
