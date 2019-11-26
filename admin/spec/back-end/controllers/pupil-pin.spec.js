@@ -601,7 +601,7 @@ describe('pupilPin controller:', () => {
         expect(groupService.assignGroupsToPupils).toHaveBeenCalled()
         expect(pupilNamePresenter.createNamesForPupilView).toHaveBeenCalled()
       })
-      it('should not call groupService and pupilNamePresenter methods if no pupils are found  ', async () => {
+      it('should not call groupService and pupilNamePresenter methods if no pupils are found', async () => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
