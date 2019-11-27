@@ -35,7 +35,7 @@ const service = {
 }
 
 function buildLookupKey (checkCode) {
-  return `check-started-check-lookup:${checkCode}`
+  return `prepared-check-lookup:${checkCode}`
 }
 
 /**

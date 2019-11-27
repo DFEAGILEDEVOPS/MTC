@@ -55,7 +55,7 @@ describe('prepare-check.service', () => {
     let actualPreparedCheckKey, actualLookupKey
     check.schoolPin = 'schoolPin'
     check.pupilPin = 'pupilPin'
-    const expectedLookupKey = `check-started-check-lookup:${check.checkCode}`
+    const expectedLookupKey = `prepared-check-lookup:${check.checkCode}`
     const expectedPreparedCheckKey = `preparedCheck:${check.schoolPin}:${check.pupilPin}`
     spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
       actualPreparedCheckKey = batch[0].key
