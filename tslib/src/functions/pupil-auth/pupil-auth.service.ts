@@ -18,7 +18,6 @@ export interface IHttpResponse {
 export class PupilAuthService {
 
   private redisService: IRedisService
-  private eightHoursInSeconds: number = 28800
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
@@ -53,9 +52,6 @@ export class PupilAuthService {
     const preparedCheck = await this.redisService.get(cacheKey)
     if (!preparedCheck) return noAuth
 
-    const checkStartedLookupKey = this.buildCheckStartedLookupKey(preparedCheck.checkCode)
-    await this.redisService.setex(checkStartedLookupKey, cacheKey, this.eightHoursInSeconds)
-
     if (preparedCheck.config.practice === false) {
       await this.redisService.expire(cacheKey, config.PupilAuth.PreparedCheckExpiryAfterLoginSeconds)
     }
@@ -80,12 +76,7 @@ export class PupilAuthService {
     }
   }
 
-  private buildCheckStartedLookupKey (checkCode: string) {
-    return `check-started-check-lookup:${checkCode}`
-  }
-
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
     return `preparedCheck:${schoolPin}:${pupilPin}`
   }
-
 }

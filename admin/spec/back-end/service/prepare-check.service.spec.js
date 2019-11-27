@@ -10,6 +10,7 @@ let check
 describe('prepare-check.service', () => {
   beforeEach(() => {
     check = {
+      checkCode: 'check-code',
       schoolPin: 'school-pin',
       pupilPin: 'pupil-pin',
       pupil: {
@@ -50,15 +51,19 @@ describe('prepare-check.service', () => {
     }
   })
 
-  it('should add each check with the expected cache key', async () => {
-    let actualKey
+  it('should add each check with the expected cache key and a lookup item', async () => {
+    let actualPreparedCheckKey, actualLookupKey
     check.schoolPin = 'schoolPin'
     check.pupilPin = 'pupilPin'
+    const expectedLookupKey = `prepared-check-lookup:${check.checkCode}`
+    const expectedPreparedCheckKey = `preparedCheck:${check.schoolPin}:${check.pupilPin}`
     spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
-      actualKey = batch[0].key
+      actualPreparedCheckKey = batch[0].key
+      actualLookupKey = batch[1].key
     })
     await sut.prepareChecks([check])
-    expect(actualKey).toEqual(`preparedCheck:${check.schoolPin}:${check.pupilPin}`)
+    expect(actualPreparedCheckKey).toEqual(expectedPreparedCheckKey)
+    expect(actualLookupKey).toEqual(expectedLookupKey)
   })
 
   it('should cache each item with the expected structure', async () => {
@@ -80,14 +85,16 @@ describe('prepare-check.service', () => {
   })
 
   it('should cache each item with the expected ttl', async () => {
-    let ttl
+    let actualPreparedCheckTtl, actualLookupKeyTtl
     const fullTestRunToleranceInSeconds = 60
     const fiveHoursInSeconds = 18000
     spyOn(redisService, 'setMany').and.callFake((items) => {
-      ttl = items[0].ttl
+      actualPreparedCheckTtl = items[0].ttl
+      actualLookupKeyTtl = items[1].ttl
     })
     await sut.prepareChecks([check])
-    expect(ttl).toBeGreaterThan(fiveHoursInSeconds - fullTestRunToleranceInSeconds)
-    expect(ttl).toBeLessThanOrEqual(fiveHoursInSeconds)
+    expect(actualPreparedCheckTtl).toBeGreaterThan(fiveHoursInSeconds - fullTestRunToleranceInSeconds)
+    expect(actualPreparedCheckTtl).toBeLessThanOrEqual(fiveHoursInSeconds)
+    expect(actualLookupKeyTtl).toEqual(actualPreparedCheckTtl)
   })
 })
