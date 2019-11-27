@@ -19,7 +19,7 @@ export class PupilAuthService {
 
   private redisService: IRedisService
 
-  constructor(redisService?: IRedisService) {
+  constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }
@@ -69,9 +69,6 @@ export class PupilAuthService {
       body: preparedCheck,
       headers: {
         'Content-Type': 'application/json'
-/*         'Access-Control-Allow-Methods': 'POST,OPTIONS',
-        'Access-Control-Allow-Headers': 'content-type',
-        'Access-Control-Allow-Origin': config.PupilAuth.CorsWhitelist */
       },
       isRaw: true
     }
