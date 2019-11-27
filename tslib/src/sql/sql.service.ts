@@ -36,9 +36,6 @@ class ConnectionPoolService {
   // pool can still be connecting when first used, this may help...
   // https://github.com/tediousjs/node-mssql/issues/934
   static async getInstance (): Promise<ConnectionPool> {
-    if (this.pool.connected === true) {
-      return this.pool
-    }
 
     // tslint:disable-next-line: strict-type-predicates
     if (this.pool === undefined) {
@@ -47,6 +44,10 @@ class ConnectionPoolService {
       this.pool.on('error', (error) => {
         console.error(`Sql Connection Pool Error Raised:${error.message}`)
       })
+    }
+
+    if (this.pool.connected === true) {
+      return this.pool
     }
 
     if (this.pool.connecting === false && this.pool.connected === false) {
@@ -69,8 +70,6 @@ class ConnectionPoolService {
    */
   private static async waitForConnection (): Promise<void> {
     let millisecondsPassed = 0
-    // Basically let's write a recursive executor with a timeout
-    // and 'passed time' threshold so it doesn't recurse forever:
     const waitForConnectionPoolToBeReadyExecutor = (
       resolve: (value?: PromiseLike<undefined> | undefined) => void,
       reject: (reason?: any) => void
@@ -89,7 +88,7 @@ class ConnectionPoolService {
       }, 2000)
     }
 
-    // This simply now waits for like 30 seconds, for the pool to become connected.
+    // This simply waits for  30 seconds, for the pool to become connected.
     // Since this is also an async function, if this fails after 30 seconds, execution stops
     // and an error is thrown.
     await new Promise(waitForConnectionPoolToBeReadyExecutor)
