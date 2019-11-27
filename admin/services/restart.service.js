@@ -2,7 +2,6 @@ const moment = require('moment')
 const bluebird = require('bluebird')
 const R = require('ramda')
 
-const checkStateService = require('../services/check-state.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
