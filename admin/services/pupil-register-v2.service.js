@@ -19,7 +19,8 @@ const pupilRegisterV2Service = {
         lastName: d.lastName,
         middleNames: d.middleNames,
         dateOfBirth: d.dateOfBirth,
-        group: d.groupName
+        group: d.groupName,
+        upn: d.upn
       }
     })
     return pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
