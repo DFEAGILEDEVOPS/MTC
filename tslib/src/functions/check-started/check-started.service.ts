@@ -32,7 +32,7 @@ export class CheckStartedService {
   }
 
   private buildCacheKey (checkCode: string): string {
-    return `check-started-check-lookup:${checkCode}`
+    return `prepared-check-lookup:${checkCode}`
   }
 }
 export interface ICheckStartedMessage {

@@ -29,7 +29,7 @@ describe('check-started.service', () => {
     const preparedCheckKey = 'prepared-check-key'
 
     redisServiceMock.get = jest.fn(async (key: string) => {
-      if (key.startsWith('check-started-check-lookup')) {
+      if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
         return {
@@ -52,7 +52,7 @@ describe('check-started.service', () => {
     const preparedCheckKey = 'prepared-check-key'
 
     redisServiceMock.get = jest.fn(async (key: string) => {
-      if (key.startsWith('check-started-check-lookup')) {
+      if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
         return {
@@ -77,7 +77,7 @@ describe('check-started.service', () => {
 
     redisServiceMock.get = jest.fn(async (key: string) => {
 
-      if (key.startsWith('check-started-check-lookup')) {
+      if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
         return {
