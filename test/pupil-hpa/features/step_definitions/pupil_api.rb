@@ -82,3 +82,10 @@ Then(/^I should see the expiry time change to (\d+) minutes$/) do |value|
   expect(@after_login/60).to be <= value.to_i
   expect(@after_login/60).to be > value.to_i - 3
 end
+
+
+Then(/^I should be able to lookup the prepared check using the check code$/) do
+  pupil_id = SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])['id']
+  check_code = SqlDbHelper.check_details(pupil_id)['checkCode']
+  expect(REDIS_CLIENT.get(JSON.parse(REDIS_CLIENT.get("prepared-check-lookup:#{check_code}"))['value'])).to_not be_nil
+end
