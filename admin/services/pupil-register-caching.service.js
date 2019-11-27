@@ -27,7 +27,7 @@ const pupilRegisterCachingService = {
   /**
    * Refresh the pupil register cache for a particular school when add or edit occurs
    * @param {Number} schoolId
-   * @return {Array}
+   * @return {Promise<Array>}
    */
   refreshPupilRegisterCache: async function (schoolId) {
     if (!schoolId) {
