@@ -85,15 +85,15 @@ describe('pupil-register.service', () => {
       spyOn(redisCacheService, 'set')
     })
     it('calls the pupil register data service to get the raw data', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42)
+      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
       expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
     })
     it('calls the pupil register identification flag service to get the view data based on raw', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42)
+      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
     })
     it('calls the redis cache service to cache the view data for the particular school', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42)
+      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
       expect(redisCacheService.set).toHaveBeenCalled()
     })
   })

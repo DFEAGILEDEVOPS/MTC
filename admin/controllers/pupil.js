@@ -63,7 +63,7 @@ const postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
-    await pupilRegisterCachingService.refreshPupilRegisterCache(req.user.schoolId)
+    await pupilRegisterCachingService.dropPupilRegisterCache(req.user.schoolId)
     req.flash('info', '1 new pupil has been added')
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
     res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
@@ -279,7 +279,7 @@ const postEditPupil = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  await pupilRegisterCachingService.refreshPupilRegisterCache(req.user.schoolId)
+  await pupilRegisterCachingService.dropPupilRegisterCache(req.user.schoolId)
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
   res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }

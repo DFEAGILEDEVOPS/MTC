@@ -1,9 +1,5 @@
 'use strict'
 
-const featureToggles = require('feature-toggles')
-
-const pupilRegisterV2Service = require('./pupil-register-v2.service')
-const pupilRegisterService = require('./pupil-register.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 
 const pupilRegisterCachingService = {
@@ -20,21 +16,21 @@ const pupilRegisterCachingService = {
     if (!pupilRegisterViewData || pupilRegisterViewData.length === 0) {
       throw new Error('Pupil register view data not provided')
     }
-    const pupilRegisterRedisKey = `school:${schoolId}`
+    const pupilRegisterRedisKey = `pupilRegisterViewData:${schoolId}`
     return redisCacheService.set(pupilRegisterRedisKey, pupilRegisterViewData)
   },
 
   /**
-   * Refresh the pupil register cache for a particular school when add or edit occurs
+   * Drop the pupil register cache for a particular school when add or edit occurs
    * @param {Number} schoolId
    * @return {Promise<Array>}
    */
-  refreshPupilRegisterCache: async function (schoolId) {
+  dropPupilRegisterCache: async function (schoolId) {
     if (!schoolId) {
       throw new Error('School id not found in session')
     }
-    return featureToggles.isFeatureEnabled('pupilRegisterV2')
-      ? pupilRegisterV2Service.getPupilRegisterViewData(schoolId) : pupilRegisterService.getPupilRegisterViewData(schoolId)
+    const pupilRegisterRedisKey = `pupilRegisterViewData:${schoolId}`
+    return redisCacheService.drop(pupilRegisterRedisKey)
   }
 }
 

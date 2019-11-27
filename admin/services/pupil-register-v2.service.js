@@ -16,20 +16,21 @@ const pupilRegisterV2Service = {
     if (!schoolId) {
       throw new Error('School id not found in session')
     }
-    const pupilRegisterRedisKey = `school:${schoolId}`
+    const pupilRegisterRedisKey = `pupilRegisterViewData:${schoolId}`
     const result = await redisCacheService.get(pupilRegisterRedisKey)
     if (result && result.length > 0) {
       return result
     }
-    return this.getPupilRegisterViewData(schoolId)
+    return this.getPupilRegisterViewData(schoolId, pupilRegisterRedisKey)
   },
 
   /**
    * Store the pupil register view data in redis and return the data set
-   * @param schoolId
+   * @param {Number} schoolId
+   * @param {String} pupilRegisterRedisKey
    * @return {Array}
    */
-  getPupilRegisterViewData: async function (schoolId) {
+  getPupilRegisterViewData: async function (schoolId, pupilRegisterRedisKey) {
     const pupilRegisterData = await pupilRegisterV2DataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
@@ -42,7 +43,6 @@ const pupilRegisterV2Service = {
       }
     })
     const pupilRegisterViewData = pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
-    const pupilRegisterRedisKey = `school:${schoolId}`
     await redisCacheService.set(pupilRegisterRedisKey, pupilRegisterViewData)
     return pupilRegisterViewData
   }

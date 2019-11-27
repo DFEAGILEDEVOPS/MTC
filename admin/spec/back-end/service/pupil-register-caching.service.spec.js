@@ -2,11 +2,7 @@
 
 /* global describe expect it beforeEach spyOn fail */
 
-const featureToggles = require('feature-toggles')
-
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const pupilRegisterV2Service = require('../../../services/pupil-register-v2.service')
-const pupilRegisterService = require('../../../services/pupil-register.service')
 const pupilRegisterCachingService = require('../../../services/pupil-register-caching.service')
 
 describe('pupil-register-caching.service', () => {
@@ -39,37 +35,26 @@ describe('pupil-register-caching.service', () => {
       expect(redisCacheService.set).toHaveBeenCalled()
     })
   })
-  describe('#refreshPupilRegisterCache', () => {
+  describe('#dropPupilRegisterCache', () => {
     beforeEach(() => {
       spyOn(redisCacheService, 'set')
     })
     it('throws if school id is not provided', async () => {
       try {
-        await pupilRegisterCachingService.refreshPupilRegisterCache(undefined)
+        await pupilRegisterCachingService.dropPupilRegisterCache(undefined)
         fail()
       } catch (error) {
         expect(error.message).toBe('School id not found in session')
       }
     })
-    it('calls pupilRegisterV2Service getPupilRegisterViewData set when pupil register v2 is enabled ', async () => {
-      spyOn(featureToggles, 'isFeatureEnabled').and.returnValue(true)
-      spyOn(pupilRegisterV2Service, 'getPupilRegisterViewData')
+    it('calls redisCacheService drop when school id is provided', async () => {
+      spyOn(redisCacheService, 'drop')
       try {
-        await pupilRegisterCachingService.refreshPupilRegisterCache(1)
+        await pupilRegisterCachingService.dropPupilRegisterCache(1)
       } catch (error) {
         fail()
       }
-      expect(pupilRegisterV2Service.getPupilRegisterViewData).toHaveBeenCalled()
-    })
-    it('calls pupilRegisterService getPupilRegisterViewData set when pupil register v2 is not enabled ', async () => {
-      spyOn(featureToggles, 'isFeatureEnabled').and.returnValue(false)
-      spyOn(pupilRegisterService, 'getPupilRegisterViewData')
-      try {
-        await pupilRegisterCachingService.refreshPupilRegisterCache(1)
-      } catch (error) {
-        fail()
-      }
-      expect(pupilRegisterService.getPupilRegisterViewData).toHaveBeenCalled()
+      expect(redisCacheService.drop).toHaveBeenCalled()
     })
   })
 })

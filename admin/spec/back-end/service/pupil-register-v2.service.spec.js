@@ -48,19 +48,19 @@ describe('pupil-register-v2.service', () => {
       spyOn(redisCacheService, 'set')
     })
     it('calls the pupil register data service to get the raw data', async () => {
-      await pupilRegisterV2Service.getPupilRegisterViewData(42)
+      await pupilRegisterV2Service.getPupilRegisterViewData(42, 'key')
       expect(pupilRegisterV2DataService.getPupilRegister).toHaveBeenCalled()
     })
     it('calls the tableSorting applySorting method to sort the raw data', async () => {
-      await pupilRegisterV2Service.getPupilRegisterViewData(42)
+      await pupilRegisterV2Service.getPupilRegisterViewData(42, 'key')
       expect(tableSorting.applySorting).toHaveBeenCalled()
     })
     it('calls the pupil register identification flag service to get the view data', async () => {
-      await pupilRegisterV2Service.getPupilRegisterViewData(42)
+      await pupilRegisterV2Service.getPupilRegisterViewData(42, 'key')
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
     })
     it('calls the redis cache service to cache the view data for the particular school', async () => {
-      await pupilRegisterV2Service.getPupilRegisterViewData(42)
+      await pupilRegisterV2Service.getPupilRegisterViewData(42, 'key')
       expect(redisCacheService.set).toHaveBeenCalled()
     })
   })
