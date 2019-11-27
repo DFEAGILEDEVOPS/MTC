@@ -1,6 +1,6 @@
 'use strict'
 
-const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
+// const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
 const pupilRegisterV2DataService = require('./data-access/pupil-register-v2.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const redisCacheService = require('./data-access/redis-cache.service')
@@ -13,16 +13,24 @@ const pupilRegisterV2Service = {
    * @return {Promise<*>}
    */
   getPupilRegister: async function (schoolId) {
+    if (!schoolId) {
+      throw new Error('School id not found in session')
+    }
     const pupilRegisterRedisKey = `school:${schoolId}`
-    let cachedPupilRegisterData
     const result = await redisCacheService.get(pupilRegisterRedisKey)
-    try {
-      cachedPupilRegisterData = JSON.parse(result)
-      if (cachedPupilRegisterData) {
-        return cachedPupilRegisterData
-      }
-    } catch (ignore) {}
-    const pupilRegisterData = await pupilRegisterCachingService.setPupilRegisterCache(schoolId, pupilRegisterV2DataService.getPupilRegister)
+    if (result && result.length > 0) {
+      return result
+    }
+    return this.getPupilRegisterViewData(schoolId)
+  },
+
+  /**
+   * Return the pupil register
+   * @param schoolId
+   * @return {Promise<*>}
+   */
+  getPupilRegisterViewData: async function (schoolId) {
+    const pupilRegisterData = await pupilRegisterV2DataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
         urlSlug: d.urlSlug,
@@ -33,7 +41,10 @@ const pupilRegisterV2Service = {
         group: d.groupName
       }
     })
-    return pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
+    const pupilRegisterViewData = pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilRegister, 'lastName'))
+    const pupilRegisterRedisKey = `school:${schoolId}`
+    await redisCacheService.set(pupilRegisterRedisKey, pupilRegisterViewData)
+    return pupilRegisterViewData
   }
 }
 

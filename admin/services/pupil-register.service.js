@@ -1,7 +1,6 @@
 'use strict'
 
 const pupilStatusService = require('../services/pupil.status.service')
-const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
 const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
@@ -43,16 +42,21 @@ const pupilRegisterService = {
    * @return {Promise<*>}
    */
   getPupilRegister: async function (schoolId) {
+    if (!schoolId) {
+      throw new Error('School id not found in session')
+    }
     const pupilRegisterRedisKey = `school:${schoolId}`
-    let cachedPupilRegisterData
     const result = await redisCacheService.get(pupilRegisterRedisKey)
     try {
-      cachedPupilRegisterData = JSON.parse(result)
-      if (cachedPupilRegisterData) {
-        return cachedPupilRegisterData
+      if (result && result.length > 0) {
+        return result
       }
     } catch (ignore) {}
-    const pupilRegisterData = await pupilRegisterCachingService.setPupilRegisterCache(schoolId, pupilRegisterDataService.getPupilRegister)
+    return this.getPupilRegisterViewData(schoolId)
+  },
+
+  getPupilRegisterViewData: async function (schoolId) {
+    const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
         urlSlug: d.urlSlug,
@@ -68,8 +72,10 @@ const pupilRegisterService = {
           d.pupilRestartCheckId)
       }
     })
-    pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
-      return pupilRegister
+    const pupilRegisterViewData = pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
+    const pupilRegisterRedisKey = `school:${schoolId}`
+    await redisCacheService.set(pupilRegisterRedisKey, pupilRegisterViewData)
+    return pupilRegisterViewData
   },
 
   /**

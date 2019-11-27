@@ -105,7 +105,7 @@ describe('pupil controller:', () => {
       nextSpy = sandbox.spy()
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-      spyOn(pupilRegisterCachingService, 'setPupilRegisterCache')
+      spyOn(pupilRegisterCachingService, 'refreshPupilRegisterCache')
     })
 
     afterEach(() => { sandbox.restore() })
@@ -130,9 +130,9 @@ describe('pupil controller:', () => {
         expect(res.statusCode).toBe(302)
         done()
       })
-      it('calls pupilRegisterCachingService.setPupilRegisterCache if pupil has been successfully added', async (done) => {
+      it('calls pupilRegisterCachingService.refreshPupilRegisterCache if pupil has been successfully added', async (done) => {
         await controller(req, res, nextSpy)
-        expect(pupilRegisterCachingService.setPupilRegisterCache).toHaveBeenCalled()
+        expect(pupilRegisterCachingService.refreshPupilRegisterCache).toHaveBeenCalled()
         done()
       })
     })
@@ -477,13 +477,13 @@ describe('pupil controller:', () => {
       expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilAgeReasonService.refreshPupilAgeReason).not.toHaveBeenCalled()
     })
-    it('calls pupilRegisterCachingService.setPupilRegisterCache if pupil has been successfully edited', async (done) => {
+    it('calls pupilRegisterCachingService.refreshPupilRegisterCache if pupil has been successfully edited', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
-      spyOn(pupilRegisterCachingService, 'setPupilRegisterCache')
+      spyOn(pupilRegisterCachingService, 'refreshPupilRegisterCache')
       spyOn(pupilValidator, 'validate').and.returnValue(new ValidationError())
       spyOn(pupilDataService, 'sqlUpdate')
       spyOn(res, 'redirect')
@@ -494,7 +494,7 @@ describe('pupil controller:', () => {
       expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilAgeReasonService.refreshPupilAgeReason).toHaveBeenCalled()
       expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
-      expect(pupilRegisterCachingService.setPupilRegisterCache).toHaveBeenCalled()
+      expect(pupilRegisterCachingService.refreshPupilRegisterCache).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       done()
     })
