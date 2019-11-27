@@ -22,14 +22,72 @@ class ConnectionPoolService {
   private static pool: ConnectionPool
   private static initialisationLock: boolean
 
-  static async getInstance (): Promise<ConnectionPool> {
+  static async getInstance_old (): Promise<ConnectionPool> {
     if (!this.initialisationLock === true) {
       this.initialisationLock = true
       this.pool = new ConnectionPool(config.Sql)
       await this.pool.connect()
+      this.pool.on('error', (error) => {
+        console.error(`Sql Connection Pool Error Raised:${error.message}`)
+      })
     }
     return this.pool
   }
+  // pool can still be connecting when first used, this may help...
+  // https://github.com/tediousjs/node-mssql/issues/934
+  static async getInstance (): Promise<ConnectionPool> {
+    // tslint:disable-next-line: strict-type-predicates
+    if (this.pool === undefined) {
+      this.pool = new ConnectionPool(config.Sql)
+      await this.pool.connect()
+      this.pool.on('error', (error) => {
+        console.error(`Sql Connection Pool Error Raised:${error.message}`)
+      })
+    }
+    if (this.pool.connecting === false && this.pool.connected === false) {
+      // may have been closed, reconnect....
+      await this.pool.connect()
+    }
+    if (this.pool.connecting === true) {
+      await this.waitForConnection()
+    }
+    if (this.pool.connected === false) {
+      throw new Error('pool failed to connect after setup')
+    }
+    return this.pool
+  }
+
+  /**
+   * @description idea taken from https://github.com/tediousjs/node-mssql/issues/934
+   */
+  private static async waitForConnection (): Promise<void> {
+    let millisecondsPassed = 0
+    // Basically let's write a recursive executor with a timeout
+    // and 'passed time' threshold so it doesn't recurse forever:
+    const waitForConnectionPoolToBeReadyExecutor = (
+      resolve: (value?: PromiseLike<undefined> | undefined) => void,
+      reject: (reason?: any) => void
+    ) => {
+      setTimeout(() => {
+        if (millisecondsPassed < 30000) {
+          millisecondsPassed += 2000
+          if (this.pool.connected) {
+            resolve()
+          } else {
+            waitForConnectionPoolToBeReadyExecutor(resolve, reject)
+          }
+        } else {
+          reject('Aborting start because the connection pool failed to initialize in the last ~30s.')
+        }
+      }, 2000)
+    }
+
+    // This simply now waits for like 30 seconds, for the pool to become connected.
+    // Since this is also an async function, if this fails after 30 seconds, execution stops
+    // and an error is thrown.
+    await new Promise(waitForConnectionPoolToBeReadyExecutor)
+  }
+
 }
 
 const connectionLimitReachedErrorCode = 10928
