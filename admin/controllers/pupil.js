@@ -7,7 +7,7 @@ const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilAgeReasonService = require('../services/pupil-age-reason.service')
-const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
@@ -63,7 +63,8 @@ const postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
-    await pupilRegisterCachingService.dropPupilRegisterCache(req.user.schoolId)
+    const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
+    await redisCacheService.drop(pupilRegisterRedisKey)
     req.flash('info', '1 new pupil has been added')
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
     res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
@@ -279,7 +280,8 @@ const postEditPupil = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  await pupilRegisterCachingService.dropPupilRegisterCache(req.user.schoolId)
+  const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
+  await redisCacheService.drop(pupilRegisterRedisKey)
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
   res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }
