@@ -55,6 +55,11 @@ const pupilRegisterService = {
     return this.getPupilRegisterViewData(schoolId)
   },
 
+  /**
+   * Store the pupil register view data in redis and return the data set
+   * @param schoolId
+   * @return {Array}
+   */
   getPupilRegisterViewData: async function (schoolId) {
     const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
