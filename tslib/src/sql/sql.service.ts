@@ -36,6 +36,10 @@ class ConnectionPoolService {
   // pool can still be connecting when first used, this may help...
   // https://github.com/tediousjs/node-mssql/issues/934
   static async getInstance (): Promise<ConnectionPool> {
+    if (this.pool.connected === true) {
+      return this.pool
+    }
+
     // tslint:disable-next-line: strict-type-predicates
     if (this.pool === undefined) {
       this.pool = new ConnectionPool(config.Sql)
@@ -44,13 +48,16 @@ class ConnectionPoolService {
         console.error(`Sql Connection Pool Error Raised:${error.message}`)
       })
     }
+
     if (this.pool.connecting === false && this.pool.connected === false) {
       // may have been closed, reconnect....
       await this.pool.connect()
     }
+
     if (this.pool.connecting === true) {
       await this.waitForConnection()
     }
+
     if (this.pool.connected === false) {
       throw new Error('pool failed to connect after setup')
     }
