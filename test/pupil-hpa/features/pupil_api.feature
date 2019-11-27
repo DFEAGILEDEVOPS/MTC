@@ -18,4 +18,9 @@ Feature: Pupil Api
     When I make a request to login
     Then I should see the expiry time change to 30 minutes
 
+  @new_check_process
+  Scenario: Prepared check data can be looked up via check code
+    Given I have generated a pin for a pupil
+    Then I should be able to lookup the prepared check using the check code
+
 
