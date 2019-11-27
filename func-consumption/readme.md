@@ -25,8 +25,8 @@ a local.settings.json file is required in the root of the project, with a minimu
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "{AzureWebJobsStorage}",
-    "AZURE_STORAGE_CONNECTION_STRING": "{your storage account connection}",
-    "ServiceBusConnection": "{your service bus connection}",
+    "AZURE_STORAGE_CONNECTION_STRING": "#your storage account connection#",
+    "ServiceBusConnection": "#your service bus connection#",
     "CORS_WHITELIST": "http://localhost:4200"
   },
   "ConnectionStrings": {}
