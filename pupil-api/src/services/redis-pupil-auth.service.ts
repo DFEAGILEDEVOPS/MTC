@@ -27,15 +27,15 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       return
     }
 
-    // Emit a successful login to the queue
-    const pupilLoginMessage = {
-      checkCode: preparedCheckEntry.checkCode,
-      loginAt: new Date(),
-      version: 1
-    }
-    azureQueueService.addMessage('pupil-login', pupilLoginMessage)
     if (preparedCheckEntry.config.practice === false) {
       await this.redisService.expire(cacheKey, config.RedisPreparedCheckExpiryInSeconds)
+      // Emit a successful login to the queue
+      const pupilLoginMessage = {
+        checkCode: preparedCheckEntry.checkCode,
+        loginAt: new Date(),
+        version: 1
+      }
+      azureQueueService.addMessage('pupil-login', pupilLoginMessage)
     }
     return preparedCheckEntry
   }

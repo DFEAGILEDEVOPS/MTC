@@ -1,0 +1,13 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "pupilLoginMessage",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "pupil-login",
+      "connection": "ServiceBusConnection"
+    }
+  ],
+  "scriptFile": "../dist/functions/pupil-login/index.js"
+}

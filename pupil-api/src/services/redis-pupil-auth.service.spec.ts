@@ -1,6 +1,5 @@
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
-import { stringLiteral } from '@babel/types'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
