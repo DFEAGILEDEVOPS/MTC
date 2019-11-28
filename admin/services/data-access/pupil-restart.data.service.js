@@ -123,10 +123,56 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart]
-  SET isDeleted=1, deletedByUser_id=@userId
-  WHERE id = @restartId`
-  return sqlService.modify(sql, params)
+  const sql = `DECLARE @newCheckId int; 
+               DECLARE @parentCheckId int;
+               DECLARE @pupilId int;
+               DECLARE @isDeleted bit;
+               
+               SELECT
+                 @newCheckId = check_id,
+                 @pupilId = pupil_id,
+                 @isDeleted = isDeleted
+               FROM 
+                [mtc_admin].[pupilRestart] 
+               WHERE id = @restartId;
+               
+               -- Just check that the restart has not already been deleted
+               IF @isDeleted = 1
+                THROW 51000, 'Restart already deleted', 1;
+              
+               -- Soft-delete the restart record
+               UPDATE [mtc_admin].[pupilRestart]
+               SET isDeleted=1, deletedByUser_id=@userId
+               WHERE id = @restartId;
+               
+               -- IF there is new check raised that has a NEW status, we must VOID the check                              
+               IF (@newCheckId IS NOT NULL)
+               BEGIN
+                  UPDATE [mtc_admin].[check] 
+                  SET checkStatus_id = (select id from [mtc_admin].[checkStatus] where code = 'VOD')
+                  WHERE id = @newCheckId;
+                  
+                  -- delete check pin as it will never be used
+                  DELETE FROM [mtc_admin].[checkPin] where check_id = @newCheckId;
+               END
+               
+               -- The previous check will have been VOIDED, and it must be re-activated.
+               -- TODO: add new design so the next line can pick up the old check_id
+               /*SET @parentCheckId = (select id from [mtc_admin].[check] where pupilRestart_id = @restartId);               
+               UPDATE [mtc_admin].[check]
+               SET checkStatus_id = dbo.ufnCalcCheckStatusID(@parentCheckId)
+               WHERE id = @parentCheckId;
+               */
+               -- Update currentCheck et al. on pupil
+               /* UPDATE [mtc_admin].[pupil] 
+               SET currentCheck = @parentCheckId,
+                   restartAvailable = 0,
+                   complete = ??
+               WHERE
+                   id = @pupilId 
+                */    
+               `
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 /**
