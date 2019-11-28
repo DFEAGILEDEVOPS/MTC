@@ -204,6 +204,11 @@ restartService.getStatus = async pupilId => {
  */
 restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
+
+  if (!pupil) {
+    throw new Error('pupil not found')
+  }
+
   const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
 
   if (!restart) {

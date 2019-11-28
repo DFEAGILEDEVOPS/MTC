@@ -29,7 +29,8 @@ const checkStartDataService = {
     const sqls = data.map((item, idx) => {
       const insert = `UPDATE [mtc_admin].[pupil] 
                       SET currentCheckId = @checkId${idx},
-                          checkComplete = 0
+                          checkComplete = 0,
+                          restartAvailable = 0
                       WHERE id=@pupilId${idx}
                       AND school_id=@schoolId${idx};`
       const params = [

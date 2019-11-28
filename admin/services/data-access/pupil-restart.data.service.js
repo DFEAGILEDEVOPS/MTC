@@ -127,11 +127,13 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                DECLARE @parentCheckId int;
                DECLARE @pupilId int;
                DECLARE @isDeleted bit;
+               DECLARE @parentCheckCode char(3);
                
                SELECT
                  @newCheckId = check_id,
                  @pupilId = pupil_id,
-                 @isDeleted = isDeleted
+                 @isDeleted = isDeleted,
+                 @parentCheckId = parentCheckId
                FROM 
                 [mtc_admin].[pupilRestart] 
                WHERE id = @restartId;
@@ -157,20 +159,25 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                END
                
                -- The previous check will have been VOIDED, and it must be re-activated.
-               -- TODO: add new design so the next line can pick up the old check_id
-               /*SET @parentCheckId = (select id from [mtc_admin].[check] where pupilRestart_id = @restartId);               
                UPDATE [mtc_admin].[check]
                SET checkStatus_id = dbo.ufnCalcCheckStatusID(@parentCheckId)
                WHERE id = @parentCheckId;
-               */
-               -- Update currentCheck et al. on pupil
-               /* UPDATE [mtc_admin].[pupil] 
-               SET currentCheck = @parentCheckId,
+               
+               -- Get the parent check status code
+               SELECT 
+                @parentCheckCode = code 
+               FROM [mtc_admin].[check] c JOIN 
+                    [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+               WHERE 
+                    c.id = @parentCheckId;
+               
+               -- Update pupil state fields
+               UPDATE [mtc_admin].[pupil] 
+               SET currentCheckId = @parentCheckId,
                    restartAvailable = 0,
-                   complete = ??
+                   checkComplete = IIF (@parentCheckCode = 'CMP', 1, 0)
                WHERE
-                   id = @pupilId 
-                */    
+                   id = @pupilId;                     
                `
   return sqlService.modifyWithTransaction(sql, params)
 }
