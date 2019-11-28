@@ -632,15 +632,14 @@ describe('group controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(groupService, 'remove').and.returnValue(Promise.resolve(groupDeletedMock))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
-          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+          expect(groupService.remove).toHaveBeenCalled()
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
@@ -658,15 +657,14 @@ describe('group controller', () => {
             groupId: null
           }
 
-          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(groupService, 'remove').and.returnValue(Promise.resolve(groupDeletedMock))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
-          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.sqlMarkGroupAsDeleted).not.toHaveBeenCalled()
+          expect(groupService.remove).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -682,15 +680,14 @@ describe('group controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.reject(new Error()))
+          spyOn(groupService, 'remove').and.returnValue(Promise.reject(new Error()))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
-          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+          expect(groupService.remove).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
