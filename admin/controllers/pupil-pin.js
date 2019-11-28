@@ -200,9 +200,8 @@ const getViewAndPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
-    if (pupils.length > 0) {
-      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
+    if (Array.isArray(pupils) && pupils.length > 0) {
+      pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
@@ -255,12 +254,11 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(pupils)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
-    if (pupils.length > 0) {
+    if (Array.isArray(pupils) && pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
-      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
+      pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
