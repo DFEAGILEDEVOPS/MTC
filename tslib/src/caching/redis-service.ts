@@ -50,6 +50,12 @@ export interface IRedisService {
    * @returns the TTL in seconds or null if the item is not found
    */
   ttl (key: string): Promise<number | null>
+  /**
+   * @description set the TTL of an existing item in the cache
+   * @param key the unique string key of the redis entry to update
+   * @param ttl the expiry time, in seconds from now
+   */
+  expire (key: string, ttl: number): Promise<any>
 }
 
 export class RedisService implements IRedisService {
@@ -163,5 +169,9 @@ export class RedisService implements IRedisService {
 
   ttl (key: string): Promise<number | null> {
     return this.redis.ttl(key)
+  }
+
+  expire (key: string, ttl: number): Promise<any> {
+    return this.redis.expire(key, ttl)
   }
 }

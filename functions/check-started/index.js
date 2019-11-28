@@ -5,7 +5,6 @@ const process = require('process')
 const sqlService = require('../lib/sql/sql.service')
 const uuid = require('uuid/v4')
 const { TYPES } = sqlService
-const config = require('../config')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -43,8 +42,7 @@ module.exports = async function (context, checkStartMessage) {
 
   // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.]
   try {
-    context.log(`isLiveCheck:${checkData.isLiveCheck} delete:${config.DeletePreparedChecksFromTableStorageOnCheckStarted}`)
-    if (checkData.isLiveCheck && config.DeletePreparedChecksFromTableStorageOnCheckStarted) {
+    if (checkData.isLiveCheck) {
       await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
       context.log('check-started: SUCCESS: pupil check row deleted from preparedCheck table for', checkStartMessage.checkCode)
       await requestPupilStatusChange(checkData.pupil_id, checkData.checkCode)
