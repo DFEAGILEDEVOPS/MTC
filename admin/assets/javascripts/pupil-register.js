@@ -3,4 +3,5 @@ document.addEventListener('DOMContentLoaded', function () {
     sortNullsLast: true,
     ignoredStrings: ['-']
   })
+  window.MTCAdmin.pupilFilter()
 })
