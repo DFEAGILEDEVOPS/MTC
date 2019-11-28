@@ -20,20 +20,7 @@ declare class SqlServerError extends Error {
  */
 class ConnectionPoolService {
   private static pool: ConnectionPool
-  private static initialisationLock: boolean
-
-  static async getInstance_old (): Promise<ConnectionPool> {
-    if (!this.initialisationLock === true) {
-      this.initialisationLock = true
-      this.pool = new ConnectionPool(config.Sql)
-      await this.pool.connect()
-      this.pool.on('error', (error) => {
-        console.error(`Sql Connection Pool Error Raised:${error.message}`)
-      })
-    }
-    return this.pool
-  }
-  // pool can still be connecting when first used, this may help...
+  // pool can still be connecting when first used...
   // https://github.com/tediousjs/node-mssql/issues/934
   static async getInstance (): Promise<ConnectionPool> {
 
