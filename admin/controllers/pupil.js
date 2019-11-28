@@ -1,12 +1,10 @@
 'use strict'
 
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
-const dateService = require('../services/date.service')
 const fileValidator = require('../lib/validator/file-validator')
 
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilAgeReasonService = require('../services/pupil-age-reason.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
@@ -16,6 +14,7 @@ const pupilPresenter = require('../helpers/pupil-presenter')
 const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const businessAvailabilityService = require('../services/business-availability.service')
+const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 
@@ -163,6 +162,8 @@ const postAddMultiplePupils = async (req, res, next) => {
     res.fileErrors = uploadResult.fileErrors
     return getAddMultiplePupils(req, res, next)
   } else {
+    const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
+    await redisCacheService.drop(pupilRegisterRedisKey)
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
     const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
@@ -259,29 +260,12 @@ const postEditPupil = async (req, res, next) => {
       pupilExampleYear
     })
   }
-
-  const trimAndUppercase = R.compose(R.toUpper, R.trim)
-  await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, req.body.ageReason, pupil.ageReason)
-  // TODO: old core! Needs refactor this to a service and data service
-  const update = {
-    id: pupil.id,
-    foreName: req.body.foreName,
-    middleNames: req.body.middleNames,
-    foreNameAlias: req.body.foreNameAlias,
-    lastNameAlias: req.body.lastNameAlias,
-    lastName: req.body.lastName,
-    upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
-    gender: req.body.gender,
-    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
-  }
   try {
-    await pupilDataService.sqlUpdate(update)
+    await pupilEditService.update(pupil, req.body, req.user.schoolId)
     req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
-  const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
-  await redisCacheService.drop(pupilRegisterRedisKey)
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
   res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }
