@@ -19,7 +19,10 @@ export class PupilLoginDataService implements IPupilLoginDataService {
                SET pupilLoginDate = @loginDate,
                    checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
                                     WHERE code = 'COL')
-               WHERE checkCode = @checkCode`
+               WHERE checkCode = @checkCode
+               AND pupilLoginDate IS NULL
+               AND checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
+                WHERE code = 'NEW')`
     const params = [
       { name: 'loginDate', value: loginDateTime, type: TYPES.DateTimeOffset },
       { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier }

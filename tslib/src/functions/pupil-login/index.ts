@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PupilLoginService, IPupilLoginMessage } from './pupil-login.service'
+import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings } from './pupil-login.service'
 const functionName = 'pupil-login'
 
 const pupilLoginService = new PupilLoginService()
@@ -10,7 +10,7 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   const version = pupilLoginMessage.version
   context.log.info(`${functionName}: version:${version} message received for checkCode ${pupilLoginMessage.checkCode}`)
 
-  await pupilLoginService.process(pupilLoginMessage)
+  await pupilLoginService.process(pupilLoginMessage, context.bindings as IPupilLoginFunctionBindings)
 
   const end = performance.now()
   const durationInMilliseconds = end - start
