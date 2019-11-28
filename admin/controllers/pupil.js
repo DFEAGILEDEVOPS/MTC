@@ -6,6 +6,7 @@ const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
@@ -61,7 +62,7 @@ const postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
-    const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
+    const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(req.user.schoolId)
     await redisCacheService.drop(pupilRegisterRedisKey)
     req.flash('info', '1 new pupil has been added')
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
@@ -161,7 +162,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     res.fileErrors = uploadResult.fileErrors
     return getAddMultiplePupils(req, res, next)
   } else {
-    const pupilRegisterRedisKey = `pupilRegisterViewData:${req.user.schoolId}`
+    const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(req.user.schoolId)
     await redisCacheService.drop(pupilRegisterRedisKey)
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
     const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)

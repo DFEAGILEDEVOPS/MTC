@@ -10,6 +10,7 @@ const azureFileDataService = require('../../../services/data-access/azure-file.d
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
@@ -106,6 +107,7 @@ describe('pupil controller:', () => {
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
       spyOn(redisCacheService, 'drop')
+      spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
     })
 
     afterEach(() => { sandbox.restore() })
@@ -250,6 +252,7 @@ describe('pupil controller:', () => {
         controller = proxyquire('../../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService
         }).postAddMultiplePupils
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('saves the new pupil and redirects to the register pupils page', async (done) => {

@@ -6,6 +6,7 @@ const dateService = require('../services/date.service')
 const pupilAgeReasonService = require('../services/pupil-age-reason.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 
 const pupilEditService = {}
 
@@ -32,7 +33,7 @@ pupilEditService.update = async function (pupil, requestBody, schoolId) {
     dateOfBirth: dateService.createUTCFromDayMonthYear(requestBody['dob-day'], requestBody['dob-month'], requestBody['dob-year'])
   }
   await pupilDataService.sqlUpdate(update)
-  const pupilRegisterRedisKey = `pupilRegisterViewData:${schoolId}`
+  const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
   await redisCacheService.drop(pupilRegisterRedisKey)
 }
 

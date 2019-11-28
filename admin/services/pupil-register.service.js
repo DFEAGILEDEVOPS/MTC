@@ -6,6 +6,7 @@ const groupService = require('../services/group.service')
 const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const redisCacheService = require('./data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 
 const pupilRegisterService = {
   /**
@@ -45,7 +46,7 @@ const pupilRegisterService = {
     if (!schoolId) {
       throw new Error('School id not found in session')
     }
-    const pupilRegisterRedisKey = `pupilRegisterViewData:${schoolId}`
+    const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
     const result = await redisCacheService.get(pupilRegisterRedisKey)
     try {
       if (result && result.length > 0) {
