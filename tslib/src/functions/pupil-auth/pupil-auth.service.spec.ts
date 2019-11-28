@@ -144,10 +144,7 @@ describe('pupil-auth.service', () => {
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
     expect(res.headers).toStrictEqual({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Methods': 'POST,OPTIONS',
-      'Access-Control-Allow-Headers': 'content-type',
-      'Access-Control-Allow-Origin': ''
+      'Content-Type': 'application/json'
     })
   })
 })
