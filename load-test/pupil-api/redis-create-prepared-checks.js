@@ -8,7 +8,7 @@ const { performance } = require('perf_hooks')
 const exampleCheck = require('./preparedCheck')
 
 const createChecks = async () => {
-  const twoHoursInSeconds = 7200
+  const twoDaysInSeconds = 172800
   const schoolPinIndexBase = 10
   const schoolPinIndexLimit = 50
   let itemsCreated = 0
@@ -21,7 +21,7 @@ const createChecks = async () => {
       const cacheItem = {
         key: cacheKey,
         value: exampleCheck,
-        ttl: twoHoursInSeconds
+        ttl: twoDaysInSeconds
       }
       preparedChecks.push(cacheItem)
       itemsCreated++
@@ -32,7 +32,7 @@ const createChecks = async () => {
   const end = performance.now()
   const durationInMilliseconds = end - start
   redis.quit()
-  console.log(`${itemsCreated} preparedCheck entries added to redis in ${durationInMilliseconds} ms, with TTL of ${twoHoursInSeconds / 60} minutes`)
+  console.log(`${itemsCreated} preparedCheck entries added to redis in ${durationInMilliseconds} ms, with TTL of ${twoDaysInSeconds / 60} minutes`)
 }
 
 createChecks()
