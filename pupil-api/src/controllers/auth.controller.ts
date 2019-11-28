@@ -4,8 +4,9 @@ import * as apiResponse from './api-response'
 import { pupilAuthenticationService } from '../services/azure-pupil-auth.service'
 import { RedisPupilAuthenticationService, IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
 import { FeatureService, IFeatureService } from '../services/feature.service'
+import { IAuthController } from '../routes/auth'
 
-export class AuthController {
+export class AuthController implements IAuthController {
   private redisAuthService: IPupilAuthenticationService
   private featureService: IFeatureService
 

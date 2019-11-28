@@ -2,8 +2,9 @@ import { Request, Response } from 'express'
 import logger from '../services/log.service'
 import * as apiResponse from './api-response'
 import { RedisPupilAuthenticationService, IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import { IAuthController } from '../routes/auth'
 
-export class RedisAuthController {
+export class RedisAuthController implements IAuthController {
   private redisAuthService: IPupilAuthenticationService
 
   constructor (redisAuthService?: IPupilAuthenticationService) {
