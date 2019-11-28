@@ -1,11 +1,10 @@
-import { Moment } from 'moment'
 import { IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
 import { v4 as uuid } from 'uuid'
 import moment = require('moment')
 export interface IPupilLoginMessage {
   version: number
   checkCode: string
-  loginAt: Moment
+  loginAt: Date
   practice: boolean
 }
 
@@ -44,7 +43,8 @@ export class PupilLoginService {
       processedAt: moment().toDate()
     })
     if (message.practice === false) {
-      return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, message.loginAt)
+      const loginDate = new Date(message.loginAt)
+      return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, loginDate)
     }
     return
   }

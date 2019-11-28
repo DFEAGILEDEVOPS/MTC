@@ -1,4 +1,3 @@
-import moment = require('moment')
 import { IPupilLoginDataService } from './pupil-login.data.service'
 import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings, IPupilEvent } from './pupil-login.service'
 
@@ -26,7 +25,7 @@ describe('pupil-login.service', () => {
     const message: IPupilLoginMessage = {
       version: 2,
       checkCode: 'the-check-code',
-      loginAt: moment(),
+      loginAt: new Date(),
       practice: true
     }
     try {
@@ -41,7 +40,7 @@ describe('pupil-login.service', () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
-      loginAt: moment(),
+      loginAt: new Date(),
       practice: false
     }
     await sut.process(message, bindings)
@@ -52,7 +51,7 @@ describe('pupil-login.service', () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
-      loginAt: moment(),
+      loginAt: new Date(),
       practice: true
     }
     await sut.process(message, bindings)
@@ -63,7 +62,7 @@ describe('pupil-login.service', () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
-      loginAt: moment(),
+      loginAt: new Date(),
       practice: true
     }
     await sut.process(message, bindings)

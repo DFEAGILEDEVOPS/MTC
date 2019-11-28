@@ -1,9 +1,8 @@
-import { Moment } from 'moment'
 import { TYPES } from 'mssql'
 import { SqlService } from '../../sql/sql.service'
 
 export interface IPupilLoginDataService {
-  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Moment): Promise<void>
+  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void>
 }
 
 export class PupilLoginDataService implements IPupilLoginDataService {
@@ -14,7 +13,7 @@ export class PupilLoginDataService implements IPupilLoginDataService {
     this.sqlService = new SqlService()
   }
 
-  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Moment): Promise<void> {
+  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void> {
     const sql = `UPDATE [mtc_admin].[check]
                SET pupilLoginDate = @loginDate,
                    checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
