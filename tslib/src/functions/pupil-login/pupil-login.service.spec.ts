@@ -1,6 +1,6 @@
-import { Moment } from 'moment'
 import moment = require('moment')
-import { IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
+import { IPupilLoginDataService } from './pupil-login.data.service'
+import { PupilLoginService, IPupilLoginMessage } from './pupil-login.service'
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
@@ -8,30 +8,6 @@ let dataServiceMock: IPupilLoginDataService
 const DataServiceMock = jest.fn<IPupilLoginDataService, any>(() => ({
   updateCheckWithLoginTimestamp: jest.fn()
 }))
-
-export interface IPupilLoginMessage {
-  version: number
-  checkCode: string
-  loginAt: Moment
-}
-
-export class PupilLoginService {
-  private dataService: IPupilLoginDataService
-
-  constructor (dataService?: IPupilLoginDataService) {
-    if (dataService === undefined) {
-      dataService = new PupilLoginDataService()
-    }
-    this.dataService = dataService
-  }
-
-  async process (message: IPupilLoginMessage) {
-    if (message.version !== 1) {
-      throw new Error(`pupil-login message version:${message.version} unsupported`)
-    }
-    return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, message.loginAt)
-  }
-}
 
 describe('pupil-login.service', () => {
   beforeEach(() => {
