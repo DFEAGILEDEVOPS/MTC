@@ -6,6 +6,7 @@ export interface IPupilLoginMessage {
   version: number
   checkCode: string
   loginAt: Moment
+  practice: boolean
 }
 
 export interface IPupilLoginFunctionBindings {
@@ -30,7 +31,7 @@ export class PupilLoginService {
     this.dataService = dataService
   }
 
-  async process (message: IPupilLoginMessage, bindings: IPupilLoginFunctionBindings) {
+  async process (message: IPupilLoginMessage, bindings: IPupilLoginFunctionBindings): Promise<void> {
     if (message.version !== 1) {
       throw new Error(`pupil-login message version:${message.version} unsupported`)
     }
@@ -42,6 +43,9 @@ export class PupilLoginService {
       payload: message,
       processedAt: moment().toDate()
     })
-    return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, message.loginAt)
+    if (message.practice === false) {
+      return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, message.loginAt)
+    }
+    return
   }
 }

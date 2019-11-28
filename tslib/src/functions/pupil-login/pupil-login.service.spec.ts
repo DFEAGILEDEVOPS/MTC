@@ -26,7 +26,8 @@ describe('pupil-login.service', () => {
     const message: IPupilLoginMessage = {
       version: 2,
       checkCode: 'the-check-code',
-      loginAt: moment()
+      loginAt: moment(),
+      practice: true
     }
     try {
       await sut.process(message, bindings)
@@ -36,21 +37,34 @@ describe('pupil-login.service', () => {
     }
   })
 
-  test('data service called if message version is supported', async () => {
+  test('data service called if live check', async () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
-      loginAt: moment()
+      loginAt: moment(),
+      practice: false
     }
     await sut.process(message, bindings)
     expect(dataServiceMock.updateCheckWithLoginTimestamp).toHaveBeenCalledWith(message.checkCode, message.loginAt)
+  })
+
+  test('data service not called if practice check', async () => {
+    const message: IPupilLoginMessage = {
+      version: 1,
+      checkCode: 'the-check-code',
+      loginAt: moment(),
+      practice: true
+    }
+    await sut.process(message, bindings)
+    expect(dataServiceMock.updateCheckWithLoginTimestamp).not.toHaveBeenCalledWith()
   })
 
   test('entry is added to pupilEvent table', async () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
-      loginAt: moment()
+      loginAt: moment(),
+      practice: true
     }
     await sut.process(message, bindings)
     expect(bindings.pupilEventTable.length).toBe(1)
