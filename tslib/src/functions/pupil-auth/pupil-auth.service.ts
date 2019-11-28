@@ -68,11 +68,9 @@ export class PupilAuthService {
       status: 200,
       body: preparedCheck,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Methods': 'POST,OPTIONS',
-        'Access-Control-Allow-Headers': 'content-type',
-        'Access-Control-Allow-Origin': config.PupilAuth.CorsWhitelist
-      }
+        'Content-Type': 'application/json'
+      },
+      isRaw: true
     }
   }
 
