@@ -3,9 +3,13 @@
 import { Router as Router, Request, Response } from 'express'
 import { AuthController } from '../controllers/auth.controller'
 
+export interface IAuthController {
+  postAuth (req: Request, res: Response): Promise<Response>
+}
+
 export class AuthRouter {
   router: Router
-  authController: AuthController
+  authController: IAuthController
 
   constructor () {
     this.authController = new AuthController()

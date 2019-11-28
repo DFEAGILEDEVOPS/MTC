@@ -16,6 +16,7 @@
     "node": ">= 8.4"
   },
   "dependencies": {
+    "@azure/service-bus": "^1.1.1",
     "applicationinsights": "^1.0.8",
     "azure-storage": "^2.10.1",
     "bluebird": "^3.5.1",
