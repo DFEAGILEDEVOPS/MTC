@@ -635,6 +635,7 @@ describe('group controller', () => {
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
@@ -660,6 +661,7 @@ describe('group controller', () => {
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)
@@ -683,6 +685,7 @@ describe('group controller', () => {
           spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.reject(new Error()))
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          spyOn(groupService, 'remove')
 
           controller = require('../../../controllers/group').removeGroup
           await controller(req, res, next)

@@ -7,6 +7,8 @@ const sinon = require('sinon')
 const groupService = require('../../../services/group.service')
 const groupDataService = require('../../../services/data-access/group.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const pupilsMock = require('../mocks/pupils')
@@ -136,6 +138,8 @@ describe('group.service', () => {
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
         spyOn(service, 'getPupils').and.returnValue(pupilsMock)
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should update group (including pupils)', async (done) => {
@@ -183,6 +187,8 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should return an error if schoolId is missing', async (done) => {
@@ -202,6 +208,8 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.reject(new Error('Failed to update group')))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should not update group', async (done) => {
@@ -226,6 +234,8 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ insertId: 1 }))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should create group', async (done) => {
@@ -248,6 +258,8 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ insertId: 1 }))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should return an error if groupName or schoolId are missing', async (done) => {
@@ -267,6 +279,8 @@ describe('group.service', () => {
         service = require('../../../services/group.service')
         spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.reject(new Error('Failed to create group')))
         spyOn(groupDataService, 'sqlModifyGroupMembers').and.returnValue(Promise.resolve())
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
 
       it('should fail to create a group', async (done) => {
@@ -336,6 +350,45 @@ describe('group.service', () => {
       const pupils = await groupService.assignGroupsToPupils(schoolId, pupilsMock)
       expect(pupils).toEqual(pupilsMock)
       done()
+    })
+  })
+  describe('remove', () => {
+    beforeEach(() => {
+      spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
+      spyOn(redisCacheService, 'drop')
+      spyOn(groupDataService, 'sqlMarkGroupAsDeleted')
+    })
+    it('should throw if schoolId is not provided', async () => {
+      const schoolId = null
+      const groupId = 1
+      try {
+        await groupService.remove(schoolId, groupId)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('schoolId is required')
+      }
+    })
+    it('should throw if groupId is not provided', async () => {
+      const schoolId = 1
+      const groupId = null
+      try {
+        await groupService.remove(schoolId, groupId)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('groupId is required')
+      }
+    })
+    it('should get the pupil register redis key, invalidate the relevant cache value and perform soft delete', async () => {
+      const schoolId = 1
+      const groupId = 1
+      try {
+        await groupService.remove(schoolId, groupId)
+        expect(redisKeyService.getPupilRegisterViewDataKey).toHaveBeenCalled()
+        expect(redisCacheService.drop).toHaveBeenCalled()
+        expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+      } catch (error) {
+        fail()
+      }
     })
   })
 })
