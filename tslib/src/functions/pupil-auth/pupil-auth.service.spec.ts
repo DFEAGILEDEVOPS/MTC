@@ -97,22 +97,6 @@ describe('pupil-auth.service', () => {
     expect(res.body).toEqual(preparedCheck)
   })
 
-  test('when prepared check found, lookup key is added to redis', async () => {
-    const preparedCheck = {
-      checkCode: 'abc',
-      config: {
-        practice: false
-      }
-    }
-    redisMock.get = jest.fn(async (key) => {
-      return preparedCheck
-    })
-    const preparedCheckKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
-    const lookupKey = `check-started-check-lookup:${preparedCheck.checkCode}`
-    await sut.authenticate(bindings, req)
-    expect(redisMock.setex).toHaveBeenCalledWith(lookupKey, preparedCheckKey, 28800)
-  })
-
   test('expire if live check', async () => {
     const preparedCheck = {
       checkCode: 'abc',

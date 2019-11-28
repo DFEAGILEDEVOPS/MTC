@@ -18,6 +18,7 @@ const service = {
          p.middleNames,
          p.lastName,
          p.urlSlug,
+         p.upn,
          p.dateOfBirth,
          p.school_id,
          p.group_id,
