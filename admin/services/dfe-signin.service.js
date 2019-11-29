@@ -76,18 +76,17 @@ const service = {
       }
     }
 
-    const logonEvent = {
-      sessionId: 'unknown', // req.session.id,
-      body: 'unknown', // JSON.stringify(req.body),
-      remoteIp: 'unknown', // (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
-      userAgent: 'unknown', // req.headers['user-agent'],
-      loginMethod: 'dfe-sign-in'
-    }
-
     // auth success
-    logonEvent.user_id = userRecord.id
-    logonEvent.isAuthenticated = true
-    logonEvent.authProviderSessionToken = dfeUser.id_token
+    const logonEvent = {
+      sessionId: 'unavailable', // req.session.id,
+      body: 'unavailable', // JSON.stringify(req.body),
+      remoteIp: 'unavailable', // (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
+      userAgent: 'unavailable', // req.headers['user-agent'],
+      loginMethod: 'dfe-sign-in',
+      user_id: userRecord.id,
+      isAuthenticated: true,
+      authProviderSessionToken: dfeUser.id_token
+    }
     await adminLogonEventDataService.sqlCreate(logonEvent)
 
     // set id to sql record id
