@@ -14,7 +14,7 @@
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
     "prestart": "yarn build && func extensions install",
-    "start:host": "func start",
+    "start:host": "func start -port 7072",
     "start": "yarn start:host",
     "start:dev": "yarn build && yarn start"
   },
