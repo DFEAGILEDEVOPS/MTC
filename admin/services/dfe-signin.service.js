@@ -6,6 +6,7 @@ const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
 const roles = require('../lib/consts/roles')
 const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
+const adminLogonEventDataService = require('./data-access/admin-logon-event.data.service')
 
 const service = {
   /**
@@ -74,6 +75,21 @@ const service = {
         userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
       }
     }
+
+    const logonEvent = {
+      sessionId: 'unknown', // req.session.id,
+      body: 'unknown', // JSON.stringify(req.body),
+      remoteIp: 'unknown', // (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
+      userAgent: 'unknown', // req.headers['user-agent'],
+      loginMethod: 'dfe-sign-in'
+    }
+
+    // auth success
+    logonEvent.user_id = userRecord.id
+    logonEvent.isAuthenticated = true
+    logonEvent.authProviderSessionToken = dfeUser.id_token
+    await adminLogonEventDataService.sqlCreate(logonEvent)
+
     // set id to sql record id
     dfeUser.id = userRecord.id
     dfeUser.school_id = userRecord.school_id
