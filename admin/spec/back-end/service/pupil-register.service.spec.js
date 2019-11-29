@@ -2,10 +2,9 @@
 
 /* global describe expect it beforeEach spyOn fail */
 
-const pupilRegisterService = require('../../../services/pupil-register.service')
-const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
+const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
+const pupilRegisterService = require('../../../services/pupil-register.service')
 
 describe('pupil-register.service', () => {
   describe('#getProcessStatus', () => {
@@ -52,27 +51,14 @@ describe('pupil-register.service', () => {
       spyOn(pupilRegisterService, 'getPupilRegisterViewData')
     })
     it('throws an error if no school password is provided', async () => {
-      spyOn(redisCacheService, 'get')
       try {
         await pupilRegisterService.getPupilRegister(undefined)
         fail()
       } catch (error) {
         expect(error.message).toBe('School id not found in session')
       }
-      expect(redisCacheService.get).not.toHaveBeenCalled()
     })
-    it('calls redisCacheService get if school is provided', async () => {
-      spyOn(redisCacheService, 'get').and.returnValue([{ id: 1 }])
-      await pupilRegisterService.getPupilRegister(42)
-      expect(redisCacheService.get).toHaveBeenCalled()
-    })
-    it('does not call getPupilRegisterViewData if there are results from redis', async () => {
-      spyOn(redisCacheService, 'get').and.returnValue([{ id: 1 }])
-      await pupilRegisterService.getPupilRegister(42)
-      expect(pupilRegisterService.getPupilRegisterViewData).not.toHaveBeenCalled()
-    })
-    it('calls the getPupilRegisterViewData if there is no result from redis', async () => {
-      spyOn(redisCacheService, 'get')
+    it('calls the getPupilRegisterViewData if school is provided', async () => {
       await pupilRegisterService.getPupilRegister(42)
       expect(pupilRegisterService.getPupilRegisterViewData).toHaveBeenCalled()
     })
@@ -82,19 +68,15 @@ describe('pupil-register.service', () => {
     beforeEach(() => {
       spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
-      spyOn(redisCacheService, 'set')
     })
+
     it('calls the pupil register data service to get the raw data', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
+      await pupilRegisterService.getPupilRegisterViewData(42)
       expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
     })
     it('calls the pupil register identification flag service to get the view data based on raw', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
+      await pupilRegisterService.getPupilRegisterViewData(42)
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
-    })
-    it('calls the redis cache service to cache the view data for the particular school', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42, 'key')
-      expect(redisCacheService.set).toHaveBeenCalled()
     })
   })
 

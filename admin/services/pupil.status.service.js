@@ -7,8 +7,6 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const pupilDataService = require('./data-access/pupil.data.service')
 const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
-const redisCacheService = require('../services/data-access/redis-cache.service')
-const redisKeyService = require('../services/redis-key.service')
 const R = require('ramda')
 
 const pupilStatusService = {}
@@ -100,8 +98,7 @@ pupilStatusService.dispatchPupilStatusMessages = async (pupils) => {
 /**
  * Make a request to the pupil status service to recalculate the status for one or more pupils.
  * This function has to fabricate a checkCode as in the not-taking-check example one isn't available.
- * @param {Array<String>} pupilSlugs
- * @param {Number} schoolId
+ * @param {[number]}postedPupilSlugs
  */
 pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) => {
   if (!(Array.isArray(pupilSlugs) && pupilSlugs.length > 0)) {
@@ -111,8 +108,6 @@ pupilStatusService.recalculateStatusByPupilSlugs = async (pupilSlugs, schoolId) 
   const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(pupilSlugs, schoolId)
 
   await pupilStatusService.dispatchPupilStatusMessages(pupils)
-  const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
-  await redisCacheService.drop(pupilRegisterRedisKey)
 }
 
 /**
