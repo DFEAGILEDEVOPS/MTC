@@ -1,5 +1,5 @@
-# Azure Resource Manager Templates
+# MTC Azure Definitions
 
-An Azure environment defined in JSON.
+ARM templates and Azure CLI scripts to deploy MTC solution
 
-See [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-authoring-templates) for more info.
+Each component type has its own subfolder with Azure CLI shell script.
