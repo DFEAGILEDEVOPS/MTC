@@ -2,7 +2,7 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe beforeEach it expect spyOn fail jasmine */
+/* global describe beforeEach it expect spyOn fail jest */
 
 const fs = require('fs-extra')
 const R = require('ramda')
@@ -299,7 +299,9 @@ describe('check-form.service', () => {
       // Set up a checkWindow that started 1 day ago
       const today = moment('2018-06-02T09:00:00').toDate()
       const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
-      jasmine.clock().mockDate(today)
+      Date.now = jest.fn(() => {
+        return today
+      })
 
       // mock out the db calls
       spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
@@ -311,7 +313,6 @@ describe('check-form.service', () => {
       } catch (error) {
         expect(error.message).toBe('Forms cannot be unassigned from an active check window')
       }
-      jasmine.clock().uninstall()
     })
 
     // happy path

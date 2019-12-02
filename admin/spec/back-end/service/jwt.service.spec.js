@@ -1,9 +1,10 @@
 'use strict'
-/* global beforeEach, describe, it, expect, jasmine, fail */
+/* global beforeEach describe it expect jest fail */
 
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const proxyquire = require('proxyquire')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 
 let jwtService
 let pupilDataServiceUpdateSpy
@@ -79,16 +80,9 @@ describe('JWT service', () => {
 
   describe('verifying a token', () => {
     describe('and the pupil is found', () => {
-      let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-        pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () { return Promise.resolve(pupil) })
-        jwtService = proxyquire('../../../services/jwt.service', {
-          './data-access/pupil.data.service': {
-            sqlUpdate: pupilDataServiceUpdateSpy,
-            sqlFindOneById: pupilDataServiceFindOneSpy
-          }
-        })
+        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
       })
 
       it('throws when not provided a token', async () => {
@@ -113,20 +107,9 @@ describe('JWT service', () => {
     })
 
     describe('and the pupil is NOT found', () => {
-      let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve()
-        })
-        pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve(null)
-        })
-        jwtService = proxyquire('../../../services/jwt.service', {
-          './data-access/pupil.data.service': {
-            sqlUpdate: pupilDataServiceUpdateSpy,
-            sqlFindOneById: pupilDataServiceFindOneSpy
-          }
-        })
+        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(null))
       })
       it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
@@ -140,20 +123,9 @@ describe('JWT service', () => {
     })
 
     describe('and the pupil has had the key revoked', () => {
-      let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve()
-        })
-        pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve(pupil)
-        })
-        jwtService = proxyquire('../../../services/jwt.service', {
-          './data-access/pupil.data.service': {
-            sqlUpdate: pupilDataServiceUpdateSpy,
-            sqlFindOneById: pupilDataServiceFindOneSpy
-          }
-        })
+        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
       })
       it('then it throws an error', async () => {
         const result = await jwtService.createToken(pupil, expiryDate)
@@ -171,20 +143,9 @@ describe('JWT service', () => {
       })
     })
     describe('and the pupil has an incorrect jwtSecret', () => {
-      let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve()
-        })
-        pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () {
-          return Promise.resolve(pupil)
-        })
-        jwtService = proxyquire('../../../services/jwt.service', {
-          './data-access/pupil.data.service': {
-            sqlUpdate: pupilDataServiceUpdateSpy,
-            sqlFindOneById: pupilDataServiceFindOneSpy
-          }
-        })
+        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
       })
       it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
@@ -200,21 +161,10 @@ describe('JWT service', () => {
   })
 
   describe('break-in tests', () => {
-    let pupilDataServiceFindOneSpy
 
     beforeEach(() => {
-      pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
-        return Promise.resolve()
-      })
-      pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () {
-        return Promise.resolve(pupil)
-      })
-      jwtService = proxyquire('../../../services/jwt.service', {
-        './data-access/pupil.data.service': {
-          sqlUpdate: pupilDataServiceUpdateSpy,
-          sqlFindOneById: pupilDataServiceFindOneSpy
-        }
-      })
+      pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
+      pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
     })
     it('denies a token that has expired 1 hour ago', async () => {
       // Setup

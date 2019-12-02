@@ -142,5 +142,9 @@
     "ignore": [
       "assets/javascripts/jquery-1.12.4.js"
     ]
+  },
+  "jest": {
+    "verbose": true,
+    "rootDir": "./spec/back-end"
   }
 }

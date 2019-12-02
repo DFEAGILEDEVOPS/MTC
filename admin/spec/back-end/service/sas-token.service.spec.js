@@ -1,4 +1,4 @@
-/* global describe expect beforeEach jasmine fail it */
+/* global describe expect beforeEach jest fail it */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const moment = require('moment')
@@ -11,8 +11,8 @@ describe('sas-token.service', () => {
 
     beforeEach(() => {
       queueServiceMock = {
-        generateSharedAccessSignature: jasmine.createSpy().and.returnValue('mock token'),
-        getUrl: jasmine.createSpy().and.returnValue('http://localhost/queue')
+        generateSharedAccessSignature: jest.fn('mock token'),
+        getUrl: jest.fn('http://localhost/queue')
       }
     })
 

@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect, spyOn jasmine */
+/* global beforeEach, afterEach, describe, it, expect, spyOn jest */
 const sinon = require('sinon')
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
@@ -540,16 +540,12 @@ describe('pupil validator', function () {
     })
 
     describe('date of birth:', () => {
-      beforeEach(function () {
-        jasmine.clock().install()
-      })
-      afterEach(function () {
-        jasmine.clock().uninstall()
-      })
       it('should be out of accepted range if the input date is before 2nd September of 11 years before the academic year', async (done) => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '01'
         req.body['dob-month'] = '09'
@@ -568,7 +564,9 @@ describe('pupil validator', function () {
       it('should be out of accepted range if the input date is after 1nd September of 7 years before the academic year', async (done) => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
@@ -588,7 +586,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
@@ -607,7 +607,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '31'
         req.body['dob-month'] = '08'
@@ -626,7 +628,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
@@ -641,7 +645,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
@@ -654,7 +660,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '31'
         req.body['dob-month'] = '08'
@@ -667,7 +675,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '01'
         req.body['dob-month'] = '09'
@@ -680,7 +690,9 @@ describe('pupil validator', function () {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
-        jasmine.clock().mockDate(baseTime)
+        Date.now = jest.fn(() => {
+          return baseTime
+        })
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '09'
