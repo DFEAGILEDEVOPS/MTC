@@ -144,7 +144,11 @@
     ]
   },
   "jest": {
-    "verbose": true,
-    "rootDir": "./spec/back-end"
+    "verbose": false,
+    "testMatch": [ "**/spec/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/spec/back-end/mocks/",
+      "<rootDir>/tests-integration/"
+     ]
   }
 }
