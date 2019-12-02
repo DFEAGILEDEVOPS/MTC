@@ -58,14 +58,12 @@
                                     Expires 4pm today
                                 </div>
                                 <div class="generate-additional-pins">
-                                    <form action="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins" name="generate-pins-list">
-                                        <% if (error) { %>
-                                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" disabled value="View all pins"/>
-                                        <% } else { %>
-                                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" value="View all pins"/>
-                                        <% } %>
-                                    </form>
-                                    <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate additional PINs</a>
+                                    <a class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-right-2" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate PINs</a>
+                                    <% if (error) { %>
+                                        <a class="govuk-link" type="submit" disabled>View all pins</a>
+                                    <% } else { %>
+                                        <a class="govuk-link" href="/pupil-pin/view-and-custom-print-<%= pinEnv %>-pins">View all pins</a>
+                                    <% } %>
                                 </div>
                             </td>
                         </tr>

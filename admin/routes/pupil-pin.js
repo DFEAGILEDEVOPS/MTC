@@ -8,7 +8,6 @@ const {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
-  getViewAndPrintPins,
   getViewAndCustomPrintPins
 } = require('../controllers/pupil-pin')
 
@@ -35,12 +34,6 @@ router.get(
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
   (req, res, next) => getViewAndCustomPrintPins(req, res, next)
-)
-router.get(
-  '/view-and-print-:pinEnv-pins',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
-  isAdminWindowAvailable,
-  (req, res, next) => getViewAndPrintPins(req, res, next)
 )
 
 module.exports = router
