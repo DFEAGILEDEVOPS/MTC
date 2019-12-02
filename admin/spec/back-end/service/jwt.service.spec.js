@@ -3,11 +3,9 @@
 
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
-const proxyquire = require('proxyquire')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 
 let jwtService
-let pupilDataServiceUpdateSpy
 const pupilId = 123
 
 describe('JWT service', () => {
@@ -81,8 +79,8 @@ describe('JWT service', () => {
   describe('verifying a token', () => {
     describe('and the pupil is found', () => {
       beforeEach(() => {
-        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
-        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
+        pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
 
       it('throws when not provided a token', async () => {
@@ -108,8 +106,8 @@ describe('JWT service', () => {
 
     describe('and the pupil is NOT found', () => {
       beforeEach(() => {
-        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
-        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(null))
+        pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(null))
       })
       it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
@@ -124,8 +122,8 @@ describe('JWT service', () => {
 
     describe('and the pupil has had the key revoked', () => {
       beforeEach(() => {
-        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
-        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
+        pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
       it('then it throws an error', async () => {
         const result = await jwtService.createToken(pupil, expiryDate)
@@ -144,8 +142,8 @@ describe('JWT service', () => {
     })
     describe('and the pupil has an incorrect jwtSecret', () => {
       beforeEach(() => {
-        pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
-        pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
+        pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
+        pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
       it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
@@ -163,8 +161,8 @@ describe('JWT service', () => {
   describe('break-in tests', () => {
 
     beforeEach(() => {
-      pupilDataService.sqlUpdate = jest.fn(Promise.resolve())
-      pupilDataService.sqlFindOneById = jest.fn(Promise.resolve(pupil))
+      pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
+      pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
     })
     it('denies a token that has expired 1 hour ago', async () => {
       // Setup
