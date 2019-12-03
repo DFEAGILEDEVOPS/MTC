@@ -14,9 +14,11 @@
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
-    "test": "yarn lint && yarn run nyc -r html ./run-jasmine.js",
+    "test": "yarn lint && yarn jest --coverage",
+    "test:watch": "yarn jest --watch",
     "client-test": "karma start karma.conf.js",
-    "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
+    "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest",
+    "jest:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
@@ -145,10 +147,10 @@
   },
   "jest": {
     "verbose": false,
-    "testMatch": [ "**/spec/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ],
+    "rootDir": "spec/back-end",
+    "testMatch": [ "**/?(*.)+(spec|test).[jt]s?(x)" ],
     "testPathIgnorePatterns": [
-      "<rootDir>/spec/back-end/mocks/",
-      "<rootDir>/tests-integration/"
+      "<rootDir>/mocks/"
      ]
   }
 }

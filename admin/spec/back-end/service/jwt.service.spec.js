@@ -159,7 +159,6 @@ describe('JWT service', () => {
   })
 
   describe('break-in tests', () => {
-
     beforeEach(() => {
       pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
       pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
