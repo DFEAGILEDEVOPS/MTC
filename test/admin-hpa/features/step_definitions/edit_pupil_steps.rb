@@ -77,3 +77,9 @@ Then(/^the pupil details should not be updated$/) do
   expect(stored_details['lastName']).to_not eql @details_hash[:last_name]
   expect(stored_details['upn']).to eql @details_hash[:upn]
 end
+
+
+Then(/^it should include the newly edited pupil$/) do
+  expect(@pupils_from_redis).to include @updated_details_hash[:last_name] + ', ' + @updated_details_hash[:first_name]
+  expect(@pupils_from_redis).to_not include @details_hash[:last_name] + ', ' + @details_hash[:first_name]
+end
