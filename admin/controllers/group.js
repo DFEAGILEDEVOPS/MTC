@@ -2,7 +2,6 @@
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
-const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -260,7 +259,7 @@ const removeGroup = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
-    await groupDataService.sqlMarkGroupAsDeleted(req.params.groupId)
+    await groupService.remove(req.user.schoolId, req.params.groupId)
   } catch (error) {
     return next(error)
   }
