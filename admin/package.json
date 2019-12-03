@@ -146,14 +146,18 @@
     ]
   },
   "jest": {
-    "collectCoverage": false,
+    "collectCoverage": true,
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/node_modules/**",
       "!**/vendor/**",
-      "!**/data-access/**"
+      "!**/data-access/**",
+      "!deploy/**",
+      "!data/**",
+      "!assets/**",
+      "!public/**"
     ],
-    "coverageDirectory": "<rootDir>/.coverage",
+    "coverageDirectory": "<rootDir>/coverage",
     "verbose": false,
     "testMatch": [ "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)" ],
     "testPathIgnorePatterns": [
