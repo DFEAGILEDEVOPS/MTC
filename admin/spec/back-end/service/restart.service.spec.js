@@ -2,7 +2,6 @@
 
 const azureQueueService = require('../../../services/azure-queue.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
-const checkStateService = require('../../../services/check-state.service')
 const moment = require('moment')
 const pinValidator = require('../../../lib/validator/pin-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -10,6 +9,7 @@ const pupilRestartDataService = require('../../../services/data-access/pupil-res
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const restartService = require('../../../services/restart.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
+const pupilStatusService = require('../../../services/pupil.status.service')
 const sinon = require('sinon')
 
 const pupilMock = require('../mocks/pupil')
@@ -138,6 +138,7 @@ describe('restart.service', () => {
           { id: 2, urlSlug: 'def-hij' }
         ]
       ))
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       let results
       try {
         results = await restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
@@ -218,18 +219,19 @@ describe('restart.service', () => {
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(pupilMock)
-      spyOn(pupilRestartDataService, 'sqlFindCheckById').and.returnValue(startedCheckMock)
-      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-      spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
-      spyOn(checkStateService, 'changeState')
       spyOn(pupilRestartDataService, 'sqlFindOpenRestartForPupil').and.returnValue({
         id: 1,
         check_id: 42
       })
-      spyOn(azureQueueService, 'addMessageAsync')
+      spyOn(pupilRestartDataService, 'sqlFindCheckById').and.returnValue(startedCheckMock)
+      spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
+      spyOn(azureQueueService, 'addMessage')
+      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+
       const deleted = await restartService.markDeleted(pupilMock.id)
+
       expect(deleted).toBeDefined()
-      expect(azureQueueService.addMessageAsync).toHaveBeenCalled()
+      expect(azureQueueService.addMessage).toHaveBeenCalled()
     })
   })
   describe('getReasons', () => {

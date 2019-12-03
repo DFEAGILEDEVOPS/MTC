@@ -113,7 +113,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       { name: `pid${idx}`, value: d.pupil_id, type: TYPES.Int },
       { name: `prrCode${idx}`, value: d.pupilRestartReasonCode, type: TYPES.Char },
       { name: `rbu${idx}`, value: d.recordedByUser_id, type: TYPES.Int },
-      { name: `pc${idx}`, value: d.currentCheckId, type: TYPES.Int }
+      { name: `oc${idx}`, value: d.currentCheckId, type: TYPES.Int }
     ]
 
     const sql = `INSERT INTO [mtc_admin].[pupilRestart] (
@@ -123,7 +123,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                 pupil_id, 
                 pupilRestartReason_id, 
                 recordedByUser_id,
-                parentCheckId
+                originCheck_id
            ) VALUES (
                 @cd${idx},
                 @dnc${idx}, 
@@ -131,7 +131,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                 @pid${idx}, 
                 (SELECT id from [mtc_admin].[pupilRestartReason] where code = @prrCode${idx}), 
                 @rbu${idx},
-                @pc${idx}
+                @oc${idx}
             );`
 
     return {

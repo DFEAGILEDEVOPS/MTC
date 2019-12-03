@@ -1,3 +1,3 @@
 ALTER TABLE [mtc_admin].[pupilRestart]
-ADD parentCheckId INTEGER,
-CONSTRAINT FK_pupilRestart_parentCheckId FOREIGN KEY (parentCheckId) references [mtc_admin].[check](id);
+ADD originCheck_id INTEGER,
+CONSTRAINT FK_pupilRestart_originCheck_id FOREIGN KEY (originCheck_id) references [mtc_admin].[check](id);

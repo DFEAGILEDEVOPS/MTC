@@ -124,16 +124,18 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
     }
   ]
   const sql = `DECLARE @newCheckId int; 
-               DECLARE @parentCheckId int;
+               DECLARE @newCheckCode char(3);
+               DECLARE @originCheckId int;
+               DECLARE @originCheckCode char(3);     
                DECLARE @pupilId int;
                DECLARE @isDeleted bit;
-               DECLARE @parentCheckCode char(3);
-               
+                              
+               -- Populate the main variables
                SELECT
                  @newCheckId = check_id,
                  @pupilId = pupil_id,
                  @isDeleted = isDeleted,
-                 @parentCheckId = parentCheckId
+                 @originCheckId = originCheck_id
                FROM 
                 [mtc_admin].[pupilRestart] 
                WHERE id = @restartId;
@@ -147,9 +149,22 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                SET isDeleted=1, deletedByUser_id=@userId
                WHERE id = @restartId;
                
-               -- IF there is new check raised that has a NEW status, we must VOID the check                              
+               -- See if there is a new check raised against the restart to consume it                   
                IF (@newCheckId IS NOT NULL)
                BEGIN
+                   -- Get the check status code
+                   SELECT 
+                    @newCheckCode = code 
+                   FROM [mtc_admin].[check] c JOIN 
+                        [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+                   WHERE 
+                        c.id = @newCheckId;
+      
+                   -- IF the new check is not in NEW status we have to bail out
+                   IF @newCheckCode <> 'NEW'
+                    THROW 5100, 'New check cannot be deleted as it does not have a NEW status', 1;                     
+                  
+                   -- IF there is new check raised that has a NEW status, we must VOID the check
                   UPDATE [mtc_admin].[check] 
                   SET checkStatus_id = (select id from [mtc_admin].[checkStatus] where code = 'VOD')
                   WHERE id = @newCheckId;
@@ -160,24 +175,25 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                
                -- The previous check will have been VOIDED, and it must be re-activated.
                UPDATE [mtc_admin].[check]
-               SET checkStatus_id = dbo.ufnCalcCheckStatusID(@parentCheckId)
-               WHERE id = @parentCheckId;
+               SET checkStatus_id = dbo.ufnCalcCheckStatusID(@originCheckId)
+               WHERE id = @originCheckId;
                
-               -- Get the parent check status code
+               -- Get the recalculated parent check status code, just so we can update the pupil.complete flag
+               -- when we later update the pupil state fields.
                SELECT 
-                @parentCheckCode = code 
+                @originCheckCode = code 
                FROM [mtc_admin].[check] c JOIN 
                     [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
                WHERE 
-                    c.id = @parentCheckId;
+                    c.id = @originCheckId;
                
                -- Update pupil state fields
                UPDATE [mtc_admin].[pupil] 
-               SET currentCheckId = @parentCheckId,
+               SET currentCheckId = @originCheckId,
                    restartAvailable = 0,
-                   checkComplete = IIF (@parentCheckCode = 'CMP', 1, 0)
+                   checkComplete = IIF (@originCheckCode = 'CMP', 1, 0)
                WHERE
-                   id = @pupilId;                     
+                   id = @pupilId;     
                `
   return sqlService.modifyWithTransaction(sql, params)
 }

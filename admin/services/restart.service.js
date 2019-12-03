@@ -2,15 +2,18 @@ const moment = require('moment')
 const bluebird = require('bluebird')
 const R = require('ramda')
 
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const schoolDataService = require('../services/data-access/school.data.service')
-const checkDataService = require('../services/data-access/check.data.service')
-const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
-const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
-const pinValidator = require('../lib/validator/pin-validator')
-const restartDataService = require('./data-access/restart-v2.data.service')
-const config = require('../config')
 const azureQueueService = require('../services/azure-queue.service')
+const checkDataService = require('../services/data-access/check.data.service')
+const config = require('../config')
+const featureToggles = require('feature-toggles')
+const logger = require('./log.service').getLogger()
+const pinValidator = require('../lib/validator/pin-validator')
+const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
+const pupilStatusService = require('../services/pupil.status.service')
+const restartDataService = require('./data-access/restart-v2.data.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 
 const restartService = {}
 
@@ -56,7 +59,7 @@ restartService.isPupilEligible = async (p) => {
 
 /**
  * Perform restart for a list of pupils
- * @param pupilsList
+ * @param {number[]} pupilsList
  * @param restartReasonCode
  * @param didNotCompleteInfo
  * @param classDisruptionInfo
@@ -104,6 +107,16 @@ restartService.restart = async (
   })
   // todo: delete Prepared Check
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
+
+  // Ask for the pupisl to have their status updated
+  try {
+    logger.debug('Pupil status recalc dispatched for ', pupilsList)
+    await pupilStatusService.recalculateStatusByPupilIds(pupilsList, schoolId)
+  } catch (error) {
+    logger.error('restartService.markDeleted(): Failed to recalculate pupil status', error)
+    throw error
+  }
+
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
 }
 
@@ -218,17 +231,29 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   // see if there is a check associated with this restart, ideally the slug
   // would refer to the restart itself, and not the pupil.
   if (restart.check_id) {
-    const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
-    // await checkStateService.changeState(check.checkCode, checkStateService.States.Expired)
-    azureQueueService.addMessage('prepared-check-delete', {
-      version: 1,
-      checkCode: check.checkCode,
-      reason: 'restart deleted',
-      actionedByUserId: userId
-    })
+    if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+      // remove redis check
+    } else {
+      const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
+      azureQueueService.addMessage('prepared-check-delete', {
+        version: 1,
+        checkCode: check.checkCode,
+        reason: 'restart deleted',
+        actionedByUserId: userId
+      })
+    }
   }
 
   await pupilRestartDataService.sqlMarkRestartAsDeleted(restart.id, userId)
+
+  // Ask for the pupil to have their status updated
+  try {
+    await pupilStatusService.recalculateStatusByPupilIds([pupil.id], schoolId)
+  } catch (error) {
+    logger.error('restartService.markDeleted(): Failed to recalculate pupil status', error)
+    throw error
+  }
+
   return pupil
 }
 
