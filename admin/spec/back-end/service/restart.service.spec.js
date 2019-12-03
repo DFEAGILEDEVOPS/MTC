@@ -6,11 +6,10 @@ const moment = require('moment')
 const pinValidator = require('../../../lib/validator/pin-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
+const pupilStatusService = require('../../../services/pupil.status.service')
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const restartService = require('../../../services/restart.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
-const pupilStatusService = require('../../../services/pupil.status.service')
-const sinon = require('sinon')
 
 const pupilMock = require('../mocks/pupil')
 const pupilRestartMock = require('../mocks/pupil-restart')
@@ -18,16 +17,9 @@ const restartCodesMock = require('../mocks/restart-codes')
 const schoolMock = require('../mocks/school')
 const startedCheckMock = require('../mocks/check-started')
 
-/* global describe, it, expect, beforeEach, afterEach, spyOn, fail */
+/* global describe, it, expect, spyOn, fail */
 
 describe('restart.service', () => {
-  let sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => sandbox.restore())
 
   describe('getPupils', () => {
     it('it should throw an error if school is not found', async () => {
