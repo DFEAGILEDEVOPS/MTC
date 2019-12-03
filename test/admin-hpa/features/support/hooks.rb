@@ -190,6 +190,11 @@ Before("@redis") do
   end
 end
 
+Before("@pupil_register_v2") do
+  p 'Skipping this scenario until pupilRegisterV2 is set to true by default'
+  skip_this_scenario
+end
+
 After("@redis") do
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
@@ -208,6 +213,7 @@ end
 After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
+    sleep 5
     width = page.execute_script("return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);")
     height = page.execute_script("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);")
     page.current_window.resize_to(width, height)

@@ -55,3 +55,9 @@ Feature:
     Given I am logged in
     When I am on the Pupil Register page
     Then I should see a count of pupils in the school
+
+  @pupil_register_v2
+  Scenario: Pupil register data stored in redis
+    Given I am logged in
+    And I am on the Pupil Register page
+    Then I should see the pupil register data stored in redis

@@ -1,10 +1,10 @@
 'use strict'
 
-/* global describe expect it beforeEach spyOn */
+/* global describe expect it beforeEach spyOn fail */
 
-const pupilRegisterService = require('../../../services/pupil-register.service')
-const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
+const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
+const pupilRegisterService = require('../../../services/pupil-register.service')
 
 describe('pupil-register.service', () => {
   describe('#getProcessStatus', () => {
@@ -48,15 +48,34 @@ describe('pupil-register.service', () => {
 
   describe('#getPupilRegister', () => {
     beforeEach(() => {
+      spyOn(pupilRegisterService, 'getPupilRegisterViewData')
+    })
+    it('throws an error if no school password is provided', async () => {
+      try {
+        await pupilRegisterService.getPupilRegister(undefined)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('School id not found in session')
+      }
+    })
+    it('calls the getPupilRegisterViewData if school is provided', async () => {
+      await pupilRegisterService.getPupilRegister(42)
+      expect(pupilRegisterService.getPupilRegisterViewData).toHaveBeenCalled()
+    })
+  })
+
+  describe('#getPupilRegisterViewData', () => {
+    beforeEach(() => {
       spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
     })
-    it('calls the data service to get the raw data', async () => {
-      await pupilRegisterService.getPupilRegister(42)
+
+    it('calls the pupil register data service to get the raw data', async () => {
+      await pupilRegisterService.getPupilRegisterViewData(42)
       expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
     })
-    it('calls the pupil identification flag service', async () => {
-      await pupilRegisterService.getPupilRegister(42)
+    it('calls the pupil register identification flag service to get the view data based on raw', async () => {
+      await pupilRegisterService.getPupilRegisterViewData(42)
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
     })
   })

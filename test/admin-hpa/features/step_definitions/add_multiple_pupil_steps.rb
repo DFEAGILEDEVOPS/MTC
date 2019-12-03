@@ -24,12 +24,12 @@ When(/^I Upload a valid CSV file to add Multiple Pupil$/) do
   @old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, @old_date1, "f", @upn]
+  @pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, @old_date1, "f", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, @old_date2, "M", @upn2]
+  @pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, @old_date2, "M", @upn2]
 
-  add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
+  add_multiple_pupil_page.upload_multiple_pupil(@pupil_detail_array, @pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
@@ -74,4 +74,9 @@ When(/^I download the Multiple Pupil upload CSV file with error$/) do
   File.open(File.join(File.expand_path("#{File.dirname(__FILE__)}/../../data/"), "multiple_pupils_errors.csv"), "w") { |f| f.write(data) }
   data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all, liberal_parsing: true})
   @hashed_data = data.map { |d| d.to_hash }
+end
+
+
+Then(/^it should include the newly added pupils$/) do
+  expect(@pupils_from_redis.select {|x| x == @pupil_detail_array[0] + ', '+ @pupil_detail_array[0] + ' ' + @pupil_detail_array[2]}.size).to eql 2
 end
