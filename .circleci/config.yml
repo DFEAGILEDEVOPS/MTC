@@ -30,7 +30,7 @@ jobs:
           command: cd admin; yarn add --dev jest-junit
       - run:
           name: Run tests with JUnit as reporter
-          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit
+          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
           environment:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: cd pupil-spa; yarn install --frozen-lockfile
