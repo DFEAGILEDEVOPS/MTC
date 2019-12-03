@@ -18,9 +18,7 @@ const schoolMock = require('../mocks/school')
 const startedCheckMock = require('../mocks/check-started')
 
 /* global describe, it, expect, spyOn, fail */
-
 describe('restart.service', () => {
-
   describe('getPupils', () => {
     it('it should throw an error if school is not found', async () => {
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)

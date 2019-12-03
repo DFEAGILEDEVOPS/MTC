@@ -193,7 +193,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                    restartAvailable = 0,
                    checkComplete = IIF (@originCheckCode = 'CMP', 1, 0)
                WHERE
-                   id = @pupilId;     
+                   id = @pupilId;
                `
   return sqlService.modifyWithTransaction(sql, params)
 }

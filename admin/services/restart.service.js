@@ -86,6 +86,8 @@ restartService.restart = async (
     throw new Error('One of the pupils is not eligible for a restart')
   }
 
+  // By assembling the restart data in a hash, duplicates IDs in the `pupilsList` will be folded into one,
+  // and it makes it easier later on to add the `currentCheckId` property.
   const restartData = {}
   pupilsList.forEach(pupilId => {
     restartData[pupilId] = {
@@ -98,17 +100,18 @@ restartService.restart = async (
     }
   })
   const checkData = await restartDataService.getLiveCheckDataByPupilId(pupilsList)
-
   // Add the current check id into the restart data, so we can pass it into the data service
   checkData.forEach(check => {
     if (check.checkId) {
       restartData[check.pupilId].currentCheckId = check.checkId
     }
   })
+
   // todo: delete Prepared Check
+
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
 
-  // Ask for the pupisl to have their status updated
+  // Ask for the pupils to have their status updated
   try {
     logger.debug('Pupil status recalc dispatched for ', pupilsList)
     await pupilStatusService.recalculateStatusByPupilIds(pupilsList, schoolId)
