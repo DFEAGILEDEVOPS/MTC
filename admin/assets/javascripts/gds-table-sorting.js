@@ -80,34 +80,52 @@ if (!window.MTCAdmin) {
      * Setup sorting for the supplied table
      * @param {Object} document
      * @param {String} tableId
-     * @param {String} config
+     * @param {Object} config
+     * @param {String} mirrorTableId - Table that mimics sorting behavior
      */
-    applySorting: function (document, tableId, config) {
+    setup: function (document, tableId, config, mirrorTableId = null) {
       // Listen for click events and perform sorting
-      var thNodeList = document.querySelectorAll('th')
+      const thNodeList = document.querySelectorAll('th')
 
-      for (var i = 0; i < thNodeList.length; i++) {
-        var th = thNodeList[i]
-        window.MTCAdmin.tableSort.setUpClickHandler(th, i, tableId, config)
+      for (let i = 0; i < thNodeList.length; i++) {
+        const th = thNodeList[i]
+        window.MTCAdmin.tableSort.setUpClickHandler(th, i, tableId, config, mirrorTableId)
       }
     },
 
-    setUpClickHandler: function (th, i, tableId, config) {
+    /**
+     * Setup sorting for the supplied table
+     * @param {Object} th
+     * @param {Number} i
+     * @param {String} tableId
+     * @param {Object} config
+     * @param {String} mirrorTableId
+     */
+    setUpClickHandler: function (th, i, tableId, config, mirrorTableId) {
       th.addEventListener('click', function () {
-        window.MTCAdmin.tableSort.applySortClass(this)
-        var tbody = document.querySelector('#' + tableId + ' tbody')
-        var trNodeList = tbody.querySelectorAll('tr')
-        var trList = [].slice.call(trNodeList)
-
-        trList.sort(window.MTCAdmin.tableSort.comparer(
-          i,
-          this.asc = this.asc !== undefined ? !this.asc : false,
-          config)
-        )
-          .forEach(function (tr) {
-            return tbody.appendChild(tr)
-          })
+        window.MTCAdmin.tableSort.applySorting(this, i, tableId, config, mirrorTableId)
       })
+    },
+
+    applySorting: function (th, i, tableId, config, mirrorTableId) {
+      window.MTCAdmin.tableSort.applySortClass(th)
+      const tbody = document.querySelector('#' + tableId + ' tbody')
+      const trNodeList = tbody.querySelectorAll('tr')
+      const trList = [].slice.call(trNodeList)
+      trList.sort(window.MTCAdmin.tableSort.comparer(i, th.asc = th.asc !== undefined ? !th.asc : false, config)).forEach(function (tr) {
+        return tbody.appendChild(tr)
+      })
+      if (mirrorTableId) {
+        let mirrorTBody
+        let mirrorTrList
+        mirrorTBody = document.querySelector('#' + mirrorTableId + ' tbody')
+        const MirrorTrNodeList = mirrorTBody.querySelectorAll('tr')
+        mirrorTrList = [].slice.call(MirrorTrNodeList)
+        trList.forEach(function (tr, index) {
+          mirrorTBody.appendChild(mirrorTrList[parseInt(tr.getAttribute('rowId'))])
+          tr.setAttribute('rowId', index)
+        })
+      }
     }
   }
 })()

@@ -1,5 +1,418 @@
 'use strict'
-/* global describe it expect spyOn */
+/* global describe it expect spyOn beforeEach */
+
+const tableEls = `
+  <table id="pinSlips" class="govuk-table">
+      <tbody>
+      <tr class="page pupil-12">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Juliana  Brewer
+                                  
+                                      (alpha)
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">7577</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      <tr class="page pupil-5">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Koch  Hobbs
+                                  
+                                      (alpha)
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">3592</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      <tr class="page pupil-9">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Ebony  Daniels
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">2647</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      <tr class="page pupil-16">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Gregory  Duke
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">8469</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      <tr class="page pupil-13">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Nieves  Dunn
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">8736</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      <tr class="page pupil-14">
+          <td class="line-empty"></td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-content">
+  
+              <div class="pupil-content">
+                              <span class="fullname">Burns  Flowers
+                                  
+                              </span>
+  
+              </div>
+              <div class="pin-content">
+                  <span class="pin-text">School Password:</span>
+                  <span class="pin-information">bxx27aaa</span>
+                  <span class="separator"></span>
+                  <label class="pin-text">PIN:</label>
+                  <span class="pin-information">2495</span>
+              </div>
+  
+              <div class="qr"><img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOnAAAAAklEQVR4AewaftIAAAOhSURBVO3BQapjRwAEwaxG979yehYG18YND0nf46Ei4i/M/O0wUw4z5TBTDjPlMFMOM+UwUw4z5TBTDjPlMFMOM+UwUw4z5TBTXrwpCT9J5Ykk3Ki0JNyoPJGEn6TyjsNMOcyUw0x58WEqn5SEd6jcJOFGpSWhqTyh8klJ+KTDTDnMlMNMefFlSXhC5YkkNJUnVN6RhKbyRBKeUPmmw0w5zJTDTHnxh0nCjcr8u8NMOcyUw0x58YdTuUlCU2lJaCotCX+Sw0w5zJTDTHnxZSq/kyQ0lRuVloRPUvmdHGbKYaYcZsqLD0vCf0mlJaGptCQ0lZaEptKS8EQSfmeHmXKYKYeZEn/hfywJTaUl4UZl/nGYKYeZcpgpL96UhKbSkvBJKk2lJeFGpSWhqdwk4UalJeGTVL7pMFMOM+UwU168SeUJlZskNJWWhKZyo9KS0FRuktBUWhJuVFoSmsoTSWgqn3SYKYeZcpgp8Rc+KAlN5SYJTaUloam0JDSVb0rCEypPJKGptCTcqLzjMFMOM+UwU158WRKaSlNpSWgq70jCjUpLwo1KS8ITSbhRuVFpSfikw0w5zJTDTHnxYSotCe9IQlNpKi0JTaUl4QmVG5WWhJaEptKScJOEn3SYKYeZcpgpL96UhKZyk4SmcqPSktBUmkpLQlNpSWgqTyShqdwkoam0JDSVloSm8kmHmXKYKYeZ8uI/loSm0pLQVD5J5SYJNyo3SbhJwjuS0FTecZgph5lymCkvfjNJaCotCU3lRuUmCU2lqbQk3CShqbQk3KjcqLQkfNJhphxmymGmvPjNJeEmCU3lm1RaEm6S8I4kNJWm8kmHmXKYKYeZEn/hfywJTeWbknCj8kQSblR+0mGmHGbKYaa8eFMSfpJKU7lJwhMqNyotCTdJaCo3Ki0JT6i84zBTDjPlMFNefJjKJyXhJglN5QmVb1J5IglN5ScdZsphphxmyosvS8ITKp+k0pLwjiTcJOEdKi0JTaUloam84zBTDjPlMFNe/GGS0FSaSkvCjcqNSkvCjUpLQkvCTRK+6TBTDjPlMFNe/OGS0FSaSktCS0JTaUloKk+otCTcqLQkfNJhphxmymGmvPgylW9SaUl4Igk3Ki0JTyThHSo/6TBTDjPlMFNefFgSflISmkpLwhMqLQlN5SYJn5SEn3SYKYeZcpgp8Rdm/naYKYeZcpgph5lymCmHmXKYKYeZcpgph5lymCmHmXKYKYeZcpgpfwFJnaEcU95vGgAAAABJRU5ErkJggg==">
+              </div>
+  
+              <div class="url">https://localhost:4200</div>
+          </td>
+          <td class="line-checktype live">
+              <div>Official</div>
+          </td>
+          <td class="line-empty"></td>
+      </tr>
+  
+      </tbody>
+  </table>
+
+  <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupislList" role="listbox" aria-label="Select pupils.">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header govuk-!-width-three-quarters">
+              <a class="no-underline sortingLink">Pupil<span class="sort-icon"><span>Sort by pupil</span></span></a>
+          </th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              <a class="no-underline sortingLink">Group<span class="sort-icon asc"><span>Sort by group</span></span></a>
+          </th>
+          <td>
+              <div class="tick-all-checkboxes-wrapper">
+                  <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                  <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                  <div class="multiple-choice-mtc">
+                      <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                      <div></div>
+                  </div>
+              </div>
+          </td>
+      </tr>
+      </thead>
+      <tbody>
+  
+      <tr rowid="0" class="govuk-table__row  group-id-1">
+          <td>
+              <label class="govuk-label" for="pupil-12">
+                  <strong id="pupilName">Brewer, Juliana</strong>
+  
+                  (alpha)
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="G801200001010">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            7577
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell">alpha</td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-12" name="pupil[]" type="checkbox" value="12" aria-label="Tick pupil Brewer, Juliana." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      <tr rowid="1" class="govuk-table__row  group-id-1">
+          <td>
+              <label class="govuk-label" for="pupil-5">
+                  <strong id="pupilName">Hobbs, Koch</strong>
+  
+                  (alpha)
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="L801200001003">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            3592
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell">alpha</td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-5" name="pupil[]" type="checkbox" value="5" aria-label="Tick pupil Hobbs, Koch." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      <tr rowid="2" class="govuk-table__row ">
+          <td>
+              <label class="govuk-label" for="pupil-9">
+                  <strong id="pupilName">Daniels, Ebony</strong>
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="T801200001007">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            2647
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell"></td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-9" name="pupil[]" type="checkbox" value="9" aria-label="Tick pupil Daniels, Ebony." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      <tr rowid="3" class="govuk-table__row ">
+          <td>
+              <label class="govuk-label" for="pupil-16">
+                  <strong id="pupilName">Duke, Gregory</strong>
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="N801200001014">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            8469
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell"></td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-16" name="pupil[]" type="checkbox" value="16" aria-label="Tick pupil Duke, Gregory." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      <tr rowid="4" class="govuk-table__row ">
+          <td>
+              <label class="govuk-label" for="pupil-13">
+                  <strong id="pupilName">Dunn, Nieves</strong>
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="W801200001011">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            8736
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell"></td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-13" name="pupil[]" type="checkbox" value="13" aria-label="Tick pupil Dunn, Nieves." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      <tr rowid="5" class="govuk-table__row ">
+          <td>
+              <label class="govuk-label" for="pupil-14">
+                  <strong id="pupilName">Flowers, Burns</strong>
+  
+              </label>
+  
+              <input type="hidden" id="pupilUpn" name="pupilUpn" value="K801200001012">
+              <div>
+                  <div class="pin-content">
+                      <span class="label">School Password: </span>
+                      <span class="information">bxx27aaa</span>
+                      <span class="separator"></span>
+                      <span class="label">PIN: </span>
+                      <span class="information">
+                                            2495
+                                        </span>
+                  </div>
+              </div>
+          </td>
+          <td class="govuk-table__cell"></td>
+          <td>
+              <div class="multiple-choice-mtc">
+                  <input id="pupil-14" name="pupil[]" type="checkbox" value="14" aria-label="Tick pupil Flowers, Burns." aria-checked="false" role="checkbox">
+                  <div></div>
+              </div>
+          </td>
+      </tr>
+  
+      </tbody>
+  </table>
+`
 
 describe('tableSort', function () {
   describe('getCellValue', function () {
@@ -128,10 +541,10 @@ describe('tableSort', function () {
       expect(headerSpan.className).toBe('sort-icon desc')
     })
   })
-  describe('applySorting', function () {
+  describe('setup', function () {
     it('should call querySelectorAll to fetch all th elements', function () {
       spyOn(document, 'querySelectorAll').and.returnValue([])
-      window.MTCAdmin.tableSort.applySorting(window.document, 'tableId', {})
+      window.MTCAdmin.tableSort.setup(window.document, 'tableId', {}, undefined)
       expect(document.querySelectorAll).toHaveBeenCalled()
     })
     it('should attach event listeners for all th elements', function () {
@@ -140,8 +553,45 @@ describe('tableSort', function () {
       ]
       spyOn(document, 'querySelectorAll').and.returnValue(tableHeaders)
       spyOn(tableHeaders[0], 'addEventListener')
-      window.MTCAdmin.tableSort.applySorting(window.document, 'tableId', {})
+      window.MTCAdmin.tableSort.setup(window.document, 'tableId', {}, undefined)
       expect(tableHeaders[0].addEventListener).toHaveBeenCalled()
+    })
+  })
+  describe('applySorting', function () {
+    let th
+    beforeEach(() => {
+      spyOn(window.MTCAdmin.tableSort, 'applySortClass')
+      spyOn(window.MTCAdmin.tableSort, 'comparer')
+      document.body.innerHTML = tableEls
+      th = document.querySelectorAll('th')[0]
+    })
+    it('should call comparer method', function () {
+      window.MTCAdmin.tableSort.applySorting(th, 0, 'generatePins', {}, undefined)
+      expect(window.MTCAdmin.tableSort.comparer).toHaveBeenCalled()
+    })
+    it('should not call setAttribute to update the rowId based on the new base table row sequence when mirrorTableId is not supplied', function () {
+      const tbody = document.querySelector('#generatePins tbody')
+      const trNodeList = tbody.querySelectorAll('tr')
+      const trList = [].slice.call(trNodeList)
+      trList.forEach(function (tr, index) {
+        spyOn(tr, 'setAttribute')
+      })
+      window.MTCAdmin.tableSort.applySorting(th, 0, 'generatePins', {}, undefined)
+      trList.forEach(function (tr, index) {
+        expect(tr.setAttribute).not.toHaveBeenCalled()
+      })
+    })
+    it('should call setAttribute to update the rowId based on the new base table row sequence when mirrorTableId is supplied', function () {
+      const tbody = document.querySelector('#generatePins tbody')
+      const trNodeList = tbody.querySelectorAll('tr')
+      const trList = [].slice.call(trNodeList)
+      trList.forEach(function (tr, index) {
+        spyOn(tr, 'setAttribute')
+      })
+      window.MTCAdmin.tableSort.applySorting(th, 0, 'generatePins', {}, 'pinSlips')
+      trList.forEach(function (tr, index) {
+        expect(tr.setAttribute).toHaveBeenCalled()
+      })
     })
   })
   describe('isNumericValue', function () {

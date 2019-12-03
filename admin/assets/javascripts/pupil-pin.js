@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-  window.MTCAdmin.tableSort.applySorting(window.document, 'generatePins', {
+  window.MTCAdmin.tableSort.setup(window.document, 'generatePins', {
     sortNullsLast: true,
     ignoredStrings: []
-  })
+  }, 'pinSlips')
   window.MTCAdmin.pupilFilter()
 })

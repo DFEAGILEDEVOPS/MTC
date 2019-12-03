@@ -109,7 +109,7 @@
 </main>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    window.MTCAdmin.tableSort.applySorting(window.document, 'pupilsList', {
+    window.MTCAdmin.tableSort.setup(window.document, 'pupilsList', {
       sortNullsLast: true,
       ignoredStrings: ['-']
     })
