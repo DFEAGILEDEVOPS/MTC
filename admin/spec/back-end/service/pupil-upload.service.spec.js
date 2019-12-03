@@ -8,12 +8,14 @@ const schoolMock = require('../mocks/school')
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
 const validateCSVService = require('../../../services/validate-csv.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 
 const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, afterEach, describe, it, expect */
+/* global beforeEach, afterEach, describe, it, expect spyOn */
 
 describe('pupil-upload service', () => {
   // TODO: Refactor to have a common setup dependencies
@@ -103,6 +105,8 @@ describe('pupil-upload service', () => {
         proxyquire('../../../services/pupil-upload.service', {
           '../../../services/data-access/pupil.data.service': pupilDataService
         })
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
       it('when saved successfully', async (done) => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
@@ -117,6 +121,8 @@ describe('pupil-upload service', () => {
         proxyquire('../../../services/pupil-upload.service', {
           '../../../services/data-access/pupil.data.service': pupilDataService
         })
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
       it('when saved successfully', async (done) => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)

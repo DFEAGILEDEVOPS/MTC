@@ -21,7 +21,7 @@ See the [package.json](./package.json) file for the full list of npm dependencie
 
 ## Running the application
 
-`AZURE_STORAGE_CONNECTION_STRING=xxx yarn start`
+`AZURE_STORAGE_CONNECTION_STRING=xxx SERVICE_BUS_CONNECTION_STRING=xxx yarn start`
 
 Will launch the app in development mode on http://localhost:3003/
 
@@ -36,8 +36,9 @@ When running in development the api documentation can be found at http://localho
 dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,
 if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
-* AZURE_STORAGE_CONNECTION_STRING - (required) - Storage account for upload file storage and queues.  Upload is only enabled for
+* AZURE_STORAGE_CONNECTION_STRING - (required when redis prepared checks disable) - Storage account for upload file storage and queues.  Upload is only enabled for
     production environments, but the queues are used by all environments.
+* SERVICE_BUS_CONNECTION_STRING - (required only when redis prepared checks enabled) - service bus for sending pupil login messages.
 * ENVIRONMENT_NAME - string - defaults to `Local-Dev`
 * PORT - number - defaults to `3003`
 * LOG_LEVEL - string - defaults to `debug`
