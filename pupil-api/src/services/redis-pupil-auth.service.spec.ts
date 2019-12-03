@@ -1,9 +1,10 @@
-import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
+import { RedisPupilAuthenticationService, IPupilLoginMessage } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
-import { stringLiteral } from '@babel/types'
+import { IQueueMessageService, IServiceBusQueueMessage } from './queue-message.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
+let messageDispatchMock: IQueueMessageService
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
@@ -14,11 +15,16 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   expire: jest.fn()
 }))
 
+const MessageDispatchMock = jest.fn<IQueueMessageService, any>(() => ({
+  dispatch: jest.fn()
+}))
+
 describe('redis-pupil-auth.service', () => {
 
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
-    sut = new RedisPupilAuthenticationService(redisServiceMock)
+    messageDispatchMock = new MessageDispatchMock()
+    sut = new RedisPupilAuthenticationService(redisServiceMock, messageDispatchMock)
   })
 
   test('should be defined', () => {
@@ -106,7 +112,6 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('no redis expiry is set if config.practice is true', async () => {
-
     const expectedPayload = {
       config: {
         practice: true
@@ -131,7 +136,6 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('no redis expiry is set if config.practice does not exist', async () => {
-
     const expectedPayload = {
       config: {}
     }
@@ -154,7 +158,6 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('no redis expiry is set if config.practice is undefined', async () => {
-
     const expectedPayload = {
       config: {
         practice: undefined
@@ -176,5 +179,31 @@ describe('redis-pupil-auth.service', () => {
     const pupilPin = '5678'
     await sut.authenticate(schoolPin, pupilPin)
     expect(redisServiceMock.expire).not.toHaveBeenCalled()
+  })
+
+  test('pupil-login message should be dispatched upon successful authentication', async () => {
+    const expectedPayload = {
+      checkCode: 'check-code',
+      config: {
+        practice: true
+      }
+    }
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+
+    let actualMessage: IPupilLoginMessage
+    messageDispatchMock.dispatch = jest.fn(async (message) => {
+      actualMessage = message.body
+    })
+
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    await sut.authenticate(schoolPin, pupilPin)
+    expect(messageDispatchMock.dispatch).toHaveBeenCalledTimes(1)
+    expect(actualMessage.checkCode).toBe(expectedPayload.checkCode)
+    expect(actualMessage.practice).toBe(expectedPayload.config.practice)
+    expect(actualMessage.version).toBe(1)
+    expect(actualMessage.loginAt).toBeDefined()
   })
 })
