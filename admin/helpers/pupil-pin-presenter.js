@@ -14,7 +14,10 @@ pupilPinPresenter.getPupilPinViewData = (pupils) => {
     pupilViewLastName: p.lastNameAlias || p.lastName,
     ...p
   })
-  return tableSorting.applySorting(tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName', false), 'group')
+  const listIncludesGroups = R.any(p => p.group && p.group.length > 0, pupils)
+  return listIncludesGroups
+    ? tableSorting.applySorting(tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName', false), 'group')
+    : tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName')
 }
 
 module.exports = pupilPinPresenter
