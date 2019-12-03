@@ -38,12 +38,11 @@ describe('pupil-upload service', () => {
       })
     })
 
-    it('returns an object after utilizing the promisified csv library', async (done) => {
+    it('returns an object after utilizing the promisified csv library', async () => {
       const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
       expect(pr).toBeDefined()
       expect(typeof pr).toBe('object')
       expect(pr.fileErrors.errors).toBe('')
-      done()
     })
   })
 

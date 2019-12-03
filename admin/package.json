@@ -15,7 +15,7 @@
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
     "test": "yarn lint && yarn jest",
-    "test:ci": "yarn lint && yarn jest --runInBand",
+    "test:ci": "yarn lint && yarn jest --runInBand --reporters=\"default\" --reporters=\"jest-junit\"",
     "test:watch": "yarn jest --watch",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest",
@@ -156,7 +156,6 @@
       "!spec/front-end/**"
     ],
     "coverageDirectory": "<rootDir>/coverage",
-    "verbose": false,
     "testMatch": [
       "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)"
     ],
@@ -166,6 +165,7 @@
       "<rootDir>/spec/back-end/coverage",
       "<rootDir>/tests/integration",
       "<rootDir>/services/data-access"
-    ]
+    ],
+    "verbose": false
   }
 }
