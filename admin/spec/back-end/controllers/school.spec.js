@@ -48,7 +48,7 @@ describe('school controller:', () => {
     })
 
     describe('#getSchoolLandingPage', () => {
-      it('should display the \'school landing page\'', async (done) => {
+      it('should display the \'school landing page\'', async () => {
         spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
         spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
@@ -68,7 +68,6 @@ describe('school controller:', () => {
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('School Homepage')
         expect(next).not.toHaveBeenCalled()
-        done()
       })
       it('should throw an error if getActiveCheckWindow method throws an error', async () => {
         spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)

@@ -136,7 +136,7 @@ describe('check-form.service', () => {
   })
 
   describe('#checkWindowNames()', () => {
-    it('should return a string value', (done) => {
+    it('should return a string value', () => {
       const formData = {
         id: 1,
         name: 'Window Test 1'
@@ -144,17 +144,15 @@ describe('check-form.service', () => {
       const result = service.checkWindowNames([formData])
       expect(result.toString()).toBe(' Window Test 1')
       expect(result).toBeTruthy()
-      done()
     })
   })
 
   describe('#canDelete()', () => {
-    it('should return a boolean', (done) => {
+    it('should return a boolean', () => {
       const formData = checkWindowByForm[29]
       const result = service.canDelete(formData)
       expect(result.toString()).toBe('false')
       expect(result).toBeFalsy()
-      done()
     })
   })
 
@@ -165,10 +163,9 @@ describe('check-form.service', () => {
       expect(result).toBeTruthy()
     })
 
-    it('should return a false if the name is invalid', async (done) => {
+    it('should return a false if the name is invalid', async () => {
       const result = await service.buildFormName('0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.csv')
       expect(result).toBeFalsy()
-      done()
     })
   })
 
@@ -179,10 +176,9 @@ describe('check-form.service', () => {
         spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue([])
       })
 
-      it('should return true when form name not in use', async (done) => {
+      it('should return true when form name not in use', async () => {
         const result = await service.validateCheckFormName(formName)
         expect(result).toBe(true)
-        done()
       })
     })
 
@@ -192,10 +188,9 @@ describe('check-form.service', () => {
         spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue(formName)
       })
 
-      it('should return false', async (done) => {
+      it('should return false', async () => {
         const result = await service.validateCheckFormName(formName)
         expect(result).toBeFalsy()
-        done()
       })
     })
   })
@@ -209,10 +204,9 @@ describe('check-form.service', () => {
         spyOn(fs, 'readFileSync').and.returnValue(csvFile)
       })
 
-      it('should return true', (done) => {
+      it('should return true', () => {
         const result = service.isRowCountValid(csvFile)
         expect(result).toBeTruthy()
-        done()
       })
     })
 
@@ -222,10 +216,9 @@ describe('check-form.service', () => {
         spyOn(fs, 'readFileSync').and.returnValue(false)
       })
 
-      it('should return false', (done) => {
+      it('should return false', () => {
         const result = service.isRowCountValid(csvFile)
         expect(result).toBeFalsy()
-        done()
       })
     })
   })
