@@ -29,6 +29,9 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
                 Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
+                <% if (pupils && pupils.length > 0) { %>
+                    You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
+                <% } %>
             </p>
             <h3 class="govuk-heading-m">Filter by name</h3>
             <div class="govuk-form-group filter-name">
