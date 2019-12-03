@@ -30,7 +30,7 @@ jobs:
       - run: cd functions; yarn install --frozen-lockfile
       - run: cd functions-app; yarn install --frozen-lockfile
       - run: cd tslib; yarn install --frozen-lockfile
-      - run: cd admin; yarn test
+      - run: cd admin; yarn test:ci
       - run: cd pupil-spa; yarn run test-single
       - run: cd pupil-api; yarn run test
       - run: cd functions; yarn run test

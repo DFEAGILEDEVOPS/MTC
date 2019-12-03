@@ -15,6 +15,7 @@
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
     "test": "yarn lint && yarn jest",
+    "test:ci": "yarn lint && yarn jest --runInBand",
     "test:watch": "yarn jest --watch",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest",
