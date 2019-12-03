@@ -15,9 +15,12 @@ pupilPinPresenter.getPupilPinViewData = (pupils) => {
     ...p
   })
   const listIncludesGroups = R.any(p => p.group && p.group.length > 0, pupils)
-  return listIncludesGroups
-    ? tableSorting.applySorting(tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName', false), 'group')
-    : tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName')
+  if (listIncludesGroups) {
+    const sortedPupilsWithGroups = tableSorting.applySorting(R.map(generatePupilPinViewData, R.filter(p => p.group && p.group.length > 0, pupils)), 'group')
+    const sortedPupilsWithoutGroups = tableSorting.applySorting(R.map(generatePupilPinViewData, R.filter(p => !p.group || p.group.length === 0, pupils)), 'pupilViewLastName')
+    return R.concat(sortedPupilsWithGroups, sortedPupilsWithoutGroups)
+  }
+  return tableSorting.applySorting(R.map(generatePupilPinViewData, pupils), 'pupilViewLastName')
 }
 
 module.exports = pupilPinPresenter
