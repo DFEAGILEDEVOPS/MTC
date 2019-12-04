@@ -2,6 +2,9 @@
 
 const groupDataService = require('../services/data-access/group.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
+
 const groupService = {}
 
 /**
@@ -90,6 +93,8 @@ groupService.update = async (id, group, schoolId) => {
     // only update pupils if list has changed
     await groupDataService.sqlModifyGroupMembers(id, pupils)
   }
+  const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
+  await redisCacheService.drop(pupilRegisterRedisKey)
   return true
 }
 
@@ -107,6 +112,8 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
   groupName = groupName.trim()
   const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
   await groupDataService.sqlModifyGroupMembers(newGroup.insertId, groupPupils)
+  const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
+  await redisCacheService.drop(pupilRegisterRedisKey)
   return newGroup.insertId
 }
 
@@ -141,6 +148,24 @@ groupService.assignGroupsToPupils = async (schoolId, pupils) => {
     p.group = groups[p.group_id] || ''
     return p
   })
+}
+
+/**
+ * Remove existing group
+ * @param schoolId
+ * @param groupId
+ * @returns {Promise<*>}
+ */
+groupService.remove = async (schoolId, groupId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  if (!groupId) {
+    throw new Error('groupId is required')
+  }
+  const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
+  await redisCacheService.drop(pupilRegisterRedisKey)
+  return groupDataService.sqlMarkGroupAsDeleted(groupId)
 }
 
 module.exports = groupService

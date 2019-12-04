@@ -9,6 +9,8 @@ const pupilAgeReasonDataService = require('../../../services/data-access/pupil-a
 const ValidationError = require('../../../lib/validation-error')
 const sqlResponse = require('../mocks/sql-modify-response')
 const pupilMock = require('../mocks/pupil')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 
 let pupilData
 
@@ -48,6 +50,8 @@ describe('pupil-add-service', () => {
     saveSpy = sandbox.stub(pupilDataService, 'sqlCreate').resolves(sqlResponse)
     spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
     spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
+    spyOn(redisCacheService, 'drop')
+    spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
     service = proxyquire('../../../services/pupil-add-service', {
       '../lib/validator/pupil-validator': pupilValidator
     })

@@ -5,6 +5,8 @@ const R = require('ramda')
 const pupilDataService = require('./data-access/pupil.data.service')
 const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 
 const service = {}
 
@@ -53,6 +55,8 @@ service.upload = async (school, uploadFile) => {
       .on('end', async () => {
         try {
           const response = await onCSVReadComplete(csvDataArray, school)
+          const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(school.id)
+          await redisCacheService.drop(pupilRegisterRedisKey)
           return resolve(response)
         } catch (error) {
           reject(error)
