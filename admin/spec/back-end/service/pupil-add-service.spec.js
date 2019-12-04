@@ -62,15 +62,14 @@ describe('pupil-add-service', () => {
     sandbox.restore()
   })
 
-  it('validates the pupil data', async (done) => {
+  it('validates the pupil data', async () => {
     service = getService(validationFunctionResolves)
     const schoolId = 999001
     await service.addPupil(pupilData, schoolId)
     expect(pupilValidatorSpy.called).toBeTruthy()
-    done()
   })
 
-  it('throws a validation error if the pupil data does not validate', async (done) => {
+  it('throws a validation error if the pupil data does not validate', async () => {
     service = getService(validationFunctionThrows)
     try {
       await service.addPupil(pupilData)
@@ -78,10 +77,9 @@ describe('pupil-add-service', () => {
     } catch (error) {
       expect(error.name).toBe('Error')
     }
-    done()
   })
 
-  it('saves the pupil data', async (done) => {
+  it('saves the pupil data', async () => {
     service = getService(validationFunctionResolves)
     try {
       await service.addPupil(pupilData, 1234)
@@ -98,10 +96,9 @@ describe('pupil-add-service', () => {
     } catch (error) {
       expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
     }
-    done()
   })
 
-  it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async (done) => {
+  it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
     service = getService(validationFunctionResolves)
     try {
       pupilData.ageReason = 'reason'
@@ -119,10 +116,9 @@ describe('pupil-add-service', () => {
     } catch (error) {
       expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
     }
-    done()
   })
 
-  it('does not save the pupil data if arguments are missing', async (done) => {
+  it('does not save the pupil data if arguments are missing', async () => {
     service = getService(validationFunctionResolves)
     try {
       await service.addPupil(pupilData, 1234)
@@ -139,6 +135,5 @@ describe('pupil-add-service', () => {
     } catch (error) {
       fail('not expected to throw')
     }
-    done()
   })
 })

@@ -39,7 +39,7 @@ describe('role.service', () => {
     beforeEach(() => {
       roleDataService = require('../../../services/data-access/role.data.service')
     })
-    it('throws an error when name not provided', async (done) => {
+    it('throws an error when name not provided', async () => {
       spyOn(roleDataService, 'sqlFindOneByTitle')
       try {
         await roleService.findByTitle(undefined)
@@ -47,18 +47,16 @@ describe('role.service', () => {
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('roleTitle is required')
-        done()
       }
     })
 
-    it('returns entry provided by data service', async (done) => {
+    it('returns entry provided by data service', async () => {
       const serviceManagerRoleName = 'SERVICE-MANAGER'
       spyOn(roleDataService, 'sqlFindOneByTitle').and.returnValue(Promise.resolve({ id: 1, name: serviceManagerRoleName }))
       const actual = await roleService.findByTitle('a role that returns service manager')
       expect(actual).toBeDefined()
       expect(actual.id).toBe(1)
       expect(actual.name).toBe(serviceManagerRoleName)
-      done()
     })
   })
 })

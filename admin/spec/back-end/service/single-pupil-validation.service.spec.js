@@ -14,7 +14,7 @@ describe('single-pupil-validation.service', () => {
       spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
     })
 
-    it('returns a pupil with no errors', async (done) => {
+    it('returns a pupil with no errors', async () => {
       const school = { _id: '001' }
       const data = ['John', 'Lawrence', 'Smith', 'X822200014001', '5/22/2005', 'M']
       const isMultiplePupilsSubmission = true
@@ -22,7 +22,6 @@ describe('single-pupil-validation.service', () => {
       const { single } = await singlePupilValidationCSVService.validate(data, school, isMultiplePupilsSubmission)
       expect(single).toBeDefined()
       expect(single[6]).toBeUndefined()
-      done()
     })
 
     it('detects duplicate upns in the upload file', async () => {
@@ -51,7 +50,7 @@ describe('single-pupil-validation.service', () => {
       spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(validationError))
     })
 
-    it('returns a pupil with errors', async (done) => {
+    it('returns a pupil with errors', async () => {
       const school = { _id: '001' }
       const data = ['John', 'Lawrence', 'Smith', 'X8222000140011', '5/22/2005', 'M']
       singlePupilValidationCSVService.init()
@@ -61,7 +60,6 @@ describe('single-pupil-validation.service', () => {
       expect(single[6]).toBeDefined()
       expect(single[6])
         .toBe('UPN invalid (character 13 not a recognised value), Date of birth can\'t be in the future')
-      done()
     })
   })
 })

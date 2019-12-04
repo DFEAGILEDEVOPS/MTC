@@ -16,11 +16,10 @@ describe('role.data.service', () => {
       return service
     })
 
-    it('makes the expected calls', async (done) => {
+    it('makes the expected calls', async () => {
       const id = 42
       await service.sqlFindOneById(id)
       expect(sqlService.findOneById).toHaveBeenCalledWith('[role]', id)
-      done()
     })
   })
 })
