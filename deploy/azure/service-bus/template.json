@@ -16,9 +16,6 @@
             "sku": {
                 "name": "Standard",
                 "tier": "Standard"
-            },
-            "properties": {
-                "zoneRedundant": false
             }
         },
         {
