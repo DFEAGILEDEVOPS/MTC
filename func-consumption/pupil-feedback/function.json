@@ -1,0 +1,18 @@
+{
+  "bindings": [
+    {
+      "name": "feedbackMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "pupil-feedback",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "type": "table",
+      "direction": "out",
+      "name": "feedbackTable",
+      "tableName": "pupilFeedback",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    }
+  ]
+}
