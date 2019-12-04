@@ -10,7 +10,6 @@ import { AuditService } from '../audit/audit.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { StorageServiceMock } from '../storage/storage.service.mock';
-import { queueNames } from '../azure-queue/queue-names';
 import { AccessArrangements } from '../../access-arrangements';
 
 let azureQueueService: AzureQueueService;
@@ -59,7 +58,7 @@ describe('PupilPrefsService', () => {
     it('should call pupil prefs azure queue storage', async () => {
       const pupil = { checkCode: 'checkCode' };
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
       const addMessageSpy = spyOn(azureQueueService, 'addMessage');
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(mockStorageService, 'setItem');
@@ -80,7 +79,7 @@ describe('PupilPrefsService', () => {
         errorDelay: pupilPrefsService.pupilPrefsAPIErrorDelay,
         errorMaxAttempts: pupilPrefsService.pupilPrefsAPIErrorMaxAttempts
       };
-      expect(addMessageSpy.calls.all()[0].args[0]).toEqual(queueNames.pupilPreferences);
+      expect(addMessageSpy.calls.all()[0].args[0]).toEqual('the-queue');
       expect(addMessageSpy.calls.all()[0].args[1]).toEqual('url');
       expect(addMessageSpy.calls.all()[0].args[2]).toEqual('token');
       expect(addMessageSpy.calls.all()[0].args[3]).toEqual(payload);
@@ -89,7 +88,7 @@ describe('PupilPrefsService', () => {
     });
     it('should audit log the error when azureQueueService add Message fails', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
       spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);

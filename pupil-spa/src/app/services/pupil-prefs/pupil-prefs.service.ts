@@ -3,7 +3,6 @@ import { APP_CONFIG } from '../config/config.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { queueNames } from '../azure-queue/queue-names';
 import { accessArrangementsDataKey, AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
 import { Pupil } from '../../pupil';
 import { AuditService } from '../audit/audit.service';
@@ -37,8 +36,7 @@ export class PupilPrefsService {
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getItem('pupil') as Pupil;
-    const queueName = queueNames.pupilPreferences;
-    const {url, token} = this.tokenService.getToken('pupilPreferences');
+    const {url, token, queueName} = this.tokenService.getToken('pupilPreferences');
     const retryConfig = {
       errorDelay: this.pupilPrefsAPIErrorDelay,
       errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
