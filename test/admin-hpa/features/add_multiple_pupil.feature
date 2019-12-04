@@ -25,3 +25,9 @@ Feature: Add Multiple Pupil
     When I Upload a CSV file with errors to add Multiple Pupil
     Then I can see the error message for adding Multiple Pupil
     And I can see link to download Error File
+
+  @multiple_pupil_upload @pupil_register_v2
+  Scenario: User can see success message after uploading valid file for adding multiple pupil
+    When I Upload a valid CSV file to add Multiple Pupil
+    And I check the redis cache
+    Then it should include the newly added pupils

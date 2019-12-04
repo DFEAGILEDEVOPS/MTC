@@ -1,4 +1,4 @@
-/* global describe expect beforeEach jasmine fail it */
+/* global describe expect beforeEach jest fail it */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const moment = require('moment')
@@ -11,8 +11,8 @@ describe('sas-token.service', () => {
 
     beforeEach(() => {
       queueServiceMock = {
-        generateSharedAccessSignature: jasmine.createSpy().and.returnValue('mock token'),
-        getUrl: jasmine.createSpy().and.returnValue('http://localhost/queue')
+        generateSharedAccessSignature: jest.fn(() => 'mock token'),
+        getUrl: jest.fn(() => 'http://localhost/queue')
       }
     })
 
@@ -45,9 +45,10 @@ describe('sas-token.service', () => {
 
     it('sets the start Date to more than 4.5 minutes in the past', () => {
       sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-      const args = queueServiceMock.generateSharedAccessSignature.calls.mostRecent().args
+      const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
       const fourAndAHalfMinutesAgo = moment().subtract(1, 'minutes').subtract(30, 'seconds')
-      expect(args[1].AccessPolicy.Start).toBeLessThan(fourAndAHalfMinutesAgo)
+      const lessThanFourAndAHalfMinutesAgo = moment(args[1].AccessPolicy.Start).isBefore(fourAndAHalfMinutesAgo)
+      expect(lessThanFourAndAHalfMinutesAgo).toBe(true)
     })
 
     it('it generates the SAS token', () => {
@@ -61,7 +62,7 @@ describe('sas-token.service', () => {
 
     it('sets the permissions to add only', () => {
       sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-      const args = queueServiceMock.generateSharedAccessSignature.calls.mostRecent().args
+      const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
       expect(args[1].AccessPolicy.Permissions).toBe('a')
     })
   })

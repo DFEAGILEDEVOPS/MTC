@@ -166,3 +166,8 @@ Feature:
     When I submit the form with the pupil dob 6 years ago
     Then I should see an error with the DOB
 
+  @pupil_register_v2
+  Scenario: Redis cache is updated upon editing a pupil
+    When I update with valid pupil data
+    When I check the redis cache
+    Then it should include the newly edited pupil
