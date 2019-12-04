@@ -1,6 +1,14 @@
+import v4 from 'uuid'
 
 export interface IPupilFeedbackMessage {
   version: number
+  checkCode: string
+  inputType: string
+  satisfactionRating: string
+  comments: string
+}
+
+export interface IPupilFeedbackTableEntity {
   PartitionKey: string
   RowKey: string
   checkCode: string
@@ -18,5 +26,15 @@ export class PupilFeedbackService {
     if (message.version !== 2) {
       throw new Error(`version:${message.version} unsupported`)
     }
+    binding.feedbackTable = []
+    const entity: IPupilFeedbackTableEntity = {
+      PartitionKey: message.checkCode,
+      RowKey: v4(),
+      checkCode: message.checkCode,
+      comments: message.comments,
+      inputType: message.inputType,
+      satisfactionRating: message.satisfactionRating
+    }
+    binding.feedbackTable.push(entity)
   }
 }

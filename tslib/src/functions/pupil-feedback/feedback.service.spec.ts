@@ -1,25 +1,23 @@
-import { PupilFeedbackService, IPupilFeedbackFunctionBinding, IPupilFeedbackMessage } from './feedback.service'
+import { PupilFeedbackService, IPupilFeedbackFunctionBinding, IPupilFeedbackMessage, IPupilFeedbackTableEntity } from './feedback.service'
 import v4 from 'uuid'
 
 let sut: PupilFeedbackService
-
-const message: IPupilFeedbackMessage = {
-  version: 2,
-  PartitionKey: v4(),
-  RowKey: v4(),
-  checkCode: v4(),
-  comments: 'comments',
-  inputType: 'inputType',
-  satisfactionRating: 'rating'
-}
-
-const bindings: IPupilFeedbackFunctionBinding = {
-  feedbackTable: []
-}
+let message: IPupilFeedbackMessage
+let bindings: IPupilFeedbackFunctionBinding
 
 describe('pupil feedback service', () => {
   beforeEach(() => {
     sut = new PupilFeedbackService()
+    message = {
+      version: 2,
+      checkCode: v4(),
+      comments: 'comments',
+      inputType: 'inputType',
+      satisfactionRating: 'rating'
+    }
+    bindings = {
+      feedbackTable: []
+    }
   })
 
   test('subject should be defined', () => {
@@ -39,5 +37,17 @@ describe('pupil feedback service', () => {
   test('feedback message should be added to feedback table binding', () => {
     sut.process(bindings, message)
     expect(bindings.feedbackTable.length).toBe(1)
+  })
+
+  test('all expected message properties should be inserted into feedback table', () => {
+    sut.process(bindings, message)
+    const entity = bindings.feedbackTable[0] as IPupilFeedbackTableEntity
+    expect(entity.PartitionKey).toEqual(message.checkCode)
+    expect(entity.RowKey).toBeDefined()
+    expect(entity.RowKey.length).toBe(v4().length)
+    expect(entity.checkCode).toEqual(message.checkCode)
+    expect(entity.inputType).toEqual(message.inputType)
+    expect(entity.satisfactionRating).toEqual(message.satisfactionRating)
+    expect(entity.comments).toEqual(message.comments)
   })
 })
