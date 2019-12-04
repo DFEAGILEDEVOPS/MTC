@@ -1,4 +1,3 @@
-import { Context } from '@azure/functions'
 
 export interface IPupilFeedbackMessage {
   version: number
@@ -10,8 +9,14 @@ export interface IPupilFeedbackMessage {
   comments: string
 }
 
+export interface IPupilFeedbackFunctionBinding {
+  feedbackTable: Array<any>
+}
+
 export class PupilFeedbackService {
-  process (context: Context, message: IPupilFeedbackMessage): void {
-    throw new Error('impl')
+  process (binding: IPupilFeedbackFunctionBinding, message: IPupilFeedbackMessage): void {
+    if (message.version !== 2) {
+      throw new Error(`version:${message.version} unsupported`)
+    }
   }
 }
