@@ -15,9 +15,7 @@
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
-    "client-test": "karma start karma.conf.js",
-    "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest",
-    "jest:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "test:frontend": "karma start karma.conf.js",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
