@@ -4,18 +4,17 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
     "migrate-sql": "node ./data/sql/migrate-sql.js",
     "seed-sql": "node ./data/sql/seed-sql.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
     "postinstall": "gulp build",
     "sasswatch": "gulp watch",
-    "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch",
+    "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest",
     "jest:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
@@ -114,34 +113,13 @@
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },
-  "nyc": {
-    "exclude": [
-      "**/*.spec.js",
-      "**/*Spec.js",
-      "app.js",
-      "assets/javascripts/details.polyfill.js",
-      "assets/javascripts/jquery-1.12.4.js",
-      "assets/javascripts/modernizr-custom.js",
-      "bin/**/*",
-      "coverage/**/*",
-      "data/**/*",
-      "gulpfile.js",
-      "public/javascripts/app.js",
-      "server.js",
-      "spec/mocks/*",
-      "tests-integration/*",
-      "services/data-access",
-      "routes"
-    ],
-    "all": true,
-    "cache": true
-  },
   "standard": {
     "ignore": [
       "assets/javascripts/jquery-1.12.4.js"
     ]
   },
   "jest": {
+    "bail": true,
     "collectCoverage": true,
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
