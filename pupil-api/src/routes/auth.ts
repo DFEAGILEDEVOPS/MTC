@@ -2,13 +2,24 @@
 
 import { Router as Router, Request, Response } from 'express'
 import { AuthController } from '../controllers/auth.controller'
+import { FeatureService } from '../services/feature.service'
+import { RedisAuthController } from '../controllers/redis.auth.controller'
+
+export interface IAuthController {
+  postAuth (req: Request, res: Response): Promise<Response>
+}
 
 export class AuthRouter {
   router: Router
-  authController: AuthController
+  authController: IAuthController
 
   constructor () {
-    this.authController = new AuthController()
+    const featureService = new FeatureService()
+    if (featureService.redisAuthMode()) {
+      this.authController = new RedisAuthController()
+    } else {
+      this.authController = new AuthController()
+    }
     this.router = Router()
     this.init()
   }

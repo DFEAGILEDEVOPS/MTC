@@ -15,24 +15,22 @@ describe('dfe-signin.service', () => {
     dfeDataService = require('../../../services/data-access/dfe-signin.data.service')
     adminLogonEventDataService = require('../../../services/data-access/admin-logon-event.data.service')
   })
-  it('throws an error if dfeUser argument is missing', async (done) => {
+  it('throws an error if dfeUser argument is missing', async () => {
     try {
       await sut.initialiseUser(undefined, {})
       fail('expected error to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
       expect(error.message).toBe('dfeUser argument required')
-      done()
     }
   })
-  it('throws an error if tokenset argument is missing', async (done) => {
+  it('throws an error if tokenset argument is missing', async () => {
     try {
       await sut.initialiseUser({}, undefined)
       fail('expected error to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
       expect(error.message).toBe('tokenset argument required')
-      done()
     }
   })
   it('throws an error if dfeUser object does not have a defined organisation property', async () => {
@@ -94,7 +92,7 @@ describe('dfe-signin.service', () => {
     expect(schoolDataService.sqlFindOneByUrn).not.toHaveBeenCalled()
   })
 
-  it('creates a user entry if one does not exist', async (done) => {
+  it('creates a user entry if one does not exist', async () => {
     spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
       Promise.resolve(undefined),
@@ -106,10 +104,9 @@ describe('dfe-signin.service', () => {
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
     expect(userDataService.sqlCreate).toHaveBeenCalled()
-    done()
   })
 
-  it('throws an error if it cannot find created user', async (done) => {
+  it('throws an error if it cannot find created user', async () => {
     spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
       Promise.resolve(),
@@ -124,11 +121,10 @@ describe('dfe-signin.service', () => {
     } catch (error) {
       expect(error).toBeDefined()
       expect(error.message).toBe('unable to find user record')
-      done()
     }
   })
 
-  it('updates user school if different to current one and refetches the object', async (done) => {
+  it('updates user school if different to current one and refetches the object', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
       Promise.resolve({ school_id: 999 }),
@@ -144,10 +140,9 @@ describe('dfe-signin.service', () => {
     expect(userDataService.sqlFindOneByIdentifier).toHaveBeenCalled()
     expect(user).toBeDefined()
     expect(user.school_id).toBe(998)
-    done()
   })
 
-  it('maps role title to user object before it is returned', async (done) => {
+  it('maps role title to user object before it is returned', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
@@ -158,10 +153,9 @@ describe('dfe-signin.service', () => {
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
     expect(user).toBeDefined()
     expect(user.role).toBe('TEACHER')
-    done()
   })
 
-  it('displayName is constructed from given name family name and email', async (done) => {
+  it('displayName is constructed from given name family name and email', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
@@ -175,10 +169,9 @@ describe('dfe-signin.service', () => {
     const user = await sut.initialiseUser({ given_name: firstName, family_name: lastName, email: email }, token)
     expect(user).toBeDefined()
     expect(user.displayName).toBe(`${firstName} ${lastName} (${email})`)
-    done()
   })
 
-  it('id_token is set on user from token object', async (done) => {
+  it('id_token is set on user from token object', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
@@ -190,10 +183,9 @@ describe('dfe-signin.service', () => {
     expect(user).toBeDefined()
     expect(user.id_token).toBeDefined()
     expect(user.id_token).toBe(token.id_token)
-    done()
   })
 
-  it('dfeNumber and schoolId are set on user from school record', async (done) => {
+  it('dfeNumber and schoolId are set on user from school record', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 123, dfeNumber: 567 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
@@ -208,10 +200,9 @@ describe('dfe-signin.service', () => {
     expect(user.School).toBe(567)
     expect(user.schoolId).toBeDefined()
     expect(user.schoolId).toBe(123)
-    done()
   })
 
-  it('sets timezone to assigned school timezone when provided', async (done) => {
+  it('sets timezone to assigned school timezone when provided', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: 'the timezone' }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
@@ -224,10 +215,9 @@ describe('dfe-signin.service', () => {
     expect(user).toBeDefined()
     expect(user.timezone).toBeDefined()
     expect(user.timezone).toBe('the timezone')
-    done()
   })
 
-  it('sets timezone to system default when no schoo timezone is set', async (done) => {
+  it('sets timezone to system default when no schoo timezone is set', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
@@ -240,10 +230,9 @@ describe('dfe-signin.service', () => {
     expect(user).toBeDefined()
     expect(user.timezone).toBeDefined()
     expect(user.timezone).toBe(config.DEFAULT_TIMEZONE)
-    done()
   })
 
-  it('sets externalUserId to the provided user id and id to the user record id', async (done) => {
+  it('sets externalUserId to the provided user id and id to the user record id', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, id: 567 }))
@@ -256,7 +245,6 @@ describe('dfe-signin.service', () => {
     expect(user).toBeDefined()
     expect(user.providerUserId).toBe('external-user-id')
     expect(user.id).toBe(567)
-    done()
   })
 
   it('adds adminLogonEvent entry', async () => {

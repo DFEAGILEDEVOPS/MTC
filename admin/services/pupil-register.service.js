@@ -41,6 +41,18 @@ const pupilRegisterService = {
    * @return {Promise<*>}
    */
   getPupilRegister: async function (schoolId) {
+    if (!schoolId) {
+      throw new Error('School id not found in session')
+    }
+    return this.getPupilRegisterViewData(schoolId)
+  },
+
+  /**
+   * Store the pupil register view data in redis and return the data set
+   * @param {Number} schoolId
+   * @return {Array}
+   */
+  getPupilRegisterViewData: async function (schoolId) {
     const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const pupilRegister = pupilRegisterData.map(d => {
       return {
@@ -58,8 +70,7 @@ const pupilRegisterService = {
           d.pupilRestartCheckId)
       }
     })
-    pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
-    return pupilRegister
+    return pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
   },
 
   /**

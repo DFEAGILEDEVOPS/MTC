@@ -6,6 +6,8 @@ const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 const pupilAgeReasonDataService = require('./data-access/pupil-age-reason.data.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 
 const pupilAddService = {
   /**
@@ -49,7 +51,8 @@ const pupilAddService = {
     if (pupilData.ageReason) {
       await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilData.ageReason)
     }
-
+    const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
+    await redisCacheService.drop(pupilRegisterRedisKey)
     return pupilRecord
   },
 

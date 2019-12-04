@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail spyOn */
+/* global describe beforeAll it expect fail spyOn afterAll */
 
 const moment = require('moment')
 const R = require('ramda')
@@ -12,6 +12,10 @@ const uuid = require('uuid/v4')
 describe('sql.service:integration', () => {
   beforeAll(async () => {
     await sql.initPool()
+  })
+
+  afterAll(async () => {
+    await sql.drainPool()
   })
 
   describe('should permit', () => {
@@ -369,9 +373,9 @@ describe('sql.service:integration', () => {
 
     it('a multiple insert with an output table returns the identities of the inserted rows', async () => {
       const stm = `DECLARE @output TABLE (id int);
-      INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) 
+      INSERT INTO [mtc_admin].[integrationTest] (tNVarChar)
         OUTPUT inserted.ID INTO @output
-        VALUES ('test 46'), ('test 47'); 
+        VALUES ('test 46'), ('test 47');
       SELECT * from @output`
       const res = await sql.modify(stm)
       expect(R.empty(res)).toBeTruthy()

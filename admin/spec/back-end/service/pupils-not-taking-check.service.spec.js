@@ -8,34 +8,31 @@ const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-form
 
 describe('Pupils are not taking the check. Service', () => {
   describe('#sortPupilsByReason', () => {
-    it('should return a list ordered by reason not equal to the original (as per mock order)', (done) => {
+    it('should return a list ordered by reason not equal to the original (as per mock order)', () => {
       const beforeSorting = Object.assign({}, pupilsWithReasonsFormattedMock)
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(beforeSorting).not.toEqual(afterSorting)
-      done()
     })
 
-    it('returns list ordered by reason asc', (done) => {
+    it('returns list ordered by reason asc', () => {
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(afterSorting[0].reason).toEqual('Absent')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Left school')
       expect(afterSorting[3].reason).toEqual('-')
-      done()
     })
 
-    it('returns list ordered by reason desc', (done) => {
+    it('returns list ordered by reason desc', () => {
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'desc')
       expect(afterSorting[0].reason).toEqual('Left school')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Absent')
       expect(afterSorting[3].reason).toEqual('-')
-      done()
     })
   })
 
   describe('#getPupilsWithReasons', () => {
-    it('should return a list of pupils', async (done) => {
+    it('should return a list of pupils', async () => {
       spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
       spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
       const pupils = await pupilNotTakingCheckService.getPupilsWithReasons()
@@ -44,12 +41,11 @@ describe('Pupils are not taking the check. Service', () => {
       expect(pupils[0].lastName).toBe('Connor')
       expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons).toHaveBeenCalled()
       expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
-      done()
     })
   })
 
   describe('#getPupilsWithoutReasons', () => {
-    it('should return a list of pupils', async (done) => {
+    it('should return a list of pupils', async () => {
       spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithoutReasons').and.returnValue(pupilsWithReasonsFormattedMock)
       spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
       const pupils = await pupilNotTakingCheckService.getPupilsWithoutReasons()
@@ -58,7 +54,6 @@ describe('Pupils are not taking the check. Service', () => {
       expect(pupils[0].lastName).toBe('Connor')
       expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasons).toHaveBeenCalled()
       expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
-      done()
     })
   })
 

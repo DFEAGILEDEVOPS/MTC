@@ -45,5 +45,8 @@ export default {
   RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800,
   FeatureToggles: {
     preparedChecksInRedis: toBool(process.env.FEATURE_TOGGLE_PREPARED_CHECKS_IN_REDIS) || false
+  },
+  ServiceBus: {
+    connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
   }
 }

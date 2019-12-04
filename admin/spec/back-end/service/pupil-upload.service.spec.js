@@ -8,12 +8,14 @@ const schoolMock = require('../mocks/school')
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
 const validateCSVService = require('../../../services/validate-csv.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 
 const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, afterEach, describe, it, expect */
+/* global beforeEach, afterEach, describe, it, expect spyOn jest */
 
 describe('pupil-upload service', () => {
   // TODO: Refactor to have a common setup dependencies
@@ -27,21 +29,20 @@ describe('pupil-upload service', () => {
 
   describe('upload', () => {
     beforeEach(() => {
-      sandbox.mock(validateCSVService).expects('process').resolves({
-        validationErrors: { errors: '' },
-        hasValidationError: true
+      validateCSVService.process = jest.fn(async () => {
+        return {
+          validationErrors: { errors: '' },
+          hasValidationError: true
+        }
       })
-      proxyquire('../../../services/pupil-upload.service', {
-        '../../../services/validate-csv.service': validateCSVService
-      })
+      redisCacheService.drop = jest.fn()
     })
 
-    it('returns an object after utilizing the promisified csv library', async (done) => {
+    it('returns an object after utilizing the promisified csv library', async () => {
       const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
       expect(pr).toBeDefined()
       expect(typeof pr).toBe('object')
       expect(pr.fileErrors.errors).toBe('')
-      done()
     })
   })
 
@@ -63,10 +64,9 @@ describe('pupil-upload service', () => {
           })
         })
 
-        it('returns error csv file if csv has errors', async (done) => {
+        it('returns error csv file if csv has errors', async () => {
           const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
           expect(pr.csvErrorFile).toBe('test.csv')
-          done()
         })
       })
       describe('on csv generation error', () => {
@@ -76,10 +76,9 @@ describe('pupil-upload service', () => {
         })
       })
 
-      it('returns error csv file if csv has errors', async (done) => {
+      it('returns error csv file if csv has errors', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
         expect(pr.error).toBe('error')
-        done()
       })
     })
   })
@@ -103,12 +102,13 @@ describe('pupil-upload service', () => {
         proxyquire('../../../services/pupil-upload.service', {
           '../../../services/data-access/pupil.data.service': pupilDataService
         })
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
-      it('when saved successfully', async (done) => {
+      it('when saved successfully', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
         expect(pr.pupilIds.length).toBe(2)
         expect(pr).toEqual({ pupilIds: [1, 2] })
-        done()
       })
     })
     describe('and returns an object with an error if save fails', () => {
@@ -117,11 +117,12 @@ describe('pupil-upload service', () => {
         proxyquire('../../../services/pupil-upload.service', {
           '../../../services/data-access/pupil.data.service': pupilDataService
         })
+        spyOn(redisCacheService, 'drop')
+        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
-      it('when saved successfully', async (done) => {
+      it('when saved successfully', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
         expect(pr.message).toBe('No pupils were saved')
-        done()
       })
     })
   })

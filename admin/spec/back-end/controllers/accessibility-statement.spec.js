@@ -5,7 +5,7 @@
 const httpMocks = require('node-mocks-http')
 
 describe('accessibility-statement page controller', () => {
-  it('should render the initial accessibility-statement page', async (done) => {
+  it('should render the initial accessibility-statement page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -22,6 +22,5 @@ describe('accessibility-statement page controller', () => {
     expect(res.locals.pageTitle).toBe('Accessibility statement')
     expect(res.render).toHaveBeenCalled()
     expect(res.statusCode).toBe(200)
-    done()
   })
 })
