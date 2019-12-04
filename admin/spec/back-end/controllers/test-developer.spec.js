@@ -41,7 +41,7 @@ describe('test-developer controller:', () => {
         controller = require('../../../controllers/test-developer').getTestDeveloperHomePage
       })
 
-      it('should render the \'test-developer\'s the landing page', async (done) => {
+      it('should render the \'test-developer\'s the landing page', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(res, 'render').and.returnValue(null)
@@ -50,7 +50,6 @@ describe('test-developer controller:', () => {
         expect(res.locals.pageTitle).toBe('MTC for test development')
         expect(res.render).toHaveBeenCalled()
         expect(next).not.toHaveBeenCalled()
-        done()
       })
     })
   })

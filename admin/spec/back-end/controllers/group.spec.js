@@ -55,7 +55,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group')
         })
 
-        it('should render the initial groups page', async (done) => {
+        it('should render the initial groups page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
@@ -72,7 +72,6 @@ describe('group controller', () => {
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
           expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
-          done()
         })
       })
 
@@ -82,7 +81,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').groupPupilsPage
         })
 
-        it('should render the initial groups page', async (done) => {
+        it('should render the initial groups page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
@@ -99,7 +98,6 @@ describe('group controller', () => {
           expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
           expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
           expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
-          done()
         })
       })
     })
@@ -112,7 +110,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should render the add page', async (done) => {
+        it('should render the add page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
@@ -128,10 +126,9 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
 
-        it('should render the edit page', async (done) => {
+        it('should render the edit page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
@@ -148,7 +145,6 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
@@ -159,7 +155,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should render the add page', async (done) => {
+        it('should render the add page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
@@ -173,10 +169,9 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
 
-        it('should render the edit page', async (done) => {
+        it('should render the edit page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
@@ -191,7 +186,6 @@ describe('group controller', () => {
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
@@ -202,7 +196,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should fail to render the edit page and execute next', async (done) => {
+        it('should fail to render the edit page and execute next', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
@@ -217,7 +211,6 @@ describe('group controller', () => {
           expect(next).toHaveBeenCalled()
           expect(res.render).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
@@ -228,7 +221,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should fail to render the add page and execute next', async (done) => {
+        it('should fail to render the add page and execute next', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
@@ -242,14 +235,13 @@ describe('group controller', () => {
           expect(next).toHaveBeenCalled()
           expect(res.render).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
     })
 
     describe('#addGroup', () => {
       describe('(happy path)', () => {
-        it('should create a new group', async (done) => {
+        it('should create a new group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -276,12 +268,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should fail to create a new group', async (done) => {
+        it('should fail to create a new group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -308,12 +299,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should fail when form has errors', async (done) => {
+        it('should fail when form has errors', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -341,12 +331,11 @@ describe('group controller', () => {
           expect(groupService.create).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should fail when getPupils fails', async (done) => {
+        it('should fail when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -372,7 +361,6 @@ describe('group controller', () => {
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
@@ -384,7 +372,7 @@ describe('group controller', () => {
           controller = require('../../../controllers/group').addGroup
         })
 
-        it('should redirect when name and/or pupil body are empty', async (done) => {
+        it('should redirect when name and/or pupil body are empty', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -400,14 +388,13 @@ describe('group controller', () => {
           expect(groupService.create).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
     })
 
     describe('#editGroup', () => {
       describe('(happy path)', () => {
-        it('should edit a group', async (done) => {
+        it('should edit a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -437,12 +424,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should redirect the user when req.body is incomplete', async (done) => {
+        it('should redirect the user when req.body is incomplete', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -468,12 +454,11 @@ describe('group controller', () => {
           expect(groupService.update).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when getGroupById fails', async (done) => {
+        it('should execute next when getGroupById fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -503,12 +488,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when form validation fails', async (done) => {
+        it('should execute next when form validation fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -541,12 +525,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when getPupils fails', async (done) => {
+        it('should execute next when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -579,12 +562,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when update fails', async (done) => {
+        it('should execute next when update fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -616,14 +598,13 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
     })
 
     describe('#removeGroup', () => {
       describe('(happy path)', () => {
-        it('should soft-delete a group', async (done) => {
+        it('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -643,12 +624,11 @@ describe('group controller', () => {
           expect(businessAvailabilityService.determineGroupsEligibility).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
 
       describe('(unhappy path - missing parameter group id)', () => {
-        it('should soft-delete a group', async (done) => {
+        it('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -666,12 +646,11 @@ describe('group controller', () => {
           expect(groupService.remove).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         })
       })
 
       describe('(unhappy path - soft-delete fails )', () => {
-        it('should soft-delete a group', async (done) => {
+        it('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -689,7 +668,6 @@ describe('group controller', () => {
           expect(groupService.remove).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
-          done()
         })
       })
     })

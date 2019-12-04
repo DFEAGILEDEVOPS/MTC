@@ -18,13 +18,12 @@ describe('pupil authentication service', () => {
       sut = require('../../../services/pupil-authentication.service')
     })
 
-    it('authenticates a pupil', async (done) => {
+    it('authenticates a pupil', async () => {
       spyOn(pinValidator, 'isActivePin').and.returnValue(true)
       spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(schoolMock)
       spyOn(pupilDataService, 'sqlFindOneByPinAndSchool').and.returnValue(pupilMock)
       const data = await sut.authenticate('pupilPin', 'schoolPin')
       expect(data).toEqual({ pupil: pupilMock, school: schoolMock })
-      done()
     })
 
     it('prepares the pupil data', () => {
@@ -40,7 +39,7 @@ describe('pupil authentication service', () => {
       sut = require('../../../services/pupil-authentication.service')
     })
 
-    it('throws when the school is not found', async (done) => {
+    it('throws when the school is not found', async () => {
       spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(undefined)
       try {
         await sut.authenticate('pupilPin', 'badPin')
@@ -48,7 +47,6 @@ describe('pupil authentication service', () => {
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
-        done()
       }
     })
   })
@@ -58,7 +56,7 @@ describe('pupil authentication service', () => {
       sut = require('../../../services/pupil-authentication.service')
     })
 
-    it('throws when pupil is not found', async (done) => {
+    it('throws when pupil is not found', async () => {
       spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(schoolMock)
       spyOn(pupilDataService, 'sqlFindOneByPinAndSchool').and.returnValue(undefined)
       try {
@@ -67,7 +65,6 @@ describe('pupil authentication service', () => {
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
-        done()
       }
     })
   })
@@ -77,7 +74,7 @@ describe('pupil authentication service', () => {
       sut = require('../../../services/pupil-authentication.service')
     })
 
-    it('throws when both pupil and school are not found', async (done) => {
+    it('throws when both pupil and school are not found', async () => {
       spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(undefined)
       try {
         await sut.authenticate('badPin', 'badPin')
@@ -85,7 +82,6 @@ describe('pupil authentication service', () => {
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
-        done()
       }
     })
   })

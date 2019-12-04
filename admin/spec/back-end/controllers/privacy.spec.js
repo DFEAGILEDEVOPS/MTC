@@ -5,7 +5,7 @@
 const httpMocks = require('node-mocks-http')
 
 describe('privacy page controller', () => {
-  it('should render the initial groups page', async (done) => {
+  it('should render the initial groups page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -22,6 +22,5 @@ describe('privacy page controller', () => {
     expect(res.locals.pageTitle).toBe('Privacy notice')
     expect(res.render).toHaveBeenCalled()
     expect(res.statusCode).toBe(200)
-    done()
   })
 })
