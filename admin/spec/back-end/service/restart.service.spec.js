@@ -10,6 +10,7 @@ const pupilStatusService = require('../../../services/pupil.status.service')
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const restartService = require('../../../services/restart.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
+const prepareCheckService = require('../../../services/prepare-check.service')
 
 const pupilMock = require('../mocks/pupil')
 const pupilRestartMock = require('../mocks/pupil-restart')
@@ -129,6 +130,7 @@ describe('restart.service', () => {
         ]
       ))
       spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
+      spyOn(prepareCheckService, 'removeChecks')
       let results
       try {
         results = await restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
@@ -136,6 +138,7 @@ describe('restart.service', () => {
         fail(error)
       }
       expect(restartDataService.restartTransactionForPupils).toHaveBeenCalledTimes(1)
+      expect(prepareCheckService.removeChecks).toHaveBeenCalledTimes(1)
       expect(results.length).toBe(2)
     })
 

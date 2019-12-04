@@ -8,6 +8,7 @@ const config = require('../config')
 const featureToggles = require('feature-toggles')
 const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
+const prepareCheckService = require('./prepare-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
@@ -107,8 +108,10 @@ restartService.restart = async (
     }
   })
 
-  // todo: delete Prepared Check
-
+  // delete any remaining Prepared Checks to prevent pupils using these checks
+  const checkIds = checkData.map(c => c.checkId)
+  await prepareCheckService.removeChecks(checkIds)
+  // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
 
   // Ask for the pupils to have their status updated
@@ -231,11 +234,11 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     throw new Error('No restarts found to remove')
   }
 
-  // see if there is a check associated with this restart, ideally the slug
+  // see if there is a new check associated with this restart, ideally the slug
   // would refer to the restart itself, and not the pupil.
   if (restart.check_id) {
     if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
-      // remove redis check
+      await prepareCheckService.removeChecks([restart.check_id])
     } else {
       const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
       azureQueueService.addMessage('prepared-check-delete', {

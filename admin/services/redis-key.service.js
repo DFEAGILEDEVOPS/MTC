@@ -11,6 +11,15 @@ const redisKeyService = {
       throw new Error('School id parameter not provided')
     }
     return `pupilRegisterViewData:${schoolId}`
+  },
+
+  /**
+   * Return the key used to store the primary prepared check key
+   * @param {string} checkCode
+   * @return {string}
+   */
+  getPreparedCheckLookup (checkCode) {
+    return `prepared-check-lookup:${checkCode}`
   }
 }
 

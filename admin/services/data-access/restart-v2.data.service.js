@@ -169,7 +169,6 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
  * @return { Promise<{checkId: number, pupilId: number, pupilPin: number, schoolPin: string}[]> }
  */
 module.exports.getLiveCheckDataByPupilId = async function getLiveCheckDataByPupilId (pupilsList) {
-  console.log('getLiveCheckDataByPupilId.pupilsList', pupilsList)
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilsList, TYPES.Int)
   const sql = `
     select 
