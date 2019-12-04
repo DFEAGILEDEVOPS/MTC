@@ -16,13 +16,12 @@ describe('user.data.service', () => {
       return service
     })
 
-    it('makes the expected calls', async (done) => {
+    it('makes the expected calls', async () => {
       const identifier = 'teacher42'
       const res = await service.sqlFindOneByIdentifier(identifier)
       expect(sqlService.query).toHaveBeenCalled()
       // as this is a find one - we expect an object back, not an array of objects
       expect(typeof res).toBe('object')
-      done()
     })
   })
 })

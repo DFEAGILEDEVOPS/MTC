@@ -47,7 +47,7 @@ describe('restart controller:', () => {
       spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
     })
 
-    it('displays the restart overview page', async (done) => {
+    it('displays the restart overview page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
@@ -62,9 +62,8 @@ describe('restart controller:', () => {
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-      done()
     })
-    it('throws an error if getSubmittedResults has an error', async (done) => {
+    it('throws an error if getSubmittedResults has an error', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
@@ -80,7 +79,6 @@ describe('restart controller:', () => {
       expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
-      done()
     })
   })
 
@@ -102,7 +100,7 @@ describe('restart controller:', () => {
       next = jasmine.createSpy('next')
     })
 
-    it('displays the restart pupils list page', async (done) => {
+    it('displays the restart pupils list page', async () => {
       const res = getRes()
 
       const req = getReq(goodReqParams)
@@ -118,10 +116,9 @@ describe('restart controller:', () => {
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-      done()
     })
 
-    it('calls next if an error occurs within restart service', async (done) => {
+    it('calls next if an error occurs within restart service', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getSelectRestartList
@@ -135,7 +132,6 @@ describe('restart controller:', () => {
       } catch (error) {
         fail('not expected to throw')
       }
-      done()
     })
   })
 
@@ -155,17 +151,16 @@ describe('restart controller:', () => {
       next = jasmine.createSpy('next')
     })
 
-    it('redirects the restart list page if no pupils are provided', async (done) => {
+    it('redirects the restart list page if no pupils are provided', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').postSubmitRestartList
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/restart/select-restart-list')
-      done()
     })
 
-    it('renders again the restart list page if the validation fails', async (done) => {
+    it('renders again the restart list page if the validation fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -184,10 +179,9 @@ describe('restart controller:', () => {
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Error: Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
-      done()
     })
 
-    it('renders the restart overview page when successfully submitted restarts', async (done) => {
+    it('renders the restart overview page when successfully submitted restarts', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -205,10 +199,9 @@ describe('restart controller:', () => {
       expect(req.flash).toHaveBeenCalled()
       expect(requestFlashCalls[0].args[1]).toBe('Restarts made for 2 pupils')
       expect(res.redirect).toHaveBeenCalled()
-      done()
     })
 
-    it('renders a specific flash message for 1 pupil', async (done) => {
+    it('renders a specific flash message for 1 pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
@@ -223,7 +216,6 @@ describe('restart controller:', () => {
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
       expect(requestFlashCalls[0].args[1]).toBe('Restart made for 1 pupil')
-      done()
     })
   })
 
@@ -261,7 +253,7 @@ describe('restart controller:', () => {
       expect(businessAvailabilityService.determineRestartsEligibility).toHaveBeenCalled()
     })
 
-    it('calls next if error occurred while marking the pupil as deleted', async (done) => {
+    it('calls next if error occurred while marking the pupil as deleted', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -271,7 +263,6 @@ describe('restart controller:', () => {
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
-      done()
     })
   })
 })

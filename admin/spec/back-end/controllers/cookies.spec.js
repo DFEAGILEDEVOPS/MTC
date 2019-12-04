@@ -5,7 +5,7 @@
 const httpMocks = require('node-mocks-http')
 
 describe('cookies page controller', () => {
-  it('should render the initial cookies page', async (done) => {
+  it('should render the initial cookies page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -22,6 +22,5 @@ describe('cookies page controller', () => {
     expect(res.locals.pageTitle).toBe('Cookies')
     expect(res.render).toHaveBeenCalled()
     expect(res.statusCode).toBe(200)
-    done()
   })
 })

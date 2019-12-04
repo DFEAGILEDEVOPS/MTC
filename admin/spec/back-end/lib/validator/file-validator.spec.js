@@ -11,59 +11,52 @@ describe('File validator', function () {
   let uploadedFile
   let sandbox
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     sandbox = sinon.createSandbox()
-    done()
   })
   afterEach(() => {
     sandbox.restore()
   })
 
   describe('received valid data and', function () {
-    beforeEach(function (done) {
+    beforeEach(function () {
       const fsMock = sandbox.mock(fs)
       fsMock.expects('readFileSync').resolves('text')
       uploadedFile = {
         file: 'test.csv'
       }
-      done()
     })
 
-    it('allows a valid request', async function (done) {
+    it('allows a valid request', async () => {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(false)
-      done()
     })
   })
   describe('received empty data and', function () {
-    beforeEach(function (done) {
+    beforeEach(function () {
       const fsMock = sandbox.mock(fs)
       fsMock.expects('readFileSync').resolves('')
       uploadedFile = null
-      done()
     })
-    it('detects no file', async function (done) {
+    it('detects no file', async () => {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
       expect(validationError.get('template-upload')).toBe(fileCsvErrors.noFile)
-      done()
     })
-    it('detects empty file on unreadable file', async function (done) {
+    it('detects empty file on unreadable file', async () => {
       uploadedFile = { file: 'test.csv' }
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
       expect(validationError.get('template-upload')).toBe(fileCsvErrors.isNotReadable)
-      done()
     })
-    it('detects not acceptable file', async function (done) {
+    it('detects not acceptable file', async () => {
       uploadedFile = { file: 'file.txt' }
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
       expect(validationError.get('template-upload')).toBe(fileCsvErrors.noCSVFile)
-      done()
     })
   })
 })
