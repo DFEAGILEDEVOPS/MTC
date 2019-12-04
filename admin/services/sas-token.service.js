@@ -14,7 +14,7 @@ const sasTokenService = {
    * @param queueName
    * @param {Moment} expiryDate
    * @param {Object} serviceImplementation
-   * @return {{token: string, url: string}}
+   * @return {{token: string, url: string, queueName: string}}
    */
   generateSasToken: function (queueName, expiryDate, serviceImplementation) {
     if (!serviceImplementation) {
@@ -51,7 +51,8 @@ const sasTokenService = {
 
     return {
       token: sasToken,
-      url: serviceImplementation.getUrl(queueName)
+      url: serviceImplementation.getUrl(queueName),
+      queueName: queueName
     }
   }
 }

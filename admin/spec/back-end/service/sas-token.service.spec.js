@@ -56,6 +56,7 @@ describe('sas-token.service', () => {
       expect(queueServiceMock.getUrl).toHaveBeenCalled()
       expect({}.hasOwnProperty.call(res, 'token')).toBe(true)
       expect({}.hasOwnProperty.call(res, 'url')).toBe(true)
+      expect({}.hasOwnProperty.call(res, 'queueName')).toBe(true)
     })
 
     it('sets the permissions to add only', () => {
