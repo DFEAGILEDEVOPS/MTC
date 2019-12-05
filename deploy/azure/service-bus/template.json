@@ -4,7 +4,11 @@
     "parameters": {
         "bus_namespace": {
             "type": "String"
-        }
+        },
+        "scale": {
+          "type": "String",
+          "defaultValue": "Standard"
+      }
     },
     "variables": {},
     "resources": [
@@ -13,17 +17,9 @@
             "apiVersion": "2018-01-01-preview",
             "name": "[parameters('bus_namespace')]",
             "location": "West Europe",
-            "tags": {
-                "Environment": "Dev",
-                "Parent Business": "Pupil Exams and Testing",
-                "Service Offering": "Multiplication Tables"
-            },
             "sku": {
-                "name": "Standard",
-                "tier": "Standard"
-            },
-            "properties": {
-                "zoneRedundant": false
+                "name": "[parameters('scale')]",
+                "tier": "[parameters('scale')]"
             }
         },
         {
