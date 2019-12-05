@@ -353,18 +353,9 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         uuid: o.school_uuid
       },
       tokens: {
-        checkStarted: {
-          token: checkStartedSasToken.token,
-          url: checkStartedSasToken.url
-        },
-        pupilPreferences: {
-          token: pupilPreferencesSasToken.token,
-          url: pupilPreferencesSasToken.url
-        },
-        pupilFeedback: {
-          token: pupilFeedbackSasToken.token,
-          url: pupilFeedbackSasToken.url
-        },
+        checkStarted: checkStartedSasToken,
+        pupilPreferences: pupilPreferencesSasToken,
+        pupilFeedback: pupilFeedbackSasToken,
         jwt: {
           token: 'token-disabled' // o.pupil_jwtToken
         }
@@ -375,13 +366,10 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
       config: pupilConfig
     }
     if (o.check_isLiveCheck) {
-      message.tokens.checkComplete = {
-        token: checkCompleteSasToken.token,
-        url: checkCompleteSasToken.url
-      }
-      message.tokens.checkSubmit = {
-        token: checkSubmitSasToken.token,
-        url: checkCompleteSasToken.url
+      if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+        message.tokens.checkComplete = checkSubmitSasToken
+      } else {
+        message.tokens.checkComplete = checkCompleteSasToken
       }
     }
     messages.push(message)

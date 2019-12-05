@@ -9,7 +9,6 @@ import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { queueNames } from '../azure-queue/queue-names';
 
 /**
  * Declaration of check start service
@@ -37,8 +36,7 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    const queueName = queueNames.checkStarted;
-    const { url, token } = this.tokenService.getToken('checkStarted');
+    const { url, token, queueName } = this.tokenService.getToken('checkStarted');
     // Create a model for the payload
     const payload = this.storageService.getItem('pupil');
     payload.clientCheckStartedAt = new Date();

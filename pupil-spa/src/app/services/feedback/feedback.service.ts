@@ -3,7 +3,6 @@ import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { queueNames } from '../azure-queue/queue-names';
 
 @Injectable()
 export class FeedbackService {
@@ -49,8 +48,7 @@ export class FeedbackService {
    * @returns {Promise.<void>}
    */
   async queueSubmit(payload) {
-    const queueName = queueNames.pupilFeedback;
-    const { url, token } = this.tokenService.getToken('pupilFeedback');
+    const { url, token, queueName } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
     const retryConfig = {
       errorDelay: this.feedbackAPIErrorDelay,

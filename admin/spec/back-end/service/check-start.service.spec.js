@@ -266,7 +266,8 @@ describe('check-start.service', () => {
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
         return {
           token: '<someToken',
-          url: `http://localhost/${s}`
+          url: `http://localhost/${s}`,
+          queueName: 'abc'
         }
       })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
@@ -310,7 +311,6 @@ describe('check-start.service', () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(5)
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
-        expect(Object.keys(res[0].tokens)).toContain('checkSubmit')
       })
     })
     describe('when familiarisation checks are generated', () => {
