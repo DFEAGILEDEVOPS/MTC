@@ -24,7 +24,7 @@ const schoolDataService = {
           ON sce.school_id = school.id
         WHERE school.id = @id
       `
-    const rows = await sqlService.query(sql, [paramId], `schoolData.sqlFindOneById.${id}`)
+    const rows = await sqlService.readonlyQuery(sql, [paramId], `schoolData.sqlFindOneById.${id}`)
     return R.head(rows)
   },
 
@@ -40,7 +40,7 @@ const schoolDataService = {
         FROM ${sqlService.adminSchema}.${table}
         WHERE pin = @pin
       `
-    const rows = await sqlService.query(sql, [paramPin])
+    const rows = await sqlService.readonlyQuery(sql, [paramPin])
     return R.head(rows)
   },
 
@@ -58,7 +58,7 @@ const schoolDataService = {
           ON sce.school_id = school.id
         WHERE dfeNumber = @dfeNumber
       `
-    const rows = await sqlService.query(sql, [paramDfeNumber])
+    const rows = await sqlService.readonlyQuery(sql, [paramDfeNumber])
     return R.head(rows)
   },
 
@@ -88,7 +88,7 @@ const schoolDataService = {
     const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -107,7 +107,7 @@ const schoolDataService = {
     const { params, paramIdentifiers } = sqlService.buildParameterList(dfeNumbers, TYPES.Int)
     const whereClause = 'WHERE dfeNumber IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -124,7 +124,7 @@ const schoolDataService = {
           ON sce.school_id = school.id
         WHERE urn = @urn
       `
-    const rows = await sqlService.query(sql, [paramUrn])
+    const rows = await sqlService.readonlyQuery(sql, [paramUrn])
     return R.head(rows)
   }
 }

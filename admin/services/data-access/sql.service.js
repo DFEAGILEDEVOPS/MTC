@@ -302,6 +302,40 @@ sqlService.query = async (sql, params = [], redisKey) => {
       } catch (e) {}
     }
     if (!result) {
+      const request = new mssql.Request(pool)
+      addParamsToRequestSimple(params, request)
+      result = await request.query(sql)
+      if (redisKey) {
+        await redisCacheService.set(redisKey, result)
+      }
+    }
+    return sqlService.transformResult(result)
+  }
+
+  return retry(query, retryConfig, dbLimitReached)
+}
+
+/**
+ * Query data from SQL Server over a readonly connection
+ * @param {string} sql - The SELECT statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @param {string} redisKey - Redis key to cache resultset against
+ * @returns {Promise<*>}
+ */
+sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
+  // logger.debug(`sql.service.readonlyQuery(): ${sql}`)
+  // logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
+  await pool
+
+  const query = async () => {
+    let result = false
+    if (redisKey) {
+      try {
+        const redisResult = await redisCacheService.get(redisKey)
+        result = JSON.parse(redisResult)
+      } catch (e) {}
+    }
+    if (!result) {
       const request = new mssql.Request(readonlyPool)
       addParamsToRequestSimple(params, request)
       result = await request.query(sql)

@@ -24,7 +24,7 @@ const serviceToExport = {
         type: TYPES.Int
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   sqlFindPupilsWithActivePins: async (schoolId, isLiveCheck) => {
@@ -37,7 +37,7 @@ const serviceToExport = {
       WHERE school_id = @schoolId
       ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
       `
-    return sqlService.query(sql, [param])
+    return sqlService.readonlyQuery(sql, [param])
   },
 
   sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
@@ -52,7 +52,7 @@ const serviceToExport = {
       type: TYPES.Int
     })
     const sql = [select, whereClause].join(' ')
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -78,7 +78,7 @@ const serviceToExport = {
                          AND c.id IN (${checkIdentifiers.join(', ')})
                          AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
     const sql = [select, whereClause].join('\n')
-    return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
+    return sqlService.readonlyQuery(sql, [schoolParam].concat(checkParams).concat(pupilParams))
   },
 
   /**
