@@ -4,6 +4,7 @@ const R = require('ramda')
 const mssql = require('mssql')
 const dateService = require('../date.service')
 const poolConfig = require('../../config/sql.config')
+const readonlyPoolConfig = require('../../config/sql.readonly.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
@@ -26,6 +27,11 @@ const dbLimitReached = (error) => {
 let cache = {}
 /* @var mssql.ConnectionPool */
 let pool
+
+/**
+ * @var {mssql.ConnectionPool} readonly connection pool for replica reads
+ */
+let readonlyPool
 
 /** Utility functions **/
 
@@ -228,6 +234,27 @@ sqlService.drainPool = async () => {
   return pool.close()
 }
 
+sqlService.initReadonlyPool = async () => {
+  if (readonlyPool) {
+    logger.warn('The read-only connection pool has already been initialised')
+    return
+  }
+  readonlyPool = new mssql.ConnectionPool(readonlyPoolConfig)
+  readonlyPool.on('error', err => {
+    logger.error('SQL Read-only Pool Error:', err)
+  })
+  return readonlyPool.connect()
+}
+
+sqlService.drainReadonlyPool = async () => {
+  await readonlyPool
+  if (!readonlyPool) {
+    logger.warn('The read-only connection pool is not initialised')
+    return
+  }
+  return readonlyPool.close()
+}
+
 /**
  * Utility service to transform the results before sending to the caller
  * @type {Function}
@@ -275,7 +302,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
       } catch (e) {}
     }
     if (!result) {
-      const request = new mssql.Request(pool)
+      const request = new mssql.Request(readonlyPool)
       addParamsToRequestSimple(params, request)
       result = await request.query(sql)
       if (redisKey) {
