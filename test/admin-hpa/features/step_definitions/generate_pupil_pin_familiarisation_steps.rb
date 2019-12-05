@@ -20,7 +20,7 @@ end
 
 And(/^I click familiarisation Generate PINs button$/) do
   generate_pins_familiarisation_overview_page.generate_pin_btn.click if generate_pins_overview_page.has_generate_pin_btn?
-  generate_pins_familiarisation_overview_page.generate_more_pin_btn.click if generated_pins_page.has_generate_more_pin_btn?
+  generate_pins_familiarisation_overview_page.generate_more_pin_btn.click if view_and_custom_print_live_check_page.has_generate_more_pin_btn?
 end
 
 Then(/^I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page$/) do
@@ -93,7 +93,7 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
 end
 
 Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
-  expect(view_and_print_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+  expect(custom_pins_familiarisation_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
 When(/^I click View all pins button$/) do
@@ -101,10 +101,9 @@ When(/^I click View all pins button$/) do
 end
 
 Then(/^familiarisation view and print pins page is displayed as per design$/) do
-  expect(view_and_print_pins_page).to have_heading
-  expect(view_and_print_pins_page).to have_view_pin_message
-  expect(view_and_print_pins_page).to have_print_pins_btn
-  expect(view_and_print_pins_page).to have_pupil_list
+  expect(custom_pins_familiarisation_page).to have_heading
+  expect(custom_pins_familiarisation_page).to have_pin_message
+  expect(custom_pins_familiarisation_page).to have_pupil_list
 end
 
 Then(/^familiarisation generated pin overview page is displayed as per design$/) do
@@ -116,7 +115,7 @@ Then(/^I should be taken to familiarisation pin overview page$/) do
 end
 
 Then(/^all pupil familiarisation pins should be generated from the specified pool of characters$/) do
-  pins_array = view_and_print_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array = custom_pins_familiarisation_page.pupil_list.rows.map {|pupil| pupil.pin.text}
   pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
 end
 
@@ -127,15 +126,15 @@ And(/^the displayed familiarisation school password is generated as per the requ
 end
 
 Then(/^the familiarisation school password should consist of (\d+) characters$/) do |size|
-  expect(view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
+  expect(custom_pins_familiarisation_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
 end
 
 Then(/^the familiarisation school password should not contain charachter 'q'$/) do
-  school_pwd = view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd = custom_pins_familiarisation_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
 end
 
 Then(/^familiarisation school password should be generated from the specified pool of characters$/) do
-  school_pwd = view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd = custom_pins_familiarisation_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstuvwxyz").to include char}
 end

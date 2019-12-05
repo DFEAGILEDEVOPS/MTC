@@ -1,10 +1,16 @@
 class ViewAndPrintPinsPage < SitePrism::Page
-  set_url '/pupil-pin/view-and-print-familiarisation-pins'
+  set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
-  element :heading, '.heading-xlarge'
-  element :view_pin_message, '.lede', text: 'Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.'
-  element :print_pins_btn, "a", text: 'Print PINs'
-  element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
+  element :heading, '.govuk-heading-xl'
+  element :pin_message, '.govuk-body', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily. You can generate additional PINs for pupils you have missed.'
+  element :filter_by_name, '#search-name'
+
+  element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]', text: 'Try it out - password and PINs'
+
+  section :group_filter, GroupFilter, '#filterByGroup'
+
+  element :select_all_pupils, '#tickAllCheckboxes'
+  element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
 
   section :pupil_list, '#generatePins tbody' do
     sections :rows, 'tr' do
@@ -13,12 +19,15 @@ class ViewAndPrintPinsPage < SitePrism::Page
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
       element :pin, '.pin-content span:nth-child(5)'
+      element :checkbox, '.multiple-choice-mtc'
+      element :group, 'td:nth-child(2)'
     end
   end
+
+  section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
 
   def find_pupil_row(name)
     wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
-
 end

@@ -1,6 +1,9 @@
 class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
 
-  set_url "pupil-pin/view-and-custom-print-live-pins?"
+  set_url "pupil-pin/view-and-custom-print-live-pins"
+
+    element :generate_more_pin_btn, 'a', text: "Generate PINs"
+    element :csrf, 'input[name="_csrf"]', visible: false
 
   element :heading, '.govuk-heading-xl'
   element :generate_pin_message, '.govuk-body', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
@@ -24,6 +27,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
       element :pin, '.pin-content span:nth-child(5)'
+      element :group, 'td:nth-child(2)'
     end
   end
 

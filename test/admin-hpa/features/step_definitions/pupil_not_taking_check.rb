@@ -295,7 +295,7 @@ end
 
 Then(/^I should not see the pupil in the list$/) do
   generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.displayed?
-  generated_pins_page.generate_more_pin_btn.click if generated_pins_page.displayed?
+  view_and_custom_print_live_check_page.generate_more_pin_btn.click if view_and_custom_print_live_check_page.displayed?
   pupil_list = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text}
   expect(pupil_list).to_not include @pupil_lastname + ', ' + @pupil_forename
 end
