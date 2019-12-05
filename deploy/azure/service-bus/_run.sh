@@ -1,6 +1,7 @@
 #!/bin/bash
 
 RES_GROUP=$1 # the target resource group
-BUS_NAME=$2 # corresponds to *.params.json file prefix, such as dev, preprod, demo etc
-
-az group deployment create --resource-group $RES_GROUP --template-file template.json --parameters bus_namespace=$BUS_NAME
+BUS_NAME=$2 # the name of the service bus instance
+SCALE="${3:-Standard}"
+echo "creating service bus name:'$BUS_NAME' scale:'$SCALE' in '$RES_GROUP'"
+az group deployment create --resource-group $RES_GROUP --template-file template.json --parameters bus_namespace=$BUS_NAME scale=$SCALE

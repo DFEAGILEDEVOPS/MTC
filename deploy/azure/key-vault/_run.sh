@@ -12,7 +12,7 @@ SB_CONSUMER_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys 
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString" --value "$SB_CONSUMER_CONNECTION_STRING"
 
   # get connection string for consumer apps...
-SB_DEPLOY_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name mtc-deploy | jq -r .primaryConnectionString)
+SB_DEPLOY_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name RootManageSharedAccessKey | jq -r .primaryConnectionString)
 # put it in key vault...
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString-Deploy" --value "$SB_DEPLOY_CONNECTION_STRING"
 
