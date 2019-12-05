@@ -28,11 +28,11 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
 let cachedActiveCheckWindow
 let cachedActiveCheckWindowExpiresAt
 checkWindowV2Service.getActiveCheckWindow = async (cacheBust = false) => {
-  const now = (new Date()).getTime()
+  const now = Date.now()
 
   if (cacheBust || !cachedActiveCheckWindow || !cachedActiveCheckWindowExpiresAt || now > cachedActiveCheckWindowExpiresAt) {
     cachedActiveCheckWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
-    cachedActiveCheckWindowExpiresAt = (new Date()).getTime() + 60 * 1000 // +60 seconds
+    cachedActiveCheckWindowExpiresAt = Date.now() + (60 * 1000) // +60 seconds
   }
 
   return cachedActiveCheckWindow
