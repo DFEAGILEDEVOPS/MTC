@@ -14,14 +14,13 @@ describe('nca-tools-user.service', () => {
       userDataService = require('../../../services/data-access/user.data.service')
       roleService = require('../../../services/role.service')
     })
-    it('throws an error if ncaUser argument is missing', async (done) => {
+    it('throws an error if ncaUser argument is missing', async () => {
       try {
         await ncaToolsUserService.mapNcaUserToMtcUser(undefined)
         fail('expected error to be thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('ncaUser argument required')
-        done()
       }
     })
     it('throws an MtcHelpdeskImpersonation type error if ncaUser object does not have a defined School property', async () => {
@@ -51,7 +50,7 @@ describe('nca-tools-user.service', () => {
       expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
     })
 
-    it('creates a user entry if one does not exist', async (done) => {
+    it('creates a user entry if one does not exist', async () => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
         Promise.resolve(undefined),
@@ -65,10 +64,9 @@ describe('nca-tools-user.service', () => {
         UserName: 'robin'
       })
       expect(userDataService.sqlCreate).toHaveBeenCalled()
-      done()
     })
 
-    it('throws an error if it cannot find created user', async (done) => {
+    it('throws an error if it cannot find created user', async () => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
         Promise.resolve(),
@@ -86,11 +84,10 @@ describe('nca-tools-user.service', () => {
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('unable to find user record')
-        done()
       }
     })
 
-    it('updates user school if different to current one and refetches the object', async (done) => {
+    it('updates user school if different to current one and refetches the object', async () => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
         Promise.resolve({ school_id: 999 }),
@@ -108,10 +105,9 @@ describe('nca-tools-user.service', () => {
       expect(userDataService.sqlFindOneByIdentifier).toHaveBeenCalled()
       expect(user).toBeDefined()
       expect(user.school_id).toBe(998)
-      done()
     })
 
-    it('maps role title to user object before it is returned', async (done) => {
+    it('maps role title to user object before it is returned', async () => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
       spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
@@ -124,7 +120,6 @@ describe('nca-tools-user.service', () => {
       })
       expect(user).toBeDefined()
       expect(user.mtcRole).toBe('TEACHER')
-      done()
     })
   })
 })

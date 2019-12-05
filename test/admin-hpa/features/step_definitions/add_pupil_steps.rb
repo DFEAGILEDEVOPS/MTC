@@ -545,3 +545,20 @@ And(/^I add a pupil with names beginning with Z$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as ZZZZZZZ"
 end
+
+
+Given(/^I have added a pupil$/) do
+  step 'I am on the add pupil page'
+  step 'I have submitted valid pupil details'
+  step 'the pupil details should be stored'
+end
+
+
+When(/^I check the redis cache$/) do
+  @pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
+end
+
+
+Then(/^it should include the newly added pupil$/) do
+  expect(@pupils_from_redis).to include @details_hash[:last_name] + ', ' + @details_hash[:first_name]
+end

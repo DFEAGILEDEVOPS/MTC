@@ -4,19 +4,18 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
     "migrate-sql": "node ./data/sql/migrate-sql.js",
     "seed-sql": "node ./data/sql/seed-sql.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
     "postinstall": "gulp build",
     "sasswatch": "gulp watch",
-    "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
-    "test": "yarn lint && yarn run nyc -r html ./run-jasmine.js",
-    "client-test": "karma start karma.conf.js",
-    "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
+    "test": "yarn lint && yarn jest",
+    "test:watch": "yarn jest --watch",
+    "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
+    "test:frontend": "karma start karma.conf.js",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
@@ -96,9 +95,6 @@
     "gulp-sass": "^4.0.2",
     "gulp-sass-variables": "^1.1.1",
     "gulp-uglify": "^3.0.0",
-    "jasmine": "^3.3.1",
-    "jasmine-console-reporter": "^3.1.0",
-    "jasmine-core": "^3.3.0",
     "jest": "^24.9.0",
     "karma": "^3.1.3",
     "karma-chrome-launcher": "^2.2.0",
@@ -109,38 +105,42 @@
     "karma-safari-launcher": "^1.0.0",
     "madge": "^3.2.0",
     "node-mocks-http": "^1.6.6",
-    "nyc": "^14.1.1",
     "proxyquire": "^2.1.0",
     "sinon": "^7.1.1",
     "standard": "^14.3.1",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },
-  "nyc": {
-    "exclude": [
-      "**/*.spec.js",
-      "**/*Spec.js",
-      "app.js",
-      "assets/javascripts/details.polyfill.js",
-      "assets/javascripts/jquery-1.12.4.js",
-      "assets/javascripts/modernizr-custom.js",
-      "bin/**/*",
-      "coverage/**/*",
-      "data/**/*",
-      "gulpfile.js",
-      "public/javascripts/app.js",
-      "server.js",
-      "spec/mocks/*",
-      "tests-integration/*",
-      "services/data-access",
-      "routes"
-    ],
-    "all": true,
-    "cache": true
-  },
   "standard": {
     "ignore": [
       "assets/javascripts/jquery-1.12.4.js"
     ]
+  },
+  "jest": {
+    "bail": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**",
+      "!**/data-access/**",
+      "!deploy/**",
+      "!data/**",
+      "!assets/**",
+      "!public/**",
+      "!spec/front-end/**"
+    ],
+    "coverageDirectory": "<rootDir>/coverage",
+    "testMatch": [
+      "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/spec/back-end/mocks/",
+      "<rootDir>/spec/front-end",
+      "<rootDir>/spec/back-end/coverage",
+      "<rootDir>/tests/integration",
+      "<rootDir>/services/data-access"
+    ],
+    "verbose": false
   }
 }

@@ -486,7 +486,7 @@ describe('pupilPin controller:', () => {
         expect(groupService.assignGroupsToPupils).not.toHaveBeenCalled()
         expect(pupilPinPresenter.getPupilPinViewData).not.toHaveBeenCalled()
       })
-      it('calls next if error occurs', async (done) => {
+      it('calls next if error occurs', async () => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
@@ -498,9 +498,8 @@ describe('pupilPin controller:', () => {
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-        done()
       })
-      it('calls next if no pin generation environment has been set', async (done) => {
+      it('calls next if no pin generation environment has been set', async () => {
         const res = getRes()
         const req = getReq(badReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
@@ -508,7 +507,6 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(res.render).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
-        done()
       })
     })
 
@@ -533,7 +531,7 @@ describe('pupilPin controller:', () => {
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       })
-      it('calls next if error occurs', async (done) => {
+      it('calls next if error occurs', async () => {
         const res = getRes()
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
@@ -545,7 +543,6 @@ describe('pupilPin controller:', () => {
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-        done()
       })
     })
   })

@@ -59,7 +59,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         controller = require('../../../controllers/school').getPupilNotTakingCheck
       })
 
-      it('should display \'pupils not taking the check\' initial page', async (done) => {
+      it('should display \'pupils not taking the check\' initial page', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
@@ -76,10 +76,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
         expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
-        done()
       })
 
-      it('should execute next if initial page fails to render', async (done) => {
+      it('should execute next if initial page fails to render', async () => {
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
@@ -95,7 +94,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
         expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).not.toHaveBeenCalled()
-        done()
       })
     })
 
@@ -168,7 +166,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#savePupilNotTakingCheck: Save reason for pupil', () => {
-      it('should save and redirect', async (done) => {
+      it('should save and redirect', async () => {
         spyOn(attendanceService, 'updatePupilAttendanceBySlug')
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
@@ -190,10 +188,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
         // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
-        done()
       })
 
-      it('should redirect because req.body has missing data', async (done) => {
+      it('should redirect because req.body has missing data', async () => {
         spyOn(attendanceService, 'updatePupilAttendanceBySlug')
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
@@ -214,10 +211,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(attendanceService.updatePupilAttendanceBySlug).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        done()
       })
 
-      it('should return next because attendanceCodeService.updatePupilAttendanceBySlug fails', async (done) => {
+      it('should return next because attendanceCodeService.updatePupilAttendanceBySlug fails', async () => {
         spyOn(attendanceService, 'updatePupilAttendanceBySlug').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
@@ -239,7 +235,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
-        done()
       })
     })
 

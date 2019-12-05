@@ -84,3 +84,10 @@ Then(/^I should see a count of pupils in the school$/) do
   db_count = SqlDbHelper.list_of_pupils_from_school(school_id).size
   expect(pupil_register_page.pupil_list.pupil_count.text).to eql "List of available pupils (#{db_count})"
 end
+
+
+Then(/^I should see the pupil register data stored in redis$/) do
+  pupils_from_register = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text.split("\n")[0]}
+  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
+  expect(pupils_from_redis.sort).to eql pupils_from_register.sort
+end

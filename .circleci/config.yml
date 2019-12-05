@@ -25,18 +25,24 @@ jobs:
       - restore_cache:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
       - run: cd admin; yarn install --frozen-lockfile
+      - run:
+          name: Install JUnit coverage reporter
+          command: cd admin; yarn add --dev jest-junit
+      - run:
+          name: Run tests with JUnit as reporter
+          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: cd pupil-spa; yarn install --frozen-lockfile
-      - run: cd pupil-api; yarn install --frozen-lockfile
-      - run: cd functions; yarn install --frozen-lockfile
-      - run: cd functions-app; yarn install --frozen-lockfile
-      - run: cd tslib; yarn install --frozen-lockfile
-      - run: cd admin; yarn test
       - run: cd pupil-spa; yarn run test-single
+      - run: cd pupil-api; yarn install --frozen-lockfile
       - run: cd pupil-api; yarn run test
+      - run: cd functions; yarn install --frozen-lockfile
       - run: cd functions; yarn run test
+      - run: cd functions-app; yarn install --frozen-lockfile
       - run: cd functions-app; yarn test
-      - run: cd tslib; yarn test
-      - run: cd admin; yarn client-test
+      - run: cd tslib; yarn install --frozen-lockfile
+      - run: cd admin; yarn test:frontend
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:

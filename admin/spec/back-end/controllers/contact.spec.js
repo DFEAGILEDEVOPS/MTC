@@ -5,7 +5,7 @@
 const httpMocks = require('node-mocks-http')
 
 describe('contact page simple controller', () => {
-  it('should render the initial groups page', async (done) => {
+  it('should render the initial groups page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -22,6 +22,5 @@ describe('contact page simple controller', () => {
     expect(res.locals.pageTitle).toBe('Contact')
     expect(res.render).toHaveBeenCalled()
     expect(res.statusCode).toBe(200)
-    done()
   })
 })
