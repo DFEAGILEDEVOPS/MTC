@@ -1,6 +1,6 @@
 Given(/^I am on the familiarisation custom print page$/) do
   step 'I have generated a familiarisation pin for a pupil'
-  view_and_print_pins_page.pins_for_fam_check_breadcrumb.click
+  custom_pins_familiarisation_page.pins_for_fam_check_breadcrumb.click
   generate_pins_familiarisation_overview_page.view_all_pins_btn.click
 end
 
