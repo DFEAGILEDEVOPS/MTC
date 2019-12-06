@@ -52,7 +52,7 @@
             <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
             <% if (pupils && pupils.length > 0) { %>
             <form id="printPinsForm" autocomplete="off">
-                <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupislList" role="listbox" aria-label="Select pupils.">
+                <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupilsList" role="listbox" aria-label="Select pupils.">
                     <thead class="no-print govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header govuk-!-width-three-quarters">
@@ -109,7 +109,7 @@
                                 <% } %>
                                 <div class="print-only url"><%= url %></div>
                             </td>
-                            <td class="govuk-table__cell"><%= pupil.group %></td>
+                            <td class="govuk-table__cell no-print"><%= pupil.group %></td>
                             <td>
                                 <div class="multiple-choice-mtc no-print">
                                     <input id="pupil-<%= pupil.id %>"
@@ -122,7 +122,7 @@
                                     <div></div>
                                 </div>
                             </td>
-                            <td class="print-only line-checktype <%= checkTypeClass %> <%= pinEnv !== 'live' ? "try-it-out-end-line" : "" %> "><div><%= pinSlipsEndText %></div></td>
+                            <td class="print-only line-checktype <%= checkTypeClass %> <%= pinEnv !== 'live' ? "try-it-out-end-line" : "live-end-line" %> "><div><%= pinSlipsEndText %></div></td>
                         </tr>
                     <% }) %>
                     </tbody>
