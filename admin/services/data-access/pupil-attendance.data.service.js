@@ -30,11 +30,17 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
     throw new Error('pupilId is required for a DELETE')
   }
   const sql = `
-  UPDATE ${sqlService.adminSchema}.${table}
+  UPDATE [mtc_admin].[pupilAttendance]
   SET isDeleted=1
-  WHERE pupil_id = @pupilId`
+  WHERE pupil_id = @pupilId;
+  
+  -- maintain the pupil state
+  UPDATE [mtc_admin].[pupil]
+  SET attendanceId = NULL
+  WHERE id = @pupilId;
+  `
   const param = { name: 'pupilId', value: pupilId, type: TYPES.Int }
-  return sqlService.modify(sql, [param])
+  return sqlService.modifyWithTransaction(sql, [param])
 }
 
 /**
