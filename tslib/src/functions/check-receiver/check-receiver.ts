@@ -4,7 +4,7 @@ import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
 const tableService = new az.AsyncTableService()
 
-class V3 {
+class CheckReceiver {
   async process (context: Context, receivedCheck: SubmittedCheckMessageV3) {
     const receivedCheckEntity: ReceivedCheck = {
       PartitionKey: receivedCheck.schoolUUID,
@@ -24,4 +24,4 @@ class V3 {
   }
 }
 
-export default new V3()
+export default new CheckReceiver()

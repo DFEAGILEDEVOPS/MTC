@@ -10,7 +10,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { queueNames } from '../azure-queue/queue-names';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
 
@@ -23,7 +22,6 @@ export class CheckCompleteService {
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
   submissionPendingViewMinDisplay;
-  submitsToCheckReceiver: boolean;
 
   constructor(private auditService: AuditService,
               private azureQueueService: AzureQueueService,
@@ -34,13 +32,11 @@ export class CheckCompleteService {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
-      submissionPendingViewMinDisplay,
-      submitsToCheckReceiver
+      submissionPendingViewMinDisplay
     } = APP_CONFIG;
     this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
     this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
     this.submissionPendingViewMinDisplay = submissionPendingViewMinDisplay;
-    this.submitsToCheckReceiver = submitsToCheckReceiver;
   }
 
   /**
@@ -64,9 +60,7 @@ export class CheckCompleteService {
     if (config.practice) {
       return this.onSuccess(startTime);
     }
-    const queueName = queueNames.checkComplete;
-    const {url, token} = this.submitsToCheckReceiver ? this.tokenService.getToken('checkSubmit')
-      : this.tokenService.getToken('checkComplete');
+    const {url, token, queueName} = this.tokenService.getToken('checkComplete');
     const retryConfig = {
       errorDelay: this.checkSubmissionApiErrorDelay,
       errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts

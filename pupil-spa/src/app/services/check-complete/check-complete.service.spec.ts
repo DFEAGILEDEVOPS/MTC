@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
-import { AppConfigService, loadConfigMockService, IAppConfig } from '../config/config.service';
+import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
