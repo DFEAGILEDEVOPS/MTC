@@ -69,6 +69,8 @@ function sleep (ms) {
 
 // Initialise the Read-only Database Connection pool
 ;(async function () {
+  // kill switch...
+  if (config.Sql.AllowReadsFromReplica !== true) return
   try {
     logger.debug('Attempting to initialise the read-only connection pool')
     await sqlService.initReadonlyPool()

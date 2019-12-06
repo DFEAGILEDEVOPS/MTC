@@ -235,6 +235,9 @@ sqlService.drainPool = async () => {
 }
 
 sqlService.initReadonlyPool = async () => {
+  if (config.Sql.AllowReadsFromReplica !== true) {
+    throw new Error('Invalid Operation: Reads from Replica are disabled')
+  }
   if (readonlyPool) {
     logger.warn('The read-only connection pool has already been initialised')
     return
@@ -325,7 +328,11 @@ sqlService.query = async (sql, params = [], redisKey) => {
 sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
   // logger.debug(`sql.service.readonlyQuery(): ${sql}`)
   // logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
-  await pool
+  // short circuit when replica reads disabled...
+  if (config.Sql.AllowReadsFromReplica !== true) {
+    return this.query(sql, params, redisKey)
+  }
+  await readonlyPool
 
   const query = async () => {
     let result = false
