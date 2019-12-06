@@ -13,7 +13,7 @@ const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const pupilNamePresenter = require('../helpers/pupil-name-presenter')
+const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -165,60 +165,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   } catch (error) {
     return next(error)
   }
-  return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins`)
-}
-
-const getViewAndPrintPins = async (req, res, next) => {
-  if (!req.params || !req.params.pinEnv) {
-    const error = new Error('Pin environment not provided')
-    return next(error)
-  }
-  const { pinEnv } = req.params
-  const isLiveCheck = pinEnv === 'live'
-  res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'View and print PINs'
-  req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
-    `/pupil-pin/generate-${pinEnv}-pins-overview`)
-  req.breadcrumbs(res.locals.pageTitle)
-
-  const helplineNumber = config.Data.helplineNumber
-  let pupils
-  let pupilsPresentationData
-  let school
-  let error
-  let qrDataURL
-  const date = dateService.formatDayAndDate()
-  let checkWindowData
-  try {
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-    if (!availabilityData[`${pinEnv}PinsAvailable`]) {
-      return res.render('availability/section-unavailable', {
-        title: res.locals.pageTitle,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
-    pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    if (Array.isArray(pupils) && pupils.length > 0) {
-      pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
-    }
-    school = await pinService.getActiveSchool(req.user.School)
-    error = await checkWindowSanityCheckService.check(isLiveCheck)
-    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
-  } catch (error) {
-    return next(error)
-  }
-  return res.render('pupil-pin/view-and-print-pins', {
-    breadcrumbs: req.breadcrumbs(),
-    school,
-    pupils: pupilsPresentationData,
-    date,
-    error,
-    helplineNumber,
-    qrDataURL,
-    url: config.PUPIL_APP_URL
-  })
+  return res.redirect(`/pupil-pin/view-and-custom-print-${pinEnv}-pins`)
 }
 
 const getViewAndCustomPrintPins = async (req, res, next) => {
@@ -258,7 +205,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
     error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (Array.isArray(pupils) && pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
-      pupilsPresentationData = pupilNamePresenter.createNamesForPupilView(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
+      pupilsPresentationData = pupilPinPresenter.getPupilPinViewData(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
@@ -281,6 +228,5 @@ module.exports = {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
-  getViewAndPrintPins,
   getViewAndCustomPrintPins
 }

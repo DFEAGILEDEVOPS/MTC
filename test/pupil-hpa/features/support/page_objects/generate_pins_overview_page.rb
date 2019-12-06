@@ -1,23 +1,23 @@
 class GeneratePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-live-pins-overview'
 
-  element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password in order to start the live check. These expire at 4pm daily.'
-  element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :heading, '.govuk-heading-xl'
+  element :generate_pin_message, 'p.govuk-body'
+  element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
   section :instruction_section, 'details' do
-    element :toggle, 'summary[role="button"]'
-    elements :info_message, '.list-number li'
+    element :toggle, '.govuk-details__summary'
+    elements :info_message, '.govuk-list--number li'
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
-  element :related_heading, ".heading-medium", text: 'Related'
-  element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
+  element :related_heading, ".govuk-heading-m", text: 'Related'
+  element :guidance, "a", text: 'Guidance'
   element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
   element :restarts, "a[href='/restart/overview']", text: 'Restarts'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :group_filter, GroupFilter, '.column-two-thirds'
+  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
@@ -38,14 +38,14 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
-  element :view_all_pins_btn, 'input[value="View all pins"]'
+  element :view_all_pins_btn, 'a', text: "View all pins"
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
-    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for 1 pupil"
-    element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
-    element :view_all_pins_btn, 'input[value="View all pins"]'
-    element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
+    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
+    element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
+    element :view_all_pins_btn, 'a', text: "View all pins"
+    element :generate_additional_pins_btn, 'a', text: "Generate PINs"
   end
 
   def generate_pin_using_name(name)
@@ -55,6 +55,16 @@ class GeneratePinsOverviewPage < SitePrism::Page
     pupil.checkbox.click
     sticky_banner.confirm.click
     name
+  end
+
+  def generate_pin_using_list_of_names(names_array)
+    names_array.each do |name|
+      pupil = find_pupil_row(name)
+      name = pupil.name.text
+      pupil.checkbox.click
+    end
+    sticky_banner.confirm.click
+    names_array
   end
 
   def generate_pin_for_multiple_pupils(number_of_pupils)

@@ -38,14 +38,14 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
-  element :view_all_pins_btn, 'input[value="View all pins"]'
+  element :view_all_pins_btn, 'a', text: "View all pins"
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
-    element :view_all_pins_btn, 'input[value="View all pins"]'
-    element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
+    element :view_all_pins_btn, 'a', text: "View all pins"
+    element :generate_additional_pins_btn, 'a', text: "Generate PINs"
   end
 
   def generate_pin_using_name(name)

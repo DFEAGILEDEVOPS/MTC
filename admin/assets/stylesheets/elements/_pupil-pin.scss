@@ -25,14 +25,8 @@
 }
 
 .generate-additional-pins {
-  padding-top: govuk-em(10px, $govuk-root-font-size);
-  form {
-    display: inline-block;
-  }
-
   a {
     display: inline-block;
     vertical-align: bottom;
-    padding: 0 govuk-em(10px, $govuk-root-font-size);
   }
 }
