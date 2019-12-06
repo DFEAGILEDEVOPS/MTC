@@ -3,33 +3,9 @@
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 const R = require('ramda')
-const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
-
-pupilAttendanceDataService.sqlInsertBatch = async (ids, attendanceCodeId, userId) => {
-  logger.debug('pupilAttendanceDataService.sqlInsertBatch: called')
-  const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
-     pupil_id,
-     recordedBy_user_id,
-     attendanceCode_id
-   ) VALUES `
-
-  const insertsClauses = []
-  const params = []
-  params.push({ name: 'userId', type: TYPES.Int, value: userId })
-  params.push({ name: 'attendanceCode', type: TYPES.Int, value: attendanceCodeId })
-
-  for (let i = 0; i < ids.length; i++) {
-    insertsClauses.push(`(@p${i}, @userId, @attendanceCode)`)
-    params.push({ name: `p${i}`, type: TYPES.Int, value: ids[i] })
-  }
-
-  const valuesSql = insertsClauses.join(', ')
-  const sql = [insert, valuesSql].join(' ')
-  return sqlService.modify(sql, params)
-}
 
 pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, userId) => {
   const update = `UPDATE ${sqlService.adminSchema}.${table}
@@ -61,16 +37,6 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
   return sqlService.modify(sql, [param])
 }
 
-pupilAttendanceDataService.findByPupilIds = async (ids) => {
-  const select = `
-  SELECT *
-  FROM ${sqlService.adminSchema}.${table}
-  `
-  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ') AND isDeleted=0'
-  const sql = [select, whereClause].join(' ')
-  return sqlService.query(sql, params)
-}
 /**
  * Returns pupil attendance based on pupil id
  * @param pupilId

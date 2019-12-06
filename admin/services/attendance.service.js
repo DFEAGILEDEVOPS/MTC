@@ -13,45 +13,6 @@ const attendanceService = {
    * @returns {Promise<void>}
    */
   updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
-    // const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(slugs, schoolId)
-    // if (!Array.isArray(pupils) || pupils.length === 0) {
-    //   throw new Error('Pupils not found')
-    // }
-    // const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)
-    // if (!attendanceCode) {
-    //   throw new Error(`attendanceCode not found: ${code}`)
-    // }
-    //
-    // const pupilIds = pupils.map(p => { return p.id })
-    //
-    // // Pupils with a Restart (unconsumed) are allowed to transition to NOT ATTENDING,
-    // // so we must delete any unconsumed restarts for the pupils.
-    // try {
-    //   await attendanceCodeDataService.sqlDeleteUnconsumedRestarts(pupilIds, userId)
-    // } catch (error) {
-    //   logger.error('Failed to delete unconsumed restarts', error)
-    //   throw error
-    // }
-    //
-    // // We need to determine if this is an update or an insert, the db doesn't support
-    // // UPSERT so we need to do it manually.
-    // const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(pupilIds)
-    //
-    // const updates = pupilAttendance.map(pa => { return pa.pupil_id })
-    // const inserts = R.difference(pupilIds, updates)
-    //
-    // if (updates && updates.length) {
-    //   await pupilAttendanceDataService.sqlUpdateBatch(updates, attendanceCode.id, userId)
-    // }
-    //
-    // if (inserts && inserts.length) {
-    //   await pupilAttendanceDataService.sqlInsertBatch(inserts, attendanceCode.id, userId)
-    // }
-    //
-    // // TODO: update this method to handle pin expiry in the same way that `restartTransactionForPupils` does
-    // // and then remove `expireMultiplePupils`
-    // await pinService.expireMultiplePins(pupilIds, schoolId)
-
     return pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, schoolId)
   },
 
