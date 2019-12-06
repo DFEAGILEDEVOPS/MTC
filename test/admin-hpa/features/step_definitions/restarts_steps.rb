@@ -348,7 +348,7 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
   generate_pins_overview_page.select_all_pupils.click
   expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
   generate_pins_overview_page.sticky_banner.confirm.click
-  expect(current_url).to include '/view-and-print-live-pins'
+  expect(current_url).to include '/view-and-custom-print-live-pins'
   SqlDbHelper.set_pupil_status_via_upn_list(@upn_list)
   SqlDbHelper.set_check_status_via_upn_list(@upn_list)
 end

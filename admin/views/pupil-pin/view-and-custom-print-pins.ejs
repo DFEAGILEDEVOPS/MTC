@@ -29,6 +29,9 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
                 Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
+                <% if (pupils && pupils.length > 0) { %>
+                    You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
+                <% } %>
             </p>
             <h3 class="govuk-heading-m">Filter by name</h3>
             <div class="govuk-form-group filter-name">
@@ -45,7 +48,12 @@
                 <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupislList" role="listbox" aria-label="Select pupils.">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header govuk-!-width-full">Pupil</th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-three-quarters">
+                                <a class="no-underline sortingLink">Pupil<span class="sort-icon"><span>Sort by pupil</span></span></a>
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                                <a class="no-underline sortingLink">Group<span class="sort-icon asc"><span>Sort by group</span></span></a>
+                            </th>
                             <td>
                                 <div class="tick-all-checkboxes-wrapper">
                                     <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
@@ -86,6 +94,7 @@
                                     </div>
                                 </div>
                             </td>
+                            <td class="govuk-table__cell"><%= pupil.group %></td>
                             <td>
                                 <div class="multiple-choice-mtc">
                                     <input id="pupil-<%= pupil.id %>"

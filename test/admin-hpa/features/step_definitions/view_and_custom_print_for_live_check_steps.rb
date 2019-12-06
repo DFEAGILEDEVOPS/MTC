@@ -10,7 +10,7 @@ end
 Then(/^view and custom print page is displayed as per design$/) do
   expect(view_and_custom_print_live_check_page).to have_heading
   expect(view_and_custom_print_live_check_page).to have_generate_pin_message
-  expect(view_and_print_pins_page).to have_pupil_list
+  expect(custom_pins_familiarisation_page).to have_pupil_list
   expect(view_and_custom_print_live_check_page).to have_select_all_pupils
 end
 
