@@ -330,7 +330,7 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
   // logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
   // short circuit when replica reads disabled...
   if (config.Sql.AllowReadsFromReplica !== true) {
-    return this.query(sql, params, redisKey)
+    return sqlService.query(sql, params, redisKey)
   }
   await readonlyPool
 
