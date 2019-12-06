@@ -40,7 +40,7 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
   const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`
   const sql = [select, whereClause].join(' ')
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 checkFormAllocationDataService.sqlCreateBatch = async function (checkFormAllocations) {

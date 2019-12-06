@@ -69,7 +69,7 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
   const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ') AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 /**
  * Returns pupil attendance based on pupil id
@@ -92,7 +92,7 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   ]
   const whereClause = 'WHERE pupil_id=@pupilId AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
