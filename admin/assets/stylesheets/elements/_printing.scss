@@ -58,7 +58,7 @@ table.govuk-spacious .print-only {
   .line-checktype {
     font-size: govuk-em(16px, $govuk-root-font-size);
     display: inline-block;
-    height: govuk-em(100px, $govuk-root-font-size);
+    height: govuk-em(110px, $govuk-root-font-size);
     vertical-align: middle;
     margin-left: 10px;
     margin-right: 10px;
@@ -91,7 +91,7 @@ table.govuk-spacious .print-only {
         font-size: 16px;
         text-align: center;
         margin-left: 2px;
-        margin-top: 5px;
+        margin-top: 10px;
       }
       &.try-it-out-end-line {
         min-width: 35px;
