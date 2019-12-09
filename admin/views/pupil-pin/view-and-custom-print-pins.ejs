@@ -77,7 +77,7 @@
                     <% pupils.forEach( (pupil, i) => { %>
                         <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %> group-id-<%= pupil.group_id %><% } %> pupil-<%= pupils[i].id %>">
                             <td class="print-only line-checktype <%= checkTypeClass %>"><div><%= pinSlipsStartText %></div></td>
-                            <td>
+                            <td class="pupil-info">
                                 <% if (pinEnv !== 'live') { %>
                                 <div class="print-only watermark govuk-!-font-size-80">Try it out</div>
                                 <% } %>
