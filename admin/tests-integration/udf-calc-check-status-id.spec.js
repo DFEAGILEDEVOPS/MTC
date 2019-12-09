@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeAll */
+/* global describe it expect beforeAll afterAll */
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const createCheck = require('./test-support/create-check')
@@ -8,6 +8,10 @@ const createCheck = require('./test-support/create-check')
 describe('DB function: udfCalcCheckStatusID', () => {
   beforeAll(async () => {
     await sql.initPool()
+  })
+
+  afterAll(async () => {
+    await sql.drainPool()
   })
 
   function createQuery (checkId) {
