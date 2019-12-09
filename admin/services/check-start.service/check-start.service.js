@@ -165,7 +165,7 @@ checkStartService.prepareCheck2 = async function (
   const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksInRedis')
 
   if (prepareCheckServiceEnabled) {
-    prepareCheckService.prepareChecks(pupilChecks)
+    await prepareCheckService.prepareChecks(pupilChecks)
   } else {
     sendChecksToTableStorage(pupilChecks, schoolId)
   }
