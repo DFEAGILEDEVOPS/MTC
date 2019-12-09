@@ -28,7 +28,7 @@ table.govuk-spacious .print-only {
     display: block;
   }
 
-  table.govuk-spacious tr,table.govuk-spacious-two-column tr {
+  table.govuk-spacious tr, table.govuk-spacious-two-column tr {
     border-bottom: none;
     page-break-before: auto;
     page-break-after: auto;
@@ -72,6 +72,7 @@ table.govuk-spacious .print-only {
     -webkit-print-color-adjust: exact;
     min-width: 20px;
     width: 20px;
+
     &.live {
       background-color: govuk-colour("black");
       color: govuk-colour("white");
@@ -87,6 +88,7 @@ table.govuk-spacious .print-only {
         margin-right: 10px;
       }
     }
+
     &.try-it-out {
       div {
         height: govuk-em(105px, $govuk-root-font-size);
@@ -97,6 +99,7 @@ table.govuk-spacious .print-only {
         margin-left: 2px;
         margin-top: 10px;
       }
+
       &.try-it-out-end-line {
         min-width: 35px;
         width: 35px;
@@ -104,6 +107,7 @@ table.govuk-spacious .print-only {
         padding-right: 5px;
       }
     }
+
     div {
       writing-mode: vertical-rl;
       -ms-writing-mode: tb-rl;
@@ -131,6 +135,7 @@ table.govuk-spacious .print-only {
   .qr {
     position: relative;
     left: 12px;
+
     img {
       width: govuk-em(80px, $govuk-root-font-size);
       height: govuk-em(80px, $govuk-root-font-size);
