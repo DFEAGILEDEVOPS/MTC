@@ -7,6 +7,10 @@ table.govuk-spacious .print-only {
 }
 
 @media print {
+  .govuk-template {
+    background-color: govuk-colour('white');
+  }
+
   .no-print {
     display: none;
     background-color: govuk-colour('white');
