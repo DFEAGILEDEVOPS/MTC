@@ -262,8 +262,8 @@ function addParamsToRequestSimple (params, request) {
  * @return {Promise<*>}
  */
 sqlService.query = async (sql, params = [], redisKey) => {
-  // logger.debug(`sql.service.query(): ${sql}`)
-  // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  logger.debug(`sql.service.query(): ${sql}`)
+  logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const query = async () => {
@@ -330,8 +330,8 @@ function addParamsToRequest (params, request) {
  * @return {Promise}
  */
 sqlService.modify = async (sql, params = []) => {
-  // logger.debug('sql.service.modify(): SQL: ' + sql)
-  // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  logger.debug('sql.service.modify(): SQL: ' + sql)
+  logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   await pool
 
   const modify = async () => {

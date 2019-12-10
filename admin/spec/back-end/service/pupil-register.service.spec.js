@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect it beforeEach spyOn fail */
+/* global describe expect it beforeEach spyOn fail test */
 
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
@@ -43,6 +43,86 @@ describe('pupil-register.service', () => {
     it('blanks it out if unknown', () => {
       const status = pupilRegisterService.getProcessStatus('KJSDHFOHDF', null, null, null)
       expect(status).toBe('')
+    })
+  })
+
+  describe('#getProcessStatusV2', () => {
+    test('it is a function', () => {
+      expect(typeof pupilRegisterService.getProcessStatusV2).toBe('function')
+    })
+
+    // on (attendanceId, currentCheckId, checkStatusCode, restartAvailable, checkComplete, checkReceived) {
+
+    test('it can detect a pupil not taking the check', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: 1,
+        currentCheckId: null,
+        checkStatusCode: null,
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false
+      })
+      expect(status).toBe('Not taking the check')
+    })
+
+    test('it can detect a Not Started pupil', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: null,
+        checkStatusCode: null,
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false
+      })
+      expect(status).toBe('Not Started')
+    })
+
+    test('it can detect a Logged In pupil', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'COL',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false
+      })
+      expect(status).toBe('Logged in')
+    })
+
+    test('it can detect a Complete pupil', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'CMP',
+        restartAvailable: false,
+        checkComplete: true,
+        checkReceived: true
+      })
+      expect(status).toBe('Complete')
+    })
+
+    test('it can detect a restart', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: null,
+        checkStatusCode: null,
+        restartAvailable: true,
+        checkComplete: false,
+        checkReceived: false
+      })
+      expect(status).toBe('Restart')
+    })
+
+    test('it can detect a not received check', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'NTR',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false
+      })
+      expect(status).toBe('Not received')
     })
   })
 

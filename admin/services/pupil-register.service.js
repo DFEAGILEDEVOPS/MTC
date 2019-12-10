@@ -1,5 +1,8 @@
 'use strict'
 
+const { isNil } = require('ramda')
+const { isFalse, isTrue, isPositive } = require('ramda-adjunct')
+
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
@@ -63,11 +66,15 @@ const pupilRegisterService = {
         dateOfBirth: d.dateOfBirth,
         upn: d.upn,
         group: d.groupName,
-        outcome: pupilRegisterService.getProcessStatus(
-          d.pupilStatusCode,
-          d.lastCheckStatusCode,
-          d.pupilRestartId,
-          d.pupilRestartCheckId)
+        outcome: pupilRegisterService.getProcessStatusV2({
+          attendanceId: d.attendanceId,
+          currentStatusId: d.currentStatusId,
+          currentStatusCode: d.currentStatusCode,
+          restartAvailable: d.restartAvailable,
+          checkReceived: d.checkReceived,
+          checkComplete: d.checkComplete,
+          pupilLoginDate: d.pupilLoginDate
+        })
       }
     })
     return pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
@@ -118,6 +125,54 @@ const pupilRegisterService = {
   },
 
   /**
+   * @typedef {Object} ProcessStatusArg
+   * @property {Number | null} attendanceId
+   * @property {Number | null} currentCheckId
+   * @property {String | null} checkStatusCode
+   * @property {Boolean} restartAvailable
+   * @property {Boolean} checkComplete
+   * @property {Boolean} checkReceived
+   * @property {Moment.moment} pupilLoginDate
+   *
+   */
+
+  /**
+   * Return the process status using new pupil status fields
+   * @param {ProcessStatusArg} an object containing the parameters
+   * @return {string}
+   */
+  getProcessStatusV2: function (arg) {
+    let status = 'N/A'
+
+    const {
+      attendanceId,
+      currentCheckId,
+      checkStatusCode,
+      restartAvailable,
+      checkReceived,
+      checkComplete
+    } = arg
+
+    if (isPositive(attendanceId)) {
+      status = 'Not taking the check'
+    } else if (isTrue(restartAvailable)) {
+      status = 'Restart'
+    } else if (isNil(currentCheckId) && isNil(checkStatusCode)) {
+      status = 'Not Started'
+    } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
+      status = 'PIN generated'
+    } else if (isPositive(currentCheckId) && isCollected(checkStatusCode) && isFalse(checkReceived)) {
+      status = 'Logged in'
+    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode)) {
+      status = 'Complete'
+    } else if (isPositive(currentCheckId) && isFalse(checkReceived) && isNotReceived(checkStatusCode)) {
+      status = 'Not received'
+    }
+
+    return status
+  },
+
+  /**
    * Identifies whether school's register has incomplete checks.
    * @param {number} schoolId
    * @return {boolean}
@@ -127,5 +182,10 @@ const pupilRegisterService = {
     return Array.isArray(result) && result.length > 0
   }
 }
+
+const isNew = (str) => str === 'NEW'
+const isCollected = (str) => str === 'COL'
+const isComplete = (str) => str === 'CMP'
+const isNotReceived = (str) => str === 'NTR'
 
 module.exports = pupilRegisterService
