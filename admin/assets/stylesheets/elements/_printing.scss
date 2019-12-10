@@ -16,10 +16,6 @@ table.govuk-spacious .print-only {
     display: block;
   }
 
-  .hidden {
-    display: none;
-  }
-
   #printPinsForm {
     width: 600px;
   }
@@ -35,6 +31,9 @@ table.govuk-spacious .print-only {
     page-break-after: auto;
     page-break-inside: avoid;
     border-bottom: 1px dashed govuk-colour("black");
+    &.hidden {
+      display: none;
+    }
   }
 
   table.govuk-spacious td.no-print {
