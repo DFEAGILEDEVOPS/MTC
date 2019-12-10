@@ -3,6 +3,11 @@
 const moment = require('moment')
 const R = require('ramda')
 const redisService = require('./data-access/redis-cache.service')
+const prepareCheckDataService = require('./data-access/prepare-check.data.service')
+const featureToggles = require('feature-toggles')
+const redisKeyService = require('./redis-key.service')
+const redisCacheService = require('./data-access/redis-cache.service')
+const logger = require('./log.service').getLogger()
 
 const service = {
   /**
@@ -31,6 +36,28 @@ const service = {
     })
     cacheItems.push(...lookupKeys)
     return redisService.setMany(cacheItems)
+  },
+
+  /**
+   * Remove prepared checks from redis
+   * @param {Number[]} checks - array of check.id's
+   * @return {Promise<*>}
+   */
+  removeChecks: async function removeChecks (checks) {
+    if (!Array.isArray(checks)) {
+      throw new Error('checks is not an array')
+    }
+    if (!checks.length > 0) {
+      throw new Error('no checks to work on')
+    }
+    logger.info(`prepareCheckService:removeChecks called for ${checks.join(', ')}`)
+    const checkCodes = await prepareCheckDataService.getCheckCodes(checks)
+    if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+      const secondaryKeys = checkCodes.map(checkCode => redisKeyService.getPreparedCheckLookup(checkCode))
+      const primaryKeys = await redisCacheService.getMany(secondaryKeys)
+      const result = await redisCacheService.drop(primaryKeys.concat(secondaryKeys))
+      return result
+    }
   }
 }
 

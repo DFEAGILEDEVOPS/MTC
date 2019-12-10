@@ -40,21 +40,6 @@ const serviceToExport = {
     return sqlService.query(sql, [param])
   },
 
-  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
-    const view = isLiveCheck ? 'vewPupilsEligibleForLivePinGeneration' : 'vewPupilsEligibleForTryItOutPin'
-    const select = `SELECT *
-                    FROM ${sqlService.adminSchema}.[${view}]`
-    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
-    const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
-    params.push({
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    })
-    const sql = [select, whereClause].join(' ')
-    return sqlService.query(sql, params)
-  },
-
   /**
    * Find checks that are being re-started
    * @param {number} schoolId

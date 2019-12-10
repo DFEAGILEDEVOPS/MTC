@@ -1,5 +1,5 @@
 'use strict'
-/* global beforeEach describe expect it fail spyOn */
+/* global beforeEach describe expect it fail spyOn jest */
 
 const moment = require('moment')
 const uuid = require('uuid/v4')
@@ -207,10 +207,27 @@ describe('check-window-v2.service', () => {
     })
   })
   describe('getActiveCheckWindow', () => {
-    it('should call checkWindowDataService sqlFindActiveCheckWindow method', async () => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow')
+    it('should cache successive calls', async () => {
+      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      await checkWindowV2Service.getActiveCheckWindow(true)
       await checkWindowV2Service.getActiveCheckWindow()
-      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalled()
+      await checkWindowV2Service.getActiveCheckWindow()
+      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalledTimes(1)
+    })
+    it('only caches for 60 seconds', async () => {
+      const now = new Date()
+      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      await checkWindowV2Service.getActiveCheckWindow(true) // 1st call
+
+      const nowPlus60 = new Date(now.getTime() + 60.010 * 1000)
+      Date.now = jest.fn().mockReturnValue(nowPlus60)
+      await checkWindowV2Service.getActiveCheckWindow() // 2nd call
+
+      const nowPlus119 = new Date(nowPlus60 + 59.998 * 1000)
+      Date.now = jest.fn().mockReturnValue(nowPlus119)
+      await checkWindowV2Service.getActiveCheckWindow() // cached response
+
+      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalledTimes(2)
     })
   })
 })
