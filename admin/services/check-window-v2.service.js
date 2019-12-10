@@ -25,8 +25,17 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
  * Get active check window
  * @return {Promise<Object>} Check window object
  */
-checkWindowV2Service.getActiveCheckWindow = async () => {
-  return checkWindowDataService.sqlFindActiveCheckWindow()
+let cachedActiveCheckWindow
+let cachedActiveCheckWindowExpiresAt
+checkWindowV2Service.getActiveCheckWindow = async (cacheBust = false) => {
+  const now = Date.now()
+
+  if (cacheBust || !cachedActiveCheckWindow || !cachedActiveCheckWindowExpiresAt || now > cachedActiveCheckWindowExpiresAt) {
+    cachedActiveCheckWindow = await checkWindowDataService.sqlFindActiveCheckWindow()
+    cachedActiveCheckWindowExpiresAt = Date.now() + (60 * 1000) // +60 seconds
+  }
+
+  return cachedActiveCheckWindow
 }
 
 /**

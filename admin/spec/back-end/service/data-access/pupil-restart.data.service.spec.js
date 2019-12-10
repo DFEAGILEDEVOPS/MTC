@@ -9,19 +9,6 @@ const sqlService = require('../../../../services/data-access/sql.service')
 describe('pupil-restart.data.service', () => {
   let service
 
-  describe('#sqlCreate', () => {
-    beforeEach(() => {
-      spyOn(sqlService, 'create').and.returnValue(Promise.resolve({ insertId: 1, rowsModified: 1 }))
-      service = require('../../../../services/data-access/pupil-restart.data.service')
-    })
-
-    it('it makes the expected calls', async () => {
-      const res = await service.sqlCreate('pupilRestart', pupilRestartMock)
-      expect(sqlService.create).toHaveBeenCalled()
-      expect(typeof res).toBe('object')
-    })
-  })
-
   describe('#sqlGetNumberOfRestartsByPupil', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ cnt: 1 }]))

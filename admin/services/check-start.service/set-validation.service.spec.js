@@ -3,7 +3,7 @@
 /* global describe expect it */
 
 describe('setValidationService', () => {
-  const service = require('../../../services/set-validation.service')
+  const service = require('./set-validation.service')
   it('finds differences when there are some', async () => {
     const a1 = [1, 2, 3, 4]
     const db1 = [{ id: 1 }, { id: 2 }, { id: 3 }]

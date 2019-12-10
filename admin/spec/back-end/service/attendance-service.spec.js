@@ -2,143 +2,21 @@
 /* globals describe it spyOn expect fail */
 
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilAttendanceDataService = require('../../../services/data-access/pupil-attendance.data.service')
-const attendanceCodeMock = require('../mocks/attendance-codes')[1]
-const pinService = require('../../../services/pin.service')
-const logger = require('../../../services/log.service').getLogger()
 
 const service = require('../../../services/attendance.service')
 
 describe('attendanceService', () => {
   describe('#updatePupilAttendanceBySlug', () => {
-    const slugs = ['slug1', 'slug2', 'slug3']
-    const code = 'ABSNT'
-    const userId = 1
-    const schoolId = 7
-
-    it('makes a call to get the pupils', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      spyOn(pinService, 'expireMultiplePins')
+    it('just calls the data service', async () => {
+      const slugs = ['slug1', 'slug2', 'slug3']
+      const code = 'ABSNT'
+      const userId = 1
+      const schoolId = 7
+      spyOn(pupilAttendanceDataService, 'markAsNotAttending')
       await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pupilDataService.sqlFindPupilsByUrlSlug).toHaveBeenCalled()
-    })
-
-    it('throws an error if no pupils are returned', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve(undefined))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      try {
-        await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Pupils not found')
-      }
-    })
-
-    it('makes a call to lookup the attendance code', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(code)
-    })
-
-    it('throws if it is unable to lookup the attendance code provided', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(undefined))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      try {
-        await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe(`attendanceCode not found: ${code}`)
-      }
-    })
-
-    it('makes a call to find out if any pupils already have an attendance code', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pupilAttendanceDataService.findByPupilIds).toHaveBeenCalled()
-    })
-
-    it('it inserts pupils that dont already have an attendance code', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-
-      // Returning an empty array means there arent any pupils that already have a
-      // pupilAttendance record, so all of them will be an update
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-      spyOn(pinService, 'expireMultiplePins')
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pupilAttendanceDataService.sqlInsertBatch).toHaveBeenCalledWith([pupilMock.id], attendanceCodeMock.id, userId)
-      expect(pupilAttendanceDataService.sqlUpdateBatch).not.toHaveBeenCalled()
-    })
-
-    it('it update pupils that already have an attendance code', async () => {
-      const pupilAttendanceMock = { pupil_id: 42 }
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([pupilAttendanceMock]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith([pupilMock.id], attendanceCodeMock.id, userId)
-      expect(pupilAttendanceDataService.sqlInsertBatch).not.toHaveBeenCalled()
-    })
-
-    it('it wipes pins for all pupils in batch', async () => {
-      const pupilAttendanceMock = { pupil_id: 42 }
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts')
-      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([pupilAttendanceMock]))
-      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
-      spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pinService.expireMultiplePins).toHaveBeenCalledWith([pupilMock.id], schoolId)
-    })
-
-    it('throws an error if the if the call to delete restarts throws an error', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([pupilMock]))
-      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(Promise.resolve(attendanceCodeMock))
-      spyOn(attendanceCodeDataService, 'sqlDeleteUnconsumedRestarts').and.returnValue(Promise.reject(new Error('a mock error')))
-      spyOn(logger, 'error')
-      try {
-        await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('a mock error')
-        expect(logger.error).toHaveBeenCalled()
-      }
+      expect(pupilAttendanceDataService.markAsNotAttending).toHaveBeenCalled()
     })
   })
 

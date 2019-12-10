@@ -24,7 +24,7 @@ settingService.update = async (loadingTimeLimit, questionTimeLimit, checkTimeLim
 
 /**
  * Get check settings
- * @returns {{checkTimeLimit: Number, loadingTimeLimit: Number, questionTimeLimit: Number}}
+ * @returns {questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number}
  */
 settingService.get = async () => {
   let settings = await settingDataService.sqlFindOne()

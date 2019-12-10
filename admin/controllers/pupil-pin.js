@@ -10,7 +10,7 @@ const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
-const checkStartService = require('../services/check-start.service')
+const checkStartService = require('../services/check-start.service/check-start.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
@@ -147,7 +147,6 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
-
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -158,8 +157,14 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     }
 
     // depends on school pin being ready
-    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, isLiveCheck, school.timezone)
-
+    await checkStartService.prepareCheck2(
+      pupilsList,
+      req.user.School,
+      req.user.schoolId,
+      isLiveCheck,
+      school.timezone,
+      checkWindowData
+    )
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {

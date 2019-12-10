@@ -2,7 +2,7 @@
 'use strict'
 require('dotenv').config()
 const { PerformanceObserver, performance } = require('perf_hooks');
-const checkStartService = require('../../admin/services/check-start.service')
+const checkStartService = require('../../admin/services/check-start.service/check-start.service')
 const sqlService = require('../../admin/services/data-access/sql.service')
 
 async function findSchoolIds () {
