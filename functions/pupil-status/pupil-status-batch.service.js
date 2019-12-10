@@ -13,8 +13,9 @@ async function recalculatePupilStatus (context, pupilIds) {
 
   const updates = []
   currentData.forEach(row => {
-    const currentStatusCode = currentData.pupilStatusCode
+    const currentStatusCode = row.pupilStatusCode
     const targetStatusCode = pupilStatusAnalysisService.analysePupilData(row)
+    context.log(`pupil-status: pupil ${row.pupil_id} current: ${currentStatusCode} targetStatusCode: ${targetStatusCode}`)
     if (currentStatusCode !== targetStatusCode) {
       updates.push({ pupilId: row.pupil_id, targetStatusCode })
     }
@@ -47,6 +48,8 @@ async function getCurrentPupilsData (pupilIds) {
               ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
            FROM [mtc_admin].[check]
            WHERE isLiveCheck = 1
+             -- ignore voided restarted checks when removing the restart
+           AND [check].[checkStatus_id] <> (SELECT id FROM [mtc_admin].[checkStatus] WHERE code = 'VOD')   
         ) lastCheck ON (lastCheck.pupil_id = p.id)
         LEFT OUTER JOIN [mtc_admin].[checkStatus] chkStatus ON (lastCheck.checkStatus_id = chkStatus.id)
         LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)

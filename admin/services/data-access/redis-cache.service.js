@@ -32,54 +32,11 @@ redisCacheService.get = async key => {
   redisConnect()
   try {
     const cacheEntry = await redis.get(key)
-    if (cacheEntry === null) return undefined
-    const cacheItem = JSON.parse(cacheEntry)
-    switch (cacheItem.meta.type) {
-      case 'string':
-        return cacheItem.value
-      case 'number':
-        return Number(cacheItem.value)
-      case 'object':
-        try {
-          const hydratedObject = JSON.parse(cacheItem.value)
-          return hydratedObject
-        } catch (e) {
-          logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
-          throw e
-        }
-      default:
-        throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
-    }
+    return unwrap(cacheEntry)
   } catch (err) {
     logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
     throw err
   }
-}
-
-function prepareCacheEntry (value) {
-  const dataType = typeof value
-  let cacheItemDataType
-  switch (dataType) {
-    case 'string':
-      cacheItemDataType = 'string'
-      break
-    case 'number':
-      cacheItemDataType = 'number'
-      break
-    case 'object':
-      cacheItemDataType = 'object'
-      value = JSON.stringify(value)
-      break
-    default:
-      throw new Error(`unsupported data type ${dataType}`)
-  }
-  const storageItem = {
-    meta: {
-      type: cacheItemDataType
-    },
-    value: value.toString()
-  }
-  return JSON.stringify(storageItem)
 }
 
 /**
@@ -149,6 +106,79 @@ redisCacheService.setMany = async (items) => {
   }
   logger.info('REDIS (multi:exec)')
   return multi.exec()
+}
+
+/**
+ * Fetch many redis keys by their keys in one network trip
+ * @param keys
+ * @return {Promise<*>}
+ */
+redisCacheService.getMany = async (keys) => {
+  if (!Array.isArray(keys)) {
+    throw new Error('keys is not an array')
+  }
+  redisConnect()
+  const rawData = await redis.mget(...keys)
+  const data = rawData.map(raw => unwrap(raw))
+  logger.info(`(redis) getMany ${keys.join(', ')}`)
+  return data
+}
+
+/**
+ * Wrap a value for storing in redis with type information
+ * @param value
+ * @return {string}
+ */
+function prepareCacheEntry (value) {
+  const dataType = typeof value
+  let cacheItemDataType
+  switch (dataType) {
+    case 'string':
+      cacheItemDataType = 'string'
+      break
+    case 'number':
+      cacheItemDataType = 'number'
+      break
+    case 'object':
+      cacheItemDataType = 'object'
+      value = JSON.stringify(value)
+      break
+    default:
+      throw new Error(`unsupported data type ${dataType}`)
+  }
+  const storageItem = {
+    meta: {
+      type: cacheItemDataType
+    },
+    value: value.toString()
+  }
+  return JSON.stringify(storageItem)
+}
+
+/**
+ * Unwrap a cached entry, returning the original type
+ * @param cacheEntry
+ * @return {number|any|undefined}
+ */
+function unwrap (cacheEntry) {
+  if (cacheEntry === null) return undefined
+  const cacheItem = JSON.parse(cacheEntry)
+  switch (cacheItem.meta.type) {
+    case 'string':
+      return cacheItem.value
+    case 'number':
+      return Number(cacheItem.value)
+    case 'object':
+      try {
+        const hydratedObject = JSON.parse(cacheItem.value)
+        return hydratedObject
+      } catch (e) {
+        logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
+        throw e
+      }
+    default:
+      throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
+  }
 }
 
 module.exports = redisCacheService

@@ -2,29 +2,56 @@
 
 const moment = require('moment-timezone')
 const R = require('ramda')
-const logger = require('./log.service').getLogger()
-
-const azureQueueService = require('../services/azure-queue.service')
-const checkDataService = require('../services/data-access/check.data.service')
-const checkFormAllocationDataService = require('../services/data-access/check-form-allocation.data.service')
-const checkFormDataService = require('../services/data-access/check-form.data.service')
-const checkFormService = require('../services/check-form.service')
-const checkStartDataService = require('../services/data-access/check-start.data.service')
-const checkStateService = require('../services/check-state.service')
-const checkWindowDataService = require('../services/data-access/check-window.data.service')
-const config = require('../config')
-const configService = require('../services/config.service')
-const dateService = require('../services/date.service')
-const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
-const pinGenerationService = require('../services/pin-generation.service')
-const pinGenerationV2Service = require('../services/pin-generation-v2.service')
-const queueNameService = require('../services/queue-name-service')
-const sasTokenService = require('../services/sas-token.service')
-const setValidationService = require('../services/set-validation.service')
-const prepareCheckService = require('./prepare-check.service')
+const logger = require('../log.service').getLogger()
 const featureToggles = require('feature-toggles')
 
-const checkStartService = {}
+// Libraries used
+const config = require('../../config')
+
+// To be deprecated
+const azureQueueService = require('../azure-queue.service')
+
+// moved
+const setValidationService = require('./set-validation.service')
+const checkStartDataService = require('./data-access/check-start.data.service')
+
+// to be moved to the module
+const checkDataService = require('../data-access/check.data.service')
+const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
+const checkFormDataService = require('../data-access/check-form.data.service')
+const checkFormService = require('../check-form.service')
+const checkStateService = require('../check-state.service')
+
+const configService = require('../config.service')
+const dateService = require('../date.service')
+const pinGenerationDataService = require('../data-access/pin-generation.data.service')
+const pinGenerationService = require('../pin-generation.service')
+const pinGenerationV2Service = require('../pin-generation-v2.service')
+const queueNameService = require('../queue-name-service')
+const sasTokenService = require('../sas-token.service')
+const prepareCheckService = require('../prepare-check.service')
+
+const checkStartService = {
+  validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
+    // Validate the incoming pupil list to ensure that the pupils are real ids:
+    // * that they belong to the user's school
+    // * that they are eligible for pin generation
+    // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
+    // Check to see if we lost any pupils during the data select, indicating - they weren't eligible for instance.
+    const difference = setValidationService.validate(
+      pupilIds.map(x => parseInt(x, 10)),
+      pupils
+    )
+
+    if (difference.size > 0) {
+      logger.error(
+        `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
+        difference
+      )
+      throw new Error('Validation failed')
+    }
+  }
+}
 
 /**
  * Prepare a check for one or more pupils
@@ -32,18 +59,21 @@ const checkStartService = {}
  *                     * place a message on the `prepare-check` queue for writing to `preparedCheck` table
  *                     * Store the check config in the `checkConfig` table
  *                     * request pupil-status changes by writing to the `pupil-status` queue
- * @param pupilIds
- * @param dfeNumber
- * @param schoolId
- * @param isLiveCheck
- * @return {Promise<void>}
+ * @param { number[] } pupilIds - pupils selected from the UI/form
+ * @param { number } dfeNumber - school dfeNumber that the teachers works at
+ * @param { number } schoolId - school ID that the teacher works at
+ * @param { boolean } isLiveCheck
+ * @param { null | string } schoolTimezone - e.g 'Europe/London'
+ * @param { {id: number} } checkWindow
+ * @return { Promise<void> }
  */
 checkStartService.prepareCheck2 = async function (
   pupilIds,
   dfeNumber,
   schoolId,
   isLiveCheck,
-  schoolTimezone = null
+  schoolTimezone = null,
+  checkWindow
 ) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
@@ -52,39 +82,26 @@ checkStartService.prepareCheck2 = async function (
     throw new Error('schoolId is required')
   }
 
-  // Validate the incoming pupil list to ensure that the pupils are real ids:
-  // * that they belong to the user's school
-  // * that they are eligible for pin generation
-  // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
-  const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
+  const pupils = await checkStartDataService.sqlFindPupilsEligibleForPinGenerationById(
     schoolId,
     pupilIds,
     isLiveCheck
   )
 
-  // Check to see if we lost any pupils during the data select, indicating - they weren't eligible for instance.
-  const difference = setValidationService.validate(
-    pupilIds.map(x => parseInt(x, 10)),
-    pupils
-  )
-  if (difference.size > 0) {
-    logger.error(
-      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
-      difference
-    )
-    throw new Error('Validation failed')
-  }
+  // This validation will throw on a failed validation, so don't trap it.
+  await this.validatePupilsAreStillEligible(pupils, pupilIds, dfeNumber)
 
-  // Find the check window we are working in
-  const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-
-  // Find all used forms for each pupil, so we make sure they do not
-  // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindowByType(
+  // Find the set of all forms allocated to a check window
+  // Just returns objects with an ID property
+  const allForms = await checkStartDataService.sqlFindAllFormsAssignedToCheckWindow(
     checkWindow.id,
     isLiveCheck
   )
-  const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
+
+  // Find all used forms for each pupil, so we make sure they do not
+  // get allocated the same form twice.  Just returns minimal form objects (id an name)
+  // to keep the data overhead down.
+  const usedForms = await checkStartDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
   // Create the checks for each pupil
   const checks = []
@@ -129,6 +146,10 @@ checkStartService.prepareCheck2 = async function (
     // Request the pupil status be re-computed
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
+    // 2020 prep: update the pupil status fields
+    const pupilsAndChecks = newChecks.map(check => { return { checkId: check.id, pupilId: check.pupil_id } })
+    await checkStartDataService.updatePupilState(schoolId, pupilsAndChecks)
+
     // Send a batch of messages for all the pupils requesting a status change
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
@@ -144,9 +165,9 @@ checkStartService.prepareCheck2 = async function (
   const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksInRedis')
 
   if (prepareCheckServiceEnabled) {
-    prepareCheckService.prepareChecks(pupilChecks)
+    await prepareCheckService.prepareChecks(pupilChecks)
   } else {
-    sendChecksToTableStorage(pupilChecks)
+    sendChecksToTableStorage(pupilChecks, schoolId)
   }
 
   // Store the `config` section from the preparedCheckMessages into the DB
@@ -190,12 +211,13 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
 
 /**
  * Return a new pupil check object. Saving the data is handled in a batch process by the caller
- * @private
  * @param {number} pupilId
  * @param {object} checkWindow
- * @param {Array.<Object>} availableForms
+ * @param { {id: number}[] } availableForms
  * @param {Array.<number>} usedFormIds
  * @param {boolean} isLiveCheck
+ * @param {number} schoolId
+ * @param {null | String} schoolTimezone
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
 checkStartService.initialisePupilCheck = async function (
