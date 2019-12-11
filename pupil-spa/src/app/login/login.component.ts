@@ -1,40 +1,28 @@
 import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { LoginErrorService } from '../services/login-error/login-error.service';
 import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
-import { UserService } from '../services/user/user.service';
-import { QuestionService } from '../services/question/question.service';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, AfterViewInit {
-
-  private submitted: boolean;
   public loginModel = new Login('', '');
   public loginSucceeded: boolean;
-  public connectionFailed: boolean;
   private errorMessage: string;
 
   constructor(
     private loginErrorService: LoginErrorService,
     private loginErrorDiagnosticsService: LoginErrorDiagnosticsService,
-    private userService: UserService,
     private router: Router,
-    private questionService: QuestionService,
-    private warmupQuestionService: WarmupQuestionService,
+    private route: ActivatedRoute,
     private elRef: ElementRef,
-    private registerInputService: RegisterInputService,
-    private checkStatusService: CheckStatusService,
-    private pupilPrefsService: PupilPrefsService
+    private checkStatusService: CheckStatusService
   ) { }
 
   ngOnInit() {
@@ -43,6 +31,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
     this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
+    const queryParams = this.route.snapshot.queryParams;
+    this.loginSucceeded = queryParams && queryParams.loginSucceeded && JSON.parse(queryParams.loginSucceeded);
   }
 
   ngAfterViewInit() {
@@ -63,44 +53,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
    * Handler for the login form submit action
    */
   onSubmit(schoolPin, pupilPin) {
-    if (this.submitted === true) {
-      return;
-    }
-    this.submitted = true;
-    this.userService.login(schoolPin, pupilPin)
-      .then(
-      () => {
-        this.loginSucceeded = true;
-        this.connectionFailed = false;
-        this.questionService.initialise();
-        this.warmupQuestionService.initialise();
-        this.registerInputService.initialise();
-
-        const config = this.questionService.getConfig();
-        this.pupilPrefsService.loadPupilPrefs();
-        if (config.fontSize) {
-          this.router.navigate(['font-choice']);
-        } else if (config.colourContrast) {
-          this.router.navigate(['colour-choice']);
-        } else {
-          this.router.navigate(['sign-in-success']);
-        }
-      },
-      async (err) => {
-        this.submitted = false;
-        this.loginErrorService.changeMessage(err.message);
-        if (err.status === 401) {
-          this.loginSucceeded = false;
-          this.router.navigate(['sign-in']);
-        } else {
-          await this.loginErrorDiagnosticsService.process(err);
-          this.router.navigate(['sign-in-fail']);
-        }
-      })
-      .catch(() => {
-        this.loginSucceeded = false;
-        this.submitted = false;
-        this.router.navigate(['sign-in']);
-      });
+    this.router.navigate(['sign-in-pending'], { queryParams: { schoolPin, pupilPin } });
   }
 }
