@@ -3,19 +3,9 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 
-const table = '[pupilRestart]'
 const pupilRestartDataService = {}
 
 /** SQL METHODS **/
-
-/**
- * Create a new pupil restart.
- * @param {object} data
- * @return  { insertId: <number>, rowsModified: <number> }
- */
-pupilRestartDataService.sqlCreate = async (data) => {
-  return sqlService.create(table, data)
-}
 
 /**
  * Returns number of restarts specified by pupil id
@@ -115,27 +105,6 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 }
 
 /**
- * Find restart reason id
- * @return {Promise<string>}
- */
-pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
-  const sql = `
-  SELECT TOP 1 id
-  FROM ${sqlService.adminSchema}.[pupilRestartReason]
-  WHERE code = @code`
-  const params = [
-    {
-      name: 'code',
-      value: code,
-      type: TYPES.Char
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  const obj = R.head(result)
-  return R.prop('id', obj)
-}
-
-/**
  * Mark an existing pupil restart as deleted
  * @param restartId
  * @param userId
@@ -154,10 +123,79 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart]
-  SET isDeleted=1, deletedByUser_id=@userId
-  WHERE id = @restartId`
-  return sqlService.modify(sql, params)
+  const sql = `DECLARE @newCheckId int; 
+               DECLARE @newCheckCode char(3);
+               DECLARE @originCheckId int;
+               DECLARE @originCheckCode char(3);     
+               DECLARE @pupilId int;
+               DECLARE @isDeleted bit;
+                              
+               -- Populate the main variables
+               SELECT
+                 @newCheckId = check_id,
+                 @pupilId = pupil_id,
+                 @isDeleted = isDeleted,
+                 @originCheckId = originCheck_id
+               FROM 
+                [mtc_admin].[pupilRestart] 
+               WHERE id = @restartId;
+               
+               -- Just check that the restart has not already been deleted
+               IF @isDeleted = 1
+                THROW 51000, 'Restart already deleted', 1;
+              
+               -- Soft-delete the restart record
+               UPDATE [mtc_admin].[pupilRestart]
+               SET isDeleted=1, deletedByUser_id=@userId
+               WHERE id = @restartId;
+               
+               -- See if there is a new check raised against the restart to consume it                   
+               IF (@newCheckId IS NOT NULL)
+               BEGIN
+                   -- Get the check status code
+                   SELECT 
+                    @newCheckCode = code 
+                   FROM [mtc_admin].[check] c JOIN 
+                        [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+                   WHERE 
+                        c.id = @newCheckId;
+      
+                   -- IF the new check is not in NEW status we have to bail out
+                   IF @newCheckCode <> 'NEW'
+                    THROW 5100, 'New check cannot be deleted as it does not have a NEW status', 1;                     
+                  
+                   -- IF there is new check raised that has a NEW status, we must VOID the check
+                  UPDATE [mtc_admin].[check] 
+                  SET checkStatus_id = (select id from [mtc_admin].[checkStatus] where code = 'VOD')
+                  WHERE id = @newCheckId;
+                  
+                  -- delete check pin as it will never be used
+                  DELETE FROM [mtc_admin].[checkPin] where check_id = @newCheckId;
+               END
+               
+               -- The previous check will have been VOIDED, and it must be re-activated.
+               UPDATE [mtc_admin].[check]
+               SET checkStatus_id = dbo.ufnCalcCheckStatusID(@originCheckId)
+               WHERE id = @originCheckId;
+               
+               -- Get the recalculated parent check status code, just so we can update the pupil.complete flag
+               -- when we later update the pupil state fields.
+               SELECT 
+                @originCheckCode = code 
+               FROM [mtc_admin].[check] c JOIN 
+                    [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+               WHERE 
+                    c.id = @originCheckId;
+               
+               -- Update pupil state fields
+               UPDATE [mtc_admin].[pupil] 
+               SET currentCheckId = @originCheckId,
+                   restartAvailable = 0,
+                   checkComplete = IIF (@originCheckCode = 'CMP', 1, 0)
+               WHERE
+                   id = @pupilId;
+               `
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 /**

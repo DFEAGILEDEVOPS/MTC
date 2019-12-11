@@ -1,7 +1,6 @@
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 
-const pupilStatusService = require('../services/pupil.status.service')
 const restartService = require('../services/restart.service')
 const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
@@ -145,15 +144,6 @@ controller.postSubmitRestartList = async (req, res, next) => {
   const pupilUrlSlugs = pupilsRestarted && pupilsRestarted.map(p => encodeURIComponent(p.urlSlug))
   const pupilsToHighlight = pupilUrlSlugs.join()
   req.flash('info', restartInfo)
-
-  // Ask for these pupils to have their status updated
-  try {
-    await pupilStatusService.recalculateStatusByPupilIds(processedPupilsIds, req.user.schoolId)
-  } catch (error) {
-    logger.error('Failed to recalculate pupil status', error)
-    throw error
-  }
-
   return res.redirect(`/restart/overview?hl=${pupilsToHighlight}`)
 }
 
@@ -168,15 +158,6 @@ controller.postDeleteRestart = async (req, res, next) => {
     logger.error('Failed to mark restart as deleted', error)
     return next(error)
   }
-
-  // Ask for these pupils to have their status updated
-  try {
-    await pupilStatusService.recalculateStatusByPupilIds([pupil.id], req.user.schoolId)
-  } catch (error) {
-    logger.error('Failed to recalculate pupil status', error)
-    throw error
-  }
-
   req.flash('info', `Restart removed for ${pupil.lastName}, ${pupil.foreName}`)
   return res.redirect('/restart/overview')
 }

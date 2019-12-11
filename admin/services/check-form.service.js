@@ -87,17 +87,6 @@ const checkFormService = {
   },
 
   /**
-   * Return all forms allocated to a checkWindow by check type, that can be assigned to a pupil
-   * @param {Number} checkWindowId
-   * @param {Boolean} isLiveCheck
-   * @return {Promise<Array>}
-   */
-  getAllFormsForCheckWindowByType: async function (checkWindowId, isLiveCheck) {
-    const sortDescending = undefined
-    return checkFormDataService.sqlFetchSortedActiveFormsByName(checkWindowId, sortDescending, isLiveCheck)
-  },
-
-  /**
    * Extract the questions from the check-form, and add an `order` property.
    * @param questions
    */

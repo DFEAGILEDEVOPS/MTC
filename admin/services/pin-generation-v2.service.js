@@ -42,19 +42,6 @@ const serviceToExport = {
   },
 
   /**
-   * Takes a list of pupil IDs and retrieves them from the pupilsEligibleForPinGeneration view
-   * - useful for validation on incoming params from the GUI
-   * - it adds restart information
-   * @param schoolId
-   * @param pupilIds
-   * @param {boolean} isLiveCheck - flag to indicate if the check is a live check (true) or a familiarisation check (false)
-   * @return {Promise<*>}
-   */
-  getPupilsEligibleForPinGenerationById: async function getPupilsEligibleForPinGenerationById (schoolId, pupilIds, isLiveCheck) {
-    return pinGenerationDataService.sqlFindPupilsEligibleForPinGenerationById(schoolId, pupilIds, isLiveCheck)
-  },
-
-  /**
    * Update the pupilRestart table when generating a restart check with the ID of the new Check
    * This "consumes" the restart, so it can't be used again
    * @param pupils

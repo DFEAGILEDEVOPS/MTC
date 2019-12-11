@@ -15,7 +15,7 @@ const pupilIdentificationFlagService = require('../../../services/pupil-identifi
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 
-/* global describe, it, expect, beforeEach, afterEach, spyOn, fail */
+/* global describe, it, expect, beforeEach, afterEach, spyOn */
 
 describe('pin.service', () => {
   let sandbox
@@ -156,34 +156,6 @@ describe('pin.service', () => {
         expect(pupilDataService.sqlUpdate).toHaveBeenCalledTimes(0)
         expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
-    })
-  })
-
-  describe('expireMultiplePins', () => {
-    const schoolId = 7
-    it('it returns if no pupils have empty pins', async () => {
-      const pupil = Object.assign({}, pupilMock)
-      pupil.pin = null
-      pupil.pinExpiresAt = null
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
-      spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([pupil.id], schoolId)
-      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(0)
-    })
-    it('it calls updateMultiple method if not empty pin is found', async () => {
-      const pupil = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
-      spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([pupil.id], schoolId)
-      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
-    })
-    it('throws an error if schoolId is not provided', async () => {
-      try {
-        await pinService.expireMultiplePins([1], undefined)
-        fail('Expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Missing parameter: `schoolId`')
-      }
     })
   })
 })

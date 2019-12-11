@@ -9,7 +9,6 @@ const restartService = require('../../../services/restart.service')
 const restartV2Service = require('../../../services/restart-v2.service')
 const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
-const pupilStatusService = require('../../../services/pupil.status.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
@@ -174,7 +173,6 @@ describe('restart controller:', () => {
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
@@ -193,7 +191,6 @@ describe('restart controller:', () => {
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
@@ -213,79 +210,12 @@ describe('restart controller:', () => {
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }])
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
       expect(requestFlashCalls[0].args[1]).toBe('Restart made for 1 pupil')
-    })
-
-    it('makes a request to update the pupil status after adding the restart', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      req.body = {
-        pupil: [pupilMock._id]
-      }
-      const validationError = new ValidationError()
-      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
-      const controller = require('../../../controllers/restart').postSubmitRestartList
-      await controller(req, res, next)
-      expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
-    })
-
-    it('throws an error if the attempt to refresh the pupils status fails', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      req.body = {
-        pupil: [pupilMock._id]
-      }
-      const validationError = new ValidationError()
-      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
-      spyOn(logger, 'error')
-      const controller = require('../../../controllers/restart').postSubmitRestartList
-      try {
-        await controller(req, res, next)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('a mock error')
-        expect(logger.error).toHaveBeenCalledTimes(1)
-      }
-    })
-    it('ensures all pupil ids are numeric values before calling recalculateStatusByPupilIds and restart service methods', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      const pupilIds = []
-      const processedPupilIds = []
-      for (let i = 0; i <= 40; i++) {
-        pupilIds.push(i < 20 ? i : { i })
-        processedPupilIds.push(i)
-      }
-      req.body = {
-        pupil: pupilIds
-      }
-      const validationError = new ValidationError()
-      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
-      const restartServiceSpy = spyOn(restartService, 'restart').and.returnValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
-      spyOn(res, 'redirect').and.returnValue(null)
-      const recalculateStatusByPupilIdsSpy = spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
-      const controller = require('../../../controllers/restart').postSubmitRestartList
-      await controller(req, res, next)
-      expect(recalculateStatusByPupilIdsSpy.calls.first().args[0]).toEqual(processedPupilIds)
-      expect(restartServiceSpy.calls.first().args[0]).toEqual(processedPupilIds)
     })
   })
 
@@ -313,7 +243,6 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
       spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineRestartsEligibility')
       const controller = require('../../../controllers/restart').postDeleteRestart
@@ -334,39 +263,6 @@ describe('restart controller:', () => {
       const controller = require('../../../controllers/restart').postDeleteRestart
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
-    })
-
-    it('makes a request for the pupil status to be refreshed', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
-      const controller = require('../../../controllers/restart').postDeleteRestart
-      await controller(req, res, next)
-      expect(pupilStatusService.recalculateStatusByPupilIds).toHaveBeenCalledTimes(1)
-    })
-
-    it('throws an error if the pupil status refresh goes wrong', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds').and.returnValue(Promise.reject(new Error('a mock error')))
-      spyOn(logger, 'error')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineRestartsEligibility')
-      const controller = require('../../../controllers/restart').postDeleteRestart
-
-      try {
-        await controller(req, res, next)
-        fail('expected to throw')
-      } catch (error) {
-        expect(logger.error).toHaveBeenCalledTimes(1)
-        expect(error.message).toBe('a mock error')
-      }
     })
   })
 })

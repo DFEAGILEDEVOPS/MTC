@@ -19,11 +19,13 @@ module.exports.States = Object.freeze({
  * CheckStatus Codes
  */
 const checkStatusCodes = Object.freeze({
-  New: { code: 'NEW' },
-  Expired: { code: 'EXP' },
+  Collected: { code: 'COL' },
   Complete: { code: 'CMP' },
+  Expired: { code: 'EXP' },
+  New: { code: 'NEW' },
+  NotReceived: { code: 'NTR' },
   Started: { code: 'STD' },
-  Collected: { code: 'COL' }
+  Void: { code: 'VOD' }
 })
 
 /**
