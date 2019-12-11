@@ -19,7 +19,6 @@ export class LoginPendingComponent implements OnInit {
 
   private submitted: boolean;
   public loginModel = new Login('', '');
-  public loginSucceeded: boolean;
   public connectionFailed: boolean;
   private schoolPin: string;
   private pupilPin: string;
@@ -52,7 +51,6 @@ export class LoginPendingComponent implements OnInit {
     this.userService.login(this.schoolPin, this.pupilPin)
       .then(
         async () => {
-          this.loginSucceeded = true;
           this.connectionFailed = false;
           this.questionService.initialise();
           this.warmupQuestionService.initialise();
@@ -74,8 +72,7 @@ export class LoginPendingComponent implements OnInit {
           this.submitted = false;
           this.loginErrorService.changeMessage(err.message);
           if (err.status === 401) {
-            this.loginSucceeded = false;
-            this.router.navigate(['sign-in'], { queryParams: { loginSucceeded: this.loginSucceeded } });
+            this.router.navigate(['sign-in'], { queryParams: { loginSucceeded: false } });
           } else {
             await this.loginErrorDiagnosticsService.process(err);
             this.router.navigate(['sign-in-fail']);
@@ -83,9 +80,8 @@ export class LoginPendingComponent implements OnInit {
         })
       .catch(async() => {
         await this.displayMinTime(startTime);
-        this.loginSucceeded = false;
         this.submitted = false;
-        this.router.navigate(['sign-in']);
+        this.router.navigate(['sign-in'], { queryParams: { loginSucceeded: false } });
       });
   }
 
