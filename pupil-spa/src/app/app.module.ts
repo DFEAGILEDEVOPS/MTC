@@ -29,7 +29,6 @@ import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
 import { LoggedInGuard } from './logged-in.guard';
 import { LoginComponent } from './login/login.component';
-import { LoginPendingComponent } from './login-pending/login-pending.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { PrivacyComponent } from './privacy/privacy.component';
@@ -95,7 +94,6 @@ const appRoutes: Routes = [
   {path: 'connectivity-check', component: ConnectivityCheckComponent, canActivate: [ConnectivityCheckGuard]},
   {path: 'connectivity-error', component: ConnectivityErrorComponent},
   {path: 'sign-in', component: LoginComponent},
-  {path: 'sign-in-pending', component: LoginPendingComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-fail', component: LoginFailureComponent},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
@@ -134,7 +132,6 @@ const appRoutes: Routes = [
     InstructionsComponent,
     LoadingComponent,
     LoginComponent,
-    LoginPendingComponent,
     LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
