@@ -176,7 +176,7 @@ const pupilRegisterService = {
       status = 'Restart'
     } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
       (isPositive(currentCheckId) && isNew(checkStatusCode) &&
-        (isNil(pinExpiresAt) || moment.utc().isAfter(pinExpiresAt)))) {
+        (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) {
       status = 'Not Started'
     } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
       status = 'PIN generated'
@@ -209,7 +209,7 @@ const isComplete = (str) => str === 'CMP'
 
 function isNotReceived (date, minutesToAdd, now) {
   if (!date || !moment.isMoment(date)) {
-    // can be undefiend
+    // can be undefined
     return false
   }
   if (!now || !moment.isMoment(now)) {
@@ -219,10 +219,19 @@ function isNotReceived (date, minutesToAdd, now) {
     throw new Error('minutesToAdd is not a positive number')
   }
   const expiry = date.add(minutesToAdd, 'minutes')
-  if (expiry.isBefore(now)) {
-    return true
+  return expiry.isBefore(now)
+}
+
+/**
+ * Test to see if a date has already passed
+ * @param {moment.isMoment} date
+ * @return {boolean}
+ */
+function isExpired (date) {
+  if (!moment.isMoment(date)) {
+    throw new Error('isExpired: date is not a moment date')
   }
-  return false
+  return moment.utc().isAfter(date)
 }
 
 module.exports = pupilRegisterService

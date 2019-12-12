@@ -56,7 +56,7 @@ describe('pupil-register.service', () => {
       expect(typeof pupilRegisterService.getProcessStatusV2).toBe('function')
     })
 
-    test('it throwx an error if pinExpiresAt is an object', () => {
+    test('it throws an error if pinExpiresAt is an object', () => {
       expect(() => {
         pupilRegisterService.getProcessStatusV2({
           pinExpiresAt: { not: 'a moment object' }
@@ -110,6 +110,22 @@ describe('pupil-register.service', () => {
         pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Not Started')
+    })
+
+    test('it can detect a PIN Generated pupil', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'NEW',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().add(7, 'hours')
+      })
+      expect(status).toBe('PIN generated')
     })
 
     test('it can detect a Logged In pupil', () => {
@@ -190,6 +206,22 @@ describe('pupil-register.service', () => {
         pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('Not Started')
+    })
+
+    test('a test that does not matches anything gets N/A', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'VOD',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().subtract(1, 'minutes')
+      })
+      expect(status).toBe('N/A')
     })
   })
 
