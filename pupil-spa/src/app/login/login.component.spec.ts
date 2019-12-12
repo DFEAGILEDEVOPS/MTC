@@ -142,7 +142,9 @@ describe('LoginComponent', () => {
 
     it('should set the loginPending to false', async () => {
       await component.onSubmit('goodPin', 'goodPin');
-      expect(component.loginPending).toBeFalsy();
+      fixture.whenStable().then(() => {
+        expect(component.loginPending).toBeFalsy();
+      });
     });
 
     it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
@@ -201,9 +203,11 @@ describe('LoginComponent', () => {
       promiseHelper.reject({ message: 'login failed', status: 401 });
     });
 
-    it('changes the loginPending to false', async () => {
+    it('changes the loginPending to be false', async () => {
       await component.onSubmit('badPin', 'badPin');
-      expect(component.loginPending).toBeFalsy();
+      fixture.whenStable().then(() => {
+        expect(component.loginPending).toBeFalsy();
+      });
     });
 
     it('redirects to login page when the school and pupil pin credentials are rejected', async () => {
