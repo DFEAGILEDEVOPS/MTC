@@ -31,7 +31,7 @@ const service = {
     AND currentCheckId IS NOT NULL
     AND checkComplete = 0
     AND pupilLoginDate IS NOT NULL
-    AND currentCheckStatusCode <> 'EXP'
+    AND checkStatusCode <> 'EXP'
     `
 
     const params = [

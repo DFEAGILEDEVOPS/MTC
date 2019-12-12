@@ -13,7 +13,7 @@
     "start": "node ./server.js",
     "startd": "yarn migrate-sql && node ./server.js",
     "test": "yarn lint && yarn jest",
-    "test:watch": "yarn jest --watch",
+    "test:watch": "yarn jest --watch --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "test:frontend": "karma start karma.conf.js",
     "purgestorage": "bin/init-dev-storage.js",

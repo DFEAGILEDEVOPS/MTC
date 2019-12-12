@@ -2,12 +2,14 @@
 
 const { isNil } = require('ramda')
 const { isFalse, isTrue, isPositive } = require('ramda-adjunct')
+const moment = require('moment')
 
 const pupilStatusService = require('../services/pupil.status.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = require('../services/group.service')
 const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
+const settingService = require('./setting.service')
 
 const pupilRegisterService = {
   /**
@@ -57,6 +59,8 @@ const pupilRegisterService = {
    */
   getPupilRegisterViewData: async function (schoolId) {
     const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
+    const settings = await settingService.get()
+
     const pupilRegister = pupilRegisterData.map(d => {
       return {
         urlSlug: d.urlSlug,
@@ -68,15 +72,18 @@ const pupilRegisterService = {
         group: d.groupName,
         outcome: pupilRegisterService.getProcessStatusV2({
           attendanceId: d.attendanceId,
-          currentStatusId: d.currentStatusId,
-          currentStatusCode: d.currentStatusCode,
+          currentCheckId: d.currentCheckId,
+          checkStatusCode: d.checkStatusCode,
           restartAvailable: d.restartAvailable,
           checkReceived: d.checkReceived,
           checkComplete: d.checkComplete,
-          pupilLoginDate: d.pupilLoginDate
+          pupilLoginDate: d.pupilLoginDate,
+          notReceivedExpiryInMinutes: settings.checkTimeLimit,
+          pinExpiresAt: d.pinExpiresAt
         })
       }
     })
+
     return pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
   },
 
@@ -132,8 +139,10 @@ const pupilRegisterService = {
    * @property {Boolean} restartAvailable
    * @property {Boolean} checkComplete
    * @property {Boolean} checkReceived
-   * @property {Moment.moment} pupilLoginDate
-   *
+   * @property {Moment.moment | null} pupilLoginDate
+   * @property {Number} notReceivedExpiryInMinutes
+   * @property {Boolean} pupilCheckComplete - pupil.checkComplete flag
+   * @property {Moment.moment | null} pinExpiresAt - the date and time in utc the pin expires (and therefore the check)
    */
 
   /**
@@ -146,27 +155,38 @@ const pupilRegisterService = {
 
     const {
       attendanceId,
-      currentCheckId,
-      checkStatusCode,
-      restartAvailable,
+      checkComplete,
       checkReceived,
-      checkComplete
+      checkStatusCode,
+      currentCheckId,
+      notReceivedExpiryInMinutes,
+      pupilCheckComplete,
+      pupilLoginDate,
+      pinExpiresAt,
+      restartAvailable
     } = arg
+
+    if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
+      throw new Error('pinExpiresAt must be null or a Moment.moment datetime')
+    }
 
     if (isPositive(attendanceId)) {
       status = 'Not taking the check'
     } else if (isTrue(restartAvailable)) {
       status = 'Restart'
-    } else if (isNil(currentCheckId) && isNil(checkStatusCode)) {
+    } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
+      (isPositive(currentCheckId) && isNew(checkStatusCode) &&
+        (isNil(pinExpiresAt) || moment.utc().isAfter(pinExpiresAt)))) {
       status = 'Not Started'
     } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
       status = 'PIN generated'
     } else if (isPositive(currentCheckId) && isCollected(checkStatusCode) && isFalse(checkReceived)) {
       status = 'Logged in'
-    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode)) {
+      if (isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())) {
+        status = 'Not received'
+      }
+    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode) && isTrue(pupilCheckComplete)) {
       status = 'Complete'
-    } else if (isPositive(currentCheckId) && isFalse(checkReceived) && isNotReceived(checkStatusCode)) {
-      status = 'Not received'
     }
 
     return status
@@ -186,6 +206,27 @@ const pupilRegisterService = {
 const isNew = (str) => str === 'NEW'
 const isCollected = (str) => str === 'COL'
 const isComplete = (str) => str === 'CMP'
-const isNotReceived = (str) => str === 'NTR'
+
+function isNotReceived (date, minutesToAdd, now) {
+  console.log('isNotReceived: date ', date)
+  console.log('isNotReceived: minutesToAdd ', minutesToAdd)
+  console.log('isNotReceived: now ', now)
+
+  if (!date || !moment.isMoment(date)) {
+    // can be undefiend
+    return false
+  }
+  if (!now || !moment.isMoment(now)) {
+    return false
+  }
+  if (!isPositive(minutesToAdd)) {
+    throw new Error('minutesToAdd is not a positive number')
+  }
+  const expiry = date.add(minutesToAdd, 'minutes')
+  if (expiry.isBefore(now)) {
+    return true
+  }
+  return false
+}
 
 module.exports = pupilRegisterService

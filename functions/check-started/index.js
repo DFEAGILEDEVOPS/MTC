@@ -28,17 +28,17 @@ module.exports = async function (context, checkStartMessage) {
   }
 
   // Update the admin database to update the check status to Check Started
-  try {
-    await updateAdminDatabaseForCheckStarted(
-      checkStartMessage.checkCode,
-      new Date(checkStartMessage.clientCheckStartedAt),
-      context.log
-    )
-    context.log(`check-started: SUCCESS: Admin DB updated for ${checkStartMessage.checkCode}`)
-  } catch (error) {
-    context.log.error(`check-started: ERROR: unable to update admin db for ${checkStartMessage.checkCode}`)
-    throw error
-  }
+  // try {
+  //   await updateAdminDatabaseForCheckStarted(
+  //     checkStartMessage.checkCode,
+  //     new Date(checkStartMessage.clientCheckStartedAt),
+  //     context.log
+  //   )
+  //   context.log(`check-started: SUCCESS: Admin DB updated for ${checkStartMessage.checkCode}`)
+  // } catch (error) {
+  //   context.log.error(`check-started: ERROR: unable to update admin db for ${checkStartMessage.checkCode}`)
+  //   throw error
+  // }
 
   // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.]
   try {

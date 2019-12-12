@@ -1,12 +1,17 @@
 'use strict'
 
 /* global describe expect it beforeEach spyOn fail test */
-
+const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
 const pupilRegisterService = require('../../../services/pupil-register.service')
+const settingService = require('../../../services/setting.service')
 
 describe('pupil-register.service', () => {
+  beforeEach(() => {
+    spyOn(settingService, 'get').and.returnValue(Promise.resolve({ checkTimeLimit: 30 }))
+  })
+
   describe('#getProcessStatus', () => {
     it('identifies "Not Started"', () => {
       const status = pupilRegisterService.getProcessStatus('UNALLOC', null, null, null)
@@ -51,7 +56,29 @@ describe('pupil-register.service', () => {
       expect(typeof pupilRegisterService.getProcessStatusV2).toBe('function')
     })
 
-    // on (attendanceId, currentCheckId, checkStatusCode, restartAvailable, checkComplete, checkReceived) {
+    test('it throwx an error if pinExpiresAt is an object', () => {
+      expect(() => {
+        pupilRegisterService.getProcessStatusV2({
+          pinExpiresAt: { not: 'a moment object' }
+        })
+      }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
+    })
+
+    test('it throws an error if pinExpiresAt is a number', () => {
+      expect(() => {
+        pupilRegisterService.getProcessStatusV2({
+          pinExpiresAt: 66
+        })
+      }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
+    })
+
+    test('does not throw if pinExpiresAt is null', () => {
+      expect(() => {
+        pupilRegisterService.getProcessStatusV2({
+          pinExpiresAt: null
+        })
+      }).not.toThrow()
+    })
 
     test('it can detect a pupil not taking the check', () => {
       const status = pupilRegisterService.getProcessStatusV2({
@@ -60,7 +87,11 @@ describe('pupil-register.service', () => {
         checkStatusCode: null,
         restartAvailable: false,
         checkComplete: false,
-        checkReceived: false
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
       })
       expect(status).toBe('Not taking the check')
     })
@@ -72,7 +103,11 @@ describe('pupil-register.service', () => {
         checkStatusCode: null,
         restartAvailable: false,
         checkComplete: false,
-        checkReceived: false
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Not Started')
     })
@@ -84,7 +119,11 @@ describe('pupil-register.service', () => {
         checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
-        checkReceived: false
+        checkReceived: false,
+        pupilLoginDate: moment(),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Logged in')
     })
@@ -96,7 +135,11 @@ describe('pupil-register.service', () => {
         checkStatusCode: 'CMP',
         restartAvailable: false,
         checkComplete: true,
-        checkReceived: true
+        checkReceived: true,
+        pupilLoginDate: moment(),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: true,
+        pinExpiresAt: null
       })
       expect(status).toBe('Complete')
     })
@@ -108,7 +151,11 @@ describe('pupil-register.service', () => {
         checkStatusCode: null,
         restartAvailable: true,
         checkComplete: false,
-        checkReceived: false
+        checkReceived: false,
+        pupilLoginDate: moment(),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
       })
       expect(status).toBe('Restart')
     })
@@ -117,12 +164,32 @@ describe('pupil-register.service', () => {
       const status = pupilRegisterService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NTR',
+        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
-        checkReceived: false
+        checkReceived: false,
+        pupilLoginDate: moment().subtract(31, 'minutes'),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().add(3, 'hours')
       })
       expect(status).toBe('Not received')
+    })
+
+    test('it can detect a pupil was allocated a check that then expired', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'NEW',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().subtract(1, 'minutes')
+      })
+      expect(status).toBe('Not Started')
     })
   })
 
