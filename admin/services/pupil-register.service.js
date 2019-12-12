@@ -208,10 +208,6 @@ const isCollected = (str) => str === 'COL'
 const isComplete = (str) => str === 'CMP'
 
 function isNotReceived (date, minutesToAdd, now) {
-  console.log('isNotReceived: date ', date)
-  console.log('isNotReceived: minutesToAdd ', minutesToAdd)
-  console.log('isNotReceived: now ', now)
-
   if (!date || !moment.isMoment(date)) {
     // can be undefiend
     return false
