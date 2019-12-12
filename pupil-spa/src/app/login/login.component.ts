@@ -102,7 +102,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
           if (err.status === 401) {
             await this.displayMinTime(startTime);
             this.loginSucceeded = false;
-            this.loginPending = false;
             this.router.navigate(['sign-in']);
           } else {
             await this.loginErrorDiagnosticsService.process(err);
@@ -113,7 +112,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         await this.displayMinTime(startTime);
         this.loginSucceeded = false;
         this.submitted = false;
-        this.loginPending = false;
         this.router.navigate(['sign-in']);
       });
   }
@@ -131,6 +129,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       const displayTime = minDisplay - duration;
       return this.sleep(displayTime);
     }
+    this.loginPending = false;
   }
 
   /**

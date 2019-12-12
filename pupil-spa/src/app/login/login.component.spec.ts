@@ -122,9 +122,27 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('#pupilPin')).toBeTruthy();
   });
 
+  describe('before login submission', () => {
+    it('should set loginPending to false', async () => {
+      expect(component.loginPending).toBeFalsy();
+    });
+  });
+
+  describe('during login submission', () => {
+    it('should set the loginPending to true', async () => {
+      component.onSubmit('goodPin', 'goodPin');
+      expect(component.loginPending).toBeTruthy();
+    });
+  });
+
   describe('on successful login', () => {
     beforeEach(() => {
       promiseHelper.resolve({ success: 'login okay' });
+    });
+
+    it('should set the loginPending to false', async () => {
+      await component.onSubmit('goodPin', 'goodPin');
+      expect(component.loginPending).toBeFalsy();
     });
 
     it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
@@ -183,6 +201,11 @@ describe('LoginComponent', () => {
       promiseHelper.reject({ message: 'login failed', status: 401 });
     });
 
+    it('changes the loginPending to false', async () => {
+      await component.onSubmit('badPin', 'badPin');
+      expect(component.loginPending).toBeFalsy();
+    });
+
     it('redirects to login page when the school and pupil pin credentials are rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
@@ -209,6 +232,10 @@ describe('LoginComponent', () => {
     });
   });
   describe('ngOnInit', () => {
+    it('should set the loginPending to false', async () => {
+      component.ngOnInit();
+      expect(component.loginPending).toBeFalsy();
+    });
     it('should navigate to check path with query params if an unfinished check is detected', () => {
       hasUnfinishedCheckSpy.and.returnValue(true);
       component.ngOnInit();
