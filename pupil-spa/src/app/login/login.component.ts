@@ -88,6 +88,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           const config = this.questionService.getConfig();
           this.pupilPrefsService.loadPupilPrefs();
           await this.displayMinTime(startTime);
+          this.loginPending = false;
           if (config.fontSize) {
             this.router.navigate(['font-choice']);
           } else if (config.colourContrast) {
@@ -101,6 +102,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.loginErrorService.changeMessage(err.message);
           if (err.status === 401) {
             await this.displayMinTime(startTime);
+            this.loginPending = false;
             this.loginSucceeded = false;
             this.router.navigate(['sign-in']);
           } else {
@@ -110,6 +112,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         })
       .catch(async () => {
         await this.displayMinTime(startTime);
+        this.loginPending = false;
         this.loginSucceeded = false;
         this.submitted = false;
         this.router.navigate(['sign-in']);
@@ -129,7 +132,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       const displayTime = minDisplay - duration;
       return this.sleep(displayTime);
     }
-    this.loginPending = false;
   }
 
   /**
