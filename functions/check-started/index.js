@@ -72,6 +72,7 @@ module.exports = async function (context, checkStartMessage) {
  * @param {Function} logger
  * @return {Promise<void>}
  */
+// eslint-disable-next-line
 async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
