@@ -340,23 +340,35 @@ end
 
 Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_restarts|
   @number_of_restarts = number_of_restarts + 1
-  step "I am logged in"
+  step "I have signed in with teacher2"
   step "I am on the add multiple pupil page"
-  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@number_of_restarts,'restarts.csv')
+  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@number_of_restarts, 'restarts.csv')
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
   generate_pins_overview_page.select_all_pupils.click
   expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
   generate_pins_overview_page.sticky_banner.confirm.click
   expect(current_url).to include '/view-and-custom-print-live-pins'
-  SqlDbHelper.set_pupil_status_via_upn_list(@upn_list)
-  SqlDbHelper.set_check_status_via_upn_list(@upn_list)
+
+  @upn_list.each do |upn|
+    pupil_detail = SqlDbHelper.pupil_details(upn)
+    pupil_id = pupil_detail['id']
+    check_entry = SqlDbHelper.check_details(pupil_id)
+    pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+    pupil_pin = pupil_pin_detail['val']
+    school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+    response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+    @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+    RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+  end
 end
 
 Then(/^I can select all$/) do
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   pupil_names = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['foreName']}
+  Timeout.timeout(30) {visit current_url until restarts_page.pupil_list.rows.find {|pupil| pupil.text.include? pupil_names.first}}
   @before_submission = SqlDbHelper.count_all_restarts
   restarts_page.restarts_for_multiple_pupils_using_names(pupil_names)
 end
@@ -365,3 +377,4 @@ And(/^I should see the pupils have a restart$/) do
   after_submission = SqlDbHelper.count_all_restarts
   expect(@before_submission + @number_of_restarts).to eql after_submission
 end
+
