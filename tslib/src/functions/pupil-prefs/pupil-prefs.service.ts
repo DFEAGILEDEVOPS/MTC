@@ -84,7 +84,7 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
     return this.sqlService.modifyWithTransaction(requests)
   }
 
-  // TODO why not add a lookup to redis on check creation to avoid sql hits?
+  // TODO : PERF why not add a lookup to redis on check creation to avoid sql hits?
   async getPupilUUIDByCheckCode (checkCode: string): Promise<any> {
     const sql = `
       SELECT p.urlSlug as pupilUUID FROM [mtc_admin].[pupil] p

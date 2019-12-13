@@ -16,6 +16,7 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     const marker = new V1.CheckMarkerV1()
     await marker.mark(context.bindings as ICheckMarkerFunctionBindings, context.log)
   } catch (error) {
+    // TODO: GUY dispatch message to check notifier
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
   }

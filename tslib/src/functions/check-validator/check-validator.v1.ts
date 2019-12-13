@@ -5,6 +5,7 @@ import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
+import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
 
 const requiredSubmittedCheckProperties = [
   'answers',
@@ -21,6 +22,7 @@ const requiredSubmittedCheckProperties = [
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: Array<any>
   checkMarkingQueue: Array<any>
+  checkNotificationQueue: Array<ICheckNotificationMessage>
 }
 
 export class CheckValidatorV1 {
@@ -53,6 +55,13 @@ export class CheckValidatorV1 {
       this.validateCheckStructure(checkData)
     } catch (error) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
+      // dispatch message to indicate validation failure
+      const validationFailure: ICheckNotificationMessage = {
+        checkCode: validateCheckMessage.checkCode,
+        notificationType: CheckNotificationType.checkInvalid,
+        version: 1
+      }
+      functionBindings.checkNotificationQueue = [validationFailure]
       logger.error(error.message)
       return
     }
