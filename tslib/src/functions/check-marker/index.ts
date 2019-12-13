@@ -4,6 +4,7 @@ import { performance } from 'perf_hooks'
 import * as V1 from './check-marker.v1'
 import { ICheckMarkerFunctionBindings } from './models'
 const functionName = 'check-marker'
+const marker = new V1.CheckMarkerV1()
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, markCheckMessage: MarkCheckMessageV1): Promise<void> {
   const start = performance.now()
@@ -13,10 +14,8 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     if (version !== 1) {
       throw new Error(`Message schema version ${version} unsupported`)
     }
-    const marker = new V1.CheckMarkerV1()
     await marker.mark(context.bindings as ICheckMarkerFunctionBindings, context.log)
   } catch (error) {
-    // TODO: GUY dispatch message to check notifier
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
   }
