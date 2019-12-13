@@ -35,6 +35,8 @@ And(/^we are on Result page$/) do
 end
 
 Then(/^Result page for no submitted hdf is displayed as per the design$/) do
+  Timeout.timeout(120){pupil_register_page.load until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
+  results_page.load
   today_date = Date.today
   if today_date.saturday? || today_date.sunday?
     expect(results_page).to have_heading
