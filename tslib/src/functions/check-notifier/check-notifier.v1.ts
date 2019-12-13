@@ -20,12 +20,3 @@ export class CheckNotifier {
     }
   }
 }
-
-export enum CheckStatus {
-  New = 1,
-  // Expired = 2, To be removed
-  Complete = 3,
-  Started = 4,
-  Collected = 5,
-  NotReceived = 6
-}
