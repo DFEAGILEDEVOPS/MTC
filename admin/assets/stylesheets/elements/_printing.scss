@@ -1,177 +1,154 @@
-// needs to be refactored for re-usability
+.print-only {
+  display: none;
+}
+
+table.govuk-spacious .print-only {
+  display: none
+}
+
 @media print {
   .govuk-template {
     background-color: govuk-colour('white');
   }
-  #content {
-    padding-bottom: 0;
-  }
-  .no-print, .no-print * {
+
+  .no-print {
     display: none;
     background-color: govuk-colour('white');
   }
-  .only-print {
-    display: block !important;
 
-    .hidden {
-      display: none !important;
-    }
+  .print-only {
+    display: block;
   }
-  .column-two-thirds {
+
+  #printPinsForm {
+    width: 600px;
+  }
+
+  table.govuk-spacious .print-only {
+    display: block;
+  }
+
+  table.govuk-spacious tr, table.govuk-spacious-two-column tr {
+    display: inline-table;
     width: 100%;
-  }
-}
-
-.only-print {
-  display: none;
-}
-
-.pupil-print-table {
-  table, td, tr {
-    border-top: 1px dashed govuk-colour("black");
-    border-bottom: 1px dashed govuk-colour("black");
-    text-align: center;
-    vertical-align: middle;
-    font-size: 14px;
-    margin-bottom: -1px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  tr.page {
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
-    display: inline-table;
-    width: 100%;
-
-    /*
-      'hack' to get page-break-inside: avoid to work for safari,
-       see https://github.com/ariya/phantomjs/issues/10638#issuecomment-20186253
-    */
-    &:after {
-      display: block;
-      height: 0;
-      visibility: hidden;
+    border-bottom: 1px dashed govuk-colour("black");
+    &.hidden {
+      display: none;
     }
   }
-  td {
-    padding: 1em;
-    strong {
-      font-size: medium;
-    }
 
-    &.line-checktype {
-      vertical-align: middle;
-      padding: 0;
-      border-left: 1px solid govuk-colour("black");
-      border-right: 1px solid govuk-colour("black");
-      -webkit-print-color-adjust: exact;
-      min-width: 15px;
-      width: 16px;
-      &.live {
-        background-color: govuk-colour("black");
-        color: govuk-colour("white");
-        div {
-          height: govuk-em(65px, $govuk-root-font-size);
-          font-weight: bold;
-          white-space: nowrap;
-        }
-      }
-      &.try-it-out {
-       div {
-          height: govuk-em(105px, $govuk-root-font-size);
-          font-weight: bold;
-          white-space: normal;
-         &.try-it-out-end-line {
-           min-width: 30px;
-           width: 31px;
-         }
-        }
-      }
+  table.govuk-spacious td.no-print {
+    display: none;
+  }
+
+  table, td, tr {
+    border-top: 1px dashed govuk-colour("black");
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .pupil-info {
+    width: 520px;
+  }
+
+  .govuk-label {
+    word-break: break-word;
+    width: 440px;
+  }
+
+  .line-checktype {
+    font-size: govuk-em(16px, $govuk-root-font-size);
+    display: inline-block;
+    height: govuk-em(110px, $govuk-root-font-size);
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 0;
+    border-left: 1px solid govuk-colour("black");
+    border-right: 1px solid govuk-colour("black");
+    -webkit-print-color-adjust: exact;
+    min-width: 20px;
+    width: 20px;
+
+    &.live {
+      background-color: govuk-colour("black");
+      color: govuk-colour("white");
+
       div {
-        writing-mode: vertical-rl;
-        -ms-writing-mode: tb-rl;
-        transform: rotate(180deg);
-        -ms-transform: rotate(180deg);
+        height: govuk-em(60px, $govuk-root-font-size);
+        font-weight: bold;
+        white-space: nowrap;
+        margin-top: 25px;
+      }
+
+      &.live-end-line {
+        margin-right: 10px;
       }
     }
 
-    &.line-empty {
-      padding: 0.5em;
+    &.try-it-out {
+      div {
+        height: govuk-em(105px, $govuk-root-font-size);
+        font-weight: bold;
+        white-space: normal;
+        font-size: 16px;
+        text-align: center;
+        margin-left: 2px;
+        margin-top: 10px;
+      }
+
+      &.try-it-out-end-line {
+        min-width: 35px;
+        width: 35px;
+        margin-right: 10px;
+        padding-right: 5px;
+      }
     }
-    &.line-content {
-      padding-right: govuk-em(20px, $govuk-root-font-size);
-      max-width: 350px;
-    }
-  }
-  .pupil-content {
-    text-align: left;
-    font-size: 12px;
-    margin-bottom: govuk-em(40px, $govuk-root-font-size);
-    max-width: 500px;
-  }
-  .fullname {
-    font-size: 22px;
-    background: none;
-    text-align: left;
-    font-weight: bold;
-    margin: 0;
-  }
-  .dob {
-    color: govuk-colour("dark-grey");
-    margin-bottom: govuk-em(-20px, $govuk-root-font-size);
-  }
-  .pin-information {
-    font-size: 36px;
-    background: none;
-    text-align: left;
-    font-weight: bold;
-    margin: 0 0 govuk-em(-1px, $govuk-root-font-size) govuk-em(5px, $govuk-root-font-size);
-    width: auto;
-    line-height: 1;
-  }
-  .label {
-    font-size: 14px;
-    max-width: govuk-em(80px, $govuk-root-font-size);
-  }
-  .separator {
-    padding: 0 govuk-em(30px, $govuk-root-font-size);
-  }
-  .pin-content {
-    text-align: left;
-    font-size: 12px;
-    width: 10px;
-    margin-top: govuk-em(30px, $govuk-root-font-size);
-	  display: flex;
-    align-items: flex-end;
-    &.pin-text {
-      white-space: normal;
-      font-size: 2px;
+
+    div {
+      writing-mode: vertical-rl;
+      -ms-writing-mode: tb-rl;
+      transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
     }
   }
+
+  .pin-content .information {
+    margin: 0 govuk-em(5px, $govuk-root-font-size) 0 govuk-em(5px, $govuk-root-font-size);
+  }
+
+  .pin-content .label {
+    font-size: govuk-em(12px, $govuk-root-font-size);
+    margin-bottom: govuk-em(5px, $govuk-root-font-size);
+  }
+
+  .url {
+    font-size: govuk-em(10px, $govuk-root-font-size);
+    float: left;
+    margin-top: govuk-em(10px, $govuk-root-font-size);
+    min-width: govuk-em(400px, $govuk-root-font-size);
+  }
+
   .qr {
     position: relative;
     left: 12px;
+
     img {
-      width: govuk-em(90px, $govuk-root-font-size);
-      height: govuk-em(90px, $govuk-root-font-size);
+      width: govuk-em(80px, $govuk-root-font-size);
+      height: govuk-em(80px, $govuk-root-font-size);
       float: right;
       position: static;
-      margin-top: govuk-em(-105px, $govuk-root-font-size);
+      margin-top: govuk-em(-65px, $govuk-root-font-size);
     }
   }
-  .url {
-    margin-top: govuk-em(5px, $govuk-root-font-size);
-    font-size: 14px;
-    float: left;
-    min-width: govuk-em(400px, $govuk-root-font-size);
-  }
+
   .watermark {
     position: relative;
-    margin-bottom: -85px;
+    margin-bottom: -80px;
     opacity: 0.1;
-    width: govuk-em(125px, $govuk-root-font-size);
+    text-align: center;
   }
 }
