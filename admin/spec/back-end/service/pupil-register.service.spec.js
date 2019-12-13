@@ -223,6 +223,25 @@ describe('pupil-register.service', () => {
       })
       expect(status).toBe('N/A')
     })
+
+    test('it detects a restart that was allocated a new check that then expired', () => {
+      const status = pupilRegisterService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'NEW',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: moment().subtract(3, 'minutes')
+      })
+      // Ideally this would show 'Restart' as it would show the teacher that the pupil was a Restart case.  However,
+      // this would need the 'restartAvailable' flag to be true, or alternatively an 'isRestart' or a 'checkCount' field
+      // on the restart e.g. Restart = checkCount > 1
+      expect(status).toBe('Not Started')
+    })
   })
 
   describe('#getPupilRegister', () => {
