@@ -1,6 +1,6 @@
 
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/models'
+import { ValidateCheckMessageV1, ReceivedCheckTableEntity, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
@@ -77,14 +77,14 @@ export class CheckValidatorV1 {
     functionBindings.checkMarkingQueue = [markingMessage]
   }
 
-  private async setReceivedCheckAsValid (receivedCheck: ReceivedCheck, checkData: any) {
-    receivedCheck.validatedAt = Moment().toDate()
-    receivedCheck.isValid = true
-    receivedCheck.answers = JSON.stringify(checkData.answers)
-    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  private async setReceivedCheckAsValid (receivedCheckTableEntity: ReceivedCheckTableEntity, checkData: any) {
+    receivedCheckTableEntity.validatedAt = Moment().toDate()
+    receivedCheckTableEntity.isValid = true
+    receivedCheckTableEntity.answers = JSON.stringify(checkData.answers)
+    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheckTableEntity)
   }
 
-  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheck) {
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity) {
     receivedCheck.validationError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false

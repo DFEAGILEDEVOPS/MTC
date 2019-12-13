@@ -33,19 +33,28 @@ export class CheckMarkerV1 {
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
     functionBindings.checkNotificationQueue = []
     if (markingData === undefined) {
-      const notification: ICheckNotificationMessage = {
-        checkCode: validatedCheck.checkCode,
-        notificationType: CheckNotificationType.checkInvalid,
-        version: 1
-      }
-      functionBindings.checkNotificationQueue.push(notification)
+      this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
     }
-    const results = this.markCheck(markingData)
-    await this.persistMark(results, validatedCheck)
+    try {
+      const results = this.markCheck(markingData)
+      await this.persistMark(results, validatedCheck)
+    } catch (error) {
+      this.notifyProcessingFailure(validatedCheck, functionBindings)
+      return
+    }
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.checkCode,
       notificationType: CheckNotificationType.checkComplete,
+      version: 1
+    }
+    functionBindings.checkNotificationQueue.push(notification)
+  }
+
+  private notifyProcessingFailure (validatedCheck: ValidatedCheck, functionBindings: ICheckMarkerFunctionBindings) {
+    const notification: ICheckNotificationMessage = {
+      checkCode: validatedCheck.checkCode,
+      notificationType: CheckNotificationType.checkInvalid,
       version: 1
     }
     functionBindings.checkNotificationQueue.push(notification)

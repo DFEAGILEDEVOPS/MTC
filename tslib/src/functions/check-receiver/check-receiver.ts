@@ -1,14 +1,14 @@
 import { Context } from '@azure/functions'
-import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheck } from '../../schemas/models'
+import { SubmittedCheckMessageV3, ValidateCheckMessageV1, ReceivedCheckTableEntity } from '../../schemas/models'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
 const tableService = new az.AsyncTableService()
 
 class CheckReceiver {
   async process (context: Context, receivedCheck: SubmittedCheckMessageV3) {
-    const receivedCheckEntity: ReceivedCheck = {
-      schoolUUID: receivedCheck.schoolUUID,
-      checkCode: receivedCheck.checkCode,
+    const receivedCheckEntity: ReceivedCheckTableEntity = {
+      PartitionKey: receivedCheck.schoolUUID,
+      RowKey: receivedCheck.checkCode,
       archive: receivedCheck.archive,
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version

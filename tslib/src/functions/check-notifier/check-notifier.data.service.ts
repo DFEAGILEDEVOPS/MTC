@@ -19,29 +19,13 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
       name: 'checkCode',
       value: checkCode
     }
-    const checkRequest: ITransactionRequest = {
-      sql: `UPDATE [mtc_admin].[check] c
-      SET c.checkStatus_id=
+    const sql = `UPDATE [mtc_admin].[check]
+      SET checkStatus_id=
       (SELECT cs.id FROM
         [mtc_admin].[checkStatus] cs
         WHERE cs.code='ERR')
-      WHERE c.checkCode=@checkCode`,
-      params: [
-        checkCodeParam
-      ]
-    }
-    const pupilRequest: ITransactionRequest = {
-      sql: `UPDATE [mtc_admin].[pupil]
-        SET checkComplete=1, ???failed
-        FROM [mtc_admin].[pupil] p
-        INNER JOIN [mtc_admin].[check] c
-        ON p.id = c.pupil_id
-        WHERE c.checkCode=@checkCode`,
-      params: [
-        checkCodeParam
-      ]
-    }
-    return this.sqlService.modifyWithTransaction([checkRequest, pupilRequest])
+      WHERE checkCode=@checkCode`
+    return this.sqlService.modify(sql, [checkCodeParam])
   }
 
   updateCheckAsComplete (checkCode: string): Promise<void> {

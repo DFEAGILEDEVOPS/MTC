@@ -14,7 +14,7 @@ export class CheckNotifier {
   async notify (notification: ICheckNotificationMessage) {
     switch (notification.notificationType) {
       case CheckNotificationType.checkInvalid:
-        throw new Error('not yet implemented')
+        return this.checkNotifierDataService.markCheckAsProcessingFailed(notification.checkCode)
       case CheckNotificationType.checkComplete:
         return this.checkNotifierDataService.updateCheckAsComplete(notification.checkCode)
     }
