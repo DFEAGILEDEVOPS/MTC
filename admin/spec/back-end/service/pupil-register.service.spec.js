@@ -176,7 +176,7 @@ describe('pupil-register.service', () => {
       expect(status).toBe('Restart')
     })
 
-    test('it can detect a not received check', () => {
+    test('it can detect an Incomplete check', () => {
       const status = pupilRegisterService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -189,7 +189,7 @@ describe('pupil-register.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: moment().add(3, 'hours')
       })
-      expect(status).toBe('Not received')
+      expect(status).toBe('Incomplete')
     })
 
     test('it can detect a pupil was allocated a check that then expired', () => {

@@ -183,7 +183,7 @@ const pupilRegisterService = {
     } else if (isPositive(currentCheckId) && isCollected(checkStatusCode) && isFalse(checkReceived)) {
       status = 'Logged in'
       if (isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())) {
-        status = 'Not received'
+        status = 'Incomplete'
       }
     } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode) && isTrue(pupilCheckComplete)) {
       status = 'Complete'
