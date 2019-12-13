@@ -1,22 +1,27 @@
-<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<%- partial('partials/_print_pupils', {
-    pupils: pupils,
-    date: date,
-    qrDataURL: qrDataURL,
-    school: school,
-    url: url
-}) %>
+<% const checkTypeClass = pinEnv === 'live' ? 'live' : 'try-it-out' %>
+<% const pinSlipsStartText = pinEnv === 'live' ? 'Official' : 'Try it out' %>
+<% const pinSlipsEndText = pinEnv === 'live' ? 'Official' : 'Do not use in official MTC' %>
 
-<main class="govuk-main-wrapper no-print" id="main-content" role="main">
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <div class="print-only">
+                <img class="sta-horizontal-logo govuk-!-margin-bottom-5" width="200" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
+                <h3 class="govuk-heading-m">Multiplication Table Check <%= pinEnv !== 'live' ? '- Try it out' : '' %></h3>
+                <ul class="govuk-list govuk-list--bullet" role="listbox">
+                    <li class="govuk-!-font-size-14" role="listitem">Please cut out and distribute to pupils</li>
+                    <li class="govuk-!-font-size-14" role="listitem">The school passwords and pupil PINs will expire by the end of <%= date %></li>
+                    <li class="govuk-!-font-size-14" role="listitem">New PINs will need to be generated if not used by the end of the day</li>
+                </ul>
+            </div>
         <% if (messages && messages.info && messages.info.length) { %>
-            <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+            <div class="no-print govuk-body govuk-info-message govuk-!-margin-bottom-7">
                 <%= messages.info %>
             </div>
         <% } %>
         <% if (error) { %>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+            <div class="no-print govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
                 <h2 class="govuk-error-summary__title" id="error-summary-title">
                     <%= error %>
                 </h2>
@@ -25,28 +30,30 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
+            <h1 class="no-print govuk-heading-xl">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <p class="govuk-body">
+            <p class="no-print govuk-body">
                 Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
                 <% if (pupils && pupils.length > 0) { %>
                     You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
                 <% } %>
             </p>
-            <h3 class="govuk-heading-m">Filter by name</h3>
-            <div class="govuk-form-group filter-name">
-                <label for="search-name">
-                    <img src="/images/icon-search.png"/>
-                </label>
-                <span>
-                    <input class="govuk-input" id="search-name" type="text" name="search-name">
-                </span>
+            <div class="no-print">
+                <h3 class="govuk-heading-m">Filter by name</h3>
+                <div class="govuk-form-group filter-name">
+                    <label for="search-name">
+                        <img src="/images/icon-search.png"/>
+                    </label>
+                    <span>
+                        <input class="govuk-input" id="search-name" type="text" name="search-name">
+                    </span>
+                </div>
             </div>
             <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
             <% if (pupils && pupils.length > 0) { %>
             <form id="printPinsForm" autocomplete="off">
-                <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupislList" role="listbox" aria-label="Select pupils.">
-                    <thead class="govuk-table__head">
+                <table class="govuk-table govuk-spacious" id="generatePins" name="filterablePupilsList" role="listbox" aria-label="Select pupils.">
+                    <thead class="no-print govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header govuk-!-width-three-quarters">
                                 <a class="no-underline sortingLink">Pupil<span class="sort-icon"><span>Sort by pupil</span></span></a>
@@ -67,14 +74,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <% pupils.forEach( (pupil, index) => { %>
-                        <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %> group-id-<%= pupil.group_id %><% } %>">
-                            <td>
+                    <% pupils.forEach( (pupil, i) => { %>
+                        <tr class="govuk-table__row <% if (pupil && pupil.group_id) { %> group-id-<%= pupil.group_id %><% } %> pupil-<%= pupils[i].id %>">
+                            <td class="print-only line-checktype <%= checkTypeClass %>"><div><%= pinSlipsStartText %></div></td>
+                            <td class="pupil-info">
+                                <% if (pinEnv !== 'live') { %>
+                                <div class="print-only watermark govuk-!-font-size-80">Try it out</div>
+                                <% } %>
                                 <label class="govuk-label" for="pupil-<%= pupil.id %>">
                                     <strong id="pupilName"><%= pupil.fullName %></strong>
-                                    <% if (pupil.group) { %>
-                                        (<%= pupil.group %>)
-                                    <% } %>
+                                    <span class="print-only">
+                                        <% if (pupil.group) { %>
+                                            (<%= pupil.group %>)
+                                        <% } %>
+                                    </span>
                                 </label>
                                 <% if (pupil.showDoB) { %>
                                     <div class="govuk-font-greyed-out govuk-!-font-size-16">
@@ -93,10 +106,14 @@
                                       </span>
                                     </div>
                                 </div>
+                                <% if (qrDataURL) { %>
+                                    <div class="print-only qr"><img src="<%= qrDataURL %>" /></div>
+                                <% } %>
+                                <div class="print-only url"><%= url %></div>
                             </td>
-                            <td class="govuk-table__cell"><%= pupil.group %></td>
+                            <td class="govuk-table__cell group-name no-print"><%= pupil.group %></td>
                             <td>
-                                <div class="multiple-choice-mtc">
+                                <div class="multiple-choice-mtc no-print">
                                     <input id="pupil-<%= pupil.id %>"
                                            name="pupil[]"
                                            type="checkbox"
@@ -107,6 +124,7 @@
                                     <div></div>
                                 </div>
                             </td>
+                            <td class="print-only line-checktype <%= checkTypeClass %> <%= pinEnv !== 'live' ? "try-it-out-end-line" : "live-end-line" %> "><div><%= pinSlipsEndText %></div></td>
                         </tr>
                     <% }) %>
                     </tbody>
@@ -120,7 +138,7 @@
                         })
                 %>
             </form>
-            <div class="govuk-back-to-top">
+            <div class="no-print govuk-back-to-top">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
                     <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
                         <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
@@ -130,7 +148,7 @@
             <% } %>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
+            <aside class="no-print app-related-items" role="complementary">
                 <h2 class="govuk-heading-m" id="subsection-title">
                     Related
                 </h2>
