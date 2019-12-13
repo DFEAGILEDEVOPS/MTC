@@ -90,8 +90,8 @@ describe('check-validator/v1', () => {
 
   test('archive is decompressesed when archive property present', async () => {
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      schoolUUID: uuid.v4(),
+      checkCode: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -107,8 +107,8 @@ describe('check-validator/v1', () => {
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      schoolUUID: uuid.v4(),
+      checkCode: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -139,8 +139,8 @@ describe('check-validator/v1', () => {
   test('validation errors are reported to check notification queue', async () => {
 
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: validateReceivedCheckQueueMessage.schoolUUID,
-      RowKey: validateReceivedCheckQueueMessage.checkCode,
+      schoolUUID: validateReceivedCheckQueueMessage.schoolUUID,
+      checkCode: validateReceivedCheckQueueMessage.checkCode,
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -168,8 +168,8 @@ describe('check-validator/v1', () => {
 
   test('submitted check with no validation errors is marked as valid', async () => {
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      schoolUUID: uuid.v4(),
+      checkCode: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -196,8 +196,8 @@ describe('check-validator/v1', () => {
 
   test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      schoolUUID: uuid.v4(),
+      checkCode: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -224,8 +224,8 @@ describe('check-validator/v1', () => {
 
   test('check marking message is created and added to output binding array', async () => {
     const receivedCheckEntity: ReceivedCheck = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      schoolUUID: uuid.v4(),
+      checkCode: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1

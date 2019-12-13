@@ -34,7 +34,7 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue = []
     if (markingData === undefined) {
       const notification: ICheckNotificationMessage = {
-        checkCode: validatedCheck.RowKey,
+        checkCode: validatedCheck.checkCode,
         notificationType: CheckNotificationType.checkInvalid,
         version: 1
       }
@@ -44,7 +44,7 @@ export class CheckMarkerV1 {
     const results = this.markCheck(markingData)
     await this.persistMark(results, validatedCheck)
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.RowKey,
+      checkCode: validatedCheck.checkCode,
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
@@ -69,7 +69,7 @@ export class CheckMarkerV1 {
       return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
     }
 
-    const checkCode = validatedCheck.RowKey
+    const checkCode = validatedCheck.checkCode
     let rawCheckForm
 
     try {

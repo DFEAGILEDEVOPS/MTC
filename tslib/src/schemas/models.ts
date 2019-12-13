@@ -31,8 +31,8 @@ export interface MarkCheckMessageV1 {
 }
 
 export interface ReceivedCheck {
-  PartitionKey: string // schoolUUID
-  RowKey: string // checkCode
+  schoolUUID: string // PartitionKey
+  checkCode: string // RowKey
   archive: string
   checkReceivedAt: Date
   checkVersion: number
@@ -43,8 +43,8 @@ export interface ReceivedCheck {
 }
 
 export interface ValidatedCheck {
-  PartitionKey: string // schoolUUID
-  RowKey: string // checkCode
+  schoolUUID: string // PartitionKey
+  checkCode: string // RowKey
   archive: string
   checkReceivedAt: Date
   checkVersion: number
