@@ -1,7 +1,7 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
-import { ValidatedCheck } from '../../schemas/models'
+import { ValidatedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
@@ -44,23 +44,23 @@ export class CheckMarkerV1 {
       return
     }
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.checkCode,
+      checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private notifyProcessingFailure (validatedCheck: ValidatedCheck, functionBindings: ICheckMarkerFunctionBindings) {
+  private notifyProcessingFailure (validatedCheck: ValidatedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings) {
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.checkCode,
+      checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkInvalid,
       version: 1
     }
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheck, logger: ILogger): Promise<MarkingData | void> {
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheckTableEntity, logger: ILogger): Promise<MarkingData | void> {
     if (RA.isEmptyString(validatedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
@@ -78,7 +78,7 @@ export class CheckMarkerV1 {
       return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
     }
 
-    const checkCode = validatedCheck.checkCode
+    const checkCode = validatedCheck.RowKey
     let rawCheckForm
 
     try {
@@ -134,21 +134,21 @@ export class CheckMarkerV1 {
     return results
   }
 
-  private async persistMark (mark: Mark, receivedCheck: ValidatedCheck) {
+  private async persistMark (mark: Mark, receivedCheck: ValidatedCheckTableEntity) {
     receivedCheck.mark = mark.mark
     receivedCheck.markedAt = mark.processedAt
     receivedCheck.maxMarks = mark.maxMarks
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
-  private findValidatedCheck (receivedCheckRef: Array<any>): ValidatedCheck {
+  private findValidatedCheck (receivedCheckRef: Array<any>): ValidatedCheckTableEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ValidatedCheck, markingError: string) {
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ValidatedCheckTableEntity, markingError: string) {
     receivedCheck.markError = markingError
     receivedCheck.markedAt = moment().toDate()
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
