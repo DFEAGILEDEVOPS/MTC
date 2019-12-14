@@ -10,6 +10,7 @@ const groupService = require('../services/group.service')
 const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const settingService = require('./setting.service')
+const logger = require('./log.service').getLogger()
 
 const pupilRegisterService = {
   /**
@@ -72,14 +73,16 @@ const pupilRegisterService = {
         group: d.groupName,
         outcome: pupilRegisterService.getProcessStatusV2({
           attendanceId: d.attendanceId,
-          currentCheckId: d.currentCheckId,
-          checkStatusCode: d.checkStatusCode,
-          restartAvailable: d.restartAvailable,
-          checkReceived: d.checkReceived,
           checkComplete: d.checkComplete,
-          pupilLoginDate: d.pupilLoginDate,
+          checkReceived: d.checkReceived,
+          checkStatusCode: d.checkStatusCode,
+          currentCheckId: d.currentCheckId,
           notReceivedExpiryInMinutes: settings.checkTimeLimit,
-          pinExpiresAt: d.pinExpiresAt
+          pinExpiresAt: d.pinExpiresAt,
+          pupilCheckComplete: d.pupilCheckComplete,
+          pupilId: d.pupilId,
+          pupilLoginDate: d.pupilLoginDate,
+          restartAvailable: d.restartAvailable
         })
       }
     })
@@ -143,6 +146,7 @@ const pupilRegisterService = {
    * @property {Number} notReceivedExpiryInMinutes
    * @property {Boolean} pupilCheckComplete - pupil.checkComplete flag
    * @property {Moment.moment | null} pinExpiresAt - the date and time in utc the pin expires (and therefore the check)
+   * @property {Number} pupilId - the pupil ID.  Used for support diagnostics only.
    */
 
   /**
@@ -160,9 +164,10 @@ const pupilRegisterService = {
       checkStatusCode,
       currentCheckId,
       notReceivedExpiryInMinutes,
-      pupilCheckComplete,
-      pupilLoginDate,
       pinExpiresAt,
+      pupilCheckComplete,
+      pupilId,
+      pupilLoginDate,
       restartAvailable
     } = arg
 
@@ -187,6 +192,9 @@ const pupilRegisterService = {
       }
     } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode) && isTrue(pupilCheckComplete)) {
       status = 'Complete'
+    } else {
+      logger.error(`getProcessStatusV2(): ERROR: Unable to determine status for pupil [${pupilId}] arg was: \n` +
+        JSON.stringify(arg, ' ', 4))
     }
 
     return status
