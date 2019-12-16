@@ -58,7 +58,7 @@ export class StorageService {
   mergeItems(key: StorageKey): any {
     const localStorageItems = this.getAllItems();
     const matchingKeys =
-      Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
+      Object.keys(localStorageItems).filter(lsi => lsi.startsWith(key));
     const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].clientTimestamp - localStorageItems[b].clientTimestamp);
     const matchingItems = [];
     sortedMatchingKeys.forEach(smk => {
