@@ -23,7 +23,8 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
       SET checkStatus_id=
       (SELECT cs.id FROM
         [mtc_admin].[checkStatus] cs
-        WHERE cs.code='ERR')
+        WHERE cs.code='ERR'),
+        processingFailed=1
       WHERE checkCode=@checkCode`
     return this.sqlService.modify(sql, [checkCodeParam])
   }
@@ -38,7 +39,10 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
       sql: `UPDATE [mtc_admin].[check]
       SET checkStatus_id=(SELECT cs.id FROM
         [mtc_admin].[checkStatus] cs
-        WHERE cs.code='CMP')
+        WHERE cs.code='CMP'),
+        complete=1,
+        completedAt=GETUTCDATE(),
+        processingFailed=0
       WHERE checkCode=@checkCode`,
       params: [
         checkCodeParam
