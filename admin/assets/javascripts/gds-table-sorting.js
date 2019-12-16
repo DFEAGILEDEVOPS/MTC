@@ -13,6 +13,10 @@ if (!window.MTCAdmin) {
   window.MTCAdmin.tableSort = {
 
     getCellValue: function (tr, idx) {
+      // Avoid sorting on print related columns
+      if (tr.children[0].classList.contains('print-only')) {
+        return tr.children[idx + 1].innerText || tr.children[idx + 1].textContent
+      }
       return tr.children[idx].innerText || tr.children[idx].textContent
     },
 
