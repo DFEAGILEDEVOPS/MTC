@@ -33,7 +33,7 @@ completedCheckDataService.sqlAddResult = async function (checkCode, completedChe
   // TODO: Refactor to extract two DL methods from this to make it simpler
   // TODO: The error should be thrown from a service method instead
   const sql = `SELECT id FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`
-  let result = await sqlService.query(sql, params)
+  let result = await sqlService.readonlyQuery(sql, params)
   result = R.head(result)
   if (!result || !result.id) {
     throw new Error(`Could not find check with checkCode:${checkCode}`)
@@ -67,7 +67,7 @@ completedCheckDataService.sqlHasUnmarked = async () => {
   WHERE cs.code = 'CMP'
   AND chk.markedAt IS NULL
   AND cr.[payload] IS NOT NULL`
-  const result = await sqlService.query(sql)
+  const result = await sqlService.readonlyQuery(sql)
   return result[0].unmarkedCount > 0
 }
 
@@ -89,7 +89,7 @@ completedCheckDataService.sqlFindUnmarked = async function (batchSize) {
   WHERE cs.code = 'CMP'
     AND chk.markedAt IS NULL
     AND cr.[payload] IS NOT NULL`
-  const results = await sqlService.query(sql)
+  const results = await sqlService.readonlyQuery(sql)
   return results.map(r => r.id)
 }
 
@@ -113,7 +113,8 @@ completedCheckDataService.sqlFindOneByCheckCode = async function (checkCode) {
       type: TYPES.UniqueIdentifier
     }
   ]
-  const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
+  const result = await sqlService.readonlyQuery(
+    `SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
 
   // Hydrate the JSON string in to an object
   const first = R.head(result)
@@ -154,7 +155,7 @@ completedCheckDataService.sqlFind = async (lowCheckId, batchSize) => {
       type: TYPES.Int
     }
   ]
-  const checks = await sqlService.query(sql, params)
+  const checks = await sqlService.readonlyQuery(sql, params)
   return R.map(parseData, checks)
 }
 
@@ -169,7 +170,7 @@ completedCheckDataService.sqlFindMeta = async () => {
     FROM [mtc_admin].[check]
     WHERE data IS NOT NULL;
   `
-  const res = await sqlService.query(sql)
+  const res = await sqlService.readonlyQuery(sql)
   return R.head(res)
 }
 
