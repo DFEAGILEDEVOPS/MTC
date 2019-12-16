@@ -191,8 +191,8 @@ describe('StorageService', () => {
         // @ts-ignore
         service.mergeItems(c);
         // @ts-ignore
-        const keyItems = sessionStorage.getItem(c);
-        expect(JSON.parse(keyItems).length).toBe(10);
+        const keyItems = service.getItem(c);
+        expect(keyItems.length).toBe(10);
       });
       localStorageKeys.forEach(c => {
         service.removeMatchingItems(`${c}-`);
