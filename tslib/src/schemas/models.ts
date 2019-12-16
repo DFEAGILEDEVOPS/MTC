@@ -40,19 +40,8 @@ export interface ReceivedCheckTableEntity {
   validatedAt?: Date
   validationError?: string
   answers?: string
-}
-
-export interface ValidatedCheckTableEntity {
-  PartitionKey: string // schoolUUID
-  RowKey: string // checkCode
-  archive: string
-  checkReceivedAt: Date
-  checkVersion: number
-  isValid: boolean
-  validatedAt: Date
   mark?: number
   markedAt?: Date
-  answers: string
   markError?: string
   maxMarks?: number
 }

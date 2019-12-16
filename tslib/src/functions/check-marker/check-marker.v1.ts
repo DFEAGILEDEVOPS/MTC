@@ -1,7 +1,7 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
-import { ValidatedCheckTableEntity } from '../../schemas/models'
+import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
@@ -51,7 +51,7 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private notifyProcessingFailure (validatedCheck: ValidatedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings) {
+  private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings) {
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkInvalid,
@@ -60,15 +60,16 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ValidatedCheckTableEntity, logger: ILogger): Promise<MarkingData | void> {
-    if (RA.isEmptyString(validatedCheck.answers)) {
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ReceivedCheckTableEntity, logger: ILogger): Promise<MarkingData | void> {
+    if (RA.isNilOrEmpty(validatedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
     }
-
     let parsedAnswersJson: any
     try {
-      parsedAnswersJson = JSON.parse(validatedCheck.answers)
+      // tsc does not recognise the RA.IsNilOrEmpty check above
+      // therefore we use the exclamanation to assert non null guarantee
+      parsedAnswersJson = JSON.parse(validatedCheck.answers!)
     } catch (error) {
       logger.error(error)
       return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
@@ -134,21 +135,21 @@ export class CheckMarkerV1 {
     return results
   }
 
-  private async persistMark (mark: Mark, receivedCheck: ValidatedCheckTableEntity) {
+  private async persistMark (mark: Mark, receivedCheck: ReceivedCheckTableEntity) {
     receivedCheck.mark = mark.mark
     receivedCheck.markedAt = mark.processedAt
     receivedCheck.maxMarks = mark.maxMarks
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
-  private findValidatedCheck (receivedCheckRef: Array<any>): ValidatedCheckTableEntity {
+  private findValidatedCheck (receivedCheckRef: Array<any>): ReceivedCheckTableEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ValidatedCheckTableEntity, markingError: string) {
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string) {
     receivedCheck.markError = markingError
     receivedCheck.markedAt = moment().toDate()
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
