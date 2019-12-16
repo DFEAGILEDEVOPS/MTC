@@ -7,10 +7,10 @@ const attendanceCodesMock = require('../../mocks/attendance-codes')
 
 describe('attendanceCodeDataService: ', () => {
   describe('#sqlFindAttendanceCodes', () => {
-    it('calls sqlService.query', async () => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve(attendanceCodesMock))
+    it('calls sqlService.readonlyQuery', async () => {
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(Promise.resolve(attendanceCodesMock))
       await attendanceCodeDataService.sqlFindAttendanceCodes()
-      expect(sqlService.query).toHaveBeenCalled()
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })
 })

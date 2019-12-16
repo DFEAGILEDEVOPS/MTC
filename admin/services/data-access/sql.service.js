@@ -4,6 +4,7 @@ const R = require('ramda')
 const mssql = require('mssql')
 const dateService = require('../date.service')
 const poolConfig = require('../../config/sql.config')
+const readonlyPoolConfig = require('../../config/sql.readonly.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const retry = require('./retry-async')
@@ -26,6 +27,11 @@ const dbLimitReached = (error) => {
 let cache = {}
 /* @var mssql.ConnectionPool */
 let pool
+
+/**
+ * @var {mssql.ConnectionPool} readonly connection pool for replica reads
+ */
+let readonlyPool
 
 /** Utility functions **/
 
@@ -228,6 +234,30 @@ sqlService.drainPool = async () => {
   return pool.close()
 }
 
+sqlService.initReadonlyPool = async () => {
+  if (config.Sql.AllowReadsFromReplica !== true) {
+    throw new Error('Invalid Operation: Reads from Replica are disabled')
+  }
+  if (readonlyPool) {
+    logger.warn('The read-only connection pool has already been initialised')
+    return
+  }
+  readonlyPool = new mssql.ConnectionPool(readonlyPoolConfig)
+  readonlyPool.on('error', err => {
+    logger.error('SQL Read-only Pool Error:', err)
+  })
+  return readonlyPool.connect()
+}
+
+sqlService.drainReadonlyPool = async () => {
+  await readonlyPool
+  if (!readonlyPool) {
+    logger.warn('The read-only connection pool is not initialised')
+    return
+  }
+  return readonlyPool.close()
+}
+
 /**
  * Utility service to transform the results before sending to the caller
  * @type {Function}
@@ -276,6 +306,44 @@ sqlService.query = async (sql, params = [], redisKey) => {
     }
     if (!result) {
       const request = new mssql.Request(pool)
+      addParamsToRequestSimple(params, request)
+      result = await request.query(sql)
+      if (redisKey) {
+        await redisCacheService.set(redisKey, result)
+      }
+    }
+    return sqlService.transformResult(result)
+  }
+
+  return retry(query, retryConfig, dbLimitReached)
+}
+
+/**
+ * Query data from SQL Server over a readonly connection
+ * @param {string} sql - The SELECT statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @param {string} redisKey - Redis key to cache resultset against
+ * @returns {Promise<*>}
+ */
+sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
+  // logger.debug(`sql.service.readonlyQuery(): ${sql}`)
+  // logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
+  // short circuit when replica reads disabled...
+  if (config.Sql.AllowReadsFromReplica !== true) {
+    return sqlService.query(sql, params, redisKey)
+  }
+  await readonlyPool
+
+  const query = async () => {
+    let result = false
+    if (redisKey) {
+      try {
+        const redisResult = await redisCacheService.get(redisKey)
+        result = JSON.parse(redisResult)
+      } catch (e) {}
+    }
+    if (!result) {
+      const request = new mssql.Request(readonlyPool)
       addParamsToRequestSimple(params, request)
       result = await request.query(sql)
       if (redisKey) {

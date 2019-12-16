@@ -24,7 +24,7 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -172,7 +172,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     ) p
     ORDER BY p.lastName
   `
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -215,7 +215,7 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId = async (scho
     AND paa.pupil_id IS NULL
     ORDER BY lastName
   `
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (urlSlug) => {
@@ -244,7 +244,7 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     LEFT JOIN ${sqlService.adminSchema}.questionReaderReasons qrr
       ON qrr.id = paa.questionReaderReasons_id
     WHERE p.urlSlug = @urlSlug`
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -284,7 +284,7 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
       type: TYPES.Int
     }
   ]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   return row && row.pupilColourContrasts_id
 }
@@ -306,7 +306,7 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
       type: TYPES.Int
     }
   ]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   return row && row.pupilFontSizes_id
 }

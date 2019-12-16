@@ -22,7 +22,7 @@ checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
       type: TYPES.UniqueIdentifier
     }
   ]
-  const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
+  const result = await sqlService.readonlyQuery(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
   return R.head(result)
 }
 
@@ -44,7 +44,7 @@ checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -74,7 +74,7 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
   }
   whereClause = whereClause + ')'
   sql = sql + whereClause
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -96,7 +96,7 @@ checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) 
       type: TYPES.Int
     }
   ]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   const obj = R.head(result)
   return R.prop('cnt', obj)
 }
@@ -175,7 +175,7 @@ checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
       type: TYPES.Int
     }
   ]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
@@ -195,7 +195,7 @@ checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
       type: TYPES.Int
     }
   ]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
@@ -245,7 +245,7 @@ checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
   ORDER BY createdAt DESC
   `
   const params = [{ name: 'pupilId', value: pupilId, type: TYPES.Int }]
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
