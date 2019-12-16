@@ -12,7 +12,7 @@ const attendanceCodeDataService = {
    */
   sqlFindAttendanceCodes: async () => {
     const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
-    return sqlService.query(sql)
+    return sqlService.readonlyQuery(sql)
   },
 
   /**
@@ -22,14 +22,14 @@ const attendanceCodeDataService = {
    */
   sqlFindOneAttendanceCodeByCode: async (code) => {
     const sql = `
-    SELECT 
-      id, 
-      reason, 
-      [code] 
-    FROM ${sqlService.adminSchema}.[attendanceCode] 
+    SELECT
+      id,
+      reason,
+      [code]
+    FROM ${sqlService.adminSchema}.[attendanceCode]
     WHERE [code] = @pcode`
     const paramCode = { name: 'pcode', value: code, type: TYPES.Char }
-    const res = await sqlService.query(sql, [paramCode])
+    const res = await sqlService.readonlyQuery(sql, [paramCode])
     return R.head(res)
   }
 }

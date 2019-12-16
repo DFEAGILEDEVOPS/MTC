@@ -49,19 +49,39 @@ function sleep (ms) {
   })
 }
 
-// Initialise the Database Connection pool
+// Initialise the Read-write Database Connection pool
 ;(async function () {
   try {
-    logger.debug('Attempting to initialise the connection pool')
+    logger.debug('Attempting to initialise the read-write connection pool')
     await sqlService.initPool()
   } catch (error) {
-    logger.alert('Failed to connect to the database', error)
+    logger.alert('Failed to connect to the readwrite database', error)
     // The initial probe connection was not able to connect: the DB is not available.  This will cause all
     // connections in the connection pool to be initialised to closed. By pausing, we allow time for the
     // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
     // hopefully the DB will be up by then.
     await sqlService.drainPool()
-    logger.alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating.`)
+    logger.alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating readwrite connection.`)
+    await sleep(config.WaitTimeBeforeExitInSeconds * 1000)
+    process.exit(1)
+  }
+})()
+
+// Initialise the Read-only Database Connection pool
+;(async function () {
+  // kill switch...
+  if (config.Sql.AllowReadsFromReplica !== true) return
+  try {
+    logger.debug('Attempting to initialise the read-only connection pool')
+    await sqlService.initReadonlyPool()
+  } catch (error) {
+    logger.alert('Failed to connect to the readonly database', error)
+    // The initial probe connection was not able to connect: the DB is not available.  This will cause all
+    // connections in the connection pool to be initialised to closed. By pausing, we allow time for the
+    // db to become available.  When run in a docker container the PM2 process manager will restart the process, and
+    // hopefully the DB will be up by then.
+    await sqlService.drainReadonlyPool()
+    logger.alert(`Waiting for ${config.WaitTimeBeforeExitInSeconds} seconds before terminating readonly connection.`)
     await sleep(config.WaitTimeBeforeExitInSeconds * 1000)
     process.exit(1)
   }

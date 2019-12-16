@@ -32,7 +32,7 @@ const checkFormV2DataService = {
     WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
     AND cF.isDeleted = 0
     ORDER BY cf.name ASC`
-    return sqlService.query(sql)
+    return sqlService.readonlyQuery(sql)
   },
 
   /**
@@ -58,7 +58,7 @@ const checkFormV2DataService = {
       ON cF.id = checkFormRanked.id
     WHERE (checkFormRanked.rank = 1 OR checkFormRanked.rank IS NULL)
     ORDER BY cf.name ASC`
-    return sqlService.query(sql)
+    return sqlService.readonlyQuery(sql)
   },
 
   /**
@@ -116,7 +116,7 @@ const checkFormV2DataService = {
     FROM ${sqlService.adminSchema}.${table}
     WHERE isLiveCheckForm = 0
     AND isDeleted = 0`
-    const result = await sqlService.query(sql)
+    const result = await sqlService.readonlyQuery(sql)
     return R.head(result)
   },
 
@@ -176,7 +176,7 @@ const checkFormV2DataService = {
         type: TYPES.NVarChar
       }
     ]
-    const result = await sqlService.query(sql, params)
+    const result = await sqlService.readonlyQuery(sql, params)
     return R.head(result)
   },
 
@@ -192,7 +192,7 @@ const checkFormV2DataService = {
     const { params, paramIdentifiers } = sqlService.buildParameterList(urlSlugs, TYPES.UniqueIdentifier)
     const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -212,7 +212,7 @@ const checkFormV2DataService = {
         type: TYPES.Bit
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -244,7 +244,7 @@ const checkFormV2DataService = {
         type: TYPES.Int
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -320,7 +320,7 @@ const checkFormV2DataService = {
         type: TYPES.Int
       }
     ]
-    const result = await sqlService.query(sql, params)
+    const result = await sqlService.readonlyQuery(sql, params)
     return R.head(result)
   },
 
