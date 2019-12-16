@@ -202,5 +202,13 @@ describe('StorageService', () => {
       expect(Object.keys(localStorageItems)[0]).toBe('audit');
       expect(Object.keys(localStorageItems)[1]).toBe('inputs');
     });
+    it('stores all items in the corresponding key based category based on timestamp order', () => {
+      localStorage.setItem(`audit-1`, JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 100 }));
+      localStorage.setItem(`audit-2`, JSON.stringify({ value: 'value2', clientTimestamp: Date.now() }));
+      service.mergeItems('audit');
+      const keyItems = service.getItem('audit');
+      expect(keyItems[0].value).toBe('value2');
+      expect(keyItems[1].value).toBe('value1');
+    });
   });
 });
