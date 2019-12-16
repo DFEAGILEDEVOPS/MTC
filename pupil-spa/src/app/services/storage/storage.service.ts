@@ -59,10 +59,10 @@ export class StorageService {
     const localStorageItems = this.getAllItems();
     const matchingKeys =
       Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
-    const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].timestamp - localStorageItems[b].timestamp);
+    const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].clientTimestamp - localStorageItems[b].clientTimestamp);
     const matchingItems = [];
     sortedMatchingKeys.forEach(smk => {
-      matchingItems.push(localStorageItems[smk].value);
+      matchingItems.push(localStorageItems[smk]);
     });
     localStorage.setItem(key, JSON.stringify(matchingItems));
   }

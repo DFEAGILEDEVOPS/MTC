@@ -182,7 +182,7 @@ describe('StorageService', () => {
         for (let i = 0; i < 10; i++) {
           const itemValue = {
             value: `value_${i}`,
-            timestamp: Date.now()
+            clientTimestamp: Date.now()
           };
           localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
         }
