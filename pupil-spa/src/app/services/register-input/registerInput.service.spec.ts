@@ -39,7 +39,7 @@ describe('RegisterInputService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('StoreEntry to call localstorage and store with a unique key name',
+  it('StoreEntry will call localstorage and store with a unique key name',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const spy = spyOn(localStorage, 'setItem');
       const eventValue = '0';

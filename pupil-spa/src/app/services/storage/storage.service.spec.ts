@@ -168,15 +168,8 @@ describe('StorageService', () => {
       expect(localStorageItems[items[2].key]).toEqual('foo-bar');
     });
   });
-  describe('set multiple items in local storage', () => {
-    it('saves 10000 items in local storage', () => {
-      for (let i = 0; i < 50000; i++) {
-        localStorage.setItem(`name${i}`, JSON.stringify(`name${i}`));
-      }
-      const localStorageItems = service.getAllItems();
-      expect(Object.keys(localStorageItems).length).toBe(50000);
-    });
-    it('stores all items in the corresponding key based category and removes them afterwards', () => {
+  describe('mergeItems', () => {
+    it('stores all items in the corresponding key based category', () => {
       const localStorageKeys = ['audit', 'inputs'];
       localStorageKeys.forEach(c => {
         for (let i = 0; i < 10; i++) {
@@ -190,17 +183,11 @@ describe('StorageService', () => {
       localStorageKeys.forEach(c => {
         // @ts-ignore
         service.mergeItems(c);
-        // @ts-ignore
-        const keyItems = service.getItem(c);
-        expect(keyItems.length).toBe(10);
       });
-      localStorageKeys.forEach(c => {
-        service.removeMatchingItems(`${c}-`);
-      });
-      const localStorageItems = service.getAllItems();
-      expect(Object.keys(localStorageItems).length).toBe(2);
-      expect(Object.keys(localStorageItems)[0]).toBe('audit');
-      expect(Object.keys(localStorageItems)[1]).toBe('inputs');
+      const auditItems = service.getItem('audit');
+      const inputItems = service.getItem('inputs');
+      expect(auditItems.length).toBe(10);
+      expect(inputItems.length).toBe(10);
     });
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       localStorage.setItem(`audit-1`, JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 100 }));
@@ -209,6 +196,31 @@ describe('StorageService', () => {
       const keyItems = service.getItem('audit');
       expect(keyItems[0].value).toBe('value2');
       expect(keyItems[1].value).toBe('value1');
+    });
+  });
+  describe('removeMatchingItems', () => {
+    it('removes all matching key value pairs after merging them', () => {
+      const localStorageKeys = ['audit', 'inputs'];
+      localStorageKeys.forEach(c => {
+        for (let i = 0; i < 10; i++) {
+          const itemValue = {
+            value: `value_${i}`,
+            clientTimestamp: Date.now()
+          };
+          localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
+        }
+      });
+      localStorageKeys.forEach(c => {
+        // @ts-ignore
+        service.mergeItems(c);
+      });
+      localStorageKeys.forEach(c => {
+        service.removeMatchingItems(`${c}-`);
+      });
+      const localStorageItems = service.getAllItems();
+      expect(Object.keys(localStorageItems).length).toBe(2);
+      expect(Object.keys(localStorageItems)[0]).toBe('audit');
+      expect(Object.keys(localStorageItems)[1]).toBe('inputs');
     });
   });
 });

@@ -67,7 +67,7 @@ export class StorageService {
     localStorage.setItem(key, JSON.stringify(matchingItems));
   }
 
-  removeMatchingItems(key): any {
+  removeMatchingItems(key: string): any {
     const localStorageItems = this.getAllItems();
     const matchingKeys =
       Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
