@@ -1,3 +1,5 @@
+import * as uuid from 'uuid';
+
 import { TestBed, inject } from '@angular/core/testing';
 import { StorageService, StorageKey } from './storage.service';
 
@@ -164,6 +166,41 @@ describe('StorageService', () => {
       expect(localStorageItems[items[0].key]).toEqual([1, 2, 3]);
       expect(localStorageItems[items[1].key]).toEqual([4, 5, 6]);
       expect(localStorageItems[items[2].key]).toEqual('foo-bar');
+    });
+  });
+  describe('set multiple items in local storage', () => {
+    it('saves 10000 items in local storage', () => {
+      for (let i = 0; i < 50000; i++) {
+        localStorage.setItem(`name${i}`, JSON.stringify(`name${i}`));
+      }
+      const localStorageItems = service.getAllItems();
+      expect(Object.keys(localStorageItems).length).toBe(50000);
+    });
+    it('stores all items in the corresponding key based category and removes them afterwards', () => {
+      const localStorageKeys = ['audit', 'inputs'];
+      localStorageKeys.forEach(c => {
+        for (let i = 0; i < 10; i++) {
+          const itemValue = {
+            value: `value_${i}`,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
+        }
+      });
+      localStorageKeys.forEach(c => {
+        // @ts-ignore
+        service.mergeItems(c);
+        // @ts-ignore
+        const keyItems = sessionStorage.getItem(c);
+        expect(JSON.parse(keyItems).length).toBe(10);
+      });
+      localStorageKeys.forEach(c => {
+        service.removeMatchingItems(`${c}-`);
+      });
+      const localStorageItems = service.getAllItems();
+      expect(Object.keys(localStorageItems).length).toBe(2);
+      expect(Object.keys(localStorageItems)[0]).toBe('audit');
+      expect(Object.keys(localStorageItems)[1]).toBe('inputs');
     });
   });
 });

@@ -67,6 +67,12 @@ export class CheckCompleteService {
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
     const payload = this.storageService.getAllItems();
+    // assemble inputs and audits
+    this.storageService.mergeItems('audit');
+    this.storageService.mergeItems('inputs');
+    // remove keys after merge
+    this.storageService.removeMatchingItems(`audit-`);
+    this.storageService.removeMatchingItems(`inputs-`);
     const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
     excludedItems.forEach(i => delete payload[i]);
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;

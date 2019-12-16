@@ -1,3 +1,5 @@
+import * as uuid from 'uuid';
+
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 
@@ -37,21 +39,14 @@ export class RegisterInputService {
   }
 
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string) {
-    let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
-    if (!Array.isArray(questionInputs)) {
-      questionInputs = [];
-    }
-
-    // Store the input
-    questionInputs.push({
+    const questionInput = {
       input: eventValue,
       eventType: eventType,
       clientTimestamp: new Date(),
       question: question,
       sequenceNumber: questionNumber
-    });
-
-    this.storageService.setItem(RegisterInputService.inputKey, questionInputs);
+    };
+    localStorage.setItem(`${(RegisterInputService.inputKey)}-${uuid.v4()}`, JSON.stringify(questionInput));
   }
 
   private getMouseButton(event) {

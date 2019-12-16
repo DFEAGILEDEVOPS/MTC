@@ -54,4 +54,23 @@ export class StorageService {
       return obj;
     }, {});
   }
+
+  mergeItems(key: StorageKey): any {
+    const localStorageItems = this.getAllItems();
+    const matchingKeys =
+      Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
+    const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].timestamp - localStorageItems[b].timestamp);
+    const matchingItems = [];
+    sortedMatchingKeys.forEach(smk => {
+      matchingItems.push(localStorageItems[smk].value);
+    });
+    localStorage.setItem(key, JSON.stringify(matchingItems));
+  }
+
+  removeMatchingItems(key): any {
+    const localStorageItems = this.getAllItems();
+    const matchingKeys =
+      Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
+    matchingKeys.forEach(mk => localStorage.removeItem(mk));
+  }
 }

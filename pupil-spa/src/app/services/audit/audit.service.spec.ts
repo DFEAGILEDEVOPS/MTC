@@ -24,58 +24,17 @@ describe('AuditService', () => {
   });
 
   describe('addEntry', () => {
-
-    it('should add entry using audit key to storageService', () => {
-      spyOn(mockStorageService, 'setItem');
-
+    it('should add entry to local storage with a unique key name', () => {
+      const spy = spyOn(localStorage, 'setItem');
       const entry = new QuestionRendered();
       service.addEntry(entry);
-
-      expect(mockStorageService.setItem).toHaveBeenCalledWith('audit', [entry]);
+      expect(spy.calls.all()[0].args[0].indexOf('audit-')).toBeGreaterThanOrEqual(0);
     });
-
-    it('should add as one item array if no existing entries', () => {
-      const entry = new CheckStarted();
-      let entries = new Array<AuditEntry>();
-
-      spyOn(mockStorageService, 'getItem').and.callFake(() => {
-        return null;
-      });
-
-      spyOn(mockStorageService, 'setItem').and.callFake((key, value: AuditEntry[]) => {
-        entries = value;
-      });
-
+    it('should add entry as stringified value', () => {
+      const spy = spyOn(localStorage, 'setItem');
+      const entry = new QuestionRendered();
       service.addEntry(entry);
-
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
-      expect(mockStorageService.getItem).toHaveBeenCalledWith('audit');
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
-      expect(mockStorageService.setItem).toHaveBeenCalledWith('audit', entries);
-    });
-
-    it('should append new entries, preserve existing ones', () => {
-      const firstEntry = new CheckStarted({ foo: 'bar' });
-      const secondEntry = new QuestionRendered();
-      const thirdEntry = new QuestionAnswered();
-      const expectedAuditEntries = new Array<AuditEntry>(firstEntry, secondEntry, thirdEntry);
-      let actualAuditEntries = new Array<AuditEntry>();
-
-      spyOn(mockStorageService, 'setItem').and.callFake((key, value: AuditEntry[]) => {
-        actualAuditEntries = value;
-      });
-
-      spyOn(mockStorageService, 'getItem').and.callFake((key) => {
-        return actualAuditEntries;
-      });
-
-      service.addEntry(firstEntry);
-      service.addEntry(secondEntry);
-      service.addEntry(thirdEntry);
-
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(3);
-      expect(actualAuditEntries.length).toEqual(3);
-      expect(actualAuditEntries).toEqual(expectedAuditEntries);
+      expect(spy.calls.all()[0].args[1]).toBe(JSON.stringify(entry));
     });
   });
 });

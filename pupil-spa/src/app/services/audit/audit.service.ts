@@ -1,19 +1,16 @@
+import * as uuid from 'uuid';
+
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import * as AuditTypes from './auditEntry';
 import { AuditEntry } from './auditEntry';
 
 @Injectable()
 export class AuditService {
+  public static readonly auditKey = 'audit';
 
   constructor(private storageService: StorageService) { }
 
   addEntry(auditEntry: AuditEntry): void {
-    let existingEntries = this.storageService.getItem('audit') as Array<AuditTypes.AuditEntry>;
-    if (!existingEntries) {
-      existingEntries = new Array<AuditTypes.AuditEntry>();
-    }
-    existingEntries.push(auditEntry);
-    this.storageService.setItem('audit', existingEntries);
+    localStorage.setItem(`${AuditService.auditKey}-${uuid.v4()}`, JSON.stringify(auditEntry));
   }
 }
