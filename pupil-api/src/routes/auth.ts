@@ -15,7 +15,7 @@ export class AuthRouter {
 
   constructor () {
     const featureService = new FeatureService()
-    if (featureService.redisAuthMode()) {
+    if (featureService._2020Mode()) {
       this.authController = new RedisAuthController()
     } else {
       this.authController = new AuthController()

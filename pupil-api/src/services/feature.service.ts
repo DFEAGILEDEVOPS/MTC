@@ -3,7 +3,7 @@ import config from '../config'
 import * as featureToggles from 'feature-toggles'
 
 export interface IFeatureService {
-  redisAuthMode (): boolean
+  _2020Mode (): boolean
 }
 
 let initialised: boolean
@@ -14,8 +14,8 @@ export class FeatureService implements IFeatureService {
     if (!initialised) this.init()
   }
 
-  redisAuthMode (): boolean {
-    return featureToggles.isFeatureEnabled('preparedChecksInRedis')
+  _2020Mode (): boolean {
+    return featureToggles.isFeatureEnabled('_2020Mode')
   }
 
   private init (): void {
