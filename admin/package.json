@@ -18,7 +18,8 @@
     "test:frontend": "karma start karma.conf.js",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
-    "parse-school-changes-csv": "node bin/parse-school-changes-csv.js"
+    "parse-school-changes-csv": "node bin/parse-school-changes-csv.js",
+    "watch": "yarn test:watch"
   },
   "engines": {
     "node": ">= 10.16.3"

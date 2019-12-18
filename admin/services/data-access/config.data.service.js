@@ -17,17 +17,17 @@ const configDataService = {
       SELECT
           p.id as pupilId,
           s.id as schoolId,
-      
+
           -- global question time settings
           st.loadingTimeLimit as loadingTime,
           st.questionTimeLimit as questionTime,
           st.checkTimeLimit as checkTime,
-      
+
           -- pupil configs
           STRING_AGG (aa.code, ',') as accessArrangementCodes,
           STRING_AGG (pfs.code, ',') as fontSizeCode,
           STRING_AGG (pcc.code, ',') as colourContrastCode
-      
+
         FROM
           mtc_admin.[pupil] p JOIN
           mtc_admin.[school] s ON (p.school_id = s.id) CROSS JOIN
@@ -45,7 +45,7 @@ const configDataService = {
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ].concat(pupilParams)
 
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   }
 }
 

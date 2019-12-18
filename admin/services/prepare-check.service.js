@@ -53,7 +53,7 @@ const service = {
     }
     logger.info(`prepareCheckService:removeChecks called for ${checks.join(', ')}`)
     const checkCodes = await prepareCheckDataService.getCheckCodes(checks)
-    if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+    if (featureToggles.isFeatureEnabled('_2020Mode')) {
       const secondaryKeys = checkCodes.map(checkCode => redisKeyService.getPreparedCheckLookup(checkCode))
       const primaryKeys = await redisCacheService.getMany(secondaryKeys)
       const result = await redisCacheService.drop(primaryKeys.concat(secondaryKeys))

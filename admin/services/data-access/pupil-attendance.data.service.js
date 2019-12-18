@@ -33,7 +33,7 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
   UPDATE [mtc_admin].[pupilAttendance]
   SET isDeleted=1
   WHERE pupil_id = @pupilId;
-  
+
   -- maintain the pupil state
   UPDATE [mtc_admin].[pupil]
   SET attendanceId = NULL
@@ -64,7 +64,7 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   ]
   const whereClause = 'WHERE pupil_id=@pupilId AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
@@ -113,12 +113,12 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   --
   -- Mark pupils as not attending
   --
-  
+
   DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code);
-  
+
   IF @attendanceCode_id IS NULL
     THROW 51000, 'unknown attendanceCode.code', 1;
-  
+
   -- Temp table to hold the incoming data
   CREATE TABLE #pupilsToSet (
       slug        nvarchar(100) NOT NULL,
@@ -127,25 +127,25 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
       recordedBy_user_id int NOT NULL,
       attendanceCode_id int NOT NULL
   );
-  
+
   -- Populate the main temp table
   ${insertSql.join('\n')}
-  
+
   -- Check the slugs match genuine pupils
   -- Populate the temp table with pupil ids: slugs that are invalid will not get their id populated.
   UPDATE #pupilsToSet
   SET id = (select id from mtc_admin.pupil where urlSlug = slug);
-  
+
   -- Bail out if a pupil is not found
   IF (SELECT COUNT(*) FROM #pupilsToSet WHERE id IS NULL) > 0
       THROW 51000, 'pupil urlSlug not found', 1;
-  
+
   -- Validation: pupils cannot have a current check assigned
   IF (SELECT COUNT(*) FROM [mtc_admin].[pupil] p
       JOIN #pupilsToSet t1 ON (p.id = t1.id)
       WHERE currentCheckId IS NOT NULL) > 0
       THROW 51000, 'One or more pupils is not eligible to have their attendanceId set', 1;
-  
+
   -- Add the pupil attendance records: can be inserts or updates
   MERGE [mtc_admin].[pupilAttendance] target USING #pupilsToSet as source
   ON source.id = target.pupil_id AND target.isDeleted = 0
@@ -158,7 +158,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
       INSERT (pupil_id, attendanceCode_id, recordedBy_user_id)
       VALUES (source.id, source.attendanceCode_id, source.recordedBy_user_id)
   ;
-  
+
   -- Modify the pupil state
   UPDATE [mtc_admin].[pupil]
   SET
@@ -171,10 +171,10 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   WHERE
       p.id = t1.id
   ;
-  
+
   -- Delete any *unconsumed* restarts
   UPDATE pr
-  SET 
+  SET
     pr.isDeleted = 1,
     pr.deletedByUser_id = @userId
   FROM

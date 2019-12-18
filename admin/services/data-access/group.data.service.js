@@ -27,7 +27,7 @@ groupDataService.sqlFindGroups = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params, `group.sqlFindGroups.${schoolId}`)
+  return sqlService.readonlyQuery(sql, params, `group.sqlFindGroups.${schoolId}`)
 }
 
 /**
@@ -57,7 +57,7 @@ groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -84,7 +84,7 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
     }
   ]
 
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
@@ -113,7 +113,7 @@ groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
     }
   ]
 
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 
@@ -232,7 +232,7 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
 
   sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
 
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -285,7 +285,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
 
   const whereClause = `WHERE g.school_id=@schoolId AND p.id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
   const sql = [sqlInit, whereClause].join(' ')
-  return sqlService.query(sql, params)
+  return sqlService.readonlyQuery(sql, params)
 }
 
 /**
@@ -308,7 +308,7 @@ groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
     }
   ]
 
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.readonlyQuery(sql, params)
   return R.head(result)
 }
 

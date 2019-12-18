@@ -23,7 +23,7 @@ const checkWindowDataService = {
         type: TYPES.Int
       }
     ]
-    const rows = await sqlService.query(sql, params)
+    const rows = await sqlService.readonlyQuery(sql, params)
     return R.head(rows)
   },
   /**
@@ -73,7 +73,7 @@ const checkWindowDataService = {
         type: TYPES.DateTimeOffset
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current).
@@ -105,7 +105,7 @@ const checkWindowDataService = {
         type: TYPES.DateTimeOffset
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   /**
    * Find current and future check windows
@@ -138,7 +138,7 @@ const checkWindowDataService = {
         value: moment.utc().toDate()
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   /**
    * Fetch (non-deleted) check windows where the admin start date is equal to or greater than today.
@@ -171,7 +171,7 @@ const checkWindowDataService = {
         value: moment.utc().toDate()
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   /**
    * Find a single current check window.  If multiple windows are concurrently running it takes the first.
@@ -197,7 +197,7 @@ const checkWindowDataService = {
         value: moment.utc().toDate()
       }
     ]
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   /**
    * Create a new check window
@@ -232,7 +232,7 @@ const checkWindowDataService = {
     }
     whereClause = whereClause + ')'
     sql = sql + whereClause + ' ORDER BY cw.checkStartDate'
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
   sqlAssignFormsToWindow: async (checkWindowId, checkFormIds) => {
     const inserts = []
@@ -272,7 +272,7 @@ const checkWindowDataService = {
         type: TYPES.Int
       }
     ]
-    const result = await sqlService.query(sql, params)
+    const result = await sqlService.readonlyQuery(sql, params)
     return R.head(result)
   },
 
@@ -299,7 +299,7 @@ const checkWindowDataService = {
                 WHERE isDeleted=0
                 ORDER BY ${sortBy} ${sortDirection}`
     const params = []
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -316,7 +316,7 @@ const checkWindowDataService = {
         type: TYPES.UniqueIdentifier
       }
     ]
-    const rows = await sqlService.query(sql, params)
+    const rows = await sqlService.readonlyQuery(sql, params)
     return R.head(rows)
   },
 
@@ -329,7 +329,7 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.[vewCheckWindowWithStatus]
     WHERE isDeleted=0
     ORDER BY name ASC`
-    return sqlService.query(sql)
+    return sqlService.readonlyQuery(sql)
   },
 
   /**
@@ -341,7 +341,7 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.[vewCheckWindowsWithStatusAndFormCountByType]
     WHERE isDeleted = 0
     ORDER BY createdAt ASC`
-    return sqlService.query(sql)
+    return sqlService.readonlyQuery(sql)
   },
 
   /**
@@ -353,7 +353,7 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
-    const result = await sqlService.query(sql, [], 'checkWindow.sqlFindActiveCheckWindow')
+    const result = await sqlService.readonlyQuery(sql, [], 'checkWindow.sqlFindActiveCheckWindow')
     return R.head(result)
   },
 
@@ -366,7 +366,7 @@ const checkWindowDataService = {
     FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     ORDER BY createdAt DESC`
-    const result = await sqlService.query(sql)
+    const result = await sqlService.readonlyQuery(sql)
     return R.head(result)
   }
 }

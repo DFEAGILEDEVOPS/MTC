@@ -15,7 +15,7 @@ const service = {
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ]
 
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   },
 
   /**
@@ -38,7 +38,7 @@ const service = {
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ]
 
-    return sqlService.query(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   }
 }
 

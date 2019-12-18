@@ -11,8 +11,8 @@ const answerDataService = {
       throw new Error('answers not provided')
     }
     const insertSql = `INSERT INTO ${sqlService.adminSchema}.${table} (
-      check_id, 
-      questionNumber, 
+      check_id,
+      questionNumber,
       factor1,
       factor2,
       answer,
@@ -69,7 +69,7 @@ const answerDataService = {
     const select = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE check_id IN`
     const whereParams = sqlService.buildParameterList(checkIds, TYPES.Int)
     const sql = [select, '(', whereParams.paramIdentifiers, ')'].join(' ')
-    const results = await sqlService.query(sql, whereParams.params)
+    const results = await sqlService.readonlyQuery(sql, whereParams.params)
     const byCheckId = {}
     results.forEach((answer) => {
       if (!byCheckId[answer.check_id]) {

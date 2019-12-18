@@ -152,7 +152,7 @@ checkStartService.prepareCheck2 = async function (
     logger.error('Unable to prepare check messages', error)
     throw error
   }
-  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('prepareChecksInRedis')
+  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('_2020Mode')
 
   if (prepareCheckServiceEnabled) {
     await prepareCheckService.prepareChecks(pupilChecks)
@@ -378,7 +378,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
       config: pupilConfig
     }
     if (o.check_isLiveCheck) {
-      if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+      if (featureToggles.isFeatureEnabled('_2020Mode')) {
         message.tokens.checkComplete = checkSubmitSasToken
       } else {
         message.tokens.checkComplete = checkCompleteSasToken

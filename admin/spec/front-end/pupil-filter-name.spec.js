@@ -11,7 +11,7 @@ describe('pupil filter name module', function () {
             <input class="govuk-input" id="search-name" type="text" name="search-name">
         </span>
     </div>
-    <table id="register-pupils" name="filterablePupislList" class="govuk-table govuk-spacious">
+    <table id="register-pupils" name="filterablePupilsList" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">List of available pupils (11)</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
