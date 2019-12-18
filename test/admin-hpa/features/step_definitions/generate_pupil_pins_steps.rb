@@ -362,6 +362,10 @@ And(/^I should be able to see a count of pupils$/) do
 end
 
 Then(/^I should see an error message to contact helpdesk$/) do
+  sleep 1
+  REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
+  pupil_register_page.load
+  generate_pins_overview_page.load
   expect(page).to have_content("The service is unavailable")
 end
 
