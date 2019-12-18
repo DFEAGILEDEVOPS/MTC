@@ -3,13 +3,13 @@ require('dotenv').config()
 const toBool = require('to-bool')
 const sql = require('./sql.config')
 const twoMinutesInMilliseconds = 120000
-const thirtySecondsInMilliseconds = 30000
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
 module.exports = {
+  LogLevel: process.env.LOG_LEVEL || 'info',
   Environment: getEnvironment(),
   Sql: {
     Database: sql.database,

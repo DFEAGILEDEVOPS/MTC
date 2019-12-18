@@ -5,7 +5,7 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const commandLineArgs = require('command-line-args')
-const logger = require('../../services/log.service').getLogger()
+const logger = require('../log.service').getLogger()
 
 const seedsDir = path.join(__dirname, 'seeds')
 

@@ -2,8 +2,8 @@
 
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
-const config = require('../../config')
-const logger = require('../../services/log.service').getLogger()
+const config = require('../config')
+const logger = require('../log.service').getLogger()
 
 const adminConfig = {
   server: config.Sql.Server,
@@ -55,7 +55,7 @@ const createDatabase = async (connection) => {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
     logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
-    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') 
+    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
     BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     const output = await executeRequest(connection, createDbSql)
     logger.info(output[0][0].value)

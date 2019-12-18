@@ -5,9 +5,9 @@ const R = require('ramda')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
-const logger = require('../../services/log.service').getLogger()
+const logger = require('../log.service').getLogger()
 
-const sqlService = require('../../services/data-access/sql.service')
+const sqlService = require('./sql.service')
 
 const seedsDirectory = path.join(__dirname, '/seeds')
 const seedFilenameFormat = ['version', 'table', 'name', 'format']

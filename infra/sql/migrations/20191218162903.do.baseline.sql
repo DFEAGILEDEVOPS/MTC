@@ -1,3 +1,8 @@
+create schema mtc_admin
+go
+
+create schema mtc_census_import
+go
 
 create type mtc_admin.SceTableType as table
 (
