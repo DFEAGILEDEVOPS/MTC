@@ -10,41 +10,50 @@ set -e
 # 4.  Seed Data
 # 5.  Update web app & function settings to new database
 # 6.  Run load test (manual operation)
-# 7.  Delete Database (see ./prep-down.sh)
+# 7.  Delete Database
 
 ### script arguments
-# $1 resource group
-# $2 sql server
-# $3 db scale (S0, S1 etc.)
-# $4 admin web app instance name
-# $5 function consumption instance name
-# $6 function app service instance name
-# $7 secondary resource group (functions)
+# $1 main resource group
+# $2 functions resource group
+# $3 sql server
+# $4 db scale (S0, S1 etc.)
+# $5 admin web app instance name
+# $6 function consumption instance name
+# $7 function app service instance name
 RES_GROUP=$1
-SQL_SERVER=$2
-DB_SCALE=$3
-ADMIN_APP=$4
-FUNC_CONSUMP=$5
-FUNC_APPSVC=$6
-RES_GROUP_FUNCTIONS=$7
-
+RES_GROUP_FUNCTIONS=$2
+SQL_SERVER=$3
+DB_SCALE=$4
+ADMIN_APP=$5
+FUNC_CONSUMP=$6
+FUNC_APPSVC=$7
 
 # 1.  Create database with unique name
-DB_NAME="load-test-$RANDOM"
+DB_SUFFIX=$(openssl rand -hex 4)
+DB_NAME="mtc-load-test-$DB_SUFFIX"
+echo "creating database $DB_NAME on $SQL_SERVER.database.windows.net..."
 az sql db create -g $RES_GROUP -s $SQL_SERVER -n $DB_NAME --service-objective $DB_SCALE
 
 # 2. Bind replica
-# TBC
+echo "TODO: bind replica"
 
 # 3. Run Migrations
-# TODO run admin migrations
+echo "TODO: run admin migrations"
 
 # 4. Seed Data
-# TODO run admin seeds
+echo "TODO: run admin seeds"
 
 # 5.  Update web app & function settings to new database
+echo "updating target database for $ADMIN_APP to $DB_NAME"
 az webapp config appsettings set -g $RES_GROUP -n $ADMIN_APP --settings SQL_DATABASE=$DB_NAME
+
+echo "updating target database for $FUNC_CONSUMP to $DB_NAME"
 az webapp config appsettings set -g $RES_GROUP_FUNCTIONS -n $FUNC_CONSUMP --settings SQL_DATABASE=$DB_NAME
+
+echo "updating target database for $FUNC_APPSVC to $DB_NAME"
 az webapp config appsettings set -g $RES_GROUP_FUNCTIONS -n $FUNC_APPSVC --settings SQL_DATABASE=$DB_NAME
 
+read -p "Once the load test is complete, press enter to delete database $DB_NAME..."
+az sql db delete --name $DB_NAME -g $RES_GROUP --server $SQL_SERVER --no-wait
+echo "delete database '$DB_NAME' operation submitted to server..."
 # DONE
