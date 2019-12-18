@@ -12,6 +12,7 @@ pupilPrefsAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"3000"}
 pupilPrefsAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"3"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
 connectivityCheckViewMinDisplay=${CONNECTIVITY_CHECK_MIN_DISPLAY:-"6000"}
+loginPendingViewMinDisplay=${LOGIN_PENDING_MIN_DISPLAY:-"750"}
 testPupilConnectionQueueName=${TEST_PUPIL_CONNECTION_QUEUE_NAME:-"test-pupil-connection"}
 testPupilConnectionQueueUrl=${TEST_PUPIL_CONNECTION_QUEUE_URL:-"testPupilConnectionQueueUrlValue"}
 testPupilConnectionQueueToken=${TEST_PUPIL_CONNECTION_QUEUE_TOKEN:-"testPupilConnectionQueueTokenValue"}
@@ -50,6 +51,7 @@ cat <<EOF > config.json
   "feedbackAPIErrorMaxAttempts": $feedbackAPIErrorMaxAttempts,
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "connectivityCheckViewMinDisplay": $connectivityCheckViewMinDisplay,
+  "loginPendingViewMinDisplay": $loginPendingViewMinDisplay,
   "testPupilConnectionQueueName": "$testPupilConnectionQueueName",
   "testPupilConnectionQueueUrl": "$testPupilConnectionQueueUrl",
   "testPupilConnectionQueueToken": "$testPupilConnectionQueueToken",
