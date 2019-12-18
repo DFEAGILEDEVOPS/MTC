@@ -7,7 +7,8 @@ describe('tableSort', function () {
       const mockRow = {
         children: [
           {
-            innerText: 'value'
+            innerText: 'value',
+            classList: { contains: () => false }
           }
         ]
       }

@@ -35,7 +35,7 @@ administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
     *
     FROM [mtc_admin].serviceMessage
   `
-  const result = await sqlService.query(sql)
+  const result = await sqlService.readonlyQuery(sql)
   return R.head(result)
 }
 

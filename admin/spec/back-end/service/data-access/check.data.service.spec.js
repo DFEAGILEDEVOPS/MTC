@@ -19,7 +19,7 @@ describe('check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
       service = proxyquire('../../../../services/data-access/check.data.service', {
         '../../../../services/data-access/sql.service': sqlService
       })
@@ -35,7 +35,7 @@ describe('check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
       service = proxyquire('../../../../services/data-access/check.data.service', {
         '../../../../services/data-access/sql.service': sqlService
       })
@@ -51,7 +51,7 @@ describe('check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
       service = proxyquire('../../../../services/data-access/check.data.service', {
         '../../../../services/data-access/sql.service': sqlService
       })
@@ -66,14 +66,14 @@ describe('check.data.service', () => {
   describe('#sqlFindNumberOfChecksStartedByPupil', () => {
     beforeEach(() => {
       service = require('../../../../services/data-access/check.data.service')
-      spyOn(sqlService, 'query').and.returnValue([{
+      spyOn(sqlService, 'readonlyQuery').and.returnValue([{
         cnt: 5
       }])
     })
 
     it('makes the expected calls', () => {
       service.sqlFindNumberOfChecksStartedByPupil(1234)
-      expect(sqlService.query).toHaveBeenCalled()
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })
 })

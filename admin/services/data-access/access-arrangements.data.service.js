@@ -29,7 +29,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
     description
   FROM ${sqlService.adminSchema}.[accessArrangements]
   ORDER BY displayOrder ASC`
-  return sqlService.query(sql)
+  return sqlService.readonlyQuery(sql)
 }
 
 /**
@@ -79,7 +79,7 @@ const init = async () => {
     SELECT *
     FROM ${sqlService.adminSchema}.[accessArrangements]`
 
-  const accessArrangements = await sqlService.query(sql)
+  const accessArrangements = await sqlService.readonlyQuery(sql)
   accessArrangements.map(aa => {
     accessArrangementCodes[aa.code] = { id: aa.id, code: aa.code }
   })

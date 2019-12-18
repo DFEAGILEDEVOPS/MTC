@@ -39,6 +39,7 @@ export class AppConfig implements IAppConfig {
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
   readonly googleAnalyticsTrackingCode: string;
+  readonly loginPendingViewMinDisplay: number;
   readonly production: boolean;
   readonly pupilPrefsAPIErrorDelay: number;
   readonly pupilPrefsAPIErrorMaxAttempts: number;

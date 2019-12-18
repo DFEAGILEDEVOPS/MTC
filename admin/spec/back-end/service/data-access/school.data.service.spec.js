@@ -20,7 +20,7 @@ describe('school.data.service', () => {
 
   describe('#sqlFindOneBySchoolPin', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([schoolMock]))
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(Promise.resolve([schoolMock]))
       service = proxyquire('../../../../services/data-access/school.data.service', {
         './sql.service': sqlService
       })
@@ -28,14 +28,14 @@ describe('school.data.service', () => {
 
     it('it makes the expected calls', async () => {
       const res = await service.sqlFindOneBySchoolPin('9999z')
-      expect(sqlService.query).toHaveBeenCalled()
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
       expect(typeof res).toBe('object')
     })
   })
 
   describe('#sqlFindOneByDfeNumber', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([schoolMock]))
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(Promise.resolve([schoolMock]))
       service = proxyquire('../../../../services/data-access/school.data.service', {
         './sql.service': sqlService
       })
@@ -43,7 +43,7 @@ describe('school.data.service', () => {
 
     it('it makes the expected calls', async () => {
       const res = await service.sqlFindOneByDfeNumber(12345678)
-      expect(sqlService.query).toHaveBeenCalled()
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
       expect(typeof res).toBe('object')
     })
   })
