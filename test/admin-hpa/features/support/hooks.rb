@@ -11,6 +11,13 @@ Before('@service_manager_message') do
   visit ENV['ADMIN_BASE_URL']
 end
 
+After('@service_manager_message') do
+  step 'I am on the manage service message page'
+  manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
+end
+
 Before("@add_a_pupil") do
   step "I am logged in"
   @name = (0...8).map {(65 + rand(26)).chr}.join
