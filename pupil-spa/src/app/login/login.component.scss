@@ -1,0 +1,26 @@
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.login-description {
+  margin-top: 10vh;
+  text-align: center;
+  min-height: 500px;
+}
+
+app-svg-loading {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.wait-text {
+  left: 5px;
+  top: 2px;
+  position: relative;
+  font-size: x-large;
+}
