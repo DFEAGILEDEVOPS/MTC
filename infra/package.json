@@ -1,0 +1,25 @@
+{
+  "name": "sql",
+  "version": "1.0.0",
+  "description": "sql server migration scripts",
+  "main": "index.js",
+  "repository": "https://github.com/DFEAGILEDEVOPS/MTC",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "scripts": {
+    "db:up": "node ./sql/migrate.js",
+    "db:data": "node ./sql/seed.js",
+    "db:newmigration": "node ./sql/create-migration.js",
+    "db:newseed": "node ./sql/create-seed.js"
+  },
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "dotenv": "^8.2.0",
+    "fast-csv": "^3.6.0",
+    "moment": "^2.24.0",
+    "postgrator": "^3.11.0",
+    "ramda": "^0.26.1",
+    "tedious": "^6.6.2",
+    "to-bool": "^0.0.1"
+  }
+}
