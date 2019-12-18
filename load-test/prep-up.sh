@@ -38,7 +38,7 @@ echo "creating database $DB_NAME on $SQL_SERVER.database.windows.net..."
 az sql db create -g $RES_GROUP -s $SQL_SERVER -n $DB_NAME --service-objective $DB_SCALE
 
 # 2. Bind replica
-if [ -n $SQL_SERVER_REPLICA ]
+if [ $SQL_SERVER_REPLICA ]
 then
   echo "setting up replica of database $DB_NAME on server $SQL_SERVER_REPLICA..."
   az sql db replica create -g $RES_GROUP -s $SQL_SERVER -n $DB_NAME
@@ -55,7 +55,7 @@ echo "TODO: run admin seeds"
 echo "updating target database for $ADMIN_APP to $DB_NAME"
 az webapp config appsettings set -g $RES_GROUP -n $ADMIN_APP --settings SQL_DATABASE=$DB_NAME
 
-if [ -n $SQL_SERVER_REPLICA ]
+if [ $SQL_SERVER_REPLICA ]
 then
   echo "configuring read replica for $ADMIN_APP..."
   az webapp config appsettings set -g $RES_GROUP -n $ADMIN_APP
@@ -74,5 +74,11 @@ az webapp config appsettings set -g $RES_GROUP_FUNCTIONS -n $FUNC_APPSVC --setti
 
 read -p "Once the load test is complete, press enter to delete database $DB_NAME..."
 az sql db delete --name $DB_NAME -g $RES_GROUP --server $SQL_SERVER --no-wait
-echo "delete database '$DB_NAME' operation submitted to server..."
+echo "delete database '$DB_NAME' operation submitted to server $SQL_SERVER..."
+
+if [ $SQL_SERVER_REPLICA ]
+then
+  az sql db delete --name $DB_NAME -g $RES_GROUP --server $SQL_SERVER_REPLICA --no-wait
+  echo "delete database $DB_NAME operation submitted to server $SQL_SERVER_REPLICA..."
+fi
 # DONE
