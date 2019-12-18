@@ -22,12 +22,14 @@ Given(/^I have refreshed through the warm up questions$/) do
     check_page.has_preload?
     check_page.has_question?
     visit current_url
+    sleep 1
   end
 end
 
 Then(/^I should be taken to the warm up complete page$/) do
   expect(warm_up_complete_page).to be_displayed
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  sleep 2
   expect(local_storage.select {|a| a['type'] == 'RefreshDetected'}.count).to eql 3
 end
 

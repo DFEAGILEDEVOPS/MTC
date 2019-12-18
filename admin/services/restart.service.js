@@ -237,7 +237,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   // see if there is a new check associated with this restart, ideally the slug
   // would refer to the restart itself, and not the pupil.
   if (restart.check_id) {
-    if (featureToggles.isFeatureEnabled('prepareChecksInRedis')) {
+    if (featureToggles.isFeatureEnabled('_2020Mode')) {
       await prepareCheckService.removeChecks([restart.check_id])
     } else {
       const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
