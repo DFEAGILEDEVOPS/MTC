@@ -137,7 +137,7 @@ checkStartService.prepareCheck2 = async function (
     )
 
     // Request the pupil status be re-computed
-    // TODO: delete
+    // TODO: delete when pupil.status is deleted
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
     // Send a batch of messages for all the pupils requesting a status change

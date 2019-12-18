@@ -1,6 +1,7 @@
 'use strict'
 
 /* global describe expect it beforeEach spyOn fail test */
+const logger = require('../../../services/log.service').getLogger()
 const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
@@ -209,6 +210,8 @@ describe('pupil-register.service', () => {
     })
 
     test('a test that does not matches anything gets N/A', () => {
+      // prevent an error being displayed in the console
+      spyOn(logger, 'error')
       const status = pupilRegisterService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -222,6 +225,7 @@ describe('pupil-register.service', () => {
         pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('N/A')
+      expect(logger.error).toHaveBeenCalled()
     })
 
     test('it detects a restart that was allocated a new check that then expired', () => {
