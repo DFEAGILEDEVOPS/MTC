@@ -56,8 +56,8 @@ export class StorageService {
       Object.keys(localStorageItems).filter(lsi => lsi.startsWith(key.toString()));
     const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].clientTimestamp - localStorageItems[b].clientTimestamp);
     const matchingItems = [];
-    sortedMatchingKeys.forEach(smk => {
-      matchingItems.push(localStorageItems[smk]);
+    sortedMatchingKeys.forEach(s => {
+      matchingItems.push(localStorageItems[s]);
     });
     return matchingItems;
   }
