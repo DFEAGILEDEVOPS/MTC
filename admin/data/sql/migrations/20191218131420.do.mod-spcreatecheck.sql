@@ -88,8 +88,6 @@ BEGIN TRY
                         END
 
                     -- Update the pupil state
-                    PRINT concat('UPdating pupil state for pupil ', CAST(@pupilId as varchar(10)));
-
                     UPDATE [mtc_admin].[pupil]
                     SET currentCheckId = @checkId,
                         checkComplete = 0,
