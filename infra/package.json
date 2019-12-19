@@ -9,8 +9,8 @@
   "scripts": {
     "db:up": "node ./sql/migrate.js",
     "db:data": "node ./sql/seed.js",
-    "db:newmigration": "node ./sql/create-migration.js",
-    "db:newseed": "node ./sql/create-seed.js"
+    "new:migration": "node ./sql/create-migration.js",
+    "new:seed": "node ./sql/create-seed.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
