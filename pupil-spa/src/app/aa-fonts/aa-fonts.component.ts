@@ -47,10 +47,10 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     this.checkValidSelection();
   }
 
-  async onClick() {
+  onClick() {
     this.accessArrangements.fontSize = this.selectedSize;
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    await this.pupilPrefsService.storePupilPrefs();
+    this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);
