@@ -1,6 +1,7 @@
 import { SqlService, ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
+import { RedisService } from '../../caching/redis-service'
 
 export class PupilPrefsService {
 
@@ -72,9 +73,11 @@ export interface IPupilPrefsDataService {
 export class PupilPrefsDataService implements IPupilPrefsDataService {
 
   private sqlService: SqlService
+  private redisService: RedisService
 
   constructor () {
     this.sqlService = new SqlService()
+    this.redisService = new RedisService()
   }
 
   updatePupilPreferences (dataUpdates: Array<IPupilPreferenceDataUpdate>): Promise<void> {
@@ -84,8 +87,11 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
     return this.sqlService.modifyWithTransaction(requests)
   }
 
-  // TODO why not add a lookup to redis on check creation to avoid sql hits?
   async getPupilUUIDByCheckCode (checkCode: string): Promise<any> {
+    const cachedPupilUuid = await this.redisService.get(`pupil-uuid-lookup:${checkCode}`)
+    if (cachedPupilUuid !== undefined) {
+      return cachedPupilUuid
+    }
     const sql = `
       SELECT p.urlSlug as pupilUUID FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[check] c ON c.pupil_id = p.id

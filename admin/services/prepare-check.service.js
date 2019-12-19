@@ -70,8 +70,8 @@ function buildPreparedCheckLookupKey (checkCode) {
   return `prepared-check-lookup:${checkCode}`
 }
 
-function buildPupilUuidLookupKey (pupilUuid) {
-  return `pupil-uuid-lookup:${pupilUuid}`
+function buildPupilUuidLookupKey (checkCode) {
+  return `pupil-uuid-lookup:${checkCode}`
 }
 
 /**
