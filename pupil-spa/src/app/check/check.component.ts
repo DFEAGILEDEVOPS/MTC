@@ -11,8 +11,9 @@ import { StorageService } from '../services/storage/storage.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
-import { TimerService, TimeoutStorageKey } from '../services/timer/timer.service';
+import { TimerService } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
+import { CheckStateStorageKey, PendingSubmissionStorageKey, TimeoutStorageKey } from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-check',
@@ -21,7 +22,6 @@ import { Router } from '@angular/router';
 })
 
 export class CheckComponent implements OnInit {
-  public static readonly checkStateKey = 'checkstate';
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
@@ -90,7 +90,7 @@ export class CheckComponent implements OnInit {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
     this.timerService.emitter.subscribe(e => {
-      this.storageService.setItem(TimeoutStorageKey, {
+      this.storageService.setItem(new TimeoutStorageKey(), {
         numQuestions: this.questionService.getNumberOfQuestions(),
         numCompleted: this.questionService.getCurrentQuestionNumber()
       });
@@ -124,7 +124,7 @@ export class CheckComponent implements OnInit {
 
   private loadExistingState() {
     // assume we are reloading during a check
-    const existingState = this.storageService.getItem(CheckComponent.checkStateKey);
+    const existingState = this.storageService.getItem(new CheckStateStorageKey());
     // console.log(`loadExistingState: state is ${existingState}`)
     if (!this.isValidState(existingState)) {
       throw new Error(`Invalid state '${existingState}'`);
@@ -140,7 +140,7 @@ export class CheckComponent implements OnInit {
   }
 
   private hasExistingState() {
-    return this.storageService.getItem(CheckComponent.checkStateKey);
+    return this.storageService.getItem(new CheckStateStorageKey());
   }
 
   /**
@@ -152,7 +152,7 @@ export class CheckComponent implements OnInit {
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
     this.state += 1; // increment state to next level - it's defined by an array
     // console.log(`changeState(): state is now set to ${this.state}`);
-    this.storageService.setItem(CheckComponent.checkStateKey, this.state);
+    this.storageService.setItem(new CheckStateStorageKey(), this.state);
 
     const stateDesc = this.getStateDescription();
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
@@ -279,7 +279,7 @@ export class CheckComponent implements OnInit {
         this.timerService.stopCheckTimer();
         // Display pending screen
         this.auditService.addEntry(new CheckSubmissionPending());
-        this.storageService.setItem('pending_submission', true);
+        this.storageService.setItem(new PendingSubmissionStorageKey(), true);
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
         this.window.ga('send', {

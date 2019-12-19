@@ -4,13 +4,11 @@ import { Router } from '@angular/router';
 import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import {
-  AccessArrangementsConfig,
-  accessArrangementsDataKey
-} from '../access-arrangements';
+import { AccessArrangementsConfig } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
+import { AccessArrangementsStorageKey, PupilStorageKey } from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -35,11 +33,11 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     private speechService: SpeechService
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
+    this.accessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
 
-    this.pupil = storageService.getItem('pupil') as Pupil;
+    this.pupil = storageService.getItem(new PupilStorageKey()) as Pupil;
   }
 
   selectionChange(selectedFont) {
@@ -49,7 +47,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
 
   async onClick() {
     this.accessArrangements.fontSize = this.selectedSize;
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    this.storageService.setItem(new AccessArrangementsStorageKey(), this.accessArrangements);
     await this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {

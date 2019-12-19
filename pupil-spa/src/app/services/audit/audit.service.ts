@@ -1,8 +1,7 @@
-import * as uuid from 'uuid';
-
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { AuditEntry } from './auditEntry';
+import { AuditStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class AuditService {
@@ -11,6 +10,6 @@ export class AuditService {
   constructor(private storageService: StorageService) { }
 
   addEntry(auditEntry: AuditEntry): void {
-    localStorage.setItem(`${AuditService.auditKey}-${uuid.v4()}`, JSON.stringify(auditEntry));
+    this.storageService.setItem(new AuditStorageKey(), auditEntry);
   }
 }

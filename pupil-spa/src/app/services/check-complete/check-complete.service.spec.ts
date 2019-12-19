@@ -9,6 +9,7 @@ import { StorageService } from '../storage/storage.service';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
+import { ConfigStorageKey } from '../storage/storageKey';
 
 let auditService: AuditService;
 let azureQueueService: AzureQueueService;
@@ -19,7 +20,8 @@ let appUsageService: AppUsageService;
 
 describe('CheckCompleteService', () => {
   const getItemMock = (arg, isPractice) => {
-    if (arg === 'config') {
+    const configStorageKey = new ConfigStorageKey();
+    if (arg.toString() === configStorageKey.toString()) {
       return ({
         practice: isPractice
       });
@@ -81,8 +83,7 @@ describe('CheckCompleteService', () => {
       capturedMessage = message;
       return Promise.resolve({});
     });
-    spyOn(storageService, 'mergeItems');
-    spyOn(storageService, 'removeMatchingItems');
+    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
@@ -93,8 +94,7 @@ describe('CheckCompleteService', () => {
     expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setItem).toHaveBeenCalledTimes(2);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-    expect(storageService.mergeItems).toHaveBeenCalledTimes(2);
-    expect(storageService.removeMatchingItems).toHaveBeenCalledTimes(2);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
   });
 
@@ -126,13 +126,11 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
     spyOn(azureQueueService, 'addMessage')
       .and.returnValue(Promise.reject(new Error('error')));
-    spyOn(storageService, 'mergeItems');
-    spyOn(storageService, 'removeMatchingItems');
+    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.mergeItems).toHaveBeenCalledTimes(2);
-    expect(storageService.removeMatchingItems).toHaveBeenCalledTimes(2);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
@@ -153,13 +151,11 @@ describe('CheckCompleteService', () => {
       authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
     };
     spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(sasTokenExpiredError));
-    spyOn(storageService, 'mergeItems');
-    spyOn(storageService, 'removeMatchingItems');
+    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.mergeItems).toHaveBeenCalledTimes(2);
-    expect(storageService.removeMatchingItems).toHaveBeenCalledTimes(2);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
@@ -176,12 +172,10 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setItem');
     spyOn(storageService, 'getAllItems');
     spyOn(azureQueueService, 'addMessage');
-    spyOn(storageService, 'mergeItems');
-    spyOn(storageService, 'removeMatchingItems');
+    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(0);
-    expect(storageService.mergeItems).toHaveBeenCalledTimes(0);
-    expect(storageService.removeMatchingItems).toHaveBeenCalledTimes(0);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(0);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(0);

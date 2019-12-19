@@ -12,8 +12,6 @@ import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -30,7 +28,6 @@ describe('LoginComponent', () => {
   let promiseHelper;
   let mockQuestionService;
   let mockWarmupQuestionService;
-  let mockRegisterInputService;
   let mockCheckStatusService;
   let mockPupilPrefsService;
   let mockLoginModel;
@@ -76,7 +73,6 @@ describe('LoginComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         LoginErrorService,
@@ -86,7 +82,6 @@ describe('LoginComponent', () => {
     });
     mockQuestionService = injector.get(QuestionService);
     mockWarmupQuestionService = injector.get(WarmupQuestionService);
-    mockRegisterInputService = injector.get(RegisterInputService);
     mockLoginModel = injector.get(Login);
     mockCheckStatusService = injector.get(CheckStatusService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
@@ -98,7 +93,6 @@ describe('LoginComponent', () => {
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
-    spyOn(mockRegisterInputService, 'initialise');
     spyOn(loginErrorService, 'changeMessage');
     hasUnfinishedCheckSpy = spyOn(mockCheckStatusService, 'hasUnfinishedCheck');
     hasUnfinishedCheckSpy.and.returnValue(false);
@@ -131,7 +125,6 @@ describe('LoginComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalled();
         expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1);
-        expect(mockRegisterInputService.initialise).toHaveBeenCalledTimes(1);
         expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled();
       });
     });

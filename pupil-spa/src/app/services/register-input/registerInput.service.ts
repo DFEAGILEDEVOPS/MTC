@@ -2,17 +2,12 @@ import * as uuid from 'uuid';
 
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
+import { InputsStorageKey } from '../storage/storageKey';
 
 
 @Injectable()
 export class RegisterInputService {
-  public static readonly inputKey = 'inputs';
-
   constructor(protected storageService: StorageService) {}
-
-  public initialise() {
-    this.storageService.setItem(RegisterInputService.inputKey, []);
-  }
 
   public addEntry(event) {
     let eventValue;
@@ -46,7 +41,7 @@ export class RegisterInputService {
       question: question,
       sequenceNumber: questionNumber
     };
-    localStorage.setItem(`${(RegisterInputService.inputKey)}-${uuid.v4()}`, JSON.stringify(questionInput));
+    this.storageService.setItem(new InputsStorageKey(), questionInput);
   }
 
   private getMouseButton(event) {

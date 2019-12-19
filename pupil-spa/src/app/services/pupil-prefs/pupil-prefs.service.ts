@@ -3,10 +3,11 @@ import { APP_CONFIG } from '../config/config.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { accessArrangementsDataKey, AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
+import { AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
 import { Pupil } from '../../pupil';
 import { AuditService } from '../audit/audit.service';
 import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../audit/auditEntry';
+import { AccessArrangementsStorageKey, ConfigStorageKey, PupilStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class PupilPrefsService {
@@ -32,10 +33,10 @@ export class PupilPrefsService {
   }
 
   public async storePupilPrefs() {
-    const accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
+    const accessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
-    const pupil = this.storageService.getItem('pupil') as Pupil;
+    const pupil = this.storageService.getItem(new PupilStorageKey()) as Pupil;
     const {url, token, queueName} = this.tokenService.getToken('pupilPreferences');
     const retryConfig = {
       errorDelay: this.pupilPrefsAPIErrorDelay,
@@ -66,7 +67,7 @@ export class PupilPrefsService {
 
   public loadPupilPrefs() {
     this.accessArrangements = new AccessArrangements();
-    const appliedAccessArrangements = this.storageService.getItem(accessArrangementsDataKey);
+    const appliedAccessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
     // Fetch prefs from current session stored within local storage
     this.accessArrangements.fontSize = appliedAccessArrangements && appliedAccessArrangements.fontSize;
     this.accessArrangements.contrast = appliedAccessArrangements && appliedAccessArrangements.contrast;
@@ -74,7 +75,7 @@ export class PupilPrefsService {
       return;
     }
     // Fetch prefs from check config or assign default values
-    const config = this.storageService.getItem('config');
+    const config = this.storageService.getItem(new ConfigStorageKey());
     if (!this.accessArrangements.contrast) {
       this.contrastSettings = AccessArrangementsConfig.contrastSettings;
       const contrastSetting = config && this.contrastSettings.find(f => f.code === config.colourContrastCode);
@@ -85,6 +86,6 @@ export class PupilPrefsService {
       const fontSetting = config && this.fontSettings.find(f => f.code === config.fontSizeCode);
       this.accessArrangements.fontSize = (fontSetting && fontSetting.val) || 'regular';
     }
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    this.storageService.setItem(new AccessArrangementsStorageKey(), this.accessArrangements);
   }
 }

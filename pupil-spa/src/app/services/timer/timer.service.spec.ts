@@ -1,10 +1,8 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { TimerService, CHECK_TIMEOUT_EVENT } from './timer.service';
-import { AuditServiceMock } from '../audit/audit.service.mock';
 import { WindowRefService } from '../window-ref/window-ref.service';
 import { QuestionService } from '../question/question.service';
-import { QuestionServiceMock } from '../question/question.service.mock';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 

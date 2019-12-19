@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppUsageService } from './app-usage.service';
 import { StorageService } from '../storage/storage.service';
+import { DeviceStorageKey } from '../storage/storageKey';
 
 let appUsageService: AppUsageService;
 const mockStorageService = {
@@ -39,9 +40,10 @@ describe('AppUsageService', () => {
   });
 
   it('should store the app usage counter', () => {
+    const deviceStorageKey = new DeviceStorageKey();
     appUsageService.increment();
     appUsageService.store();
     expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
-    expect(mockStorageService.setItem).toHaveBeenCalledWith('device', {appUsageCounter: 2});
+    expect(mockStorageService.setItem).toHaveBeenCalledWith(deviceStorageKey, {appUsageCounter: 2});
   });
 });

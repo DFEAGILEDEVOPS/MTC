@@ -3,12 +3,18 @@ import { APP_CONFIG } from '../config/config.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
-const questionsDataKey = 'questions';
-const configDataKey = 'config';
-const pupilDataKey = 'pupil';
-const schoolDataKey = 'school';
-const accessTokenKey = 'access_token';
-const tokenKey = 'tokens';
+import {
+  AccessArrangementsStorageKey, AccessTokenStorageKey,
+  ConfigStorageKey,
+  PupilStorageKey,
+  QuestionsStorageKey,
+  SchoolStorageKey, TokensStorageKey
+} from '../storage/storageKey';
+
+const configStorageKey = new ConfigStorageKey();
+const pupilStorageKey = new PupilStorageKey();
+const schoolStorageKey = new SchoolStorageKey();
+const tokensStorageKey = new TokensStorageKey();
 
 @Injectable()
 export class UserService {
@@ -16,7 +22,7 @@ export class UserService {
   data: any = {};
 
   constructor(private http: HttpClient, private storageService: StorageService) {
-    this.loggedIn = !!this.storageService.getItem(accessTokenKey);
+    this.loggedIn = !!this.storageService.getItem(new AccessArrangementsStorageKey());
   }
 
   login(schoolPin, pupilPin): Promise<any> {
@@ -30,12 +36,18 @@ export class UserService {
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
-          this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
-          this.storageService.setItem(configDataKey, data[configDataKey]);
-          this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
-          this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
-          this.storageService.setItem(accessTokenKey, data[tokenKey] && data[tokenKey]['jwt'] && data[tokenKey]['jwt']['token']);
-          this.storageService.setItem(tokenKey, data[tokenKey]);
+          const questions = data['questions'] ? data['questions'] : [];
+          questions.forEach(q => {
+            const questionsStorageKey = new QuestionsStorageKey();
+            this.storageService.setItem(questionsStorageKey, q);
+          });
+          this.storageService.setItem(configStorageKey, data[configStorageKey.toString()]);
+          this.storageService.setItem(pupilStorageKey, data[pupilStorageKey.toString()]);
+          this.storageService.setItem(schoolStorageKey, data[schoolStorageKey.toString()]);
+          this.storageService.setItem(new AccessTokenStorageKey(),
+            data[tokensStorageKey.toString()] && data[tokensStorageKey.toString()]['jwt']
+            && data[tokensStorageKey.toString()]['jwt']['token']);
+          this.storageService.setItem(new TokensStorageKey(), data[tokensStorageKey.toString()]);
 
           resolve();
         },

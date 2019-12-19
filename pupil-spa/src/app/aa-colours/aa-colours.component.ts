@@ -2,13 +2,13 @@ import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angula
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
-  accessArrangementsDataKey
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { AccessArrangementsStorageKey } from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-aa-colours',
@@ -32,7 +32,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     private speechService: SpeechService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
+    this.accessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
@@ -50,7 +50,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async onClick() {
     this.accessArrangements.contrast = this.selectedContrast;
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    this.storageService.setItem(new AccessArrangementsStorageKey(), this.accessArrangements);
     await this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {

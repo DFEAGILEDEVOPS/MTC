@@ -33,18 +33,14 @@ describe('AnswerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should append answer to answers object in storage service', () => {
-    const answer1 = new Answer(1, 1, '1', 1, '1x1', new Date('1970-01-01'));
-    const answer2 = new Answer(2, 2, '2', 2, '2x2', new Date('1970-01-01'));
-    const existingAnswers = [answer1, answer2];
-    storageService.setItem('answers', existingAnswers);
-    const answer3 = new Answer(3, 3, '3', 3);
-    answer3.question = '3x3';
-    answer3.clientTimestamp = new Date('1970-01-01');
-    service.setAnswer(answer3);
-    const expected = [toPoJo(answer1), toPoJo(answer2), toPoJo(answer3)];
-    const actual = storageService.getItem('answers');
-    expect(actual).toEqual(expected);
+  it('should store answer under unique key', () => {
+    const setItemSpy = spyOn(storageService, 'setItem');
+    const answer1 = new Answer(3, 3, '3', 3);
+    answer1.question = '3x3';
+    answer1.clientTimestamp = new Date('1970-01-01');
+    service.setAnswer(answer1);
+    expect(setItemSpy.calls.allArgs()[0][0].toString().indexOf('answers-')).toBeGreaterThanOrEqual(0);
+    expect(setItemSpy.calls.allArgs()[0][1]).toEqual(answer1);
   });
 
   it('should create answers object if it does not already exist', () => {
@@ -53,14 +49,14 @@ describe('AnswerService', () => {
     answer1.question = '1x1';
     answer1.clientTimestamp = new Date('1970-01-01');
     const expected = [toPoJo(answer1)];
-    const actual = storageService.getItem('answers');
+    const actual = storageService.fetchAllEntriesByKey('answers');
     expect(actual).toEqual(expected);
   });
 
   it('should not add duplicate answers', () => {
     const answer = new Answer(1, 1, '1', 1);
     spyOn(storageService, 'setItem');
-    spyOn(storageService, 'getItem').and.returnValues(
+    spyOn(storageService, 'fetchAllEntriesByKey').and.returnValues(
       [], // 1st call
       [ answer ] // 2nd call
     );
@@ -73,7 +69,7 @@ describe('AnswerService', () => {
     const answer = new Answer(9, 8, '1', 20);
     spyOn(storageService, 'setItem');
     const auditServiceAddEntrySpy = spyOn(auditService, 'addEntry');
-    spyOn(storageService, 'getItem').and.returnValues(
+    spyOn(storageService, 'fetchAllEntriesByKey').and.returnValues(
       [], // 1st call
       [ answer ] // 2nd call
     );

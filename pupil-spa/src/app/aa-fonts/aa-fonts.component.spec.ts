@@ -11,6 +11,7 @@ import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { AccessArrangementsStorageKey, PupilStorageKey } from '../services/storage/storageKey';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
@@ -46,9 +47,11 @@ describe('AAFontsComponent', () => {
     mockPupilPrefsService = injector.get(PupilPrefsService);
 
     spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
-      if (arg === 'pupil') {
+      const pupilStorageKey = new PupilStorageKey();
+      const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
+      if (arg.toString() === pupilStorageKey.toString()) {
         return { firstName: 'a', lastName: 'b' };
-      } else if (arg === 'access_arrangements') {
+      } else if (arg.toString() === accessArrangementsStorageKey.toString()) {
         return { fontSize: 'regular', contrast: 'bow' };
       }
     });

@@ -11,14 +11,25 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { Router } from '@angular/router';
-import { CheckComponent } from '../check/check.component';
-import { StartTimeStorageKey, TimeoutStorageKey } from '../services/timer/timer.service';
+import {
+  CheckStartTimeStorageKey,
+  CheckStateStorageKey,
+  CompletedSubmissionStorageKey,
+  TimeoutStorageKey
+} from '../services/storage/storageKey';
+
+const checkStartTimeStorageKey = new CheckStartTimeStorageKey();
+const checkStateStorageKey = new CheckStateStorageKey();
+const timeoutStorageKey = new TimeoutStorageKey();
+const completedSubmissionStorageKey = new CompletedSubmissionStorageKey();
 
 describe('CheckCompleteComponent', () => {
   let component: CheckCompleteComponent;
   let fixture: ComponentFixture<CheckCompleteComponent>;
   let mockRouter;
   let storageService;
+  let removeItemSpy;
+  let setItemSpy;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -42,8 +53,8 @@ describe('CheckCompleteComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckCompleteComponent);
     storageService = fixture.debugElement.injector.get(StorageService);
-    spyOn(storageService, 'removeItem').and.callThrough();
-    spyOn(storageService, 'setItem').and.callThrough();
+    removeItemSpy = spyOn(storageService, 'removeItem').and.callThrough();
+    setItemSpy = spyOn(storageService, 'setItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -57,12 +68,12 @@ describe('CheckCompleteComponent', () => {
       const mockEvent = new Event('click');
       spyOn(mockEvent, 'preventDefault');
       component.onStartAgainClick(mockEvent);
-      expect(storageService.removeItem).toHaveBeenCalledWith(CheckComponent.checkStateKey);
-      expect(storageService.removeItem).toHaveBeenCalledWith(TimeoutStorageKey);
-      expect(storageService.removeItem).toHaveBeenCalledWith(StartTimeStorageKey);
-      expect(storageService.getItem(CheckComponent.checkStateKey)).not.toBeDefined();
-      expect(storageService.setItem).toHaveBeenCalledWith('completed_submission', false);
-      expect(storageService.getItem('completed_submission')).toBeFalsy();
+      expect(removeItemSpy.calls.allArgs()[0].toString()).toEqual(checkStateStorageKey.toString());
+      expect(removeItemSpy.calls.allArgs()[1].toString()).toEqual(timeoutStorageKey.toString());
+      expect(removeItemSpy.calls.allArgs()[2].toString()).toEqual(checkStartTimeStorageKey.toString());
+      expect(storageService.getItem(CheckStateStorageKey)).not.toBeDefined();
+      expect(setItemSpy.calls.allArgs()[0].toString()).toEqual(`${completedSubmissionStorageKey.toString()},false`);
+      expect(storageService.getItem(completedSubmissionStorageKey.toString())).toBeFalsy();
       expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-start']);
     });

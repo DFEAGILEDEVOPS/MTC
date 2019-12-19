@@ -3,6 +3,7 @@ import { StorageService } from '../storage/storage.service';
 import { Answer } from './answer.model';
 import { AuditService } from '../audit/audit.service';
 import { DuplicateAnswerError } from '../audit/auditEntry';
+import { AnswersStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class AnswerService {
@@ -12,31 +13,23 @@ export class AnswerService {
 
   setAnswer(answer: Answer): void {
 
-    let answers = this.storageService.getItem('answers');
-
-    if (!answers) {
-      answers = [];
-    }
-
     // Check for duplicates - we can only store one answer for each question
-    const previousAnswers = this.getPreviousAnswers(answer, answers);
-
+    const previousAnswers = this.getPreviousAnswers(answer);
     if (previousAnswers.length > 0) {
       // Log this error
       this.auditService.addEntry(new DuplicateAnswerError(answer));
       return;
     }
-    answers.push(answer);
-    this.storageService.setItem('answers', answers);
+    this.storageService.setItem(new AnswersStorageKey(), answer);
   }
 
   /**
    * Find a previous answer in the answers array
    * @param {Answer} answer - the current answer to be stored
-   * @param [Answer] answers - the list of previously stored answers
    * @return [Answer?] - empty array or array of answers
    */
-  private getPreviousAnswers(answer: Answer, answers) {
+  private getPreviousAnswers(answer: Answer) {
+    const answers = this.storageService.fetchAllEntriesByKey('answers');
     return answers.filter(
       x => {
         if (x.sequenceNumber === answer.sequenceNumber

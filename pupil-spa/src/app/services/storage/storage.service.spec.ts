@@ -1,9 +1,11 @@
 import * as uuid from 'uuid';
 
-import { TestBed, inject } from '@angular/core/testing';
-import { StorageService, StorageKey } from './storage.service';
+import { TestBed } from '@angular/core/testing';
+import { StorageService } from './storage.service';
+import { AuditStorageKey, DeviceStorageKey, InputsStorageKey } from './storageKey';
 
 let service: StorageService;
+const deviceStorageKey = new DeviceStorageKey();
 
 describe('StorageService', () => {
 
@@ -34,12 +36,11 @@ describe('StorageService', () => {
 
     it('adds item to localStorage when key provided', () => {
       spyOn(localStorage, 'setItem');
-      const key: StorageKey = 'answers';
       const value = { setItem_value: 'value' };
 
-      service.setItem(key, value);
+      service.setItem(deviceStorageKey, value);
 
-      expect(localStorage.setItem).toHaveBeenCalledWith(key, JSON.stringify(value));
+      expect(localStorage.setItem).toHaveBeenCalledWith(deviceStorageKey.toString(), JSON.stringify(value));
     });
   });
 
@@ -58,32 +59,32 @@ describe('StorageService', () => {
     });
 
     it('returns JSON item when key provided and item exists', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = { getItem: 'getItem_Value' };
       localStorage.setItem(key, JSON.stringify(value));
 
-      const data = service.getItem(key);
+      const data = service.getItem(deviceStorageKey);
 
       expect(data).toBeTruthy();
       expect(data).toEqual(value);
     });
 
     it('returns string item when key provided and item exists', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = 'foo-bar';
       localStorage.setItem(key, value);
 
-      const data = service.getItem(key);
+      const data = service.getItem(deviceStorageKey);
 
       expect(data).toBeTruthy();
       expect(data).toEqual(value);
     });
 
     it('returns null when key provided and item does not exist', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = 'getItem_Value';
 
-      const data = service.getItem(key);
+      const data = service.getItem(deviceStorageKey);
 
       expect(data).toBeNull();
     });
@@ -105,11 +106,9 @@ describe('StorageService', () => {
 
     it('removes item when key provided and item exists', () => {
       spyOn(localStorage, 'removeItem');
-      const removeItemKey = 'answers';
 
-      service.removeItem(removeItemKey);
-
-      expect(localStorage.removeItem).toHaveBeenCalledWith(removeItemKey);
+      service.removeItem(deviceStorageKey);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(deviceStorageKey.toString());
     });
   });
 
@@ -168,7 +167,7 @@ describe('StorageService', () => {
       expect(localStorageItems[items[2].key]).toEqual('foo-bar');
     });
   });
-  describe('mergeItems', () => {
+  describe('fetchAllEntriesByKey', () => {
     it('stores all items in the corresponding key based category', () => {
       const localStorageKeys = ['audit', 'inputs'];
       localStorageKeys.forEach(c => {
@@ -180,47 +179,20 @@ describe('StorageService', () => {
           localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
         }
       });
+      const baseKeys = [];
       localStorageKeys.forEach(c => {
         // @ts-ignore
-        service.mergeItems(c);
+        baseKeys.push(service.fetchAllEntriesByKey(c));
       });
-      const auditItems = service.getItem('audit');
-      const inputItems = service.getItem('inputs');
-      expect(auditItems.length).toBe(10);
-      expect(inputItems.length).toBe(10);
+      expect(baseKeys[0].length).toBe(10);
+      expect(baseKeys[1].length).toBe(10);
     });
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       localStorage.setItem(`audit-1`, JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 100 }));
       localStorage.setItem(`audit-2`, JSON.stringify({ value: 'value2', clientTimestamp: Date.now() }));
-      service.mergeItems('audit');
-      const keyItems = service.getItem('audit');
+      const keyItems = service.fetchAllEntriesByKey('audit');
       expect(keyItems[0].value).toBe('value2');
       expect(keyItems[1].value).toBe('value1');
-    });
-  });
-  describe('removeMatchingItems', () => {
-    it('removes all matching key value pairs after merging them', () => {
-      const localStorageKeys = ['audit', 'inputs'];
-      localStorageKeys.forEach(c => {
-        for (let i = 0; i < 10; i++) {
-          const itemValue = {
-            value: `value_${i}`,
-            clientTimestamp: Date.now()
-          };
-          localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
-        }
-      });
-      localStorageKeys.forEach(c => {
-        // @ts-ignore
-        service.mergeItems(c);
-      });
-      localStorageKeys.forEach(c => {
-        service.removeMatchingItems(`${c}-`);
-      });
-      const localStorageItems = service.getAllItems();
-      expect(Object.keys(localStorageItems).length).toBe(2);
-      expect(Object.keys(localStorageItems)[0]).toBe('audit');
-      expect(Object.keys(localStorageItems)[1]).toBe('inputs');
     });
   });
 });

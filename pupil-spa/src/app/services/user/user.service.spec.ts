@@ -3,14 +3,17 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { StorageService } from '../storage/storage.service';
-import * as mockLoginResponseBody from '../../login.userService.response.mock.json';
+import { default as mockLoginResponseBody } from '../../login.userService.response.mock.json';
 import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
+import { AccessTokenStorageKey, ConfigStorageKey, PupilStorageKey, SchoolStorageKey, TokensStorageKey } from '../storage/storageKey';
 
 let userService: UserService;
 let storageService: StorageService;
-const pupilDataKey = 'pupil';
-const questionsDataKey = 'questions';
-const configDataKey = 'config';
+const pupilDataKey = new PupilStorageKey();
+const configDataKey = new ConfigStorageKey();
+const schoolDataKey = new SchoolStorageKey();
+const accessTokenDataKey =  new AccessTokenStorageKey();
+const tokensDataKey =  new TokensStorageKey();
 
 describe('UserService', () => {
   let httpClient: HttpClient;
@@ -36,15 +39,20 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
-      spyOn(storageService, 'setItem');
-
+      const setItemSpy = spyOn(storageService, 'setItem');
       userService.login('abc12345', '9999a').then(() => {
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(pupilDataKey, mockLoginResponseBody[pupilDataKey]);
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
+          expect(setItemSpy.calls.allArgs()[0].toString().indexOf('questions-')).toBeGreaterThanOrEqual(0);
+          expect(setItemSpy.calls.allArgs()[1].toString().indexOf('questions-')).toBeGreaterThanOrEqual(0);
+          expect(setItemSpy.calls.allArgs()[2].toString())
+            .toEqual(`${configDataKey.toString()},${mockLoginResponseBody[configDataKey.toString()]}`);
+          expect(setItemSpy.calls.allArgs()[3].toString())
+            .toEqual(`${pupilDataKey.toString()},${mockLoginResponseBody[pupilDataKey.toString()]}`);
+          expect(setItemSpy.calls.allArgs()[4].toString())
+            .toEqual(`${schoolDataKey.toString()},${mockLoginResponseBody[schoolDataKey.toString()]}`);
+          expect(setItemSpy.calls.allArgs()[5].toString())
+            .toEqual(`${accessTokenDataKey.toString()},${mockLoginResponseBody[tokensDataKey.toString()]['jwt']['token']}`);
+          expect(setItemSpy.calls.allArgs()[6].toString())
+            .toEqual(`${tokensDataKey.toString()},${mockLoginResponseBody[tokensDataKey.toString()]}`);
         },
         (error) => {
           fail(error);

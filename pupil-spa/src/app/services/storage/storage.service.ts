@@ -1,26 +1,21 @@
 import { Injectable } from '@angular/core';
-
-export type StorageKey = 'answers' | 'inputs' | 'session' |
-  'audit' | 'questions' | 'config' | 'pupil' | 'school' | 'access_token' |
-  'feedback' | 'checkstate' | 'device' | 'pending_submission' | 'completed_submission' |
-  'access_arrangements' | 'tokens' | 'time_out' | 'check_start_time';
+import { StorageKeyTypesAll, StorageKeyPrefix } from './storageKey';
 
 @Injectable()
 export class StorageService {
 
-  setItem(key: StorageKey, value: Object | Array<Object>): void {
-
+  setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
     if (!key) {
       throw new Error('key is required');
     }
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key.toString(), JSON.stringify(value));
   }
 
-  getItem(key: StorageKey): any {
+  getItem(key: StorageKeyTypesAll): any {
     if (!key) {
       throw new Error('key is required');
     }
-    let item = localStorage.getItem(key);
+    let item = localStorage.getItem(key.toString());
     // try/catch as not all localstorage items are JSON, e.g. ai_session
     try {
       item = JSON.parse(item);
@@ -28,11 +23,11 @@ export class StorageService {
     return item;
   }
 
-  removeItem(key: StorageKey): void {
+  removeItem(key: StorageKeyTypesAll): void {
     if (!key) {
       throw new Error('key is required');
     }
-    localStorage.removeItem(key);
+    localStorage.removeItem(key.toString());
   }
 
   clear(): void {
@@ -55,22 +50,15 @@ export class StorageService {
     }, {});
   }
 
-  mergeItems(key: StorageKey): any {
+  fetchAllEntriesByKey(key: StorageKeyPrefix): any {
     const localStorageItems = this.getAllItems();
     const matchingKeys =
-      Object.keys(localStorageItems).filter(lsi => lsi.startsWith(key));
+      Object.keys(localStorageItems).filter(lsi => lsi.startsWith(key.toString()));
     const sortedMatchingKeys = matchingKeys.sort((a, b) => localStorageItems[a].clientTimestamp - localStorageItems[b].clientTimestamp);
     const matchingItems = [];
     sortedMatchingKeys.forEach(smk => {
       matchingItems.push(localStorageItems[smk]);
     });
-    localStorage.setItem(key, JSON.stringify(matchingItems));
-  }
-
-  removeMatchingItems(key: string): any {
-    const localStorageItems = this.getAllItems();
-    const matchingKeys =
-      Object.keys(localStorageItems).filter(lsi => lsi.indexOf(key) >= 0);
-    matchingKeys.forEach(mk => localStorage.removeItem(mk));
+    return matchingItems;
   }
 }

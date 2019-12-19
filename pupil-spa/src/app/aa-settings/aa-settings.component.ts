@@ -5,9 +5,13 @@ import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
-import { RouteService } from '../services/route/route.service';
-import { CheckComponent } from '../check/check.component';
-import { TimeoutStorageKey, StartTimeStorageKey } from '../services/timer/timer.service';
+import {
+  CheckStartTimeStorageKey,
+  CheckStateStorageKey,
+  CompletedSubmissionStorageKey,
+  PupilStorageKey,
+  TimeoutStorageKey
+} from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-aa-settings',
@@ -35,10 +39,10 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     // Reset the check state when visitng the settings page
-    this.storageService.removeItem(CheckComponent.checkStateKey);
-    this.storageService.removeItem(TimeoutStorageKey);
-    this.storageService.removeItem(StartTimeStorageKey);
-    this.storageService.setItem('completed_submission', false);
+    this.storageService.removeItem(new CheckStateStorageKey());
+    this.storageService.removeItem(new TimeoutStorageKey());
+    this.storageService.removeItem(new CheckStartTimeStorageKey());
+    this.storageService.setItem(new CompletedSubmissionStorageKey(), false);
   }
 
   // wait for the component to be rendered first, before parsing the text
@@ -70,12 +74,12 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
       if (!this.inputAssistantForm.valid) {
         return;
       } else {
-        const pupilData = this.storageService.getItem('pupil');
+        const pupilData = this.storageService.getItem(new PupilStorageKey());
         pupilData.inputAssistant = {
           firstName: this.inputAssistantForm.value.inputAssistantFirstName,
           lastName: this.inputAssistantForm.value.inputAssistantLastName,
         };
-        this.storageService.setItem('pupil', pupilData);
+        this.storageService.setItem(new PupilStorageKey(), pupilData);
       }
     }
     this.router.navigate(['check-start']);

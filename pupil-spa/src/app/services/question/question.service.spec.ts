@@ -5,6 +5,7 @@ import { StorageService } from '../storage/storage.service';
 import { SpeechService } from '../speech/speech.service';
 import { SpeechServiceMock } from '../speech/speech.service.mock';
 import * as responseMock from '../../login.response.mock.json';
+import { ConfigStorageKey, QuestionsStorageKey } from '../storage/storageKey';
 
 describe('QuestionService', () => {
 
@@ -13,16 +14,21 @@ describe('QuestionService', () => {
   beforeEach(() => {
     mockStorageService = {
       getItem() {
-      }
+      },
+      fetchAllEntriesByKey() {
+      },
     };
     const questions = responseMock['questions'];
     const config = responseMock['config'];
     spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
-      switch (arg) {
-        case 'config':
-          return config;
-        case 'questions':
-          return questions;
+      const configStorageKey = new ConfigStorageKey();
+      if (arg.toString() === configStorageKey.toString()) {
+        return config;
+      }
+    });
+    spyOn(mockStorageService, 'fetchAllEntriesByKey').and.callFake((arg) => {
+      if (arg.toString() === 'questions') {
+        return questions;
       }
     });
     TestBed.configureTestingModule({

@@ -12,6 +12,7 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
+import { CompletedSubmissionStorageKey, ConfigStorageKey, PendingSubmissionStorageKey } from '../storage/storageKey';
 
 /**
  * Declaration of check start service
@@ -56,8 +57,8 @@ export class CheckCompleteService {
   public async submit(startTime): Promise<void> {
     this.appUsageService.store();
     let message;
-    const config = this.storageService.getItem('config');
-    if (config.practice) {
+    const checkConfig = this.storageService.getItem(new ConfigStorageKey());
+    if (checkConfig.practice) {
       return this.onSuccess(startTime);
     }
     const {url, token, queueName} = this.tokenService.getToken('checkComplete');
@@ -67,17 +68,14 @@ export class CheckCompleteService {
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
     const payload = this.storageService.getAllItems();
-    // assemble inputs and audits
-    this.storageService.mergeItems('audit');
-    this.storageService.mergeItems('inputs');
-    // remove keys after merge
-    this.storageService.removeMatchingItems(`audit-`);
-    this.storageService.removeMatchingItems(`inputs-`);
     const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
     excludedItems.forEach(i => delete payload[i]);
+    payload.audits = this.storageService.fetchAllEntriesByKey('audit');
+    payload.inputs = this.storageService.fetchAllEntriesByKey('inputs');
+    payload.answers = this.storageService.fetchAllEntriesByKey('questions');
+    payload.answers = this.storageService.fetchAllEntriesByKey('answers');
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
     payload.schoolUUID = payload && payload.school && payload.school.uuid;
-    const checkConfig = this.storageService.getItem(CheckCompleteService.configStorageKey);
     if (checkConfig.compressCompletedCheck) {
       message = {
         version: 2,
@@ -110,8 +108,8 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   async onSuccess(startTime): Promise<void> {
-    this.storageService.setItem('pending_submission', false);
-    this.storageService.setItem('completed_submission', true);
+    this.storageService.setItem(new PendingSubmissionStorageKey(), false);
+    this.storageService.setItem(new CompletedSubmissionStorageKey(), true);
     // Display pending screen for the minimum configurable time
     const endTime = Date.now();
     const duration = endTime - startTime;
