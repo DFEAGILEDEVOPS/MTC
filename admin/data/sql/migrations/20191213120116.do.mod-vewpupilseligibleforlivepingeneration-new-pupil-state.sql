@@ -14,7 +14,7 @@ ALTER VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
            cp.pinExpiresAt,
            p.currentCheckId
     FROM [mtc_admin].[pupil] p LEFT JOIN
-         [mtc_admin].[check] c ON (c.pupil_id = p.id) LEFT JOIN
+         [mtc_admin].[check] c ON (p.currentCheckId = c.id) LEFT JOIN
          -- We could avoid this join by moving pinExpiresAt to the check (along with the proposed field `pinValidFrom`)
          [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)
     WHERE p.attendanceId IS NULL
