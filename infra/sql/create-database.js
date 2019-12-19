@@ -5,16 +5,11 @@ const config = require('../config')
 const logger = require('../log.service').getLogger()
 
 const dbConfig = {
-  user: config.Sql.Migrator.Username,
-  password: config.Sql.Migrator.Password,
-  server: config.Sql.Server,
+  user: config.Sql.user,
+  password: config.Sql.password,
+  server: config.Sql.server,
   database: 'master',
-  port: config.Sql.Port,
-  pool: {
-    max: config.Sql.Pooling.MaxCount,
-    min: config.Sql.Pooling.MinCount,
-    idleTimeoutMillis: 30000
-  },
+  port: config.Sql.port,
   connectionTimeout: config.Sql.connectionTimeout,
   requestTimeout: config.Sql.requestTimeout
 }
@@ -27,9 +22,9 @@ const createDatabase = async () => {
     }
     logger.info(`attempting to connect to ${dbConfig.server} on ${dbConfig.port} within ${dbConfig.connectionTimeout}ms`)
     await mssql.connect(dbConfig)
-    logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
-    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
-    BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
+    logger.info(`attempting to create database ${config.Sql.database} ${azureOnlyScaleSetting} if it does not already exist...`)
+    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.database}')
+    BEGIN CREATE DATABASE [${config.Sql.database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     return mssql.query(createDbSql)
   } catch (error) {
     console.error(error)

@@ -1,39 +1,28 @@
 'use strict'
+
 require('dotenv').config()
 const toBool = require('to-bool')
-const sql = require('./sql/sql.config')
 const yargs = require('yargs').argv
-const twoMinutesInMilliseconds = 120000
 
-const getEnvironment = () => {
-  return process.env.ENVIRONMENT_NAME || 'Local-Dev'
-}
+const thirtySecondsInMilliseconds = 30000
+const oneMinuteInMilliseconds = 60000
+const twoMinutesInMilliseconds = 120000
 
 module.exports = {
   LogLevel: process.env.LOG_LEVEL || 'info',
-  Environment: getEnvironment(),
+  Environment: process.env.ENVIRONMENT_NAME || 'Local-Dev',
   Sql: {
-    Database: yargs.database || sql.database,
-    Server: yargs.dbserver || sql.server,
-    Port: sql.port,
-    requestTimeout: sql.requestTimeout,
-    connectionTimeout: sql.connectionTimeout,
-    Encrypt: sql.options.encrypt,
-    Application: {
-      Name: sql.options.appName,
-      Username: yargs.dbuser || sql.user,
-      Password: yargs.dbpassword || sql.password
-    },
-    Pooling: {
-      MinCount: sql.pool.min,
-      MaxCount: sql.pool.max,
-      // DEPRECATED - not supported in MSSQL
-      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
-    },
-    Migrator: {
-      Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
-      Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
+    database: yargs.database || process.env.SQL_DATABASE || 'mtc',
+    server: yargs.dbserver || process.env.SQL_SERVER || 'localhost',
+    port: process.env.SQL_PORT ? parseInt(process.env.SQL_PORT) : 1433,
+    requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || oneMinuteInMilliseconds,
+    connectionTimeout: parseInt(process.env.SQL_CONNECT_TIMEOUT, 10) || thirtySecondsInMilliseconds,
+    migrationTimeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds,
+    user: yargs.dbuser || process.env.SQL_ADMIN_USER || 'sa', // docker default
+    password: yargs.dbpassword || process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
+    options: {
+      appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
+      encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true
     },
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
@@ -41,8 +30,7 @@ module.exports = {
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
-    },
-    AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false
+    }
   },
   DatabaseRetry: {
     MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,

@@ -48,14 +48,14 @@ class Migrator extends Postgrator {
 const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
   driver: 'mssql',
-  host: config.Sql.Server,
+  host: config.Sql.server,
   // Required for when SQL_PORT is passed in via docker-compose
-  port: parseInt(config.Sql.Port),
-  database: config.Sql.Database,
-  username: config.Sql.Migrator.Username,
-  password: config.Sql.Migrator.Password,
-  requestTimeout: config.Sql.Migrator.Timeout,
-  connectionTimeout: config.Sql.Migrator.Timeout,
+  port: parseInt(config.Sql.port),
+  database: config.Sql.database,
+  username: config.Sql.user,
+  password: config.Sql.password,
+  requestTimeout: config.Sql.migrationTimeout,
+  connectionTimeout: config.Sql.connectionTimeout,
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {
