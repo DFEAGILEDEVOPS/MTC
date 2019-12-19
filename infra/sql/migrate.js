@@ -10,6 +10,7 @@ const {
   sortMigrationsDesc
 } = require('postgrator/lib/utils.js')
 const createDatabaseIfNotExists = require('./create-database')
+const yargs = require('yargs').argv
 
 class Migrator extends Postgrator {
   /*
@@ -89,7 +90,7 @@ const runMigrations = async (version) => {
   }
 }
 
-runMigrations(process.argv[2] || 'max')
+runMigrations(yargs.version || 'max')
   .then(() => {
     logger.info('Done')
     process.exit(0)

@@ -1,99 +1,40 @@
 'use strict'
 
-const Request = require('tedious').Request
-const Connection = require('tedious').Connection
+const mssql = require('mssql')
 const config = require('../config')
 const logger = require('../log.service').getLogger()
 
-const adminConfig = {
+const dbConfig = {
+  user: config.Sql.Migrator.Username,
+  password: config.Sql.Migrator.Password,
   server: config.Sql.Server,
-  options: {
-    database: 'master',
-    encrypt: config.Sql.Encrypt,
-    requestTimeout: config.Sql.Migrator.Timeout,
-    port: config.Sql.Port,
-    connectTimeout: config.Sql.Migrator.Timeout
+  database: 'master',
+  port: config.Sql.Port,
+  pool: {
+    max: config.Sql.Pooling.MaxCount,
+    min: config.Sql.Pooling.MinCount,
+    idleTimeoutMillis: 30000
   },
-  authentication: {
-    type: 'default',
-    options: {
-      userName: config.Sql.Migrator.Username,
-      password: config.Sql.Migrator.Password
-    }
-  },
-  appName: config.Sql.Application.Name,
-  debug: {
-    packet: false,
-    data: true,
-    payload: false,
-    token: false
-  }
+  connectionTimeout: config.Sql.connectionTimeout,
+  requestTimeout: config.Sql.requestTimeout
 }
 
-const executeRequest = (connection, sql) => {
-  return new Promise((resolve, reject) => {
-    const results = []
-    // http://tediousjs.github.io/tedious/api-request.html
-    var request = new Request(sql, function (err, rowCount) {
-      if (err) {
-        return reject(err)
-      }
-      return resolve(results)
-    })
-
-    request.on('row', function (cols) {
-      results.push(cols)
-    })
-    connection.execSql(request)
-  })
-}
-
-const createDatabase = async (connection) => {
+const createDatabase = async () => {
   try {
     let azureOnlyScaleSetting = ''
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
+    logger.info(`attempting to connect to ${dbConfig.server} on ${dbConfig.port} within ${dbConfig.connectionTimeout}ms`)
+    await mssql.connect(dbConfig)
     logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
     const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
     BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
-    const output = await executeRequest(connection, createDbSql)
-    logger.info(output[0][0].value)
+    return mssql.query(createDbSql)
   } catch (error) {
     console.error(error)
   }
 }
 
-const main = () => {
-  return new Promise((resolve, reject) => {
-    logger.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
-    const connection = new Connection(adminConfig)
-    connection.on('connect', async (err) => {
-      if (err) {
-        logger.error(`Connection error 1: ${err.message}`)
-        return reject(err)
-      }
-      logger.info('About to create new database')
-      await createDatabase(connection)
-      logger.info('DB Created')
-      connection.close()
-      resolve()
-    })
-    connection.on('error', (error) => {
-      logger.error(`Connection error 2: ${error.message}`)
-      return reject(error)
-    })
-    connection.on('debug', (text) => {
-      logger.info(`connection debug: ${text}`)
-    })
-    connection.on('infoMessage', (info) => {
-      logger.info(`server info message: ${info.message}`)
-    })
-    connection.on('errorMessage', (info) => {
-      logger.info(`server error message: ${info.message}`)
-    })
-  })
-}
-
 // NB `main` return a Promise because it wraps the `connection.on()` call.  It CAN be awaited on.
-module.exports = main
+module.exports = createDatabase

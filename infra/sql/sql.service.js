@@ -3,7 +3,7 @@
 const R = require('ramda')
 const mssql = require('mssql')
 const dateService = require('../date.service')
-const poolConfig = require('../sql.config')
+const poolConfig = require('./sql.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 

@@ -1,7 +1,8 @@
 'use strict'
 require('dotenv').config()
 const toBool = require('to-bool')
-const sql = require('./sql.config')
+const sql = require('./sql/sql.config')
+const yargs = require('yargs').argv
 const twoMinutesInMilliseconds = 120000
 
 const getEnvironment = () => {
@@ -12,16 +13,16 @@ module.exports = {
   LogLevel: process.env.LOG_LEVEL || 'info',
   Environment: getEnvironment(),
   Sql: {
-    Database: sql.database,
-    Server: sql.server,
+    Database: yargs.database || sql.database,
+    Server: yargs.dbserver || sql.server,
     Port: sql.port,
     requestTimeout: sql.requestTimeout,
     connectionTimeout: sql.connectionTimeout,
     Encrypt: sql.options.encrypt,
     Application: {
       Name: sql.options.appName,
-      Username: sql.user,
-      Password: sql.password
+      Username: yargs.dbuser || sql.user,
+      Password: yargs.dbpassword || sql.password
     },
     Pooling: {
       MinCount: sql.pool.min,

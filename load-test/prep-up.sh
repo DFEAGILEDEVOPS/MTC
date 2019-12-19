@@ -49,10 +49,14 @@ then
 fi
 
 # Run Migrations
-echo "TODO: run admin migrations"
+echo "running database migrations..."
+cd ../infra
+yarn install
+yarn migrate-sql --database $DB_NAME
 
 # Seed Data
-echo "TODO: run admin seeds"
+echo "TODO: run database seeds when custom database name supported"
+# yarn seed-sql --database $DB_NAME
 
 # Update web app & function settings to new database
 echo "updating target database for $ADMIN_APP to $DB_NAME"

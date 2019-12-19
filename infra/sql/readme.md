@@ -17,12 +17,18 @@ Generated migrations have the filename yyyymmddhhmmss.<do|undo>.name.<sql|js>
 
 ## Running migrations
 
-- The migration script will execute *all* migrations up or down to a given version
+- The migration script will execute *all* migrations by default, or up or down to a specific version
 
 ```
-node data/sql/migrate-sql.js
-node data/sql/migrate-sql.js max
-node data/sql/migrate-sql.js yyyymmddhhmmss
+yarn db:up
+yarn db:up --version max
+yarn db:up --version yyyymmddhhmmss
+```
+
+- You can target a specific sql server instance by passing the necessary arguments
+
+```
+yarn db:up --database myTargetDatabase --dbserver myServer --dbuser myAdminUser --dbpassword myPassword
 ```
 
 ## Creating seeds
