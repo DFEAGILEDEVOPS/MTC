@@ -14,11 +14,12 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { LoginErrorService } from '../services/login-error/login-error.service';
 import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { loadConfigMockService } from '../services/config/config.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -67,6 +68,7 @@ describe('LoginComponent', () => {
       imports: [FormsModule, HttpClientTestingModule],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         { provide: Login, useValue: mockLoginModel },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
@@ -114,9 +116,29 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('#pupilPin')).toBeTruthy();
   });
 
+  describe('before login submission', () => {
+    it('should set loginPending to false', async () => {
+      expect(component.loginPending).toBeFalsy();
+    });
+  });
+
+  describe('during login submission', () => {
+    it('should set the loginPending to true', async () => {
+      component.onSubmit('goodPin', 'goodPin');
+      expect(component.loginPending).toBeTruthy();
+    });
+  });
+
   describe('on successful login', () => {
     beforeEach(() => {
       promiseHelper.resolve({ success: 'login okay' });
+    });
+
+    it('should set the loginPending to false', async () => {
+      await component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component.loginPending).toBeFalsy();
+      });
     });
 
     it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
@@ -129,7 +151,7 @@ describe('LoginComponent', () => {
       });
     });
 
-    it('should reject a second submit', async () => {
+    it('should prevent a second submit', async () => {
       component.onSubmit('goodPin', 'goodPin');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
@@ -174,6 +196,13 @@ describe('LoginComponent', () => {
       promiseHelper.reject({ message: 'login failed', status: 401 });
     });
 
+    it('changes the loginPending to be false', async () => {
+      await component.onSubmit('badPin', 'badPin');
+      fixture.whenStable().then(() => {
+        expect(component.loginPending).toBeFalsy();
+      });
+    });
+
     it('redirects to login page when the school and pupil pin credentials are rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
@@ -189,8 +218,8 @@ describe('LoginComponent', () => {
     });
 
     it('redirects to an error page when the connection fails', async () => {
-      component.onSubmit('goodPin', 'goodPin');
       spyOn(loginErrorDiagnosticsService, 'process');
+      component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(loginErrorService.changeMessage).toHaveBeenCalledWith('no connection');
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail']);
@@ -200,6 +229,10 @@ describe('LoginComponent', () => {
     });
   });
   describe('ngOnInit', () => {
+    it('should set the loginPending to false', async () => {
+      component.ngOnInit();
+      expect(component.loginPending).toBeFalsy();
+    });
     it('should navigate to check path with query params if an unfinished check is detected', () => {
       hasUnfinishedCheckSpy.and.returnValue(true);
       component.ngOnInit();
