@@ -24,12 +24,12 @@ const service = {
       const preparedCheckKey = buildKey(check.schoolPin, check.pupilPin)
       const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
       lookupKeys.push({
-        key: buildPreparedCheckLookupKey(check.checkCode),
+        key: redisKeyService.getPreparedCheckLookup(check.checkCode),
         value: preparedCheckKey,
         ttl: ttl
       })
       lookupKeys.push({
-        key: buildPupilUuidLookupKey(check.checkCode),
+        key: redisKeyService.getPupilUuidLookupKey(check.checkCode),
         value: check.pupil.uuid,
         ttl
       })
@@ -64,14 +64,6 @@ const service = {
       return result
     }
   }
-}
-
-function buildPreparedCheckLookupKey (checkCode) {
-  return `prepared-check-lookup:${checkCode}`
-}
-
-function buildPupilUuidLookupKey (checkCode) {
-  return `pupil-uuid-lookup:${checkCode}`
 }
 
 /**

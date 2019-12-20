@@ -20,6 +20,10 @@ const redisKeyService = {
    */
   getPreparedCheckLookup (checkCode) {
     return `prepared-check-lookup:${checkCode}`
+  },
+
+  getPupilUuidLookupKey (checkCode) {
+    return `pupil-uuid-lookup:${checkCode}`
   }
 }
 
