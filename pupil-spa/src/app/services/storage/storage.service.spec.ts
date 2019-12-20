@@ -168,6 +168,9 @@ describe('StorageService', () => {
     });
   });
   describe('fetchAllEntriesByKey', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
     it('stores all items in the corresponding key based category', () => {
       const localStorageKeys = ['audit', 'inputs'];
       localStorageKeys.forEach(c => {
@@ -188,11 +191,13 @@ describe('StorageService', () => {
       expect(baseKeys[1].length).toBe(10);
     });
     it('stores all items in the corresponding key based category based on timestamp order', () => {
-      localStorage.setItem(`audit-1`, JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 100 }));
-      localStorage.setItem(`audit-2`, JSON.stringify({ value: 'value2', clientTimestamp: Date.now() }));
+      localStorage.setItem('audit-1', JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 500 }));
+      localStorage.setItem('audit-2', JSON.stringify({ value: 'value2', clientTimestamp: Date.now() + 1000 }));
+      localStorage.setItem('audit-3', JSON.stringify({ value: 'value3', clientTimestamp: Date.now() }));
       const keyItems = service.fetchAllEntriesByKey('audit');
-      expect(keyItems[0].value).toBe('value2');
+      expect(keyItems[0].value).toBe('value3');
       expect(keyItems[1].value).toBe('value1');
+      expect(keyItems[2].value).toBe('value2');
     });
   });
 });

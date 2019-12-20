@@ -49,10 +49,9 @@ describe('storageKey', () => {
     });
   });
   describe('QuestionsStorageKey', () => {
-    it('should create a composite key with a prefix and suffix', () => {
+    it('should create a static key', () => {
       const questionsStorageKey = new QuestionsStorageKey();
-      expect(questionsStorageKey.toString().split('-')[0]).toBe('questions');
-      expect(questionsStorageKey.toString().split('questions-')[1].length).toEqual(uuidV4.length);
+      expect(questionsStorageKey.toString()).toBe('questions');
     });
   });
   describe('ConfigStorageKey', () => {

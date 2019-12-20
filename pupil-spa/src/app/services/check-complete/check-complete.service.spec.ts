@@ -94,7 +94,7 @@ describe('CheckCompleteService', () => {
     expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setItem).toHaveBeenCalledTimes(2);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
   });
 
@@ -130,7 +130,7 @@ describe('CheckCompleteService', () => {
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
@@ -155,7 +155,7 @@ describe('CheckCompleteService', () => {
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(4);
+    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);

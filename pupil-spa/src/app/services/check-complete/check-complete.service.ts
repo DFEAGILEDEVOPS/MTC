@@ -77,7 +77,6 @@ export class CheckCompleteService {
     });
     payload.audits = this.storageService.fetchAllEntriesByKey('audit');
     payload.inputs = this.storageService.fetchAllEntriesByKey('inputs');
-    payload.questions = this.storageService.fetchAllEntriesByKey('questions');
     payload.answers = this.storageService.fetchAllEntriesByKey('answers');
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
     payload.schoolUUID = payload && payload.school && payload.school.uuid;

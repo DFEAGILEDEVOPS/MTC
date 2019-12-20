@@ -11,6 +11,7 @@ import {
   SchoolStorageKey, TokensStorageKey
 } from '../storage/storageKey';
 
+const questionsStorageKey = new QuestionsStorageKey();
 const configStorageKey = new ConfigStorageKey();
 const pupilStorageKey = new PupilStorageKey();
 const schoolStorageKey = new SchoolStorageKey();
@@ -36,11 +37,7 @@ export class UserService {
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
-          const questions = data['questions'] ? data['questions'] : [];
-          questions.forEach(q => {
-            const questionsStorageKey = new QuestionsStorageKey();
-            this.storageService.setItem(questionsStorageKey, q);
-          });
+          this.storageService.setItem(questionsStorageKey, data[questionsStorageKey.toString()]);
           this.storageService.setItem(configStorageKey, data[configStorageKey.toString()]);
           this.storageService.setItem(pupilStorageKey, data[pupilStorageKey.toString()]);
           this.storageService.setItem(schoolStorageKey, data[schoolStorageKey.toString()]);

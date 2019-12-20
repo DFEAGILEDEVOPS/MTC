@@ -58,7 +58,6 @@ export class QuestionsStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'questions';
-    this.suffix = uuid.v4();
   }
 }
 
