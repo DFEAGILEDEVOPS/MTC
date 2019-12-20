@@ -68,11 +68,16 @@ export class CheckCompleteService {
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
     const payload = this.storageService.getAllItems();
-    const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
-    excludedItems.forEach(i => delete payload[i]);
+    const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission',
+      'audit', 'inputs', 'questions', 'answers'];
+    const payloadKeys = Object.keys(payload);
+    excludedItems.forEach(i => {
+      const matches = payloadKeys.filter(p => p.indexOf(i) >= 0);
+      matches.forEach(m => delete payload[m]);
+    });
     payload.audits = this.storageService.fetchAllEntriesByKey('audit');
     payload.inputs = this.storageService.fetchAllEntriesByKey('inputs');
-    payload.answers = this.storageService.fetchAllEntriesByKey('questions');
+    payload.questions = this.storageService.fetchAllEntriesByKey('questions');
     payload.answers = this.storageService.fetchAllEntriesByKey('answers');
     payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
     payload.schoolUUID = payload && payload.school && payload.school.uuid;
