@@ -10,6 +10,8 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AccessArrangementsStorageKey } from '../services/storage/storageKey';
 
+const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
+
 @Component({
   selector: 'app-aa-colours',
   templateUrl: './aa-colours.component.html',
@@ -32,7 +34,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     private speechService: SpeechService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.accessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
+    this.accessArrangements = this.storageService.getItem(accessArrangementsStorageKey);
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
@@ -48,10 +50,10 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedContrast = selectedContrast;
   }
 
-  async onClick() {
+  onClick() {
     this.accessArrangements.contrast = this.selectedContrast;
-    this.storageService.setItem(new AccessArrangementsStorageKey(), this.accessArrangements);
-    await this.pupilPrefsService.storePupilPrefs();
+    this.storageService.setItem(accessArrangementsStorageKey, this.accessArrangements);
+    this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);

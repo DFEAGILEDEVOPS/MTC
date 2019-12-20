@@ -1,7 +1,6 @@
 import * as Subject from './check-marker.v1'
 import uuid = require('uuid')
 import moment = require('moment')
-import { ValidatedCheck } from '../../schemas/models'
 import { IAsyncTableService } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
@@ -9,6 +8,7 @@ import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
+import { ReceivedCheckTableEntity } from '../../schemas/models'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -62,7 +62,7 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is empty', async () => {
 
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -93,7 +93,7 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when answers is not an array', async () => {
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -124,7 +124,7 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -159,7 +159,7 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -194,7 +194,7 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -230,7 +230,7 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -293,7 +293,7 @@ describe('check-marker/v1', () => {
         clientTimestamp: '2018-09-24T12:00:03.963Z'
       }
     ]
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -356,7 +356,7 @@ describe('check-marker/v1', () => {
         clientTimestamp: '2018-09-24T12:00:03.963Z'
       }
     ]
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -419,7 +419,7 @@ describe('check-marker/v1', () => {
         clientTimestamp: '2018-09-24T12:00:03.963Z'
       }
     ]
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -474,7 +474,7 @@ describe('check-marker/v1', () => {
         clientTimestamp: '2018-09-24T12:00:00.811Z'
       }
     ]
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
       archive: 'foo',
@@ -507,7 +507,7 @@ describe('check-marker/v1', () => {
 
   test('check notification is dispatched when marking unsuccessful', async () => {
     const checkCode = uuid.v4()
-    const validatedCheckEntity: ValidatedCheck = {
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: checkCode,
       archive: 'foo',

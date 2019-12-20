@@ -10,6 +10,8 @@ import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { AccessArrangementsStorageKey, PupilStorageKey } from '../services/storage/storageKey';
 
+const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
+
 @Component({
   selector: 'app-aa-fonts',
   templateUrl: './aa-fonts.component.html',
@@ -33,7 +35,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     private speechService: SpeechService
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
-    this.accessArrangements = this.storageService.getItem(new AccessArrangementsStorageKey());
+    this.accessArrangements = this.storageService.getItem(accessArrangementsStorageKey);
     this.selectedSize = this.accessArrangements.fontSize || 'regular';
     this.checkValidSelection();
 
@@ -45,10 +47,10 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     this.checkValidSelection();
   }
 
-  async onClick() {
+  onClick() {
     this.accessArrangements.fontSize = this.selectedSize;
-    this.storageService.setItem(new AccessArrangementsStorageKey(), this.accessArrangements);
-    await this.pupilPrefsService.storePupilPrefs();
+    this.storageService.setItem(accessArrangementsStorageKey, this.accessArrangements);
+    this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);
