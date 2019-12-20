@@ -7,11 +7,15 @@ import completeCheckPayload from '../../schemas/complete-check-payload'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
   const message = JSON.parse(JSON.stringify(submittedCheck))
+  const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
   message.checkCode = req.query['checkCode'] || uuid()
   message.schoolUUID = uuid()
-  // enable to create an invalid check
-  // delete completeCheckPayload.answers
-  const archive = lz.compressToUTF16(JSON.stringify(completeCheckPayload))
+  // create an invalid check
+  if (req.query['bad']) {
+    context.log('creating invalid check...')
+    delete samplePayload.answers
+  }
+  const archive = lz.compressToUTF16(JSON.stringify(samplePayload))
   message.archive = archive
   context.bindings.submittedCheckQueue = [ message ]
   context.done()
