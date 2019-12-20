@@ -21,7 +21,7 @@ const service = {
     const lookupKeys = []
     const cacheItems = checks.map(check => {
       const preparedCheck = constructPreparedCheck(check)
-      const preparedCheckKey = buildKey(check.schoolPin, check.pupilPin)
+      const preparedCheckKey = redisKeyService.getPreparedCheckKey(check.schoolPin, check.pupilPin)
       const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
       lookupKeys.push({
         key: redisKeyService.getPreparedCheckLookup(check.checkCode),
@@ -97,10 +97,6 @@ function constructPreparedCheck (check) {
     updatedAt: moment()
   }
   return entity
-}
-
-function buildKey (schoolPin, pupilPin) {
-  return `preparedCheck:${schoolPin}:${pupilPin}`
 }
 
 module.exports = service

@@ -22,8 +22,21 @@ const redisKeyService = {
     return `prepared-check-lookup:${checkCode}`
   },
 
+  /**
+   * the key used to store the ancillary pupil uuid lookup by check code
+   * @param {string} checkCode
+   */
   getPupilUuidLookupKey (checkCode) {
     return `pupil-uuid-lookup:${checkCode}`
+  },
+
+  /**
+   * return the key used to store the prepared check entry for pupil API
+   * @param {string} schoolPin
+   * @param {number} pupilPin
+   */
+  getPreparedCheckKey (schoolPin, pupilPin) {
+    return `preparedCheck:${schoolPin}:${pupilPin}`
   }
 }
 
