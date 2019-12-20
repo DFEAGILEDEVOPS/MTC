@@ -83,7 +83,7 @@ describe('CheckCompleteService', () => {
       capturedMessage = message;
       return Promise.resolve({});
     });
-    spyOn(storageService, 'fetchAllEntriesByKey');
+    spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe('CheckCompleteService', () => {
     expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setItem).toHaveBeenCalledTimes(2);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
+    expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
   });
 
@@ -112,6 +112,7 @@ describe('CheckCompleteService', () => {
         uuid: expectedSchoolUUID
       }
     });
+    spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
     await checkCompleteService.submit(Date.now());
     expect(tokenService.getToken).toHaveBeenCalledWith('checkComplete');
   });
@@ -126,11 +127,10 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
     spyOn(azureQueueService, 'addMessage')
       .and.returnValue(Promise.reject(new Error('error')));
-    spyOn(storageService, 'fetchAllEntriesByKey');
+    spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
@@ -146,16 +146,16 @@ describe('CheckCompleteService', () => {
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
     spyOn(storageService, 'setItem');
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
+    spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     const sasTokenExpiredError = {
       statusCode: 403,
       authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
     };
     spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(sasTokenExpiredError));
-    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(3);
+    expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
@@ -171,15 +171,57 @@ describe('CheckCompleteService', () => {
     spyOn(tokenService, 'getToken');
     spyOn(storageService, 'setItem');
     spyOn(storageService, 'getAllItems');
+    spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     spyOn(azureQueueService, 'addMessage');
-    spyOn(storageService, 'fetchAllEntriesByKey');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(0);
-    expect(storageService.fetchAllEntriesByKey).toHaveBeenCalledTimes(0);
+    expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(0);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
     expect(storageService.setItem).toHaveBeenCalledTimes(2);
     expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+  });
+
+  describe('getAllEntriesByKey', () => {
+      it('stores all items in the corresponding key based category based on timestamp order', () => {
+        const localStorageItems = {
+          'audit-1': { value: 'value1', clientTimestamp: Date.now() + 500 },
+          'audit-2': { value: 'value2', clientTimestamp: Date.now() + 1000 },
+          'audit-3': { value: 'value3', clientTimestamp: Date.now() },
+        };
+        const keyItems = checkCompleteService.getAllEntriesByKey('audit', localStorageItems);
+        expect(keyItems[0].value).toBe('value3');
+        expect(keyItems[1].value).toBe('value1');
+        expect(keyItems[2].value).toBe('value2');
+      });
+  });
+  describe('getPayload', () => {
+    it('stores all items in the corresponding key based category based on timestamp order', () => {
+      const localStorageItems = {
+        'audit-1': { value: 'value1', clientTimestamp: Date.now() + 500 },
+        'audit-2': { value: 'value2', clientTimestamp: Date.now() + 1000 },
+        'audit-3': { value: 'value3', clientTimestamp: Date.now() },
+        'pupil': {
+          'checkCode': 'checkCode'
+        },
+        'school': {
+          'uuid': 'schoolUUID'
+        }
+      };
+      const keyEntries = [
+        { value: 'value1', clientTimestamp: Date.now() + 500 },
+        { value: 'value2', clientTimestamp: Date.now() + 1000 },
+        { value: 'value3', clientTimestamp: Date.now() }
+      ];
+      spyOn(checkCompleteService, 'getAllEntriesByKey').and.returnValue(keyEntries);
+      const payload = checkCompleteService.getPayload(localStorageItems);
+      expect(payload['audit']).toEqual(keyEntries);
+      expect(payload['checkCode']).toEqual('checkCode');
+      expect(payload['schoolUUID']).toEqual('schoolUUID');
+      expect(Object.keys(payload))
+        .toEqual(['checkCode', 'schoolUUID', 'config', 'device', 'pupil',
+          'questions', 'school', 'tokens', 'audit', 'inputs', 'answers']);
+    });
   });
 });

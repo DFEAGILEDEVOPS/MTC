@@ -48,17 +48,17 @@ describe('AnswerService', () => {
     service.setAnswer(answer1);
     answer1.question = '1x1';
     answer1.clientTimestamp = new Date('1970-01-01');
-    const expected = [toPoJo(answer1)];
-    const actual = storageService.fetchAllEntriesByKey('answers');
-    expect(actual).toEqual(expected);
+    const expected = toPoJo(answer1);
+    const items = storageService.getAllItems();
+    expect(items[Object.keys(items)[0]]).toEqual(expected);
   });
 
   it('should not add duplicate answers', () => {
     const answer = new Answer(1, 1, '1', 1);
     spyOn(storageService, 'setItem');
-    spyOn(storageService, 'fetchAllEntriesByKey').and.returnValues(
-      [], // 1st call
-      [ answer ] // 2nd call
+    spyOn(storageService, 'getAllItems').and.returnValues(
+      {}, // 1st call
+      { 'answer-1': answer } // 2nd call
     );
     service.setAnswer(answer);
     service.setAnswer(answer);
@@ -69,9 +69,9 @@ describe('AnswerService', () => {
     const answer = new Answer(9, 8, '1', 20);
     spyOn(storageService, 'setItem');
     const auditServiceAddEntrySpy = spyOn(auditService, 'addEntry');
-    spyOn(storageService, 'fetchAllEntriesByKey').and.returnValues(
-      [], // 1st call
-      [ answer ] // 2nd call
+    spyOn(storageService, 'getAllItems').and.returnValues(
+      {}, // 1st call
+      { 'answer-1': answer } // 2nd call
     );
     service.setAnswer(answer);
     service.setAnswer(answer);

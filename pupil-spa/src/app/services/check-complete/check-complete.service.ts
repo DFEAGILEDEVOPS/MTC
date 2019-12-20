@@ -12,7 +12,7 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
-import { CompletedSubmissionStorageKey, ConfigStorageKey, PendingSubmissionStorageKey } from '../storage/storageKey';
+import { CompletedSubmissionStorageKey, ConfigStorageKey, PendingSubmissionStorageKey, StorageKeyPrefix } from '../storage/storageKey';
 
 /**
  * Declaration of check start service
@@ -67,24 +67,13 @@ export class CheckCompleteService {
       errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
-    const payload = this.storageService.getAllItems();
-    const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission',
-      'audit', 'inputs', 'questions', 'answers'];
-    const payloadKeys = Object.keys(payload);
-    excludedItems.forEach(i => {
-      const matches = payloadKeys.filter(p => p.indexOf(i) >= 0);
-      matches.forEach(m => delete payload[m]);
-    });
-    payload.audits = this.storageService.fetchAllEntriesByKey('audit');
-    payload.inputs = this.storageService.fetchAllEntriesByKey('inputs');
-    payload.answers = this.storageService.fetchAllEntriesByKey('answers');
-    payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-    payload.schoolUUID = payload && payload.school && payload.school.uuid;
+    const items = this.storageService.getAllItems();
+    const payload = this.getPayload(items);
     if (checkConfig.compressCompletedCheck) {
       message = {
         version: 2,
-        checkCode: payload.checkCode,
-        schoolUUID: payload.schoolUUID,
+        checkCode: payload['checkCode'],
+        schoolUUID: payload['schoolUUID'],
         archive: CompressorService.compress(JSON.stringify(payload))
       };
     } else {
@@ -104,6 +93,48 @@ export class CheckCompleteService {
         this.router.navigate(['/submission-failed']);
       }
     }
+  }
+
+  /**
+   * Get all entries matching a key
+   * @param {String} key
+   * @param {Object} items
+   * @returns {Array}
+   */
+  getAllEntriesByKey(key: string, items: object): any {
+    const matchingKeys =
+      Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
+    const sortedMatchingKeys = matchingKeys.sort((a, b) =>
+      new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
+    );
+    const matchingItems = [];
+    sortedMatchingKeys.forEach(s => {
+      matchingItems.push(items[s]);
+    });
+    return matchingItems;
+  }
+
+  /**
+   * Get check payload for submission
+   * @param {Object} items
+   * @returns {Object}
+   */
+  getPayload(items: object): object {
+    const payload = {
+      checkCode: undefined,
+      schoolUUID: undefined,
+    };
+    const includedSingularItems = ['config', 'device', 'pupil', 'questions', 'school', 'tokens'];
+    const includedMultipleItems = ['audit', 'inputs', 'answers'];
+    includedSingularItems.forEach(i => {
+      payload[i] = items[i];
+    });
+    includedMultipleItems.forEach(i => {
+      payload[i] = this.getAllEntriesByKey(i, items);
+    });
+    payload.checkCode = items && items['pupil'] && items['pupil'].checkCode;
+    payload.schoolUUID = items && items['school'] && items['school'].uuid;
+    return payload;
   }
 
   /**

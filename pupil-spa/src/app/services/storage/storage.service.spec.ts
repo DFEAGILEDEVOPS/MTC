@@ -167,37 +167,4 @@ describe('StorageService', () => {
       expect(localStorageItems[items[2].key]).toEqual('foo-bar');
     });
   });
-  describe('fetchAllEntriesByKey', () => {
-    beforeEach(() => {
-      localStorage.clear();
-    });
-    it('stores all items in the corresponding key based category', () => {
-      const localStorageKeys = ['audit', 'inputs'];
-      localStorageKeys.forEach(c => {
-        for (let i = 0; i < 10; i++) {
-          const itemValue = {
-            value: `value_${i}`,
-            clientTimestamp: Date.now()
-          };
-          localStorage.setItem(`${c}-${uuid.v4()}`, JSON.stringify(itemValue));
-        }
-      });
-      const baseKeys = [];
-      localStorageKeys.forEach(c => {
-        // @ts-ignore
-        baseKeys.push(service.fetchAllEntriesByKey(c));
-      });
-      expect(baseKeys[0].length).toBe(10);
-      expect(baseKeys[1].length).toBe(10);
-    });
-    it('stores all items in the corresponding key based category based on timestamp order', () => {
-      localStorage.setItem('audit-1', JSON.stringify({ value: 'value1', clientTimestamp: Date.now() + 500 }));
-      localStorage.setItem('audit-2', JSON.stringify({ value: 'value2', clientTimestamp: Date.now() + 1000 }));
-      localStorage.setItem('audit-3', JSON.stringify({ value: 'value3', clientTimestamp: Date.now() }));
-      const keyItems = service.fetchAllEntriesByKey('audit');
-      expect(keyItems[0].value).toBe('value3');
-      expect(keyItems[1].value).toBe('value1');
-      expect(keyItems[2].value).toBe('value2');
-    });
-  });
 });

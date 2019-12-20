@@ -49,18 +49,4 @@ export class StorageService {
       return obj;
     }, {});
   }
-
-  fetchAllEntriesByKey(key: StorageKeyPrefix): any {
-    const localStorageItems = this.getAllItems();
-    const matchingKeys =
-      Object.keys(localStorageItems).filter(lsi => lsi.startsWith(key.toString()));
-    const sortedMatchingKeys = matchingKeys.sort((a, b) =>
-      new Date(localStorageItems[a].clientTimestamp).getTime() - new Date(localStorageItems[b].clientTimestamp).getTime()
-    );
-    const matchingItems = [];
-    sortedMatchingKeys.forEach(s => {
-      matchingItems.push(localStorageItems[s]);
-    });
-    return matchingItems;
-  }
 }

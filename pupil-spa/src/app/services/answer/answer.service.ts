@@ -29,7 +29,13 @@ export class AnswerService {
    * @return [Answer?] - empty array or array of answers
    */
   private getPreviousAnswers(answer: Answer) {
-    const answers = this.storageService.fetchAllEntriesByKey('answers');
+    const localStorageItems = this.storageService.getAllItems();
+    const matchingAnswerKeys =
+      Object.keys(localStorageItems).filter(lsi => lsi.startsWith('answer'));
+    const answers = [];
+    matchingAnswerKeys.forEach(s => {
+      answers.push(localStorageItems[s]);
+    });
     return answers.filter(
       x => {
         if (x.sequenceNumber === answer.sequenceNumber
