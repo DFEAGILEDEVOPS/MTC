@@ -48,15 +48,18 @@ then
     --partner-server $SQL_SERVER_REPLICA --service-objective $DB_SCALE
 fi
 
+echo "set admin.env.SQL_DATABASE to $DB_NAME"
+read -p "once you have saved the .env file change, press enter to continue..."
+
 # Run Migrations
 echo "running database migrations..."
-cd ../infra
+cd ../admin
 yarn install
-yarn migrate-sql --database $DB_NAME
+yarn migrate-sql
 
 # Seed Data
 echo "TODO: run database seeds when custom database name supported"
-# yarn seed-sql --database $DB_NAME
+yarn migrate-sql
 
 # Update web app & function settings to new database
 echo "updating target database for $ADMIN_APP to $DB_NAME"
