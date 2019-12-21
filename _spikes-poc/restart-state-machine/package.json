@@ -1,0 +1,11 @@
+{
+  "name": "restart-state-machine",
+  "version": "1.0.0",
+  "description": "restarts as a state machine",
+  "main": "index.js",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "xstate": "^4.7.3"
+  }
+}
