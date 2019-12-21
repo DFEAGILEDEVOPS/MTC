@@ -6,7 +6,7 @@ import { Machine } from 'xstate'
 // collected
 // submitted
 // complete
-// void
+// rejected / invalid
 
 // events...
 // ALLOCATE
@@ -14,7 +14,7 @@ import { Machine } from 'xstate'
 // RECEIVED
 // PROCESSING_FAILED
 // PROCESSING_SUCCESS
-// VOID
+// RESTART
 
 const checkMachine = Machine({
   id: 'check',
@@ -40,11 +40,19 @@ const checkMachine = Machine({
     },
     submitted: {
       on: {
-        PROCESSING_FAILED: 'void',
+        PROCESSING_FAILED: 'rejected',
         PROCESSING_SUCCESS: 'complete'
       }
     },
-    complete: {},
-    void: {}
+    complete: {
+      type: "final" // can we restart after completion?
+    },
+    rejected: {
+      on: {
+        RESTART: 'untaken' // TODO context.restarts++
+      }
+    }
   }
 })
+
+export default checkMachine

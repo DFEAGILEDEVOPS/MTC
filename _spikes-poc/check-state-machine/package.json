@@ -6,6 +6,12 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "dependencies": {
+    "typescript": "^3.7.4",
     "xstate": "^4.7.3"
+  },
+  "scripts": {
+    "build": "tsc -b --v",
+    "clean": "rm -rf ./dist",
+    "start": "yarn build && node ./dist/index.js"
   }
 }
