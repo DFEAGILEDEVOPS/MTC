@@ -10,4 +10,3 @@ checkService.send('ALLOCATE')
 checkService.send('LOGIN')
 checkService.send('RECEIVED')
 checkService.send('PROCESSING_SUCCESS')
-

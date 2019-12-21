@@ -45,7 +45,7 @@ const checkMachine = Machine({
       }
     },
     complete: {
-      type: "final" // can we restart after completion?
+      type: 'final' // can we restart after completion?
     },
     rejected: {
       on: {

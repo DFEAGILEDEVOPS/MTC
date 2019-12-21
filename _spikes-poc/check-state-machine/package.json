@@ -6,6 +6,8 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "dependencies": {
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^9.0.0",
     "typescript": "^3.7.4",
     "xstate": "^4.7.3"
   },
