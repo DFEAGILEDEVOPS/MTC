@@ -14,18 +14,9 @@ export class CheckNotifier {
   async notify (notification: ICheckNotificationMessage) {
     switch (notification.notificationType) {
       case CheckNotificationType.checkInvalid:
-        throw new Error('not yet implemented')
+        return this.checkNotifierDataService.markCheckAsProcessingFailed(notification.checkCode)
       case CheckNotificationType.checkComplete:
         return this.checkNotifierDataService.updateCheckAsComplete(notification.checkCode)
     }
   }
-}
-
-export enum CheckStatus {
-  New = 1,
-  // Expired = 2, To be removed
-  Complete = 3,
-  Started = 4,
-  Collected = 5,
-  NotReceived = 6
 }
