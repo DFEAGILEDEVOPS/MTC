@@ -148,9 +148,8 @@ Feature: Generate Pupil PINs
 
   @redis @no_active_check_window
   Scenario: Generate Pin Overview page display error if there is no active check window
-    Given I have signed in with teacher2
-    And I am on the generate pupil pins page
-    Then I should see an error message to contact helpdesk
+    Given I am on the generate pupil pins page after logging in with teacher2
+    Then I should see an error message stating the service is unavailable
 
   Scenario: Generate pins page has related content
     Given I have signed in with teacher2

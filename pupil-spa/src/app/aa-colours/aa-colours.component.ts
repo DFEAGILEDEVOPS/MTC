@@ -48,10 +48,10 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedContrast = selectedContrast;
   }
 
-  async onClick() {
+  onClick() {
     this.accessArrangements.contrast = this.selectedContrast;
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
-    await this.pupilPrefsService.storePupilPrefs();
+    this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {
       this.router.navigate(['access-settings']);
