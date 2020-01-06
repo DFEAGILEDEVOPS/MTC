@@ -24,7 +24,7 @@ describe('pupil validator', function () {
       upn: 'H801200001001',
       'dob-day': '01',
       'dob-month': '02',
-      'dob-year': '2010',
+      'dob-year': ((new Date()).getFullYear() - 9).toString(),
       gender: 'M',
       ageReason: ''
     }
@@ -669,6 +669,7 @@ describe('pupil validator', function () {
         req.body.gender = 'f'
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
+        console.log(validationError)
         expect(validationError.hasError()).toBeFalsy()
       })
     })
