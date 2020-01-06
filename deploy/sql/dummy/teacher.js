@@ -1,7 +1,7 @@
 'use strict'
 
 const sql = require('mssql')
-const config = require('../config')
+const config = require('../../../infra/config')
 
 const teacherCount = 50000
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
