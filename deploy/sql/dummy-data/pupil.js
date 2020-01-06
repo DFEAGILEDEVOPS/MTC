@@ -1,7 +1,7 @@
 'use strict'
 
 const sql = require('mssql')
-const config = require('../../../infra/config')
+const config = require('../config')
 const uuid = require('uuid/v4')
 
 const pupilCountPerSchool = 30
