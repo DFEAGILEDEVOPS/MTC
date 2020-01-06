@@ -669,7 +669,6 @@ describe('pupil validator', function () {
         req.body.gender = 'f'
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
-        console.log(validationError)
         expect(validationError.hasError()).toBeFalsy()
       })
     })
