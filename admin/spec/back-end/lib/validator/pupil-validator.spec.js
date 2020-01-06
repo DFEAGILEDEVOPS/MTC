@@ -24,7 +24,7 @@ describe('pupil validator', function () {
       upn: 'H801200001001',
       'dob-day': '01',
       'dob-month': '02',
-      'dob-year': '2010',
+      'dob-year': ((new Date()).getFullYear() - 9).toString(),
       gender: 'M',
       ageReason: ''
     }
