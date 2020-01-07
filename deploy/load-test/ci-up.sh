@@ -3,7 +3,8 @@
 # exit on error
 set -e
 
-### Azure CLI script to initialise load-test environment with fresh database
+### Azure CLI script to initialise load-test sql db
+
 # Create Database with unique name
 # Bind replica (optional)
 # Run Migrations
@@ -12,8 +13,6 @@ set -e
 # Enable / Disable admin app replica read mode
 # Update function consumption app database name setting
 # Update function app service database name setting
-# Run load test (manual operation)
-# Delete Database
 
 ### script arguments
 # $1  main resource group
@@ -24,8 +23,10 @@ set -e
 # $6  function consumption instance name
 # $7  function app service instance name
 # $8  sql replica server name
-# $9  sql server user (for running migrations)
-# $10 sql server user password
+
+### environment variables
+# SQL_ADMIN_USER username of priveliged user to execute migrations
+# SQL_ADMIN_USER_PASSWORD password of priveliged user
 
 RES_GROUP=$1
 RES_GROUP_FUNCTIONS=$2
@@ -36,10 +37,12 @@ FUNC_CONSUMP=$6
 FUNC_APPSVC=$7
 SQL_SERVER_REPLICA=$8
 
+SQL_AZURE_FQDN="database.windows.net"
+
 ### Create database with unique name
 DB_SUFFIX=$(openssl rand -hex 4)
 SQL_DATABASE="mtc-load-test-$DB_SUFFIX"
-echo "creating database $SQL_DATABASE on $SQL_SERVER.database.windows.net..."
+echo "creating database $SQL_DATABASE on $SQL_SERVER.$SQL_AZURE_FQDN..."
 az sql db create -g $RES_GROUP -s $SQL_SERVER -n $SQL_DATABASE --service-objective $DB_SCALE
 
 ### Create replica
@@ -54,10 +57,14 @@ fi
 echo "running database migrations..."
 cd ../../admin
 yarn install
-SQL_SERVER="$SQL_SERVER.database.windows.net" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
+
 # Seed Data
 echo "running database seeds..."
-SQL_SERVER="$SQL_SERVER.database.windows.net" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn seed-sql
+cd ../deploy/sql
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:schools
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:pupils
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:teachers
 
 ### Update web app & function settings to new database
 echo "updating target database for $ADMIN_APP to $SQL_DATABASE"
@@ -66,7 +73,7 @@ az webapp config appsettings set -g $RES_GROUP -n $ADMIN_APP --settings SQL_DATA
 if [ $SQL_SERVER_REPLICA ]
 then
   echo "configuring read replica for $ADMIN_APP..."
-  REPLICA_FULL_NAME="$SQL_SERVER_REPLICA.database.windows.net"
+  REPLICA_FULL_NAME="$SQL_SERVER_REPLICA.$SQL_AZURE_FQDN"
   az webapp config appsettings set -g $RES_GROUP -n $ADMIN_APP \
     --settings SQL_ALLOW_REPLICA_FOR_READS=true SQL_DATABASE_REPLICA=$SQL_DATABASE SQL_SERVER_REPLICA=$REPLICA_FULL_NAME  > /dev/null
 else
@@ -80,13 +87,5 @@ az webapp config appsettings set -g $RES_GROUP_FUNCTIONS -n $FUNC_CONSUMP --sett
 echo "updating target database for $FUNC_APPSVC to $SQL_DATABASE"
 az webapp config appsettings set -g $RES_GROUP_FUNCTIONS -n $FUNC_APPSVC --settings SQL_DATABASE=$SQL_DATABASE  > /dev/null
 
-read -p "Once the load test is complete, press enter to delete database $SQL_DATABASE..."
-az sql db delete --name $SQL_DATABASE -g $RES_GROUP --server $SQL_SERVER --no-wait
-echo "delete database '$SQL_DATABASE' operation submitted to server $SQL_SERVER..."
-
-if [ $SQL_SERVER_REPLICA ]
-then
-  az sql db delete --name $SQL_DATABASE -g $RES_GROUP --server $SQL_SERVER_REPLICA --no-wait
-  echo "delete database $SQL_DATABASE operation submitted to server $SQL_SERVER_REPLICA..."
-fi
+echo "load test environment initialised with new database(s)"
 # DONE

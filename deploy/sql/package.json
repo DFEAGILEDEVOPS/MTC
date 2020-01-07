@@ -8,9 +8,12 @@
   "license": "GPL-3.0",
   "scripts": {
     "db:up": "node ./schema(WIP)/migrate.js",
-    "db:data": "node ./schema(WIP)/seed.js",
+    "db:seed": "node ./schema(WIP)/seed.js",
     "new:migration": "node ./schema(WIP)/create-migration.js",
-    "new:seed": "node ./schema(WIP)/create-seed.js"
+    "new:seed": "node ./schema(WIP)/create-seed.js",
+    "dummy:schools": "node ./dummy-data/school.js",
+    "dummy:pupils": "node ./dummy-data/pupil.js",
+    "dummy:teachers": "node ./dummy-data/teacher.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
