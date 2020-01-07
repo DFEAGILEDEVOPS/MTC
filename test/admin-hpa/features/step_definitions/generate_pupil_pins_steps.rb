@@ -361,7 +361,7 @@ And(/^I should be able to see a count of pupils$/) do
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
 
-Then(/^I should see an error message to contact helpdesk$/) do
+Then(/^I should see an error message stating the service is unavailable$/) do
   sleep 1
   REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
   pupil_register_page.load
@@ -417,4 +417,13 @@ end
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-custom-print-live-pins'
   expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @total_pins + @before_pin_gen
+end
+
+
+Given(/^I am on the generate pupil pins page after logging in with teacher2$/) do
+  expect(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow")).to be_nil
+  step "I have signed in with teacher2"
+  expect(school_landing_page).to be_displayed
+  Timeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
+  expect(JSON.parse(JSON.parse(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow"))['value'])['recordset']).to be_empty
 end
