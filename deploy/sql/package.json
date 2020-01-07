@@ -7,10 +7,10 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "scripts": {
-    "db:up": "node ./sql/migrate.js",
-    "db:data": "node ./sql/seed.js",
-    "new:migration": "node ./sql/create-migration.js",
-    "new:seed": "node ./sql/create-seed.js"
+    "db:up": "node ./schema(WIP)/migrate.js",
+    "db:data": "node ./schema(WIP)/seed.js",
+    "new:migration": "node ./schema(WIP)/create-migration.js",
+    "new:seed": "node ./schema(WIP)/create-seed.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
