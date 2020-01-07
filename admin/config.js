@@ -92,6 +92,7 @@ module.exports = {
   },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
+    DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
