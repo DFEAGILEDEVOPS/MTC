@@ -94,7 +94,7 @@ describe('pupil-register.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: null
       })
-      expect(status).toBe('Not taking the check')
+      expect(status).toBe('Not taking the Check')
     })
 
     test('it can detect a Not Started pupil', () => {
@@ -110,7 +110,7 @@ describe('pupil-register.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: moment().add(4, 'hours')
       })
-      expect(status).toBe('Not Started')
+      expect(status).toBe('Not started')
     })
 
     test('it can detect a PIN Generated pupil', () => {
@@ -206,7 +206,7 @@ describe('pupil-register.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: moment().subtract(1, 'minutes')
       })
-      expect(status).toBe('Not Started')
+      expect(status).toBe('Not started')
     })
 
     test('a test that does not matches anything gets N/A', () => {
@@ -244,7 +244,7 @@ describe('pupil-register.service', () => {
       // Ideally this would show 'Restart' as it would show the teacher that the pupil was a Restart case.  However,
       // this would need the 'restartAvailable' flag to be true, or alternatively an 'isRestart' or a 'checkCount' field
       // on the restart e.g. Restart = checkCount > 1
-      expect(status).toBe('Not Started')
+      expect(status).toBe('Not started')
     })
   })
 
