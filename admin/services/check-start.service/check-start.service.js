@@ -140,6 +140,7 @@ checkStartService.prepareCheck2 = async function (
     // TODO: delete when pupil.status is deleted
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
+    // TODO to be removed 2020
     // Send a batch of messages for all the pupils requesting a status change
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
   }
@@ -297,7 +298,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
     throw new Error('checkIds must be an array')
   }
 
-  const messages = []
+  const payloads = []
   const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(
     checkIds
   )
@@ -346,21 +347,20 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
     pupilConfig.practice = !o.check_isLiveCheck
     pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
 
-    const message = {
+    const payload = {
       checkCode: o.check_checkCode,
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
       pupil: {
-        id: o.pupil_id,
         firstName: o.pupil_foreNameAlias || o.pupil_foreName,
         lastName: o.pupil_lastNameAlias || o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,
-        pinExpiresAt: o.pupil_pinExpiresAt
+        pinExpiresAt: o.pupil_pinExpiresAt,
+        uuid: o.pupil_uuid
       },
       school: {
-        id: o.school_id,
         name: o.school_name,
         uuid: o.school_uuid
       },
@@ -379,14 +379,14 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
     }
     if (o.check_isLiveCheck) {
       if (featureToggles.isFeatureEnabled('_2020Mode')) {
-        message.tokens.checkComplete = checkSubmitSasToken
+        payload.tokens.checkComplete = checkSubmitSasToken
       } else {
-        message.tokens.checkComplete = checkCompleteSasToken
+        payload.tokens.checkComplete = checkCompleteSasToken
       }
     }
-    messages.push(message)
+    payloads.push(payload)
   }
-  return messages
+  return payloads
 }
 
 module.exports = checkStartService
