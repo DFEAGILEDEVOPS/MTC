@@ -3,6 +3,11 @@
 # exit on error
 set -e
 
+# initialise node runtime
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm use
+
 ### Azure CLI script to initialise load-test sql db
 
 # Create Database with unique name
