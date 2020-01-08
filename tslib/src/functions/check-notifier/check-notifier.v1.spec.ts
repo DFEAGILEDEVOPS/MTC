@@ -3,7 +3,8 @@ import { CheckNotifier } from './check-notifier.v1'
 import { ICheckNotifierDataService } from './check-notifier.data.service'
 
 const CheckNotifierDataServiceMock = jest.fn<ICheckNotifierDataService, any>(() => ({
-  updateCheckAsComplete: jest.fn()
+  updateCheckAsComplete: jest.fn(),
+  markCheckAsProcessingFailed: jest.fn()
 }))
 
 let sut: CheckNotifier
@@ -30,17 +31,13 @@ describe('check-notifier/v1', () => {
     expect(dataServiceMock.updateCheckAsComplete).toHaveBeenCalledWith('code')
   })
 
-  test('checkInvalid notification should throw an error, as not yet implemented', async () => {
-    try {
-      await sut.notify({
-        notificationType: CheckNotificationType.checkInvalid,
-        checkCode: 'code',
-        version: 1
-      })
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error.message).toBe('not yet implemented')
-      expect(dataServiceMock.updateCheckAsComplete).not.toHaveBeenCalled()
-    }
+  test('checkInvalid notification should update check as processing failed', async () => {
+    await sut.notify({
+      notificationType: CheckNotificationType.checkInvalid,
+      checkCode: 'code',
+      version: 1
+    })
+    expect(dataServiceMock.markCheckAsProcessingFailed).toHaveBeenCalledTimes(1)
+    expect(dataServiceMock.markCheckAsProcessingFailed).toHaveBeenCalledWith('code')
   })
 })

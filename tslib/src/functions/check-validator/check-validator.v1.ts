@@ -1,10 +1,11 @@
 
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
-import { ValidateCheckMessageV1, ReceivedCheck, MarkCheckMessageV1 } from '../../schemas/models'
+import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
+import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
 
 const requiredSubmittedCheckProperties = [
   'answers',
@@ -21,6 +22,7 @@ const requiredSubmittedCheckProperties = [
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: Array<any>
   checkMarkingQueue: Array<any>
+  checkNotificationQueue: Array<ICheckNotificationMessage>
 }
 
 export class CheckValidatorV1 {
@@ -53,6 +55,13 @@ export class CheckValidatorV1 {
       this.validateCheckStructure(checkData)
     } catch (error) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
+      // dispatch message to indicate validation failure
+      const validationFailure: ICheckNotificationMessage = {
+        checkCode: validateCheckMessage.checkCode,
+        notificationType: CheckNotificationType.checkInvalid,
+        version: 1
+      }
+      functionBindings.checkNotificationQueue = [validationFailure]
       logger.error(error.message)
       return
     }
@@ -68,14 +77,14 @@ export class CheckValidatorV1 {
     functionBindings.checkMarkingQueue = [markingMessage]
   }
 
-  private async setReceivedCheckAsValid (receivedCheck: ReceivedCheck, checkData: any) {
-    receivedCheck.validatedAt = Moment().toDate()
-    receivedCheck.isValid = true
-    receivedCheck.answers = JSON.stringify(checkData.answers)
-    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  private async setReceivedCheckAsValid (receivedCheckTableEntity: ReceivedCheckTableEntity, checkData: any) {
+    receivedCheckTableEntity.validatedAt = Moment().toDate()
+    receivedCheckTableEntity.isValid = true
+    receivedCheckTableEntity.answers = JSON.stringify(checkData.answers)
+    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheckTableEntity)
   }
 
-  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheck) {
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity) {
     receivedCheck.validationError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false
