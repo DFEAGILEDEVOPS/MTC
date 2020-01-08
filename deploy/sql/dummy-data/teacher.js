@@ -15,7 +15,7 @@ table.columns.add('school_id', sql.Int)
 table.columns.add('role_id', sql.Int, { nullable: false })
 
 for (let idx = 0; idx < teacherCount; idx++) {
-  table.rows.add(`loadtest-teacher${idx + 1}`, password, idx + 1, teacherRoleId)
+  table.rows.add(`bulk-teacher${idx + 1}`, password, idx + 1, teacherRoleId)
 }
 
 const pool = new sql.ConnectionPool(config.Sql)

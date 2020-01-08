@@ -19,7 +19,7 @@ table.columns.add('upn', sql.Char(13), { nullable: false })
 
 for (let schoolIdx = 0; schoolIdx < schoolCount; schoolIdx++) {
   for (let pupilIndex = 0; pupilIndex < pupilCountPerSchool; pupilIndex++) {
-    table.rows.add(schoolId, `pupil ${pupilIndex + 1}`, `pupil ${pupilIndex + 1}`,
+    table.rows.add(schoolId, `bulk pupil ${pupilIndex + 1}`, `pupil ${pupilIndex + 1}`,
       'F', new Date('2009-01-01'), genFakeUpn())
     schoolId++
   }

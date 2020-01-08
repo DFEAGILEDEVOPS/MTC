@@ -10,10 +10,12 @@ set -e
 # $1  main resource group
 # $2  sql server
 # $3  sql replica server name
+# $4 sql database name
 
 RES_GROUP=$1
 SQL_SERVER=$2
 SQL_SERVER_REPLICA=$3
+SQL_DATABASE=$4
 
 SQL_AZURE_FQDN="database.windows.net"
 

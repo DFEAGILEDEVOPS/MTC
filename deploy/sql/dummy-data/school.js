@@ -13,7 +13,7 @@ table.columns.add('name', sql.NVarChar, { length: 'max', nullable: false })
 table.columns.add('urn', sql.Int, { nullable: false })
 table.columns.add('dfeNumber', sql.Int, { nullable: false })
 for (let idx = 0; idx < schoolCount; idx++) {
-  table.rows.add(777, 'estab', `school ${idx + 1}`, idx + 1, idx + 1)
+  table.rows.add(777, 'estab', `bulk school ${idx + 1}`, idx + 1, idx + 1)
 }
 
 const pool = new sql.ConnectionPool(config.Sql)
