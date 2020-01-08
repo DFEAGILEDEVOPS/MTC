@@ -97,6 +97,7 @@ const pupilRegisterService = {
    * @param pupilRestartId
    * @param pupilRestartCheckId
    * @return {string}
+   * @deprecated - use getProcessStatusV2 instead
    */
   getProcessStatus: function (pupilStatusCode, checkStatusCode, pupilRestartId, pupilRestartCheckId) {
     let status
@@ -176,13 +177,13 @@ const pupilRegisterService = {
     }
 
     if (isPositive(attendanceId)) {
-      status = 'Not taking the check'
+      status = 'Not taking the Check'
     } else if (isTrue(restartAvailable)) {
       status = 'Restart'
     } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
       (isPositive(currentCheckId) && isNew(checkStatusCode) &&
         (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) {
-      status = 'Not Started'
+      status = 'Not started'
     } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
       status = 'PIN generated'
     } else if (isPositive(currentCheckId) && isCollected(checkStatusCode) && isFalse(checkReceived)) {
