@@ -3,17 +3,10 @@
 # exit on error
 set -e
 
-# initialise node runtime
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-nvm use
-
 ### Azure CLI script to initialise load-test sql db
 
 # Create Database with unique name
 # Bind replica (optional)
-# Run Migrations
-# Seed Data
 # Update admin app database name setting
 # Enable / Disable admin app replica read mode
 # Update function consumption app database name setting
@@ -58,21 +51,8 @@ then
     --partner-server $SQL_SERVER_REPLICA --service-objective $DB_SCALE
 fi
 
-### Run Migrations
-echo "running database migrations..."
-cd ../../admin
-yarn install
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
-
-# Bulk Data
-echo "running database seeds..."
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn seed-sql
-
-echo "inserting bulk data for schools, pupils & teachers..."
-cd ../deploy/sql
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:schools
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:pupils
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:teachers
+### build database and seed...
+./build-db.sh $SQL_SERVER $SQL_DATABASE $DB_SCALE
 
 ### Update web app & function settings to new database
 echo "updating target database for $ADMIN_APP to $SQL_DATABASE"
