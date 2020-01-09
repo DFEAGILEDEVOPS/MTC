@@ -62,8 +62,11 @@ cd ../../admin
 yarn install
 SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
 
-# Seed Data
 echo "running database seeds..."
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn seed-sql
+
+# Seed Data
+echo "inserting bulk data for schools, pupils & teachers..."
 cd ../deploy/sql
 SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:schools
 SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn dummy:pupils
