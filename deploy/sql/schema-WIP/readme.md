@@ -1,4 +1,6 @@
-# SQL Migrations & Seeding
+# WORK IN PROGRESS
+
+# *NOT FOR PRODUCTION USE*
 
 ## Creating migrations
 
