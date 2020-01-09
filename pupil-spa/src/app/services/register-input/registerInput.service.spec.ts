@@ -4,10 +4,9 @@ import { TestBed, inject } from '@angular/core/testing';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 
-let mockStorageService: StorageServiceMock;
 let mockQuestionService: QuestionServiceMock;
+let storageService: StorageService;
 
 @Injectable()
 export class TestRegisterInputService extends RegisterInputService {
@@ -18,20 +17,18 @@ export class TestRegisterInputService extends RegisterInputService {
 }
 
 describe('RegisterInputService', () => {
-  let mockStorageServiceSpy;
-
+  let storageServiceSetInputSpy;
   beforeEach(() => {
-    mockStorageService = new StorageServiceMock();
     mockQuestionService = new QuestionServiceMock();
-    mockStorageServiceSpy = spyOn(mockStorageService, 'setItem');
-
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       imports: [],
       providers: [
         TestRegisterInputService,
-        { provide: StorageService, useValue: mockStorageService }
+        StorageService,
       ]
     });
+    storageService = injector.get(StorageService);
+    storageServiceSetInputSpy = spyOn(storageService, 'setInput');
   });
 
   it('should be created', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
@@ -43,8 +40,7 @@ describe('RegisterInputService', () => {
       const eventValue = '0';
       const eventType = 'keydown';
       service.storeEntry(eventValue, eventType, 7, '2x3');
-      expect(mockStorageServiceSpy).toHaveBeenCalledTimes(1);
-      expect(mockStorageServiceSpy.calls.all()[0].args[0].toString().indexOf('inputs-')).toBeGreaterThanOrEqual(0);
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
     }));
   it('StoreEntry to should store entry',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
@@ -56,8 +52,8 @@ describe('RegisterInputService', () => {
         sequenceNumber: 7,
       };
       service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question );
-      expect(mockStorageServiceSpy).toHaveBeenCalledTimes(1);
-      expect(mockStorageServiceSpy.calls.all()[0].args[1]).toEqual(entry);
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
+      expect(storageServiceSetInputSpy.calls.all()[0].args[0]).toEqual(entry);
     }));
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {

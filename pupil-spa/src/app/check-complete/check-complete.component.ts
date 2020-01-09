@@ -7,12 +7,6 @@ import { StorageService } from '../services/storage/storage.service';
 import { Router } from '@angular/router';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { Config } from '../config.model';
-import {
-  TimeoutStorageKey,
-  CheckStartTimeStorageKey,
-  CheckStateStorageKey,
-  CompletedSubmissionStorageKey
-} from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-check-complete',
@@ -74,10 +68,10 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onStartAgainClick(event): void {
     event.preventDefault();
-    this.storageService.removeItem(new CheckStateStorageKey());
-    this.storageService.removeItem(new TimeoutStorageKey());
-    this.storageService.removeItem(new CheckStartTimeStorageKey());
-    this.storageService.setItem(new CompletedSubmissionStorageKey(), false);
+    this.storageService.removeCheckState();
+    this.storageService.removeTimeout();
+    this.storageService.removeCheckStartTime();
+    this.storageService.setCompletedSubmission(false);
     this.router.navigate(['/check-start']);
   }
 }

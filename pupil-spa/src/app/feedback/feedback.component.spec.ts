@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
+import { CheckStatusService } from '../services/check-status/check-status.service';
 import { StorageService } from '../services/storage/storage.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
 import { TokenService } from '../services/token/token.service';
@@ -37,17 +38,18 @@ describe('FeedbackComponent', () => {
         AzureQueueService,
         FeedbackService,
         StorageService,
-        TokenService
+        TokenService,
+        CheckStatusService
       ]
     });
     const storageService = injector.get(StorageService);
     const feedbackService = injector.get(FeedbackService);
     injector.compileComponents();
 
-    spyOn(storageService, 'getItem').and.callFake(function (key) {
+    spyOn(storageService, 'getFeedback').and.callFake(function (key) {
       return JSON.stringify(responseMock);
     });
-    spyOn(storageService, 'setItem').and.callFake(function (key, value) {
+    spyOn(storageService, 'setFeedback').and.callFake(function (key, value) {
       return store[key] = value + '';
     });
     spyOn(feedbackService, 'postFeedback').and.callFake(function() {

@@ -3,7 +3,6 @@ import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { AccessTokenStorageKey, FeedbackStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class FeedbackService {
@@ -22,8 +21,8 @@ export class FeedbackService {
   }
 
   async postFeedback() {
-    const storedFeedback = this.storageService.getItem(new FeedbackStorageKey());
-    const accessToken = this.storageService.getItem(new AccessTokenStorageKey());
+    const storedFeedback = this.storageService.getFeedback();
+    const accessToken = this.storageService.getAccessToken();
     if (!storedFeedback || !accessToken) {
       return false;
     }

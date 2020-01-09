@@ -10,13 +10,11 @@ import { CheckComponent } from './check.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { TimerService } from '../services/timer/timer.service';
 import { TimerServiceMock } from '../services/timer/timer.service.mock';
 import { Router } from '@angular/router';
-import { CheckStateStorageKey, PendingSubmissionStorageKey } from '../services/storage/storageKey';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -24,7 +22,9 @@ describe('CheckComponent', () => {
   let storageService;
   let checkStateMock = null;
   let mockRouter;
-  let setItemSpy;
+  let setTimeoutSpy;
+  let setCheckStateSpy;
+  let setPendingSubmissionSpy;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -35,7 +35,7 @@ describe('CheckComponent', () => {
     }
     const afterState = component[ 'state' ];
     expect(beforeState + 1).toBe(afterState);
-    expect(setItemSpy).toHaveBeenCalledTimes(1);
+    expect(setCheckStateSpy).toHaveBeenCalledTimes(1);
   }
 
   beforeEach(async(() => {
@@ -52,10 +52,10 @@ describe('CheckComponent', () => {
         AnswerService,
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: TimerService, useClass: TimerServiceMock },
         { provide: Router, useValue: mockRouter },
+        StorageService,
         WindowRefService
       ]
     })
@@ -65,19 +65,13 @@ describe('CheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
     storageService = fixture.debugElement.injector.get(StorageService);
-    spyOn(storageService, 'getItem').and.callFake((arg) => {
-      const checkStateStorageKey = new CheckStateStorageKey();
-      if (arg.toString() === checkStateStorageKey.toString()) {
-        // By default assume that there is no previous checkstate
-        // we can change this to a valid state number to simulate
-        // a page refresh.
-        return checkStateMock;
-      } else {
-        return [];
-      }
-    });
-    setItemSpy = spyOn(storageService, 'setItem');
-    setItemSpy.and.callThrough();
+    spyOn(storageService, 'getCheckState').and.callFake(() => checkStateMock);
+    setTimeoutSpy = spyOn(storageService, 'setTimeout');
+    setTimeoutSpy.and.callThrough();
+    setCheckStateSpy = spyOn(storageService, 'setCheckState');
+    setCheckStateSpy.and.callThrough();
+    setPendingSubmissionSpy = spyOn(storageService, 'setPendingSubmission');
+    setPendingSubmissionSpy.and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -253,13 +247,12 @@ describe('CheckComponent', () => {
     });
     it('is adding an audit entry for checkComplete', () => {
       // test setup
-      const pendingSubmissionStorageKey = new PendingSubmissionStorageKey();
       component['allowedStates'] = ['Q25', 'submission-pending'];
       component['state'] = 0;
       // call changeState()
       component['changeState']();
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
-      expect(setItemSpy.calls.allArgs()[1].toString()).toEqual(`${pendingSubmissionStorageKey.toString()},true`);
+      expect(setPendingSubmissionSpy.calls.count()).toEqual(1);
       expect(auditEntryInserted instanceof CheckSubmissionPending).toBeTruthy();
     });
   });

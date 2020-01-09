@@ -12,7 +12,6 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
-import { CompletedSubmissionStorageKey, ConfigStorageKey, PendingSubmissionStorageKey, StorageKeyPrefix } from '../storage/storageKey';
 
 /**
  * Declaration of check start service
@@ -57,7 +56,7 @@ export class CheckCompleteService {
   public async submit(startTime): Promise<void> {
     this.appUsageService.store();
     let message;
-    const checkConfig = this.storageService.getItem(new ConfigStorageKey());
+    const checkConfig = this.storageService.getConfig();
     if (checkConfig.practice) {
       return this.onSuccess(startTime);
     }
@@ -143,8 +142,8 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   async onSuccess(startTime): Promise<void> {
-    this.storageService.setItem(new PendingSubmissionStorageKey(), false);
-    this.storageService.setItem(new CompletedSubmissionStorageKey(), true);
+    this.storageService.setPendingSubmission(false);
+    this.storageService.setCompletedSubmission(true);
     // Display pending screen for the minimum configurable time
     const endTime = Date.now();
     const duration = endTime - startTime;

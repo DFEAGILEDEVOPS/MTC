@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 
@@ -34,11 +33,11 @@ describe('AAFontsComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         { provide: SpeechService, useClass: SpeechServiceMock },
-        RouteService
+        RouteService,
+        StorageService
       ]
     });
 

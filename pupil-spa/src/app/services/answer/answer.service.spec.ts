@@ -8,7 +8,6 @@ import { AuditService } from '../audit/audit.service';
 
 let service: AnswerService;
 let storageService: StorageService;
-let auditService: AuditService;
 
 describe('AnswerService', () => {
 
@@ -24,8 +23,7 @@ describe('AnswerService', () => {
     });
     localStorage.clear();
     storageService = injector.get(StorageService);
-    auditService = injector.get(AuditService);
-    service = new AnswerService(storageService, auditService);
+    service = new AnswerService(storageService);
     jasmine.clock().mockDate(new Date('1970-01-01'));
   });
 
@@ -34,13 +32,13 @@ describe('AnswerService', () => {
   });
 
   it('should store answer under unique key', () => {
-    const setItemSpy = spyOn(storageService, 'setItem');
+    const setAnswerSpy = spyOn(storageService, 'setAnswer');
     const answer1 = new Answer(3, 3, '3', 3);
     answer1.question = '3x3';
     answer1.clientTimestamp = new Date('1970-01-01');
     service.setAnswer(answer1);
-    expect(setItemSpy.calls.allArgs()[0][0].toString().indexOf('answers-')).toBeGreaterThanOrEqual(0);
-    expect(setItemSpy.calls.allArgs()[0][1]).toEqual(answer1);
+    // expect(setAnswerSpy.calls.allArgs()[0][0].toString().indexOf('answers-')).toBeGreaterThanOrEqual(0);
+    expect(setAnswerSpy.calls.allArgs()[0][0]).toEqual(answer1);
   });
 
   it('should create answers object if it does not already exist', () => {
@@ -51,35 +49,5 @@ describe('AnswerService', () => {
     const expected = toPoJo(answer1);
     const items = storageService.getAllItems();
     expect(items[Object.keys(items)[0]]).toEqual(expected);
-  });
-
-  it('should not add duplicate answers', () => {
-    const answer = new Answer(1, 1, '1', 1);
-    spyOn(storageService, 'setItem');
-    spyOn(storageService, 'getAllItems').and.returnValues(
-      {}, // 1st call
-      { 'answer-1': answer } // 2nd call
-    );
-    service.setAnswer(answer);
-    service.setAnswer(answer);
-    expect(storageService.setItem).toHaveBeenCalledTimes(1);
-  });
-
-  it('logs the attempted duplication to the audit log', () => {
-    const answer = new Answer(9, 8, '1', 20);
-    spyOn(storageService, 'setItem');
-    const auditServiceAddEntrySpy = spyOn(auditService, 'addEntry');
-    spyOn(storageService, 'getAllItems').and.returnValues(
-      {}, // 1st call
-      { 'answer-1': answer } // 2nd call
-    );
-    service.setAnswer(answer);
-    service.setAnswer(answer);
-    expect(auditServiceAddEntrySpy).toHaveBeenCalled();
-    const auditArg = auditServiceAddEntrySpy.calls.mostRecent().args[0];
-    expect(auditArg.type).toBe('DuplicateAnswerError');
-    expect(auditArg.data['factor1']).toBe(9);
-    expect(auditArg.data['factor2']).toBe(8);
-    expect(auditArg.data['sequenceNumber']).toBe(20);
   });
 });

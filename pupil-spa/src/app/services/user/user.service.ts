@@ -4,7 +4,6 @@ import { APP_CONFIG } from '../config/config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
 import {
-  AccessArrangementsStorageKey, AccessTokenStorageKey,
   ConfigStorageKey,
   PupilStorageKey,
   QuestionsStorageKey,
@@ -23,7 +22,7 @@ export class UserService {
   data: any = {};
 
   constructor(private http: HttpClient, private storageService: StorageService) {
-    this.loggedIn = !!this.storageService.getItem(new AccessArrangementsStorageKey());
+    this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
   login(schoolPin, pupilPin): Promise<any> {
@@ -37,15 +36,14 @@ export class UserService {
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
-          this.storageService.setItem(questionsStorageKey, data[questionsStorageKey.toString()]);
-          this.storageService.setItem(configStorageKey, data[configStorageKey.toString()]);
-          this.storageService.setItem(pupilStorageKey, data[pupilStorageKey.toString()]);
-          this.storageService.setItem(schoolStorageKey, data[schoolStorageKey.toString()]);
-          this.storageService.setItem(new AccessTokenStorageKey(),
+          this.storageService.setQuestions(data[questionsStorageKey.toString()]);
+          this.storageService.setConfig(data[configStorageKey.toString()]);
+          this.storageService.setPupil(data[pupilStorageKey.toString()]);
+          this.storageService.setSchool(data[schoolStorageKey.toString()]);
+          this.storageService.setAccessToken(
             data[tokensStorageKey.toString()] && data[tokensStorageKey.toString()]['jwt']
             && data[tokensStorageKey.toString()]['jwt']['token']);
-          this.storageService.setItem(new TokensStorageKey(), data[tokensStorageKey.toString()]);
-
+          this.storageService.setToken(data[tokensStorageKey.toString()]);
           resolve();
         },
         (err) => {

@@ -5,13 +5,6 @@ import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
-import {
-  CheckStartTimeStorageKey,
-  CheckStateStorageKey,
-  CompletedSubmissionStorageKey,
-  PupilStorageKey,
-  TimeoutStorageKey
-} from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-aa-settings',
@@ -39,10 +32,10 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     // Reset the check state when visitng the settings page
-    this.storageService.removeItem(new CheckStateStorageKey());
-    this.storageService.removeItem(new TimeoutStorageKey());
-    this.storageService.removeItem(new CheckStartTimeStorageKey());
-    this.storageService.setItem(new CompletedSubmissionStorageKey(), false);
+    this.storageService.removeCheckState();
+    this.storageService.removeTimeout();
+    this.storageService.removeCheckStartTime();
+    this.storageService.setCompletedSubmission(false);
   }
 
   // wait for the component to be rendered first, before parsing the text
@@ -74,12 +67,12 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
       if (!this.inputAssistantForm.valid) {
         return;
       } else {
-        const pupilData = this.storageService.getItem(new PupilStorageKey());
+        const pupilData = this.storageService.getPupil();
         pupilData.inputAssistant = {
           firstName: this.inputAssistantForm.value.inputAssistantFirstName,
           lastName: this.inputAssistantForm.value.inputAssistantLastName,
         };
-        this.storageService.setItem(new PupilStorageKey(), pupilData);
+        this.storageService.setPupil(pupilData);
       }
     }
     this.router.navigate(['check-start']);

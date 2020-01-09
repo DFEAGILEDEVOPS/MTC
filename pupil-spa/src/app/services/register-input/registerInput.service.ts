@@ -1,9 +1,5 @@
-import * as uuid from 'uuid';
-
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { InputsStorageKey } from '../storage/storageKey';
-
 
 @Injectable()
 export class RegisterInputService {
@@ -41,7 +37,7 @@ export class RegisterInputService {
       question: question,
       sequenceNumber: questionNumber
     };
-    this.storageService.setItem(new InputsStorageKey(), questionInput);
+    this.storageService.setInput(questionInput);
   }
 
   private getMouseButton(event) {

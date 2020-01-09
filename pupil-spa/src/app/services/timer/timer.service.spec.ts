@@ -4,7 +4,6 @@ import { TimerService, CHECK_TIMEOUT_EVENT } from './timer.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
 import { QuestionService } from '../question/question.service';
 import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 
 describe('TimerService', () => {
 
@@ -20,7 +19,7 @@ describe('TimerService', () => {
             providers: [
                 TimerService,
                 {provide: QuestionService, useValue: mockQuestionService },
-                {provide: StorageService, useClass: StorageServiceMock },
+                StorageService,
                 WindowRefService,
             ]
         });
@@ -52,17 +51,17 @@ describe('TimerService', () => {
 
     it('should load the timer from local storage', () => {
         const t = new Date().getTime();
-        spyOn(mockStorageService, 'getItem').and.returnValue(`${t}`);
+        spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t}`);
         service.startCheckTimer();
-        expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
+        expect(mockStorageService.getCheckStartTime).toHaveBeenCalledTimes(1);
         expect(service.timeRemaining).toBe(t + 600000);
         service.stopCheckTimer();
     });
 
     it('should clear timer from local storage', () => {
-        spyOn(mockStorageService, 'removeItem');
+        spyOn(mockStorageService, 'removeCheckStartTime');
         service.clearStartTime();
-        expect(mockStorageService.removeItem).toHaveBeenCalledTimes(1);
+        expect(mockStorageService.removeCheckStartTime).toHaveBeenCalledTimes(1);
     });
 
     it('should stop the timer and clear the interval', () => {
@@ -74,7 +73,7 @@ describe('TimerService', () => {
 
     it('should start the timer and emit timeout event', async () => {
         const t = new Date().getTime();
-        spyOn(mockStorageService, 'getItem').and.returnValue(`${t - 600000}`);
+        spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t - 600000}`);
         service.emitter.emit = jasmine.createSpy('emit');
         service.startCheckTimer();
         expect(service.emitter.emit).toHaveBeenCalledWith(CHECK_TIMEOUT_EVENT);

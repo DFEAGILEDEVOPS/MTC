@@ -4,7 +4,6 @@ import { Config } from '../../config.model';
 import { StorageService } from '../storage/storage.service';
 
 export const CHECK_TIMEOUT_EVENT = 'CHECK_TIMEOUT_EVENT';
-import { CheckStartTimeStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class TimerService {
@@ -38,10 +37,10 @@ export class TimerService {
         if (this.interval) {
             return;
         }
-        const storedStartTime = this.storageService.getItem(new CheckStartTimeStorageKey());
+        const storedStartTime = this.storageService.getCheckStartTime();
         if (!storedStartTime) {
             this.checkStartTime = new Date().getTime();
-            this.storageService.setItem(new CheckStartTimeStorageKey(), this.checkStartTime);
+            this.storageService.setCheckStartTime(this.checkStartTime);
         } else {
             this.checkStartTime = parseInt(storedStartTime, 10);
         }
@@ -58,6 +57,6 @@ export class TimerService {
 
     public clearStartTime() {
         this.checkStartTime = 0;
-        this.storageService.removeItem(new CheckStartTimeStorageKey());
+        this.storageService.removeCheckStartTime();
     }
 }

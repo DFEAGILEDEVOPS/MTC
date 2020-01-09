@@ -9,7 +9,6 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { UserService } from '../services/user/user.service';
-import { PupilStorageKey, SchoolStorageKey } from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-login-success',
@@ -31,8 +30,8 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
               private appUsageService: AppUsageService,
               private userService: UserService,
               private elRef: ElementRef) {
-    const pupilData = storageService.getItem(new PupilStorageKey());
-    const schoolData = storageService.getItem(new SchoolStorageKey());
+    const pupilData = storageService.getPupil();
+    const schoolData = storageService.getSchool();
 
     // if the user comes back to this component after his personal data
     // was deleted (direct access through link or the back button in browser)
@@ -58,7 +57,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // remove pupil data from local storage after setting them visually
     const checkCode = pupilData.checkCode;
-    this.storageService.setItem(new PupilStorageKey(), { checkCode });
+    this.storageService.setPupil({ checkCode });
 
     this.config = this.questionService.getConfig();
   }

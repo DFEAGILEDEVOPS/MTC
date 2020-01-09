@@ -8,7 +8,6 @@ import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
 import { Login } from './login.model';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -28,6 +27,7 @@ describe('LoginComponent', () => {
   let mockUserService;
   let promiseHelper;
   let mockQuestionService;
+  let storageService;
   let mockWarmupQuestionService;
   let mockCheckStatusService;
   let mockPupilPrefsService;
@@ -72,13 +72,13 @@ describe('LoginComponent', () => {
         { provide: Login, useValue: mockLoginModel },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         LoginErrorService,
         LoginErrorDiagnosticsService,
+        StorageService,
         WindowRefService
       ]
     });
@@ -91,6 +91,7 @@ describe('LoginComponent', () => {
     loginErrorDiagnosticsService = injector.get(LoginErrorDiagnosticsService);
     httpClient = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
+    storageService = TestBed.get(StorageService);
     windowRefService = injector.get(WindowRefService);
 
     spyOn(mockQuestionService, 'initialise');

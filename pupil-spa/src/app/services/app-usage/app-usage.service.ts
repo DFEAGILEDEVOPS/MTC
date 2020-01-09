@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { DeviceStorageKey } from '../storage/storageKey';
-
 
 @Injectable()
 export class AppUsageService {
@@ -14,9 +12,9 @@ export class AppUsageService {
   store(): void {
     // Store the appUsageCounter in the device data so it is
     // picked up later by storageService.getAllItems()
-    const deviceData = this.storageService.getItem(new DeviceStorageKey()) || {};
+    const deviceData = this.storageService.getDeviceData() || {};
     deviceData.appUsageCounter = this.getCounterValue();
-    this.storageService.setItem(new DeviceStorageKey(), deviceData);
+    this.storageService.setDeviceData(deviceData);
   }
 
   increment(): void {

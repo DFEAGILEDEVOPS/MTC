@@ -5,10 +5,6 @@ import { StorageService } from '../storage/storage.service';
 import { SpeechService } from '../speech/speech.service';
 
 import { Config } from '../../config.model';
-import { ConfigStorageKey, QuestionsStorageKey } from '../storage/storageKey';
-
-const questionStorageKey = new QuestionsStorageKey();
-const configStorageKey = new ConfigStorageKey();
 
 @Injectable()
 export class QuestionService {
@@ -22,7 +18,7 @@ export class QuestionService {
     this.currentQuestion = 0;
 
     // Re-read the stored questions on page refresh
-    if (this.storageService.getItem(questionStorageKey) && this.storageService.getItem(configStorageKey)) {
+    if (this.storageService.getQuestions() && this.storageService.getConfig()) {
       this.initialise();
     }
   }
@@ -71,8 +67,8 @@ export class QuestionService {
   }
 
   initialise() {
-    const questionData = this.storageService.getItem(questionStorageKey);
-    const configData = this.storageService.getItem(configStorageKey);
+    const questionData = this.storageService.getQuestions();
+    const configData = this.storageService.getConfig();
     this.questions = questionData;
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];

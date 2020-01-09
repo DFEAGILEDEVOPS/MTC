@@ -14,7 +14,6 @@ import { StorageService } from '../services/storage/storage.service';
 import { QuestionService } from '../services/question/question.service';
 import { Config } from '../config.model';
 import { AccessArrangements } from '../access-arrangements';
-import { AccessArrangementsStorageKey } from '../services/storage/storageKey';
 
 @Component({
   selector: 'app-practice-question',
@@ -128,7 +127,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
 
-    const accessArrangementsData = storageService.getItem(new AccessArrangementsStorageKey());
+    const accessArrangementsData = storageService.getAccessArrangements();
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
     this.shouldShowQuestion = true;

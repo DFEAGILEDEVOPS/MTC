@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { CompletedSubmissionStorageKey, PendingSubmissionStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class CheckStatusService {
@@ -9,10 +8,10 @@ export class CheckStatusService {
   }
 
   hasUnfinishedCheck(): boolean {
-    return this.storageService.getItem(new PendingSubmissionStorageKey());
+    return this.storageService.getPendingSubmission();
   }
 
   hasFinishedCheck(): boolean {
-    return this.storageService.getItem(new CompletedSubmissionStorageKey());
+    return this.storageService.getCompletedSubmission();
   }
 }

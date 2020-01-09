@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
-import { DeviceStorageKey } from '../storage/storageKey';
 
 @Injectable()
 export class DeviceService {
@@ -17,7 +16,7 @@ export class DeviceService {
    * @return {Promise<void>}
    */
   async capture() {
-    this.storageService.setItem(new DeviceStorageKey(),
+    this.storageService.setDeviceData(
       {
         battery: await this.getBatteryInformation(),
         cpu: this.getCpuInformation(),

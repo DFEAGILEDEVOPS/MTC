@@ -5,12 +5,12 @@ export type StorageKeyPrefix = 'answers' | 'inputs' | 'session' |
   'feedback' | 'checkstate' | 'device' | 'pending_submission' | 'completed_submission' |
   'access_arrangements' | 'tokens' | 'time_out' | 'check_start_time';
 
-export type StorageKeyTypesSingular = SessionStorageKey | TokensStorageKey | ConfigStorageKey |
+export type StorageKeyTypesSingular = SessionStorageKey | QuestionsStorageKey | TokensStorageKey | ConfigStorageKey |
   PupilStorageKey | SchoolStorageKey | AccessTokenStorageKey | FeedbackStorageKey | CheckStateStorageKey |
   DeviceStorageKey | PendingSubmissionStorageKey | CompletedSubmissionStorageKey | AccessArrangementsStorageKey |
   TimeoutStorageKey | CheckStartTimeStorageKey;
 
-export type StorageKeyTypesMulti = AnswersStorageKey | InputsStorageKey | AuditStorageKey | QuestionsStorageKey;
+export type StorageKeyTypesMulti = AnswersStorageKey | InputsStorageKey | AuditStorageKey;
 
 export type StorageKeyTypesAll = StorageKeyTypesMulti | StorageKeyTypesSingular;
 

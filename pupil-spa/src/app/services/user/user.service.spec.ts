@@ -20,7 +20,6 @@ const questionsDataKey = new QuestionsStorageKey();
 const pupilDataKey = new PupilStorageKey();
 const configDataKey = new ConfigStorageKey();
 const schoolDataKey = new SchoolStorageKey();
-const accessTokenDataKey =  new AccessTokenStorageKey();
 const tokensDataKey =  new TokensStorageKey();
 
 describe('UserService', () => {
@@ -47,20 +46,25 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
-      const setItemSpy = spyOn(storageService, 'setItem');
+      const setQuestionsSpy = spyOn(storageService, 'setQuestions');
+      const setConfigSpy = spyOn(storageService, 'setConfig');
+      const setPupilSpy = spyOn(storageService, 'setPupil');
+      const setSchoolSpy = spyOn(storageService, 'setSchool');
+      const setAccessTokenSpy = spyOn(storageService, 'setAccessToken');
       userService.login('abc12345', '9999a').then(() => {
-          expect(setItemSpy.calls.allArgs()[0].toString())
-            .toEqual(`${questionsDataKey.toString()},${mockLoginResponseBody[questionsDataKey.toString()]}`);
-          expect(setItemSpy.calls.allArgs()[1].toString())
-            .toEqual(`${configDataKey.toString()},${mockLoginResponseBody[configDataKey.toString()]}`);
-          expect(setItemSpy.calls.allArgs()[2].toString())
-            .toEqual(`${pupilDataKey.toString()},${mockLoginResponseBody[pupilDataKey.toString()]}`);
-          expect(setItemSpy.calls.allArgs()[3].toString())
-            .toEqual(`${schoolDataKey.toString()},${mockLoginResponseBody[schoolDataKey.toString()]}`);
-          expect(setItemSpy.calls.allArgs()[4].toString())
-            .toEqual(`${accessTokenDataKey.toString()},${mockLoginResponseBody[tokensDataKey.toString()]['jwt']['token']}`);
-          expect(setItemSpy.calls.allArgs()[5].toString())
-            .toEqual(`${tokensDataKey.toString()},${mockLoginResponseBody[tokensDataKey.toString()]}`);
+        console.log(setQuestionsSpy);
+          expect(setQuestionsSpy.calls.allArgs()[0].toString())
+            .toEqual(`${mockLoginResponseBody[questionsDataKey.toString()]}`);
+          expect(setConfigSpy.calls.allArgs()[1].toString())
+            .toEqual(`${mockLoginResponseBody[configDataKey.toString()]}`);
+          expect(setPupilSpy.calls.allArgs()[2].toString())
+            .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`);
+          expect(setSchoolSpy.calls.allArgs()[3].toString())
+            .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`);
+          expect(setAccessTokenSpy.calls.allArgs()[4].toString())
+            .toEqual(`${mockLoginResponseBody[tokensDataKey.toString()]['jwt']['token']}`);
+          expect(setAccessTokenSpy.calls.allArgs()[5].toString())
+            .toEqual(`${mockLoginResponseBody[tokensDataKey.toString()]}`);
         },
         (error) => {
           fail(error);
@@ -74,7 +78,7 @@ describe('UserService', () => {
     });
 
     it('should return a promise that rejects on invalid login', () => {
-      spyOn(storageService, 'setItem');
+      spyOn(storageService, 'setQuestions');
 
       userService.login('xxx', 'xxx').then(
         (res) => {
@@ -87,7 +91,7 @@ describe('UserService', () => {
         fail(error);
       });
 
-      expect(storageService.setItem).not.toHaveBeenCalled();
+      expect(storageService.setQuestions).not.toHaveBeenCalled();
 
       const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
       req.flush('Unauthorised', { status: 401, statusText: 'Not authorised' });
