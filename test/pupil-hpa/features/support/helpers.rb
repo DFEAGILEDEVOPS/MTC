@@ -25,11 +25,13 @@ module Helpers
   def create_pupil_details_hash(pupil_details)
     {'firstName' => pupil_details['foreName'], 'lastName' => pupil_details['lastName'],
      'dob' => pupil_details['dateOfBirth'].strftime("%-d %B %Y"),
-     'checkCode' => SqlDbHelper.get_check_using_pupil(pupil_details['id'])['checkCode']}
+     'checkCode' => SqlDbHelper.get_check_using_pupil(pupil_details['id'])['checkCode'],
+     'uuid' => pupil_details['urlSlug']
+    }
   end
 
   def create_school_details_hash(school_id)
-    {"id" => SqlDbHelper.find_school(school_id)['id'], "name"=>SqlDbHelper.find_school(school_id)['name'], "uuid"=>SqlDbHelper.find_school(school_id)['urlSlug']}
+    {"name"=>SqlDbHelper.find_school(school_id)['name'], "uuid"=>SqlDbHelper.find_school(school_id)['urlSlug']}
   end
 
   def create_config_details_hash
