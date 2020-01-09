@@ -24,12 +24,6 @@ describe('AuditService', () => {
   });
 
   describe('addEntry', () => {
-    // it('should add entry to local storage with a unique key name', () => {
-    //   const spy = spyOn(storageService, 'setAuditEntry');
-    //   const entry = new QuestionRendered();
-    //   service.addEntry(entry);
-    //   expect(spy.calls.all()[0].args[0].toString().indexOf('audit-')).toBeGreaterThanOrEqual(0);
-    // });
     it('should add entry as stringified value', () => {
       const spy = spyOn(storageService, 'setAuditEntry');
       const entry = new QuestionRendered();
