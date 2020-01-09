@@ -173,6 +173,7 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
 
 /**
  * Find a pupil by Id and schoolId with associated attendance reasons
+ * @deprecated NB: Move to HDF vertical slice
  * @param {string} urlSlug
  * @param {number} schoolId
  * @return {Promise<object>}
