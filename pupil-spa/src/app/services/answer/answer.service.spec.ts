@@ -37,7 +37,6 @@ describe('AnswerService', () => {
     answer1.question = '3x3';
     answer1.clientTimestamp = new Date('1970-01-01');
     service.setAnswer(answer1);
-    // expect(setAnswerSpy.calls.allArgs()[0][0].toString().indexOf('answers-')).toBeGreaterThanOrEqual(0);
     expect(setAnswerSpy.calls.allArgs()[0][0]).toEqual(answer1);
   });
 
