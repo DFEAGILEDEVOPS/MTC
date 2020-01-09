@@ -6,7 +6,7 @@ export type StorageKeyPrefix = 'answers' | 'inputs' | 'session' |
   'access_arrangements' | 'tokens' | 'time_out' | 'check_start_time';
 
 export type StorageKeyTypesSingular = SessionStorageKey | QuestionsStorageKey | TokensStorageKey | ConfigStorageKey |
-  PupilStorageKey | SchoolStorageKey | AccessTokenStorageKey | FeedbackStorageKey | CheckStateStorageKey |
+  PupilStorageKey | SchoolStorageKey | FeedbackStorageKey | CheckStateStorageKey |
   DeviceStorageKey | PendingSubmissionStorageKey | CompletedSubmissionStorageKey | AccessArrangementsStorageKey |
   TimeoutStorageKey | CheckStartTimeStorageKey;
 
@@ -79,13 +79,6 @@ export class SchoolStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'school';
-  }
-}
-
-export class AccessTokenStorageKey extends StorageKey {
-  constructor() {
-    super();
-    this.prefix = 'access_token';
   }
 }
 

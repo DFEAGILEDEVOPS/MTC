@@ -6,7 +6,6 @@ import { StorageService } from '../storage/storage.service';
 import { default as mockLoginResponseBody } from '../../login.userService.response.mock.json';
 import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
 import {
-  AccessTokenStorageKey,
   ConfigStorageKey,
   PupilStorageKey,
   QuestionsStorageKey,
@@ -50,7 +49,6 @@ describe('UserService', () => {
       const setConfigSpy = spyOn(storageService, 'setConfig');
       const setPupilSpy = spyOn(storageService, 'setPupil');
       const setSchoolSpy = spyOn(storageService, 'setSchool');
-      const setAccessTokenSpy = spyOn(storageService, 'setAccessToken');
       userService.login('abc12345', '9999a').then(() => {
         console.log(setQuestionsSpy);
           expect(setQuestionsSpy.calls.allArgs()[0].toString())
@@ -61,10 +59,6 @@ describe('UserService', () => {
             .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`);
           expect(setSchoolSpy.calls.allArgs()[3].toString())
             .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`);
-          expect(setAccessTokenSpy.calls.allArgs()[4].toString())
-            .toEqual(`${mockLoginResponseBody[tokensDataKey.toString()]['jwt']['token']}`);
-          expect(setAccessTokenSpy.calls.allArgs()[5].toString())
-            .toEqual(`${mockLoginResponseBody[tokensDataKey.toString()]}`);
         },
         (error) => {
           fail(error);

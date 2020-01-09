@@ -14,7 +14,6 @@ import {
   SchoolStorageKey,
   DeviceStorageKey,
   AuditStorageKey,
-  AccessTokenStorageKey,
   InputsStorageKey,
   CheckStartTimeStorageKey,
   TokensStorageKey
@@ -25,7 +24,6 @@ import { AuditEntry } from '../audit/auditEntry';
 import { Question } from '../question/question.model';
 
 const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
-const accessTokenStorageKey = new AccessTokenStorageKey();
 const checkStartTimeStorageKey = new CheckStartTimeStorageKey();
 const checkStateStorageKey = new CheckStateStorageKey();
 const completedSubmissionStorageKey = new CompletedSubmissionStorageKey();
@@ -48,14 +46,6 @@ export class StorageService {
 
   setAccessArrangements(accessArrangements: AccessArrangements) {
     this.setItem(accessArrangementsStorageKey, accessArrangements);
-  }
-
-  getAccessToken() {
-    return this.getItem(accessTokenStorageKey);
-  }
-
-  setAccessToken(accessToken: String) {
-    this.setItem(accessTokenStorageKey, accessToken);
   }
 
   setAnswer(answer: Answer) {

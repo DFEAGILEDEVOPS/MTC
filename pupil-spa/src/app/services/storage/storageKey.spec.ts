@@ -2,7 +2,6 @@ import * as uuid from 'uuid';
 
 import {
   AccessArrangementsStorageKey,
-  AccessTokenStorageKey,
   AnswersStorageKey,
   AuditStorageKey,
   CheckStartTimeStorageKey,
@@ -70,12 +69,6 @@ describe('storageKey', () => {
     it('should create a static key', () => {
       const schoolStorageKey = new SchoolStorageKey();
       expect(schoolStorageKey.toString()).toBe('school');
-    });
-  });
-  describe('AccessTokenStorageKey', () => {
-    it('should create a static key', () => {
-      const accessTokenStorageKey = new AccessTokenStorageKey();
-      expect(accessTokenStorageKey.toString()).toBe('access_token');
     });
   });
   describe('FeedbackStorageKey', () => {

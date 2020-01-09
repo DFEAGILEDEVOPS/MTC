@@ -38,7 +38,6 @@ describe('FeedbackService', () => {
   }));
   describe('postFeedback ', () => {
     let storedFeedbackMock;
-    let accessTokenMock;
     beforeEach(() => {
       storedFeedbackMock = {
         inputType: {id: 1},
@@ -46,22 +45,19 @@ describe('FeedbackService', () => {
         comments: 'comments',
         checkCode: 'checkCode'
       };
-      accessTokenMock = 'accessToken';
+
     });
     it('should call queueSubmit',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(storageService, 'getFeedback').and.returnValues(storedFeedbackMock);
-        spyOn(storageService, 'getAccessToken').and.returnValues(accessTokenMock);
         spyOn(service, 'queueSubmit');
         await service.postFeedback();
         expect(service.queueSubmit).toHaveBeenCalled();
         expect(storageService.getFeedback).toHaveBeenCalledTimes(1);
-        expect(storageService.getAccessToken).toHaveBeenCalledTimes(1);
       }));
     it('should return if feedback is not fetched before making any call',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(storageService, 'getFeedback').and.returnValues(undefined);
-        spyOn(storageService, 'getAccessToken').and.returnValues(accessTokenMock);
         spyOn(service, 'queueSubmit');
         await service.postFeedback();
         expect(service.queueSubmit).not.toHaveBeenCalled();

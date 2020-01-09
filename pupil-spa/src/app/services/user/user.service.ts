@@ -40,9 +40,6 @@ export class UserService {
           this.storageService.setConfig(data[configStorageKey.toString()]);
           this.storageService.setPupil(data[pupilStorageKey.toString()]);
           this.storageService.setSchool(data[schoolStorageKey.toString()]);
-          this.storageService.setAccessToken(
-            data[tokensStorageKey.toString()] && data[tokensStorageKey.toString()]['jwt']
-            && data[tokensStorageKey.toString()]['jwt']['token']);
           this.storageService.setToken(data[tokensStorageKey.toString()]);
           resolve();
         },
