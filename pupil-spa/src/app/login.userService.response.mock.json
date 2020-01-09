@@ -34,6 +34,7 @@
   },
   "school": {
     "id": 2,
+    "uuid": "4C75D75D-E488-4AB0-A717-01721459B69B",
     "name": "Example School One"
   }
 }
