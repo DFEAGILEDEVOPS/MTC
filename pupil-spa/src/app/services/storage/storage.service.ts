@@ -26,7 +26,6 @@ import { Question } from '../question/question.model';
 
 const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
 const accessTokenStorageKey = new AccessTokenStorageKey();
-const auditStorageKey = new AuditStorageKey();
 const checkStartTimeStorageKey = new CheckStartTimeStorageKey();
 const checkStateStorageKey = new CheckStateStorageKey();
 const completedSubmissionStorageKey = new CompletedSubmissionStorageKey();
@@ -140,7 +139,7 @@ export class StorageService {
   }
 
   setAuditEntry(auditEntry: AuditEntry) {
-    this.setItem(auditStorageKey, auditEntry);
+    this.setItem(new AuditStorageKey(), auditEntry);
   }
 
   getAccessToken() {
