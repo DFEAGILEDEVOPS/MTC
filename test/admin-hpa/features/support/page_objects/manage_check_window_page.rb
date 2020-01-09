@@ -61,5 +61,4 @@ class ManageCheckWindowPage < SitePrism::Page
     formatted_start_date + " to " + formatted_end_date
   end
 
-
 end
