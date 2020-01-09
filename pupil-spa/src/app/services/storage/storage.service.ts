@@ -42,10 +42,6 @@ const tokensStorageKey = new TokensStorageKey();
 @Injectable()
 export class StorageService {
 
-  setAnswer(answer: Answer) {
-    this.setItem(new AnswersStorageKey(), answer);
-  }
-
   getAccessArrangements() {
     return this.getItem(accessArrangementsStorageKey);
   }
@@ -54,12 +50,44 @@ export class StorageService {
     this.setItem(accessArrangementsStorageKey, accessArrangements);
   }
 
-  getPupil() {
-    return this.getItem(pupilStorageKey);
+  getAccessToken() {
+    return this.getItem(accessTokenStorageKey);
   }
 
-  setPupil(pupilData: Object) {
-    this.setItem(pupilStorageKey, pupilData);
+  setAccessToken(accessToken: String) {
+    this.setItem(accessTokenStorageKey, accessToken);
+  }
+
+  setAnswer(answer: Answer) {
+    this.setItem(new AnswersStorageKey(), answer);
+  }
+
+  setAuditEntry(auditEntry: AuditEntry) {
+    this.setItem(new AuditStorageKey(), auditEntry);
+  }
+
+  getCheckStartTime() {
+    return this.getItem(checkStartTimeStorageKey);
+  }
+
+  setCheckStartTime(checkStartTime: Number) {
+    this.setItem(checkStartTimeStorageKey, checkStartTime);
+  }
+
+  removeCheckStartTime() {
+    this.removeItem(checkStartTimeStorageKey);
+  }
+
+  getCheckState() {
+    return this.getItem(checkStateStorageKey);
+  }
+
+  setCheckState(state: Number) {
+    this.setItem(checkStateStorageKey, state);
+  }
+
+  removeCheckState() {
+    this.removeItem(checkStateStorageKey);
   }
 
   getCompletedSubmission() {
@@ -78,40 +106,12 @@ export class StorageService {
     this.setItem(configStorageKey, configData);
   }
 
-  setTimeout(obj: Object) {
-    this.setItem(timeoutStorageKey, obj);
+  getDeviceData() {
+    return this.getItem(deviceStorageKey);
   }
 
-  removeTimeout() {
-    this.removeItem(timeoutStorageKey);
-  }
-
-  getCheckState() {
-    return this.getItem(checkStateStorageKey);
-  }
-
-  setCheckState(state: Number) {
-    this.setItem(checkStateStorageKey, state);
-  }
-
-  removeCheckState() {
-    this.removeItem(checkStateStorageKey);
-  }
-
-  getPendingSubmission() {
-    return this.getItem(pendingSubmissionStorageKey);
-  }
-
-  setPendingSubmission(isPending: Boolean) {
-    this.setItem(pendingSubmissionStorageKey, isPending);
-  }
-
-  getQuestions() {
-    return this.getItem(questionsStorageKey);
-  }
-
-  setQuestions(questions: Array<Question>) {
-    this.setItem(questionsStorageKey, questions);
+  setDeviceData(deviceData) {
+    this.setItem(deviceStorageKey, deviceData);
   }
 
   getFeedback() {
@@ -122,6 +122,34 @@ export class StorageService {
     this.setItem(feedbackStorageKey, feedbackData);
   }
 
+  setInput(questionInput: Object) {
+    this.setItem(new InputsStorageKey(), questionInput);
+  }
+
+  getPendingSubmission() {
+    return this.getItem(pendingSubmissionStorageKey);
+  }
+
+  setPendingSubmission(isPending: Boolean) {
+    this.setItem(pendingSubmissionStorageKey, isPending);
+  }
+
+  getPupil() {
+    return this.getItem(pupilStorageKey);
+  }
+
+  setPupil(pupilData: Object) {
+    this.setItem(pupilStorageKey, pupilData);
+  }
+
+  getQuestions() {
+    return this.getItem(questionsStorageKey);
+  }
+
+  setQuestions(questions: Array<Question>) {
+    this.setItem(questionsStorageKey, questions);
+  }
+
   getSchool() {
     return this.getItem(schoolStorageKey);
   }
@@ -130,40 +158,12 @@ export class StorageService {
     this.setItem(schoolStorageKey, schoolData);
   }
 
-  getDeviceData() {
-    return this.getItem(deviceStorageKey);
+  setTimeout(obj: Object) {
+    this.setItem(timeoutStorageKey, obj);
   }
 
-  setDeviceData(deviceData) {
-    this.setItem(deviceStorageKey, deviceData);
-  }
-
-  setAuditEntry(auditEntry: AuditEntry) {
-    this.setItem(new AuditStorageKey(), auditEntry);
-  }
-
-  getAccessToken() {
-    return this.getItem(accessTokenStorageKey);
-  }
-
-  setAccessToken(accessToken: String) {
-    this.setItem(accessTokenStorageKey, accessToken);
-  }
-
-  setInput(questionInput: Object) {
-    this.setItem(new InputsStorageKey(), questionInput);
-  }
-
-  getCheckStartTime() {
-    return this.getItem(checkStartTimeStorageKey);
-  }
-
-  setCheckStartTime(checkStartTime: Number) {
-    this.setItem(checkStartTimeStorageKey, checkStartTime);
-  }
-
-  removeCheckStartTime() {
-    this.removeItem(checkStartTimeStorageKey);
+  removeTimeout() {
+    this.removeItem(timeoutStorageKey);
   }
 
   getToken() {
