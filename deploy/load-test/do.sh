@@ -59,7 +59,7 @@ fi
 ### Run Migrations
 echo "running database migrations..."
 cd ../../admin
-yarn install
+yarn install --frozen-lockfile
 SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
 
 echo "running database seeds..."

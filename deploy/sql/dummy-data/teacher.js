@@ -20,16 +20,17 @@ for (let idx = 0; idx < teacherCount; idx++) {
 
 const pool = new sql.ConnectionPool(config.Sql)
 pool.connect()
-  .then((x) => {
+  .then(() => {
     console.log('connected')
     console.log(`inserting ${teacherCount} teachers...`)
     const request = new sql.Request(pool)
-    request.bulk(table, (err, result) => {
+    request.bulk(table, async (err, result) => {
       if (err) {
         console.error(err.message)
+        await pool.close()
         process.exit(-1)
       }
       console.log('all done')
-      process.exit(0)
+      await pool.close()
     })
   })
