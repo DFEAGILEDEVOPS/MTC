@@ -51,6 +51,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
 
 /**
  * Find count of pupils blocking hdf submission before check end date
+ * This finds a count of all pupils who are not marked as taking the check, but who haven't completed it yet.
  * @param schoolId
  * @return {Promise<Number>}
  */
@@ -58,9 +59,8 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
     WHERE p.school_id = @schoolId
-    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
+    AND (p.attendanceId IS NULL AND p.checkComplete <> 1) 
   `
 
   const params = [
@@ -72,7 +72,9 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
 }
 
 /**
- * Find count of pupils blocking hdf submission before check end date
+ * Find count of pupils blocking hdf submission after check end date
+ * Blocking pupils are defined as pupils who have not completed the check, or at least attempted the check (and are not
+ * marked as not-attending)
  * @param schoolId
  * @return {Promise<Number>}
  */
@@ -80,18 +82,9 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
-    LEFT JOIN (
-        SELECT *,
-            ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
-        FROM [mtc_admin].[check]
-        WHERE isLiveCheck = 1
-           ) lastCheck ON (lastCheck.pupil_id = p.id)
-    LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-    WHERE p.school_id = @schoolId
-    AND (lastCheck.rank = 1 or lastCheck.rank IS NULL)
-    AND (ps.code != 'STARTED' OR cs.code != 'NTR')
-    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
+    LEFT JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
+    WHERE (p.attendanceId IS NULL
+          AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
   `
 
   const params = [
