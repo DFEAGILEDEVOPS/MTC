@@ -10,4 +10,8 @@ then
   yarn migrate-sql
 fi
 
+echo "Starting SSH..."
+service ssh start
+
+echo "Starting PM2..."
 pm2-docker start pm2.json

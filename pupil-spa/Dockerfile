@@ -68,4 +68,10 @@ COPY --from=builder /ng-app/docker-start.sh /
 #  * app.component.ts:9
 #RUN rm -rf /usr/share/nginx/html/assets
 
+# install ssh server
+RUN apk add openssh \
+     && echo "root:Docker!" | chpasswd
+
+COPY sshd_config /etc/ssh/
+
 CMD ["./docker-start.sh"]
