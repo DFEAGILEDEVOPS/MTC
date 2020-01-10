@@ -35,7 +35,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="TEACHER_LOGIN_FILE" elementType="Argument">
             <stringProp name="Argument.name">TEACHER_LOGIN_FILE</stringProp>
-            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) + &quot;-teacherLogins.csv&quot; )}</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) != null ? System.getenv(&quot;FLOOD_NODE_INDEX&quot;) : &quot;01&quot; + &quot;-teacherLogins.csv&quot; )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

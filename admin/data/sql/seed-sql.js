@@ -129,7 +129,7 @@ const runSeeds = async (version) => {
     process.exitCode = 1
     logger.error(`Error caught: ${error.message}`)
   } finally {
-    const drainInfo = await sqlService.drainPool()
-    logger.info('seeds complete: ', drainInfo)
+    await sqlService.drainPool()
+    logger.info('sql pool closed')
   }
 })()
