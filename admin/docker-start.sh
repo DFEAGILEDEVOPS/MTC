@@ -15,5 +15,9 @@ fi
 echo "Starting SSH..."
 service ssh start
 
+# oddly, docs specify this...
+# /usr/sbin/sshd
+# ref - https://docs.microsoft.com/en-us/azure/app-service/containers/configure-custom-container#enable-ssh
+
 echo "Starting PM2..."
 pm2-docker start pm2.json
