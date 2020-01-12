@@ -65,7 +65,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
-    this.registerInputService.addEntry(event);
+    const data = {
+      questionNumber: this.sequenceNumber.toString(),
+      factor1: this.sequenceNumber.toString(),
+      factor2: this.sequenceNumber.toString(),
+    };
+    this.registerInputService.addEntry(event, data);
   }
 
   /**
@@ -74,7 +79,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event) {
-    this.registerInputService.addEntry(event);
+    const data = {
+      questionNumber: this.sequenceNumber.toString(),
+      factor1: this.sequenceNumber.toString(),
+      factor2: this.sequenceNumber.toString(),
+    };
+    this.registerInputService.addEntry(event, data);
   }
 
   /**
@@ -84,8 +94,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
-    this.registerInputService.addEntry(event);
+    const data = {
+      questionNumber: this.sequenceNumber.toString(),
+      factor1: this.sequenceNumber.toString(),
+      factor2: this.sequenceNumber.toString(),
+    };
+    this.registerInputService.addEntry(event, data);
     const key = event.key;
     // register inputs
     switch (key) {

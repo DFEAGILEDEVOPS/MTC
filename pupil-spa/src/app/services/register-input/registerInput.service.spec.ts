@@ -49,7 +49,12 @@ describe('RegisterInputService', () => {
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f', currentTarget: null};
-    service.addEntry(event);
+    const data = {
+      questionNumber: '1',
+      factor1: '1',
+      factor2: '12',
+    };
+    service.addEntry(event, data);
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
 
@@ -58,7 +63,12 @@ describe('RegisterInputService', () => {
       const event = {
         type: 'mousedown', which: 1, currentTarget: null
       };
-      service.addEntry(event);
+      const data = {
+        questionNumber: '1',
+        factor1: '1',
+        factor2: '12',
+      };
+      service.addEntry(event, data);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
       const args = mockStorageServiceSpy.calls.first().args;
       const record = args[1][0];
@@ -70,8 +80,13 @@ describe('RegisterInputService', () => {
       const event = {
         type: 'mousedown', which: 1, currentTarget: null
       };
-      registerInputService.addEntry(event);
-      registerInputService.addEntry(event);
+      const data = {
+        questionNumber: '1',
+        factor1: '1',
+        factor2: '12',
+      };
+      registerInputService.addEntry(event, data);
+      registerInputService.addEntry(event, data);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(2);
     }));
 });
