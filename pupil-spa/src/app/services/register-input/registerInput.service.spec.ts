@@ -6,7 +6,7 @@ import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
 
 let mockQuestionService: QuestionServiceMock;
-let storageService: StorageService;
+let mockStorageService: StorageService;
 
 @Injectable()
 export class TestRegisterInputService extends RegisterInputService {
@@ -27,8 +27,8 @@ describe('RegisterInputService', () => {
         StorageService,
       ]
     });
-    storageService = injector.get(StorageService);
-    storageServiceSetInputSpy = spyOn(storageService, 'setInput');
+    mockStorageService = injector.get(StorageService);
+    storageServiceSetInputSpy = spyOn(mockStorageService, 'setInput');
   });
 
   it('should be created', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
