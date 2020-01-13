@@ -1,6 +1,10 @@
 # This is ssh server systemwide configuration file.
 #
 # /etc/sshd_config
+#
+# enables SSH from azure portal into running container, not publicly exposed.
+# see docs for full info...
+# https://docs.microsoft.com/en-us/azure/app-service/containers/configure-custom-container
 
 Port 			SSH_PORT
 ListenAddress 		0.0.0.0
