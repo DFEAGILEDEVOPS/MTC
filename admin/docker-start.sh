@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Starting SSH..."
+service ssh start
+
 echo "migrate is $MIGRATE."
 if [ "$MIGRATE" == "1" ]
 then
@@ -11,9 +14,6 @@ then
   echo "running database seeds..."
   yarn seed-sql
 fi
-
-echo "Starting SSH..."
-service ssh start
 
 echo "Starting PM2..."
 pm2-docker start pm2.json

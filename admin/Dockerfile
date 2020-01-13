@@ -16,6 +16,4 @@ COPY sshd_config /etc/ssh/
 
 EXPOSE 3001 2222
 
-RUN chmod u+x ./docker-start.sh
-
 CMD ./docker-start.sh
