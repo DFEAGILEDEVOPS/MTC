@@ -69,9 +69,17 @@ COPY --from=builder /ng-app/docker-start.sh /
 #RUN rm -rf /usr/share/nginx/html/assets
 
 # install ssh server
-RUN apk add openssh \
+RUN apk add openssh openrc \
      && echo "root:Docker!" | chpasswd
 
 COPY sshd_config /etc/ssh/
+
+# auto start ssh on startup
+# RUN rc-update add sshd
+
+# generate keys...
+RUN /usr/bin/ssh-keygen -A
+
+EXPOSE 80 2222
 
 CMD ["./docker-start.sh"]
