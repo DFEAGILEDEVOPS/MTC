@@ -86,7 +86,6 @@ describe('RegisterInputService', () => {
         factor2: '12',
       };
       registerInputService.addEntry(event, questionData);
-      registerInputService.addEntry(event, questionData);
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(2);
+      expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
     }));
 });
