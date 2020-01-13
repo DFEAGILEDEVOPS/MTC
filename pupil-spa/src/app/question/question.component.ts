@@ -13,7 +13,7 @@ import { StorageService } from '../services/storage/storage.service';
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
 })
-export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   /**
    * Do not show 'practice' label on top left.
@@ -32,12 +32,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-
-    // Add attributes to the <body> tag to reflect the current question
-    const bodyTag = <Element>window.document[ 'body' ];
-    bodyTag.setAttribute('data-sequence-number', this.sequenceNumber.toString());
-    bodyTag.setAttribute('data-factor1', this.factor1.toString());
-    bodyTag.setAttribute('data-factor2', this.factor2.toString());
   }
 
   /**
@@ -50,14 +44,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     }));
     // Start the countdown and page timeout timers
     this.startTimer();
-  }
-
-  ngOnDestroy() {
-    // Remove attributes from the <body> tag to reflect the current lack of a question
-    const bodyTag = <Element>window.document[ 'body' ];
-    bodyTag.removeAttribute('data-sequence-number');
-    bodyTag.removeAttribute('data-factor1');
-    bodyTag.removeAttribute('data-factor2');
   }
 
   /**
