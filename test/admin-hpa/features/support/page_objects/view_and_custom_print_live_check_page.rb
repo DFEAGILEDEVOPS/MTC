@@ -27,7 +27,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
       element :pin, '.pin-content span:nth-child(5)'
-      element :group, 'td:nth-child(2)'
+      element :group, 'td:nth-child(3)'
     end
   end
 

@@ -52,18 +52,21 @@ describe('prepare-check.service', () => {
   })
 
   it('should add each check with the expected cache key and a lookup item', async () => {
-    let actualPreparedCheckKey, actualLookupKey
+    let actualPreparedCheckKey, actualPreparedCheckLookupKey, actualPupilUuidLookupKey
     check.schoolPin = 'schoolPin'
     check.pupilPin = 'pupilPin'
-    const expectedLookupKey = `prepared-check-lookup:${check.checkCode}`
+    const expectedPreparedCheckLookupKey = `prepared-check-lookup:${check.checkCode}`
     const expectedPreparedCheckKey = `preparedCheck:${check.schoolPin}:${check.pupilPin}`
+    const expectedPupilUuidLookupKey = `pupil-uuid-lookup:${check.checkCode}`
     spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
       actualPreparedCheckKey = batch[0].key
-      actualLookupKey = batch[1].key
+      actualPreparedCheckLookupKey = batch[1].key
+      actualPupilUuidLookupKey = batch[2].key
     })
     await sut.prepareChecks([check])
     expect(actualPreparedCheckKey).toEqual(expectedPreparedCheckKey)
-    expect(actualLookupKey).toEqual(expectedLookupKey)
+    expect(actualPreparedCheckLookupKey).toEqual(expectedPreparedCheckLookupKey)
+    expect(actualPupilUuidLookupKey).toEqual(expectedPupilUuidLookupKey)
   })
 
   it('should cache each item with the expected structure', async () => {

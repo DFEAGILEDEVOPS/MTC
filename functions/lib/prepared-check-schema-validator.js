@@ -13,7 +13,7 @@ preparedCheckSchemaValidator.validateMessage = function (message) {
 }
 
 preparedCheckSchemaValidator.validatePupil = function (pupil) {
-  const pupilProperties = ['firstName', 'lastName', 'dob', 'checkCode']
+  const pupilProperties = ['firstName', 'lastName', 'dob', 'checkCode', 'uuid']
   preparedCheckSchemaValidator.schemaValidator(pupil, pupilProperties, 'pupil')
 }
 
@@ -30,7 +30,7 @@ preparedCheckSchemaValidator.validateQuestions = function (questions) {
 }
 
 preparedCheckSchemaValidator.validateSchool = function (school) {
-  const schoolProperties = ['id', 'name']
+  const schoolProperties = ['uuid', 'name']
   preparedCheckSchemaValidator.schemaValidator(school, schoolProperties, 'school')
 }
 

@@ -23,4 +23,9 @@ Feature: Pupil Api
     Given I have generated a pin for a pupil
     Then I should be able to lookup the prepared check using the check code
 
+  @new_check_process
+  Scenario: Pupil UUID can be looked up via check code
+    Given I have generated a pin for a pupil
+    Then I should be able to lookup the pupil uuid using the check code
+
 

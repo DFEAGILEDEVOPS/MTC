@@ -285,7 +285,9 @@ end
 And(/^I should be able to generate pins for all pupils in this group$/) do
   generate_pins_overview_page.select_all_pupils.click
   generate_pins_overview_page.sticky_banner.confirm.click
-  pupils_with_pins = view_and_custom_print_live_check_page.pupil_list.rows.select {|row| row.has_pin?}
+  group = view_and_custom_print_live_check_page.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
+  pupils_with_pins = view_and_custom_print_live_check_page.pupil_list.rows.select {|row| row.group.text.include?(@group_name)}
   names = pupils_with_pins.map {|row| row.name.text}
   expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
@@ -319,9 +321,13 @@ Given(/^I have generated pins for all pupils in a group$/) do
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
   view_and_custom_print_live_check_page.load
-  @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
+  if view_and_custom_print_live_check_page.has_pupil_list?
+    @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
+  else
+    @before_pin_gen =  0
+  end
   generate_pins_overview_page.load
-  generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
+  step 'I click Generate PINs button'
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   generate_pins_overview_page.select_all_pupils.click
@@ -361,7 +367,7 @@ And(/^I should be able to see a count of pupils$/) do
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
 
-Then(/^I should see an error message to contact helpdesk$/) do
+Then(/^I should see an error message stating the service is unavailable$/) do
   sleep 1
   REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
   pupil_register_page.load
@@ -417,4 +423,13 @@ end
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-custom-print-live-pins'
   expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @total_pins + @before_pin_gen
+end
+
+
+Given(/^I am on the generate pupil pins page after logging in with teacher2$/) do
+  expect(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow")).to be_nil
+  step "I have signed in with teacher2"
+  expect(school_landing_page).to be_displayed
+  Timeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
+  expect(JSON.parse(JSON.parse(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow"))['value'])['recordset']).to be_empty
 end
