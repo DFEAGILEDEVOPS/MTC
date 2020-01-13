@@ -6,7 +6,7 @@
 # see docs for full info...
 # https://docs.microsoft.com/en-us/azure/app-service/containers/configure-custom-container
 
-Port 			SSH_PORT
+Port 			2222
 ListenAddress 		0.0.0.0
 LoginGraceTime 		180
 X11Forwarding 		yes
