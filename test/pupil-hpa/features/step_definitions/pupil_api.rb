@@ -87,5 +87,16 @@ end
 Then(/^I should be able to lookup the prepared check using the check code$/) do
   pupil_id = SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])['id']
   check_code = SqlDbHelper.check_details(pupil_id)['checkCode']
-  expect(REDIS_CLIENT.get(JSON.parse(REDIS_CLIENT.get("prepared-check-lookup:#{check_code}"))['value'])).to_not be_nil
+  expect(REDIS_CLIENT.get("prepared-check-lookup:#{check_code}")).to_not be_nil
+  prepared_check_value = JSON.parse(REDIS_CLIENT.get("prepared-check-lookup:#{check_code}"))
+  expect(prepared_check_value).to eql ({"meta"=>{"type"=>"string"}, "value"=>"preparedCheck:#{@pupil_credentials[:school_password]}:#{@pupil_credentials[:pin]}"})
+end
+
+
+Then(/^I should be able to lookup the pupil uuid using the check code$/) do
+  pupil_id = SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])['id']
+  check_code = SqlDbHelper.check_details(pupil_id)['checkCode']
+  expect(REDIS_CLIENT.get("pupil-uuid-lookup:#{check_code}")).to_not be_nil
+  pupil_uuid_value = JSON.parse(REDIS_CLIENT.get("pupil-uuid-lookup:#{check_code}"))
+  expect(pupil_uuid_value).to eql ({"meta" =>{"type"=>"string"}, "value"=>SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])["urlSlug"]})
 end

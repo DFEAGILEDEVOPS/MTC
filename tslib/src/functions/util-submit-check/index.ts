@@ -6,6 +6,7 @@ import submittedCheck from '../../schemas/submitted-check.v3'
 import completeCheckPayload from '../../schemas/complete-check-payload'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
+  // TODO add support for live check toggle via query string?
   const message = JSON.parse(JSON.stringify(submittedCheck))
   const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
   message.checkCode = req.query['checkCode'] || uuid()
@@ -17,6 +18,15 @@ const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest)
   }
   const archive = lz.compressToUTF16(JSON.stringify(samplePayload))
   message.archive = archive
+  // TODO put message on pupil login queue...?
+  /*
+    const pupilLoginMessage: IPupilLoginMessage = {
+      checkCode: preparedCheckEntry.checkCode,
+      loginAt: new Date(),
+      version: 1,
+      practice: preparedCheckEntry.config.practice
+    }
+  */
   context.bindings.submittedCheckQueue = [ message ]
   context.done()
 }

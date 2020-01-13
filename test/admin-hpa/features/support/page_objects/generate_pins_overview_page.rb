@@ -81,4 +81,5 @@ class GeneratePinsOverviewPage < SitePrism::Page
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
 
+
 end
