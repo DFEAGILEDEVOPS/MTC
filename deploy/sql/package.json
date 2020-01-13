@@ -7,10 +7,13 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "scripts": {
-    "db:up": "node ./sql/migrate.js",
-    "db:data": "node ./sql/seed.js",
-    "new:migration": "node ./sql/create-migration.js",
-    "new:seed": "node ./sql/create-seed.js"
+    "db:up": "node ./schema(WIP)/migrate.js",
+    "db:seed": "node ./schema(WIP)/seed.js",
+    "new:migration": "node ./schema(WIP)/create-migration.js",
+    "new:seed": "node ./schema(WIP)/create-seed.js",
+    "dummy:schools": "node ./dummy-data/school.js",
+    "dummy:pupils": "node ./dummy-data/pupil.js",
+    "dummy:teachers": "node ./dummy-data/teacher.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
@@ -21,6 +24,7 @@
     "postgrator": "^3.11.0",
     "ramda": "^0.26.1",
     "to-bool": "^0.0.1",
+    "uuid": "^3.3.3",
     "winston": "^3.2.1",
     "yargs": "^15.0.2"
   }

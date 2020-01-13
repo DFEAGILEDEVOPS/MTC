@@ -1,0 +1,46 @@
+pool:
+
+  name: MTC LIVE
+
+variables:
+
+  MainResourceGroup: ''
+
+  FunctionsResourceGroup: ''
+
+  SqlServer.Master: ''
+
+  Sql.Scale: 'S2'
+
+  AdminAppName: ''
+
+  Functions.Consumption: ''
+
+  Functions.AppSvc: ''
+
+  SqlServer.Replica: ''
+
+
+
+steps:
+
+- task: Bash@3
+
+  displayName: up
+
+  inputs:
+
+    targetType: filePath
+
+    filePath: './deploy/load-test/ci-up.sh'
+
+    arguments: '$(MainResourceGroup) $(FunctionsResourceGroup) $(SqlServer.Master) $(Sql.Scale) $(AdminAppName) $(Functions.Consumption) $(Functions.AppSvc) $(SqlServer.Replica)'
+
+  env:
+
+    SQL_ADMIN_USER: $(SqlAdminUsername)
+
+    SQL_ADMIN_USER_PASSWORD: $(SqlAdminPassword)
+
+
+
