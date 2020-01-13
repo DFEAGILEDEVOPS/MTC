@@ -11,16 +11,16 @@ export class RegisterInputService {
     this.storageService.setItem(RegisterInputService.inputKey, []);
   }
 
-  public addEntry(event, data) {
+  public addEntry(event, questionData) {
     let eventValue;
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
     eventValue = eventValue || event.key || '';
 
-    const questionNumber = data.questionNumber;
-    const factor1 = data.factor1;
-    const factor2 = data.factor2;
+    const questionNumber = questionData.questionNumber;
+    const factor1 = questionData.factor1;
+    const factor2 = questionData.factor2;
     const question = `${factor1}x${factor2}`;
 
     this.storeEntry(eventValue, event.type, questionNumber, question);
