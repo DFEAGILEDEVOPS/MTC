@@ -27,7 +27,8 @@ import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.compo
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
-import { LoggedInGuard } from './logged-in.guard';
+import { LoggedInGuard } from './routes/logged-in/logged-in.guard';
+import { CanExitGuard } from './routes/can-exit/can-exit.guard';
 import { LoginComponent } from './login/login.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -87,7 +88,7 @@ declare var AzureStorage: IAzureStorage;
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [CanExitGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
@@ -204,6 +205,7 @@ const appRoutes: Routes = [
     LoginErrorDiagnosticsService,
     ConnectivityService,
     ConnectivityCheckGuard,
+    CanExitGuard,
     {
       provide: QUEUE_STORAGE_TOKEN,
       useValue: AzureStorage.Queue
