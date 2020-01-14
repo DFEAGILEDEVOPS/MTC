@@ -6,7 +6,6 @@ const R = require('ramda')
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
@@ -16,12 +15,12 @@ const settingService = require('./setting.service')
 
 /**
  * Add the pupil `status` field, using the pupil register service to do so.
- * @param settings
- * @param pupil
- * @return {unknown}
+ * @param {Object} settings
+ * @param {Object} pupil
+ * @return {Object} partially cloned pupil obj with an additional `status` property
  */
 headteacherDeclarationService.addStatus = function addStatus (settings, pupil) {
-  const newPupil = R.pickAll(['foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'checkStatusCode',
+  const newPupil = R.pickAll(['id', 'foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'checkStatusCode',
     'group_id', 'reason', 'reasonCode'], pupil)
   newPupil.status = pupilRegisterService.getProcessStatusV2({
     attendanceId: pupil.attendanceId,
@@ -79,15 +78,17 @@ headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
  * @param dfeNumber
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeNumber) => {
-  if (!dfeNumber || !urlSlug) {
-    throw new Error('urlSlug and dfeNumber are required')
+headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolId (urlSlug, schoolId) {
+  if (!urlSlug) {
+    throw new Error('urlSlug param is required')
   }
-  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-  if (!school) {
-    throw new Error(`School [${dfeNumber}] not found`)
+  if (!schoolId) {
+    throw new Error('schoolId param is required')
   }
-  return pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool(urlSlug, school.id)
+  const settings = await settingService.get()
+  const pupil = await headteacherDeclarationDataService.sqlFindOnePupilFullStatus(urlSlug, schoolId)
+  const newPupil = this.addStatus(settings, pupil)
+  return newPupil
 }
 
 /**

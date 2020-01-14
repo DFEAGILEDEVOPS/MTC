@@ -172,32 +172,6 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
 }
 
 /**
- * Find a pupil by Id and schoolId with associated attendance reasons
- * @deprecated NB: Move to HDF vertical slice
- * @param {string} urlSlug
- * @param {number} schoolId
- * @return {Promise<object>}
- */
-pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug, schoolId) => {
-  const paramPupil = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
-  const sql = `
-  SELECT TOP 1
-  p.*, ps.code, ac.reason, ac.code as reasonCode
-  FROM [mtc_admin].[pupil] p
-  LEFT JOIN [mtc_admin].[pupilStatus] ps
-    ON p.pupilStatus_id = ps.id
-  LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa
-    ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-  LEFT OUTER JOIN [mtc_admin].[attendanceCode] ac
-    ON pa.attendanceCode_id = ac.id
-  WHERE p.urlSlug = @urlSlug and school_id = @schoolId
-    `
-  const results = await sqlService.query(sql, [paramPupil, paramSchool])
-  return R.head(results)
-}
-
-/**
  * Find a pupil by school id and pupil pin
  * @param {number} pin
  * @param {number} schoolId

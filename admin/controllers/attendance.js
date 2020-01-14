@@ -157,7 +157,7 @@ controller.getEditReason = async (req, res, next) => {
 
   let pupil, attendanceCodes
   try {
-    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(req.params.urlSlug, req.user.School)
+    pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(req.params.urlSlug, req.user.schoolId)
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
   } catch (error) {
     return next(error)
@@ -176,18 +176,15 @@ controller.getEditReason = async (req, res, next) => {
 
 controller.postSubmitEditReason = async (req, res, next) => {
   const { urlSlug, attendanceCode } = req.body
-
-  let pupil
   try {
-    pupil = await headteacherDeclarationService.findPupilBySlugAndDfeNumber(urlSlug, req.user.School)
+    const pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(urlSlug, req.user.schoolId)
     await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.id], attendanceCode, req.user.id)
+    req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
+    req.flash('urlSlug', pupil.urlSlug)
+    return res.redirect('/attendance/review-pupil-details')
   } catch (error) {
     return next(error)
   }
-
-  req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
-  req.flash('urlSlug', pupil.urlSlug)
-  return res.redirect('/attendance/review-pupil-details')
 }
 
 controller.getConfirmSubmit = async (req, res, next) => {
