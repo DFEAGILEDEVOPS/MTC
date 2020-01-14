@@ -1,13 +1,16 @@
 When(/^I inspect local storage$/) do
-  @local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  @local_storage = []
+  storage_audit_keys.each do |key|
+    @local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
 end
 
 
 Then(/^all the events should be captured$/) do
-
-  expect(@local_storage.first['type']).to eql 'WarmupStarted'
-  @local_storage.shift
-  expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
+  expect(@local_storage.find{|a| a['type'] == 'WarmupStarted'}).to_not be_nil
+  expect(@local_storage.find{|a| a['type'] == 'WarmupIntroRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}
   expect(@local_storage.find{|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupCompleteRendered'}
@@ -19,17 +22,16 @@ Then(/^all the events should be captured$/) do
   @local_storage.reject!{|a| a['type'] == 'CheckStartedApiCalled'}
   expect(@local_storage.find{|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'CheckStartedAPICallSucceeded'}
-  @last = @local_storage.pop(1)[0]
-  expect(@last['type']).to eql 'CheckSubmissionAPICallSucceeded'
-  @local_storage.each_slice(5) do |slice|
-    if !((slice[0]['type'].eql?('CheckSubmissionPending')) || (slice[1]['type'].eql?('CheckSubmissionAPICallSucceeded')) || (slice[2]['type'].eql?('CheckSubmissionApiCalled')))
-      expect(slice[0]['type']).to eql 'PauseRendered'
-      expect(slice[1]['type']).to eql 'QuestionRendered'
-      expect(slice[2]['type']).to eql 'QuestionTimerStarted'
-      expect(slice[3]['type']).to eql 'QuestionTimerCancelled'
-      expect(slice[4]['type']).to eql 'QuestionAnswered'
-      expect((Time.parse(slice[1]['clientTimestamp'])-Time.parse(slice[0]['clientTimestamp'])).to_i).to be >= 2
-    end
+  expect(@local_storage.find{|a| a['type'] == 'CheckSubmissionAPICallSucceeded'}).to_not be_nil
 
-  end
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  wait_until(120,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
+  pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
+  wait_until(240,5){SqlDbHelper.get_check_result(pupil_check['id'])}
+  check_result = SqlDbHelper.get_check_result(pupil_check['id'])
+  check = JSON.parse(check_result['payload'])
+  local_storage = check['audit']
+
+  expect(local_storage.first['type']).to eql 'WarmupStarted'
+  expect(local_storage.last['type']).to eql 'CheckSubmissionApiCalled'
 end
