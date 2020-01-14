@@ -237,6 +237,7 @@ describe('headteacherDeclarationService', () => {
   describe('findPupilsForSchool', () => {
     const schoolId = 123
     const service = require('../../../services/headteacher-declaration.service')
+    const settingService = require('../../../services/setting.service')
 
     it('throws an error when no schoolId is provided', async () => {
       try {
@@ -247,11 +248,32 @@ describe('headteacherDeclarationService', () => {
       }
     })
 
-    it('finds the pupils using the dfeNumber', async () => {
-      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
-      const result = await service.findPupilsForSchool(schoolId)
-      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(schoolId)
-      expect(result).toEqual('Mock pupils result')
+    it('finds the pupils using the schoolId', async () => {
+      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsFullStatus').and.returnValue([
+        {
+          foreName: 'John',
+          lastName: 'Smith',
+          middleNames: 'Albert William',
+          dateOfBirth: moment().subtract(8.5, 'years'),
+          group_id: null,
+          urlSlug: 'abc-def-hij',
+          checkStatusCode: null,
+          reason: null,
+          reasonCode: null,
+          attendanceId: null,
+          pupilCheckComplete: false,
+          currentCheckId: null,
+          pupilId: 1,
+          restartAvailable: false,
+          checkReceived: false,
+          checkComplete: false,
+          pupilLoginDate: false,
+          pinExpiresAt: null
+        }
+      ])
+      spyOn(settingService, 'get').and.returnValue({ checkTimeLimit: 30 })
+      await service.findPupilsForSchool(schoolId)
+      expect(headteacherDeclarationDataService.sqlFindPupilsFullStatus).toHaveBeenCalledWith(schoolId)
     })
   })
 

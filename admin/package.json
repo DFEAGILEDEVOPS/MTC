@@ -129,11 +129,17 @@
       "!data/**",
       "!assets/**",
       "!public/**",
-      "!spec/front-end/**"
+      "!spec/front-end/**",
+      "!**/*.spec.js",
+      "!**/tests-integration/**",
+      "!**/back-end/mocks/**",
+      "!**/coverage/**",
+      "!**/bin/**"
     ],
     "coverageDirectory": "<rootDir>/coverage",
     "testMatch": [
-      "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)"
+      "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)",
+      "**/services/*/*.spec.js"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/spec/back-end/mocks/",

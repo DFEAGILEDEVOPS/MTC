@@ -13,7 +13,6 @@ const attendanceCodeService = require('../../../services/attendance.service')
 const hdfValidator = require('../../../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../../../lib/validator/hdf-confirm-validator')
 const ValidationError = require('../../../lib/validation-error')
-const hdfPresenter = require('../../../helpers/hdf-presenter')
 
 describe('attendance controller:', () => {
   let next
@@ -136,7 +135,6 @@ describe('attendance controller:', () => {
     it('renders the pupil details list page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(hdfPresenter, 'getPupilsWithViewStatus').and.returnValue([])
       spyOn(headteacherDeclarationService, 'findPupilsForSchool').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getReviewPupilDetails(req, res)

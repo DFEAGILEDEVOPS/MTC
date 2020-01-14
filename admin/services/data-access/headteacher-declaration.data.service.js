@@ -95,43 +95,43 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
   return R.path(['pupilsCount'], R.head(result))
 }
 
-/**
- * Fetch all pupils for a school by dfeNumber with their status codes and attendance reasons
- * @param schoolId
- * @returns {Promise<*>}
- */
-headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (schoolId) {
-  const paramDfeNumber = { name: 'schoolId', type: TYPES.Int, value: schoolId }
-
+headteacherDeclarationDataService.sqlFindPupilsFullStatus = async function sqlFindPupilsAndAttendanceReasons (schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId param is required')
+  }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
   SELECT
-  p.foreName,
-  p.lastName,
-  p.middleNames,
-  p.dateOfBirth,
-  p.urlSlug,
-  ps.code AS pupilStatusCode,
-  cs.code AS checkStatusCode,
-  p.group_id,
-  ac.reason,
-  ac.code as reasonCode
-FROM [mtc_admin].pupil p
-JOIN [mtc_admin].pupilStatus ps
-   ON p.pupilStatus_id = ps.id
-LEFT JOIN [mtc_admin].[pupilAttendance] pa
-   ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-LEFT JOIN [mtc_admin].[attendanceCode] ac
-   ON pa.attendanceCode_id = ac.id
-LEFT JOIN (
-   SELECT *,
-       ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
-   FROM [mtc_admin].[check]
-   WHERE isLiveCheck = 1
-  ) lastCheck ON (lastCheck.pupil_id = p.id AND lastCheck.rank = 1)
-LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-WHERE p.school_id = @schoolId
+    p.foreName,
+    p.lastName,
+    p.middleNames,
+    p.dateOfBirth,
+    p.group_id,
+    p.urlSlug,
+    cs.code as checkStatusCode,
+    ac.reason, 
+    ac.code as reasonCode,
+
+    -- the following fields are required to produce the HDF pupil status for the Heads review
+    p.attendanceId,
+    p.checkComplete as pupilCheckComplete,
+    p.currentCheckId,
+    p.id as pupilId,
+    p.restartAvailable,
+    chk.received as checkReceived,
+    chk.complete as checkComplete,
+    chk.pupilLoginDate,
+    cp.pinExpiresAt
+  FROM
+    [mtc_admin].[pupil] p LEFT JOIN  
+    [mtc_admin].[check] chk ON (p.currentCheckId = chk.id) LEFT JOIN  
+    [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN 
+    [mtc_admin].[attendanceCode] ac ON (p.attendanceId = ac.id) LEFT JOIN
+    [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
+  WHERE
+    p.school_id = @schoolId  
   `
-  return sqlService.query(sql, [paramDfeNumber])
+  return sqlService.readonlyQuery(sql, [paramSchoolId])
 }
 
 module.exports = headteacherDeclarationDataService

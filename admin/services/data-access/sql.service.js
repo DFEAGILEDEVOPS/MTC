@@ -327,7 +327,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
  * @param {string} redisKey - Redis key to cache resultset against
  * @returns {Promise<*>}
  */
-sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
+sqlService.readonlyQuery = async (sql, params = [], redisKey = '') => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug(`sql.service.readonlyQuery(): ${sql}`)
     logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))

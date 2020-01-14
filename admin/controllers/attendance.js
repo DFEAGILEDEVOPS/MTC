@@ -131,16 +131,19 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
-  const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
-  if (!pupils) {
-    throw new Error('No pupils found')
+  try {
+    const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
+    if (!pupils) {
+      return next('No pupils found')
+    }
+    const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupils)
+    return res.render('hdf/review-pupil-details', {
+      breadcrumbs: req.breadcrumbs(),
+      pupils: pupilsSortedWithFlags
+    })
+  } catch (error) {
+    return next(error)
   }
-  const pupilsWithProcessStatus = hdfPresenter.getPupilsWithViewStatus(pupils)
-  const pupilsSortedWithFlags = pupilPresenter.getPupilsSortedWithIdentificationFlags(pupilsWithProcessStatus)
-  return res.render('hdf/review-pupil-details', {
-    breadcrumbs: req.breadcrumbs(),
-    pupils: pupilsSortedWithFlags
-  })
 }
 
 controller.getEditReason = async (req, res, next) => {
