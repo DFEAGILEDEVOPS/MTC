@@ -4,11 +4,16 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
 RUN yarn install --ignore-engines --frozen-lockfile
-# RUN ./node_modules/.bin/gulp build
 RUN yarn global add pm2
 
-EXPOSE 3001
+# ssh
+ENV SSH_PASSWD "root:Docker!"
+RUN apt-get update \
+      && apt-get install -y --no-install-recommends dialog openssh-server \
+	    && echo "$SSH_PASSWD" | chpasswd
 
-RUN chmod +x wait-sqldb.sh
+COPY sshd_config /etc/ssh/
 
-CMD ./wait-sqldb.sh && ./docker-start.sh
+EXPOSE 3001 2222
+
+CMD ./docker-start.sh
