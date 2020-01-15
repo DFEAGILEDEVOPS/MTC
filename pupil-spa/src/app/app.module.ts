@@ -18,6 +18,7 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckCompleteService} from './services/check-complete/check-complete.service';
 import { CheckComponent } from './check/check.component';
+import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { ConnectivityCheckGuard } from './connectivity-check.guard';
 import { ConnectivityService } from './services/connectivity-service/connectivity-service';
@@ -180,6 +181,7 @@ const appRoutes: Routes = [
     AuditService,
     AzureQueueService,
     CheckCompleteService,
+    CheckStartService,
     CheckStatusService,
     ConnectivityCheckGuard,
     ConnectivityService,
