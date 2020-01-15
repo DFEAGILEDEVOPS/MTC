@@ -4,7 +4,8 @@ end
 
 
 Then(/^all the events should be captured$/) do
-
+  expect(@local_storage.first['type']).to eql 'UtteranceEnded'
+  @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupStarted'
   @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
@@ -15,12 +16,7 @@ Then(/^all the events should be captured$/) do
   @local_storage.reject!{|a| a['type'] == 'QuestionIntroRendered'}
   expect(@local_storage.find{|a| a['type'] == 'CheckStarted'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'CheckStarted'}
-  expect(@local_storage.find{|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'CheckStartedApiCalled'}
-  expect(@local_storage.find{|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'CheckStartedAPICallSucceeded'}
-  @last = @local_storage.pop(1)[0]
-  expect(@last['type']).to eql 'CheckSubmissionAPICallSucceeded'
+  expect(@local_storage.find{|a| a['type'] == 'CheckSubmissionAPICallSucceeded'}).to_not be_nil
   @local_storage.each_slice(5) do |slice|
     if !((slice[0]['type'].eql?('CheckSubmissionPending')) || (slice[1]['type'].eql?('CheckSubmissionAPICallSucceeded')) || (slice[2]['type'].eql?('CheckSubmissionApiCalled')))
       expect(slice[0]['type']).to eql 'PauseRendered'

@@ -141,6 +141,8 @@ When(/^I click view all pins button$/) do
 end
 
 Given(/^I have generated pin for all pupil$/) do
+  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.set_pupil_attendance_via_school(5,'null')
   step "I have signed in with teacher4"
   step "I am on Generate pins Pupil List page"
   generate_pins_overview_page.select_all_pupils.click
@@ -297,23 +299,30 @@ And(/^I should be able to generate pins for all pupils in this group$/) do
 end
 
 And(/^that pupil is apart of a group$/) do
-  add_edit_groups_page.load(add_or_edit: 'add')
-  step 'I enter a valid group name'
   @excluded_pupil = @pupil_lastname + ", " + @pupil_forename
-  excluded_pupil = add_edit_groups_page.pupil_list.rows.find {|row| row.name.text == @excluded_pupil}
   @pupil_group_array = []
-  excluded_pupil.checkbox.click
+  for i in 0..3
+    name = (0...8).map {(65 + rand(26)).chr}.join
+    step "I am on the add pupil page"
+    step "I submit the form with the name fields set as #{name}"
+    step "the pupil details should be stored"
+    @pupil_forename = name
+    @pupil_lastname = name
+    @pupil_group_array << @pupil_lastname + ", " + @pupil_forename
+  end
+  group_pupils_page.load
+  group_pupils_page.create_group.click
+  step 'I enter a valid group name'
+
+  excluded_pupil = add_edit_groups_page.pupil_list.rows.find {|row| row.name.text == @excluded_pupil}
   @pupil_group_array << excluded_pupil.name.text
-  add_edit_groups_page.pupil_list.rows[2].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[2].name.text
-  add_edit_groups_page.pupil_list.rows[3].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[3].name.text
+  @pupil_group_array.each {|pupil| add_edit_groups_page.select_pupil_for_a_group(pupil)}
   add_edit_groups_page.sticky_banner.confirm.click
 end
 
 Then(/^I should only see pupils available for taking the check$/) do
   filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split(' Date')[0]}.compact
-  expect(@pupil_group_array - [@excluded_pupil]).to eql filtered_pupils
+  expect(@pupil_group_array.sort - [@excluded_pupil]).to eql filtered_pupils.sort
 end
 
 Given(/^I have generated pins for all pupils in a group$/) do
