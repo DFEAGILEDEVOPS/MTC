@@ -4,7 +4,7 @@ set -e
 cd ./tslib
 yarn install
 cd ../func-consumption
-yarn install
+yarn install --frozen-lockfile
 yarn build
 
 cd ..
