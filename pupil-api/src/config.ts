@@ -47,6 +47,6 @@ export default {
     _2020Mode: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_2020_MODE') ? toBool(process.env.FEATURE_TOGGLE_2020_MODE) : true
   },
   ServiceBus: {
-    connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
+    connectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   }
 }

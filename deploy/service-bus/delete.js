@@ -2,7 +2,7 @@
 
 require('dotenv').config()
 const azure = require('azure')
-const sbService = azure.createServiceBusService(process.env.SERVICE_BUS_CONNECTION_STRING)
+const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
 const queues = require('./queues-topics.json').queues
 
 const deleteQueue = (queueName) => (new Promise((resolve, reject) => {

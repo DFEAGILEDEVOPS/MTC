@@ -163,7 +163,7 @@ module.exports = {
     externalHost: process.env.RUNTIME_EXTERNAL_HOST || 'http://localhost:3001'
   },
   ServiceBus: {
-    connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
+    connectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   },
   FeatureToggles: {
     accessArrangements: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_ACCESS_ARRANGEMENTS') ? toBool(process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS) : true,
