@@ -39,9 +39,16 @@ BEGIN TRY
 
             -- Assign a pin to the check
             INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pinExpiresAt, pin_id)
-            VALUES (@schoolId, @checkId, @pinExpiresAt, (SELECT TOP 1 p.id FROM mtc_admin.pin p
-                                                                                    LEFT OUTER JOIN (SELECT cp.pin_id, cp.school_id FROM mtc_admin.checkPin cp WHERE school_id = @schoolId)
-                AS vew ON p.id = vew.pin_id WHERE vew.pin_id IS NULL ORDER BY NEWID()))
+            VALUES (@schoolId,
+                    @checkId,
+                    @pinExpiresAt,
+                    (SELECT TOP 1 p.id
+                    FROM mtc_admin.pin p
+                    LEFT OUTER JOIN (SELECT cp.pin_id, cp.school_id
+                                    FROM mtc_admin.checkPin cp
+                                    WHERE school_id = @schoolId) AS vew ON p.id = vew.pin_id
+                    WHERE vew.pin_id IS NULL ORDER BY NEWID())
+                    )
 
 
             IF @isLiveCheck = 1

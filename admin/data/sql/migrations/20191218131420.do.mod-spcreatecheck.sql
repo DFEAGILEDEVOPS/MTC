@@ -61,14 +61,11 @@ BEGIN TRY
                     FROM [mtc_admin].[pupil]
                     WHERE id = @pupilId;
 
-                    PRINT concat('isLiveCheck ', cast(@isLiveCheck as varchar(10)));
-                    PRINT concat('isRestart ', cast(@isRestart as varchar(10)));
-
                     IF @isRestart = 1
                         BEGIN
                             -- Find the pupilRestart id so we can update it
                             SELECT
-                                    @pupilRestartId = id
+                                @pupilRestartId = id
                             FROM
                                 [mtc_admin].[pupilRestart]
                             WHERE id = (
