@@ -1,0 +1,7 @@
+{
+  "license": "GPL-3.0",
+  "scripts": {
+    "start": "echo 'use `func-consumption` instead'"
+  },
+  "dependencies": {}
+}
