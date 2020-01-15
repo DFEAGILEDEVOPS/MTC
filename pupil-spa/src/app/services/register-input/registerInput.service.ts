@@ -33,10 +33,10 @@ export class RegisterInputService {
       question = `${factor1}x${factor2}`;
     }
 
-    this.storeEntry(eventValue, event.type, questionNumber, question);
+    this.storeEntry(eventValue, event.type, questionNumber, question, event.timeStamp);
   }
 
-  public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string) {
+  public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string, eventTimeStamp: number = null) {
     let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
     if (!Array.isArray(questionInputs)) {
       questionInputs = [];
@@ -46,7 +46,7 @@ export class RegisterInputService {
     questionInputs.push({
       input: eventValue,
       eventType: eventType,
-      clientTimestamp: new Date(),
+      clientTimestamp:  eventTimeStamp || new Date(),
       question: question,
       sequenceNumber: questionNumber
     });

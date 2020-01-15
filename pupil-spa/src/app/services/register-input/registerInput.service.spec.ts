@@ -48,7 +48,7 @@ describe('RegisterInputService', () => {
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
-    const event = {type: 'keydown', key: 'f', currentTarget: null};
+    const event = {type: 'keydown', key: 'f', currentTarget: null, timeStamp: 1519211809934};
     service.addEntry(event);
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
@@ -56,7 +56,7 @@ describe('RegisterInputService', () => {
   it('expects a left click event to be registered',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const event = {
-        type: 'mousedown', which: 1, currentTarget: null
+        type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
       service.addEntry(event);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
@@ -68,7 +68,7 @@ describe('RegisterInputService', () => {
   it('calls the storage service', inject([TestRegisterInputService],
     (registerInputService: TestRegisterInputService) => {
       const event = {
-        type: 'mousedown', which: 1, currentTarget: null
+        type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
       registerInputService.addEntry(event);
       registerInputService.addEntry(event);
