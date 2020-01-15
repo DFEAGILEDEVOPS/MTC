@@ -5,12 +5,17 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
+      ServiceBusConnection: "${SERVICE_BUS_CONNECTION_STRING}"
       SQL_SERVER: "sqldb"
+      REDIS_HOST: "redis"
     build: ./func-consumption
     container_name: mtc_funcs
-    ports:
-    - "8080:80"
+# enable the following to allow HTTP interaction
+#    ports:
+#    - "80:7071"
     depends_on:
     - sqldb
+    - redis
     links:
     - sqldb
+    - redis
