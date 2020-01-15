@@ -29,16 +29,9 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
   pupil_reason_page.sticky_banner.confirm.click
 
   step 'the Absent reason should be stored against the pupils'
-  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
-  begin
-    retries ||= 0
-    pupil_detail = SqlDbHelper.get_pupil_with_no_attandance_code(school_id)
-    fail if !(pupil_detail.nil?)
-  rescue
-    sleep(15)
-    retry if (retries += 1) < 5
-  end
-  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "There are still pupil with Not started status") {sleep 1 until SqlDbHelper.get_pupil_with_no_attandance_code(school_id).nil?}
+  pupil_register_page.load
+  invalid_status = pupil_register_page.pupil_list.pupil_row.map{|row| row.status.text != 'Not taking the Check' && row.status.text != 'Complete'}
+  expect(invalid_status).to_not include true
 end
 
 And(/^headteacher select the pupil for updating its reason$/)do
