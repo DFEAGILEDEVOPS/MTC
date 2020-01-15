@@ -5,7 +5,7 @@ services:
       AZURE_STORAGE_CONNECTION_STRING: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
-      ServiceBusConnection: "${SERVICE_BUS_CONNECTION_STRING}"
+      ServiceBusConnection: "${AZURE_SERVICE_BUS_CONNECTION_STRING}"
       SQL_SERVER: "sqldb"
       REDIS_HOST: "redis"
     build: ./func-consumption
