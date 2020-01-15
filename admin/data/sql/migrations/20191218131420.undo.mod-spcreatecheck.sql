@@ -55,12 +55,9 @@ BEGIN TRY
                 BEGIN
                     -- If the pupil is consuming a restart we need to mark it in the restart table
                     SELECT
-                            @isRestart = restartAvailable
+                        @isRestart = restartAvailable
                     FROM [mtc_admin].[pupil]
                     WHERE id = @pupilId;
-
-                    PRINT concat('isLiveCheck ', cast(@isLiveCheck as varchar(10)));
-                    PRINT concat('isRestart ', cast(@isRestart as varchar(10)));
 
                     IF @isRestart = 1
                         BEGIN
