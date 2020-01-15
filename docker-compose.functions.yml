@@ -6,7 +6,7 @@ services:
       AzureWebJobsStorage: "${AZURE_STORAGE_CONNECTION_STRING}"
       AzureWebJobsDashboard: "${AZURE_STORAGE_CONNECTION_STRING}"
       SQL_SERVER: "sqldb"
-    build: ./functions
+    build: ./func-consumption
     container_name: mtc_funcs
     ports:
     - "8080:80"

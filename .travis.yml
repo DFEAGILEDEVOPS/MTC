@@ -9,7 +9,7 @@ cache:
   - "/home/travis/.rvm/"
   - "${TRAVIS_BUILD_DIR}/admin/node_modules"
   - "${TRAVIS_BUILD_DIR}/pupil-api/node_modules"
-  - "${TRAVIS_BUILD_DIR}/functions/node_modules"
+  - "${TRAVIS_BUILD_DIR}/func-consumption/node_modules"
   - "${TRAVIS_BUILD_DIR}/pupil-spa/node_modules"
 env:
   global:
@@ -36,8 +36,7 @@ before_install:
 - cd ${TRAVIS_BUILD_DIR}/deploy/service-bus && yarn install --frozen-lockfile && yarn createqs
 - cd ${TRAVIS_BUILD_DIR}
 install:
-- docker-compose -f docker-compose.yml -f docker-compose.functions.yml up --build
-  -d && sleep 30
+- ./run-docker-compose-travis.sh
 - docker info
 - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
 - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
