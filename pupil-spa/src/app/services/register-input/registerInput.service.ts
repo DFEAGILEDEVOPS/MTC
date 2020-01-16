@@ -46,7 +46,7 @@ export class RegisterInputService {
     questionInputs.push({
       input: eventValue,
       eventType: eventType,
-      clientTimestamp:  eventTimeStamp || new Date(),
+      clientTimestamp:  new Date(eventTimeStamp) || new Date(),
       question: question,
       sequenceNumber: questionNumber
     });
