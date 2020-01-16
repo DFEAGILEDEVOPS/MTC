@@ -8,4 +8,5 @@ RUN mkdir -p /func-app
 WORKDIR /func-app
 COPY . .
 
+RUN func extensions install
 CMD yarn start
