@@ -1,10 +1,17 @@
 {
   "queues": [
     "check-started",
+    "check-started-poison",
     "check-submitted",
+    "check-submitted-poison",
     "pupil-feedback",
+    "pupil-feedback-poison",
     "pupil-prefs",
-    "test-pupil-connection"
+    "pupil-prefs-poison",
+    "pupil-status",
+    "pupil-status-poison",
+    "test-pupil-connection",
+    "test-pupil-connection-poison"
   ],
   "tables": [
     "receivedCheck",
