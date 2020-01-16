@@ -47,13 +47,14 @@ install:
   install
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && gem install bundler -v 1.16.6 --conservative && bundle
   install
-- docker-compose logs
 - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql && yarn seed-sql
 - docker restart mtc_funcs
-- docker-compose logs -f &
 script:
+- docker ps
+- docker logs $(docker ps -q -f "name=mtc_funcs")
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 - cd ${TRAVIS_BUILD_DIR}/admin && yarn test:integration
 - cd ${TRAVIS_BUILD_DIR}/tslib && yarn tests:integration
 after_script:
+- docker-compose logs
 - docker-compose -f docker-compose.yml -f docker-compose.functions.yml down
