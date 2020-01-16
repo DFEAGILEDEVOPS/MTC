@@ -50,6 +50,7 @@ install:
 - docker-compose logs
 - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql && yarn seed-sql
 - docker restart mtc_funcs
+- docker-compose logs -f &
 script:
 - cd ${TRAVIS_BUILD_DIR}/test/pupil-hpa && ./hpa_travis_reduced.sh;
 - cd ${TRAVIS_BUILD_DIR}/admin && yarn test:integration
