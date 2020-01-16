@@ -9,7 +9,6 @@ end
 
 
 Then(/^all the events should be captured$/) do
-  expect(@local_storage.find{|a| a['type'] == 'UtteranceEnded'}).to_not be_nil
   expect(@local_storage.find{|a| a['type'] == 'WarmupStarted'}).to_not be_nil
   expect(@local_storage.find{|a| a['type'] == 'WarmupIntroRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}
@@ -25,12 +24,10 @@ Then(/^all the events should be captured$/) do
   @local_storage.reject!{|a| a['type'] == 'CheckStartedAPICallSucceeded'}
   expect(@local_storage.find{|a| a['type'] == 'CheckSubmissionAPICallSucceeded'}).to_not be_nil
 
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  wait_until(120,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
-  pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  wait_until(240,5){SqlDbHelper.get_check_result(pupil_check['id'])}
-  check_result = SqlDbHelper.get_check_result(pupil_check['id'])
-  check = JSON.parse(check_result['payload'])
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['audit']
 
   expect(local_storage.first['type']).to eql 'WarmupStarted'
