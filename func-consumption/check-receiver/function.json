@@ -20,6 +20,13 @@
       "name": "checkValidationQueue",
       "queueName": "check-validation",
       "connection": "ServiceBusConnection"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkNotificationQueue",
+      "queueName": "check-notification",
+      "connection": "ServiceBusConnection"
     }
   ],
   "scriptFile": "../dist/functions/check-receiver/index.js"

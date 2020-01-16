@@ -53,7 +53,8 @@ const service = {
       throw new Error('checks is not an array')
     }
     if (!checks.length > 0) {
-      throw new Error('no checks to work on')
+      // there are no preparedChecks outstanding, e.g the checkPin has already been deleted from the DB
+      return
     }
     logger.info(`prepareCheckService:removeChecks called for ${checks.join(', ')}`)
     const checkCodes = await prepareCheckDataService.getCheckCodes(checks)

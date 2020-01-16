@@ -16,7 +16,6 @@ const checkWindowMock = require('../../spec/back-end/mocks/check-window-2')
 const configService = require('../config.service')
 const logger = require('../log.service.js').getLogger()
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
-const pinGenerationV2Service = require('../pin-generation-v2.service')
 const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const prepareCheckService = require('../prepare-check.service')
@@ -77,7 +76,6 @@ describe('check-start.service', () => {
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessageAsync')
-      spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
       spyOn(configService, 'getBatchConfig').and.returnValue(
         {
           1: configService.getBaseConfig(),
@@ -85,7 +83,6 @@ describe('check-start.service', () => {
           3: configService.getBaseConfig()
         })
       spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
-      spyOn(checkStartDataService, 'updatePupilState')
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -125,11 +122,6 @@ describe('check-start.service', () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
-    })
-
-    it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
-      expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {

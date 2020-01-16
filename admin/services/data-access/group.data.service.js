@@ -37,19 +37,16 @@ groupDataService.sqlFindGroups = async (schoolId) => {
  */
 groupDataService.sqlFindGroupsWithAtleastOnePresentPupil = async (schoolId) => {
   const sql = `
-  SELECT
-         g.id,
-         g.name,
-         COUNT(p.id) as pupilCount
-  FROM [mtc_admin].[group] g
-  LEFT JOIN [mtc_admin].pupil p ON (g.id = p.group_id)
-  LEFT JOIN [mtc_admin].pupilAttendance pa ON (pa.pupil_id=p.id AND pa.isDeleted=0)
-  LEFT JOIN [mtc_admin].pupilStatus ps ON (p.pupilStatus_id = ps.id)
-  WHERE pa.id IS NULL
-    AND g.school_id=@schoolId
-    AND ps.code = 'UNALLOC'
-  GROUP BY g.id, g.name
-  ORDER BY name ASC`
+      SELECT g.id,
+             g.name,
+             COUNT(p.id) as pupilCount
+      FROM [mtc_admin].[group] g
+               LEFT JOIN [mtc_admin].pupil p ON (g.id = p.group_id)
+      WHERE p.attendanceId IS NULL
+        AND g.school_id = @schoolId
+        AND p.currentCheckId IS NULL
+      GROUP BY g.id, g.name
+      ORDER BY name ASC`
   const params = [
     {
       name: 'schoolId',

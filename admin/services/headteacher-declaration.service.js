@@ -1,26 +1,75 @@
 'use strict'
 
 const moment = require('moment-timezone')
+const R = require('ramda')
 
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
 const headteacherDeclarationService = {}
+const pupilRegisterService = require('./pupil-register.service')
+const settingService = require('./setting.service')
+
+/**
+ * Add the pupil `status` field, using the pupil register service to do so.
+ * @param {Object} settings
+ * @param {Object} pupil
+ * @return {Object} partially cloned pupil obj with an additional `status` property
+ */
+headteacherDeclarationService.addStatus = function addStatus (settings, pupil) {
+  const newPupil = R.pickAll(['id', 'foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'checkStatusCode',
+    'group_id', 'reason', 'reasonCode'], pupil)
+  newPupil.status = pupilRegisterService.getProcessStatusV2({
+    attendanceId: pupil.attendanceId,
+    checkComplete: pupil.checkComplete,
+    checkReceived: pupil.checkReceived,
+    checkStatusCode: pupil.checkStatusCode,
+    currentCheckId: pupil.currentCheckId,
+    notReceivedExpiryInMinutes: settings.checkTimeLimit,
+    pinExpiresAt: pupil.pinExpiresAt,
+    pupilCheckComplete: pupil.pupilCheckComplete,
+    pupilId: pupil.pupilId,
+    pupilLoginDate: pupil.pupilLoginDate,
+    restartAvailable: pupil.restartAvailable
+  })
+  return newPupil
+}
+
+/**
+ * @typedef {Object} hdfPupil
+ * @property {string } foreName,
+ * @property {string} lastName,
+ * @property {string|null} middleNames,
+ * @property {Moment.moment} dateOfBirth,
+ * @property {string} urlSlug,
+ * @property {pupilStatusCode} pupilStatusCode,
+ * @property {string} checkStatusCode,
+ * @property {number|null} group_id,
+ * @property {string|null} reason,
+ * @property {string|null} reasonCode
+ */
 
 /**
  * Find the pupils for the given dfe number
  * @param schoolId
- * @return {Promise<object>}
+ * @return {Promise<{hdfPupil[]}>}
  */
 headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  return headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons(schoolId)
+
+  const settings = await settingService.get()
+
+  // We can get pupils and attendance codes directly from the database...
+  const pupils = await headteacherDeclarationDataService.sqlFindPupilsFullStatus(schoolId)
+  // ...and add the HDF status in.  The HDF status is the same as the pupil outcome status on the pupil register / status
+  // screen, but the Non-attendance reason shown in the status, rather than 'Not attending'.
+  const pupilsWithStatus = pupils.map(R.partial(headteacherDeclarationService.addStatus, [settings]))
+  return pupilsWithStatus
 }
 
 /**
@@ -29,15 +78,17 @@ headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
  * @param dfeNumber
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilBySlugAndDfeNumber = async (urlSlug, dfeNumber) => {
-  if (!dfeNumber || !urlSlug) {
-    throw new Error('urlSlug and dfeNumber are required')
+headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolId (urlSlug, schoolId) {
+  if (!urlSlug) {
+    throw new Error('urlSlug param is required')
   }
-  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-  if (!school) {
-    throw new Error(`School [${dfeNumber}] not found`)
+  if (!schoolId) {
+    throw new Error('schoolId param is required')
   }
-  return pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool(urlSlug, school.id)
+  const settings = await settingService.get()
+  const pupil = await headteacherDeclarationDataService.sqlFindOnePupilFullStatus(urlSlug, schoolId)
+  const newPupil = this.addStatus(settings, pupil)
+  return newPupil
 }
 
 /**

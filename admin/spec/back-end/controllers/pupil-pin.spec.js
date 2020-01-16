@@ -263,7 +263,6 @@ describe('pupilPin controller:', () => {
         pupil: ['595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520']
       }
     }
-
     const badReqParams = {
       method: 'POST',
       url: '/pupil-pin/generate-familiarisation-pins-list',
@@ -287,8 +286,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
-        spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
@@ -318,7 +315,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -336,7 +332,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
         await controller(req, res, next)
@@ -355,7 +350,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
@@ -376,7 +370,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -394,7 +387,6 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
         await controller(req, res, next)

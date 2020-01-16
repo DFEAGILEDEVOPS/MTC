@@ -172,31 +172,6 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
 }
 
 /**
- * Find a pupil by Id and schoolId with associated attendance reasons
- * @param {string} urlSlug
- * @param {number} schoolId
- * @return {Promise<object>}
- */
-pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool = async (urlSlug, schoolId) => {
-  const paramPupil = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
-  const sql = `
-  SELECT TOP 1
-  p.*, ps.code, ac.reason, ac.code as reasonCode
-  FROM [mtc_admin].[pupil] p
-  LEFT JOIN pupilStatus ps
-    ON p.pupilStatus_id = ps.id
-  LEFT OUTER JOIN [mtc_admin].[pupilAttendance] pa
-    ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-  LEFT OUTER JOIN [mtc_admin].[attendanceCode] ac
-    ON pa.attendanceCode_id = ac.id
-  WHERE p.urlSlug = @urlSlug and school_id = @schoolId
-    `
-  const results = await sqlService.query(sql, [paramPupil, paramSchool])
-  return R.head(results)
-}
-
-/**
  * Find a pupil by school id and pupil pin
  * @param {number} pin
  * @param {number} schoolId
@@ -231,28 +206,6 @@ pupilDataService.sqlUpdate = async (update) => {
  */
 pupilDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
-}
-
-/**
- * Find pupils for a school with pins that have not yet expired, for
- * a specific pin environment (live / fam)
- * @param schoolId
- * @param pinEnv
- * @return {Promise<*>}
- */
-pupilDataService.sqlFindPupilsWithActivePins = async (schoolId, pinEnv) => {
-  // TODO: use pinEnv to differentiate between live and familiarisation
-  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
-  const sql = `
-  SELECT p.*
-  FROM [mtc_admin].[pupil] p
-  WHERE p.pin IS NOT NULL
-  AND p.school_id = @schoolId
-  AND p.pinExpiresAt IS NOT NULL
-  AND p.pinExpiresAt > GETUTCDATE()
-  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
-  `
-  return sqlService.query(sql, [paramSchoolId])
 }
 
 /**
@@ -308,39 +261,6 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   return sqlService.query(sql, params)
 }
 
-/**
- * Batch update pupil pins for specific pin env (live/fam)
- * @param pupils
- * @param pinEnv
- * @return {Promise<void>}
- */
-pupilDataService.sqlUpdatePinsBatch = async (pupils, pinEnv = 'live') => {
-  // TODO: use pinEnv to differentiate between the live and familiarisation checks
-  const params = []
-  const update = []
-  pupils.forEach((p, i) => {
-    update.push(`UPDATE [mtc_admin].[pupil]
-    SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i}
-    WHERE id = @id${i}`)
-    params.push({
-      name: `pin${i}`,
-      value: p.pin,
-      type: TYPES.NVarChar
-    })
-    params.push({
-      name: `pinExpiredAt${i}`,
-      value: p.pinExpiresAt,
-      type: TYPES.DateTimeOffset
-    })
-    params.push({
-      name: `id${i}`,
-      value: p.id,
-      type: TYPES.Int
-    })
-  })
-  const sql = update.join(';\n')
-  return sqlService.modify(sql, params)
-}
 /**
  * Update several pupil tokens in one query
  * @param {id: number, jwtToken: String, jwtSecret: String} pupils
