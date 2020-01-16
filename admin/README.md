@@ -68,6 +68,9 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 
 * AZURE_STORAGE_CONNECTION_STRING - Storage account for upload file storage and queues.  Upload is only enabled for
     production environments, but the queues are used by all environments.
+* DEBUG_VERBOSITY - For even more logging when the log level is set to `debug`.  Set to 1 for default logging, 2 for
+    more logging, and 3 for even more.
+* LOG_LEVEL - set to one of `debug`, `info`, `warning`, `error`, `alert`.  Default is `info`.
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there
     is a tracking code and in production mode, eg `NODE_ENV=production`
 * MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation

@@ -1,4 +1,4 @@
-import { ICheckNotificationMessage, CheckNotificationType } from './check-notification-message'
+import { CheckNotificationType, ICheckNotificationMessage } from './check-notification-message'
 import { CheckNotifierDataService, ICheckNotifierDataService } from './check-notifier.data.service'
 
 export class CheckNotifier {
@@ -13,6 +13,8 @@ export class CheckNotifier {
 
   async notify (notification: ICheckNotificationMessage) {
     switch (notification.notificationType) {
+      case CheckNotificationType.checkReceived:
+        return this.checkNotifierDataService.markCheckAsReceived(notification.checkCode)
       case CheckNotificationType.checkInvalid:
         return this.checkNotifierDataService.markCheckAsProcessingFailed(notification.checkCode)
       case CheckNotificationType.checkComplete:

@@ -1,18 +1,18 @@
 const moment = require('moment-timezone')
 const bluebird = require('bluebird')
-const R = require('ramda')
 const crypto = bluebird.promisifyAll(require('crypto'))
-const pupilDataService = require('../services/data-access/pupil.data.service')
+
 const checkDataService = require('../services/data-access/check.data.service')
-const groupDataService = require('../services/data-access/group.data.service')
+const config = require('../config')
 const dateService = require('../services/date.service')
-const randomGenerator = require('../lib/random-generator')
+const groupDataService = require('../services/data-access/group.data.service')
+const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilAttendanceService = require('../services/attendance.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const randomGenerator = require('../lib/random-generator')
 const restartService = require('../services/restart.service')
-const config = require('../config')
-const logger = require('./log.service').getLogger()
 
 const allowedWords = new Set(
   (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
@@ -109,76 +109,6 @@ pinGenerationService.isValid = async (p, pinEnv = 'live') => {
 }
 
 /**
- * Generate pupils pins for a specific pin env (live/fam)
- * @param pupilsList
- * @param dfeNumber
- * @param maxAttempts
- * @param attemptsRemaining
- * @param schoolId
- * @param pinEnv
- * @throws
- */
-pinGenerationService.updatePupilPins = async (
-  pupilsList,
-  dfeNumber,
-  maxAttempts,
-  attemptsRemaining,
-  schoolId,
-  pinEnv
-) => {
-  if (!Array.isArray(pupilsList)) {
-    throw new Error('Received list of pupils is not an array')
-  }
-  if (!schoolId) {
-    throw new Error('Parameter `schoolId` not provided', schoolId)
-  }
-
-  let ids = Object.values(pupilsList || null)
-  ids = ids.map(i => parseInt(i))
-  const pupils = await pupilDataService.sqlFindByIds(ids, schoolId)
-  pupils.forEach(pupil => {
-    if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
-      pupil.pin = pinGenerationService.generatePupilPin()
-      pupil.pinExpiresAt = pinExpiryTime()
-    }
-  })
-  const data = pupils.map(p => ({
-    id: p.id,
-    pin: p.pin,
-    pinExpiresAt: p.pinExpiresAt
-  }))
-  try {
-    await pupilDataService.sqlUpdatePinsBatch(data, pinEnv)
-  } catch (error) {
-    if (attemptsRemaining === 0) {
-      throw new Error(
-        `${maxAttempts} allowed attempts 
-      for pin generation resubmission have been reached`
-      )
-    }
-    // Handle duplicate pins
-    if (error.number === 2601 && attemptsRemaining !== 0) {
-      attemptsRemaining -= 1
-      const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(
-        schoolId
-      )
-      const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
-      const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
-      await pinGenerationService.updatePupilPins(
-        pendingPupilIds,
-        dfeNumber,
-        maxAttempts,
-        attemptsRemaining,
-        schoolId,
-        pinEnv
-      )
-    } else {
-      throw new Error(error)
-    }
-  }
-}
-
-/**
  * Generate school password
  * @param school
  * @returns { pin: string, pinExpiresAt: Moment } || undefined
@@ -221,15 +151,6 @@ pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
   const maxDec = 281474976710656
   const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
   return Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)
-}
-
-/**
- * Generate Pupil Pin
- * @returns {String}
- */
-pinGenerationService.generatePupilPin = () => {
-  const pupilPinLength = 4
-  return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
 module.exports = pinGenerationService

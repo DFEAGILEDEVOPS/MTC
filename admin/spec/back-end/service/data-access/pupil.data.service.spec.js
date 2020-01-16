@@ -107,19 +107,6 @@ describe('pupil.data.service', () => {
     })
   })
 
-  describe('#sqlFindPupilsWithActivePins', () => {
-    beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
-      service = require('../../../../services/data-access/pupil.data.service')
-    })
-
-    it('it makes the expected calls', async () => {
-      const dfeNumber = 9991001
-      await service.sqlFindPupilsWithActivePins(dfeNumber)
-      expect(sqlService.query).toHaveBeenCalled()
-    })
-  })
-
   describe('#sqlFindOneByPinAndSchool', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))

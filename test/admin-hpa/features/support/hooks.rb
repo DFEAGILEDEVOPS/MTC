@@ -53,7 +53,7 @@ end
 
 After("@pupil_not_taking_check") do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_status(6,1)
+  SqlDbHelper.set_pupil_status(6, 1)
 end
 
 Before('@reset_hdf_submission') do
@@ -68,8 +68,7 @@ end
 
 Before("@hdf") do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_status(6, 1)
-
+  SqlDbHelper.set_pupil_attendance_via_school(5,'null')
   step 'I have signed in with teacher4'
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
@@ -77,16 +76,9 @@ Before("@hdf") do
   step "I select a reason"
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
-  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
-  begin
-    retries ||= 0
-    pupil_detail = SqlDbHelper.get_pupil_with_no_attandance_code(school_id)
-    fail if !(pupil_detail.nil?)
-  rescue
-    sleep(1)
-    retry if (retries += 1) < 5
-  end
-  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "There are still pupil with Not started status") {sleep 1 until SqlDbHelper.get_pupil_with_no_attandance_code(school_id).nil?}
+  pupil_register_page.load
+  invalid_status = pupil_register_page.pupil_list.pupil_row.map{|row| row.status.text != 'Not taking the Check' && row.status.text != 'Complete'}
+  expect(invalid_status).to_not include true
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
@@ -145,7 +137,7 @@ Before("@deactivate_all_test_check_window") do
   SqlDbHelper.deactivate_all_test_check_window()
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
-      REDIS_CLIENT. del key
+      REDIS_CLIENT.del key
     end
   end
 end
@@ -164,7 +156,7 @@ end
 After('@incomplete_pupil') do
   p @stored_pupil_details['id']
   SqlDbHelper.set_pupil_status_via_id(2, @stored_pupil_details['id'])
-  SqlDbHelper.set_check_status(1,@check_id)
+  SqlDbHelper.set_check_status(1, @check_id)
 end
 
 After("@no_active_check_window") do
@@ -192,7 +184,7 @@ end
 Before("@redis") do
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
-      REDIS_CLIENT. del key
+      REDIS_CLIENT.del key
     end
   end
 end
@@ -205,7 +197,7 @@ end
 After("@redis") do
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
-      REDIS_CLIENT. del key
+      REDIS_CLIENT.del key
     end
   end
 end

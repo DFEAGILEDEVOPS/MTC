@@ -1,5 +1,4 @@
 const pupilDataService = require('./data-access/pupil.data.service')
-const schoolDataService = require('./data-access/school.data.service')
 
 const pupilService = {}
 
@@ -21,38 +20,6 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
  */
 pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
   return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
-}
-
-/**
- * Return a subset of pupil data so their Pins can be printed
- * @param dfeNumber
- * @return {Promise<void>}
- */
-pupilService.getPrintPupils = async (schoolId) => {
-  if (!schoolId) {
-    throw new Error('schoolId is required')
-  }
-  const p1 = pupilDataService.sqlFindPupilsWithActivePins(schoolId)
-  const p2 = schoolDataService.sqlFindOneById(schoolId)
-  const [pupils, school] = await Promise.all([p1, p2])
-  if (!pupils) { throw new Error(`Pupils not found for ${schoolId}`) }
-  if (!school) { throw new Error(`School not found for ${schoolId}`) }
-  return pupils.map(p => ({
-    fullName: `${p.foreName} ${p.lastName}`,
-    schoolPin: school.pin,
-    pupilPin: p.pin
-  }))
-}
-
-/**
- * Find Pupils using urlSlugs
- * @param {Array} slugs
- * @param {number} schoolId - the db id of the school
- * @return {Promise<*>}
- */
-pupilService.getPupilsByUrlSlug = async (slugs, schoolId) => {
-  // TODO: [JMS] this only seems to be used by the test!
-  return pupilDataService.sqlFindPupilsByUrlSlug(slugs, schoolId)
 }
 
 /**

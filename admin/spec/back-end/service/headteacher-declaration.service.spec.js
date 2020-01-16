@@ -6,7 +6,6 @@ const moment = require('moment')
 
 const headteacherDeclarationDataService = require('../../../services/data-access/headteacher-declaration.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('../../../services/data-access/pupil-attendance.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -14,6 +13,7 @@ const sqlResponseMock = require('../mocks/sql-modify-response')
 const schoolMock = require('../mocks/school')
 const hdfMock = require('../mocks/sql-hdf')
 const checkWindowMock = require('../mocks/check-window')
+const settingsService = require('../../../services/setting.service')
 
 describe('headteacherDeclarationService', () => {
   describe('#getEligibilityForSchool', () => {
@@ -237,6 +237,7 @@ describe('headteacherDeclarationService', () => {
   describe('findPupilsForSchool', () => {
     const schoolId = 123
     const service = require('../../../services/headteacher-declaration.service')
+    const settingService = require('../../../services/setting.service')
 
     it('throws an error when no schoolId is provided', async () => {
       try {
@@ -247,53 +248,64 @@ describe('headteacherDeclarationService', () => {
       }
     })
 
-    it('finds the pupils using the dfeNumber', async () => {
-      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsWithStatusAndAttendanceReasons').and.returnValue('Mock pupils result')
-      const result = await service.findPupilsForSchool(schoolId)
-      expect(headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons).toHaveBeenCalledWith(schoolId)
-      expect(result).toEqual('Mock pupils result')
+    it('finds the pupils using the schoolId', async () => {
+      spyOn(headteacherDeclarationDataService, 'sqlFindPupilsFullStatus').and.returnValue([
+        {
+          foreName: 'John',
+          lastName: 'Smith',
+          middleNames: 'Albert William',
+          dateOfBirth: moment().subtract(8.5, 'years'),
+          group_id: null,
+          urlSlug: 'abc-def-hij',
+          checkStatusCode: null,
+          reason: null,
+          reasonCode: null,
+          attendanceId: null,
+          pupilCheckComplete: false,
+          currentCheckId: null,
+          pupilId: 1,
+          restartAvailable: false,
+          checkReceived: false,
+          checkComplete: false,
+          pupilLoginDate: false,
+          pinExpiresAt: null
+        }
+      ])
+      spyOn(settingService, 'get').and.returnValue({ checkTimeLimit: 30 })
+      await service.findPupilsForSchool(schoolId)
+      expect(headteacherDeclarationDataService.sqlFindPupilsFullStatus).toHaveBeenCalledWith(schoolId)
     })
   })
 
-  describe('findPupilBySlugAndDfeNumber', () => {
+  describe('findPupilBySlugAndSchoolId', () => {
     const urlSlug = 'xxx-xxx-xxx-xxx'
-    const dfeNumber = 9991999
+    const schoolId = 1
     const service = require('../../../services/headteacher-declaration.service')
-
-    it('throws an error when no dfeNumber is provided', async () => {
-      try {
-        await service.findPupilBySlugAndDfeNumber(null, dfeNumber)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('urlSlug and dfeNumber are required')
-      }
-    })
 
     it('throws an error when no urlSlug is provided', async () => {
       try {
-        await service.findPupilBySlugAndDfeNumber(urlSlug, null)
+        await service.findPupilBySlugAndSchoolId(null, schoolId)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('urlSlug and dfeNumber are required')
+        expect(error.message).toBe('urlSlug param is required')
       }
     })
 
-    it('throws an error when a school is not found for the dfeNumber', async () => {
+    it('throws an error when no schoolId is provided', async () => {
       try {
-        spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.throwError('School not found')
-        await service.findPupilBySlugAndDfeNumber(urlSlug, dfeNumber)
+        await service.findPupilBySlugAndSchoolId(urlSlug, null)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('School not found')
+        expect(error.message).toBe('schoolId param is required')
       }
     })
 
-    it('finds the pupil using the urlSlug and dfeNumber', async () => {
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindOneWithAttendanceReasonsBySlugAndSchool').and.returnValue('Mock pupil result')
-      const result = await service.findPupilBySlugAndDfeNumber(urlSlug, dfeNumber)
-      expect(pupilDataService.sqlFindOneWithAttendanceReasonsBySlugAndSchool).toHaveBeenCalledWith(urlSlug, schoolMock.id)
-      expect(result).toEqual('Mock pupil result')
+    it('finds the pupil using the urlSlug and schoolId', async () => {
+      spyOn(headteacherDeclarationDataService, 'sqlFindOnePupilFullStatus').and.returnValue('Mock pupil result')
+      spyOn(settingsService, 'get').and.returnValue({ checkTimeLimit: 30 })
+      const result = await service.findPupilBySlugAndSchoolId(urlSlug, schoolId)
+      expect(headteacherDeclarationDataService.sqlFindOnePupilFullStatus).toHaveBeenCalledWith(urlSlug, schoolId)
+      expect(result.status).toEqual('Not started')
     })
   })
 

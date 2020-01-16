@@ -106,20 +106,11 @@ Given(/^I have multiple pupils for restart$/) do
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-
-    response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
-    begin
-      retries ||= 0
-      fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(pupil_id)['checkStatus_id'] != 4
-    rescue
-      sleep(15)
-      retry if (retries += 1) < 5
-    end
-
-    response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-    Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(pupil_id)['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(pupil_id)['checkStatus_id'] == 3}
+    AzureQueueHelper.create_check_submission_message(RequestHelper.build_check_submission_message(@parsed_response_pupil_auth).to_json)
+    school_uuid = @parsed_response_pupil_auth['school']['uuid']
+    check_code = @parsed_response_pupil_auth['checkCode']
+    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
   end
-
   step 'I am on the Restarts Page'
 end
 
@@ -222,19 +213,10 @@ When(/^they become eligable for a restart$/) do
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    p pupil_firstname + ' ' + pupil_lastname
-
-    RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
-    begin
-      retries ||= 0
-      fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(pupil_id)['checkStatus_id'] != 4
-    rescue
-      sleep(15)
-      retry if (retries += 1) < 5
-    end
-
-    response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-    Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(pupil_id)['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(pupil_id)['checkStatus_id'] == 3}
+    AzureQueueHelper.create_check_submission_message(RequestHelper.build_check_submission_message(@parsed_response_pupil_auth).to_json)
+    school_uuid = @parsed_response_pupil_auth['school']['uuid']
+    check_code = @parsed_response_pupil_auth['checkCode']
+    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
   end
   step 'I am on the Restarts Page'
 end
@@ -294,20 +276,10 @@ Given(/^pupil logs in and completed the check$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=5 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 5}
-
-  RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkStarted']['url'], @parsed_response_pupil_auth['tokens']['checkStarted']['token'])
-  begin
-    retries ||= 0
-    fail 'Expected checkStatus_id=4' if SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] != 4
-  rescue
-    sleep(15)
-    retry if (retries += 1) < 5
-  end
-  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=4 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 4}
-
-  response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
-  Timeout.timeout(ENV['WAIT_TIME'].to_i, Timeout::Error, "Expected checkStatus_id=3 ,got #{SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id']}") {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['checkStatus_id'] == 3}
+  AzureQueueHelper.create_check_submission_message(RequestHelper.build_check_submission_message(@parsed_response_pupil_auth).to_json)
+  school_uuid = @parsed_response_pupil_auth['school']['uuid']
+  check_code = @parsed_response_pupil_auth['checkCode']
+  AzureTableHelper.wait_for_received_check(school_uuid, check_code)
 end
 
 And(/^I generate a pin for that pupil$/) do
@@ -360,7 +332,10 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+    AzureQueueHelper.create_check_submission_message(RequestHelper.build_check_submission_message(@parsed_response_pupil_auth).to_json)
+    school_uuid = @parsed_response_pupil_auth['school']['uuid']
+    check_code = @parsed_response_pupil_auth['checkCode']
+    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
   end
 end
 

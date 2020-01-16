@@ -25,6 +25,7 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'In Progress'
 
+  @wip
   Scenario: Pupil status is Check Started when a pupil started the actual check
     Given a pupil has started a check
     When I am on the Pupil Register page

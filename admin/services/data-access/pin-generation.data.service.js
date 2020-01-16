@@ -67,18 +67,6 @@ const serviceToExport = {
   },
 
   /**
-   * Update one or more pupilRestarts with the checkId that consumed the restart
-   * This happens at pin generation.
-   * @param updateData - [ { pupilRestartId: 2, checkId: 3}, [...] ]
-   */
-  updatePupilRestartsWithCheckInformation: async (updateData) => {
-    const restartIdParams = updateData.map((data, index) => { return { name: `checkId${index}`, value: data.checkId, type: TYPES.Int } })
-    const pupilRestartParams = updateData.map((data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } })
-    const updates = updateData.map((data, index) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
-    return sqlService.modify(updates.join(';\n'), restartIdParams.concat(pupilRestartParams))
-  },
-
-  /**
    * Batch create checks with pins, now using a stored procedure
    * A pin will be randomly allocated
    *

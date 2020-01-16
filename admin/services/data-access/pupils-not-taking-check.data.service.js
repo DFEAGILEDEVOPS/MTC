@@ -43,11 +43,9 @@ const pupilsNotTakingCheckDataService = {
     p.urlSlug,
     p.group_id
   FROM [mtc_admin].[pupil] p
-  JOIN [mtc_admin].pupilStatus ps ON ps.id = p.pupilStatus_id
-  LEFT JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id AND pa.isDeleted=0
   WHERE p.school_id = @schoolId
-  AND ps.code = 'UNALLOC'
-  AND pa.id IS NULL
+    AND p.currentCheckId IS NULL
+    AND p.attendanceId IS NULL
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{

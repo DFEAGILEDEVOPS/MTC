@@ -13,7 +13,6 @@ const attendanceCodeService = require('../../../services/attendance.service')
 const hdfValidator = require('../../../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../../../lib/validator/hdf-confirm-validator')
 const ValidationError = require('../../../lib/validation-error')
-const hdfPresenter = require('../../../helpers/hdf-presenter')
 
 describe('attendance controller:', () => {
   let next
@@ -136,7 +135,6 @@ describe('attendance controller:', () => {
     it('renders the pupil details list page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(hdfPresenter, 'getPupilsWithViewStatus').and.returnValue([])
       spyOn(headteacherDeclarationService, 'findPupilsForSchool').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getReviewPupilDetails(req, res)
@@ -157,11 +155,11 @@ describe('attendance controller:', () => {
     it('renders the edit attendance reason page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(headteacherDeclarationService, 'findPupilBySlugAndDfeNumber').and.returnValue({})
+      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({})
       spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
       spyOn(res, 'render').and.returnValue(null)
       await controller.getEditReason(req, res)
-      expect(headteacherDeclarationService.findPupilBySlugAndDfeNumber).toHaveBeenCalled()
+      expect(headteacherDeclarationService.findPupilBySlugAndSchoolId).toHaveBeenCalled()
       expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
@@ -178,11 +176,11 @@ describe('attendance controller:', () => {
     it('redirects to the review pupils page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(headteacherDeclarationService, 'findPupilBySlugAndDfeNumber').and.returnValue({ id: 1 })
+      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({ id: 1 })
       spyOn(headteacherDeclarationService, 'updatePupilsAttendanceCode').and.returnValue(null)
       spyOn(res, 'redirect')
       await controller.postSubmitEditReason(req, res)
-      expect(headteacherDeclarationService.findPupilBySlugAndDfeNumber).toHaveBeenCalled()
+      expect(headteacherDeclarationService.findPupilBySlugAndSchoolId).toHaveBeenCalled()
       expect(headteacherDeclarationService.updatePupilsAttendanceCode).toHaveBeenCalledWith(
         [1],
         reqParams.body.attendanceCode,

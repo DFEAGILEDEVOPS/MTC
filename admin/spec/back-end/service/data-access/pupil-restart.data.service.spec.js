@@ -50,14 +50,13 @@ describe('pupil-restart.data.service', () => {
 
   describe('#sqlMarkRestartAsDeleted', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'modify').and.returnValue({ rowsModified: 1 })
+      spyOn(sqlService, 'modifyWithTransactionAndResponse').and.returnValue({ rowsModified: 1 })
       service = require('../../../../services/data-access/pupil-restart.data.service')
     })
 
     it('it makes the expected calls', async () => {
-      const res = await service.sqlMarkRestartAsDeleted(pupilMock._id, 'some_id')
-      expect(sqlService.modify).toHaveBeenCalled()
-      expect(typeof res).toBe('object')
+      await service.sqlMarkRestartAsDeleted(pupilMock._id, 'some_id')
+      expect(sqlService.modifyWithTransactionAndResponse).toHaveBeenCalled()
     })
   })
 })

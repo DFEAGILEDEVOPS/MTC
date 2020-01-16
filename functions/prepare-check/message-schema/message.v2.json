@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "messages": [
-    message1, // message MUST conform to the spec as described in message.v1.json
-    message2,
-    ...
-  ]
-}

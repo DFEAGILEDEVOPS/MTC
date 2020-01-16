@@ -14,12 +14,14 @@ const pupilAccessArrangementsDataService = {}
 pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = async function (pupilId) {
   const sql = `
   SELECT
-  paa.*, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
-  FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
-  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
-  ON paa.pupilFontSizes_id = pfs.id
-  LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
-  ON paa.pupilColourContrasts_id = pcc.id
+    paa.*, 
+    pfs.code AS pupilFontSizeCode, 
+    pcc.code AS pupilColourContrastCode
+  FROM [mtc_admin].[pupilAccessArrangements] paa
+  LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
+    ON paa.pupilFontSizes_id = pfs.id
+  LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc
+    ON paa.pupilColourContrasts_id = pcc.id
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
@@ -147,30 +149,19 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     }
   ]
   const sql = `
-    SELECT *, completedCheck & ~unusedRestart hasCompletedCheck
-    FROM (
-      SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description,
-      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
-      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
-      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
-      FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
-        INNER JOIN ${sqlService.adminSchema}.pupil p
-          ON paa.pupil_id = p.id
-        INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
-         ON ps.id = p.pupilStatus_id
-        INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
-          ON aa.id = paa.accessArrangements_id
-        LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-          ON pa.pupil_id = p.id AND pa.isDeleted = 0
-        LEFT JOIN (
-          SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
-             FROM ${sqlService.adminSchema}.[pupilRestart] pr
-             WHERE isDeleted = 0
-             AND check_id is NULL
-           ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE p.school_id = @schoolId
-    ) p
-    ORDER BY p.lastName
+      SELECT
+          p.urlSlug,
+          p.foreName,
+          p.middleNames,
+          p.lastName,
+          p.dateOfBirth,
+          aa.description,
+          p.checkcomplete AS hasCompletedCheck
+        FROM [mtc_admin].pupilaccessarrangements paa
+             INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
+             INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
+       WHERE p.school_id = @schoolId
+       ORDER BY p.lastname
   `
   return sqlService.readonlyQuery(sql, params)
 }
@@ -189,31 +180,22 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId = async (scho
     }
   ]
   const sql = `
-    SELECT *
-    FROM (
-      SELECT p.*,
-      CASE WHEN unusedRestart.id IS NULL THEN 0 ELSE 1 END unusedRestart,
-      CASE WHEN pa.id IS NULL THEN 0 ELSE 1 END notTakingCheck,
-      CASE WHEN ps.code = 'COMPLETED' THEN 1 ELSE 0 END completedCheck
-      FROM ${sqlService.adminSchema}.pupil p
-      INNER JOIN ${sqlService.adminSchema}.pupilStatus ps
-         ON ps.id = p.pupilStatus_id
-      LEFT JOIN ${sqlService.adminSchema}.pupilAttendance pa
-        ON pa.pupil_id = p.id AND pa.isDeleted = 0
-      LEFT JOIN (
-        SELECT pr.id, pr.pupil_id, ROW_NUMBER() OVER (PARTITION BY pr.pupil_id ORDER BY pr.id DESC) as rank
-           FROM ${sqlService.adminSchema}.[pupilRestart] pr
-           WHERE isDeleted = 0
-           AND check_id is NULL
-         ) unusedRestart ON (p.id = unusedRestart.pupil_id) AND unusedRestart.rank = 1
-      WHERE p.school_id = @schoolId
-    ) p
-    LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa
-      ON paa.pupil_id = p.id
-    WHERE notTakingCheck = 0
-    AND (completedCheck = 0 OR unusedRestart = 1)
-    AND paa.pupil_id IS NULL
-    ORDER BY lastName
+      SELECT
+          p.id,
+          p.foreName,
+          p.lastName,
+          p.middleNames,
+          p.dateOfBirth,
+          p.group_id,
+          p.urlSlug
+        FROM
+            [mtc_admin].[pupil] p
+            LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa ON (paa.pupil_id = p.id)
+       WHERE p.school_id = @schoolId
+         AND p.attendanceId IS NULL
+         AND p.checkComplete = 0
+         AND paa.pupil_id IS NULL
+       ORDER BY lastName;
   `
   return sqlService.readonlyQuery(sql, params)
 }
