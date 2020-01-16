@@ -212,12 +212,15 @@ describe('QuestionComponent', () => {
   describe('#onClickAnswer', () => {
     it('calls registerInputService', () => {
       spyOn(registerInputService, 'storeEntry');
-      component.onClickAnswer(42);
+      const event = { timeStamp: 1519211809934 };
+      component.onClickAnswer(42, event);
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('42', 'click', 0, '0x0', 1519211809934);
     });
 
     it('adds the number to the answer', () => {
-      component.onClickAnswer(9);
+      const event = {};
+      component.onClickAnswer(9, event);
       expect(component['answer']).toBe('9');
     });
   });
@@ -228,14 +231,16 @@ describe('QuestionComponent', () => {
       component.sequenceNumber = 1;
       component.factor1 = 1;
       component.factor2 = 2;
-      component.onClickBackspace();
+      const event = { timeStamp: 1519211809934 };
+      component.onClickBackspace(event);
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click', 1, '1x2');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click', 1, '1x2', 1519211809934);
     });
 
     it('deletes a char from the answer', () => {
       component['answer'] = '1444';
-      component.onClickBackspace();
+      const event = {};
+      component.onClickBackspace(event);
       expect(component['answer']).toBe('144');
     });
   });
@@ -246,14 +251,16 @@ describe('QuestionComponent', () => {
       component.sequenceNumber = 1;
       component.factor1 = 1;
       component.factor2 = 2;
-      component.onClickSubmit();
+      const event = { timeStamp: 1519211809934 };
+      component.onClickSubmit(event);
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 1, '1x2');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 1, '1x2', 1519211809934);
     });
 
     it('calls onSubmit()', () => {
       spyOn(component, 'onSubmit');
-      component.onClickSubmit();
+      const event = {};
+      component.onClickSubmit(event);
       expect(component.onSubmit).toHaveBeenCalledTimes(1);
     });
   });

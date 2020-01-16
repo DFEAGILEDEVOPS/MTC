@@ -120,25 +120,44 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   /**
    * Called from clicking a number button on the virtual keypad
    * @param {number} number
+   * @param {Object} event
    */
-  onClickAnswer(number: number) {
-    this.registerInputService.storeEntry(number.toString(), 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickAnswer(number: number, event) {
+    this.registerInputService.storeEntry
+    (number.toString(),
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.addChar(number.toString());
   }
 
   /**
    * Called from clicking the backspace button on the virtual keyboard
+   * @param {Object} event
    */
-  onClickBackspace() {
-    this.registerInputService.storeEntry('Backspace', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickBackspace(event) {
+    this.registerInputService.storeEntry('Backspace',
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.deleteChar();
   }
 
   /**
    * Called when the user clicks the enter button on the virtual keypad
+   * @param {Object} event
    */
-  onClickSubmit() {
-    this.registerInputService.storeEntry('Enter', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickSubmit(event) {
+    this.registerInputService.storeEntry('Enter',
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.onSubmit();
   }
 

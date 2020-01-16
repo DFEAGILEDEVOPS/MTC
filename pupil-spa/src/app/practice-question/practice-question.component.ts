@@ -220,22 +220,25 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Called from clicking a number button on the virtual keypad
    * @param {number} number
+   * @param {Object} event
    */
-  onClickAnswer(number: number) {
+  onClickAnswer(number: number, event) {
     this.addChar(number.toString());
   }
 
   /**
    * Called from clicking the backspace button on the virtual keyboard
+   * @param {Object} event
    */
-  onClickBackspace() {
+  onClickBackspace(event) {
     this.deleteChar();
   }
 
   /**
    * Called when the user clicks the enter button on the virtual keypad
+   * @param {Object} event
    */
-  onClickSubmit() {
+  onClickSubmit(event) {
     this.onSubmit();
   }
 

@@ -84,12 +84,13 @@ describe('PractiseQuestionComponent', () => {
   describe('onClickAnswer', () => {
     it('adds the input to the answer if there is room', () => {
       component.answer = '12';
-      component.onClickAnswer(4);
+      const event = {};
+      component.onClickAnswer(4, event);
       expect(component.answer).toBe('124');
     });
     it('does not add the input to the answer if the answer is 5 chars long', () => {
       component.answer = '12345';
-      component.onClickAnswer(6);
+      component.onClickAnswer(6, event);
       expect(component.answer).toBe('12345');
     });
   });
@@ -97,12 +98,14 @@ describe('PractiseQuestionComponent', () => {
   describe('onClickBackspace', () => {
     it('deletes the end character from the answer', () => {
       component.answer = '12345';
-      component.onClickBackspace();
+      const event = {};
+      component.onClickBackspace(event);
       expect(component.answer).toBe('1234');
     });
     it('behaves when the answer is empty', () => {
       component.answer = '';
-      component.onClickBackspace();
+      const event = {};
+      component.onClickBackspace(event);
       expect(component.answer).toBe('');
     });
   });
