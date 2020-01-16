@@ -13,8 +13,9 @@ MSG='admin app is running under process '
 MSG+=$PID
 echo $MSG
 
-echo 'sleeping for 120 seconds to allow the pupil spa to boot...'
-sleep 120
+SLEEP_TIME=60
+echo "sleeping for $SLEEP_TIME seconds to allow the pupil spa to stabilise..."
+sleep $SLEEP_TIME
 
 rake features OPTS='-t @travis'
 CUCUMBER_EXIT_CODE=$?
