@@ -8,21 +8,26 @@ const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
 
 pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, userId) => {
-  const update = `UPDATE ${sqlService.adminSchema}.${table}
+  const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
+  const update = `
+    UPDATE [mtc_admin].[pupilAttendance]
     SET
       attendanceCode_id = @attendanceCodeId,
       recordedBy_user_id = @userId
+    WHERE
+        pupil_id IN (${where.paramIdentifiers.join(', ')});
+    
+    UPDATE [mtc_admin].[pupil] 
+    SET 
+        attendanceId = @attendanceCodeId
+    WHERE
+        id IN (${where.paramIdentifiers.join(', ')});
   `
-
   const params = [
     { name: 'attendanceCodeId', type: TYPES.Int, value: attendanceCodeId },
     { name: 'userId', type: TYPES.Int, value: userId }
   ]
-
-  const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
-  const sql = [update, whereClause].join(' ')
-  return sqlService.modify(sql, R.concat(params, where.params))
+  return sqlService.modifyWithTransaction(update, R.concat(params, where.params))
 }
 
 pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {

@@ -92,6 +92,7 @@ module.exports = {
   },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
+    DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
@@ -162,7 +163,7 @@ module.exports = {
     externalHost: process.env.RUNTIME_EXTERNAL_HOST || 'http://localhost:3001'
   },
   ServiceBus: {
-    connectionString: process.env.SERVICE_BUS_CONNECTION_STRING
+    connectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   },
   FeatureToggles: {
     accessArrangements: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_ACCESS_ARRANGEMENTS') ? toBool(process.env.FEATURE_TOGGLE_ACCESS_ARRANGEMENTS) : true,
@@ -174,6 +175,6 @@ module.exports = {
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     pupilRegisterV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_REGISTER_V2') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) : false,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : false,
-    _2020Mode: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_2020_MODE') ? toBool(process.env.FEATURE_TOGGLE_2020_MODE) : false
+    _2020Mode: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_2020_MODE') ? toBool(process.env.FEATURE_TOGGLE_2020_MODE) : true
   }
 }

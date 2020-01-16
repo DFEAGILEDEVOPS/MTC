@@ -20,33 +20,6 @@ const checkStartDataService = {
     return sqlService.modifyWithTransaction(inserts, params)
   },
 
-  /**
-   * Batch update the pupil `currentCheckId with the provided checkId`
-   * @param { {pupilId: number, checkId: number}[] } data
-   * @return {Promise<*|undefined>}
-   */
-  updatePupilState: async function updatePupilState (schoolId, data) {
-    const sqls = data.map((item, idx) => {
-      const insert = `UPDATE [mtc_admin].[pupil] 
-                      SET currentCheckId = @checkId${idx},
-                          checkComplete = 0,
-                          restartAvailable = 0
-                      WHERE id=@pupilId${idx}
-                      AND school_id=@schoolId${idx};`
-      const params = [
-        { name: `checkId${idx}`, value: item.checkId, type: sqlService.TYPES.Int },
-        { name: `pupilId${idx}`, value: item.pupilId, type: sqlService.TYPES.Int },
-        { name: `schoolId${idx}`, value: schoolId, type: sqlService.TYPES.Int }
-      ]
-      return { sql: insert, params }
-    })
-    const params = R.flatten(
-      R.map(R.prop('params'), sqls)
-    )
-    const inserts = R.join('\n', R.map(R.prop('sql'), sqls))
-    return sqlService.modifyWithTransaction(inserts, params)
-  },
-
   /** Retrieve a list of pupils eligible for pin generation
    *
    * @param {number} schoolId

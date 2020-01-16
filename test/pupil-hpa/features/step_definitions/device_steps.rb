@@ -6,14 +6,10 @@ end
 Then(/^the device information should be persisted to the DB$/) do
   device_info = JSON.parse(page.evaluate_script('window.localStorage.getItem("device");'))
   check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-  wait_until(60, 1){SqlDbHelper.get_check(check_code)['id']}
-  check_id = SqlDbHelper.get_check(check_code)['id']
-  wait_until(60, 1){SqlDbHelper.get_check_result(check_id)}
-  data = SqlDbHelper.get_check_result(check_id)
-  local_info = JSON.parse data['payload']
-  db_device_info = local_info['device']
-  device_info['appUsageCounter']=1
-  expect(db_device_info).to eql device_info
+  school_uuid = JSON.parse(page.evaluate_script('window.localStorage.getItem("school");'))['uuid']
+  check_result = AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+  device_info_from_ts = JSON.parse(LZString::UTF16.decompress(check_result['archive']))['device']
+  expect(device_info).to eql device_info_from_ts
 end
 
 When(/^I go from the instructions page to the complete page$/) do
@@ -24,7 +20,7 @@ When(/^I go from the instructions page to the complete page$/) do
   warm_up_complete_page.start_check.click
   mtc_check_start_page.start_now.click
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
+  @answers = check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_completion_text
 end
@@ -36,8 +32,8 @@ When(/^I have completed 2 checks$/) do
   step 'I have generated a live pin'
   @pupil_2 = @pupil_credentials
   sign_in_page.load unless sign_in_page.displayed?
-  [@pupil_1,@pupil_2].each do |login_details|
-    p 'login credentials ' + login_details[:school_password]+ ', ' + login_details[:pin]
+  [@pupil_1, @pupil_2].each do |login_details|
+    p 'login credentials ' + login_details[:school_password] + ', ' + login_details[:pin]
     sign_in_page.login(login_details[:school_password], login_details[:pin])
     sign_in_page.sign_in_button.click
     confirmation_page.read_instructions.click
@@ -47,18 +43,20 @@ When(/^I have completed 2 checks$/) do
     warm_up_complete_page.start_check.click
     mtc_check_start_page.start_now.click
     questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-    @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
+    @answers = check_page.complete_check_with_correct_answers(questions.size, 'numpad')
     complete_page.wait_for_complete_page
     expect(complete_page).to have_heading
     @check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
+    @school_uuid = JSON.parse(page.evaluate_script('window.localStorage.getItem("school");'))['uuid']
     complete_page.sign_out.click
-    Timeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
+    Timeout.timeout(8) {sleep 0.2 until current_url.include? sign_in_page.url}
   end
 end
 
 Then(/^the app counter should be set to (\d+)$/) do |count|
-  db_payload = JSON.parse (SqlDbHelper.get_check_result(SqlDbHelper.get_check(@check_code)['id'])['payload'])
-    expect(db_payload['device']['appUsageCounter']).to eql count
+  check_result = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  app_usage_from_ts = JSON.parse(LZString::UTF16.decompress(check_result['archive']))['device']['appUsageCounter']
+  expect(app_usage_from_ts).to eql count
 end
 
 Given(/^I have refreshed a page during the check$/) do

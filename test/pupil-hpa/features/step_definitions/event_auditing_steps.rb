@@ -4,7 +4,8 @@ end
 
 
 Then(/^all the events should be captured$/) do
-
+  expect(@local_storage.first['type']).to eql 'UtteranceEnded'
+  @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupStarted'
   @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
