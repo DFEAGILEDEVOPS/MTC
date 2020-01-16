@@ -124,7 +124,7 @@ export class CheckComponent implements OnInit, CanExit {
   }
 
   canDeactivate(): boolean {
-    return false;
+    return this.viewState === 'warmup-intro' || this.viewState === 'submission-pending';
   }
 
   private loadExistingState() {
