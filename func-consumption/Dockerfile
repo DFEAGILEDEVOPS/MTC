@@ -8,6 +8,4 @@ RUN mkdir -p /func-app
 WORKDIR /func-app
 COPY . .
 
-RUN chmod +x wait-admin-app.sh
-
-CMD ./wait-admin-app.sh && yarn start
+CMD yarn start
