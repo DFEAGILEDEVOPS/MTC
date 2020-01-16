@@ -27,9 +27,11 @@ const service = {
     const sql = `
     SELECT TOP 1 *
     FROM [mtc_admin].[vewPupilRegister]
-    WHERE lastCheckStatusCode = 'NTR'
-    AND pupilStatusCode = 'STARTED'
-    AND school_id = @schoolId
+    WHERE school_id = @schoolId
+    AND currentCheckId IS NOT NULL
+    AND checkComplete = 0
+    AND pupilLoginDate IS NOT NULL
+    AND checkStatusCode <> 'EXP'
     `
 
     const params = [

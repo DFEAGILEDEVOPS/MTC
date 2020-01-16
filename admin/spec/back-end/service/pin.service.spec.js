@@ -1,21 +1,13 @@
 const moment = require('moment')
 const proxyquire = require('proxyquire').noCallThru()
-const R = require('ramda')
 const sinon = require('sinon')
 
-const checkDataService = require('../../../services/data-access/check.data.service')
-const jwtService = require('../../../services/jwt.service')
-const pinService = require('../../../services/pin.service')
-const dateService = require('../../../services/date.service')
 const pinValidator = require('../../../lib/validator/pin-validator')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
-const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 
-const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 
-/* global describe, it, expect, beforeEach, afterEach, spyOn */
+/* global describe, it, expect, beforeEach, afterEach */
 
 describe('pin.service', () => {
   let sandbox
@@ -25,65 +17,6 @@ describe('pin.service', () => {
   })
 
   afterEach(() => sandbox.restore())
-
-  describe('getPupilsWithActivePins', () => {
-    let pupil1
-    let pupil2
-    const service = require('../../../services/pin.service')
-    const dfeNumber = 9991999
-
-    beforeEach(() => {
-      pupil1 = Object.assign({}, pupilMock)
-      pupil1.pin = 'f55sg'
-      pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-      pupil2 = Object.assign({}, pupilMock)
-      pupil2._id = '595cd5416e5ca13e48ed2520'
-      pupil2.id = 43
-      pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-    })
-
-    describe('for live pins', () => {
-      it('makes a call to get the pupils with active pins', async () => {
-        spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
-        spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
-        await service.getPupilsWithActivePins(dfeNumber, 'live')
-        expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber, 'live')
-      })
-    })
-
-    describe('for familiarisation pins', () => {
-      it('makes a call to get the pupils with active pins', async () => {
-        spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
-        spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
-        await service.getPupilsWithActivePins(dfeNumber, 'familiarisation')
-        expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber, 'familiarisation')
-      })
-    })
-
-    it('Adds identification flags to the pupil when they have the same name', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
-      spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
-      const data = await service.getPupilsWithActivePins(dfeNumber)
-      // Because we used the pupil mock we expect the pupils to have the same name, so we need
-      // show the dob to differentiate.
-      expect(data[0].showDoB).toBe(true)
-      expect(data[0].dateOfBirth).toBe('9 Sep 2008')
-      expect(data[1].showDoB).toBe(true)
-      expect(data[1].dateOfBirth).toBe('9 Sep 2008')
-    })
-
-    it('does not add identification flags to the pupil when they have different names', async () => {
-      const p1 = R.clone(pupilMock)
-      const p2 = R.clone(pupilMock)
-      p2.lastName = 'Sherlock'
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([p1, p2]))
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
-      const data = await service.getPupilsWithActivePins(dfeNumber)
-      expect(data[0].showDoB).toBeUndefined()
-      expect(data[1].showDoB).toBeUndefined()
-    })
-  })
 
   describe('getActiveSchool', () => {
     let service
@@ -116,45 +49,6 @@ describe('pin.service', () => {
       it('it should return null', async () => {
         const result = await service.getActiveSchool(school.id)
         expect(result).toBeNull()
-      })
-    })
-  })
-  describe('expirePupilPin', () => {
-    describe('for actual users', () => {
-      beforeEach(() => {
-        const pupil = Object.assign({}, pupilMock)
-        sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
-        sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
-        proxyquire('../../../services/pin.service', {
-          '../../../services/data-access/pupil.data.service': pupilDataService,
-          '../../../services/jwt.service': jwtService
-        })
-      })
-      it('it expire pin and set check start time ', async () => {
-        spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
-        await pinService.expirePupilPin('token', 'checkCode')
-        expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
-        expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
-      })
-    })
-    describe('for test developer users', () => {
-      beforeEach(() => {
-        const pupil = Object.assign({}, pupilMock)
-        pupil.isTestAccount = true
-        sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
-        sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
-        proxyquire('../../../services/pin.service', {
-          '../../../services/data-access/pupil.data.service': pupilDataService,
-          '../../../services/jwt.service': jwtService
-        })
-      })
-      it('it should not expire pin for developer test account', async () => {
-        spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
-        await pinService.expirePupilPin('token', 'checkCode')
-        expect(pupilDataService.sqlUpdate).toHaveBeenCalledTimes(0)
-        expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
     })
   })

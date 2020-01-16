@@ -23,6 +23,9 @@ for i in $(seq 1 8); do
 done
 echo ""
 
+echo "Resetting terminal..."
+command -v reset >/dev/null 2>&1 && reset
+
 echo "Running migrations..."
 (cd ${scriptDir}/admin && yarn migrate-sql)
 

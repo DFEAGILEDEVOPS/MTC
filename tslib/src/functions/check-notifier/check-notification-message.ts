@@ -7,5 +7,6 @@ export interface ICheckNotificationMessage {
 
 export enum CheckNotificationType {
   checkComplete = 'checkComplete',
-  checkInvalid = 'checkInvalid'
+  checkInvalid = 'checkInvalid',
+  checkReceived = 'checkReceived'
 }

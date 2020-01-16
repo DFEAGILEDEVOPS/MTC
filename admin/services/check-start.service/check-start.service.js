@@ -26,7 +26,6 @@ const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
 const pinGenerationService = require('../pin-generation.service')
-const pinGenerationV2Service = require('../pin-generation-v2.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
 const prepareCheckService = require('../prepare-check.service')
@@ -132,23 +131,15 @@ checkStartService.prepareCheck2 = async function (
     pupilIds
   )
 
-  await pinGenerationV2Service.checkAndUpdateRestarts(
-    schoolId,
-    pupils,
-    newCheckIds
-  )
-
   if (isLiveCheck) {
     const pupilStatusQueueName = queueNameService.getName(
       queueNameService.NAMES.PUPIL_STATUS
     )
 
     // Request the pupil status be re-computed
+    // TODO: delete when pupil.status is deleted
     const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
 
-    // 2020 prep: update the pupil status fields
-    const pupilsAndChecks = newChecks.map(check => { return { checkId: check.id, pupilId: check.pupil_id } })
-    await checkStartDataService.updatePupilState(schoolId, pupilsAndChecks)
     // TODO to be removed 2020
     // Send a batch of messages for all the pupils requesting a status change
     await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })

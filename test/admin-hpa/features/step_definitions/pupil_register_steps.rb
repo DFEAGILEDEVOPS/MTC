@@ -48,12 +48,12 @@ end
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   pupil_register_page.load
   p @details_hash[:first_name]
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).result.text == status}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).status.text == status}
 end
 
 Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
   pupil_row = pupil_register_page.find_pupil_row(@pupil['lastName'])
-  expect(pupil_row.result.text).to eql(status)
+  expect(pupil_row.status.text).to eql(status)
 end
 
 Then(/^I should see each pupil row have the group coloumn populated with the group name$/) do

@@ -129,11 +129,8 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  wait_until(120,5){SqlDbHelper.get_check(storage_pupil['checkCode'])}
-  pupil_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
-  wait_until(240,5){SqlDbHelper.get_check_result(pupil_check['id'])}
-  check_result = SqlDbHelper.get_check_result(pupil_check['id'])
-  check = JSON.parse(check_result['payload'])
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}
   expect(check['tokens']['jwt']['token']).to eql storage_access_token
@@ -182,9 +179,9 @@ end
 
 Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expected_score|
   ls_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  ls_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_code = ls_pupil['checkCode']
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 5 until SqlDbHelper.get_check(check_code)['mark'] != nil}
-  check = SqlDbHelper.get_check(check_code)
-  p check
-  expect(check['mark']).to eql expected_score
+  school_uuid = ls_school['uuid']
+  check_result = AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+  expect(check_result['mark']).to eql expected_score
 end

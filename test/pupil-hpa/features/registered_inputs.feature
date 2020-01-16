@@ -1,6 +1,7 @@
 @registered_inputs
 Feature: Registered Inputs
 
+  @wip
   Scenario: All inputs are recorded when using the on screen keyboard
     Given I have used all the keys on the on screen keyboard to complete the check
     Then I should see all my number pad inputs recorded
