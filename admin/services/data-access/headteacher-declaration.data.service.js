@@ -51,6 +51,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
 
 /**
  * Find count of pupils blocking hdf submission before check end date
+ * This finds a count of all pupils who are not marked as taking the check, but who haven't completed it yet.
  * @param schoolId
  * @return {Promise<Number>}
  */
@@ -58,9 +59,8 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
     WHERE p.school_id = @schoolId
-    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
+    AND (p.attendanceId IS NULL AND p.checkComplete <> 1) 
   `
 
   const params = [
@@ -72,7 +72,9 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
 }
 
 /**
- * Find count of pupils blocking hdf submission before check end date
+ * Find count of pupils blocking hdf submission after check end date
+ * Blocking pupils are defined as pupils who have not completed the check, or at least attempted the check (and are not
+ * marked as not-attending)
  * @param schoolId
  * @return {Promise<Number>}
  */
@@ -80,18 +82,9 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
-    JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
-    LEFT JOIN (
-        SELECT *,
-            ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
-        FROM [mtc_admin].[check]
-        WHERE isLiveCheck = 1
-           ) lastCheck ON (lastCheck.pupil_id = p.id)
-    LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-    WHERE p.school_id = @schoolId
-    AND (lastCheck.rank = 1 or lastCheck.rank IS NULL)
-    AND (ps.code != 'STARTED' OR cs.code != 'NTR')
-    AND ps.code NOT IN ('NOT_TAKING', 'COMPLETED')
+    LEFT JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
+    WHERE (p.attendanceId IS NULL
+          AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
   `
 
   const params = [
@@ -102,43 +95,95 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
   return R.path(['pupilsCount'], R.head(result))
 }
 
-/**
- * Fetch all pupils for a school by dfeNumber with their status codes and attendance reasons
- * @param schoolId
- * @returns {Promise<*>}
- */
-headteacherDeclarationDataService.sqlFindPupilsWithStatusAndAttendanceReasons = async function (schoolId) {
-  const paramDfeNumber = { name: 'schoolId', type: TYPES.Int, value: schoolId }
-
+headteacherDeclarationDataService.sqlFindPupilsFullStatus = async function sqlFindPupilsAndAttendanceReasons (schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId param is required')
+  }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
   SELECT
-  p.foreName,
-  p.lastName,
-  p.middleNames,
-  p.dateOfBirth,
-  p.urlSlug,
-  ps.code AS pupilStatusCode,
-  cs.code AS checkStatusCode,
-  p.group_id,
-  ac.reason,
-  ac.code as reasonCode
-FROM [mtc_admin].pupil p
-JOIN [mtc_admin].pupilStatus ps
-   ON p.pupilStatus_id = ps.id
-LEFT JOIN [mtc_admin].[pupilAttendance] pa
-   ON p.id = pa.pupil_id AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
-LEFT JOIN [mtc_admin].[attendanceCode] ac
-   ON pa.attendanceCode_id = ac.id
-LEFT JOIN (
-   SELECT *,
-       ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
-   FROM [mtc_admin].[check]
-   WHERE isLiveCheck = 1
-  ) lastCheck ON (lastCheck.pupil_id = p.id AND lastCheck.rank = 1)
-LEFT JOIN [mtc_admin].[checkStatus] cs ON (lastCheck.checkStatus_id = cs.id)
-WHERE p.school_id = @schoolId
+    p.foreName,
+    p.lastName,
+    p.middleNames,
+    p.dateOfBirth,
+    p.group_id,
+    p.urlSlug,
+    cs.code as checkStatusCode,
+    ac.reason, 
+    ac.code as reasonCode,
+
+    -- the following fields are required to produce the HDF pupil status for the Heads review
+    p.attendanceId,
+    p.checkComplete as pupilCheckComplete,
+    p.currentCheckId,
+    p.id as pupilId,
+    p.restartAvailable,
+    chk.received as checkReceived,
+    chk.complete as checkComplete,
+    chk.pupilLoginDate,
+    cp.pinExpiresAt
+  FROM
+    [mtc_admin].[pupil] p LEFT JOIN  
+    [mtc_admin].[check] chk ON (p.currentCheckId = chk.id) LEFT JOIN  
+    [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN 
+    [mtc_admin].[attendanceCode] ac ON (p.attendanceId = ac.id) LEFT JOIN
+    [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
+  WHERE
+    p.school_id = @schoolId  
   `
-  return sqlService.query(sql, [paramDfeNumber])
+  return sqlService.readonlyQuery(sql, [paramSchoolId])
+}
+
+/**
+ * Find a particular pupil with full status attributes
+ * @param {string} urlSlug
+ * @param {number} schoolId
+ * @return {Promise<*>}
+ */
+headteacherDeclarationDataService.sqlFindOnePupilFullStatus = async function sqlFindOnePupilFullStatus (urlSlug, schoolId) {
+  if (!urlSlug) {
+    throw new Error('urlSlug param is required')
+  }
+  if (!schoolId) {
+    throw new Error('schoolId param is required')
+  }
+  const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const paramUrlSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
+  const sql = `
+  SELECT
+    p.id,
+    p.foreName,
+    p.lastName,
+    p.middleNames,
+    p.dateOfBirth,
+    p.group_id,
+    p.urlSlug,
+    cs.code as checkStatusCode,
+    ac.reason, 
+    ac.code as reasonCode,
+
+    -- the following fields are required to produce the HDF pupil status for the Heads review
+    p.attendanceId,
+    p.checkComplete as pupilCheckComplete,
+    p.currentCheckId,
+    p.id as pupilId,
+    p.restartAvailable,
+    chk.received as checkReceived,
+    chk.complete as checkComplete,
+    chk.pupilLoginDate,
+    cp.pinExpiresAt
+  FROM
+    [mtc_admin].[pupil] p LEFT JOIN  
+    [mtc_admin].[check] chk ON (p.currentCheckId = chk.id) LEFT JOIN  
+    [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id) LEFT JOIN 
+    [mtc_admin].[attendanceCode] ac ON (p.attendanceId = ac.id) LEFT JOIN
+    [mtc_admin].[checkPin] cp ON (chk.id = cp.check_id)
+  WHERE
+    p.school_id = @schoolId 
+  AND p.urlSlug = @urlSlug
+  `
+  const results = await sqlService.readonlyQuery(sql, [paramSchoolId, paramUrlSlug])
+  return R.head(results)
 }
 
 module.exports = headteacherDeclarationDataService

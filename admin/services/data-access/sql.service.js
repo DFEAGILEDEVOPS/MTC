@@ -292,8 +292,10 @@ function addParamsToRequestSimple (params, request) {
  * @return {Promise<*>}
  */
 sqlService.query = async (sql, params = [], redisKey) => {
-  // logger.debug(`sql.service.query(): ${sql}`)
-  // logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  if (config.Logging.DebugVerbosity > 1) {
+    logger.debug(`sql.service.query(): ${sql}`)
+    logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
+  }
   await pool
 
   const query = async () => {
@@ -325,9 +327,12 @@ sqlService.query = async (sql, params = [], redisKey) => {
  * @param {string} redisKey - Redis key to cache resultset against
  * @returns {Promise<*>}
  */
-sqlService.readonlyQuery = async (sql, params = [], redisKey) => {
-  // logger.debug(`sql.service.readonlyQuery(): ${sql}`)
-  // logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
+sqlService.readonlyQuery = async (sql, params = [], redisKey = '') => {
+  if (config.Logging.DebugVerbosity > 1) {
+    logger.debug(`sql.service.readonlyQuery(): ${sql}`)
+    logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
+  }
+
   // short circuit when replica reads disabled...
   if (config.Sql.AllowReadsFromReplica !== true) {
     return sqlService.query(sql, params, redisKey)
@@ -376,8 +381,8 @@ function addParamsToRequest (params, request) {
         options.scale = param.scale || 5
       }
       const opts = param.options ? param.options : options
-      if (opts && Object.keys(opts).length) {
-        // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+      if (config.Logging.DebugVerbosity > 1 && opts && Object.keys(opts).length) {
+        logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
       }
 
       if (opts.precision) {
@@ -398,8 +403,11 @@ function addParamsToRequest (params, request) {
  * @return {Promise}
  */
 sqlService.modify = async (sql, params = []) => {
-  // logger.debug('sql.service.modify(): SQL: ' + sql)
-  // logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  if (config.Logging.DebugVerbosity > 1) {
+    logger.debug('sql.service.modify(): SQL: ' + sql)
+    logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
+  }
+
   await pool
 
   const modify = async () => {
@@ -494,12 +502,18 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
     await sqlService.updateDataTypeCache()
   }
   if (!{}.hasOwnProperty.call(cache, key)) {
-    logger.debug(`sql.service: cache miss for ${key}`)
+    if (config.Logging.DebugVerbosity > 2) {
+      logger.debug(`sql.service: cache miss for ${key}`)
+    }
     return undefined
   }
   const cacheData = cache[key]
-  logger.debug(`sql.service: cache hit for ${key}`)
-  logger.debug('sql.service: cache', cacheData)
+
+  if (config.Logging.DebugVerbosity > 2) {
+    logger.debug(`sql.service: cache hit for ${key}`)
+    logger.debug('sql.service: cache', cacheData)
+  }
+
   return cacheData
 }
 
@@ -511,7 +525,9 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
  */
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
-  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  if (config.Logging.DebugVerbosity > 2) {
+    logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  }
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]`
@@ -547,7 +563,9 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
     )
   })
   params = R.flatten(params)
-  // logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  if (config.Logging.DebugVerbosity > 2) {
+    logger.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  }
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${headers} ) VALUES ( ${values} );
   SELECT SCOPE_IDENTITY()`

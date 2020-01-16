@@ -12,4 +12,7 @@ echo "Purging Service Bus..."
 echo "Stopping docker..."
 docker-compose down
 
+echo "Resetting terminal..."
+command -v reset >/dev/null 2>&1 && reset
+
 echo "MTC Infrastructure down!"

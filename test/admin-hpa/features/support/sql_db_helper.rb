@@ -177,14 +177,6 @@ class SqlDbHelper
     chk_form_res
   end
 
-  def self.check_details(pupil_id)
-    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id = '#{pupil_id}' ORDER BY id DESC"
-    result = SQL_CLIENT.execute(sql)
-    chk_res = result.first
-    result.cancel
-    chk_res
-  end
-
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
@@ -321,6 +313,13 @@ class SqlDbHelper
     result.do
   end
 
+
+  def self.set_pupil_attendance_via_school(school_id,code)
+    sql = "UPDATE [mtc_admin].[pupil] set attendanceId=#{code} WHERE school_id=#{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
   def self.set_pupil_status(reset_from, reset_to)
       sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
       result = SQL_CLIENT.execute(sql)
@@ -336,9 +335,7 @@ class SqlDbHelper
   def self.get_pupil_with_no_attandance_code(school_id)
     sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
     result = SQL_CLIENT.execute(sql)
-    school_res = result.first
-    result.cancel
-    school_res
+    result.each {|row| row.map}
   end
 
   def self.get_default_assigned_fam_form

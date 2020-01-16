@@ -25,7 +25,7 @@ class PupilRegisterPage < SitePrism::Page
       element :edited_pupil, '.govuk-highlight-item'
       element :incomplete_pupil, '.govuk-warning-item'
       element :group, 'td:nth-child(2)'
-      element :result, 'td:nth-child(3)'
+      element :status, 'td:nth-child(3)'
       element :edit_pupil_link, 'a'
     end
   end

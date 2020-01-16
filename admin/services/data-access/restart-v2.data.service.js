@@ -179,8 +179,9 @@ module.exports.getLiveCheckDataByPupilId = async function getLiveCheckDataByPupi
     from 
         [mtc_admin].[pupil] pp JOIN 
         [mtc_admin].[school] s ON (pp.school_id = s.id) JOIN 
-        [mtc_admin].[check] c ON (pp.currentCheckId = c.id) JOIN 
-        [mtc_admin].[checkPin] cp ON (c.id = cp.check_id) JOIN
+        [mtc_admin].[check] c ON (pp.currentCheckId = c.id) LEFT JOIN
+        -- the checkPin may already have been deleted by the time the restart happens            
+        [mtc_admin].[checkPin] cp ON (c.id = cp.check_id) LEFT JOIN
         [mtc_admin].[pin] p on (cp.pin_id = p.id)
     where
         pp.id IN (${paramIdentifiers.join(', ')})

@@ -9,6 +9,7 @@ end
 
 
 Then(/^all the events should be captured$/) do
+  expect(@local_storage.find{|a| a['type'] == 'UtteranceEnded'}).to_not be_nil
   expect(@local_storage.find{|a| a['type'] == 'WarmupStarted'}).to_not be_nil
   expect(@local_storage.find{|a| a['type'] == 'WarmupIntroRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}

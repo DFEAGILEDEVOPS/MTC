@@ -195,7 +195,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                WHERE
                    id = @pupilId;
                `
-  return sqlService.modifyWithTransaction(sql, params)
+  return sqlService.modifyWithTransactionAndResponse(sql, params)
 }
 
 /**
