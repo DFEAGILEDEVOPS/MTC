@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { LoginErrorDiagnosticsService } from './login-error-diagnostics.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
 import { LoginErrorService } from '../login-error/login-error.service';
+import { APP_INITIALIZER } from '@angular/core';
+import { loadConfigMockService } from '../config/config.service';
 
 let loginErrorDiagnosticsService;
 
@@ -20,7 +22,8 @@ describe('LoginErrorDiagnosticsService', () => {
       providers: [
         LoginErrorDiagnosticsService,
         WindowRefService,
-        LoginErrorService
+        LoginErrorService,
+        {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
       ]
     });
     httpClient = TestBed.get(HttpClient);
@@ -40,12 +43,14 @@ describe('LoginErrorDiagnosticsService', () => {
       await loginErrorDiagnosticsService.process(err);
       expect(loginErrorDiagnosticsService.canAccessURL).not.toHaveBeenCalled();
     });
-    it('should call changeMessage when api url refused connection and browser status is online', async () => {
+    it('should call changeMessage when api url refused connection and browser status is online',
+      inject([LoginErrorDiagnosticsService], async (service: LoginErrorDiagnosticsService) => {
       spyOn(loginErrorDiagnosticsService, 'canAccessURL').and.returnValue(false);
       spyOn(loginErrorService, 'changeMessage');
       const err = { status: 0 };
+      service.isBrowserStatusOnline = true;
       await loginErrorDiagnosticsService.process(err);
       expect(loginErrorService.changeMessage).toHaveBeenCalledWith('Connection refused to undefined');
-    });
+    }));
   });
 });

@@ -38,7 +38,7 @@ export class CheckStartService {
   public async submit(): Promise<void> {
     const { url, token, queueName } = this.tokenService.getToken('checkStarted');
     // Create a model for the payload
-    const payload = this.storageService.getItem('pupil');
+    const payload = this.storageService.getPupil();
     payload.clientCheckStartedAt = new Date();
     payload.version = 1;
     const retryConfig = {

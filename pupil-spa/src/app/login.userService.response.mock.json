@@ -24,5 +24,17 @@
     "jwt": {
       "token": "token"
     }
+  },
+  "pupil": {
+    "firstName": "Juliana",
+    "lastName": "Brewer",
+    "dob": "2 February 2009",
+    "checkCode": "17F27C48-3CA8-4E28-907A-6A72D982C342",
+    "uuid": "5C67D75D-E488-4AB0-A717-01721459B69B"
+  },
+  "school": {
+    "id": 2,
+    "uuid": "4C75D75D-E488-4AB0-A717-01721459B69B",
+    "name": "Example School One"
   }
 }

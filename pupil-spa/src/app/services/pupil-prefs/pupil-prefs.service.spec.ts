@@ -9,15 +9,14 @@ import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { AuditService } from '../audit/audit.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 import { AccessArrangements } from '../../access-arrangements';
 
 let azureQueueService: AzureQueueService;
 let pupilPrefsService: PupilPrefsService;
-let mockStorageService: StorageServiceMock;
 let auditService: AuditService;
 let mockQuestionService;
 let tokenService: TokenService;
+let storageService: StorageService;
 let storedPrefs;
 
 describe('PupilPrefsService', () => {
@@ -33,7 +32,7 @@ describe('PupilPrefsService', () => {
         PupilPrefsService,
         TokenService,
         AuditService,
-        { provide: StorageService, useClass: StorageServiceMock },
+        StorageService,
         { provide: QuestionService, useClass: QuestionServiceMock }
       ]
     });
@@ -42,7 +41,7 @@ describe('PupilPrefsService', () => {
     tokenService = injector.get(TokenService);
     mockQuestionService = injector.get(QuestionService);
     auditService = injector.get(AuditService);
-    mockStorageService = injector.get(StorageService);
+    storageService = injector.get(StorageService);
 
     storedPrefs = {
       fontSize: 'large',
@@ -56,16 +55,16 @@ describe('PupilPrefsService', () => {
 
   describe('storePupilPrefs ', () => {
     it('should call pupil prefs azure queue storage', async () => {
-      const pupil = { checkCode: 'checkCode' };
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
       const addMessageSpy = spyOn(azureQueueService, 'addMessage');
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(mockStorageService, 'setItem');
-      spyOn(mockStorageService, 'getItem').and.returnValues(storedPrefs, pupil);
+      spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
+      spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
       await pupilPrefsService.storePupilPrefs();
       expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-      expect(mockStorageService.getItem).toHaveBeenCalled();
+      expect(storageService.getAccessArrangements).toHaveBeenCalled();
+      expect(storageService.getPupil).toHaveBeenCalled();
       expect(tokenService.getToken).toHaveBeenCalled();
       const payload = {
         preferences: {
@@ -91,9 +90,11 @@ describe('PupilPrefsService', () => {
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
       spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(mockStorageService, 'getItem').and.returnValue(storedPrefs);
+      spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
+      spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
       await pupilPrefsService.storePupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalled();
+      expect(storageService.getAccessArrangements).toHaveBeenCalled();
+      expect(storageService.getPupil).toHaveBeenCalled();
       expect(tokenService.getToken).toHaveBeenCalled();
       expect(azureQueueService.addMessage).toHaveBeenCalled();
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
@@ -101,30 +102,34 @@ describe('PupilPrefsService', () => {
   });
   describe('loadPupilPrefs', () => {
     it('should load prefs from local storage access_arrangements key and return', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValue({ contrast: 'bow', fontSize: 'regular' });
+      spyOn(storageService, 'getAccessArrangements').and.returnValue({ contrast: 'bow', fontSize: 'regular' });
       const accessArrangements = new AccessArrangements();
       accessArrangements.fontSize = 'regular';
       accessArrangements.contrast = 'bow';
       pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
+      expect(storageService.getAccessArrangements).toHaveBeenCalledTimes(1);
       expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
     });
     it('should load prefs from local storage config key', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValues(undefined, { colourContrastCode: 'BOB', fontSizeCode: 'SML' });
+      spyOn(storageService, 'getAccessArrangements');
+      spyOn(storageService, 'getConfig').and.returnValue({ colourContrastCode: 'BOB', fontSizeCode: 'SML' });
       const accessArrangements = new AccessArrangements();
       accessArrangements.fontSize = 'small';
       accessArrangements.contrast = 'bob';
       pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
+      expect(storageService.getAccessArrangements).toHaveBeenCalledTimes(1);
+      expect(storageService.getConfig).toHaveBeenCalledTimes(1);
       expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
     });
     it('should provide defaults if local storage does not provide existing values', () => {
-      spyOn(mockStorageService, 'getItem').and.returnValues(undefined, undefined);
+      spyOn(storageService, 'getAccessArrangements');
+      spyOn(storageService, 'getConfig');
       const accessArrangements = new AccessArrangements();
       accessArrangements.fontSize = 'regular';
       accessArrangements.contrast = 'bow';
       pupilPrefsService.loadPupilPrefs();
-      expect(mockStorageService.getItem).toHaveBeenCalledTimes(2);
+      expect(storageService.getAccessArrangements).toHaveBeenCalledTimes(1);
+      expect(storageService.getConfig).toHaveBeenCalledTimes(1);
       expect(pupilPrefsService.accessArrangements).toEqual(accessArrangements);
     });
   });
