@@ -9,17 +9,17 @@ Then(/^all the events should be captured$/) do
   expect(@local_storage.first['type']).to eql 'WarmupStarted'
   @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
-  @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}
-  expect(@local_storage.find{|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'WarmupCompleteRendered'}
-  expect(@local_storage.find{|a| a['type'] == 'QuestionIntroRendered'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'QuestionIntroRendered'}
-  expect(@local_storage.find{|a| a['type'] == 'CheckStarted'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'CheckStarted'}
-  expect(@local_storage.find{|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'CheckStartedApiCalled'}
-  expect(@local_storage.find{|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_nil
-  @local_storage.reject!{|a| a['type'] == 'CheckStartedAPICallSucceeded'}
+  @local_storage.reject! {|a| a['type'] == 'WarmupIntroRendered'}
+  expect(@local_storage.find {|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
+  @local_storage.reject! {|a| a['type'] == 'WarmupCompleteRendered'}
+  expect(@local_storage.find {|a| a['type'] == 'QuestionIntroRendered'}).to_not be_nil
+  @local_storage.reject! {|a| a['type'] == 'QuestionIntroRendered'}
+  expect(@local_storage.find {|a| a['type'] == 'CheckStarted'}).to_not be_nil
+  @local_storage.reject! {|a| a['type'] == 'CheckStarted'}
+  expect(@local_storage.find {|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_nil
+  @local_storage.reject! {|a| a['type'] == 'CheckStartedApiCalled'}
+  expect(@local_storage.find {|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_nil
+  @local_storage.reject! {|a| a['type'] == 'CheckStartedAPICallSucceeded'}
   @last = @local_storage.pop(1)[0]
   expect(@last['type']).to eql 'CheckSubmissionAPICallSucceeded'
   @local_storage.each_slice(5) do |slice|
@@ -29,7 +29,7 @@ Then(/^all the events should be captured$/) do
       expect(slice[2]['type']).to eql 'QuestionTimerStarted'
       expect(slice[3]['type']).to eql 'QuestionTimerCancelled'
       expect(slice[4]['type']).to eql 'QuestionAnswered'
-      expect((Time.parse(slice[1]['clientTimestamp'])-Time.parse(slice[0]['clientTimestamp'])).to_i).to be >= 2
+      expect((Time.parse(slice[1]['clientTimestamp']) - Time.parse(slice[0]['clientTimestamp'])).to_i).to be >= 2
     end
 
   end
