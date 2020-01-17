@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 
 import { AAColoursComponent } from './aa-colours.component';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { RouteService } from '../services/route/route.service';
 import { RouteServiceMock } from '../services/route/route.service.mock';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
@@ -35,10 +34,10 @@ describe('AAColoursComponent', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: RouteService, useClass: RouteServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock }
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        StorageService,
       ]
     });
 

@@ -11,7 +11,6 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
@@ -39,13 +38,13 @@ describe('SubmissionPendingComponent', () => {
         AzureQueueService,
         TokenService,
         AppUsageService,
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
-        { provide: QUEUE_STORAGE_TOKEN }
+        { provide: QUEUE_STORAGE_TOKEN },
+        StorageService
       ]
     })
     .compileComponents();

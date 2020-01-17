@@ -4,6 +4,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
+import { CheckStatusService } from '../services/check-status/check-status.service';
 
 @Component({
   selector: 'app-feedback',
@@ -31,6 +32,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private storageService: StorageService,
+    private checkStatusService: CheckStatusService,
     private speechService: SpeechService,
     private questionService: QuestionService,
     private elRef: ElementRef,
@@ -41,12 +43,11 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.componentValidate()) {
       this.router.navigate(['feedback-thanks']);
     }
-    const questions = this.storageService.getItem('questions');
-    const answers = this.storageService.getItem('answers');
-    if (!answers || !questions || questions.length !== answers.length) {
+    const hasFinishedCheck = this.checkStatusService.hasFinishedCheck();
+    if (!hasFinishedCheck) {
       this.router.navigate(['check-start']);
     }
-    this.pupilData = this.storageService.getItem('pupil');
+    this.pupilData = this.storageService.getPupil();
     this.inputTypes = [
       { id: 1, value: 'Touchscreen' },
       { id: 2, value: 'Mouse' },
@@ -89,7 +90,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   componentValidate() {
-    this.feedbackExists = this.storageService.getItem('feedback');
+    this.feedbackExists = this.storageService.getFeedback();
     return (this.feedbackExists === null);
   }
 
@@ -124,7 +125,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
         'createdAt': new Date(),
         'checkCode': this.pupilData['checkCode']
       };
-      this.storageService.setItem('feedback', this.feedbackData);
+      this.storageService.setFeedback(this.feedbackData);
       this.enableSubmit = false;
       this.submitted = true;
 

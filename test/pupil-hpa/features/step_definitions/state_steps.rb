@@ -28,7 +28,13 @@ end
 
 Then(/^I should be taken to the warm up complete page$/) do
   expect(warm_up_complete_page).to be_displayed
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   sleep 2
   expect(local_storage.select {|a| a['type'] == 'RefreshDetected'}.count).to eql 3
 end
@@ -109,6 +115,12 @@ Then(/^I should see the complete page after seeing all the questions$/) do
 end
 
 And(/^audit and inputs recorded should reflect this$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   expect(local_storage.select {|a| a['type'] == 'RefreshDetected'}.count).to eql @array_of_questions.size
 end

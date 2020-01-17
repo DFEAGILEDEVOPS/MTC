@@ -187,9 +187,3 @@ export class AppError extends AuditEntry {
     super('AppError', new Date(), data);
   }
 }
-
-export class DuplicateAnswerError extends AuditEntry {
-  constructor(data?: any) {
-    super('DuplicateAnswerError', new Date(), data);
-  }
-}
