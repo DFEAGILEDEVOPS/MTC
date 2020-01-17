@@ -3,12 +3,18 @@ import { APP_CONFIG } from '../config/config.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
-const questionsDataKey = 'questions';
-const configDataKey = 'config';
-const pupilDataKey = 'pupil';
-const schoolDataKey = 'school';
-const accessTokenKey = 'access_token';
-const tokenKey = 'tokens';
+import {
+  ConfigStorageKey,
+  PupilStorageKey,
+  QuestionsStorageKey,
+  SchoolStorageKey, TokensStorageKey
+} from '../storage/storageKey';
+
+const questionsStorageKey = new QuestionsStorageKey();
+const configStorageKey = new ConfigStorageKey();
+const pupilStorageKey = new PupilStorageKey();
+const schoolStorageKey = new SchoolStorageKey();
+const tokensStorageKey = new TokensStorageKey();
 
 @Injectable()
 export class UserService {
@@ -16,7 +22,7 @@ export class UserService {
   data: any = {};
 
   constructor(private http: HttpClient, private storageService: StorageService) {
-    this.loggedIn = !!this.storageService.getItem(accessTokenKey);
+    this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
   login(schoolPin, pupilPin): Promise<any> {
@@ -30,13 +36,11 @@ export class UserService {
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
-          this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
-          this.storageService.setItem(configDataKey, data[configDataKey]);
-          this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
-          this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
-          this.storageService.setItem(accessTokenKey, data[tokenKey] && data[tokenKey]['jwt'] && data[tokenKey]['jwt']['token']);
-          this.storageService.setItem(tokenKey, data[tokenKey]);
-
+          this.storageService.setQuestions(data[questionsStorageKey.toString()]);
+          this.storageService.setConfig(data[configStorageKey.toString()]);
+          this.storageService.setPupil(data[pupilStorageKey.toString()]);
+          this.storageService.setSchool(data[schoolStorageKey.toString()]);
+          this.storageService.setToken(data[tokensStorageKey.toString()]);
           resolve();
         },
         (err) => {

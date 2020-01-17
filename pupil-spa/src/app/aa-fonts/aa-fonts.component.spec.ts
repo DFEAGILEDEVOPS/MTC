@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 
@@ -11,6 +10,7 @@ import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { AccessArrangementsStorageKey, PupilStorageKey } from '../services/storage/storageKey';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
@@ -33,11 +33,11 @@ describe('AAFontsComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         { provide: SpeechService, useClass: SpeechServiceMock },
-        RouteService
+        RouteService,
+        StorageService
       ]
     });
 
@@ -46,9 +46,11 @@ describe('AAFontsComponent', () => {
     mockPupilPrefsService = injector.get(PupilPrefsService);
 
     spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
-      if (arg === 'pupil') {
+      const pupilStorageKey = new PupilStorageKey();
+      const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
+      if (arg.toString() === pupilStorageKey.toString()) {
         return { firstName: 'a', lastName: 'b' };
-      } else if (arg === 'access_arrangements') {
+      } else if (arg.toString() === accessArrangementsStorageKey.toString()) {
         return { fontSize: 'regular', contrast: 'bow' };
       }
     });

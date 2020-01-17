@@ -8,7 +8,7 @@ export class TokenService {
   }
 
   getToken(key) {
-    const token = this.storageService.getItem('tokens');
+    const token = this.storageService.getToken();
     return token[key];
   }
 }

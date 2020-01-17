@@ -56,8 +56,8 @@ export class CheckCompleteService {
   public async submit(startTime): Promise<void> {
     this.appUsageService.store();
     let message;
-    const config = this.storageService.getItem('config');
-    if (config.practice) {
+    const checkConfig = this.storageService.getConfig();
+    if (checkConfig.practice) {
       return this.onSuccess(startTime);
     }
     const {url, token, queueName} = this.tokenService.getToken('checkComplete');
@@ -66,17 +66,13 @@ export class CheckCompleteService {
       errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
-    const payload = this.storageService.getAllItems();
-    const excludedItems = ['access_token', 'checkstate', 'pending_submission', 'completed_submission'];
-    excludedItems.forEach(i => delete payload[i]);
-    payload.checkCode = payload && payload.pupil && payload.pupil.checkCode;
-    payload.schoolUUID = payload && payload.school && payload.school.uuid;
-    const checkConfig = this.storageService.getItem(CheckCompleteService.configStorageKey);
+    const items = this.storageService.getAllItems();
+    const payload = this.getPayload(items);
     if (checkConfig.compressCompletedCheck) {
       message = {
         version: 2,
-        checkCode: payload.checkCode,
-        schoolUUID: payload.schoolUUID,
+        checkCode: payload['checkCode'],
+        schoolUUID: payload['schoolUUID'],
         archive: CompressorService.compress(JSON.stringify(payload))
       };
     } else {
@@ -99,13 +95,55 @@ export class CheckCompleteService {
   }
 
   /**
+   * Get all entries matching a key
+   * @param {String} key
+   * @param {Object} items
+   * @returns {Array}
+   */
+  getAllEntriesByKey(key: string, items: object): any {
+    const matchingKeys =
+      Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
+    const sortedMatchingKeys = matchingKeys.sort((a, b) =>
+      new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
+    );
+    const matchingItems = [];
+    sortedMatchingKeys.forEach(s => {
+      matchingItems.push(items[s]);
+    });
+    return matchingItems;
+  }
+
+  /**
+   * Get check payload for submission
+   * @param {Object} items
+   * @returns {Object}
+   */
+  getPayload(items: object): object {
+    const payload = {
+      checkCode: undefined,
+      schoolUUID: undefined,
+    };
+    const includedSingularItems = ['config', 'device', 'pupil', 'questions', 'school', 'tokens'];
+    const includedMultipleItems = ['audit', 'inputs', 'answers'];
+    includedSingularItems.forEach(i => {
+      payload[i] = items[i];
+    });
+    includedMultipleItems.forEach(i => {
+      payload[i] = this.getAllEntriesByKey(i, items);
+    });
+    payload.checkCode = items && items['pupil'] && items['pupil'].checkCode;
+    payload.schoolUUID = items && items['school'] && items['school'].uuid;
+    return payload;
+  }
+
+  /**
    * On success handler
    * @param {Number} startTime
    * @returns {Promise.<void>}
    */
   async onSuccess(startTime): Promise<void> {
-    this.storageService.setItem('pending_submission', false);
-    this.storageService.setItem('completed_submission', true);
+    this.storageService.setPendingSubmission(false);
+    this.storageService.setCompletedSubmission(true);
     // Display pending screen for the minimum configurable time
     const endTime = Date.now();
     const duration = endTime - startTime;

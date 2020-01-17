@@ -30,7 +30,14 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_completion_text
-  @audit = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  @audit = []
+  storage_audit_keys.each do |key|
+    @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
 end
 
 Then(/^I should have an expired pin$/) do
@@ -50,7 +57,13 @@ end
 
 
 Then(/^I should see a check start failure event recorded in the audit log$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   expect(local_storage.select {|a| a['type'] == 'CheckStarted'}).to_not be_empty
   expect(local_storage.select {|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_empty
   expect(local_storage.select {|a| a['type'] == 'CheckStartedAPICallFailed'}).to_not be_empty
@@ -89,7 +102,13 @@ When(/^I start the check$/) do
 end
 
 Then(/^I should see the check start time is recorded$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   check_start_time = Time.parse(local_storage.select {|a| a['type'] == 'CheckStarted'}.first['clientTimestamp'])
   expect((check_start_time - @time).to_i).to eql 0
 end

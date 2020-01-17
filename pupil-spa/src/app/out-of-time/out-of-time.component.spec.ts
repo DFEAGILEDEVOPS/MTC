@@ -7,7 +7,6 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { OutOfTimeComponent } from './out-of-time.component';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { UserService } from '../services/user/user.service';
 import { UserServiceMock } from '../services/user/user.service.mock';
@@ -18,6 +17,7 @@ describe('OutOfTimeComponent', () => {
   let mockQuestionService;
   let mockWarmupQuestionService;
   let mockUserService;
+  let storageService;
 
   beforeEach(async(() => {
     const injector = TestBed.configureTestingModule({
@@ -26,15 +26,16 @@ describe('OutOfTimeComponent', () => {
       providers: [
         WindowRefService,
         { provide: SpeechService, useClass: SpeechServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: UserService, useClass: UserServiceMock},
+        StorageService
       ]
     });
     mockQuestionService = injector.get(QuestionService);
     mockWarmupQuestionService = injector.get(WarmupQuestionService);
     mockUserService = injector.get(UserService);
+    storageService = injector.get(StorageService);
 
     spyOn(mockQuestionService, 'reset');
     spyOn(mockWarmupQuestionService, 'reset');

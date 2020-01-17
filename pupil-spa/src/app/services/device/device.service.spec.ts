@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 import { WindowRefService } from '../window-ref/window-ref.service';
 
 import { DeviceService } from './device.service';
@@ -9,14 +8,14 @@ describe('DeviceService', () => {
   let service, storageService;
 
   beforeEach(() => {
-    storageService = new StorageServiceMock();
     const injector = TestBed.configureTestingModule({
       providers: [
         DeviceService,
-        {provide: StorageService, useValue: storageService},
+        StorageService,
         WindowRefService,
       ]
     });
+    storageService = injector.get(StorageService);
     service = new DeviceService(
       storageService,
       injector.get(WindowRefService)
@@ -29,7 +28,7 @@ describe('DeviceService', () => {
 
   it('captures device info to localStorage',  async () => {
     await service.capture();
-    const deviceInfo = storageService.getItem('device');
+    const deviceInfo = storageService.getDeviceData();
     expect(deviceInfo).toBeTruthy();
   });
 });

@@ -1,7 +1,12 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { StorageService, StorageKey } from './storage.service';
+import * as uuid from 'uuid';
+
+import { TestBed } from '@angular/core/testing';
+import { StorageService } from './storage.service';
+import { AuditStorageKey, DeviceStorageKey, InputsStorageKey, TimeoutStorageKey } from './storageKey';
 
 let service: StorageService;
+const deviceStorageKey = new DeviceStorageKey();
+const timeoutStorageKey = new TimeoutStorageKey();
 
 describe('StorageService', () => {
 
@@ -18,96 +23,53 @@ describe('StorageService', () => {
   });
 
   describe('setItem', () => {
-
-    it('throws an error when key missing', () => {
-      spyOn(localStorage, 'setItem');
-      try {
-        service.setItem(null, 'xxxx');
-      } catch (error) {
-        expect(error).toBeTruthy();
-        expect(localStorage.setItem).toHaveBeenCalledTimes(0);
-        expect(error.message).toEqual('key is required');
-      }
-    });
-
     it('adds item to localStorage when key provided', () => {
       spyOn(localStorage, 'setItem');
-      const key: StorageKey = 'answers';
       const value = { setItem_value: 'value' };
-
-      service.setItem(key, value);
-
-      expect(localStorage.setItem).toHaveBeenCalledWith(key, JSON.stringify(value));
+      service.setDeviceData(value);
+      expect(localStorage.setItem).toHaveBeenCalledWith(deviceStorageKey.toString(), JSON.stringify(value));
     });
   });
 
   describe('getItem', () => {
-
-    it('throws an error when key missing', () => {
-      spyOn(localStorage, 'getItem');
-
-      try {
-        service.getItem(null);
-      } catch (error) {
-        expect(error).toBeTruthy();
-        expect(error.message).toEqual('key is required');
-        expect(localStorage.getItem).toHaveBeenCalledTimes(0);
-      }
-    });
-
     it('returns JSON item when key provided and item exists', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = { getItem: 'getItem_Value' };
       localStorage.setItem(key, JSON.stringify(value));
 
-      const data = service.getItem(key);
+      const data = service.getDeviceData();
 
       expect(data).toBeTruthy();
       expect(data).toEqual(value);
     });
 
     it('returns string item when key provided and item exists', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = 'foo-bar';
       localStorage.setItem(key, value);
 
-      const data = service.getItem(key);
+      const data = service.getDeviceData();
 
       expect(data).toBeTruthy();
       expect(data).toEqual(value);
     });
 
     it('returns null when key provided and item does not exist', () => {
-      const key = 'answers';
+      const key = 'device';
       const value = 'getItem_Value';
 
-      const data = service.getItem(key);
+      const data = service.getDeviceData();
 
       expect(data).toBeNull();
     });
   });
 
   describe('removeItem', () => {
-
-    it('throws an error when key not provided', () => {
-      spyOn(localStorage, 'removeItem');
-
-      try {
-        service.removeItem(null);
-      } catch (error) {
-        expect(localStorage.removeItem).toHaveBeenCalledTimes(0);
-        expect(error).toBeTruthy();
-        expect(error.message).toEqual('key is required');
-      }
-    });
-
     it('removes item when key provided and item exists', () => {
       spyOn(localStorage, 'removeItem');
-      const removeItemKey = 'answers';
 
-      service.removeItem(removeItemKey);
-
-      expect(localStorage.removeItem).toHaveBeenCalledWith(removeItemKey);
+      service.removeTimeout();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(timeoutStorageKey.toString());
     });
   });
 
