@@ -6,7 +6,6 @@ import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -26,7 +25,7 @@ describe('PractiseQuestionComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: SpeechService, useValue: mockSpeechService },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
+        StorageService,
         WindowRefService
       ]
     })

@@ -2,7 +2,6 @@ import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angula
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
-  accessArrangementsDataKey
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
 import { RouteService } from '../services/route/route.service';
@@ -32,7 +31,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     private speechService: SpeechService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
-    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey);
+    this.accessArrangements = this.storageService.getAccessArrangements();
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
@@ -50,7 +49,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onClick() {
     this.accessArrangements.contrast = this.selectedContrast;
-    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+    this.storageService.setAccessArrangements(this.accessArrangements);
     this.pupilPrefsService.storePupilPrefs();
 
     if (this.routeService.getPreviousUrl() === '/access-settings') {

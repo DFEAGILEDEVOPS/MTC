@@ -3,10 +3,7 @@ import { AppUsageService } from './app-usage.service';
 import { StorageService } from '../storage/storage.service';
 
 let appUsageService: AppUsageService;
-const mockStorageService = {
-  getItem: jasmine.createSpy('getItem'),
-  setItem: jasmine.createSpy('setItem')
-};
+let storageService: StorageService;
 
 describe('AppUsageService', () => {
 
@@ -16,11 +13,12 @@ describe('AppUsageService', () => {
     const injector = TestBed.configureTestingModule({
         providers: [
           AppUsageService,
-          { provide: StorageService, useValue: mockStorageService },
+          StorageService,
         ]
       }
     );
     appUsageService = injector.get(AppUsageService);
+    storageService = injector.get(StorageService);
   });
 
   it('should be created', () => {
@@ -39,9 +37,11 @@ describe('AppUsageService', () => {
   });
 
   it('should store the app usage counter', () => {
+    spyOn(storageService, 'getDeviceData');
+    spyOn(storageService, 'setDeviceData');
     appUsageService.increment();
     appUsageService.store();
-    expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
-    expect(mockStorageService.setItem).toHaveBeenCalledWith('device', {appUsageCounter: 2});
+    expect(storageService.setDeviceData).toHaveBeenCalledTimes(1);
+    expect(storageService.setDeviceData).toHaveBeenCalledWith({appUsageCounter: 2});
   });
 });

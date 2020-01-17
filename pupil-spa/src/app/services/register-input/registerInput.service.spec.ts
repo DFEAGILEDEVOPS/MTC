@@ -4,10 +4,9 @@ import { TestBed, inject } from '@angular/core/testing';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 
-let mockStorageService: StorageServiceMock;
 let mockQuestionService: QuestionServiceMock;
+let mockStorageService: StorageService;
 
 @Injectable()
 export class TestRegisterInputService extends RegisterInputService {
@@ -18,32 +17,43 @@ export class TestRegisterInputService extends RegisterInputService {
 }
 
 describe('RegisterInputService', () => {
-  let mockStorageServiceSpy;
-
+  let storageServiceSetInputSpy;
   beforeEach(() => {
-    mockStorageService = new StorageServiceMock();
     mockQuestionService = new QuestionServiceMock();
-    mockStorageServiceSpy = spyOn(mockStorageService, 'setItem');
-
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       imports: [],
       providers: [
         TestRegisterInputService,
-        {provide: StorageService, useValue: mockStorageService}
+        StorageService,
       ]
     });
+    mockStorageService = injector.get(StorageService);
+    storageServiceSetInputSpy = spyOn(mockStorageService, 'setInput');
   });
 
   it('should be created', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     expect(service).toBeTruthy();
   }));
 
-  it('StoreEntry will populate the questionInputs array',
+  it('StoreEntry will call localstorage and store with a unique key name',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const eventValue = '0';
       const eventType = 'keydown';
       service.storeEntry(eventValue, eventType, 7, '2x3');
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
+    }));
+  it('StoreEntry to should store entry',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const entry = {
+        input: '0',
+        eventType: 'keydown',
+        clientTimestamp: new Date(),
+        question: '2x3',
+        sequenceNumber: 7,
+      };
+      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question );
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
+      expect(storageServiceSetInputSpy.calls.all()[0].args[0]).toEqual(entry);
     }));
 
   it('StoreEntry will generate new Date if the event timestamp is undefined',
@@ -51,8 +61,8 @@ describe('RegisterInputService', () => {
       const eventValue = '0';
       const eventType = 'keydown';
       service.storeEntry(eventValue, eventType, 7, '2x3');
-      expect(mockStorageServiceSpy).toHaveBeenCalledTimes(1);
-      const clientTimestamp = mockStorageServiceSpy.calls.all()[0].args[1][0].clientTimestamp
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
+      const clientTimestamp = storageServiceSetInputSpy.calls.all()[0].args[0].clientTimestamp;
       expect(clientTimestamp).toBeDefined();
       expect(clientTimestamp instanceof Date).toBeTruthy();
     }));
@@ -66,23 +76,25 @@ describe('RegisterInputService', () => {
 
   it('expects a left click event to be registered',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const spy = spyOn(service, 'storeEntry');
       const event = {
         type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
       service.addEntry(event);
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
-      const args = mockStorageServiceSpy.calls.first().args;
-      const record = args[1][0];
-      expect(record['input']).toBe('left click');
+      expect(service.storeEntry).toHaveBeenCalledTimes(1);
+      const args = spy.calls.first().args;
+      const eventType = args[0];
+      expect(eventType).toBe('left click');
     }));
 
-  it('calls the storage service', inject([TestRegisterInputService],
-    (registerInputService: TestRegisterInputService) => {
+  it('calls the storage service',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const spy = spyOn(service, 'storeEntry');
       const event = {
         type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
-      registerInputService.addEntry(event);
-      registerInputService.addEntry(event);
-      expect(mockStorageService.setItem).toHaveBeenCalledTimes(2);
+      service.addEntry(event);
+      service.addEntry(event);
+      expect(service.storeEntry).toHaveBeenCalledTimes(2);
     }));
 });

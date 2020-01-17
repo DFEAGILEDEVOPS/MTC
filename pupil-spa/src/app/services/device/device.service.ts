@@ -4,7 +4,6 @@ import { WindowRefService } from '../window-ref/window-ref.service';
 
 @Injectable()
 export class DeviceService {
-  public static readonly storageKey = 'device';
   private window;
 
   constructor(private storageService: StorageService,
@@ -17,7 +16,7 @@ export class DeviceService {
    * @return {Promise<void>}
    */
   async capture() {
-    this.storageService.setItem(DeviceService.storageKey,
+    this.storageService.setDeviceData(
       {
         battery: await this.getBatteryInformation(),
         cpu: this.getCpuInformation(),

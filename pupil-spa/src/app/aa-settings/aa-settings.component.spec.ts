@@ -72,8 +72,8 @@ describe('AASettingsComponent', () => {
       });
 
       it('should redirect to the sign-in-success page on successful submission', () => {
-        spyOn(storageService, 'getItem').and.returnValue({checkCode: 'checkCode', inputAssistant: {}});
-        const setItemSpy = spyOn(storageService, 'setItem');
+        spyOn(storageService, 'getPupil').and.returnValue({checkCode: 'checkCode', inputAssistant: {}});
+        const setPupilSpy = spyOn(storageService, 'setPupil');
         fixture.whenStable().then(() => {
           component.inputAssistantForm.controls.inputAssistantFirstName.setValue('F1rstNàme');
           component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last-Na\'me');
@@ -86,34 +86,34 @@ describe('AASettingsComponent', () => {
           };
           component.onClick();
           expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
-          expect(storageService.getItem).toHaveBeenCalled();
-          expect(setItemSpy.calls.all()[0].args[1]).toEqual(updatedPupilData);
+          expect(storageService.getPupil).toHaveBeenCalled();
+          expect(setPupilSpy.calls.all()[0].args[0]).toEqual(updatedPupilData);
         });
       });
 
       it('should not redirect to the sign-in-success when a disallowed special character(exclamation) is detected', () => {
-        spyOn(storageService, 'getItem');
-        spyOn(storageService, 'setItem');
+        spyOn(storageService, 'getPupil');
+        spyOn(storageService, 'setPupil');
         fixture.whenStable().then(() => {
           component.inputAssistantForm.controls.inputAssistantFirstName.setValue('First!Name');
           component.inputAssistantForm.controls.inputAssistantLastName.setValue('LastName');
           component.onClick();
           expect(mockRouter.navigate).not.toHaveBeenCalled();
-          expect(storageService.getItem).not.toHaveBeenCalled();
-          expect(storageService.setItem).not.toHaveBeenCalled();
+          expect(storageService.getPupil).not.toHaveBeenCalled();
+          expect(storageService.setPupil).not.toHaveBeenCalled();
         });
       });
 
       it('should not redirect to the sign-in-success when a disallowed special character(double quotes) is detected', () => {
-        spyOn(storageService, 'getItem');
-        spyOn(storageService, 'setItem');
+        spyOn(storageService, 'getPupil');
+        spyOn(storageService, 'setPupil');
         fixture.whenStable().then(() => {
           component.inputAssistantForm.controls.inputAssistantFirstName.setValue('FirstName');
           component.inputAssistantForm.controls.inputAssistantLastName.setValue('Last"Name');
           component.onClick();
           expect(mockRouter.navigate).not.toHaveBeenCalled();
-          expect(storageService.getItem).not.toHaveBeenCalled();
-          expect(storageService.setItem).not.toHaveBeenCalled();
+          expect(storageService.getPupil).not.toHaveBeenCalled();
+          expect(storageService.setPupil).not.toHaveBeenCalled();
         });
       });
     });
@@ -124,14 +124,14 @@ describe('AASettingsComponent', () => {
         fixture.detectChanges();
         component = fixture.componentInstance;
       });
-      it('should not call storageService setItem method when practice mode is switched on', () => {
-        spyOn(storageService, 'getItem');
-        spyOn(storageService, 'setItem');
+      it('should not call storageService setPupil method when practice mode is switched on', () => {
+        spyOn(storageService, 'getPupil');
+        spyOn(storageService, 'setPupil');
         fixture.whenStable().then(() => {
           component.onClick();
           expect(mockRouter.navigate).toHaveBeenCalled();
-          expect(storageService.getItem).not.toHaveBeenCalled();
-          expect(storageService.setItem).not.toHaveBeenCalled();
+          expect(storageService.getPupil).not.toHaveBeenCalled();
+          expect(storageService.getPupil).not.toHaveBeenCalled();
         });
       });
     });

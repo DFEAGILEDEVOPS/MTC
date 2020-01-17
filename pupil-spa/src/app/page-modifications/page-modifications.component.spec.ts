@@ -2,8 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
-
 import { PageModificationsComponent } from './page-modifications.component';
 
 describe('PageModificationsComponent', () => {
@@ -22,7 +20,7 @@ describe('PageModificationsComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: StorageService, useClass: StorageServiceMock }
+        StorageService
       ]
     });
 
