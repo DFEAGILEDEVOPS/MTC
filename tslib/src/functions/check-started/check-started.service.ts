@@ -26,7 +26,8 @@ export class CheckStartedService {
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })
     const preparedCheck = await this.redisService.get(preparedCheckKey)
-    if (preparedCheck.config.practice === false) {
+
+    if (preparedCheck && preparedCheck.config.practice === false) {
       return this.redisService.drop([preparedCheckKey])
     }
   }
