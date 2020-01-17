@@ -46,6 +46,17 @@ describe('RegisterInputService', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
     }));
 
+  it('StoreEntry will generate new Date if the event timestamp is undefined',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const eventValue = '0';
+      const eventType = 'keydown';
+      service.storeEntry(eventValue, eventType, 7, '2x3');
+      expect(mockStorageServiceSpy).toHaveBeenCalledTimes(1);
+      const clientTimestamp = mockStorageServiceSpy.calls.all()[0].args[1][0].clientTimestamp
+      expect(clientTimestamp).toBeDefined();
+      expect(clientTimestamp instanceof Date).toBeTruthy();
+    }));
+
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f', currentTarget: null, timeStamp: 1519211809934};
