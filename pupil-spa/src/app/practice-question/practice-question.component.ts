@@ -13,7 +13,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { QuestionService } from '../services/question/question.service';
 import { Config } from '../config.model';
-import { AccessArrangements, accessArrangementsDataKey } from '../access-arrangements';
+import { AccessArrangements } from '../access-arrangements';
 
 @Component({
   selector: 'app-practice-question',
@@ -127,7 +127,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
 
-    const accessArrangementsData = storageService.getItem(accessArrangementsDataKey);
+    const accessArrangementsData = storageService.getAccessArrangements();
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
     this.shouldShowQuestion = true;

@@ -3,13 +3,7 @@ import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class RegisterInputService {
-  public static readonly inputKey = 'inputs';
-
   constructor(protected storageService: StorageService) {}
-
-  public initialise() {
-    this.storageService.setItem(RegisterInputService.inputKey, []);
-  }
 
   public addEntry(event, questionData) {
     let eventValue;
@@ -27,21 +21,14 @@ export class RegisterInputService {
   }
 
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string) {
-    let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
-    if (!Array.isArray(questionInputs)) {
-      questionInputs = [];
-    }
-
-    // Store the input
-    questionInputs.push({
+    const questionInput = {
       input: eventValue,
       eventType: eventType,
       clientTimestamp: new Date(),
       question: question,
       sequenceNumber: questionNumber
-    });
-
-    this.storageService.setItem(RegisterInputService.inputKey, questionInputs);
+    };
+    this.storageService.setInput(questionInput);
   }
 
   private getMouseButton(event) {

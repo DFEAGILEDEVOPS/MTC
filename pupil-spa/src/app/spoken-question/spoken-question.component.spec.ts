@@ -5,7 +5,6 @@ import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenQuestionComponent } from './spoken-question.component';
@@ -17,7 +16,7 @@ import { SoundComponentMock } from '../sound/sound-component-mock';
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
-  let speechService;
+  let speechService, storageService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,8 +26,8 @@ describe('SpokenQuestionComponent', () => {
         WindowRefService,
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock }
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        StorageService
       ]
     })
     .compileComponents();
@@ -40,9 +39,9 @@ describe('SpokenQuestionComponent', () => {
     component.soundComponent = new SoundComponentMock();
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
+    storageService = fixture.debugElement.injector.get(StorageService);
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
-
     fixture.detectChanges();
   });
 

@@ -9,6 +9,7 @@ import { WindowRefService} from '../window-ref/window-ref.service';
 export class LoginErrorDiagnosticsService {
 
   protected window: any;
+  isBrowserStatusOnline: boolean;
 
   constructor(
     private http: HttpClient,
@@ -16,14 +17,14 @@ export class LoginErrorDiagnosticsService {
     private windowRefService: WindowRefService
   ) {
     this.window = windowRefService.nativeWindow;
+    this.isBrowserStatusOnline = this.window.navigator.onLine;
   }
 
   async process(err) {
     if (err.status !== 0) {
       return;
     }
-    const isBrowserStatusOnline = this.window.navigator.onLine;
-    if (!isBrowserStatusOnline) {
+    if (!this.isBrowserStatusOnline) {
       this.loginErrorService.changeMessage('Internet disconnected');
       return;
     }

@@ -3,14 +3,23 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { StorageService } from '../storage/storage.service';
-import * as mockLoginResponseBody from '../../login.userService.response.mock.json';
+import { default as mockLoginResponseBody } from '../../login.userService.response.mock.json';
 import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
+import {
+  ConfigStorageKey,
+  PupilStorageKey,
+  QuestionsStorageKey,
+  SchoolStorageKey,
+  TokensStorageKey
+} from '../storage/storageKey';
 
 let userService: UserService;
 let storageService: StorageService;
-const pupilDataKey = 'pupil';
-const questionsDataKey = 'questions';
-const configDataKey = 'config';
+const questionsDataKey = new QuestionsStorageKey();
+const pupilDataKey = new PupilStorageKey();
+const configDataKey = new ConfigStorageKey();
+const schoolDataKey = new SchoolStorageKey();
+const tokensDataKey =  new TokensStorageKey();
 
 describe('UserService', () => {
   let httpClient: HttpClient;
@@ -36,15 +45,20 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
-      spyOn(storageService, 'setItem');
-
+      const setQuestionsSpy = spyOn(storageService, 'setQuestions');
+      const setConfigSpy = spyOn(storageService, 'setConfig');
+      const setPupilSpy = spyOn(storageService, 'setPupil');
+      const setSchoolSpy = spyOn(storageService, 'setSchool');
       userService.login('abc12345', '9999a').then(() => {
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(pupilDataKey, mockLoginResponseBody[pupilDataKey]);
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
-          expect(storageService.setItem)
-            .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
+        console.log(setQuestionsSpy);
+          expect(setQuestionsSpy.calls.allArgs()[0].toString())
+            .toEqual(`${mockLoginResponseBody[questionsDataKey.toString()]}`);
+          expect(setConfigSpy.calls.allArgs()[1].toString())
+            .toEqual(`${mockLoginResponseBody[configDataKey.toString()]}`);
+          expect(setPupilSpy.calls.allArgs()[2].toString())
+            .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`);
+          expect(setSchoolSpy.calls.allArgs()[3].toString())
+            .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`);
         },
         (error) => {
           fail(error);
@@ -58,7 +72,7 @@ describe('UserService', () => {
     });
 
     it('should return a promise that rejects on invalid login', () => {
-      spyOn(storageService, 'setItem');
+      spyOn(storageService, 'setQuestions');
 
       userService.login('xxx', 'xxx').then(
         (res) => {
@@ -71,7 +85,7 @@ describe('UserService', () => {
         fail(error);
       });
 
-      expect(storageService.setItem).not.toHaveBeenCalled();
+      expect(storageService.setQuestions).not.toHaveBeenCalled();
 
       const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
       req.flush('Unauthorised', { status: 401, statusText: 'Not authorised' });

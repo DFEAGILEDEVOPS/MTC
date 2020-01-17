@@ -7,7 +7,12 @@ Given(/^I have used all the keys on the on screen keyboard to complete the check
 end
 
 Then(/^I should see all my number pad inputs recorded$/) do
-  inputs = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  local_storage = check['inputs']
+
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
   inputs1 = inputs.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
@@ -23,7 +28,12 @@ Given(/^I have used the physical screen keyboard to complete the check$/) do
 end
 
 Then(/^I should see all my keyboard inputs recorded$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  local_storage = check['inputs']
+
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
@@ -41,7 +51,12 @@ Given(/^I have used backspace to correct my answer using the on screen keyboard$
 end
 
 Then(/^I should see backspace numpad event recorded$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  local_storage = check['inputs']
+
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expected = [{"input"=>"left click", "eventType"=>"mousedown", "question"=>"1x1", "sequenceNumber"=>1},
@@ -61,7 +76,12 @@ Given(/^I have used backspace to correct my answer using the physical keyboard$/
 end
 
 Then(/^I should see backspace keyboard event recorded$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  local_storage = check['inputs']
+
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expected = [{"input"=>"1", "eventType"=>"keydown", "question"=>"1x1",

@@ -9,13 +9,12 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
   let fixture: ComponentFixture<SpokenPracticeQuestionComponent>;
-  let speechService, auditService;
+  let speechService, auditService, storageService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -24,7 +23,7 @@ describe('SpokenPracticeQuestionComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
+        StorageService,
         WindowRefService,
       ]
     })
@@ -36,6 +35,7 @@ describe('SpokenPracticeQuestionComponent', () => {
     component = fixture.componentInstance;
     speechService = fixture.debugElement.injector.get(SpeechService);
     auditService = fixture.debugElement.injector.get(AuditService);
+    storageService = fixture.debugElement.injector.get(StorageService);
     spyOn(speechService, 'speakQuestion');
     spyOn(auditService, 'addEntry');
     component.soundComponent = new SoundComponentMock();
