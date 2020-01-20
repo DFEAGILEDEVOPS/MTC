@@ -1,8 +1,8 @@
-import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupStarted} from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, WarmupStarted } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
@@ -42,6 +42,17 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
       page: '/instructions'
     });
     AppInsights.trackPageView('Instructions', '/instructions');
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   onClick() {

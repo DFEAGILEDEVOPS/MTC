@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
@@ -8,6 +8,8 @@ import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
 
 @Component({
   selector: 'app-aa-colours',
@@ -28,7 +30,8 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     private pupilPrefsService: PupilPrefsService,
     private questionService: QuestionService,
     private elRef: ElementRef,
-    private speechService: SpeechService
+    private speechService: SpeechService,
+    private auditService: AuditService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
     this.accessArrangements = this.storageService.getAccessArrangements();
@@ -39,6 +42,17 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     const validBackLinks = ['/access-settings', '/font-choice'];
     if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
       this.backLinkUrl = this.routeService.getPreviousUrl();
+    }
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
     }
   }
 

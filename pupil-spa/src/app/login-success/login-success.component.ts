@@ -1,14 +1,16 @@
-import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
 import { Config } from '../config.model';
 import { Router } from '@angular/router';
+import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 import { DeviceService } from '../services/device/device.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { UserService } from '../services/user/user.service';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-login-success',
@@ -29,6 +31,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
               private speechService: SpeechService,
               private appUsageService: AppUsageService,
               private userService: UserService,
+              private auditService: AuditService,
               private elRef: ElementRef) {
     const pupilData = storageService.getPupil();
     const schoolData = storageService.getSchool();
@@ -65,6 +68,17 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   async ngOnInit() {
     // Store various browser props in localStorage to be sent back to the server at the end of the check.
     await this.deviceService.capture();
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   // wait for the component to be rendered first, before parsing the text

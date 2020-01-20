@@ -8,6 +8,9 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { FormsModule } from '@angular/forms';
 
 import { AASettingsComponent } from './aa-settings.component';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
 
 describe('AASettingsComponent', () => {
   let mockRouter;
@@ -15,6 +18,7 @@ describe('AASettingsComponent', () => {
   let component: AASettingsComponent;
   let fixture: ComponentFixture<AASettingsComponent>;
   let storageService: StorageService;
+  let mockAuditService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -27,6 +31,7 @@ describe('AASettingsComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useValue: mockQuestionService },
         { provide: SpeechService, useClass: SpeechServiceMock },
         StorageService
@@ -34,6 +39,7 @@ describe('AASettingsComponent', () => {
       imports: [FormsModule]
     });
     storageService = injector.get(StorageService);
+    mockAuditService = injector.get(AuditService);
   }));
 
   describe('With input assistant disabled', () => {
@@ -132,6 +138,35 @@ describe('AASettingsComponent', () => {
           expect(mockRouter.navigate).toHaveBeenCalled();
           expect(storageService.getPupil).not.toHaveBeenCalled();
           expect(storageService.getPupil).not.toHaveBeenCalled();
+        });
+      });
+    });
+    describe('#visibilityChange', () => {
+      const simulateHiddenDocument = () => {
+        Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+        Object.defineProperty(document, 'hidden', {value: true, writable: true});
+        document.dispatchEvent(new Event('visibilitychange'));
+      };
+      const simulateVisibleDocument = () => {
+        Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+        Object.defineProperty(document, 'hidden', {value: false, writable: true});
+        document.dispatchEvent(new Event('visibilitychange'));
+      };
+      beforeEach(() => {
+        simulateVisibleDocument();
+      });
+      it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+        const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+        simulateVisibleDocument();
+        fixture.whenStable().then(() => {
+          expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+        });
+      });
+      it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+        const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+        simulateHiddenDocument();
+        fixture.whenStable().then(() => {
+          expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
         });
       });
     });

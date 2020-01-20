@@ -8,6 +8,8 @@ import { AccessArrangementsConfig } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
 
 @Component({
   selector: 'app-aa-fonts',
@@ -29,7 +31,8 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     private storageService: StorageService,
     private pupilPrefsService: PupilPrefsService,
     private elRef: ElementRef,
-    private speechService: SpeechService
+    private speechService: SpeechService,
+    private auditService: AuditService
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
     this.accessArrangements = this.storageService.getAccessArrangements();
@@ -37,6 +40,17 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     this.checkValidSelection();
 
     this.pupil = storageService.getPupil() as Pupil;
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   selectionChange(selectedFont) {

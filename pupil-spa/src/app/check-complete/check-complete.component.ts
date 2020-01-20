@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -7,6 +7,8 @@ import { StorageService } from '../services/storage/storage.service';
 import { Router } from '@angular/router';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { Config } from '../config.model';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
 
 @Component({
   selector: 'app-check-complete',
@@ -26,6 +28,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
               private elRef: ElementRef,
               private storageService: StorageService,
               private warmupQuestionService: WarmupQuestionService,
+              private auditService: AuditService,
               private router: Router) {
     this.window = windowRefService.nativeWindow;
     const config = questionService.getConfig();
@@ -41,6 +44,17 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
       page: '/check-complete'
     });
     AppInsights.trackPageView('Check complete', '/check-complete');
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   // wait for the component to be rendered first, before parsing the text

@@ -6,7 +6,7 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { QuestionService } from '../services/question/question.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -16,31 +16,31 @@ describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
   let fixture: ComponentFixture<InstructionsComponent>;
   let mockRouter;
-  const auditServiceMock = new AuditServiceMock();
+  let mockAuditService;
 
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [InstructionsComponent],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: AuditService, useValue: auditServiceMock },
+        { provide: AuditService, useClass : AuditServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         WindowRefService
       ]
-    })
-      .compileComponents();
+    });
+    injector.compileComponents();
+    mockAuditService = injector.get(AuditService);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InstructionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
   });
 
   it('should be created', () => {
@@ -62,9 +62,33 @@ describe('InstructionsComponent', () => {
     });
     it('adds audit entry onClick for check started', () => {
       component.onClick();
-      expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+      expect(mockAuditService.addEntry).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof WarmupStarted).toBeTruthy();
     });
   });
-
+  describe('#visibilityChange', () => {
+    const simulateHiddenDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+      Object.defineProperty(document, 'hidden', {value: true, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const simulateVisibleDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+      Object.defineProperty(document, 'hidden', {value: false, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    beforeEach(() => {
+      simulateVisibleDocument();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateVisibleDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateHiddenDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
+    });
+  });
 });

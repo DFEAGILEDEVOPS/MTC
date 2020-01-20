@@ -1,10 +1,12 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
 
 @Component({
   selector: 'app-aa-settings',
@@ -23,6 +25,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   constructor(
     private router: Router,
     private elRef: ElementRef,
+    private auditService: AuditService,
     private questionService: QuestionService,
     private storageService: StorageService,
     private speechService: SpeechService
@@ -36,6 +39,17 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
     this.storageService.removeTimeout();
     this.storageService.removeCheckStartTime();
     this.storageService.setCompletedSubmission(false);
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   // wait for the component to be rendered first, before parsing the text

@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -118,6 +118,17 @@ export class CheckComponent implements OnInit {
       this.isWarmUp = true;
       this.viewState = 'warmup-intro';
       this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
+    }
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
     }
   }
 

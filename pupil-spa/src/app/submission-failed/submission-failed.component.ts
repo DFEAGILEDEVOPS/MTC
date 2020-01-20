@@ -1,5 +1,5 @@
-import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { CheckSubmissionFailed } from '../services/audit/auditEntry';
+import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
+import { AppHidden, AppVisible, CheckSubmissionFailed } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { APP_CONFIG } from '../services/config/config.service';
@@ -34,6 +34,17 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
       page: '/submission-failed'
     });
     AppInsights.trackPageView('Submission failed', '/submission-failed');
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    const visibilityState = document.visibilityState;
+    if (visibilityState === 'hidden') {
+      this.auditService.addEntry(new AppHidden());
+    }
+    if (visibilityState === 'visible') {
+      this.auditService.addEntry(new AppVisible());
+    }
   }
 
   // wait for the component to be rendered first, before parsing the text

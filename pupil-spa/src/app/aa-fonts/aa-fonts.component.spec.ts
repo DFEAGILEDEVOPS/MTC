@@ -11,12 +11,16 @@ import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { AccessArrangementsStorageKey, PupilStorageKey } from '../services/storage/storageKey';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
 
 describe('AAFontsComponent', () => {
   let mockRouter;
   let mockStorageService;
   let mockQuestionService;
   let mockPupilPrefsService;
+  let mockAuditService;
   let component: AAFontsComponent;
   let fixture: ComponentFixture<AAFontsComponent>;
 
@@ -33,6 +37,7 @@ describe('AAFontsComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         { provide: SpeechService, useClass: SpeechServiceMock },
@@ -44,6 +49,7 @@ describe('AAFontsComponent', () => {
     mockStorageService = injector.get(StorageService);
     mockQuestionService = injector.get(QuestionService);
     mockPupilPrefsService = injector.get(PupilPrefsService);
+    mockAuditService = injector.get(AuditService);
 
     spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
       const pupilStorageKey = new PupilStorageKey();
@@ -85,5 +91,30 @@ describe('AAFontsComponent', () => {
   it('should store pupil prefs when navigating away', async () => {
     component.onClick();
     expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalledTimes(1);
+  });
+  describe('#visibilityChange', () => {
+    const simulateHiddenDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+      Object.defineProperty(document, 'hidden', {value: true, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const simulateVisibleDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+      Object.defineProperty(document, 'hidden', {value: false, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    beforeEach(() => {
+      simulateVisibleDocument();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateVisibleDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateHiddenDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
+    });
   });
 });

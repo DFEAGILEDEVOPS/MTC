@@ -18,6 +18,7 @@ import { TokenService } from '../services/token/token.service';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>;
@@ -28,8 +29,10 @@ describe('SubmissionPendingComponent', () => {
   let component;
   let router: Router;
   let activatedRoute: ActivatedRoute;
+  let mockAuditService;
+
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [ SubmissionPendingComponent ],
       imports: [ RouterTestingModule.withRoutes([])],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
@@ -46,10 +49,11 @@ describe('SubmissionPendingComponent', () => {
         { provide: QUEUE_STORAGE_TOKEN },
         StorageService
       ]
-    })
-    .compileComponents();
-    router = TestBed.get(Router);
-    activatedRoute = TestBed.get(ActivatedRoute);
+    });
+    injector.compileComponents();
+    router = injector.get(Router);
+    activatedRoute = injector.get(ActivatedRoute);
+    mockAuditService = injector.get(AuditService);
   }));
 
   beforeEach(() => {
@@ -82,6 +86,31 @@ describe('SubmissionPendingComponent', () => {
       activatedRoute.snapshot.queryParams.unfinishedCheck = true;
       await component.ngOnInit();
       expect(component.title).toBe('Uploading previous check');
+    });
+  });
+  describe('#visibilityChange', () => {
+    const simulateHiddenDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+      Object.defineProperty(document, 'hidden', {value: true, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const simulateVisibleDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+      Object.defineProperty(document, 'hidden', {value: false, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    beforeEach(() => {
+      simulateVisibleDocument();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateVisibleDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateHiddenDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
     });
   });
 });

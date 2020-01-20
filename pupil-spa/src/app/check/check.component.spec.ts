@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
-import { AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { CheckComponent } from './check.component';
@@ -25,6 +25,7 @@ describe('CheckComponent', () => {
   let setTimeoutSpy;
   let setCheckStateSpy;
   let setPendingSubmissionSpy;
+  let mockAuditService;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -44,7 +45,7 @@ describe('CheckComponent', () => {
       navigate: jasmine.createSpy('navigate')
     };
 
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       imports: [ ],
       declarations: [ CheckComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
@@ -58,8 +59,9 @@ describe('CheckComponent', () => {
         StorageService,
         WindowRefService
       ]
-    })
-      .compileComponents();
+    });
+    injector.compileComponents();
+    mockAuditService = injector.get(AuditService);
   }));
 
   beforeEach(() => {
@@ -96,7 +98,6 @@ describe('CheckComponent', () => {
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('app-question')).toBeTruthy();
-      // console.log(compiled);
     });
   });
 
@@ -391,6 +392,30 @@ describe('CheckComponent', () => {
       checkStateMock = state;
       expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
     });
-
+  });
+  describe('#visibilityChange', () => {
+    const simulateHiddenDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+      Object.defineProperty(document, 'hidden', {value: true, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const simulateVisibleDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+      Object.defineProperty(document, 'hidden', {value: false, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    beforeEach(() => {
+      simulateVisibleDocument();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateVisibleDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateHiddenDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
+    });
   });
 });

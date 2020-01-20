@@ -16,6 +16,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { Config } from '../config.model';
+import { AppHidden, AppVisible } from '../services/audit/auditEntry';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
@@ -25,6 +26,7 @@ describe('LoginSuccessComponent', () => {
   let appUsageService;
   let questionService;
   let storageService;
+  let mockAuditService;
 
   beforeEach(() => {
     mockRouter = {
@@ -52,6 +54,7 @@ describe('LoginSuccessComponent', () => {
     storageService = injector.get(StorageService);
     appUsageService = injector.get(AppUsageService);
     questionService = injector.get(QuestionService);
+    mockAuditService = injector.get(AuditService);
     injector.compileComponents();
 
     store = {};
@@ -132,6 +135,31 @@ describe('LoginSuccessComponent', () => {
       spyOnProperty(component.config, 'inputAssistance').and.returnValue(true);
       component.onClick();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+    });
+  });
+  describe('#visibilityChange', () => {
+    const simulateHiddenDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'hidden', writable: true});
+      Object.defineProperty(document, 'hidden', {value: true, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const simulateVisibleDocument = () => {
+      Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});
+      Object.defineProperty(document, 'hidden', {value: false, writable: true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    beforeEach(() => {
+      simulateVisibleDocument();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is visible', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateVisibleDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppVisible).toBeTruthy();
+    });
+    it('should call auditService addEntry with AppHidden as audit entry if visibility is hidden', async () => {
+      const addEntrySpy = spyOn(mockAuditService, 'addEntry');
+      simulateHiddenDocument();
+      expect(addEntrySpy.calls.all()[0].args[0] instanceof AppHidden).toBeTruthy();
     });
   });
 });
