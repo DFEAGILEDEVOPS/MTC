@@ -39,12 +39,9 @@ Then(/^I am taken back to the login page$/) do
   expect(sign_in_page).to be_displayed
 end
 
-Then(/^I should see the related section$/) do
-  expect(school_landing_page).to have_related
-end
-
 Then(/^I should see option to view guidance in the before you start section$/) do
   expect(school_landing_page).to have_guidance
+  expect(school_landing_page).to have_guidance_text
 end
 
 Then(/^I should see option to manage check forms in the before you start section$/) do
@@ -111,9 +108,13 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see an option to manage restarts"
   step "I should see an option to complete the hdf"
   step "I should see an option to view the results"
-  step "I should see the related section"
   step "I should see option to view guidance in the before you start section"
   step "I should see an option to generate pins familiarisation"
+  step "I should see a step by step navigation section"
+end
+
+Given(/^I should see a step by step navigation section$/) do
+  expect(school_landing_page.mtc_process).to be_all_there
 end
 
 Given(/^there is a pupil with an incomplete status$/) do
