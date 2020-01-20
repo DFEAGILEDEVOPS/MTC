@@ -4,13 +4,11 @@ const R = require('ramda')
 
 const checkDataService = require('../services/data-access/check.data.service')
 const config = require('../config')
-const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
 const prepareCheckService = require('./prepare-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
-const pupilStatusService = require('../services/pupil.status.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 
@@ -111,16 +109,6 @@ restartService.restart = async (
   await prepareCheckService.removeChecks(checkIds)
   // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
-
-  // Ask for the pupils to have their status updated
-  try {
-    logger.debug('Pupil status recalc dispatched for ', pupilsList)
-    await pupilStatusService.recalculateStatusByPupilIds(pupilsList, schoolId)
-  } catch (error) {
-    logger.error('restartService.markDeleted(): Failed to recalculate pupil status', error)
-    throw error
-  }
-
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
 }
 

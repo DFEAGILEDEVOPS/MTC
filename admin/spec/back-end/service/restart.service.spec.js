@@ -8,7 +8,6 @@ const pinValidator = require('../../../lib/validator/pin-validator')
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
-const pupilStatusService = require('../../../services/pupil.status.service')
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const restartService = require('../../../services/restart.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
@@ -128,7 +127,6 @@ describe('restart.service', () => {
           { id: 2, urlSlug: 'def-hij' }
         ]
       ))
-      spyOn(pupilStatusService, 'recalculateStatusByPupilIds')
       spyOn(prepareCheckService, 'removeChecks')
       let results
       try {

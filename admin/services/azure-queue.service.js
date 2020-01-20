@@ -7,6 +7,7 @@ const logger = require('./log.service').getLogger()
 let azureQueueService // cache the queueService for repeated use
 let azureQueueServiceAsync // cache an async version
 
+// TODO : delete this service from admin
 const service = {
   addMessage: function addMessage (queueName, payload, queueService) {
     if (queueName === null || queueName.length < 1) {
