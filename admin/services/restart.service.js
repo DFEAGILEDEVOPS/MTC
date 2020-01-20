@@ -2,10 +2,8 @@ const moment = require('moment')
 const bluebird = require('bluebird')
 const R = require('ramda')
 
-const azureQueueService = require('../services/azure-queue.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const config = require('../config')
-const featureToggles = require('feature-toggles')
 const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
 const prepareCheckService = require('./prepare-check.service')
@@ -219,7 +217,7 @@ restartService.getStatus = async pupilId => {
  * Mark as deleted the latest pupil's restart
  * @param pupilId
  * @param userId
- * @returns {String}
+ * @returns {Object} - the pupil obj
  */
 restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
@@ -228,36 +226,18 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     throw new Error('pupil not found')
   }
 
+  // Ideally the slug would refer to the restart itself and not the pupil.
   const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)
 
   if (!restart) {
     throw new Error('No restarts found to remove')
   }
 
-  // see if there is a new check associated with this restart, ideally the slug
-  // would refer to the restart itself, and not the pupil.
-  if (restart.check_id) {
-    if (featureToggles.isFeatureEnabled('_2020Mode')) {
-      await prepareCheckService.removeChecks([restart.check_id])
-    } else {
-      const check = await pupilRestartDataService.sqlFindCheckById(restart.check_id, schoolId)
-      azureQueueService.addMessage('prepared-check-delete', {
-        version: 1,
-        checkCode: check.checkCode,
-        reason: 'restart deleted',
-        actionedByUserId: userId
-      })
-    }
-  }
-
   await pupilRestartDataService.sqlMarkRestartAsDeleted(restart.id, userId)
 
-  // Ask for the pupil to have their status updated
-  try {
-    await pupilStatusService.recalculateStatusByPupilIds([pupil.id], schoolId)
-  } catch (error) {
-    logger.error('restartService.markDeleted(): Failed to recalculate pupil status', error)
-    throw error
+  // If the above was successful we can remove any prepared checks in Redis that may exist.
+  if (restart.check_id) {
+    await prepareCheckService.removeChecks([restart.check_id])
   }
 
   return pupil

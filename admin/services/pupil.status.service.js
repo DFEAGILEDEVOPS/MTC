@@ -28,6 +28,7 @@ pupilStatusService.STATUS_CODES = Object.freeze({
  * @param pupil
  * @returns {String}
  * @deprecated - this makes too many SQL calls
+ * TODO: delete this - not used
  */
 pupilStatusService.getStatus = async (pupil) => {
   // pupils is from SQL server

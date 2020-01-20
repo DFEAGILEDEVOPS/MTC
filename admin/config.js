@@ -175,6 +175,5 @@ module.exports = {
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     pupilRegisterV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_REGISTER_V2') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) : false,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : false,
-    _2020Mode: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_2020_MODE') ? toBool(process.env.FEATURE_TOGGLE_2020_MODE) : true
   }
 }
