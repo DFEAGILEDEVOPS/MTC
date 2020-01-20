@@ -5,7 +5,7 @@ const config = require('../config')
 const uuid = require('uuid/v4')
 
 const pupilCountPerSchool = 30
-let schoolCount = 20000
+let schoolCount = config.DummyData.SchoolCount
 let schoolId = 6
 
 const table = new sql.Table('mtc_admin.pupil')

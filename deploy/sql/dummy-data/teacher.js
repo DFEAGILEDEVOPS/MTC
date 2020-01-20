@@ -3,7 +3,7 @@
 const sql = require('mssql')
 const config = require('../config')
 
-const teacherCount = 50000
+const teacherCount = config.DummyData.SchoolCount
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
 

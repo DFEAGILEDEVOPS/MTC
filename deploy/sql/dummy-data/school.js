@@ -3,7 +3,7 @@
 const sql = require('mssql')
 const config = require('../config')
 
-const schoolCount = 20000
+const schoolCount = config.DummyData.SchoolCount
 
 const table = new sql.Table('mtc_admin.school')
 table.create = false
