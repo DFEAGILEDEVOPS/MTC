@@ -13,6 +13,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
 import { TimerService } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
+import { CanExit } from '../routes/can-exit/can-exit.guard';
 
 @Component({
   selector: 'app-check',
@@ -20,7 +21,7 @@ import { Router } from '@angular/router';
   styleUrls: [ './check.component.scss' ]
 })
 
-export class CheckComponent implements OnInit {
+export class CheckComponent implements OnInit, CanExit {
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
@@ -119,6 +120,10 @@ export class CheckComponent implements OnInit {
       this.viewState = 'warmup-intro';
       this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
     }
+  }
+
+  canDeactivate(): boolean {
+    return this.viewState === 'warmup-intro' || this.viewState === 'submission-pending';
   }
 
   private loadExistingState() {

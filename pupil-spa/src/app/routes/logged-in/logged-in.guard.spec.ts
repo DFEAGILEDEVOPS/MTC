@@ -2,7 +2,7 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { LoggedInGuard } from './logged-in.guard';
-import { UserService } from './services/user/user.service';
+import { UserService } from '../../services/user/user.service';
 
 let mockRouter;
 let mockUser;
