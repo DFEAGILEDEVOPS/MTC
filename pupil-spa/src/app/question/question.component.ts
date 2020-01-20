@@ -53,8 +53,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   handleMouseEvent(event: MouseEvent) {
     const questionData = {
       questionNumber: this.sequenceNumber.toString(),
-      factor1: this.sequenceNumber.toString(),
-      factor2: this.sequenceNumber.toString(),
+      factor1: this.factor1,
+      factor2: this.factor2
     };
     this.registerInputService.addEntry(event, questionData);
   }
@@ -67,8 +67,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   handleTouchEvent(event) {
     const questionData = {
       questionNumber: this.sequenceNumber.toString(),
-      factor1: this.sequenceNumber.toString(),
-      factor2: this.sequenceNumber.toString(),
+      factor1: this.factor1,
+      factor2: this.factor2
     };
     this.registerInputService.addEntry(event, questionData);
   }
@@ -82,8 +82,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   handleKeyboardEvent(event: KeyboardEvent) {
     const questionData = {
       questionNumber: this.sequenceNumber.toString(),
-      factor1: this.sequenceNumber.toString(),
-      factor2: this.sequenceNumber.toString(),
+      factor1: this.factor1,
+      factor2: this.factor2
     };
     this.registerInputService.addEntry(event, questionData);
     const key = event.key;
