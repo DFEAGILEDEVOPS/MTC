@@ -21,8 +21,8 @@ for (let schoolIdx = 0; schoolIdx < schoolCount; schoolIdx++) {
   for (let pupilIndex = 0; pupilIndex < pupilCountPerSchool; pupilIndex++) {
     table.rows.add(schoolId, `bulk pupil ${pupilIndex + 1}`, `pupil ${pupilIndex + 1}`,
       'F', new Date('2009-01-01'), genFakeUpn())
-    schoolId++
   }
+  schoolId++
 }
 
 const pool = new sql.ConnectionPool(config.Sql)
