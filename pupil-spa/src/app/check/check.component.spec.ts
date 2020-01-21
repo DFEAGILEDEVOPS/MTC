@@ -75,6 +75,7 @@ describe('CheckComponent', () => {
     setPendingSubmissionSpy = spyOn(storageService, 'setPendingSubmission');
     setPendingSubmissionSpy.and.callThrough();
     component = fixture.componentInstance;
+    component.viewState = undefined;
     fixture.detectChanges();
   });
 
@@ -391,6 +392,34 @@ describe('CheckComponent', () => {
       const state = true;
       checkStateMock = state;
       expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+    describe('canDeactivate', () => {
+      it('can deactivate on warmup intro view state', () => {
+        component.viewState = 'warmup-intro';
+        expect(component.canDeactivate()).toBeTruthy();
+      });
+      it('can deactivate on submission pending view state', () => {
+        component.viewState = 'submission-pending';
+        expect(component.canDeactivate()).toBeTruthy();
+      });
+      it('cannot deactivate on any other state', () => {
+        component.viewState = 'warmup-preload';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'practice-question';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'spoken-practice-question';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'warmup-complete';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'questions-intro';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'preload';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'question';
+        expect(component.canDeactivate()).toBeFalsy();
+        component.viewState = 'spoken-question';
+        expect(component.canDeactivate()).toBeFalsy();
+      });
     });
   });
   describe('#visibilityChange', () => {
