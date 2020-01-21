@@ -14,14 +14,6 @@ class SqlDbHelper
     end
   end
 
-  def self.pupil_details(upn)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
-    result = SQL_CLIENT.execute(sql)
-    pupil_details_res = result.first
-    result.cancel
-    pupil_details_res
-  end
-
   def self.pupil_details_using_names(firstname, lastname)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
     result = SQL_CLIENT.execute(sql)
@@ -320,23 +312,23 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_pupil_status(reset_from, reset_to)
-      sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
-      result = SQL_CLIENT.execute(sql)
-      result.do
-  end
-
-  def self.set_pupil_status_via_id(status_id, pupil_id)
-      sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{status_id} WHERE id=#{pupil_id}"
-      result = SQL_CLIENT.execute(sql)
-      result.do
-  end
-
-  def self.get_pupil_with_no_attandance_code(school_id)
-    sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
-    result = SQL_CLIENT.execute(sql)
-    result.each {|row| row.map}
-  end
+  # def self.set_pupil_status(reset_from, reset_to)
+  #     sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
+  #     result = SQL_CLIENT.execute(sql)
+  #     result.do
+  # end
+  #
+  # def self.set_pupil_status_via_id(status_id, pupil_id)
+  #     sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{status_id} WHERE id=#{pupil_id}"
+  #     result = SQL_CLIENT.execute(sql)
+  #     result.do
+  # end
+  #
+  # def self.get_pupil_with_no_attandance_code(school_id)
+  #   sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
+  #   result = SQL_CLIENT.execute(sql)
+  #   result.each {|row| row.map}
+  # end
 
   def self.get_default_assigned_fam_form
     sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
@@ -398,12 +390,12 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
-
-  def self.set_pupil_status_via_upn_list(upn_array)
-    sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=4 WHERE upn in ('#{upn_array.join("','")}')"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
+  #
+  # def self.set_pupil_status_via_upn_list(upn_array)
+  #   sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=4 WHERE upn in ('#{upn_array.join("','")}')"
+  #   result = SQL_CLIENT.execute(sql)
+  #   result.do
+  # end
 
   def self.set_check_status_via_upn_list(upn_array)
     pupil_ids = upn_array.map {|upn| pupil_details(upn)['id']}
@@ -420,13 +412,13 @@ class SqlDbHelper
     count.values.first
   end
 
-  def self.count_unallocated_pupils(school_id)
-    sql = "SELECT COUNT(*) FROM [mtc_admin].[pupil] WHERE pupilStatus_id=1 and school_id=#{school_id}"
-    result = SQL_CLIENT.execute(sql)
-    count = result.first
-    result.cancel
-    count.values.first
-  end
+  # def self.count_unallocated_pupils(school_id)
+  #   sql = "SELECT COUNT(*) FROM [mtc_admin].[pupil] WHERE pupilStatus_id=1 and school_id=#{school_id}"
+  #   result = SQL_CLIENT.execute(sql)
+  #   count = result.first
+  #   result.cancel
+  #   count.values.first
+  # end
 
   def self.create_group(group_name, school_id)
     sql = "INSERT INTO [mtc_admin].[group] (name, createdAt, updatedAt, school_id) VALUES ('#{group_name}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"

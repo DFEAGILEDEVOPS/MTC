@@ -119,7 +119,6 @@ end
 
 Given(/^there is a pupil with an incomplete status$/) do
   step 'I have generated a live pin for a pupil'
-  SqlDbHelper.set_pupil_status_via_id(4, @stored_pupil_details['id'])
   @check_id = SqlDbHelper.check_details(@stored_pupil_details['id'])['id']
   SqlDbHelper.set_check_status(6,@check_id)
 end
