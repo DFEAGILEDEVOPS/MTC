@@ -52,7 +52,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
     const questionData = {
-      questionNumber: this.sequenceNumber.toString(),
+      questionNumber: this.sequenceNumber,
       factor1: this.factor1,
       factor2: this.factor2
     };
@@ -66,7 +66,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event) {
     const questionData = {
-      questionNumber: this.sequenceNumber.toString(),
+      questionNumber: this.sequenceNumber,
       factor1: this.factor1,
       factor2: this.factor2
     };
@@ -81,7 +81,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     const questionData = {
-      questionNumber: this.sequenceNumber.toString(),
+      questionNumber: this.sequenceNumber,
       factor1: this.factor1,
       factor2: this.factor2
     };
