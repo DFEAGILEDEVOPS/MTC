@@ -59,7 +59,12 @@ describe('RegisterInputService', () => {
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f', currentTarget: null};
-    service.addEntry(event);
+    const questionData = {
+      questionNumber: '1',
+      factor1: '1',
+      factor2: '12',
+    };
+    service.addEntry(event, questionData);
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
 
@@ -69,21 +74,30 @@ describe('RegisterInputService', () => {
       const event = {
         type: 'mousedown', which: 1, currentTarget: null
       };
-      service.addEntry(event);
+      const questionData = {
+        questionNumber: '1',
+        factor1: '1',
+        factor2: '12',
+      };
+      service.addEntry(event, questionData);
       expect(service.storeEntry).toHaveBeenCalledTimes(1);
       const args = spy.calls.first().args;
       const eventType = args[0];
       expect(eventType).toBe('left click');
     }));
 
-  it('calls the storage service',
+  it('calls the storeEntry method',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const spy = spyOn(service, 'storeEntry');
       const event = {
         type: 'mousedown', which: 1, currentTarget: null
       };
-      service.addEntry(event);
-      service.addEntry(event);
-      expect(service.storeEntry).toHaveBeenCalledTimes(2);
+      const questionData = {
+        questionNumber: '1',
+        factor1: '1',
+        factor2: '12',
+      };
+      service.addEntry(event, questionData);
+      expect(service.storeEntry).toHaveBeenCalledTimes(1);
     }));
 });
