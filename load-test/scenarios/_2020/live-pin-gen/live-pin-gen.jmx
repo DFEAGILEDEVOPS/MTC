@@ -80,7 +80,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="username" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">bulk-teacher${__threadNum}</stringProp>
+                <stringProp name="Argument.value">bulk-teacher${teacherIndex}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">username</stringProp>
@@ -458,7 +458,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">load-test/scenarios/_2020/live-pin-gen/resultsTree.csv</stringProp>
+          <stringProp name="filename">../load-test/scenarios/_2020/live-pin-gen/resultsTree.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
