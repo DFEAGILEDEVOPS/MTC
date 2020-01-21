@@ -11,7 +11,7 @@ end
 Then(/^I should still have a valid pin$/) do
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
-  sign_in_page.login(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
   expect(confirmation_page).to be_displayed
 end
@@ -30,9 +30,10 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_completion_text
-
   storage1 = page.evaluate_script('window.localStorage;')
-  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  @check_code = JSON.parse(storage1['pupil'])['checkCode']
+  @school_uuid = JSON.parse(storage1['school'])['uuid']
+  storage_audit_keys = storage1.keys.select {|x| x.include?('audit')}
   @audit = []
   storage_audit_keys.each do |key|
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
@@ -41,10 +42,10 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
 end
 
 Then(/^I should have an expired pin$/) do
-  time = Time.now
   visit Capybara.app_host + '/sign-out'
+  AzureTableHelper.wait_for_received_check(@school_uuid,@check_code)
   sign_in_page.load
-  sign_in_page.login(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
   expect(sign_in_page.login_failure).to be_all_there
 end
@@ -58,7 +59,7 @@ end
 
 Then(/^I should see a check start failure event recorded in the audit log$/) do
   storage1 = page.evaluate_script('window.localStorage;')
-  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  storage_audit_keys = storage1.keys.select {|x| x.include?('audit')}
   local_storage = []
   storage_audit_keys.each do |key|
     local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
@@ -103,7 +104,7 @@ end
 
 Then(/^I should see the check start time is recorded$/) do
   storage1 = page.evaluate_script('window.localStorage;')
-  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  storage_audit_keys = storage1.keys.select {|x| x.include?('audit')}
   local_storage = []
   storage_audit_keys.each do |key|
     local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
