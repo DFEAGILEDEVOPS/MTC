@@ -121,19 +121,35 @@ Then(/^I should see the number of the next questions$/) do
 end
 
 Then(/^I should see all the data from the check stored in the DB$/) do
-  storage_answers = JSON.parse page.evaluate_script('window.localStorage.getItem("answers");')
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_answers_keys= storage1.keys.select{|x| x.include?('answers')}
+
+  storage_answers = []
+  storage_answers_keys.each do |key|
+    storage_answers << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  storage_access_token = JSON.parse page.evaluate_script('window.localStorage.getItem("access_token");')
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_config = JSON.parse page.evaluate_script('window.localStorage.getItem("config");')
-  storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
-  storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
+
+  storage_inputs_keys= storage1.keys.select{|x| x.include?('inputs')}
+  storage_inputs = []
+  storage_inputs_keys.each do |key|
+    storage_inputs << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  storage_audit = []
+  storage_audit_keys.each do |key|
+    storage_audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}
-  expect(check['tokens']['jwt']['token']).to eql storage_access_token
   [storage_school].each {|audit| expect(check['school']).to include audit}
   [storage_config].each {|audit| expect(check['config']).to include audit}
   storage_questions.each {|audit| expect(check['questions']).to include audit}

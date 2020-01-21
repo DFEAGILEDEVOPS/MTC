@@ -9,16 +9,17 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { Router } from '@angular/router';
-import { CheckComponent } from '../check/check.component';
-import { StartTimeStorageKey, TimeoutStorageKey } from '../services/timer/timer.service';
 
 describe('CheckCompleteComponent', () => {
   let component: CheckCompleteComponent;
   let fixture: ComponentFixture<CheckCompleteComponent>;
   let mockRouter;
   let storageService;
+  let removeCheckStateSpy;
+  let removeTimeoutSpy;
+  let removeCheckStartTimeSpy;
+  let setCompletedSubmission;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -31,9 +32,9 @@ describe('CheckCompleteComponent', () => {
         WindowRefService,
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: StorageService, useClass: StorageServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: Router, useValue: mockRouter },
+        StorageService
       ]
     })
     .compileComponents();
@@ -42,8 +43,10 @@ describe('CheckCompleteComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckCompleteComponent);
     storageService = fixture.debugElement.injector.get(StorageService);
-    spyOn(storageService, 'removeItem').and.callThrough();
-    spyOn(storageService, 'setItem').and.callThrough();
+    removeCheckStateSpy = spyOn(storageService, 'removeCheckState').and.callThrough();
+    removeTimeoutSpy = spyOn(storageService, 'removeTimeout').and.callThrough();
+    removeCheckStartTimeSpy = spyOn(storageService, 'removeCheckStartTime').and.callThrough();
+    setCompletedSubmission = spyOn(storageService, 'setCompletedSubmission').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -56,13 +59,15 @@ describe('CheckCompleteComponent', () => {
     it('should clear the storageService state and redirect to the check start page', async () => {
       const mockEvent = new Event('click');
       spyOn(mockEvent, 'preventDefault');
+      storageService.setCheckState(1);
+      expect(storageService.getCheckState()).toBe(1);
       component.onStartAgainClick(mockEvent);
-      expect(storageService.removeItem).toHaveBeenCalledWith(CheckComponent.checkStateKey);
-      expect(storageService.removeItem).toHaveBeenCalledWith(TimeoutStorageKey);
-      expect(storageService.removeItem).toHaveBeenCalledWith(StartTimeStorageKey);
-      expect(storageService.getItem(CheckComponent.checkStateKey)).not.toBeDefined();
-      expect(storageService.setItem).toHaveBeenCalledWith('completed_submission', false);
-      expect(storageService.getItem('completed_submission')).toBeFalsy();
+      expect(removeCheckStateSpy.calls.count()).toEqual(1);
+      expect(removeTimeoutSpy.calls.count()).toEqual(1);
+      expect(removeCheckStartTimeSpy.calls.count()).toEqual(1);
+      expect(storageService.getCheckState()).toBeNull();
+      expect(setCompletedSubmission.calls.allArgs()[0].toString()).toEqual('false');
+      expect(storageService.getCompletedSubmission()).toBeFalsy();
       expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-start']);
     });

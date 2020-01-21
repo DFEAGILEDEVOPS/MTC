@@ -31,7 +31,8 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
-import { LoggedInGuard } from './logged-in.guard';
+import { LoggedInGuard } from './routes/logged-in/logged-in.guard';
+import { CanExitGuard } from './routes/can-exit/can-exit.guard';
 import { LoginComponent } from './login/login.component';
 import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
 import { LoginErrorService } from './services/login-error/login-error.service';
@@ -86,7 +87,7 @@ const appRoutes: Routes = [
   {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
   {path: 'access-settings', component: AASettingsComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [CanExitGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'colour-choice', component: AAColoursComponent },
@@ -180,6 +181,7 @@ const appRoutes: Routes = [
     AppUsageService,
     AuditService,
     AzureQueueService,
+    CanExitGuard,
     CheckCompleteService,
     CheckStartService,
     CheckStatusService,

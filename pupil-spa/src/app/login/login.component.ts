@@ -7,7 +7,6 @@ import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostic
 import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
@@ -35,7 +34,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private questionService: QuestionService,
     private warmupQuestionService: WarmupQuestionService,
     private elRef: ElementRef,
-    private registerInputService: RegisterInputService,
     private checkStatusService: CheckStatusService,
     private pupilPrefsService: PupilPrefsService
   ) {
@@ -83,7 +81,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.connectionFailed = false;
           this.questionService.initialise();
           this.warmupQuestionService.initialise();
-          this.registerInputService.initialise();
 
           const config = this.questionService.getConfig();
           this.pupilPrefsService.loadPupilPrefs();

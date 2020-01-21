@@ -8,31 +8,22 @@ import * as responseMock from '../../login.response.mock.json';
 
 describe('QuestionService', () => {
 
-  let mockStorageService;
+  let storageService;
 
   beforeEach(() => {
-    mockStorageService = {
-      getItem() {
-      }
-    };
     const questions = responseMock['questions'];
     const config = responseMock['config'];
-    spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
-      switch (arg) {
-        case 'config':
-          return config;
-        case 'questions':
-          return questions;
-      }
-    });
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       imports: [ ],
       providers: [
         QuestionService,
-        { provide: StorageService, useValue: mockStorageService },
+        StorageService,
         { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     });
+    storageService = injector.get(StorageService);
+    spyOn(storageService, 'getQuestions').and.callFake(() => questions);
+    spyOn(storageService, 'getConfig').and.callFake(() => config);
   });
 
   it('should be created', inject([QuestionService], (service: QuestionService) => {

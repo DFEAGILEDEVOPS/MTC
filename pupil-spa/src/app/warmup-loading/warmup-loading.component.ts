@@ -1,9 +1,6 @@
-import { Component, AfterViewInit, ElementRef, OnDestroy, Input } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { LoadingComponent } from '../loading/loading.component';
-import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
-import { SpeechService } from '../services/speech/speech.service';
-import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-warmup-loading',

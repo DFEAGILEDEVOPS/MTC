@@ -2,7 +2,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CheckStartService } from './check-start.service';
 import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { TokenService } from '../token/token.service';
@@ -11,34 +10,34 @@ import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { APP_INITIALIZER } from '@angular/core';
 
 let checkStartService: CheckStartService;
-let mockStorageService: StorageServiceMock;
 let tokenService: TokenService;
 let azureQueueService: AzureQueueService;
 let auditService: AuditService;
+let storageService: StorageService;
 
 describe('CheckStartService', () => {
   beforeEach(() => {
-    mockStorageService = new StorageServiceMock();
     const inject = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
-          { provide: StorageService, useValue: mockStorageService },
           { provide: QUEUE_STORAGE_TOKEN },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           TokenService,
           AzureQueueService,
           AuditService,
           CheckStartService,
+          StorageService
         ]
       }
     );
     checkStartService = inject.get(CheckStartService);
     tokenService = inject.get(TokenService);
     azureQueueService = inject.get(AzureQueueService);
+    storageService = inject.get(StorageService);
     auditService = inject.get(AuditService);
     checkStartService.checkStartAPIErrorDelay = 100;
     checkStartService.checkStartAPIErrorMaxAttempts = 1;
-    spyOn(mockStorageService, 'getItem').and.returnValue({
+    spyOn(storageService, 'getPupil').and.returnValue({
       checkCode: 'abc-def'
     });
   });

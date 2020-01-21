@@ -21,9 +21,8 @@ export class FeedbackService {
   }
 
   async postFeedback() {
-    const storedFeedback = this.storageService.getItem('feedback');
-    const accessToken = this.storageService.getItem('access_token');
-    if (!storedFeedback || !accessToken) {
+    const storedFeedback = this.storageService.getFeedback();
+    if (!storedFeedback) {
       return false;
     }
     const inputType = storedFeedback.inputType.value;
@@ -36,8 +35,7 @@ export class FeedbackService {
       inputType,
       satisfactionRating,
       comments,
-      checkCode,
-      accessToken
+      checkCode
     };
     await this.queueSubmit(payload);
   }
