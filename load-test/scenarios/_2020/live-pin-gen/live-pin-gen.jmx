@@ -62,7 +62,7 @@
           <boolProp name="resetInterpreter">false</boolProp>
           <stringProp name="script">int machineIndex = 0;
 if (System.getenv(&quot;FLOOD_NODE_INDEX&quot;) != null) {
-	machineIndex = System.getenv(&quot;FLOOD_NODE_INDEX&quot;);
+	machineIndex = Integer.parseInt(System.getenv(&quot;FLOOD_NODE_INDEX&quot;));
 }
 log.info(&quot;machineIndex:&quot; + machineIndex);
 int lastTeacher = (machineIndex + 1) * 1000;
@@ -109,11 +109,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-View-Home" enabled="false">
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-View-Home" enabled="true">
           <stringProp name="ConstantTimer.delay">2000</stringProp>
         </ConstantTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET-Pupil-Register" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET-Pupil-Register" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -132,11 +132,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-View-Register" enabled="false">
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-View-Register" enabled="true">
           <stringProp name="ConstantTimer.delay">2000</stringProp>
         </ConstantTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET-Generate-Pin" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET-Generate-Pin" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -178,11 +178,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
         </hashTree>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-Select-Pupils" enabled="false">
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait-Select-Pupils" enabled="true">
           <stringProp name="ConstantTimer.delay">10000</stringProp>
         </ConstantTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Generate-Pin" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Generate-Pin" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="pupil[0]" elementType="HTTPArgument">
