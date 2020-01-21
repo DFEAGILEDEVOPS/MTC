@@ -67,7 +67,6 @@ export class PupilPrefsService {
   public loadPupilPrefs() {
     this.accessArrangements = new AccessArrangements();
     const appliedAccessArrangements = this.storageService.getAccessArrangements();
-    console.log(appliedAccessArrangements);
     // Fetch prefs from current session stored within local storage
     this.accessArrangements.fontSize = appliedAccessArrangements && appliedAccessArrangements.fontSize;
     this.accessArrangements.contrast = appliedAccessArrangements && appliedAccessArrangements.contrast;
