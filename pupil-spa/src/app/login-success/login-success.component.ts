@@ -10,7 +10,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { UserService } from '../services/user/user.service';
-import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected, RefreshOrTabCloseDetected } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-login-success',
@@ -73,7 +73,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification() {
-    this.auditService.addEntry(new RefreshDetected());
+    this.auditService.addEntry(new RefreshOrTabCloseDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

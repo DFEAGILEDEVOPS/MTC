@@ -5,7 +5,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
-import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected, RefreshOrTabCloseDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification() {
-    this.auditService.addEntry(new RefreshDetected());
+    this.auditService.addEntry(new RefreshOrTabCloseDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])
