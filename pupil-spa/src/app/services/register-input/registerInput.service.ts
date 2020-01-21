@@ -5,26 +5,17 @@ import { StorageService } from '../storage/storage.service';
 export class RegisterInputService {
   constructor(protected storageService: StorageService) {}
 
-  public addEntry(event) {
+  public addEntry(event, questionData) {
     let eventValue;
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
     eventValue = eventValue || event.key || '';
 
-    const document = <Element>event.currentTarget;
-
-    let body;
-    let questionNumber = -1;
-    let question = '-1x-1';
-
-    if (document) {
-      body = document.querySelector('body');
-      questionNumber = parseInt((body.getAttribute('data-sequence-number') || '-1'), 10);
-      const factor1 = body.getAttribute('data-factor1') || '-1';
-      const factor2 = body.getAttribute('data-factor2') || '-1';
-      question = `${factor1}x${factor2}`;
-    }
+    const questionNumber = questionData.questionNumber;
+    const factor1 = questionData.factor1;
+    const factor2 = questionData.factor2;
+    const question = `${factor1}x${factor2}`;
 
     this.storeEntry(eventValue, event.type, questionNumber, question);
   }
