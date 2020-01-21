@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, HostListener }
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
-import { AppHidden, AppVisible, WarmupStarted } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected, WarmupStarted } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
@@ -42,6 +42,11 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
       page: '/instructions'
     });
     AppInsights.trackPageView('Instructions', '/instructions');
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

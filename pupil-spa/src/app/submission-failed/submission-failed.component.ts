@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
-import { AppHidden, AppVisible, CheckSubmissionFailed } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, CheckSubmissionFailed, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { APP_CONFIG } from '../services/config/config.service';
@@ -34,6 +34,11 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
       page: '/submission-failed'
     });
     AppInsights.trackPageView('Submission failed', '/submission-failed');
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

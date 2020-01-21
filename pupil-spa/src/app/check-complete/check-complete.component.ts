@@ -7,7 +7,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { Router } from '@angular/router';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { Config } from '../config.model';
-import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 
 @Component({
@@ -44,6 +44,11 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
       page: '/check-complete'
     });
     AppInsights.trackPageView('Check complete', '/check-complete');
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

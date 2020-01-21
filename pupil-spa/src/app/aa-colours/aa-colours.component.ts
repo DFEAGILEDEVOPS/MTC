@@ -8,7 +8,7 @@ import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 
 @Component({
@@ -43,6 +43,11 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
       this.backLinkUrl = this.routeService.getPreviousUrl();
     }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

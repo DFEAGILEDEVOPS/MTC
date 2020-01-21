@@ -10,7 +10,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { UserService } from '../services/user/user.service';
-import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-login-success',
@@ -68,6 +68,12 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   async ngOnInit() {
     // Store various browser props in localStorage to be sent back to the server at the end of the check.
     await this.deviceService.capture();
+  }
+
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])

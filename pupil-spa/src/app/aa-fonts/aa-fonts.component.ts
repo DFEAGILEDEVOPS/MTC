@@ -8,7 +8,7 @@ import { AccessArrangementsConfig } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
-import { AppHidden, AppVisible } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 
 @Component({
@@ -40,6 +40,11 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     this.checkValidSelection();
 
     this.pupil = storageService.getPupil() as Pupil;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification() {
+    this.auditService.addEntry(new RefreshDetected());
   }
 
   @HostListener('document:visibilitychange', ['$event'])
