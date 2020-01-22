@@ -98,6 +98,13 @@ class SqlDbHelper
     settings_res
   end
 
+  def self.set_check_time_limit(minutes)
+    sql = "UPDATE [mtc_admin].[settings] set checkTimeLimit=#{minutes}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+
   def self.latest_setting_log
     sql = "SELECT * FROM [mtc_admin].[settingsLog] ORDER BY createdAt DESC"
     result = SQL_CLIENT.execute(sql)
