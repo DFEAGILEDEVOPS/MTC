@@ -4,7 +4,7 @@ const sql = require('mssql')
 const config = require('../config')
 const uuid = require('uuid/v4')
 
-const pupilCountPerSchool = 30
+const pupilCountPerSchool = 300
 let schoolCount = config.DummyData.SchoolCount
 let schoolId = 6
 
