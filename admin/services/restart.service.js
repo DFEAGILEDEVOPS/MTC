@@ -1,16 +1,13 @@
-const moment = require('moment')
 const bluebird = require('bluebird')
 const R = require('ramda')
 
 const checkDataService = require('../services/data-access/check.data.service')
 const config = require('../config')
-const pinValidator = require('../lib/validator/pin-validator')
 const prepareCheckService = require('./prepare-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
-const schoolDataService = require('../services/data-access/school.data.service')
 
 const restartService = {}
 
@@ -18,40 +15,11 @@ restartService.totalRestartsAllowed = config.RESTART_MAX_ATTEMPTS
 restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
- * Get pupils who are eligible for restart
- * @param schoolId
- * @returns {Array}
- */
-restartService.getPupils = async (schoolId) => {
-  const school = await schoolDataService.sqlFindOneById(schoolId)
-  if (!school) throw new Error(`School [${schoolId}] not found`)
-  let pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  pupils = await bluebird.filter(pupils.map(async p => {
-    const isPupilEligible = await restartService.isPupilEligible(p)
-    if (isPupilEligible) return p
-  }), p => !!p)
-  return pupils
-}
-
-/**
  * Get restart reasons
  * @returns {Array}
  */
 restartService.getReasons = async () => {
   return pupilRestartDataService.sqlFindRestartReasons()
-}
-
-/**
- * Determine all the factors that make pupil eligible for a restart
- * @param p
- * @returns {boolean}
- */
-restartService.isPupilEligible = async (p) => {
-  const canRestart = await restartService.canRestart(p.id)
-  if (p.attendanceCode || !canRestart) return false
-  const hasExpiredToday = p.pinExpiresAt && moment(p.pinExpiresAt).isSame(moment.now(), 'day')
-  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && hasExpiredToday
 }
 
 /**
@@ -65,7 +33,6 @@ restartService.isPupilEligible = async (p) => {
  * @param {Number} schoolId - `school.id` database ID
  * @returns {Promise.<void>}
  */
-
 restartService.restart = async (
   pupilsList,
   restartReasonCode,
@@ -78,10 +45,7 @@ restartService.restart = async (
     throw new Error('Missing parameter: `schoolId`')
   }
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
-  const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
-  if (!canAllPupilsRestart) {
-    throw new Error('One of the pupils is not eligible for a restart')
-  }
+  // TODO: validate incoming pupils are eligible for restart.
 
   // By assembling the restart data in a hash, duplicates IDs in the `pupilsList` will be folded into one,
   // and it makes it easier later on to add the `currentCheckId` property.
@@ -110,38 +74,6 @@ restartService.restart = async (
   // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
-}
-
-/**
- * Checks if all selected pupils are eligible for restarts
- * @param pupilsList
- * @return {boolean}
- */
-restartService.canAllPupilsRestart = async (pupilsList) => {
-  const eligibilityList = await Promise.all(pupilsList.map(async pupilId => {
-    const canRestart = await restartService.canRestart(pupilId)
-    return { pupilId, canRestart: canRestart }
-  }))
-  return eligibilityList.every(e => e.canRestart)
-}
-
-/**
- * Compare completed checks and restarts counts to determine if pupil is allowed to have a restart
- * @param pupilId
- * @returns {boolean}
- */
-
-restartService.canRestart = async pupilId => {
-  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(pupilId)
-  const pupilRestartsCount = await pupilRestartDataService.sqlGetNumberOfRestartsByPupil(pupilId)
-  const hasRestartAttemptRemaining = pupilRestartsCount < restartService.totalRestartsAllowed
-  const hasCheckAttemptRemaining = checkCount < restartService.totalChecksAllowed
-  // i.e. If pupil has been given a restart on the very first time then:
-  // The restart total count will be 1 and the check total count will be 1 as well
-  // In order for the pupil to be visible on the restart eligibility list
-  // the pupil must have completed the additional check ( 2 checks in total for this example)
-  const hasUsedRestart = checkCount === pupilRestartsCount + 1
-  return hasUsedRestart && hasRestartAttemptRemaining && hasCheckAttemptRemaining
 }
 
 /**

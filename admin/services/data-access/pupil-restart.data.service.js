@@ -14,7 +14,7 @@ const pupilRestartDataService = {}
  */
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
   const sql = `SELECT COUNT(*) AS [cnt]
-  FROM ${sqlService.adminSchema}.[pupilRestart]
+  FROM [mtc_admin].[pupilRestart]
   WHERE pupil_id=@pupilId AND isDeleted=0
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
