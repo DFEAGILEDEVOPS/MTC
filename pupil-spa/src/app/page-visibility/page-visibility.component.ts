@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { AppHidden, AppVisible, RefreshOrTabCloseDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
+import { StorageService } from '../services/storage/storage.service';
 
 
 @Component({
@@ -13,15 +13,16 @@ import { AuditService } from '../services/audit/audit.service';
 export class PageVisibilityComponent {
   constructor(
     private auditService: AuditService,
-    private router: Router) {
+    private storageService: StorageService) {
   }
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification() {
-    const currentUrl = this.router.url;
+    const checkState = this.storageService.getCheckState();
     // This audit report is excluded from check route
     // Check component handles refresh detection accurately at that stage
-    if (currentUrl !== '/check') {
+    // If check state is detected in local storage we can safely assume the check route is active
+    if (!checkState) {
       this.auditService.addEntry(new RefreshOrTabCloseDetected());
     }
   }
