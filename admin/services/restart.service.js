@@ -1,11 +1,6 @@
-const bluebird = require('bluebird')
-const R = require('ramda')
-
-const checkDataService = require('../services/data-access/check.data.service')
 const config = require('../config')
 const prepareCheckService = require('./prepare-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
 
@@ -74,63 +69,6 @@ restartService.restart = async (
   // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
-}
-
-/**
- * Get pupils who have been submitted for a restart
- * @param schoolId
- * @returns {Array}
- */
-restartService.getSubmittedRestarts = async schoolId => {
-  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
-  if (!pupils || pupils.length === 0) return []
-  let restarts = []
-  // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
-  const latestPupilRestarts = await bluebird.filter(pupils.map(async p => {
-    const restart = await pupilRestartDataService.sqlFindLatestRestart(p.id)
-    if (restart) {
-      const status = await restartService.getStatus(p.id)
-      return { ...restart, status }
-    }
-  }), p => !!p)
-  await Promise.all(pupils.map(async p => {
-    const record = latestPupilRestarts.find(l => l.pupil_id === p.id)
-    if (record) {
-      const reason = await pupilRestartDataService.sqlFindRestartReasonDescById(record.pupilRestartReason_id)
-      restarts.push({
-        id: record.id,
-        pupilId: p.id,
-        reason: reason,
-        status: record.status,
-        foreName: p.foreName,
-        lastName: p.lastName,
-        middleNames: p.middleNames,
-        dateOfBirth: p.dateOfBirth,
-        urlSlug: p.urlSlug
-      })
-    }
-  }))
-  restarts = pupilIdentificationFlagService.addIdentificationFlags(restarts)
-  return restarts
-}
-
-/**
- * Get pupil's restart status
- * @param pupilId
- * @returns {String}
- */
-
-restartService.getStatus = async pupilId => {
-  const restartCodes = await pupilRestartDataService.sqlFindRestartCodes()
-  const getStatus = (value) => {
-    const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
-    return entry && entry.description
-  }
-  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(pupilId)
-  const pupilRestartsCount = await pupilRestartDataService.sqlGetNumberOfRestartsByPupil(pupilId)
-  if (checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
-  if (checkCount === pupilRestartsCount) return getStatus('REM')
-  if (checkCount === pupilRestartsCount + 1) return getStatus('TKN')
 }
 
 /**

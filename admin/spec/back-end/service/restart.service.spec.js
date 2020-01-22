@@ -2,7 +2,6 @@
 
 /* global beforeEach, afterEach, describe, it, expect, spyOn, fail, jest, xit */
 
-const checkDataService = require('../../../services/data-access/check.data.service')
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
@@ -10,9 +9,6 @@ const restartDataService = require('../../../services/data-access/restart-v2.dat
 const restartService = require('../../../services/restart.service')
 
 const pupilMock = require('../mocks/pupil')
-const pupilRestartMock = require('../mocks/pupil-restart')
-const restartCodesMock = require('../mocks/restart-codes')
-const schoolMock = require('../mocks/school')
 
 describe('restart.service', () => {
   describe('restart', () => {
@@ -69,48 +65,6 @@ describe('restart.service', () => {
       } catch (error) {
         expect(error.message).toBe('One of the pupils is not eligible for a restart')
       }
-    })
-  })
-
-  describe('getSubmittedRestarts', () => {
-    it('returns a list of pupils who have been submitted for a restart', async () => {
-      const pupil1 = Object.assign({}, pupilMock)
-      const pupil2 = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([pupil1, pupil2])
-      spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
-      spyOn(restartService, 'getStatus').and.returnValue('Remove restart')
-      spyOn(pupilRestartDataService, 'sqlFindRestartReasonDescById').and.returnValue('Did Not Complete')
-      const result = await restartService.getSubmittedRestarts(schoolMock.id)
-      expect(result.length).toBe(2)
-    })
-    it('returns an empty list if no pupil has been submitted for a restart', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue([])
-      const result = await restartService.getSubmittedRestarts(schoolMock.id)
-      expect(result.length).toBe(0)
-    })
-  })
-
-  describe('getStatus', () => {
-    it('returns maximum number reached if the restart or check count reaches the limit', async () => {
-      spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(3)
-      spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(2)
-      spyOn(pupilRestartDataService, 'sqlFindRestartCodes').and.returnValue(restartCodesMock)
-      const status = await restartService.getStatus(pupilMock.id)
-      expect(status).toBe('Maximum number of restarts taken')
-    })
-    it('returns remove restart if the pupil has been submitted for a restart', async () => {
-      spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
-      spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
-      spyOn(pupilRestartDataService, 'sqlFindRestartCodes').and.returnValue(restartCodesMock)
-      const status = await restartService.getStatus(pupilMock.id)
-      expect(status).toBe('Remove restart')
-    })
-    it('returns restart taken if the pupil has taken the restart', async () => {
-      spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(2)
-      spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
-      spyOn(pupilRestartDataService, 'sqlFindRestartCodes').and.returnValue(restartCodesMock)
-      const status = await restartService.getStatus(pupilMock.id)
-      expect(status).toBe('Restart taken')
     })
   })
 
