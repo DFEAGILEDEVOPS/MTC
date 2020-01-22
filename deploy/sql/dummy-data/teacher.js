@@ -7,7 +7,7 @@ const { performance } = require('perf_hooks')
 const teacherCount = config.DummyData.SchoolCount
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
-let schoolId = 6
+let schoolId = 7
 
 const table = new sql.Table('mtc_admin.user')
 table.create = false

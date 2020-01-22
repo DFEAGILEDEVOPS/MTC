@@ -7,7 +7,7 @@ const { performance } = require('perf_hooks')
 
 const pupilCountPerSchool = 300
 let schoolCount = config.DummyData.SchoolCount
-let schoolId = 6
+let schoolId = 7
 
 const table = new sql.Table('mtc_admin.pupil')
 table.create = false
