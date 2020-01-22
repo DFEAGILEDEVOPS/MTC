@@ -447,7 +447,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">../load-test/scenarios/_2020/live-pin-gen/resultsTree.csv</stringProp>
+          <stringProp name="filename">../load-test/scenarios/_2020/pin-gen/live-resultsTree.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>

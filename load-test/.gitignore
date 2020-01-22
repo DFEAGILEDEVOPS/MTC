@@ -2,5 +2,5 @@ reports
 html-report
 scenarios/pupil-login-check/preparedChecks.csv
 scenarios/pupil-login-check/user.properties
-resultsTree.csv
+*resultsTree.csv
 user.properties
