@@ -31,17 +31,6 @@
         <boolProp name="CookieManager.clearEachIteration">false</boolProp>
       </CookieManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Machine Index" enabled="false">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="machineIndex" elementType="Argument">
-            <stringProp name="Argument.name">machineIndex</stringProp>
-            <stringProp name="Argument.value">{__BeanShell( System.getenv(&quot;FLOOD_NODE_INDEX&quot;) != null ? System.getenv(&quot;FLOOD_NODE_INDEX&quot;) : 0 )}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-        <stringProp name="TestPlan.comments">flood supports multi node tests, this gets the ID and falls back to zero if not running in flood.  required for teacher index (node 1 = teacher 1 - 999, node 2 = teacher 1000-1999 etc)</stringProp>
-      </Arguments>
-      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Teacher Journey" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -74,6 +63,30 @@ int thisTeacher = firstTeacher + (threadNumber - 1);
 log.info(&quot;thisTeacher: &quot; + thisTeacher);
 vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
         </BeanShellPreProcessor>
+        <hashTree/>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Groovy: Create Teacher Index" enabled="false">
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="filename">/Users/guyharwood/dev/MTC/load-test/scenarios/_2020/pin-gen/teacher-index.groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">def machineIndex=0;
+def floodNodeIndex = vars.get(&quot;FLOOD_NODE_INDEX&quot;);
+log.info(&quot;FLOOD_NODE_INDEX:&quot; + floodNodeIndex);
+log.info(&quot;machineIndex:&quot; + machineIndex);
+
+def lastTeacher = (machineIndex + 1) * 1000;
+def firstTeacher = lastTeacher - 999;
+log.info(&quot;node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+
+def threadNumber = ctx.getThreadNum();
+log.info(&quot;threadNumber:&quot; + threadNumber);
+
+def thisTeacher = firstTeacher + (threadNumber - 1);
+log.info(&quot;thisTeacher:&quot; + threadNumber);
+vars.put(&quot;teacherIndex&quot;, thisTeacher);
+
+</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223PreProcessor>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Admin-Sign-In" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -144,7 +157,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/pupil-pin/generate-live-pins-list</stringProp>
+          <stringProp name="HTTPSampler.path">/pupil-pin/generate-familiarisation-pins-list</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -408,7 +421,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/pupil-pin/generate-live-pins</stringProp>
+          <stringProp name="HTTPSampler.path">/pupil-pin/generate-familiarisation-pins</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -419,13 +432,13 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>
         </DebugSampler>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
