@@ -56,9 +56,20 @@ describe('RegisterInputService', () => {
       expect(storageServiceSetInputSpy.calls.all()[0].args[0]).toEqual(entry);
     }));
 
+  it('StoreEntry will generate new Date if the event timestamp is undefined',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const eventValue = '0';
+      const eventType = 'keydown';
+      service.storeEntry(eventValue, eventType, 7, '2x3');
+      expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
+      const clientTimestamp = storageServiceSetInputSpy.calls.all()[0].args[0].clientTimestamp;
+      expect(clientTimestamp).toBeDefined();
+      expect(clientTimestamp instanceof Date).toBeTruthy();
+    }));
+
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
-    const event = {type: 'keydown', key: 'f', currentTarget: null};
+    const event = {type: 'keydown', key: 'f', currentTarget: null, timeStamp: 1519211809934};
     const questionData = {
       questionNumber: '1',
       factor1: '1',
@@ -72,7 +83,7 @@ describe('RegisterInputService', () => {
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const spy = spyOn(service, 'storeEntry');
       const event = {
-        type: 'mousedown', which: 1, currentTarget: null
+        type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
       const questionData = {
         questionNumber: '1',
@@ -90,7 +101,7 @@ describe('RegisterInputService', () => {
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const spy = spyOn(service, 'storeEntry');
       const event = {
-        type: 'mousedown', which: 1, currentTarget: null
+        type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
       };
       const questionData = {
         questionNumber: '1',

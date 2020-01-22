@@ -17,14 +17,14 @@ export class RegisterInputService {
     const factor2 = questionData.factor2;
     const question = `${factor1}x${factor2}`;
 
-    this.storeEntry(eventValue, event.type, questionNumber, question);
+    this.storeEntry(eventValue, event.type, questionNumber, question, event.timeStamp);
   }
 
-  public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string) {
+  public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string, eventTimeStamp: number = null) {
     const questionInput = {
       input: eventValue,
       eventType: eventType,
-      clientTimestamp: new Date(),
+      clientTimestamp:  new Date(eventTimeStamp) || new Date(),
       question: question,
       sequenceNumber: questionNumber
     };
