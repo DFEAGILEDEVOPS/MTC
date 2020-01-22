@@ -64,30 +64,6 @@ log.info(&quot;thisTeacher: &quot; + thisTeacher);
 vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
         </BeanShellPreProcessor>
         <hashTree/>
-        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Groovy: Create Teacher Index" enabled="false">
-          <stringProp name="cacheKey">false</stringProp>
-          <stringProp name="filename">/Users/guyharwood/dev/MTC/load-test/scenarios/_2020/pin-gen/teacher-index.groovy</stringProp>
-          <stringProp name="parameters"></stringProp>
-          <stringProp name="script">def machineIndex=0;
-def floodNodeIndex = vars.get(&quot;FLOOD_NODE_INDEX&quot;);
-log.info(&quot;FLOOD_NODE_INDEX:&quot; + floodNodeIndex);
-log.info(&quot;machineIndex:&quot; + machineIndex);
-
-def lastTeacher = (machineIndex + 1) * 1000;
-def firstTeacher = lastTeacher - 999;
-log.info(&quot;node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
-
-def threadNumber = ctx.getThreadNum();
-log.info(&quot;threadNumber:&quot; + threadNumber);
-
-def thisTeacher = firstTeacher + (threadNumber - 1);
-log.info(&quot;thisTeacher:&quot; + threadNumber);
-vars.put(&quot;teacherIndex&quot;, thisTeacher);
-
-</stringProp>
-          <stringProp name="scriptLanguage">groovy</stringProp>
-        </JSR223PreProcessor>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST-Admin-Sign-In" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
