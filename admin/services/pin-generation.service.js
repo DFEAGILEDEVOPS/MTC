@@ -102,7 +102,6 @@ pinGenerationService.isValid = async (p, pinEnv = 'live') => {
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
   const hasValidPin = pinValidator.isActivePin(p.pin, p.pinExpiresAt)
-  // TODO: use pinEnv to differentiate between live and familiarisation checks
   return pinEnv === 'live'
     ? !hasValidPin && !hasAttendance && !canRestart
     : !hasValidPin && !hasAttendance
