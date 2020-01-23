@@ -53,14 +53,12 @@
 if (System.getenv(&quot;FLOOD_NODE_INDEX&quot;) != null) {
 	machineIndex = Integer.parseInt(System.getenv(&quot;FLOOD_NODE_INDEX&quot;));
 }
-log.info(&quot;machineIndex:&quot; + machineIndex);
+
 int lastTeacher = (machineIndex + 1) * 1000;
 int firstTeacher = lastTeacher - 999;
-log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+// log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
 int threadNumber = ${__threadNum};
-log.info(&quot;threadNumber:&quot; + threadNumber);
 int thisTeacher = firstTeacher + (threadNumber - 1);
-log.info(&quot;thisTeacher: &quot; + thisTeacher);
 vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
         </BeanShellPreProcessor>
         <hashTree/>
@@ -450,6 +448,10 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
         </hashTree>
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 Seconds" enabled="true">
+          <stringProp name="ConstantTimer.delay">10000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
         <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
@@ -509,49 +511,41 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract sas token" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">sasToken</stringProp>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check-started sas token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">checkStartedSasToken</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.token</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract queue URL" enabled="true">
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check-submitted sas token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">checkSubmittedSasToken</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkComplete.token</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract queue base URL" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">fullQueueUrl</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.url</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 2 Seconds" enabled="false">
-            <stringProp name="ConstantTimer.delay">2000</stringProp>
-          </ConstantTimer>
-          <hashTree/>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="base64 encode check-started message" enabled="true">
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="prepare queue data" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="script">import org.apache.commons.codec.binary.Base64;
 import java.net.URI;
 
-log.info(&quot;Base64 encoding check-started message&quot;);
 String message = &quot;{\&quot;version\&quot;: 1,\&quot;checkCode\&quot;: \&quot;${checkCode}\&quot;,\&quot;clientCheckStartedAt\&quot;: \&quot;${__time(yyyy-MM-dd HH:mm:ss,)}\&quot;}&quot;;
-log.info(&quot;message to encode: &quot; + message);
-byte[] encoded = Base64.encodeBase64(message.getBytes());
-log.info(&quot;encoded message: &quot;, encoded.toString());
-vars.put(&quot;encodedMessage&quot;, encoded.toString());
-vars.put(&quot;raw json message&quot;, message);
+String encoded = Base64.encodeBase64String(message.getBytes());
+vars.put(&quot;encodedCheckStartedMessage&quot;, encoded);
 
 // get domain from full URL
 String url = vars.get(&quot;fullQueueUrl&quot;);
 URI uri = new URI(url);
 String domain = uri.getHost();
-vars.put(&quot;queueDomain&quot;, domain);
-
-// remove https from queue URL
-// String url = vars.get(&quot;fullQueueUrl&quot;);
-// String newUrl = url.replace(&quot;https://&quot;, &quot;&quot;);
-// log.info(&quot;newUrl is: &quot;, newUrl);
-// vars.put(&quot;queueUrl&quot;, newUrl);</stringProp>
+vars.put(&quot;queueDomain&quot;, domain);</stringProp>
           </BeanShellPreProcessor>
           <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-started queue" enabled="true">
@@ -560,11 +554,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&lt;QueueMessage&gt;  &#xd;
-    &lt;MessageText&gt;&#xd;
-    	${encodedMessage}&#xd;
-    &lt;/MessageText&gt;  &#xd;
-&lt;/QueueMessage&gt;  </stringProp>
+                  <stringProp name="Argument.value">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;QueueMessage&gt;&lt;MessageText&gt;${encodedCheckStartedMessage}&lt;/MessageText&gt;&lt;/QueueMessage&gt;  </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -573,7 +563,51 @@ vars.put(&quot;queueDomain&quot;, domain);
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/check-started/messages?${sasToken}</stringProp>
+            <stringProp name="HTTPSampler.path">/check-started/messages?${checkStartedSasToken}</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP HEADERS check-started queue" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/xml</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Date</stringProp>
+                  <stringProp name="Header.value">${__time(yyyy-MM-dd HH:mm:ss,)}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 Seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-submitted queue" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;QueueMessage&gt;&lt;MessageText&gt;${encodedCheckStartedMessage}&lt;/MessageText&gt;&lt;/QueueMessage&gt;  </stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${queueDomain}</stringProp>
+            <stringProp name="HTTPSampler.port">443</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/check-submitted/messages?${checkSubmittedSasToken}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
