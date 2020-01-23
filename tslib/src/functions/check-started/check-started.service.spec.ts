@@ -90,4 +90,18 @@ describe('check-started.service', () => {
     await sut.process(message, functionBindings)
     expect(redisServiceMock.drop).not.toHaveBeenCalled()
   })
+
+  test('it does not attempt to drop from redis if no prepared check found', async () => {
+    const message: ICheckStartedMessage = {
+      checkCode: 'check-code',
+      clientCheckStartedAt: new Date(),
+      version: 1
+    }
+
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return null
+    })
+    await sut.process(message, functionBindings)
+    expect(redisServiceMock.drop).not.toHaveBeenCalled()
+  })
 })
