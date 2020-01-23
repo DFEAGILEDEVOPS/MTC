@@ -3,7 +3,10 @@ require 'lz_string'
 
 class ReceivedCheckDecompressor
 
-  AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: '', storage_access_key: '')
+  credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
+  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+  AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: @account_name, storage_access_key: @account_key)
 
   def self.get_row(table_name, partition_key, row_key)
     AZURE_TABLE_CLIENT.get_entity(table_name, partition_key, row_key).properties
@@ -19,6 +22,5 @@ class ReceivedCheckDecompressor
     LZString::UTF16.decompress(archive)
     out_file = File.new(ENV['HOME']+ "/received_check_message_#{ARGV[1]}.json", "w")
     out_file.puts(LZString::UTF16.decompress(archive))
-    p ENV['LOL']
   end
 end
