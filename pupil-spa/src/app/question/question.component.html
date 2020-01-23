@@ -13,26 +13,26 @@
                     <div class="numpad-container" *ngIf="!config.numpadRemoval">
                         <table class="numpad" id="js-numpad">
                             <tr>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb1" (click)="onClickAnswer(1)"><span>1</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb2" (click)="onClickAnswer(2)"><span>2</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb3" (click)="onClickAnswer(3)"><span>3</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb1" (click)="onClickAnswer(1, $event)"><span>1</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb2" (click)="onClickAnswer(2, $event)"><span>2</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb3" (click)="onClickAnswer(3, $event)"><span>3</span></button></td>
                             </tr>
                             <tr>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb4" (click)="onClickAnswer(4)"><span>4</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb5" (click)="onClickAnswer(5)"><span>5</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb6" (click)="onClickAnswer(6)"><span>6</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb4" (click)="onClickAnswer(4, $event)"><span>4</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb5" (click)="onClickAnswer(5, $event)"><span>5</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb6" (click)="onClickAnswer(6, $event)"><span>6</span></button></td>
                             </tr>
                             <tr>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb7" (click)="onClickAnswer(7)"><span>7</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb8" (click)="onClickAnswer(8)"><span>8</span></button></td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb9" (click)="onClickAnswer(9)"><span>9</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb7" (click)="onClickAnswer(7, $event)"><span>7</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb8" (click)="onClickAnswer(8, $event)"><span>8</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb9" (click)="onClickAnswer(9, $event)"><span>9</span></button></td>
                             </tr>
                             <tr>
                                 <td class="key js-key">
-                                    <button type="button" id="kb-backspace" class="numpad-enter-button aa-contrast-invert" (click)="onClickBackspace()"><span>&#9003;</span></button>
+                                    <button type="button" id="kb-backspace" class="numpad-enter-button aa-contrast-invert" (click)="onClickBackspace($event)"><span>&#9003;</span></button>
                                 </td>
-                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb0" (click)="onClickAnswer(0)"><span>0</span></button></td>
-                                <td class="key js-key"><button type="button" id="kb-enter" class="numpad-enter-button aa-contrast-invert" (click)="onClickSubmit()"><span>Enter</span></button></td>
+                                <td class="key js-key"><button type="button" class="numpad-button aa-contrast-invert" id="kb0" (click)="onClickAnswer(0, $event)"><span>0</span></button></td>
+                                <td class="key js-key"><button type="button" id="kb-enter" class="numpad-enter-button aa-contrast-invert" (click)="onClickSubmit($event)"><span>Enter</span></button></td>
                             </tr>
                         </table>
                     </div>
