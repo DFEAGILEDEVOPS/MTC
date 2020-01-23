@@ -516,26 +516,43 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             </JSONPostProcessor>
             <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract queue URL" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">queueUrl</stringProp>
+              <stringProp name="JSONPostProcessor.referenceNames">fullQueueUrl</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.url</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="base64 encode check-started message" enabled="true">
-              <boolProp name="resetInterpreter">false</boolProp>
-              <stringProp name="parameters"></stringProp>
-              <stringProp name="filename"></stringProp>
-              <stringProp name="script">import org.apache.commons.codec.binary.Base64;
-log.info(&quot;Base64 encoding check-started message&quot;);
-String message = &quot;{\&quot;version\&quot;: 1,\&quot;checkCode\&quot;: \&quot;${checkCode}\&quot;,\&quot;clientCheckStartedAt\&quot;: \&quot;${__time(yyyy-MM-dd HH:mm:ss,)}\&quot;}&quot;;
-byte[] encoded = Base64.encodeBase64(message);
-vars.put(&quot;encodedMessage&quot;, message);</stringProp>
-            </BeanShellPreProcessor>
-            <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 2 Seconds" enabled="true">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 2 Seconds" enabled="false">
             <stringProp name="ConstantTimer.delay">2000</stringProp>
           </ConstantTimer>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="base64 encode check-started message" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">import org.apache.commons.codec.binary.Base64;
+import java.net.URI;
+
+log.info(&quot;Base64 encoding check-started message&quot;);
+String message = &quot;{\&quot;version\&quot;: 1,\&quot;checkCode\&quot;: \&quot;${checkCode}\&quot;,\&quot;clientCheckStartedAt\&quot;: \&quot;${__time(yyyy-MM-dd HH:mm:ss,)}\&quot;}&quot;;
+log.info(&quot;message to encode: &quot; + message);
+byte[] encoded = Base64.encodeBase64(message.getBytes());
+log.info(&quot;encoded message: &quot;, encoded.toString());
+vars.put(&quot;encodedMessage&quot;, encoded.toString());
+vars.put(&quot;raw json message&quot;, message);
+
+// get domain from full URL
+String url = vars.get(&quot;fullQueueUrl&quot;);
+URI uri = new URI(url);
+String domain = uri.getHost();
+vars.put(&quot;queueDomain&quot;, domain);
+
+// remove https from queue URL
+// String url = vars.get(&quot;fullQueueUrl&quot;);
+// String newUrl = url.replace(&quot;https://&quot;, &quot;&quot;);
+// log.info(&quot;newUrl is: &quot;, newUrl);
+// vars.put(&quot;queueUrl&quot;, newUrl);</stringProp>
+          </BeanShellPreProcessor>
           <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-started queue" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -552,11 +569,11 @@ vars.put(&quot;encodedMessage&quot;, message);</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${queueUrl}</stringProp>
+            <stringProp name="HTTPSampler.domain">${queueDomain}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/messages</stringProp>
+            <stringProp name="HTTPSampler.path">/check-started/messages?${sasToken}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
