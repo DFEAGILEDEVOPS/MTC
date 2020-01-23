@@ -98,10 +98,10 @@
                                 <div>
                                     <div class="pin-content">
                                         <span class="label">School Password: </span>
-                                        <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
+                                        <span class="information" id="schoolPin" name="schoolPin"><%= (!!school ? school.pin : 'No active password') %></span>
                                         <span class="separator"></span>
                                         <span class="label">PIN: </span>
-                                        <span class="information">
+                                        <span class="information" id="pupilPin" name="pupilPin">
                                           <%= pupil.pin %>
                                       </span>
                                     </div>
