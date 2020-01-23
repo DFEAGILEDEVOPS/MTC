@@ -1,13 +1,19 @@
 const sb = require('@azure/service-bus')
 const config = require('../config')
 
-const sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
-const sbQueueClient = sbClient.createQueueClient('check-sync')
-const sbQueueSender = sbQueueClient.createSender()
+let sbClient
+let sbQueueClient
+let sbQueueSender
 
 const preparedCheckSyncService = {}
 
 const addMessageToRedis = async (pupilUrlSlug) => {
+  if (!sbClient || !sbQueueClient || !sbQueueSender) {
+    sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
+    sbQueueClient = sbClient.createQueueClient('check-sync')
+    sbQueueSender = sbQueueClient.createSender()
+  }
+
   await sbQueueSender.send({
     body: {
       pupilUUID: pupilUrlSlug,
