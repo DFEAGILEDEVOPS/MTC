@@ -1,5 +1,6 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import v4 from 'uuid/v4'
+import * as R from 'ramda'
 
 export interface ICheckStartedFunctionBindings {
   checkStartedTable: Array<any>
@@ -26,7 +27,8 @@ export class CheckStartedService {
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })
     const preparedCheck = await this.redisService.get(preparedCheckKey)
-    if (preparedCheck.config.practice === false) {
+
+    if (R.path(['config', 'practice'], preparedCheck) === false) {
       return this.redisService.drop([preparedCheckKey])
     }
   }
