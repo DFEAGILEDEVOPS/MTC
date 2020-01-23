@@ -27,6 +27,7 @@ https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
 https://jmeter-plugins.org/wiki/Functions/
 
 ## Best practices
+* **Launch Jmeter executable from this directory** this will ensure that any output files from local test runs are created under this directory.
 * **Use a HTTP defaults item for each scenario** You can specify defaults for protocol, port & hostname for the target and parameterise each property.  This ensures you do not have to set them for each request.
 * **Do not hardcode data** It does not work at scale.  Instead use tools such as the XPath extractor to find elements in web pages and obtain record IDs from the value property (see the `admin-generate-pins.jmx` scenario as an example).
 * **Use the Debug Sampler for local scenario development** Use it to output variables and other useful information after a local test run.  This can help you see what data / parameters / values are being produced at runtime.
