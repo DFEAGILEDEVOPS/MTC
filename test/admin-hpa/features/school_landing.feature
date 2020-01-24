@@ -124,7 +124,7 @@ Feature:
       | service-manager | 9991003   |
       | service-manager | 9991004   |
 
-  @incomplete_pupil @wip
+  @incomplete_pupil
   Scenario: Incomplete is displayed on the school homepage if there is one or more pupils with Incomplete status
     Given there is a pupil with an incomplete status
     When I navigate to the school landing page

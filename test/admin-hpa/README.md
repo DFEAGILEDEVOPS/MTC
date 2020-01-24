@@ -23,7 +23,7 @@ Use ruby version 2.3.3 and set it as your default:
 
 ##Installing required gems
 
-Go to the folder /test and run the following commands:
+Go to the folder /test/admin-hpa and run the following commands:
 
 `gem install bundler` and then `bundle install`
 
@@ -79,3 +79,35 @@ Options available:
 `rake features OPTS='features/prototype.feature' DRIVER=XXXX`
 
 Note: if no `DRIVER` is passed in, the default driver will be used
+
+
+##Test helpers
+###These helpers require ohmyzsh (https://github.com/ohmyzsh/ohmyzsh)
+####Generate a new UPN 
+
+In your `.zshrc` add the following alias with your own path to the admin-hpa folder:
+
+`alias upn='ruby -r "/Users/X/Documents/Projects/MTC/test/admin-hpa/./features/support/upn_generator.rb" -e "UpnGenerator.generate"'` 
+
+Close your terminal and re-open
+
+You should be able to run the command `upn` and generate a new UPN
+
+
+####Decompress archive string taken from the `recievedCheck` table
+
+In your `.zshrc` add the following alias with your own path to the admin-hpa folder:
+
+`alias decompress='ruby -r "/Users/X/Documents/Projects/MTC/test/admin-hpa/./features/support/received_check_decompressor.rb" -e "ReceivedCheckDecompressor.decompress_archive_message"'` 
+
+Close your terminal and re-open
+
+Now you can run:
+
+`decompress <school_uuid> <check_code>`
+
+This will then create a file in your home directory in the format:
+
+`received_check_message_<check_code>.json`
+
+#####Please note you will need to add your `AZURE_STORAGE_CONNECTION_STRING` to your `/admin/.env`
