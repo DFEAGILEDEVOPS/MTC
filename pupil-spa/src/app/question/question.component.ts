@@ -13,7 +13,7 @@ import { StorageService } from '../services/storage/storage.service';
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
 })
-export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   /**
    * Do not show 'practice' label on top left.
@@ -32,12 +32,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-
-    // Add attributes to the <body> tag to reflect the current question
-    const bodyTag = <Element>window.document[ 'body' ];
-    bodyTag.setAttribute('data-sequence-number', this.sequenceNumber.toString());
-    bodyTag.setAttribute('data-factor1', this.factor1.toString());
-    bodyTag.setAttribute('data-factor2', this.factor2.toString());
   }
 
   /**
@@ -52,20 +46,17 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     this.startTimer();
   }
 
-  ngOnDestroy() {
-    // Remove attributes from the <body> tag to reflect the current lack of a question
-    const bodyTag = <Element>window.document[ 'body' ];
-    bodyTag.removeAttribute('data-sequence-number');
-    bodyTag.removeAttribute('data-factor1');
-    bodyTag.removeAttribute('data-factor2');
-  }
-
   /**
    * Track all mouse click activity
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
-    this.registerInputService.addEntry(event);
+    const questionData = {
+      questionNumber: this.sequenceNumber,
+      factor1: this.factor1,
+      factor2: this.factor2
+    };
+    this.registerInputService.addEntry(event, questionData);
   }
 
   /**
@@ -74,7 +65,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event) {
-    this.registerInputService.addEntry(event);
+    const questionData = {
+      questionNumber: this.sequenceNumber,
+      factor1: this.factor1,
+      factor2: this.factor2
+    };
+    this.registerInputService.addEntry(event, questionData);
   }
 
   /**
@@ -84,8 +80,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
-    this.registerInputService.addEntry(event);
+    const questionData = {
+      questionNumber: this.sequenceNumber,
+      factor1: this.factor1,
+      factor2: this.factor2
+    };
+    this.registerInputService.addEntry(event, questionData);
     const key = event.key;
     // register inputs
     switch (key) {
@@ -120,25 +120,44 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   /**
    * Called from clicking a number button on the virtual keypad
    * @param {number} number
+   * @param {Object} event
    */
-  onClickAnswer(number: number) {
-    this.registerInputService.storeEntry(number.toString(), 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickAnswer(number: number, event) {
+    this.registerInputService.storeEntry
+    (number.toString(),
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.addChar(number.toString());
   }
 
   /**
    * Called from clicking the backspace button on the virtual keyboard
+   * @param {Object} event
    */
-  onClickBackspace() {
-    this.registerInputService.storeEntry('Backspace', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickBackspace(event) {
+    this.registerInputService.storeEntry('Backspace',
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.deleteChar();
   }
 
   /**
    * Called when the user clicks the enter button on the virtual keypad
+   * @param {Object} event
    */
-  onClickSubmit() {
-    this.registerInputService.storeEntry('Enter', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
+  onClickSubmit(event) {
+    this.registerInputService.storeEntry('Enter',
+      'click',
+      this.sequenceNumber,
+      `${this.factor1}x${this.factor2}`,
+      event.timeStamp
+    );
     this.onSubmit();
   }
 
