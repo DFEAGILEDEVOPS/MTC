@@ -474,7 +474,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${__P(pupilApiHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(port,3003)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(pupilApiPort,3003)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/auth</stringProp>
@@ -508,6 +508,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract checkCode" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">checkCode</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.checkCode</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check submission payload" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">checkPayload</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
@@ -598,16 +604,16 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;QueueMessage&gt;&lt;MessageText&gt;${encodedCheckStartedMessage}&lt;/MessageText&gt;&lt;/QueueMessage&gt;  </stringProp>
+                  <stringProp name="Argument.value">${checkPayload}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${queueDomain}</stringProp>
-            <stringProp name="HTTPSampler.port">443</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${__P(proxyFunctionHost,localhost)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(proxyFunctionPort,7073)}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/check-submitted/messages?${checkSubmittedSasToken}</stringProp>
+            <stringProp name="HTTPSampler.path">/api/submit?${__P(proxyFunctionAuthCode,)}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
