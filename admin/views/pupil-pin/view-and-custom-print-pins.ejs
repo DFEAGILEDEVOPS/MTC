@@ -96,16 +96,18 @@
                                 <% } %>
                                 <input type="hidden" id="pupilUpn" name="pupilUpn" value="<%= pupil.upn %>"/>
                                 <div>
-                                    <div class="pin-content">
-                                        <span class="label">School Password: </span>
-                                        <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
-                                        <span class="separator"></span>
-                                        <span class="label">PIN: </span>
-                                        <span class="information">
-                                          <%= pupil.pin %>
+                                  <div class="pin-content">
+                                      <span class="label">School Password: </span>
+                                      <span class="information" id="schoolPin" name="schoolPin">
+                                        <%= (!!school ? school.pin : 'No active password') %>
                                       </span>
-                                    </div>
-                                </div>
+                                      <span class="separator"></span>
+                                      <span class="label">PIN: </span>
+                                      <span class="information" id="pupilPin" name="pupilPin">
+                                        <%= pupil.pin %>
+                                      </span>
+                                  </div>
+                              </div>
                                 <% if (qrDataURL) { %>
                                     <div class="print-only qr"><img src="<%= qrDataURL %>" /></div>
                                 <% } %>
