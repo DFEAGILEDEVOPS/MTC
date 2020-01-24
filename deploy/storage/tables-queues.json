@@ -2,7 +2,6 @@
   "queues": [
     "check-started",
     "check-submitted",
-    "prepared-check-sync",
     "pupil-feedback",
     "pupil-prefs",
     "test-pupil-connection"
