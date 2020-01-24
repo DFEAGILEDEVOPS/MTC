@@ -7,7 +7,7 @@ let sbQueueSender
 
 const preparedCheckSyncService = {}
 
-const addMessageToRedis = async (pupilUrlSlug) => {
+const addMessageToServiceBus = async (pupilUrlSlug) => {
   if (!sbClient || !sbQueueClient || !sbQueueSender) {
     sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
     sbQueueClient = sbClient.createQueueClient('check-sync')
@@ -22,6 +22,6 @@ const addMessageToRedis = async (pupilUrlSlug) => {
   })
 }
 
-preparedCheckSyncService.addMessages = addMessageToRedis
+preparedCheckSyncService.addMessages = addMessageToServiceBus
 
 module.exports = preparedCheckSyncService
