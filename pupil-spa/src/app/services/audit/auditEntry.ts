@@ -4,7 +4,8 @@ export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded
   'CheckSubmissionPending' | 'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' |
   'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'SessionExpired' | 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
   'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
-  'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' | 'DuplicateAnswerError';
+  'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' |
+  'AppVisible' | 'AppHidden' | 'RefreshOrTabCloseDetected';
 
 export abstract class AuditEntry {
 
@@ -185,5 +186,23 @@ export class QuestionTimerCancelled extends AuditEntry {
 export class AppError extends AuditEntry {
   constructor(data?: any) {
     super('AppError', new Date(), data);
+  }
+}
+
+export class AppVisible extends AuditEntry {
+  constructor(data?: any) {
+    super('AppVisible', new Date(), data);
+  }
+}
+
+export class AppHidden extends AuditEntry {
+  constructor(data?: any) {
+    super('AppHidden', new Date(), data);
+  }
+}
+
+export class RefreshOrTabCloseDetected extends AuditEntry {
+  constructor(data?: any) {
+    super('RefreshOrTabCloseDetected', new Date(), data);
   }
 }
