@@ -35,3 +35,13 @@ Feature:
     Given I am on the complete page
     When I attempt to refresh the page
     Then I should remain on the complete page
+
+
+   Scenario: Refresh on non-check page is recorded in audit log
+     Given I have completed the check with refersh on instruction page
+     Then audit recorded should reflect this refresh event
+
+   @manual
+  Scenario: Navigation to different tab during the check is recorded in audit log
+    Given I navigated to different tab during the check
+    Then audit recorded should reflect the navigation of tab
