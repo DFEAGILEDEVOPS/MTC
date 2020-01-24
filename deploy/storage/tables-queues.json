@@ -2,7 +2,6 @@
   "queues": [
     "check-started",
     "check-submitted",
-    "prepared-check-delete",
     "prepared-check-sync",
     "pupil-feedback",
     "pupil-prefs",
@@ -10,7 +9,6 @@
   ],
   "tables": [
     "receivedCheck",
-    "preparedCheck",
     "pupilEvent",
     "pupilFeedback"
   ]
