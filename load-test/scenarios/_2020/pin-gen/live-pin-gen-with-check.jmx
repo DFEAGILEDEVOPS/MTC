@@ -511,6 +511,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract queue base URL" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">queueUrl</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.url</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check submission payload" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">checkPayload</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$</stringProp>
@@ -529,31 +535,26 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract queue base URL" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">fullQueueUrl</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkStarted.url</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-            </JSONPostProcessor>
-            <hashTree/>
-          </hashTree>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="prepare queue data" enabled="true">
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="script">import org.apache.commons.codec.binary.Base64;
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="create queue vars" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">import org.apache.commons.codec.binary.Base64;
 import java.net.URI;
 
 String message = &quot;{\&quot;version\&quot;: 1,\&quot;checkCode\&quot;: \&quot;${checkCode}\&quot;,\&quot;clientCheckStartedAt\&quot;: \&quot;${__time(yyyy-MM-dd HH:mm:ss,)}\&quot;}&quot;;
-String encoded = Base64.encodeBase64String(message.getBytes());
+byte[] msgBytes = message.getBytes();
+String encoded = Base64.encodeBase64String(msgBytes);
 vars.put(&quot;encodedCheckStartedMessage&quot;, encoded);
 
-// get domain from full URL
-String url = vars.get(&quot;fullQueueUrl&quot;);
+String url = vars.get(&quot;queueUrl&quot;).toString();
 URI uri = new URI(url);
 String domain = uri.getHost();
 vars.put(&quot;queueDomain&quot;, domain);</stringProp>
-          </BeanShellPreProcessor>
-          <hashTree/>
+              <stringProp name="scriptLanguage">java</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-started queue" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -598,7 +599,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             <stringProp name="ConstantTimer.delay">5000</stringProp>
           </ConstantTimer>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-submitted queue" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit function proxy" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -624,7 +625,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP HEADERS check-started queue" enabled="true">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP HEADERS check submit function proxy" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>

@@ -46,15 +46,13 @@ start the admin app with `yarn start`
 - **adminAppHost** the domain of the admin app, defaults to `localhost`
 - **port** the port of the admin app, defaults to `3001`
 - **protocol** the protocol of the admin app, defaults to `http`
-- threads
-- rampup
-- duration
-- pupilApiHost
-- pupilApiPort
-- proxyFunctionHost
-- proxyFunctionPort
-
-
+- **threads** number of threads to run, defaults to 5
+- **rampup** ramp up period, in seconds. defaults to 5
+- **duration** test run duration, in seconds. defaults to 300 (5 minutes)
+- **pupilApiHost** the domain of the pupil auth Api. defaults to `localhost`
+- **pupilApiPort** the port of the pupil auth Api, defaults to `3003`
+- **proxyFunctionHost** the domain of the function proxy api, defaults to `localhost`
+- **proxyFunctionPort** the port of the function proxy api, defaults to `7073`
 
 
 ## Seed load test data (non-local test only)
