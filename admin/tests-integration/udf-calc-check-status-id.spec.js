@@ -104,13 +104,6 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusId).toBe('COL') // COLLECTED
     })
 
-    it('can identify a STARTED check', async () => {
-      const id = await createCheck('STD', 0)
-      const res = await sql.query(createQuery(id))
-      const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // STARTED
-    })
-
     it('can identify an EXPIRED check with a pin', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
@@ -138,6 +131,9 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const checkStatusId = res[0].code
       expect(checkStatusId).toBe('STD') // Started
     })
+
+    // TODO: add support for checkStatus.code = 'ERR'
+    // TODO: add support for checkStatus.code = 'VOD'
   })
 
   describe('unusual conditions:', () => {
