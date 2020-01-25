@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict'
 
-// require('dotenv').config()
 const winston = require('winston')
 const consoleTransport = new winston.transports.Console()
 winston.add(consoleTransport)

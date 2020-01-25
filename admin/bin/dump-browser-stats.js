@@ -1,11 +1,23 @@
 #!/usr/bin/env node
 'use strict'
 
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 const winston = require('winston')
 const csv = require('fast-csv')
 const chalk = require('chalk')
-const fs = require('fs')
 winston.level = 'info'
 const moment = require('moment')
 const useragent = require('useragent')
