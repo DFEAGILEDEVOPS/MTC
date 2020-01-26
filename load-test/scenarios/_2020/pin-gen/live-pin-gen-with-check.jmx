@@ -474,7 +474,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${__P(pupilApiHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(pupilApiPort,3003)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(port,3003)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/auth</stringProp>
@@ -611,7 +611,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${__P(proxyFunctionHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(proxyFunctionPort,7073)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(port,7073)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/api/submit?code=${__P(proxyFunctionAuthCode,none)}</stringProp>
