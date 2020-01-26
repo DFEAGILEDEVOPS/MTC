@@ -6,6 +6,7 @@ let sut: PupilAuthService
 let redisMock: IRedisService
 let req: HttpRequest
 let bindings: IPupilAuthFunctionBindings
+import config from '../../config'
 
 describe('pupil-auth.service', () => {
   beforeEach(() => {
@@ -60,6 +61,8 @@ describe('pupil-auth.service', () => {
   })
 
   test('options method returns 204', async () => {
+    const savedCorsWhitelist = config.PupilAuth.CorsWhitelist
+    config.PupilAuth.CorsWhitelist = ''
     req.method = 'OPTIONS'
     const res = await sut.authenticate(bindings, req)
     expect(res.body).toBe('')
@@ -69,6 +72,7 @@ describe('pupil-auth.service', () => {
       'Access-Control-Allow-Origin' : ''
     })
     expect(res.status).toBe(204)
+    config.PupilAuth.CorsWhitelist = savedCorsWhitelist
   })
 
   test('post method attempts redis lookup of preparedCheck', async () => {
