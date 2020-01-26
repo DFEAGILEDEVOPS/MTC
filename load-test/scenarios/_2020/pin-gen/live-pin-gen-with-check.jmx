@@ -595,10 +595,6 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 Seconds" enabled="true">
-            <stringProp name="ConstantTimer.delay">5000</stringProp>
-          </ConstantTimer>
-          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit function proxy" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
