@@ -1,4 +1,4 @@
-CREATE FUNCTION dbo.ufnCalcCheckStatusID (@checkId int)
+CREATE OR ALTER FUNCTION dbo.ufnCalcCheckStatusID (@checkId int)
     RETURNS int
 AS
 BEGIN
