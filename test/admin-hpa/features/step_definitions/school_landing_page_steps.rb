@@ -119,12 +119,11 @@ end
 
 Given(/^there is a pupil with an incomplete status$/) do
   step 'I have generated a live pin for a pupil'
-  SqlDbHelper.set_pupil_status_via_id(4, @stored_pupil_details['id'])
-  @check_id = SqlDbHelper.check_details(@stored_pupil_details['id'])['id']
-  SqlDbHelper.set_check_status(6,@check_id)
+  RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 end
 
 Then(/^I should see a incomplete banner$/) do
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until school_landing_page.has_incomplete_banner?}
   expect(school_landing_page).to have_incomplete_banner
   expect(school_landing_page).to have_incomplete_banner_text
 end

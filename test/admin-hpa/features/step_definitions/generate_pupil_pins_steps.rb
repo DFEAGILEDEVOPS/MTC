@@ -134,6 +134,8 @@ When(/^I have generated a live pin for a pupil$/) do
   @pupil_forename = name
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
 end
 
 When(/^I click view all pins button$/) do

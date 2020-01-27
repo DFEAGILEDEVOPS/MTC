@@ -34,8 +34,8 @@ class SchoolLandingPage < SitePrism::Page
   element :generate_pupil_pin_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can take the MTC'
 
 
-  element :incomplete_banner, '.warning-banner', text: 'INCOMPLETE'
-  element :incomplete_banner_text, '.govuk-font-greyed-out', text: 'There are pupils with an incomplete status in your register'
+  element :incomplete_banner, '.warning-banner', text: 'REVIEW PUPIL STATUS'
+  element :incomplete_banner_text, '.govuk-font-greyed-out', text: 'Ensure all pupils have successfully completed the check'
 
   # review check
   element :pupil_status, 'a', text: 'Pupil status'

@@ -124,3 +124,68 @@ And(/^audit and inputs recorded should reflect this$/) do
 
   expect(local_storage.select {|a| a['type'] == 'RefreshDetected'}.count).to eql @array_of_questions.size
 end
+
+
+Given(/^I have completed the check with refersh on instruction page$/) do
+  step 'I have generated a live pin'
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  visit current_url
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  @question_strings = create_question_strings(JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')))
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_heading
+end
+
+And(/^audit recorded should reflect this refresh event$/) do
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+  expect(local_storage.find{|a| a['type'] == 'RefreshOrTabCloseDetected'}).to_not be_nil
+  expect(local_storage.find{|a| a['type'] == 'AppHidden'}).to_not be_nil
+end
+
+Given(/^I navigated to different tab during the check$/) do
+  step 'I have generated a live pin'
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  visit current_url
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  @question_strings = create_question_strings(JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')))
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+  check_page.complete_check_with_correct_answers(18, 'keyboard')
+
+  first_tab = page.windows.first
+  new_window = Capybara.open_new_window
+  switch_to_window new_window
+  visit ENV['ADMIN_BASE_URL']
+  sleep(1)
+  page.switch_to_window page.windows.first
+  visit current_url
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_heading
+end
+
+
+And(/^audit recorded should reflect the navigation of tab$/) do
+  storage1 = page.evaluate_script('window.localStorage;')
+  storage_audit_keys = storage1.keys.select{|x| x.include?('audit')}
+  local_storage = []
+  storage_audit_keys.each do |key|
+    local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+  expect(local_storage.find{|a| a['type'] == 'AppVisible'}).to_not be_nil
+  expect(local_storage.find{|a| a['type'] == 'AppHidden'}).to_not be_nil
+end
