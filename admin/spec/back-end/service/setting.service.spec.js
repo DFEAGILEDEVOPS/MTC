@@ -1,21 +1,21 @@
 'use strict'
-/* global spyOn beforeEach, afterEach, describe, it, expect */
+/* global spyOn, describe, it, expect */
 
-const sinon = require('sinon')
 const settingDataService = require('../../../services/data-access/setting.data.service')
 const settingLogDataService = require('../../../services/data-access/setting-log.data.service')
 const settingService = require('../../../services/setting.service')
 
 describe('setting.service', () => {
-  let sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => sandbox.restore())
+  const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2, checkTimeLimit: 30 }
 
   describe('get', () => {
+    it('should cache successive calls', async () => {
+      spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
+      await settingService.get(true)
+      await settingService.get()
+      await settingService.get()
+      expect(settingDataService.sqlFindOne).toHaveBeenCalledTimes(1)
+    })
     it('calls the setting data service', async () => {
       const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2, checkTimeLimit: 30 }
       spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)

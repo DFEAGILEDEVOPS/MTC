@@ -24,18 +24,22 @@ settingService.update = async (loadingTimeLimit, questionTimeLimit, checkTimeLim
 
 /**
  * Get check settings
+ * @param {Boolean} cacheBust
  * @returns {questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number}
  */
-settingService.get = async () => {
-  let settings = await settingDataService.sqlFindOne()
-  if (!settings) {
-    settings = {
+let cachedSettings
+settingService.get = async (cacheBust = false) => {
+  if (cacheBust || !cachedSettings) {
+    cachedSettings = await settingDataService.sqlFindOne()
+  }
+  if (!cachedSettings) {
+    cachedSettings = {
       questionTimeLimit: config.QUESTION_TIME_LIMIT,
       loadingTimeLimit: config.TIME_BETWEEN_QUESTIONS,
       checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES
     }
   }
-  return settings
+  return cachedSettings
 }
 
 module.exports = settingService

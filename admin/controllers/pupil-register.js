@@ -18,6 +18,7 @@ const listPupils = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData)
+    // TODO: Remove feature toggle chec, v1 calls and services and default to v2
     if (featureToggles.isFeatureEnabled('pupilRegisterV2')) {
       pupilsFormatted = await pupilRegisterV2Service.getPupilRegister(req.user.schoolId)
       pupilsListView = 'pupil-register/pupils-list-v2'
