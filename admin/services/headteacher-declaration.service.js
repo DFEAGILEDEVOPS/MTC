@@ -36,7 +36,7 @@ headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  // The HDF status is the same as the pupil outcome status on the pupil register / status screen
+  // The HDF pupil status is the same as the pupil outcome status on the pupil register / status screen
   return pupilStatusService.getPupilStatusData(schoolId)
 }
 
