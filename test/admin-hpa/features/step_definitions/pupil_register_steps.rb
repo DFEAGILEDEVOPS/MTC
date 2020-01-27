@@ -68,6 +68,7 @@ Then(/^any pupils not part of a group should not have an entry for group$/) do
 end
 
 Then(/^these pupils should be highlighted in red$/) do
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_register_page.find_pupil_row(@pupil_name).has_incomplete_pupil?}
   expect(pupil_register_page).to have_incomplete_message
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row).to have_incomplete_pupil

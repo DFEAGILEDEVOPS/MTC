@@ -11,6 +11,10 @@ Before('@service_manager_message') do
   visit ENV['ADMIN_BASE_URL']
 end
 
+Before('@incomplete_pupil') do
+  SqlDbHelper.set_check_time_limit(1)
+end
+
 After('@service_manager_message') do
   step 'I am on the manage service message page'
   manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
@@ -154,9 +158,7 @@ After('@remove_mod_school') do
 end
 
 After('@incomplete_pupil') do
-  p @stored_pupil_details['id']
-  SqlDbHelper.set_pupil_status_via_id(2, @stored_pupil_details['id'])
-  SqlDbHelper.set_check_status(1, @check_id)
+  SqlDbHelper.set_check_time_limit(30)
 end
 
 After("@no_active_check_window") do

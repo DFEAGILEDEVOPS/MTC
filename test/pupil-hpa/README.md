@@ -23,7 +23,7 @@ Use ruby version 2.4.0 and set it as your default:
 
 ##Installing required gems
 
-Go to the folder /test and run the following commands:
+Go to the folder /test/pupil-hpa and run the following commands:
 
 `gem install bundler` and then `bundle install`
 

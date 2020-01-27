@@ -45,7 +45,7 @@ Feature:
     When I am on the Pupil Register page
     Then any pupils not part of a group should not have an entry for group
 
-  @incomplete_pupil @wip
+  @incomplete_pupil
   Scenario: Incomplete pupils are highlighted with a red bar
     Given there is a pupil with an incomplete status
     When I am on the Pupil Register page

@@ -198,6 +198,8 @@ Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expect
   ls_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_code = ls_pupil['checkCode']
   school_uuid = ls_school['uuid']
+  p 'pupil check code ' + check_code
+  p 'school_uuid' + school_uuid
   check_result = AzureTableHelper.wait_for_received_check(school_uuid, check_code)
   expect(check_result['mark']).to eql expected_score
 end
