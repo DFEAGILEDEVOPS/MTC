@@ -110,4 +110,4 @@ This will then create a file in your home directory in the format:
 
 `received_check_message_<check_code>.json`
 
-#####Please note you will need to add your `AZURE_STORAGE_CONNECTION_STRING` to your `/admin/.env`
+#####Please note you will need to add your `AZURE_STORAGE_CONNECTION_STRING` to your `/admin/.env` or set `AZURE_STORAGE_CONNECTION_STRING` as an environment variable
