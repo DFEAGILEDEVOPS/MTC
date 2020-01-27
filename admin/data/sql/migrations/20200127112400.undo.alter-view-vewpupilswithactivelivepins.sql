@@ -1,4 +1,4 @@
-ALTER VIEW [mtc_admin].[vewPupilsWithActiveLivePins] AS
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsWithActiveLivePins] AS
     SELECT
         p.id,
         p.foreName,
