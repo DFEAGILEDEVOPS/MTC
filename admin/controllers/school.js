@@ -36,6 +36,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const currentDate = moment.tz(req.user.timezone || config.DEFAULT_TIMEZONE)
     const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
     const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
+    // TODO: Determine if the below call will still be needed
     const hasIncompleteChecks = await pupilRegisterService.hasIncompleteChecks(req.user.schoolId)
     const serviceMessage = await administrationMessageService.getMessage()
     const schoolHomeView = featureToggles.isFeatureEnabled('schoolHomeViewV2')
