@@ -2,7 +2,6 @@
 set -e
 
 FLOOD_NAME=$1 # name of stream to run
-FLOOD_REGION=$2
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
@@ -21,7 +20,7 @@ flood_uuid=$(curl -u flood_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: -X POST htt
 -F "flood_files[]=@basic.jmx" \
 -F "flood[grids][][infrastructure]=demand" \
 -F "flood[grids][][instance_quantity]=1" \
--F "flood[grids][][region]=$FLOOD_REGION" \
+-F "flood[grids][][region]=eu-west-2" \
 -F "flood[grids][][instance_type]=m5.xlarge" \
 -F "flood[grids][][stop_after]=15" | jq -r ".uuid")
 
