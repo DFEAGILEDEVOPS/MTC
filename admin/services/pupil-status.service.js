@@ -52,7 +52,6 @@ const pupilStatusService = {
     return newPupil
   },
 
-  // TODO: Move to pupil status service
   /**
    * Return the process status using new pupil status fields
    * @param {ProcessStatusArg} arg object containing the parameters
