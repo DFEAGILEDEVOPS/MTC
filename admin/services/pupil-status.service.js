@@ -47,7 +47,9 @@ const pupilStatusService = {
       pupilCheckComplete: pupil.pupilCheckComplete,
       pupilId: pupil.pupilId,
       pupilLoginDate: pupil.pupilLoginDate,
-      restartAvailable: pupil.restartAvailable
+      restartAvailable: pupil.restartAvailable,
+      processingFailed: pupil.processingFailed,
+      reason: pupil.reason
     })
     return newPupil
   },
@@ -72,7 +74,8 @@ const pupilStatusService = {
       pupilId,
       pupilLoginDate,
       restartAvailable,
-      processingFailed
+      processingFailed,
+      reason
     } = arg
 
     if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
@@ -80,7 +83,7 @@ const pupilStatusService = {
     }
 
     if (isPositive(attendanceId)) {
-      status = 'Not taking the Check'
+      status = reason
     } else if (isTrue(processingFailed)) {
       status = 'Error in processing'
     } else if (isTrue(restartAvailable)) {

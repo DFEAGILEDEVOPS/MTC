@@ -50,9 +50,10 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAt: null
+        pinExpiresAt: null,
+        reason: 'Just arrived with EAL'
       })
-      expect(status).toBe('Not taking the Check')
+      expect(status).toBe('Just arrived with EAL')
     })
 
     test('it can detect a Not Started pupil', () => {
