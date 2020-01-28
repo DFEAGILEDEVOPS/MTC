@@ -13,13 +13,21 @@ export class CheckFormService implements ICheckFormService {
 
   constructor () {
     this.connection = new mssql.ConnectionPool(config.Sql)
-    this.connection.connect().catch(err => {
+    console.info('GUY: connecting to sql...')
+    this.connection.connect()
+    .then(() => {
+      console.log('GUY: connected to sql')
+    })
+    .catch(err => {
       throw new Error(err)
     })
   }
 
   async getCheckFormDataByCheckCode (checkCode: string) {
     try {
+      // ensures connection is ready and available...
+      // tslint:disable-next-line: await-promise
+      await this.connection
       const request = new mssql.Request(this.connection)
       const sql = `SELECT TOP 1 f.formData
                FROM mtc_admin.[check] chk
@@ -42,8 +50,6 @@ export class CheckFormService implements ICheckFormService {
     } catch (err) {
       console.error(err.message)
       throw err
-    } finally {
-      await this.connection.close()
     }
   }
 
