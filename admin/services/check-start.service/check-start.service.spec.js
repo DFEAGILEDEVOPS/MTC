@@ -1,44 +1,23 @@
 'use strict'
 
 /* global describe it expect beforeEach spyOn fail */
-
-const moment = require('moment')
-
-const azureQueueService = require('../azure-queue.service')
-const checkDataService = require('../data-access/check.data.service')
 const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
-const checkFormDataService = require('../data-access/check-form.data.service')
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
-const checkStateService = require('../check-state.service')
 const checkWindowMock = require('../../spec/back-end/mocks/check-window-2')
 const configService = require('../config.service')
 const logger = require('../log.service.js').getLogger()
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
+const prepareCheckService = require('../prepare-check.service')
 const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
-const prepareCheckService = require('../prepare-check.service')
-const featureToggles = require('feature-toggles')
 
 const checkFormMock = {
   id: 100,
   name: 'MTC0100',
   isDeleted: false,
   formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11,"f2" : 2    }]'
-}
-const preparedCheckMock = {
-  id: 1,
-  checkCode: 'abc-def-ghi',
-  checkWindow_id: 2,
-  checkForm_id: 3,
-  pupil_id: 42,
-  pupilLoginDate: null,
-  mark: null,
-  maxMark: null,
-  markedAt: null,
-  startedAt: null,
-  data: null
 }
 
 describe('check-start.service', () => {
@@ -54,15 +33,42 @@ describe('check-start.service', () => {
   const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
-  const mockPreparedCheckQueueMessages = [
-    { mock: 'message', checkCode: '1A' },
-    { mock: 'message', checkCode: '2A' },
-    { mock: 'message', checkCode: '3A' }
-  ]
   const mockNewChecks = [
     { id: 1, checkCode: '1A', pupil_id: 1 },
     { id: 1, checkCode: '2A', pupil_id: 2 },
     { id: 3, checkCode: '3A', pupil_id: 3 }
+  ]
+  const mockCreatePupilCheckPayloads = [
+    {
+      checkCode: '1A',
+      schoolPin: 'pin',
+      pupilPin: 'pin',
+      pupil: {},
+      school: {},
+      tokens: {},
+      questions: {},
+      config: {}
+    },
+    {
+      checkCode: '2A',
+      schoolPin: 'pin',
+      pupilPin: 'pin',
+      pupil: {},
+      school: {},
+      tokens: {},
+      questions: {},
+      config: {}
+    },
+    {
+      checkCode: '3A',
+      schoolPin: 'pin',
+      pupilPin: 'pin',
+      pupil: {},
+      school: {},
+      tokens: {},
+      questions: {},
+      config: {}
+    }
   ]
 
   describe('#prepareCheck2', () => {
@@ -74,8 +80,8 @@ describe('check-start.service', () => {
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockPreparedCheckQueueMessages)
-      spyOn(azureQueueService, 'addMessageAsync')
+      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
+      spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
       spyOn(configService, 'getBatchConfig').and.returnValue(
         {
           1: configService.getBaseConfig(),
@@ -124,23 +130,10 @@ describe('check-start.service', () => {
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
-    it('adds messages to the queue', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
-      // pupil status re-calc and prepare-check queues
-      expect(azureQueueService.addMessageAsync).toHaveBeenCalledTimes(2)
-    })
-
     it('adds config to the database', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
-    })
-
-    it('uses prepare check service when toggle enabled', async () => {
-      spyOn(featureToggles, 'isFeatureEnabled').and.returnValue(true)
-      spyOn(prepareCheckService, 'prepareChecks')
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
-      expect(prepareCheckService.prepareChecks).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -179,73 +172,6 @@ describe('check-start.service', () => {
         expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
         expect({}.hasOwnProperty.call(c, 'checkForm_id'))
       })
-    })
-  })
-
-  describe('#pupilLogin', () => {
-    it('finds the latest check for the pupil', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      await service.pupilLogin(1)
-      expect(checkDataService.sqlFindOneForPupilLogin).toHaveBeenCalled()
-    })
-
-    it('throws an error if the check is not found', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(null)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      try {
-        await service.pupilLogin(1)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to find a prepared check for pupil: 1')
-      }
-    })
-
-    it('finds the CheckForm for the check', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      await service.pupilLogin(1)
-      expect(checkFormDataService.sqlGetActiveForm).toHaveBeenCalled()
-    })
-
-    it('throws an error if the check form is not found', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue(null)
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      try {
-        await service.pupilLogin(1)
-      } catch (error) {
-        expect(error.message).toBe('CheckForm not found: 3')
-      }
-    })
-
-    it('calls sqlUpdate to add the pupilLoginDate to the check', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      await service.pupilLogin(1)
-      expect(checkDataService.sqlUpdate).toHaveBeenCalled()
-      const arg = checkDataService.sqlUpdate.calls.mostRecent().args[0]
-      expect({}.hasOwnProperty.call(arg, 'pupilLoginDate')).toBeTruthy()
-      expect(moment.isMoment(arg.pupilLoginDate)).toBeTruthy()
-    })
-
-    it('returns an object with checkCode and questions props', async () => {
-      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
-      spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
-      spyOn(checkDataService, 'sqlUpdate')
-      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
-      const res = await service.pupilLogin(1)
-      expect({}.hasOwnProperty.call(res, 'checkCode')).toBeTruthy()
-      expect({}.hasOwnProperty.call(res, 'questions')).toBeTruthy()
     })
   })
 
@@ -300,7 +226,7 @@ describe('check-start.service', () => {
       })
       it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(5)
+        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
       })
     })

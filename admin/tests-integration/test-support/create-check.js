@@ -48,13 +48,7 @@ const createCheck = async function createCheck (code, isLiveCheck) {
                      received = 1,
                      mark = 10,
                      maxMark = 10                        
-                 where id = ${checkId};
-                
-                 INSERT INTO [mtc_admin].[checkResult]
-                 (check_id, payload)
-                 VALUES 
-                 (${checkId}, '{}');
-                 `
+                 where id = ${checkId};`
     await sqlService.modifyWithTransaction(sql)
   }
 

@@ -1,0 +1,25 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "queue",
+      "name": "submittedCheckQueue",
+      "direction": "out",
+      "queueName": "check-submitted",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    }
+  ]
+}

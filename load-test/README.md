@@ -20,25 +20,40 @@
 * Download [JMeter 4.0](http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
-### Install Jmeter Plugins - Custom JMeter Functions (not required)
+### Install Jmeter Plugins - Custom JMeter Functions (optional, not required)
 * download Jmeter plugin manager
 https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
 * download the Custom JMeter Functions plugin
 https://jmeter-plugins.org/wiki/Functions/
 
 ## Best practices
+* **Launch Jmeter executable from this directory** this will ensure that any output files from local test runs are created under this directory.
 * **Use a HTTP defaults item for each scenario** You can specify defaults for protocol, port & hostname for the target and parameterise each property.  This ensures you do not have to set them for each request.
 * **Do not hardcode data** It does not work at scale.  Instead use tools such as the XPath extractor to find elements in web pages and obtain record IDs from the value property (see the `admin-generate-pins.jmx` scenario as an example).
 * **Use the Debug Sampler for local scenario development** Use it to output variables and other useful information after a local test run.  This can help you see what data / parameters / values are being produced at runtime.
 * **Run a small load test locally after making changes**  The JMeter UI can handle running 1-5 user load on a local instance of the app.  The UI can sometimes be flaky, but its useful for viewing results and debug sampler information as you build out your scenarios.  If you encounter issues with the UI, run from the command line.
 
 
-## Teacher pin generation load test preparation (local test)
+## General environment preparation
 ### Initialise storage services
 Execute `./start.sh` to clear storage account contents, start SQL Server Docker instance, execute migrations and seed default data set.
 * **NOTE**: in order to successfully clear storage account contents, you must have the `AZURE_STORAGE_CONNECTION_STRING` variable set for the admin app.  Either in a `.env` file or as environment variable.
 ### Start the admin application
 start the admin app with `yarn start`
+
+## common parameters
+
+- **adminAppHost** the domain of the admin app, defaults to `localhost`
+- **port** the port of the admin app, defaults to `3001`
+- **protocol** the protocol of the admin app, defaults to `http`
+- **threads** number of threads to run, defaults to 5
+- **rampup** ramp up period, in seconds. defaults to 5
+- **duration** test run duration, in seconds. defaults to 300 (5 minutes)
+- **pupilApiHost** the domain of the pupil auth Api. defaults to `localhost`
+- **pupilApiPort** the port of the pupil auth Api, defaults to `3003`
+- **proxyFunctionHost** the domain of the function proxy api, defaults to `localhost`
+- **proxyFunctionPort** the port of the function proxy api, defaults to `7073`
+
 
 ## Seed load test data (non-local test only)
 The scenarios have low defaults (2 users) so they can be executed quickly in a local environment.  However, when performing load test at scale you will want to seed the database with a high volume of users (teachers) and pupils

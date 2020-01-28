@@ -63,7 +63,7 @@ Both will launch the app in development mode on http://localhost:3001/
 
 #### Environment Variables
 
-dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,
+dotenv is installed and will load environment variables from a `.env` file stored in the root of the project,
 if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
 * AZURE_STORAGE_CONNECTION_STRING - Storage account for upload file storage and queues.  Upload is only enabled for

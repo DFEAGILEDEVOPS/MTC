@@ -2,10 +2,12 @@
 
 const sql = require('mssql')
 const config = require('../config')
+const { performance } = require('perf_hooks')
 
-const teacherCount = 50000
+const teacherCount = config.DummyData.SchoolCount
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
+let schoolId = 7
 
 const table = new sql.Table('mtc_admin.user')
 table.create = false
@@ -15,7 +17,7 @@ table.columns.add('school_id', sql.Int)
 table.columns.add('role_id', sql.Int, { nullable: false })
 
 for (let idx = 0; idx < teacherCount; idx++) {
-  table.rows.add(`bulk-teacher${idx + 1}`, password, idx + 1, teacherRoleId)
+  table.rows.add(`bulk-teacher${idx + 1}`, password, schoolId++, teacherRoleId)
 }
 
 const pool = new sql.ConnectionPool(config.Sql)
@@ -24,13 +26,17 @@ pool.connect()
     console.log('connected')
     console.log(`inserting ${teacherCount} teachers...`)
     const request = new sql.Request(pool)
+    const start = performance.now()
     request.bulk(table, async (err, result) => {
+      const end = performance.now()
+      const durationInMilliseconds = end - start
+      const timeStamp = new Date().toISOString()
       if (err) {
         console.error(err.message)
         await pool.close()
         process.exit(-1)
       }
-      console.log('all done')
+      console.log(`bulk teacher insert: ${timeStamp} completed in ${durationInMilliseconds} ms`)
       await pool.close()
     })
   })
