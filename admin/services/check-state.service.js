@@ -8,11 +8,13 @@ const checkStatusDataService = require('./data-access/check-status.data.service'
  * @type {Readonly<{New: string, Expired: string, Complete: string, Started: string, Collected: string}>}
  */
 module.exports.States = Object.freeze({
-  New: 'New',
-  Expired: 'Expired',
+  Collected: 'Collected',
   Complete: 'Complete',
-  Started: 'Started',
-  Collected: 'Collected'
+  Error: 'Error',
+  Expired: 'Expired',
+  New: 'New',
+  NotReceived: 'Not Received',
+  Void: 'Void'
 })
 
 /**
@@ -21,10 +23,10 @@ module.exports.States = Object.freeze({
 const checkStatusCodes = Object.freeze({
   Collected: { code: 'COL' },
   Complete: { code: 'CMP' },
+  Error: { code: 'ERR' },
   Expired: { code: 'EXP' },
   New: { code: 'NEW' },
   NotReceived: { code: 'NTR' },
-  Started: { code: 'STD' },
   Void: { code: 'VOD' }
 })
 

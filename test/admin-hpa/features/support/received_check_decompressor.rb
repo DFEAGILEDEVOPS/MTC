@@ -4,8 +4,8 @@ require 'lz_string'
 class ReceivedCheckDecompressor
 
   def self.connection
-    if File.exist?('../../admin/.env')
-      credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+    if File.exist?('../../.env')
+      credentials = File.read('../../.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
       @account_name = credentials.find {|a| a.include? 'AccountName'}.gsub('AccountName=', '')
       @account_key = credentials.find {|a| a.include? 'AccountKey'}.gsub('AccountKey=', '')
     else

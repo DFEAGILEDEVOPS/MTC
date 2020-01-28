@@ -1,9 +1,21 @@
 #!/usr/bin/env node
 'use strict'
 
-require('dotenv').config()
-const csv = require('fast-csv')
+const path = require('path')
 const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
+const csv = require('fast-csv')
 const sqlService = require('../services/data-access/sql.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const { TYPES } = sqlService

@@ -2,15 +2,16 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const redisService = require('./data-access/redis-cache.service')
-const prepareCheckDataService = require('./data-access/prepare-check.data.service')
-const featureToggles = require('feature-toggles')
-const redisKeyService = require('./redis-key.service')
-const redisCacheService = require('./data-access/redis-cache.service')
+
 const logger = require('./log.service').getLogger()
+const prepareCheckDataService = require('./data-access/prepare-check.data.service')
+const redisCacheService = require('./data-access/redis-cache.service')
+const redisKeyService = require('./redis-key.service')
+const redisService = require('./data-access/redis-cache.service')
 
 const service = {
   /**
+   * Create the prepared Check and store it in Redis for login at scale
    * @param {[{object}]} checks the pupil checks to prepare
    * @returns {Promise<void>}
    */
@@ -58,12 +59,10 @@ const service = {
     }
     logger.info(`prepareCheckService:removeChecks called for ${checks.join(', ')}`)
     const checkCodes = await prepareCheckDataService.getCheckCodes(checks)
-    if (featureToggles.isFeatureEnabled('_2020Mode')) {
-      const secondaryKeys = checkCodes.map(checkCode => redisKeyService.getPreparedCheckLookup(checkCode))
-      const primaryKeys = await redisCacheService.getMany(secondaryKeys)
-      const result = await redisCacheService.drop(primaryKeys.concat(secondaryKeys))
-      return result
-    }
+    const secondaryKeys = checkCodes.map(checkCode => redisKeyService.getPreparedCheckLookup(checkCode))
+    const primaryKeys = await redisCacheService.getMany(secondaryKeys)
+    const result = await redisCacheService.drop(primaryKeys.concat(secondaryKeys))
+    return result
   }
 }
 
