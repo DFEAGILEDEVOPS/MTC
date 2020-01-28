@@ -1,5 +1,3 @@
-// const config = require('../config')
-
 const pupilStatusService = require('../services/pupil-status.service')
 
 const controller = {}
