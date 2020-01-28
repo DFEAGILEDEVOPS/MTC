@@ -1,6 +1,7 @@
 
 import * as mssql from 'mssql'
 import { SqlService } from '../../sql/sql.service'
+import * as RA from 'ramda-adjunct'
 
 export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
@@ -27,6 +28,10 @@ export class CheckFormService implements ICheckFormService {
         type: mssql.UniqueIdentifier
       }
     ]
-    return this.sqlService.query(sql, params)
+    const result = await this.sqlService.query(sql, params)
+    if (RA.isNilOrEmpty(result)) return
+    if (result[0].formData) {
+      return result[0].formData
+    }
   }
 }
