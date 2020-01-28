@@ -28,9 +28,13 @@ settingService.update = async (loadingTimeLimit, questionTimeLimit, checkTimeLim
  * @returns {questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number}
  */
 let cachedSettings
+let cachedSettingsExpiresAt
 settingService.get = async (cacheBust = false) => {
-  if (cacheBust || !cachedSettings) {
+  const now = Date.now()
+
+  if (cacheBust || !cachedSettings || !cachedSettingsExpiresAt || now > cachedSettingsExpiresAt) {
     cachedSettings = await settingDataService.sqlFindOne()
+    cachedSettingsExpiresAt = Date.now() + (5 * 60 * 1000) // +5 minutes
   }
   if (!cachedSettings) {
     cachedSettings = {

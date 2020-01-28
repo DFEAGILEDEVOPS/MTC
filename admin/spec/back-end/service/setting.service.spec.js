@@ -1,5 +1,5 @@
 'use strict'
-/* global spyOn, describe, it, expect */
+/* global spyOn, describe, it, expect jest */
 
 const settingDataService = require('../../../services/data-access/setting.data.service')
 const settingLogDataService = require('../../../services/data-access/setting-log.data.service')
@@ -21,6 +21,21 @@ describe('setting.service', () => {
       spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
       const result = await settingService.get()
       expect(Object.keys(result).length).toBe(3)
+    })
+    it('only caches for 5 minutes', async () => {
+      const now = new Date()
+      spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
+      await settingService.get(true) // 1st call
+
+      const nowPlusFiveMinutes = new Date(now.getTime() + 5 * 60.010 * 1000)
+      Date.now = jest.fn().mockReturnValue(nowPlusFiveMinutes)
+      await settingService.get() // 2nd call
+
+      const nowPlusSixMinutes = new Date(nowPlusFiveMinutes + 59.998 * 1000)
+      Date.now = jest.fn().mockReturnValue(nowPlusSixMinutes)
+      await settingService.get() // cached response
+
+      expect(settingDataService.sqlFindOne).toHaveBeenCalledTimes(2)
     })
   })
 
