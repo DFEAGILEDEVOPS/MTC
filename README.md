@@ -35,7 +35,7 @@ This compose file depends on `docker-compose.yml` and should not be run directly
 
 To stand up the tests, app and db containers run either `./run-compose-admin-test-suite.sh` or `./run-compose-pupil-test-suite.sh`
 
-Both of these scripts require the following values defined in `/admin/.env`:
+Both of these scripts require the following values defined in `$PROJECT_ROOT/.env`:
 * Note how both values are wrapped in single quotes.  This is essential...
 ```
 AZURE_STORAGE_CONNECTION_STRING='foo-bar'

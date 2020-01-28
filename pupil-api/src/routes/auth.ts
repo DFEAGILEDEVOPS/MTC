@@ -1,8 +1,6 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-import { AuthController } from '../controllers/auth.controller'
-import { FeatureService } from '../services/feature.service'
 import { RedisAuthController } from '../controllers/redis.auth.controller'
 
 export interface IAuthController {
@@ -14,12 +12,7 @@ export class AuthRouter {
   authController: IAuthController
 
   constructor () {
-    const featureService = new FeatureService()
-    if (featureService._2020Mode()) {
-      this.authController = new RedisAuthController()
-    } else {
-      this.authController = new AuthController()
-    }
+    this.authController = new RedisAuthController()
     this.router = Router()
     this.init()
   }

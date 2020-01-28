@@ -57,7 +57,6 @@ end
 
 After("@pupil_not_taking_check") do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_status(6, 1)
 end
 
 Before('@reset_hdf_submission') do
@@ -88,7 +87,6 @@ end
 
 After("@hdf") do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_status(6, 1)
 end
 
 Before("@create_new_window") do

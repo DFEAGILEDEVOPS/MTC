@@ -199,7 +199,8 @@ Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expect
   check_code = ls_pupil['checkCode']
   school_uuid = ls_school['uuid']
   p 'pupil check code ' + check_code
-  p 'school_uuid' + school_uuid
+  p 'school_uuid ' + school_uuid
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until !AzureTableHelper.wait_for_received_check(school_uuid, check_code)['mark'].nil?}
   check_result = AzureTableHelper.wait_for_received_check(school_uuid, check_code)
   expect(check_result['mark']).to eql expected_score
 end

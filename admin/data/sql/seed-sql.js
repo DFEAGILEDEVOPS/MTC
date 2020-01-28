@@ -1,10 +1,21 @@
 'use strict'
 
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 const R = require('ramda')
 const csv = require('fast-csv')
-const fs = require('fs')
-const path = require('path')
 const logger = require('../../services/log.service').getLogger()
 
 const sqlService = require('../../services/data-access/sql.service')

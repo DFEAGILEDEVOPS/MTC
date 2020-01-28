@@ -85,7 +85,7 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
  */
 checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) {
   const sql = `
-  SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
+  SELECT COUNT(*) AS [cnt] FROM [mtc_admin].[check]
   WHERE pupil_id=@pupilId
   AND startedAt IS NOT NULL
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
