@@ -10,7 +10,6 @@ const attendanceService = require('../../../services/attendance.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
-const pupilStatusService = require('../../../services/pupil.status.service')
 const groupService = require('../../../services/group.service')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 
@@ -47,7 +46,6 @@ describe('pupils-not-taking-the-check controller:', () => {
     beforeEach(() => {
       sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
-      spyOn(pupilStatusService, 'recalculateStatusByPupilSlugs')
     })
 
     afterEach(() => {
@@ -187,7 +185,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
       })
 
       it('should redirect because req.body has missing data', async () => {
@@ -286,7 +283,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
         expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        // expect(pupilStatusService.recalculateStatusByPupilSlugs).toHaveBeenCalled()
       })
 
       it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {

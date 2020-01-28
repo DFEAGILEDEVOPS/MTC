@@ -1,7 +1,7 @@
 Installing and Running MTC tests
 ================================
 
-This is a short guide to installing and running the MTC tests.  
+This is a short guide to installing and running the MTC tests.
 
 ##Clone the tests
 
@@ -14,10 +14,10 @@ git clone git@github.com:DFEAGILEDEVOPS/MTC.git
 Follow installation instructions for installing RVM here:
 
 https://rvm.io/rvm/install
- 
+
 Once rvm is installed, we need ruby version 2.4.0, to install use the following:
  `rvm install 2.4.0`
- 
+
 Use ruby version 2.4.0 and set it as your default:
  `rvm use 2.4.0 --default`
 
@@ -36,9 +36,9 @@ These two commands will install all the gems that the tests need.
 To run the tests with the default options ( headless and app running on localhost:4200 ) give the command below:
 
 `cd test`
-And then: 
+And then:
 `cucumber`
- 
+
  The above command runs the tests headless & sequentially in one process on url 'http://localhost:4200'
 
 If you want to run the tests in chrome:
@@ -77,9 +77,9 @@ any benefit then you need to add the following:
 Options available:
 
 `rake parallel NODES=4 GROUP_SIZE=5`
- 
+
 Set the `NODES` environment variable to how many threads / nodes you want.
-Set the `GROUP_SIZE` environment variable to how many scenarios you want in 
+Set the `GROUP_SIZE` environment variable to how many scenarios you want in
 group that will be executed on one of the nodes
 
 You can also pass in any other options by using the following:
@@ -89,19 +89,19 @@ You can also pass in any other options by using the following:
 
 ##Using Ruby with Azure Storage
 
-Create a file named `.env` in the root of `/admin` and put 
+Create a file named `.env` in the root of the project and put
 in your `AZURE_STORAGE_CONNECTION_STRING` in to it.
 
 If you want to set environment variables to run the tests without the `.env` file please set the following vars:
-`ENV["AZURE_ACCOUNT_NAME"]` and `ENV["AZURE_ACCOUNT_KEY"]` 
+`ENV["AZURE_ACCOUNT_NAME"]` and `ENV["AZURE_ACCOUNT_KEY"]`
 
 #####Using Ruby with Azure Storage Queues
 
-In the `test/pupil/features/support/azure_queue_helper.rb` we have a method 
+In the `test/pupil/features/support/azure_queue_helper.rb` we have a method
 to retrieve a number of messages from a given queue. Each message has a property called `message_text`
 which is Base64 encoded. Use the `decode_message_text` method to decode the message once the message
 required has been found.
- 
+
 More methods and information can be found here:
 https://github.com/azure/azure-storage-ruby/tree/master/queue
 
@@ -109,14 +109,14 @@ https://github.com/azure/azure-storage-ruby/tree/master/queue
 
 In `test/pupil/features/support/azure_blob_helper.rb` we have the `get_blobs` method which takes a argument
 for the container name. This will return a list of blobs in the container.
- 
+
 More methods and information can be found here:
 https://github.com/azure/azure-storage-ruby/tree/master/blob
 
 #####Using Ruby with Azure Storage Tables
 
-In the `test/pupil/features/support/azure_table_helper.rb` we have a method to retrieve a row from a given 
-table using the `PartitionKey` and `RowKey`. 
+In the `test/pupil/features/support/azure_table_helper.rb` we have a method to retrieve a row from a given
+table using the `PartitionKey` and `RowKey`.
 
 More methods and information can be found here:
 https://github.com/azure/azure-storage-ruby/tree/master/table

@@ -10,7 +10,6 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const serviceToExport = {
   /**
    * Return a list of pupils who can have a pin generated
-   * TODO: add pinEnv
    * @param schoolId
    * @return {Promise<*>}
    */

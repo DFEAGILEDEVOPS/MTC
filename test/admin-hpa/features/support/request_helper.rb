@@ -29,88 +29,208 @@ class RequestHelper
     builder.to_xml
   end
 
-  def self.build_payload_json(parsed_response_pupil_auth)
+  def self.build_payload_json(parsed_response_pupil_auth,correct_answers=nil)
     ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
     {
       "answers": [
         {
+          "factor1": 1,
+          "factor2": 1,
+          "answer": "2",
+          "sequenceNumber": 1,
+          "question": "1x1",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 2,
+          "answer": "0",
+          "sequenceNumber": 2,
+          "question": "1x2",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 3,
+          "answer": "0",
+          "sequenceNumber": 3,
+          "question": "1x3",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 4,
+          "answer": "0",
+          "sequenceNumber": 4,
+          "question": "1x4",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 5,
+          "answer": "0",
+          "sequenceNumber": 5,
+          "question": "1x5",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 6,
+          "answer": "0",
+          "sequenceNumber": 6,
+          "question": "1x6",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 7,
+          "answer": "0",
+          "sequenceNumber": 7,
+          "question": "1x7",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 8,
+          "answer": "0",
+          "sequenceNumber": 8,
+          "question": "1x8",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 9,
+          "answer": "0",
+          "sequenceNumber": 9,
+          "question": "1x9",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 12,
+          "factor2": 12,
+          "answer": "0",
+          "sequenceNumber": 10,
+          "question": "12x12",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 1,
+          "answer": "",
+          "sequenceNumber": 11,
+          "question": "1x1",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 2,
+          "answer": "0",
+          "sequenceNumber": 12,
+          "question": "1x2",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 3,
+          "answer": "0",
+          "sequenceNumber": 13,
+          "question": "1x3",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 4,
+          "answer": "0",
+          "sequenceNumber": 14,
+          "question": "1x4",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 5,
+          "answer": "",
+          "sequenceNumber": 15,
+          "question": "1x5",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 6,
+          "answer": "0",
+          "sequenceNumber": 16,
+          "question": "1x6",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 7,
+          "answer": "0",
+          "sequenceNumber": 17,
+          "question": "1x7",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 8,
+          "answer": "0",
+          "sequenceNumber": 18,
+          "question": "1x8",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 9,
+          "answer": "0",
+          "sequenceNumber": 19,
+          "question": "1x9",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 12,
+          "factor2": 12,
+          "answer": "0",
+          "sequenceNumber": 20,
+          "question": "12x12",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 2,
+          "answer": "0",
+          "sequenceNumber": 21,
+          "question": "1x2",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 3,
+          "answer": "0",
+          "sequenceNumber": 22,
+          "question": "1x3",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 4,
+          "answer": "0",
+          "sequenceNumber": 23,
+          "question": "1x4",
+          "clientTimestamp": "#{ct}"
+        },
+        {
+          "factor1": 1,
+          "factor2": 5,
+          "answer": "0",
+          "sequenceNumber": 24,
+          "question": "1x5",
+          "clientTimestamp": "#{ct}"
+        },
+        {
           "factor1": 2,
           "factor2": 5,
-          "answer": "5",
-          "sequenceNumber": 1,
+          "answer": "0",
+          "sequenceNumber": 25,
           "question": "2x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 11,
-          "factor2": 2,
-          "answer": "5",
-          "sequenceNumber": 2,
-          "question": "11x2",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 5,
-          "answer": "5",
-          "sequenceNumber": 1,
-          "question": "2x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 11,
-          "factor2": 2,
-          "answer": "5",
-          "sequenceNumber": 2,
-          "question": "11x2",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 5,
-          "answer": "5",
-          "sequenceNumber": 1,
-          "question": "2x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 11,
-          "factor2": 2,
-          "answer": "5",
-          "sequenceNumber": 2,
-          "question": "11x2",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 5,
-          "answer": "5",
-          "sequenceNumber": 1,
-          "question": "2x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 11,
-          "factor2": 2,
-          "answer": "5",
-          "sequenceNumber": 2,
-          "question": "11x2",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 5,
-          "answer": "5",
-          "sequenceNumber": 1,
-          "question": "2x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 11,
-          "factor2": 2,
-          "answer": "5",
-          "sequenceNumber": 2,
-          "question": "11x2",
           "clientTimestamp": "#{ct}"
         }
       ],
@@ -255,8 +375,10 @@ class RequestHelper
     }
   end
 
-  def self.build_check_submission_message(parsed_response_pupil_auth)
+  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers=nil)
+   correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
     payload = build_payload_json(parsed_response_pupil_auth)
+    payload[:answers][0..correct_answers].each {|q| q[:answer] = q[:factor1] * q[:factor2]} unless correct_answers.nil?
     {"version": 2, "checkCode": parsed_response_pupil_auth['checkCode'],
      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
      "archive": LZString::UTF16.compress(payload.to_json)

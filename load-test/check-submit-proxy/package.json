@@ -1,0 +1,13 @@
+{
+  "name": "",
+  "version": "",
+  "description": "",
+  "scripts": {
+    "start": "func host start --port 7073",
+    "install-bindings": "func extensions install"
+  },
+  "author": "",
+  "dependencies": {
+    "lz-string": "^1.4.4"
+  }
+}

@@ -1,7 +1,21 @@
 'use strict'
 
 // these modules must be loaded first
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
+
 // telemetry
 // fallback to app insights, if configured
 const appInsights = require('./helpers/app-insights')
@@ -19,7 +33,6 @@ const featureToggles = require('feature-toggles')
 const flash = require('connect-flash')
 const LocalStrategy = require('passport-local').Strategy
 const piping = require('piping')
-const path = require('path')
 const partials = require('express-partials')
 const passport = require('passport')
 const session = require('express-session')

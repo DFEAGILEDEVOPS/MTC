@@ -1,6 +1,19 @@
 'use strict'
 
-import 'dotenv/config'
+import * as path from 'path'
+import * as fs from 'fs'
+import * as dotenv from 'dotenv'
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    dotenv.config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 import * as toBool from 'to-bool'
 
 const getEnvironment = () => {
@@ -43,9 +56,7 @@ export default {
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
   },
   RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800,
-  FeatureToggles: {
-    _2020Mode: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_2020_MODE') ? toBool(process.env.FEATURE_TOGGLE_2020_MODE) : true
-  },
+  FeatureToggles: {},
   ServiceBus: {
     connectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   }

@@ -60,10 +60,8 @@
       "<rootDir>/src/tests-integration/"
     ]
   },
-  "globals":
-  {
-    "ts-jest":
-    {
+  "globals": {
+    "ts-jest": {
       "isolatedModules": true
     }
   }

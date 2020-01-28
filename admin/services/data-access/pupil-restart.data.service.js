@@ -14,7 +14,7 @@ const pupilRestartDataService = {}
  */
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
   const sql = `SELECT COUNT(*) AS [cnt]
-  FROM ${sqlService.adminSchema}.[pupilRestart]
+  FROM [mtc_admin].[pupilRestart]
   WHERE pupil_id=@pupilId AND isDeleted=0
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
@@ -221,32 +221,6 @@ pupilRestartDataService.sqlFindOpenRestartForPupil = async (pupilUrlSlug, school
   const restarts = await sqlService.query(sql, params)
 
   return R.head(restarts)
-}
-
-/**
- * Find a check by id
- * @param checkId
- * @param schoolId
- * @return {Promise<Object>}
- */
-pupilRestartDataService.sqlFindCheckById = async function (checkId, schoolId) {
-  const sql = `SELECT
-                chk.*,
-                cs.code
-               FROM [mtc_admin].[check] chk join
-                    [mtc_admin].[pupil] p ON (chk.pupil_id = p.id) join
-                    [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)
-               WHERE
-                    chk.id = @checkId
-               AND p.school_id = @schoolId`
-
-  const params = [
-    { name: 'checkId', value: checkId, type: TYPES.Int },
-    { name: 'schoolId', value: schoolId, type: TYPES.Int }
-  ]
-
-  const check = await sqlService.query(sql, params)
-  return R.head(check)
 }
 
 module.exports = pupilRestartDataService

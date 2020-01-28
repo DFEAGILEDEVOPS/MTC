@@ -5,7 +5,20 @@ Requires your local env file to be configured with the following...
 - AZURE_STORAGE_CONNECTION_STRING
 */
 
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 const azure = require('azure-storage')
 const bluebird = require('bluebird')
 const names = require('../../deploy/storage/tables-queues.json')

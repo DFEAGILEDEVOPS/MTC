@@ -2,17 +2,12 @@ const moment = require('moment-timezone')
 const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 
-const checkDataService = require('../services/data-access/check.data.service')
 const config = require('../config')
 const dateService = require('../services/date.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
-const pupilAttendanceService = require('../services/attendance.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const randomGenerator = require('../lib/random-generator')
-const restartService = require('../services/restart.service')
 
 const allowedWords = new Set(
   (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
@@ -48,37 +43,6 @@ const chars = '23456789'
 pinGenerationService.getPinExpiryTime = pinExpiryTime
 
 /**
- * Fetch pupils and filter required only pupil attributes
- * @param schoolId
- * @returns {Array}
- */
-pinGenerationService.getPupils = async (schoolId, pinEnv) => {
-  let pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
-  pupils = await Promise.all(
-    pupils.map(async p => {
-      const isValid = await pinGenerationService.isValid(p, pinEnv)
-      if (isValid) {
-        return {
-          id: p.id,
-          pin: p.pin,
-          group_id: p.group_id,
-          dateOfBirth: p.dateOfBirth,
-          foreName: p.foreName,
-          lastName: p.lastName,
-          fullName: `${p.lastName}, ${p.foreName}`,
-          middleNames: p.middleNames
-        }
-      }
-    })
-  )
-  pupils = pupils.filter(p => !!p)
-  if (pupils.length === 0) return []
-  // determine if more than one pupil has same full name
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  return pupils
-}
-
-/**
  * Find groups that have pupils that can get PINs assigned.
  * @param schoolId
  * @param pupilIds
@@ -87,25 +51,6 @@ pinGenerationService.getPupils = async (schoolId, pinEnv) => {
 pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
   if (pupilIds.length < 1) return []
   return groupDataService.sqlFindGroupsByIds(schoolId, pupilIds)
-}
-
-/**
- * Determine if pupil is valid for pin generation
- * @param p
- * @returns {Boolean}
- */
-pinGenerationService.isValid = async (p, pinEnv = 'live') => {
-  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(
-    p.id
-  )
-  const hasAttendance = await pupilAttendanceService.hasAttendance(p.id, pinEnv)
-  if (checkCount === restartService.totalChecksAllowed) return false
-  const canRestart = await restartService.canRestart(p.id)
-  const hasValidPin = pinValidator.isActivePin(p.pin, p.pinExpiresAt)
-  // TODO: use pinEnv to differentiate between live and familiarisation checks
-  return pinEnv === 'live'
-    ? !hasValidPin && !hasAttendance && !canRestart
-    : !hasValidPin && !hasAttendance
 }
 
 /**
