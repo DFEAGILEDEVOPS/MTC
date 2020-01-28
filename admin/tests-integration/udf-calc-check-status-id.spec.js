@@ -1,7 +1,20 @@
 'use strict'
 
 /* global describe it expect beforeAll afterAll */
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 const sql = require('../services/data-access/sql.service')
 const createCheck = require('./test-support/create-check')
 
@@ -91,13 +104,6 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusId).toBe('COL') // COLLECTED
     })
 
-    it('can identify a STARTED check', async () => {
-      const id = await createCheck('STD', 0)
-      const res = await sql.query(createQuery(id))
-      const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // STARTED
-    })
-
     it('can identify an EXPIRED check with a pin', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
@@ -125,6 +131,9 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const checkStatusId = res[0].code
       expect(checkStatusId).toBe('STD') // Started
     })
+
+    // TODO: add support for checkStatus.code = 'ERR'
+    // TODO: add support for checkStatus.code = 'VOD'
   })
 
   describe('unusual conditions:', () => {

@@ -3,32 +3,24 @@
 const moment = require('moment-timezone')
 const R = require('ramda')
 const logger = require('../log.service').getLogger()
-const featureToggles = require('feature-toggles')
 
 // Libraries used
 const config = require('../../config')
-
-// To be deprecated
-const azureQueueService = require('../azure-queue.service')
 
 // moved
 const setValidationService = require('./set-validation.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 
 // to be moved to the module
-const checkDataService = require('../data-access/check.data.service')
 const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
-const checkFormDataService = require('../data-access/check-form.data.service')
 const checkFormService = require('../check-form.service')
-const checkStateService = require('../check-state.service')
-
 const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
 const pinGenerationService = require('../pin-generation.service')
+const prepareCheckService = require('../prepare-check.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
-const prepareCheckService = require('../prepare-check.service')
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -131,20 +123,6 @@ checkStartService.prepareCheck2 = async function (
     pupilIds
   )
 
-  if (isLiveCheck) {
-    const pupilStatusQueueName = queueNameService.getName(
-      queueNameService.NAMES.PUPIL_STATUS
-    )
-
-    // Request the pupil status be re-computed
-    // TODO: delete when pupil.status is deleted
-    const pupilMessages = newChecks.map(c => { return { pupilId: c.pupil_id, checkCode: c.checkCode } })
-
-    // TODO to be removed 2020
-    // Send a batch of messages for all the pupils requesting a status change
-    await azureQueueService.addMessageAsync(pupilStatusQueueName, { version: 2, messages: pupilMessages })
-  }
-
   let pupilChecks
   try {
     pupilChecks = await checkStartService
@@ -153,34 +131,12 @@ checkStartService.prepareCheck2 = async function (
     logger.error('Unable to prepare check messages', error)
     throw error
   }
-  const prepareCheckServiceEnabled = featureToggles.isFeatureEnabled('_2020Mode')
 
-  if (prepareCheckServiceEnabled) {
-    await prepareCheckService.prepareChecks(pupilChecks)
-  } else {
-    sendChecksToTableStorage(pupilChecks, schoolId)
-  }
+  // Put the checks into redis for pupil-login at scale
+  await prepareCheckService.prepareChecks(pupilChecks)
 
   // Store the `config` section from the preparedCheckMessages into the DB
   return this.storeCheckConfigs(pupilChecks, newChecks)
-}
-
-async function sendChecksToTableStorage (pupilChecks, schoolId) {
-  // Send batch messages each containing the up to 20 prepare check messages.   This avoids hitting the max message size
-  // for Azure Queues of 64Kb
-  // Get the queue name
-  const prepareCheckQueueName = queueNameService.getName(
-    queueNameService.NAMES.PREPARE_CHECK
-  )
-  logger.info(`check start service: prepare check batch size is ${config.prepareCheckMessageBatchSize}`)
-  const batches = R.splitEvery(config.prepareCheckMessageBatchSize, pupilChecks)
-  let batchCount = 1
-  const totalBatches = batches.length
-  for (const batch of batches) {
-    logger.info(`check start service: sending batch ${batchCount} of ${totalBatches} for school ${schoolId}`)
-    await azureQueueService.addMessageAsync(prepareCheckQueueName, { version: 2, messages: batch })
-    batchCount += 1
-  }
 }
 
 checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
@@ -253,38 +209,8 @@ checkStartService.initialisePupilCheck = async function (
 }
 
 /**
- *
- * @param pupilId
- * @return {Promise<*>} partial check data
- */
-checkStartService.pupilLogin = async function (pupilId) {
-  const check = await checkDataService.sqlFindOneForPupilLogin(pupilId)
-  if (!check) {
-    throw new Error('Unable to find a prepared check for pupil: ' + pupilId)
-  }
-
-  const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
-  if (!res) {
-    throw new Error('CheckForm not found: ' + check.checkForm_id)
-  }
-  const checkForm = R.head(res)
-  const checkData = {
-    id: check.id,
-    pupilLoginDate: moment.utc()
-  }
-
-  await checkDataService.sqlUpdate(checkData)
-  await checkStateService.changeState(
-    check.checkCode,
-    checkStateService.States.Collected
-  )
-  const questions = JSON.parse(checkForm.formData)
-  return { checkCode: check.checkCode, questions, practice: !check.isLiveCheck }
-}
-
-/**
- * Query the DB and put the info into messages suitable for placing on the prepare-check queue
- * The message needs to contain everything the pupil needs to login and take the check
+ * Return pupil login payloads
+ * The payload needs to contain everything the pupil needs to login and take the check
  * @param checkIds
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
@@ -305,7 +231,6 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
 
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
-  let checkCompleteSasToken
   let checkSubmitSasToken
 
   const checkStartedSasToken = sasTokenService.generateSasToken(
@@ -317,10 +242,6 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
     sasExpiryDate
   )
   if (hasLiveChecks) {
-    checkCompleteSasToken = sasTokenService.generateSasToken(
-      queueNameService.NAMES.CHECK_COMPLETE,
-      sasExpiryDate
-    )
     checkSubmitSasToken = sasTokenService.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
@@ -378,11 +299,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
       config: pupilConfig
     }
     if (o.check_isLiveCheck) {
-      if (featureToggles.isFeatureEnabled('_2020Mode')) {
-        payload.tokens.checkComplete = checkSubmitSasToken
-      } else {
-        payload.tokens.checkComplete = checkCompleteSasToken
-      }
+      payload.tokens.checkComplete = checkSubmitSasToken
     }
     payloads.push(payload)
   }

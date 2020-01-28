@@ -6,7 +6,20 @@ generates sequenced pupil and school pins as a json array.
 Created for testing the pupil API in isolation from loader.io.
 */
 
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 
 const entriesToCreate = process.env.LOAD_COUNT || 1000
 const schoolCount = entriesToCreate / 30

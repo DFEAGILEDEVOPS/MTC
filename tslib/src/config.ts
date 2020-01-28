@@ -1,5 +1,18 @@
-
-import 'dotenv/config'
+import * as path from 'path'
+import * as fs from 'fs'
+// @ts-ignore
+import * as dotenv from 'dotenv'
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    dotenv.config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 import * as toBool from './common/to-bool'
 
 const getEnvironment = () => {

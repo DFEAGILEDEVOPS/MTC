@@ -1,10 +1,23 @@
 'use strict'
 /* global describe beforeAll it expect fail spyOn afterAll */
 
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 const moment = require('moment')
 const R = require('ramda')
 const logger = require('../services/log.service').getLogger()
-require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const TYPES = sql.TYPES
 const uuid = require('uuid/v4')

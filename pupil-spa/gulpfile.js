@@ -1,6 +1,19 @@
 const gulp = require('gulp')
 const replace = require('gulp-string-replace')
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 
 gulp.task('setRuntimeConfigURL', () => {
   console.log('Attempting to update runtime config URL from the environment...')

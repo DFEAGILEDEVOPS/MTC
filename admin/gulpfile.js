@@ -9,7 +9,20 @@ const clean = require('gulp-clean')
 const replace = require('gulp-replace')
 const winston = require('winston')
 const merge = require('merge-stream')
-require('dotenv').config()
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 
 const config = require('./config')
 
