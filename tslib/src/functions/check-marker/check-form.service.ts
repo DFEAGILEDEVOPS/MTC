@@ -13,13 +13,14 @@ export class CheckFormService implements ICheckFormService {
 
   constructor () {
     this.connection = new mssql.ConnectionPool(config.Sql)
+    this.connection.connect().catch(err => {
+      throw new Error(err)
+    })
   }
 
   async getCheckFormDataByCheckCode (checkCode: string) {
-    let pool: mssql.ConnectionPool
     try {
-      pool = await this.connection.connect()
-      const request = new mssql.Request(pool)
+      const request = new mssql.Request(this.connection)
       const sql = `SELECT TOP 1 f.formData
                FROM mtc_admin.[check] chk
                INNER JOIN mtc_admin.[checkForm] f ON chk.checkForm_id = f.id
