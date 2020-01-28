@@ -3,10 +3,11 @@
 const sql = require('mssql')
 const config = require('../config')
 const uuid = require('uuid/v4')
+const { performance } = require('perf_hooks')
 
-const pupilCountPerSchool = 30
-let schoolCount = 20000
-let schoolId = 6
+const pupilCountPerSchool = 300
+let schoolCount = config.DummyData.SchoolCount
+let schoolId = 7
 
 const table = new sql.Table('mtc_admin.pupil')
 table.create = false
@@ -21,8 +22,8 @@ for (let schoolIdx = 0; schoolIdx < schoolCount; schoolIdx++) {
   for (let pupilIndex = 0; pupilIndex < pupilCountPerSchool; pupilIndex++) {
     table.rows.add(schoolId, `bulk pupil ${pupilIndex + 1}`, `pupil ${pupilIndex + 1}`,
       'F', new Date('2009-01-01'), genFakeUpn())
-    schoolId++
   }
+  schoolId++
 }
 
 const pool = new sql.ConnectionPool(config.Sql)
@@ -31,13 +32,17 @@ pool.connect()
     console.log('connected')
     console.log(`inserting ${pupilCountPerSchool} pupils into ${schoolCount} schools...`)
     const request = new sql.Request(pool)
+    const start = performance.now()
     request.bulk(table, async (err, result) => {
+      const end = performance.now()
+      const durationInMilliseconds = end - start
+      const timeStamp = new Date().toISOString()
       if (err) {
         console.error(err.message)
         await pool.close()
         process.exit(-1)
       }
-      console.log('all done')
+      console.log(`bulk pupil insert: ${timeStamp} completed in ${durationInMilliseconds} ms`)
       await pool.close()
     })
   })

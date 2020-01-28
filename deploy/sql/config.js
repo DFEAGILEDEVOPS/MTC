@@ -49,5 +49,8 @@ module.exports = {
     MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,
     InitialPauseMs: parseInt(process.env.RETRY_PAUSE_MS, 10) || 5000,
     PauseMultiplier: parseFloat(process.env.RETRY_PAUSE_MULTIPLIER) || 1.5
+  },
+  DummyData: {
+    SchoolCount: parseInt(process.env.DUMMY_SCHOOL_COUNT, 10) || 100
   }
 }
