@@ -20,5 +20,5 @@ SELECT
    AND  chkStatus.code = 'NEW'
    AND  chk.isLiveCheck = 1
    AND  p.attendanceId IS NULL
-   AND  p.currentCheckId IS NULL
+   AND  p.currentCheckId IS NOT NULL
 ;
