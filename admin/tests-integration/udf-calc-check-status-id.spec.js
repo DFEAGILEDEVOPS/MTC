@@ -33,13 +33,6 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusId).toBe('COL') // COLLECTED
     })
 
-    it('can identify a STARTED check', async () => {
-      const id = await createCheck('STD', 1)
-      const res = await sql.query(createQuery(id))
-      const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // STARTED
-    })
-
     it('can identify a COMPLETED check', async () => {
       const id = await createCheck('CMP', 1)
       const res = await sql.query(createQuery(id))
@@ -91,13 +84,6 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusId).toBe('COL') // COLLECTED
     })
 
-    it('can identify a STARTED check', async () => {
-      const id = await createCheck('STD', 0)
-      const res = await sql.query(createQuery(id))
-      const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // STARTED
-    })
-
     it('can identify an EXPIRED check with a pin', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
@@ -123,7 +109,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const id = await createCheck('NTR1', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // Started
+      expect(checkStatusId).toBe('COL') // COLLECTED
     })
   })
 
@@ -132,7 +118,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const id = await createCheck('CMP', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('STD') // STARTED
+      expect(checkStatusId).toBe('COL') // COLLECTED
     })
   })
 })

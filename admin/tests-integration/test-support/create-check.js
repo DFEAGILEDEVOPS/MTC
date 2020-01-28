@@ -38,14 +38,6 @@ const createCheck = async function createCheck (code, isLiveCheck) {
 
   // These modification to the base check are meant to represent canonical
   // representations of the check in various status's.
-  if (code === 'STD') {
-    const sql = `UPDATE [mtc_admin].[check] 
-                    set pupilLoginDate = GETUTCDATE(),
-                        startedAt = GETUTCDATE() 
-                    where id = ${checkId}`
-    await sqlService.modify(sql)
-  }
-
   if (code === 'CMP') {
     const sql = `UPDATE [mtc_admin].[check] 
                  set pupilLoginDate = GETUTCDATE(),   

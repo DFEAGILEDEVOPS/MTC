@@ -11,7 +11,6 @@ module.exports.States = Object.freeze({
   New: 'New',
   Expired: 'Expired',
   Complete: 'Complete',
-  Started: 'Started',
   Collected: 'Collected'
 })
 
@@ -24,7 +23,6 @@ const checkStatusCodes = Object.freeze({
   Expired: { code: 'EXP' },
   New: { code: 'NEW' },
   NotReceived: { code: 'NTR' },
-  Started: { code: 'STD' },
   Void: { code: 'VOD' }
 })
 
