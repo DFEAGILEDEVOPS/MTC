@@ -83,6 +83,9 @@ If you are running a local run of 5 users or less (useful for debugging jmx scen
 
 For a set of 100 schools, with 300 pupils each and one teacher, run `./prep-local-db.sh` prior to the test run.
 
+# Run a Local test
+Run `./exec-local.sh` to run a local load test of 5 users.  See the script source for requirements.
+
 ## Additional load test scripts (for remote environment setups)
 **Some of these are pre 2020, and may no longer work as-is.**
 
@@ -100,6 +103,3 @@ The scenarios have low defaults (2 users) so they can be executed quickly in a l
 * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing:
     * While in the `load-test` directory:
     * `node bin/extract-pins-to-csv.js`
-
-# Local test
-Run `./exec-local.sh` to run a local load test of 5 users.  See the script source for requirements.
