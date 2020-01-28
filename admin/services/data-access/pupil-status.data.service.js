@@ -5,7 +5,7 @@ const R = require('ramda')
 const sqlService = require('./sql.service')
 const pupilStatusDataService = {}
 
-pupilStatusDataService.sqlFindPupilsFullStatus = async function sqlFindPupilsAndAttendanceReasons (schoolId) {
+pupilStatusDataService.sqlFindPupilsFullStatus = async (schoolId) => {
   if (!schoolId) {
     throw new Error('schoolId param is required')
   }
@@ -51,7 +51,7 @@ pupilStatusDataService.sqlFindPupilsFullStatus = async function sqlFindPupilsAnd
  * @param {number} schoolId
  * @return {Promise<*>}
  */
-pupilStatusDataService.sqlFindOnePupilFullStatus = async function sqlFindOnePupilFullStatus (urlSlug, schoolId) {
+pupilStatusDataService.sqlFindOnePupilFullStatus = async (urlSlug, schoolId) => {
   if (!urlSlug) {
     throw new Error('urlSlug param is required')
   }
