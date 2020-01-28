@@ -98,11 +98,11 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceSpeechStarted();
-      this.audit.addEntry(new UtteranceStarted({ utterance }));
+      this.audit.addEntry(new UtteranceStarted());
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new UtteranceEnded({ utterance }));
+      this.audit.addEntry(new UtteranceEnded());
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
@@ -124,11 +124,11 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
-      this.audit.addEntry(new QuestionReadingStarted({ utterance, sequenceNumber }));
+      this.audit.addEntry(new QuestionReadingStarted({ sequenceNumber }));
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new QuestionReadingEnded({ utterance, sequenceNumber }));
+      this.audit.addEntry(new QuestionReadingEnded({ sequenceNumber }));
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
