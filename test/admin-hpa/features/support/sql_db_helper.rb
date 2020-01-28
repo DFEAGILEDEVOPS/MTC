@@ -319,24 +319,6 @@ class SqlDbHelper
     result.do
   end
 
-  # def self.set_pupil_status(reset_from, reset_to)
-  #     sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{reset_to} WHERE pupilStatus_id=#{reset_from}"
-  #     result = SQL_CLIENT.execute(sql)
-  #     result.do
-  # end
-  #
-  # def self.set_pupil_status_via_id(status_id, pupil_id)
-  #     sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=#{status_id} WHERE id=#{pupil_id}"
-  #     result = SQL_CLIENT.execute(sql)
-  #     result.do
-  # end
-  #
-  # def self.get_pupil_with_no_attandance_code(school_id)
-  #   sql = "select * from [mtc_admin].[pupil] where school_id='#{school_id}' and pupilStatus_id NOT IN (6)"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.each {|row| row.map}
-  # end
-
   def self.get_default_assigned_fam_form
     sql = "select * from [mtc_admin].[checkFormWindow] where checkForm_id=4 and checkWindow_id=1"
     result = SQL_CLIENT.execute(sql)
