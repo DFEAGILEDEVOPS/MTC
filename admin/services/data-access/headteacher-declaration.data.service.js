@@ -85,6 +85,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
     LEFT JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
     WHERE (p.attendanceId IS NULL
           AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
+          AND p.school_id = @schoolId
   `
 
   const params = [
