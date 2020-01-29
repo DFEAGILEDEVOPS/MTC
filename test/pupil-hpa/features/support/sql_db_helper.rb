@@ -66,6 +66,22 @@ class SqlDbHelper
     pupil_details
   end
 
+  def self.find_pupil_via_pin_and_checkCode(pin, check_code)
+    pin_query = "SELECT id FROM [mtc_admin].[pin] WHERE val='#{pin}'"
+    result = SQL_CLIENT.execute(pin_query)
+    pin_id = result.first
+    result.cancel
+    check_query = "SELECT pupil_id FROM [mtc_admin].[check] WHERE id in(SELECT check_id FROM [mtc_admin].[checkPin] WHERE pin_id='#{pin_id.values.first}') and checkCode = '#{check_code}'"
+    result = SQL_CLIENT.execute(check_query)
+    pupil_id = result.first
+    result.cancel
+    pupil_query = "SELECT * FROM [mtc_admin].[pupil] WHERE id='#{pupil_id.values.first}'"
+    result = SQL_CLIENT.execute(pupil_query)
+    pupil_details = result.first
+    result.cancel
+    pupil_details
+  end
+
   def self.find_next_pupil
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin is Null"
     result = SQL_CLIENT.execute(sql)
