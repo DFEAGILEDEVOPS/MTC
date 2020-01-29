@@ -1,5 +1,6 @@
 CREATE OR ALTER VIEW [mtc_admin].[vewPupilStatus] AS (
     SELECT
+        p.id,
         p.foreName,
         p.lastName,
         p.middleNames,
