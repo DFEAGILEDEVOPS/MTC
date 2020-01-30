@@ -53,8 +53,25 @@ CREATE INDEX idx_schoolScore_checkWindow_id ON mtc_admin.[schoolScore] (checkWin
 CREATE INDEX idx_user_role_id ON mtc_admin.[user] (role_id)
 CREATE INDEX idx_user_school_id ON mtc_admin.[user] (school_id)
 
--- sql authority recommended (after load test)...
-CREATE INDEX [IX_pupil_pupilAgeReason_id] ON [mtc-load].[mtc_admin].[pupil] ([pupilAgeReason_id])
+-- drops
+DROP INDEX IF EXISTS [mtc_admin].[check].[check_receivedByServerAt_index];
+DROP INDEX IF EXISTS [mtc_admin].[check].[check_liveFlag_pupilId_index];
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_job_id_index];
+DROP INDEX IF EXISTS [mtc_admin].[adminLogonEvent].[adminLogonEvent_user_id_index];
+DROP INDEX IF EXISTS [mtc_admin].[check].[check_checkWindow_id_index];
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_azure_recommended_pupil_school];
+
+-- sql authority add recommended (after load test)...
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.pupil') AND NAME ='IX_pupil_pupilAgeReason_id')
+BEGIN
+    DROP INDEX IX_pupil_pupilAgeReason_id ON mtc_admin.pupil;
+END
+CREATE INDEX IX_pupil_pupilAgeReason_id ON mtc_admin.pupil([pupilAgeReason_id]);
+-- outcome: no noticable difference
+
+
+-- sql authority drop recommendations...
+
 
 
 -- IDEAS
