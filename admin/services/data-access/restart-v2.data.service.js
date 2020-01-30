@@ -27,6 +27,37 @@ module.exports.sqlFindPupilsEligibleForRestart = async function sqlFindPupilsEli
   return sqlService.query(sql, params)
 }
 
+module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFindPupilsEligibleForRestart (schoolId, pupilIds) {
+  if (!Array.isArray(pupilIds)) {
+    throw new Error('`pupilIds` is not an array')
+  }
+  if (!pupilIds.length) {
+    throw new Error('`pupilIds` is empty')
+  }
+  const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
+
+  const sql = `SELECT *
+               FROM   [mtc_admin].[vewPupilsEligibleForRestart]
+               WHERE  school_id = @schoolId
+               AND    totalCheckCount < (@maxRestartsAllowed + 1)
+               AND    id IN (${paramIdentifiers.join(', ')})`
+
+  const extraParams = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    },
+    {
+      name: 'maxRestartsAllowed',
+      value: config.RESTART_MAX_ATTEMPTS,
+      type: TYPES.Int
+    }
+  ]
+
+  return sqlService.query(sql, params.concat(extraParams))
+}
+
 module.exports.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
   const sql = `
     SELECT
