@@ -53,6 +53,10 @@ CREATE INDEX idx_schoolScore_checkWindow_id ON mtc_admin.[schoolScore] (checkWin
 CREATE INDEX idx_user_role_id ON mtc_admin.[user] (role_id)
 CREATE INDEX idx_user_school_id ON mtc_admin.[user] (school_id)
 
+-- sql authority recommended (after load test)...
+CREATE INDEX [IX_pupil_pupilAgeReason_id] ON [mtc-load].[mtc_admin].[pupil] ([pupilAgeReason_id])
+
+
 -- IDEAS
 
 /*
