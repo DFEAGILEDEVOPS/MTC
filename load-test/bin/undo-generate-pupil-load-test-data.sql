@@ -1,16 +1,14 @@
 
-UPDATE mtc_admin.school SET pin=NULL
-DELETE FROM mtc_admin.psychometricianReportCache
-DELETE FROM mtc_admin.pupilRestart
-DELETE FROM mtc_admin.[checkPin]
-DELETE FROM mtc_admin.answer
+truncate table mtc_admin.psychometricianReportCache
+truncate table mtc_admin.pupilRestart
 UPDATE mtc_admin.pupil SET checkComplete=0, currentCheckId=NULL
-DELETE FROM mtc_admin.[checkConfig]
+truncate table mtc_admin.checkPin
+truncate table mtc_admin.checkConfig
 DELETE FROM mtc_admin.[check]
-DELETE FROM mtc_admin.auditLog
-DELETE FROM mtc_admin.pupilAccessArrangements
+truncate table mtc_admin.auditLog
+truncate table mtc_admin.pupilAccessArrangements
 DELETE FROM mtc_admin.pupilAgeReason
-DELETE FROM mtc_admin.pupilAttendance
+truncate table mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilColourContrasts
 DELETE FROM mtc_admin.pupilFontSizes
 DELETE FROM mtc_admin.[group]
