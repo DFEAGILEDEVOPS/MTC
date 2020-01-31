@@ -17,13 +17,13 @@ controller.getSchoolImpersonation = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'MTC Helpdesk School Impersonation'
   try {
     res.locals.isSubmitImpersonationUrl = true
-    res.render('helpdesk/school-impersonation', {
+    return res.render('helpdesk/school-impersonation', {
       formData: req.body,
       err: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -41,11 +41,10 @@ controller.postAddSchoolImpersonation = async (req, res, next) => {
     if (validationError && validationError.hasError && validationError.hasError()) {
       return controller.getSchoolImpersonation(req, res, next, validationError)
     }
-    res.redirect('/school/school-home')
+    return res.redirect('/school/school-home')
   } catch (error) {
-    next(error)
+    return next(error)
   }
-  return next()
 }
 
 /**
@@ -59,11 +58,10 @@ controller.postRemoveSchoolImpersonation = async (req, res, next) => {
   try {
     schoolImpersonationService.removeImpersonation(req.user)
     req.flash('info', 'School impersonation has been removed')
-    res.redirect('/helpdesk/school-impersonation')
+    return res.redirect('/helpdesk/school-impersonation')
   } catch (error) {
-    next(error)
+    return next(error)
   }
-  return next()
 }
 
 module.exports = controller
