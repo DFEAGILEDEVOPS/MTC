@@ -14,12 +14,14 @@ describe('setting.service', () => {
     it('should call redis cache service to fetch the settings', async () => {
       spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       await settingService.get()
       expect(redisCacheService.get).toHaveBeenCalled()
     })
     it('should not call settingDataService.sqlFindOne if settings are fetched from redis', async () => {
       spyOn(redisCacheService, 'get').and.returnValue(databaseRecord)
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       await settingService.get()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(settingDataService.sqlFindOne).not.toHaveBeenCalled()
@@ -57,12 +59,14 @@ describe('setting.service', () => {
     it('returns settings from settings data service', async () => {
       spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
+      spyOn(redisCacheService, 'set')
       const result = await settingService.get()
       expect(result).toBe(databaseRecord)
     })
     it('returns config data (if present) if data service does not have any data', async () => {
       spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       const result = await settingService.get()
       expect(result).toStrictEqual({ questionTimeLimit: undefined, loadingTimeLimit: undefined, checkTimeLimit: undefined })
     })
