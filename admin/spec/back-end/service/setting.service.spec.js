@@ -42,6 +42,7 @@ describe('setting.service', () => {
     it('should call settingDataService.sqlFindOne if undefined is returned from redis service', async () => {
       spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       await settingService.get()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(settingDataService.sqlFindOne).toHaveBeenCalled()
@@ -49,6 +50,7 @@ describe('setting.service', () => {
     it('should call redisCacheService.set if undefined is returned from redis service', async () => {
       spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       await settingService.get()
       expect(redisCacheService.set).toHaveBeenCalled()
     })
@@ -82,7 +84,7 @@ describe('setting.service', () => {
       spyOn(settingLogDataService, 'sqlCreate').and.returnValue(updateResult)
       spyOn(redisCacheService, 'set')
       await settingService.update(1, 2, 3, 4)
-      expect(redisCacheService.set).toHaveBeenCalledWith(settingsRedisKey, { questionLimitRounded: 2, loadingLimitRounded: 1, checkLimitRounded: 3 })
+      expect(redisCacheService.set).toHaveBeenCalledWith(settingsRedisKey, { questionTimeLimit: 2, loadingTimeLimit: 1, checkTimeLimit: 3 })
     })
   })
 })
