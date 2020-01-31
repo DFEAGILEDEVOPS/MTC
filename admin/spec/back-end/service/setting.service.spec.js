@@ -27,9 +27,17 @@ describe('setting.service', () => {
     it('should call settingDataService.sqlFindOne if redis service returns false while attempting to fetch the settings', async () => {
       spyOn(redisCacheService, 'get').and.returnValue(false)
       spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
       await settingService.get()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(settingDataService.sqlFindOne).toHaveBeenCalled()
+    })
+    it('should call redisCacheService.set if redis service returns false while attempting to fetch the settings', async () => {
+      spyOn(redisCacheService, 'get').and.returnValue(false)
+      spyOn(settingDataService, 'sqlFindOne')
+      spyOn(redisCacheService, 'set')
+      await settingService.get()
+      expect(redisCacheService.set).toHaveBeenCalled()
     })
     it('should call settingDataService.sqlFindOne if undefined is returned from redis service', async () => {
       spyOn(redisCacheService, 'get')
@@ -37,6 +45,12 @@ describe('setting.service', () => {
       await settingService.get()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(settingDataService.sqlFindOne).toHaveBeenCalled()
+    })
+    it('should call redisCacheService.set if undefined is returned from redis service', async () => {
+      spyOn(redisCacheService, 'get')
+      spyOn(settingDataService, 'sqlFindOne')
+      await settingService.get()
+      expect(redisCacheService.set).toHaveBeenCalled()
     })
     it('returns settings from settings data service', async () => {
       spyOn(redisCacheService, 'get')

@@ -17,13 +17,13 @@ const settingsRedisKey = 'settings'
  * @param {number} userId
  */
 
-settingService.update = async (loadingTimeLimit, questionTimeLimit, checkTimeLimit, userId) => {
-  const questionLimitRounded = Math.round(questionTimeLimit * 100) / 100
-  const loadingLimitRounded = Math.round(loadingTimeLimit * 100) / 100
-  const checkLimitRounded = Math.round(checkTimeLimit)
-  await settingDataService.sqlUpdate(loadingLimitRounded, questionLimitRounded, checkLimitRounded)
-  await settingLogDataService.sqlCreate(loadingLimitRounded, questionLimitRounded, checkLimitRounded, userId)
-  const settings = { questionLimitRounded, loadingLimitRounded, checkLimitRounded }
+settingService.update = async (updatedLoadingTimeLimit, updatedQuestionTimeLimit, updatedCheckTimeLimit, userId) => {
+  const questionTimeLimit = Math.round(updatedQuestionTimeLimit * 100) / 100
+  const loadingTimeLimit = Math.round(updatedLoadingTimeLimit * 100) / 100
+  const checkTimeLimit = Math.round(updatedCheckTimeLimit)
+  await settingDataService.sqlUpdate(questionTimeLimit, loadingTimeLimit, checkTimeLimit)
+  await settingLogDataService.sqlCreate(questionTimeLimit, loadingTimeLimit, checkTimeLimit, userId)
+  const settings = { loadingTimeLimit, questionTimeLimit, checkTimeLimit }
   return redisCacheService.set(settingsRedisKey, settings)
 }
 
@@ -44,6 +44,7 @@ settingService.get = async () => {
       checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES
     }
   }
+  await redisCacheService.set(settingsRedisKey, settings)
   return settings
 }
 
