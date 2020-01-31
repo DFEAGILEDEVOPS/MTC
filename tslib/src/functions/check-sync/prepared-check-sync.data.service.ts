@@ -28,7 +28,9 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     INNER JOIN [mtc_admin].pin pn
       ON cp.pin_id = pn.id
     WHERE chk.isLiveCheck = 1
-      AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
+      AND cs.code NOT IN ('CMP', 'NTR', 'ERR', 'VOD')
+      -- exclude expired checks
+      AND cp.pinExpiresAt > GETUTCDATE() -- pin expiry in the future
       AND p.urlSlug = @pupilUUID
     ORDER BY chk.createdAt DESC`
     const tioCheckSql = `
