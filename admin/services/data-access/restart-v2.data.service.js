@@ -27,7 +27,7 @@ module.exports.sqlFindPupilsEligibleForRestart = async function sqlFindPupilsEli
   return sqlService.query(sql, params)
 }
 
-module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFindPupilsEligibleForRestart (schoolId, pupilIds) {
+module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFindPupilsEligibleForRestartByPupilId (schoolId, pupilIds) {
   if (!Array.isArray(pupilIds)) {
     throw new Error('`pupilIds` is not an array')
   }
