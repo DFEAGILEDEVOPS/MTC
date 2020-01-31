@@ -62,15 +62,22 @@ DROP INDEX IF EXISTS [mtc_admin].[check].[check_checkWindow_id_index];
 DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_azure_recommended_pupil_school];
 
 -- sql authority add recommended (after load test)...
+-- ALSO suggested to remove afterward, now says missing!
 IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.pupil') AND NAME ='IX_pupil_pupilAgeReason_id')
 BEGIN
     DROP INDEX IX_pupil_pupilAgeReason_id ON mtc_admin.pupil;
 END
-CREATE INDEX IX_pupil_pupilAgeReason_id ON mtc_admin.pupil([pupilAgeReason_id]);
+CREATE INDEX [IX_check_pupil_id] ON [mtc-load].[mtc_admin].[check] ([pupil_id]) INCLUDE ([checkForm_id])
 -- outcome: no noticable difference
 
 
--- sql authority drop recommendations...
+-- dropping these made performance on pin gen worse...
+/*
+DROP INDEX [check_checkForm_id_index] ON [mtc_admin].[check]
+DROP INDEX [check_pupil_id_index] ON [mtc_admin].[check]
+DROP INDEX [idx_checkPin_pin_id] ON [mtc_admin].[checkPin]
+DROP INDEX [idx_checkConfig_check_id] ON [mtc_admin].[checkConfig]
+*/
 
 
 
