@@ -1,41 +1,54 @@
 'use strict'
-/* global spyOn, describe, it, expect jest */
+/* global spyOn, describe, it, expect */
 
 const settingDataService = require('../../../services/data-access/setting.data.service')
 const settingLogDataService = require('../../../services/data-access/setting-log.data.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const settingService = require('../../../services/setting.service')
+
+const settingsRedisKey = 'settings'
 
 describe('setting.service', () => {
   const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2, checkTimeLimit: 30 }
-
   describe('get', () => {
-    it('should cache successive calls', async () => {
-      spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
-      await settingService.get(true)
+    it('should call redis cache service to fetch the settings', async () => {
+      spyOn(redisCacheService, 'get')
+      spyOn(settingDataService, 'sqlFindOne')
       await settingService.get()
-      await settingService.get()
-      expect(settingDataService.sqlFindOne).toHaveBeenCalledTimes(1)
+      expect(redisCacheService.get).toHaveBeenCalled()
     })
-    it('calls the setting data service', async () => {
-      const databaseRecord = { questionTimeLimit: 1, loadingTimeLimit: 2, checkTimeLimit: 30 }
+    it('should not call settingDataService.sqlFindOne if settings are fetched from redis', async () => {
+      spyOn(redisCacheService, 'get').and.returnValue(databaseRecord)
+      spyOn(settingDataService, 'sqlFindOne')
+      await settingService.get()
+      expect(redisCacheService.get).toHaveBeenCalled()
+      expect(settingDataService.sqlFindOne).not.toHaveBeenCalled()
+    })
+    it('should call settingDataService.sqlFindOne if redis service returns false while attempting to fetch the settings', async () => {
+      spyOn(redisCacheService, 'get').and.returnValue(false)
+      spyOn(settingDataService, 'sqlFindOne')
+      await settingService.get()
+      expect(redisCacheService.get).toHaveBeenCalled()
+      expect(settingDataService.sqlFindOne).toHaveBeenCalled()
+    })
+    it('should call settingDataService.sqlFindOne if undefined is returned from redis service', async () => {
+      spyOn(redisCacheService, 'get')
+      spyOn(settingDataService, 'sqlFindOne')
+      await settingService.get()
+      expect(redisCacheService.get).toHaveBeenCalled()
+      expect(settingDataService.sqlFindOne).toHaveBeenCalled()
+    })
+    it('returns settings from settings data service', async () => {
+      spyOn(redisCacheService, 'get')
       spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
       const result = await settingService.get()
-      expect(Object.keys(result).length).toBe(3)
+      expect(result).toBe(databaseRecord)
     })
-    it('only caches for 5 minutes', async () => {
-      const now = new Date()
-      spyOn(settingDataService, 'sqlFindOne').and.returnValue(databaseRecord)
-      await settingService.get(true) // 1st call
-
-      const nowPlusFiveMinutes = new Date(now.getTime() + 5 * 60.010 * 1000)
-      Date.now = jest.fn().mockReturnValue(nowPlusFiveMinutes)
-      await settingService.get() // 2nd call
-
-      const nowPlusSixMinutes = new Date(nowPlusFiveMinutes + 59.998 * 1000)
-      Date.now = jest.fn().mockReturnValue(nowPlusSixMinutes)
-      await settingService.get() // cached response
-
-      expect(settingDataService.sqlFindOne).toHaveBeenCalledTimes(2)
+    it('returns config data (if present) if data service does not have any data', async () => {
+      spyOn(redisCacheService, 'get')
+      spyOn(settingDataService, 'sqlFindOne')
+      const result = await settingService.get()
+      expect(result).toStrictEqual({ questionTimeLimit: undefined, loadingTimeLimit: undefined, checkTimeLimit: undefined })
     })
   })
 
@@ -44,9 +57,18 @@ describe('setting.service', () => {
       const updateResult = { rowsAffected: 1 }
       spyOn(settingDataService, 'sqlUpdate').and.returnValue(updateResult)
       spyOn(settingLogDataService, 'sqlCreate').and.returnValue(updateResult)
+      spyOn(redisCacheService, 'set')
       await settingService.update(1, 2, 3, 4)
       expect(settingDataService.sqlUpdate).toHaveBeenCalled()
       expect(settingLogDataService.sqlCreate).toHaveBeenCalled()
+    })
+    it('should call redisCacheService.set after a successful database transmission', async () => {
+      const updateResult = { rowsAffected: 1 }
+      spyOn(settingDataService, 'sqlUpdate').and.returnValue(updateResult)
+      spyOn(settingLogDataService, 'sqlCreate').and.returnValue(updateResult)
+      spyOn(redisCacheService, 'set')
+      await settingService.update(1, 2, 3, 4)
+      expect(redisCacheService.set).toHaveBeenCalledWith(settingsRedisKey, { questionLimitRounded: 2, loadingLimitRounded: 1, checkLimitRounded: 3 })
     })
   })
 })

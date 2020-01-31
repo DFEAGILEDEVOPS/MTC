@@ -2,9 +2,12 @@
 
 const settingDataService = require('./data-access/setting.data.service')
 const settingLogDataService = require('./data-access/setting-log.data.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 const config = require('../config')
 
 const settingService = {}
+
+const settingsRedisKey = 'settings'
 
 /**
  * Update check settings
@@ -20,30 +23,28 @@ settingService.update = async (loadingTimeLimit, questionTimeLimit, checkTimeLim
   const checkLimitRounded = Math.round(checkTimeLimit)
   await settingDataService.sqlUpdate(loadingLimitRounded, questionLimitRounded, checkLimitRounded)
   await settingLogDataService.sqlCreate(loadingLimitRounded, questionLimitRounded, checkLimitRounded, userId)
+  const settings = { questionLimitRounded, loadingLimitRounded, checkLimitRounded }
+  return redisCacheService.set(settingsRedisKey, settings)
 }
 
 /**
  * Get check settings
- * @param {Boolean} cacheBust
  * @returns {questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number}
  */
-let cachedSettings
-let cachedSettingsExpiresAt
-settingService.get = async (cacheBust = false) => {
-  const now = Date.now()
-
-  if (cacheBust || !cachedSettings || !cachedSettingsExpiresAt || now > cachedSettingsExpiresAt) {
-    cachedSettings = await settingDataService.sqlFindOne()
-    cachedSettingsExpiresAt = Date.now() + (5 * 60 * 1000) // +5 minutes
+settingService.get = async () => {
+  const cachedSettings = await redisCacheService.get(settingsRedisKey)
+  if (cachedSettings) {
+    return cachedSettings
   }
-  if (!cachedSettings) {
-    cachedSettings = {
+  let settings = await settingDataService.sqlFindOne()
+  if (!settings) {
+    settings = {
       questionTimeLimit: config.QUESTION_TIME_LIMIT,
       loadingTimeLimit: config.TIME_BETWEEN_QUESTIONS,
       checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES
     }
   }
-  return cachedSettings
+  return settings
 }
 
 module.exports = settingService
