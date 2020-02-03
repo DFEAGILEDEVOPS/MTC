@@ -64,14 +64,14 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const id = await createCheck('EXP1', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('EXP') // COMPLETED
+      expect(checkStatusId).toBe('NEW')
     })
 
     it('can identify a EXPIRED check without a pin', async () => {
       const id = await createCheck('EXP2', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusId = res[0].code
-      expect(checkStatusId).toBe('EXP') // COMPLETED
+      expect(checkStatusId).toBe('NEW')
     })
 
     it('can identify a NOT RECEIVED check', async () => {
