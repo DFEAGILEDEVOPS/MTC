@@ -1,9 +1,9 @@
 import { CheckNotificationType } from '../check-notifier/check-notification-message'
-import { ICheckNotifyDataService } from './check-notify.data.service'
-import { BatchCheckNotifier } from './check-notify.service'
+import { IBatchCheckNotifierDataService } from './batch-check-notifier.data.service'
+import { BatchCheckNotifier } from './batch-check-notifier.service'
 import { ITransactionRequest } from '../../sql/sql.service'
 
-const CheckNotifyDataServiceMock = jest.fn<ICheckNotifyDataService, any>(() => ({
+const CheckNotifyDataServiceMock = jest.fn<IBatchCheckNotifierDataService, any>(() => ({
   createProcessingFailedRequest: jest.fn(),
   createCheckReceivedRequest: jest.fn(),
   createCheckCompleteRequest: jest.fn(),
@@ -11,7 +11,7 @@ const CheckNotifyDataServiceMock = jest.fn<ICheckNotifyDataService, any>(() => (
 }))
 
 let sut: BatchCheckNotifier
-let dataService: ICheckNotifyDataService
+let dataService: IBatchCheckNotifierDataService
 
 describe('check-notifier/v2', () => {
 

@@ -1,12 +1,12 @@
 import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
-import { ICheckNotifyDataService } from './check-notify.data.service'
+import { IBatchCheckNotifierDataService } from './batch-check-notifier.data.service'
 import { ITransactionRequest } from '../../sql/sql.service'
 
 export class BatchCheckNotifier {
 
-  private dataService: ICheckNotifyDataService
+  private dataService: IBatchCheckNotifierDataService
 
-  constructor (checkNotifyDataService: ICheckNotifyDataService) {
+  constructor (checkNotifyDataService: IBatchCheckNotifierDataService) {
     this.dataService = checkNotifyDataService
   }
 

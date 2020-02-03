@@ -1,14 +1,14 @@
 import { SqlService, ITransactionRequest, ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
 
-export interface ICheckNotifyDataService {
+export interface IBatchCheckNotifierDataService {
   createCheckCompleteRequest (checkCode: string): ITransactionRequest[]
   createProcessingFailedRequest (checkCode: string): ITransactionRequest
   createCheckReceivedRequest (checkCode: string): ITransactionRequest
   executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void>
 }
 
-export class CheckNotifyDataService implements ICheckNotifyDataService {
+export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataService {
 
   private sqlService: SqlService
 

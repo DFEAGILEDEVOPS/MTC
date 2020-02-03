@@ -13,7 +13,7 @@ const busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceB
 const queueClient = busClient.createQueueClient('check-notification')
 const receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
 
-const checkNotifyTimerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
   const start = performance.now()
   context.log(`timer triggered at ${start}`)
   const messageBatch = await receiver.receiveMessages(config.ServiceBus.BatchReceiveCount)
@@ -30,4 +30,4 @@ const checkNotifyTimerTrigger: AzureFunction = async function (context: Context,
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-export default checkNotifyTimerTrigger
+export default batchCheckNotifier
