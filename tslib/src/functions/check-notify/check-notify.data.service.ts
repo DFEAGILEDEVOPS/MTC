@@ -1,14 +1,14 @@
 import { SqlService, ITransactionRequest, ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
 
-export interface ICheckNotifierDataService {
-  createUpdateCheckAsCompleteRequests (checkCode: string): ITransactionRequest[]
-  createMarkCheckAsProcessingFailedRequest (checkCode: string): ITransactionRequest
-  createMarkCheckAsReceivedRequest (checkCode: string): ITransactionRequest
+export interface ICheckNotifyDataService {
+  createCheckCompleteRequest (checkCode: string): ITransactionRequest[]
+  createProcessingFailedRequest (checkCode: string): ITransactionRequest
+  createCheckReceivedRequest (checkCode: string): ITransactionRequest
   executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void>
 }
 
-export class CheckNotifyDataService implements ICheckNotifierDataService {
+export class CheckNotifyDataService implements ICheckNotifyDataService {
 
   private sqlService: SqlService
 
@@ -16,7 +16,7 @@ export class CheckNotifyDataService implements ICheckNotifierDataService {
     this.sqlService = new SqlService()
   }
 
-  createUpdateCheckAsCompleteRequests (checkCode: string): ITransactionRequest[] {
+  createCheckCompleteRequest (checkCode: string): ITransactionRequest[] {
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -50,7 +50,7 @@ export class CheckNotifyDataService implements ICheckNotifierDataService {
     return [checkRequest, pupilRequest]
   }
 
-  createMarkCheckAsProcessingFailedRequest (checkCode: string): ITransactionRequest {
+  createProcessingFailedRequest (checkCode: string): ITransactionRequest {
     return {
       sql: `UPDATE [mtc_admin].[check]
       SET checkStatus_id=
@@ -68,7 +68,7 @@ export class CheckNotifyDataService implements ICheckNotifierDataService {
       ]
     }
   }
-  createMarkCheckAsReceivedRequest (checkCode: string): ITransactionRequest {
+  createCheckReceivedRequest (checkCode: string): ITransactionRequest {
     return {
       params: [{
         type: mssql.UniqueIdentifier,
