@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "timer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "*/30 * * * * *"
+    }
+  ],
+  "scriptFile": "../dist/functions/check-notify/index.js"
+}
