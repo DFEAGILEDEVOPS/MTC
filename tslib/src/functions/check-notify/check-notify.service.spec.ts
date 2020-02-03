@@ -1,6 +1,7 @@
 import { CheckNotificationType } from '../check-notifier/check-notification-message'
 import { ICheckNotifyDataService } from './check-notify.data.service'
 import { BatchCheckNotifier } from './check-notify.service'
+import { ITransactionRequest } from '../../sql/sql.service'
 
 const CheckNotifyDataServiceMock = jest.fn<ICheckNotifyDataService, any>(() => ({
   createProcessingFailedRequest: jest.fn(),
@@ -17,6 +18,30 @@ describe('check-notifier/v2', () => {
   beforeEach(() => {
     dataService = new CheckNotifyDataServiceMock()
     sut = new BatchCheckNotifier(dataService)
+    dataService.createCheckCompleteRequest = jest.fn(() => {
+      return [
+        {
+          sql: '',
+          params: []
+        },
+        {
+          sql: '',
+          params: []
+        }
+      ]
+    })
+    dataService.createCheckReceivedRequest = jest.fn(() => {
+      return {
+        sql: '',
+        params: []
+      }
+    })
+    dataService.createProcessingFailedRequest = jest.fn(() => {
+      return {
+        sql: '',
+        params: []
+      }
+    })
   })
 
   test('should be defined', () => {
@@ -24,18 +49,10 @@ describe('check-notifier/v2', () => {
   })
 
   test('checkComplete notification type should create corresponding requests and be executed', async () => {
-    dataService.createCheckCompleteRequest = jest.fn(() => {
-      return [
-        {
-          sql: '',
-          params: []
-        }
-      ]
-    })
     await sut.notify([{
       notificationType: CheckNotificationType.checkComplete,
       checkCode: 'code',
-      version: 2
+      version: 1
     }])
     expect(dataService.createCheckCompleteRequest).toHaveBeenCalledTimes(1)
     expect(dataService.executeRequestsInTransaction).toHaveBeenCalledTimes(1)
@@ -45,7 +62,7 @@ describe('check-notifier/v2', () => {
     await sut.notify([{
       notificationType: CheckNotificationType.checkInvalid,
       checkCode: 'code',
-      version: 2
+      version: 1
     }])
     expect(dataService.createProcessingFailedRequest).toHaveBeenCalledTimes(1)
     expect(dataService.executeRequestsInTransaction).toHaveBeenCalledTimes(1)
@@ -55,10 +72,36 @@ describe('check-notifier/v2', () => {
     await sut.notify([{
       notificationType: CheckNotificationType.checkReceived,
       checkCode: 'code',
-      version: 2
+      version: 1
     }])
     expect(dataService.createCheckReceivedRequest).toHaveBeenCalledTimes(1)
     expect(dataService.executeRequestsInTransaction).toHaveBeenCalledTimes(1)
+  })
+
+  test('processing multiple message should create corresponding number of requests', async () => {
+    let createdRequests: ITransactionRequest[] = []
+    dataService.executeRequestsInTransaction = jest.fn(async (requests) => {
+      createdRequests = requests
+    })
+    await sut.notify([
+      { // creates 2 requests
+        notificationType: CheckNotificationType.checkComplete,
+        checkCode: 'code',
+        version: 1
+      },
+      { // creates 1 request
+        notificationType: CheckNotificationType.checkInvalid,
+        checkCode: 'code',
+        version: 1
+      },
+      { // creates 1 request
+        notificationType: CheckNotificationType.checkReceived,
+        checkCode: 'code',
+        version: 1
+      }
+    ])
+    expect(createdRequests).toBeDefined()
+    expect(createdRequests.length).toBe(4)
   })
 
 })
