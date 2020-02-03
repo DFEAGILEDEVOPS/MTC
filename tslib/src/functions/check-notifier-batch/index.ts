@@ -33,10 +33,16 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
       await msg.complete()
     })
   } catch (error) {
+    context.log.error(error.message)
     messageBatch.forEach(async msg => {
       // undo message pickup
-      await msg.abandon()
+      try {
+        await msg.abandon()
+      } catch (error) {
+        context.log.error(`unable to abandon message:${error.message}`)
+      }
     })
+    throw error
   }
 
   const end = performance.now()
