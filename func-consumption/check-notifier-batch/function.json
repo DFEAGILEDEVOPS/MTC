@@ -7,5 +7,5 @@
       "schedule": "*/30 * * * * *"
     }
   ],
-  "scriptFile": "../dist/functions/check-notify/index.js"
+  "scriptFile": "../dist/functions/check-notifier-batch/index.js"
 }
