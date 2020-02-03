@@ -123,7 +123,6 @@ BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.no
 AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
 
-
 redis_key = ENV['REDIS_KEY'] || ''
 redis_port =  ENV['REDIS_PORT'] || 6379
 
