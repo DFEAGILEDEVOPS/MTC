@@ -6,18 +6,18 @@ import config from '../../config'
 import { ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
 
-if (!config.ServiceBus.ConnectionString) {
-  throw new Error('ServiceBusConnection env var is required')
-}
-
-const busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-const queueClient = busClient.createQueueClient('check-notification')
-const receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
-
-const batchNotifier = new BatchCheckNotifier()
-
 const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
   const start = performance.now()
+
+  if (!config.ServiceBus.ConnectionString) {
+    throw new Error('ServiceBusConnection env var is required')
+  }
+
+  const busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
+  const queueClient = busClient.createQueueClient('check-notification')
+  const receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
+  const batchNotifier = new BatchCheckNotifier()
+
   const messageBatch = await receiver.receiveMessages(config.ServiceBus.BatchReceiveCount)
   const notifications: ICheckNotificationMessage[] = []
   for (let index = 0; index < messageBatch.length; index++) {
@@ -34,7 +34,6 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   } catch (error) {
     context.log.error(error.message)
     messageBatch.forEach(async msg => {
-      // undo message pickup
       try {
         await msg.abandon()
       } catch (error) {
@@ -43,6 +42,10 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
     })
     throw error
   }
+
+  await receiver.close()
+  await queueClient.close()
+  await busClient.close()
 
   const end = performance.now()
   const durationInMilliseconds = end - start

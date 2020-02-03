@@ -28,7 +28,11 @@ echo "#     - Func consumption                                      #"
 echo "#     - Check Submit proxy function (./check-submit-proxy)    #"
 echo "#                                                             #"
 echo "###############################################################"
-echo "Bulk data will be inserted into sql prior to the load test."
+echo "CAUTION!!! All storage entities & queues will be purged!!!"
 read -n 1 -s -r -p "Press any key when you are ready to continue..."
-echo "\nexecuting jmeter scenario 'pin generation, pupil-login, check start and check submission...'"
-jmeter -n -t scenarios/_2020/live-pin-gen-with-check.jmx -l reports/mtc_jmeter_test_result.csv -Djmeter.save.saveservice.output_format=csv -e -o html-report/
+echo "purging and rebuilding storage...\n"
+LOAD_TEST_DIR=$PWD
+source prep-local-db.sh
+cd $LOAD_TEST_DIR
+echo "executing jmeter scenario 'pin generation, pupil-login, check start and check submission...'"
+jmeter -n -t scenarios/_2020/live-pin-gen-with-check.jmx -Jtimer.factor=0 -l reports/mtc_jmeter_test_result.csv -Djmeter.save.saveservice.output_format=csv -e -o html-report/
