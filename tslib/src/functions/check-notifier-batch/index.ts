@@ -18,7 +18,6 @@ const batchNotifier = new BatchCheckNotifier()
 
 const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
   const start = performance.now()
-  context.log(`timer triggered at ${Date.now()}`)
   const messageBatch = await receiver.receiveMessages(config.ServiceBus.BatchReceiveCount)
   const notifications: ICheckNotificationMessage[] = []
   for (let index = 0; index < messageBatch.length; index++) {

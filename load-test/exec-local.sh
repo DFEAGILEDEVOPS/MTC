@@ -30,5 +30,5 @@ echo "#                                                             #"
 echo "###############################################################"
 echo "Bulk data will be inserted into sql prior to the load test."
 read -n 1 -s -r -p "Press any key when you are ready to continue..."
-echo "executing jmeter scenario 'pin generation, pupil-login, check start and check submission...'"
+echo "\nexecuting jmeter scenario 'pin generation, pupil-login, check start and check submission...'"
 jmeter -n -t scenarios/_2020/live-pin-gen-with-check.jmx -l reports/mtc_jmeter_test_result.csv -Djmeter.save.saveservice.output_format=csv -e -o html-report/

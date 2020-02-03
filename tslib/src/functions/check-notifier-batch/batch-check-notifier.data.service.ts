@@ -85,6 +85,6 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
     }
   }
   executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void> {
-    return this.sqlService.modifyWithTransactionParallel(requests)
+    return this.sqlService.modifyWithTransaction(requests)
   }
 }
