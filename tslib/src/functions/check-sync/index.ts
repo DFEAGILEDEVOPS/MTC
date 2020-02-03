@@ -9,7 +9,6 @@ const functionName = 'check-sync'
  * @param context
  * @param preparedCheckSyncMessage
  */
-
 const queueTrigger: AzureFunction = async function (context: Context, preparedCheckSyncMessage: IPreparedCheckSyncMessage): Promise<void> {
   const start = performance.now()
   const version = preparedCheckSyncMessage.version
