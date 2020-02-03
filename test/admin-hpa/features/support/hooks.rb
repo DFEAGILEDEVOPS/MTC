@@ -79,8 +79,8 @@ Before("@hdf") do
   step "I select a reason"
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
-  pupil_register_page.load
-  invalid_status = pupil_register_page.pupil_list.pupil_row.map{|row| row.status.text != 'Not taking the Check' && row.status.text != 'Complete'}
+  pupil_status_page.load
+  invalid_status = pupil_status_page.pupil_list.pupil_row.map{|row| row.status.text != 'Incorrect registration' && row.status.text != 'Left school' && row.status.text != 'Working below expectation' && row.status.text != 'Absent' && row.status.text != 'Unable to access' && row.status.text != 'Just arrived with EAL' && row.status.text != 'Complete'}
   expect(invalid_status).to_not include true
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end

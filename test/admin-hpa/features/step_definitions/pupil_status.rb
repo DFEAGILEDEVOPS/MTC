@@ -26,3 +26,8 @@ end
 Given(/^I complete the warm up questions using the (.+)$/) do |input_type|
   @warm_up_inputs = warm_up_page.complete_check_with_correct_answers(3, input_type)
 end
+
+
+When(/^I am on the Pupil Status page$/) do
+  pupil_status_page.load
+end
