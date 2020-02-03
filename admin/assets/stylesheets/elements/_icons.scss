@@ -1,0 +1,33 @@
+.check-icon-background {
+  content: "\00a0";
+  border: solid 8px govuk-colour('green');
+  border-radius: 9px;
+  -moz-border-radius: 9px;
+  -webkit-border-radius: 9px;
+  height: 0;
+  width: 0;
+  display: inline-block;
+}
+
+
+.check-icon {
+  height: 6px;
+  width: 3px;
+  border: solid govuk-colour('white');
+  border-width: 0px 2px 2px 0px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  display: block;
+  margin-top: -5px;
+  margin-left: -2px;
+}
+
+.warning-text__icon-small {
+  position: relative;
+  min-width: 15px;
+  font-size: 19px;
+  line-height: 19px;
+  margin-right: 5px;
+  min-height: 0;
+}
