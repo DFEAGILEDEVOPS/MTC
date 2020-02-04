@@ -68,7 +68,10 @@ export default {
     CorsWhitelist: process.env.CORS_WHITELIST || ''
   },
   ServiceBus: {
-    ConnectionString: process.env.ServiceBusConnection,
-    BatchReceiveCount: parseInt(optionalValueParser(process.env.SERVICE_BUS_BATCH_COUNT, 32), 10)
+    ConnectionString: process.env.ServiceBusConnection
+  },
+  CheckNotifier: {
+    MessagesPerBatch: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
+    BatchesPerExecution: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_BATCH_COUNT, 32), 10)
   }
 }
