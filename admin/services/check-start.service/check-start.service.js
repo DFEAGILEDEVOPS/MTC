@@ -8,7 +8,7 @@ const logger = require('../log.service').getLogger()
 const config = require('../../config')
 
 // moved
-const setValidationService = require('./set-validation.service')
+const setValidationService = require('../set-validation.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 
 // to be moved to the module
