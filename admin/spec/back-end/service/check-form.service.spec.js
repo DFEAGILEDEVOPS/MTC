@@ -2,19 +2,14 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe beforeEach it expect spyOn fail jest */
+/* global describe beforeEach it expect spyOn fail */
 
 const fs = require('fs-extra')
-const R = require('ramda')
-const moment = require('moment')
-
 const checkFormDataService = require('../../../services/data-access/check-form.data.service')
-const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const random = require('../../../lib/random-generator')
 
 const checkFormsMock = require('../mocks/check-forms')
 const checkWindowByForm = require('../mocks/check-window-by-form')
-const checkWindowMock = require('../mocks/check-window-2')
 
 const checkFormMock = {
   id: 100,
@@ -22,9 +17,6 @@ const checkFormMock = {
   isDeleted: false,
   formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11, "f2" : 2    }]'
 }
-
-const resolve = (x) => Promise.resolve(x)
-const reject = (x) => Promise.reject(x)
 
 describe('check-form.service', () => {
   const service = require('../../../services/check-form.service')
@@ -262,68 +254,6 @@ describe('check-form.service', () => {
       spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
       const result = await service.getCheckFormsByIds([1])
       expect(typeof result[0].formData).toBe('object')
-    })
-  })
-
-  describe('removeWindowAssignment', () => {
-    it('throws an error if the checkForm ID is not found in the DB', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(reject(new Error('mock error')))
-      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock))
-      try {
-        await service.removeWindowAssignment(1, 2)
-        fail('should have thrown')
-      } catch (error) {
-        expect(error.message).toBe('mock error')
-      }
-    })
-
-    it('throws an error if the checkWindow ID is not found in the DB', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
-      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(reject(new Error('mock error')))
-      try {
-        await service.removeWindowAssignment(1, 2)
-        fail('should have thrown')
-      } catch (error) {
-        expect(error.message).toBe('mock error')
-      }
-    })
-
-    it('throws an error if the checkWindow.checkStartDate has already passed', async () => {
-      // Set up a checkWindow that started 1 day ago
-      const today = moment('2018-06-02T09:00:00').toDate()
-      const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
-      Date.now = jest.fn(() => {
-        return today
-      })
-
-      // mock out the db calls
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
-      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock2))
-
-      try {
-        await service.removeWindowAssignment(1, 2)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Forms cannot be unassigned from an active check window')
-      }
-    })
-
-    // happy path
-    it('calls the data layer method to unassign forms', async () => {
-      // For this to pass we want the checkStart date to be in the future
-      checkWindowMock.checkStartDate = moment().add(2, 'weeks')
-
-      // mock out the db calls
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
-      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock))
-      spyOn(checkFormDataService, 'sqlRemoveWindowAssignment').and.returnValue(resolve({}))
-
-      try {
-        await service.removeWindowAssignment(1, 2)
-        expect(checkFormDataService.sqlRemoveWindowAssignment).toHaveBeenCalledTimes(1)
-      } catch (error) {
-        fail(error)
-      }
     })
   })
 })

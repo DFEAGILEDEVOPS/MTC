@@ -12,6 +12,7 @@ const pinGenerationDataService = require('../data-access/pin-generation.data.ser
 const prepareCheckService = require('../prepare-check.service')
 const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
+const redisCacheService = require('../data-access/redis-cache.service')
 
 const checkFormMock = {
   id: 100,
@@ -89,6 +90,8 @@ describe('check-start.service', () => {
           3: configService.getBaseConfig()
         })
       spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
+      spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve())
+      spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
     })
 
     it('throws an error if the pupilIds are not provided', async () => {

@@ -37,6 +37,15 @@ const redisKeyService = {
    */
   getPreparedCheckKey (schoolPin, pupilPin) {
     return `preparedCheck:${schoolPin}:${pupilPin}`
+  },
+
+  /**
+   * return the key used to store the check forms
+   * @param {number} checkWindowId
+   * @param {boolean} isLiveCheck
+   */
+  getCheckFormsKey (checkWindowId, isLiveCheck) {
+    return `checkForms:${checkWindowId}:live:${isLiveCheck}`
   }
 }
 

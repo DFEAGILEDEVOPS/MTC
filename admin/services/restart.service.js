@@ -1,8 +1,10 @@
 const config = require('../config')
+const logger = require('./log.service').getLogger()
 const prepareCheckService = require('./prepare-check.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
+const setValidationService = require('./set-validation.service')
 
 const restartService = {}
 
@@ -40,7 +42,8 @@ restartService.restart = async (
     throw new Error('Missing parameter: `schoolId`')
   }
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
-  // TODO: validate incoming pupils are eligible for restart.
+  // validation throws if it fails to validate
+  await restartService.validateIncomingPupils(schoolId, pupilsList)
 
   // By assembling the restart data in a hash, duplicates IDs in the `pupilsList` will be folded into one,
   // and it makes it easier later on to add the `currentCheckId` property.
@@ -99,6 +102,28 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   }
 
   return pupil
+}
+
+/**
+ *
+ * @param { Number } schoolId
+ * @param { Number[] } pupilIds
+ * @return {Promise<>}
+ */
+restartService.validateIncomingPupils = async (schoolId, pupilIds) => {
+  const dbPupils = await restartDataService.sqlFindPupilsEligibleForRestartByPupilId(schoolId, pupilIds)
+  const difference = setValidationService.validate(
+    pupilIds.map(x => parseInt(x, 10)), // convert incoming strings '99' to numbers 99
+    dbPupils // must have an 'id' field to check against
+  )
+
+  if (difference.size > 0) {
+    logger.error(
+      `checkStartService.prepareCheck: incoming pupiIds [${pupilIds.join(', ')}] not found for school ID [${schoolId}]: `,
+      difference
+    )
+    throw new Error('One of the pupils is not eligible for a restart')
+  }
 }
 
 module.exports = restartService
