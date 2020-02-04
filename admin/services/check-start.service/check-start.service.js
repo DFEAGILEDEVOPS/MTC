@@ -21,6 +21,9 @@ const pinGenerationService = require('../pin-generation.service')
 const prepareCheckService = require('../prepare-check.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
+const redisCacheService = require('../data-access/redis-cache.service')
+const redisKeyService = require('../redis-key.service')
+const oneMonthInSeconds = 2592000
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -84,10 +87,15 @@ checkStartService.prepareCheck2 = async function (
 
   // Find the set of all forms allocated to a check window
   // Just returns objects with an ID property
-  const allForms = await checkStartDataService.sqlFindAllFormsAssignedToCheckWindow(
-    checkWindow.id,
-    isLiveCheck
-  )
+  const formsCacheKey = redisKeyService.getCheckFormsKey(checkWindow.id, isLiveCheck)
+  let allForms = await redisCacheService.get(formsCacheKey)
+  if (!allForms) {
+    allForms = await checkStartDataService.sqlFindAllFormsAssignedToCheckWindow(
+      checkWindow.id,
+      isLiveCheck
+    )
+    await redisCacheService.set(formsCacheKey, allForms, oneMonthInSeconds)
+  }
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice.  Just returns minimal form objects (id an name)

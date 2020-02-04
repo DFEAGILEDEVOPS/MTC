@@ -7,6 +7,7 @@ const checkFormV2DataService = require('../../../services/data-access/check-form
 const checkFormV2Service = require('../../../services/check-form-v2.service')
 const checkFormsValidator = require('../../../lib/validator/check-form/check-forms-validator')
 const ValidationError = require('../../../lib/validation-error')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
 describe('check-form-v2.service', () => {
   describe('saveCheckForms', () => {
@@ -148,6 +149,7 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
       spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
+      spyOn(redisCacheService, 'drop').and.returnValue(Promise.resolve())
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
@@ -160,6 +162,7 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs')
       spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
+      spyOn(redisCacheService, 'drop').and.returnValue(Promise.resolve())
       const checkWindow = {}
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
@@ -177,6 +180,7 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([])
       spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
+      spyOn(redisCacheService, 'drop').and.returnValue(Promise.resolve())
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
@@ -194,6 +198,7 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue(Promise.reject(new Error('error')))
       spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow')
+      spyOn(redisCacheService, 'drop').and.returnValue(Promise.resolve())
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
@@ -211,6 +216,7 @@ describe('check-form-v2.service', () => {
       spyOn(checkFormV2DataService, 'sqlFindCheckFormsByUrlSlugs').and.returnValue([{ id: 1 }])
       spyOn(checkFormV2DataService, 'sqlUnassignFamiliarisationForm')
       spyOn(checkFormV2DataService, 'sqlAssignFormsToCheckWindow').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(redisCacheService, 'drop').and.returnValue(Promise.resolve())
       const checkWindow = { id: 1, urlSlug: 'urlSlug' }
       const checkFormType = 'live'
       const checkFormUrlSlugs = ['urlSlug1', 'urlSlug2']
