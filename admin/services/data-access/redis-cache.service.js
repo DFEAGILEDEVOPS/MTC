@@ -31,6 +31,7 @@ const redisCacheService = {}
 redisCacheService.get = async key => {
   redisConnect()
   try {
+    logger.info(`REDIS (get): retrieving ${key}`)
     const cacheEntry = await redis.get(key)
     return unwrap(cacheEntry)
   } catch (err) {
@@ -49,6 +50,7 @@ redisCacheService.get = async key => {
 redisCacheService.set = async (key, value, ttl = undefined) => {
   redisConnect()
   try {
+    logger.info(`REDIS (set): adding ${key} ttl:${ttl}`)
     const storageItemString = prepareCacheEntry(value)
     if (ttl) {
       await redis.setex(key, ttl, storageItemString)

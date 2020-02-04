@@ -4,6 +4,9 @@ const R = require('ramda')
 const checkFormPresenter = require('../helpers/check-form-presenter')
 const checkFormV2DataService = require('./data-access/check-form-v2.data.service')
 const checkFormsValidator = require('../lib/validator/check-form/check-forms-validator')
+const redisCacheService = require('./data-access/redis-cache.service')
+const redisKeyService = require('./redis-key.service')
+
 const checkFormV2Service = {}
 
 const checkFormTypes = {
@@ -159,6 +162,8 @@ checkFormV2Service.updateCheckWindowForms = async (checkWindow, checkFormType, c
   if (checkFormType === 'familiarisation' && !checkFormUrlSlugs) {
     return checkFormV2DataService.sqlUnassignFamiliarisationForm(checkWindow.id)
   }
+  const formsCacheKey = redisKeyService.getCheckFormsKey(checkWindow.id, isLiveCheckForm)
+  await redisCacheService.drop(formsCacheKey)
   const checkForms = await checkFormV2DataService.sqlFindCheckFormsByUrlSlugs(checkFormUrlSlugs)
   if (!checkForms || !Array.isArray(checkForms) || checkForms.length === 0) {
     throw new Error(`Check forms not found with url slugs ${checkFormUrlSlugs.join(',')}`)
