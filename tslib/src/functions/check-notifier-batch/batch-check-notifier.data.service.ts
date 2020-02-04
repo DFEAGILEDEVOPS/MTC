@@ -31,7 +31,8 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         complete=1,
         completedAt=GETUTCDATE(),
         processingFailed=0
-      WHERE checkCode=@checkCode`,
+      WHERE checkCode=@checkCode
+      AND complete=0`,
       params: [
         checkCodeParam
       ]
@@ -42,7 +43,8 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[check] c
         ON p.id = c.pupil_id
-        WHERE c.checkCode=@checkCode`,
+        WHERE c.checkCode=@checkCode
+        AND checkComplete=0`,
       params: [
         checkCodeParam
       ]
@@ -58,7 +60,8 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         [mtc_admin].[checkStatus] cs
         WHERE cs.code='ERR'),
         processingFailed=1
-      WHERE checkCode=@checkCode`,
+      WHERE checkCode=@checkCode
+      AND processingFailed=0`,
       params: [
         {
           type: mssql.UniqueIdentifier,

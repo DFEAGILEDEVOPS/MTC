@@ -13,7 +13,7 @@ const CheckNotifyDataServiceMock = jest.fn<IBatchCheckNotifierDataService, any>(
 let sut: BatchCheckNotifier
 let dataService: IBatchCheckNotifierDataService
 
-describe('check-notifier/v2', () => {
+describe('batch-request-builder/v2', () => {
 
   beforeEach(() => {
     dataService = new CheckNotifyDataServiceMock()
