@@ -54,7 +54,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
     if (RA.isNilOrEmpty(messageBatch)) {
       context.log('no messages to process')
       await disconnect()
-      exit(start, context)
+      finish(start, context)
       return
     }
     context.log(`received batch of ${messageBatch.length} messages`)
@@ -63,7 +63,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   }
 
   await disconnect()
-  exit(start, context)
+  finish(start, context)
 }
 
 async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusMessage[]): Promise<void> {
@@ -110,7 +110,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   }
 }
 
-function exit (start: number, context: Context) {
+function finish (start: number, context: Context) {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
