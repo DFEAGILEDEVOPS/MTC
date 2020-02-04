@@ -1,7 +1,6 @@
 'use strict'
 
 const R = require('ramda')
-const moment = require('moment')
 const dateService = require('../services/date.service')
 
 const pupilStatusPresenter = {}
