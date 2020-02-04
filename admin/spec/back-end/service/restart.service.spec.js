@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect, spyOn, fail, jest, xit */
+/* global beforeEach, afterEach, describe, it, expect, spyOn, fail, jest */
 
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -23,6 +23,8 @@ describe('restart.service', () => {
 
     it('it should call restartTransactionForPupils if the pupil can be restarted', async () => {
       const schoolId = 42
+      // allow `incomingPupilValidation()` to match
+      spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').and.returnValue([{ id: 1 }, { id: 2 }])
       spyOn(restartDataService, 'getLiveCheckDataByPupilId').and.returnValue(
         Promise.resolve([
           {
@@ -57,9 +59,11 @@ describe('restart.service', () => {
       expect(results.length).toBe(2)
     })
 
-    xit('it should throw an error if the pupil cannot be restarted', async () => {
+    it('it should throw an error if the pupil cannot be restarted', async () => {
       const schoolId = 42
       try {
+        // allow `incomingPupilValidation()` to fail
+        spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').and.returnValue([{ id: 1 }]) // #2 is missing
         await restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
         fail('expected to throw')
       } catch (error) {
