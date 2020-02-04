@@ -14,6 +14,11 @@ import { BatchCheckNotifier } from './batch-check-notifier.service'
   put on the dead letter queue automatically.
 */
 const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+
+  if (timer.IsPastDue) {
+    context.log('timer is past due, exiting...')
+    return
+  }
   const start = performance.now()
 
   if (!config.ServiceBus.ConnectionString) {
@@ -48,7 +53,13 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
       notifications.push(notification)
     }
 
-    if (notifications.length === 0) return
+    if (notifications.length === 0) {
+      context.log('no more messages to process')
+      await receiver.close()
+      await queueClient.close()
+      await busClient.close()
+      return
+    }
 
     try {
       await batchNotifier.notify(notifications)
