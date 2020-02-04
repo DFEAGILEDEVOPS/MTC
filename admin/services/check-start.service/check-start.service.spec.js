@@ -91,6 +91,7 @@ describe('check-start.service', () => {
         })
       spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
       spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve())
+      spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
