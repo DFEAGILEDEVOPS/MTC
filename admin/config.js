@@ -186,7 +186,6 @@ module.exports = {
     newCheckForm: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_FORM') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) : true,
     newCheckWindow: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_WINDOW') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) : true,
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
-    pupilRegisterV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_REGISTER_V2') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_REGISTER_V2) : false,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true
   }
 }

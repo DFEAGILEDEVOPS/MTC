@@ -1,26 +1,23 @@
 'use strict'
 
-/* global describe expect it beforeEach spyOn fail test */
+/* global describe expect it fail beforeEach spyOn test */
 const logger = require('../../../services/log.service').getLogger()
 const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
-const pupilRegisterDataService = require('../../../services/data-access/pupil-register.data.service')
-const pupilRegisterService = require('../../../services/pupil-register.service')
+const pupilStatusDataService = require('../../../services/data-access/pupil-status.data.service')
+const pupilStatusService = require('../../../services/pupil-status.service')
 const settingService = require('../../../services/setting.service')
+const tableSorting = require('../../../helpers/table-sorting')
 
-describe('pupil-register.service', () => {
-  beforeEach(() => {
-    spyOn(settingService, 'get').and.returnValue(Promise.resolve({ checkTimeLimit: 30 }))
-  })
-
+describe('pupil-status.service', () => {
   describe('#getProcessStatusV2', () => {
     test('it is a function', () => {
-      expect(typeof pupilRegisterService.getProcessStatusV2).toBe('function')
+      expect(typeof pupilStatusService.getProcessStatusV2).toBe('function')
     })
 
     test('it throws an error if pinExpiresAt is an object', () => {
       expect(() => {
-        pupilRegisterService.getProcessStatusV2({
+        pupilStatusService.getProcessStatusV2({
           pinExpiresAt: { not: 'a moment object' }
         })
       }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
@@ -28,7 +25,7 @@ describe('pupil-register.service', () => {
 
     test('it throws an error if pinExpiresAt is a number', () => {
       expect(() => {
-        pupilRegisterService.getProcessStatusV2({
+        pupilStatusService.getProcessStatusV2({
           pinExpiresAt: 66
         })
       }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
@@ -36,14 +33,14 @@ describe('pupil-register.service', () => {
 
     test('does not throw if pinExpiresAt is null', () => {
       expect(() => {
-        pupilRegisterService.getProcessStatusV2({
+        pupilStatusService.getProcessStatusV2({
           pinExpiresAt: null
         })
       }).not.toThrow()
     })
 
     test('it can detect a pupil not taking the check', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: 1,
         currentCheckId: null,
         checkStatusCode: null,
@@ -53,13 +50,14 @@ describe('pupil-register.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAt: null
+        pinExpiresAt: null,
+        reason: 'Just arrived with EAL'
       })
-      expect(status).toBe('Not taking the Check')
+      expect(status).toBe('Just arrived with EAL')
     })
 
     test('it can detect a Not Started pupil', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
         checkStatusCode: null,
@@ -75,7 +73,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it can detect a PIN Generated pupil', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'NEW',
@@ -91,7 +89,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it can detect a Logged In pupil', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'COL',
@@ -106,8 +104,41 @@ describe('pupil-register.service', () => {
       expect(status).toBe('Logged in')
     })
 
+    test('it can detect a pupil that has a check in processing phase', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'COL',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: true,
+        pupilLoginDate: moment(),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
+      })
+      expect(status).toBe('Processing')
+    })
+
+    test('it can detect a pupil that has a check with error in processing', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        checkStatusCode: 'COL',
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: true,
+        pupilLoginDate: moment(),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null,
+        processingFailed: true
+      })
+      expect(status).toBe('Error in processing')
+    })
+
     test('it can detect a Complete pupil', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'CMP',
@@ -123,7 +154,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it can detect a restart', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
         checkStatusCode: null,
@@ -139,7 +170,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it can detect an Incomplete check', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'COL',
@@ -155,7 +186,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it can detect a pupil was allocated a check that then expired', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'NEW',
@@ -173,7 +204,7 @@ describe('pupil-register.service', () => {
     test('a test that does not matches anything gets N/A', () => {
       // prevent an error being displayed in the console
       spyOn(logger, 'error')
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'VOD',
@@ -190,7 +221,7 @@ describe('pupil-register.service', () => {
     })
 
     test('it detects a restart that was allocated a new check that then expired', () => {
-      const status = pupilRegisterService.getProcessStatusV2({
+      const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         checkStatusCode: 'NEW',
@@ -209,50 +240,41 @@ describe('pupil-register.service', () => {
     })
   })
 
-  describe('#getPupilRegister', () => {
+  describe('#getPupilStatusData', () => {
     beforeEach(() => {
-      spyOn(pupilRegisterService, 'getPupilRegisterViewData')
+      spyOn(settingService, 'get').and.returnValue(Promise.resolve({ checkTimeLimit: 30 }))
+      spyOn(pupilStatusDataService, 'sqlFindPupilsFullStatus').and.returnValue([{ urlSlug: 'urlSlug' }])
+      spyOn(pupilStatusService, 'addStatus')
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+      spyOn(tableSorting, 'applySorting')
     })
     it('throws an error if no school password is provided', async () => {
       try {
-        await pupilRegisterService.getPupilRegister(undefined)
+        await pupilStatusService.getPupilStatusData(undefined)
         fail()
       } catch (error) {
         expect(error.message).toBe('School id not found in session')
       }
     })
-    it('calls the getPupilRegisterViewData if school is provided', async () => {
-      await pupilRegisterService.getPupilRegister(42)
-      expect(pupilRegisterService.getPupilRegisterViewData).toHaveBeenCalled()
+    it('calls the settingService get if school is provided', async () => {
+      await pupilStatusService.getPupilStatusData(42)
+      expect(settingService.get).toHaveBeenCalled()
     })
-  })
-
-  describe('#getPupilRegisterViewData', () => {
-    beforeEach(() => {
-      spyOn(pupilRegisterDataService, 'getPupilRegister').and.returnValue([])
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+    it('calls the pupilStatusDataService sqlFindPupilsFullStatus if school is provided', async () => {
+      await pupilStatusService.getPupilStatusData(42)
+      expect(pupilStatusDataService.sqlFindPupilsFullStatus).toHaveBeenCalled()
     })
-
-    it('calls the pupil register data service to get the raw data', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42)
-      expect(pupilRegisterDataService.getPupilRegister).toHaveBeenCalled()
+    it('calls the pupilStatusService addStatus if school is provided', async () => {
+      await pupilStatusService.getPupilStatusData(42)
+      expect(pupilStatusService.addStatus).toHaveBeenCalled()
     })
-    it('calls the pupil register identification flag service to get the view data based on raw', async () => {
-      await pupilRegisterService.getPupilRegisterViewData(42)
+    it('calls the pupilIdentificationFlagService addIdentificationFlags if school is provided', async () => {
+      await pupilStatusService.getPupilStatusData(42)
       expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
     })
-  })
-
-  describe('#hasIncompleteChecks', () => {
-    it('returns true if incomplete checks are found', async () => {
-      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([{ urlSlug: 1 }])
-      const result = await pupilRegisterService.hasIncompleteChecks(42)
-      expect(result).toBeTruthy()
-    })
-    it('returns false if incomplete checks are not found', async () => {
-      spyOn(pupilRegisterDataService, 'getIncompleteChecks').and.returnValue([])
-      const result = await pupilRegisterService.hasIncompleteChecks(42)
-      expect(result).toBeFalsy()
+    it('calls the tableSorting applySorting if school is provided', async () => {
+      await pupilStatusService.getPupilStatusData(42)
+      expect(tableSorting.applySorting).toHaveBeenCalled()
     })
   })
 })

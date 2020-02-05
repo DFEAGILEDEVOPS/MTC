@@ -46,13 +46,13 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
-  pupil_register_page.load
+  pupil_status_page.load
   p @details_hash[:first_name]
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_register_page.find_pupil_row(@details_hash[:first_name]).status.text == status}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_status_page.find_pupil_row(@details_hash[:first_name]).status.text == status}
 end
 
 Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
-  pupil_row = pupil_register_page.find_pupil_row(@pupil['lastName'])
+  pupil_row = pupil_status_page.find_pupil_row(@pupil['lastName'])
   expect(pupil_row.status.text).to eql(status)
 end
 

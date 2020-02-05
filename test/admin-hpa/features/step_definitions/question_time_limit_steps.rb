@@ -85,7 +85,7 @@ When(/^I update the time between questions from (\d+) to (\d+) seconds$/) do |li
 end
 
 Then(/^I should see a record that has date and time of the Time between questions change to (\d+) in database$/) do |arg|
-  wait_until{SqlDbHelper.get_settings['loadingTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.get_settings['loadingTimeLimit'].to_i == arg.to_i}
 end
 
 Then(/^I should see a historic record appended for Time between questions change to (\d+) in the database$/) do |arg|
@@ -93,6 +93,7 @@ Then(/^I should see a historic record appended for Time between questions change
 end
 
 Then(/^I should see that maximum length of check is set to (\d+) minutes$/) do |limit|
+  # Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until check_settings_page.check_time_limit.value.to_i.eql? limit}
   expect(check_settings_page.check_time_limit.value).to eql limit.to_s
 end
 

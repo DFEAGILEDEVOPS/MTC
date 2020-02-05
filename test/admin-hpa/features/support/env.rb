@@ -120,13 +120,13 @@ AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
 
 
-redis_key = ENV['RedisKey'] || ''
-redis_port =  ENV['Redis.Port'] || 6379
+redis_key = ENV['REDIS_KEY'] || ''
+redis_port =  ENV['REDIS_PORT'] || 6379
 
 if ENV['DOCKER'] == 'true'
   redis_host = 'redis'
 else
-  redis_host = ENV['Redis.Host'] || 'localhost'
+  redis_host = ENV['REDIS_HOST'] || 'localhost'
 end
 
 if azure_test == 'true'
