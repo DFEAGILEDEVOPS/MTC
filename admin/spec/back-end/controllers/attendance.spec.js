@@ -176,7 +176,7 @@ describe('attendance controller:', () => {
     it('redirects to the review pupils page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({ id: 1 })
+      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({ pupilId: 1 })
       spyOn(headteacherDeclarationService, 'updatePupilsAttendanceCode').and.returnValue(null)
       spyOn(res, 'redirect')
       await controller.postSubmitEditReason(req, res)
