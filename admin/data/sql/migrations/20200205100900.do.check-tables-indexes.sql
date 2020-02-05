@@ -5,7 +5,6 @@ CREATE INDEX idx_check_checkStatus_id ON mtc_admin.[check] (checkStatus_id) WITH
 -- not recommended due to high activity
 DROP INDEX IF EXISTS [mtc_admin].[check].[check_receivedByServerAt_index];
 DROP INDEX IF EXISTS [mtc_admin].[check].[check_liveFlag_pupilId_index];
-DROP INDEX IF EXISTS [mtc_admin].[check].[check_checkWindow_id_index];
 -- heavily used lookup
 CREATE INDEX [IX_check_pupil_id] ON [mtc-load].[mtc_admin].[check] ([pupil_id]) INCLUDE ([checkForm_id]) WITH (DROP_EXISTING = ON)
 
