@@ -607,10 +607,6 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="true">
-            <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-          </ConstantTimer>
-          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check-started queue" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -651,10 +647,6 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="true">
-            <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-          </ConstantTimer>
-          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit function proxy" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
