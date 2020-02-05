@@ -1,0 +1,6 @@
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_questionReaderReasons_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_pupil_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_recordedBy_user_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_accessArrangements_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_pupilFontSizes_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAccessArrangements].[idx_pupilAccessArrangements_pupilColourContrasts_id]
