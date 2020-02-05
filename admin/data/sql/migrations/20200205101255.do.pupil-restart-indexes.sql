@@ -1,0 +1,6 @@
+CREATE INDEX idx_pupilRestart_pupil_id ON mtc_admin.[pupilRestart] (pupil_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_recordedBy_user_id ON mtc_admin.[pupilRestart] (recordedByUser_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_deletedByUser_id ON mtc_admin.[pupilRestart] (deletedByUser_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_pupilRestartReason_id ON mtc_admin.[pupilRestart] (pupilRestartReason_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_check_id ON mtc_admin.[pupilRestart] (check_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_originCheck_id ON mtc_admin.[pupilRestart] (originCheck_id) WITH (DROP_EXISTING = ON)
