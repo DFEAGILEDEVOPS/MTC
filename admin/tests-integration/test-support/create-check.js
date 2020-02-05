@@ -38,18 +38,9 @@ const createCheck = async function createCheck (code, isLiveCheck) {
 
   // These modification to the base check are meant to represent canonical
   // representations of the check in various status's.
-  if (code === 'STD') {
-    const sql = `UPDATE [mtc_admin].[check] 
-                    set pupilLoginDate = GETUTCDATE(),
-                        startedAt = GETUTCDATE() 
-                    where id = ${checkId}`
-    await sqlService.modify(sql)
-  }
-
   if (code === 'CMP') {
     const sql = `UPDATE [mtc_admin].[check] 
-                 set pupilLoginDate = GETUTCDATE(),   
-                     startedAt = GETUTCDATE(),
+                 set pupilLoginDate = GETUTCDATE(),                        
                      receivedByServerAt = GETUTCDATE(),
                      complete = 1,
                      completedAt = GETUTCDATE(),
@@ -80,8 +71,7 @@ const createCheck = async function createCheck (code, isLiveCheck) {
   if (code === 'NTR1') {
     // Not received
     const sql = `UPDATE [mtc_admin].[check]
-                 SET pupilLoginDate = DATEADD(minute, -32, GETUTCDATE()),
-                     startedAt = DATEADD(minute, -31, GETUTCDATE())
+                 SET pupilLoginDate = DATEADD(minute, -32, GETUTCDATE())
                  WHERE id = ${checkId}                     
                  `
     await sqlService.modify(sql)
@@ -96,16 +86,13 @@ const createCheck = async function createCheck (code, isLiveCheck) {
     await sqlService.modify(sql)
   }
 
-  if (code === 'EXP3' && isLiveCheck === 0) {
+  if (code === 'ERR' && isLiveCheck === 1) {
     const sql = `UPDATE [mtc_admin].[check]
-                 SET pupilLoginDate = GETUTCDATE(),
-                     startedAt = GETUTCDATE()
-                 WHERE id = ${checkId};
-
-                UPDATE [mtc_admin].[checkPin]
-                SET pinExpiresAt = DATEADD(minute, -1, GETUTCDATE())
-                WHERE check_id = ${checkId};
-                `
+                 SET pupilLoginDate= GETUTCDATE(),
+                     received = 1,
+                     receivedByServerAt = GETUTCDATE(),
+                     processingFailed = 1
+                 WHERE id = ${checkId}`
     await sqlService.modifyWithTransaction(sql)
   }
 

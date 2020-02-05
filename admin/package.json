@@ -16,6 +16,7 @@
     "test:watch": "yarn jest --watch --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "test:frontend": "karma start karma.conf.js",
+    "test:all": "yarn test && yarn test:integration && yarn test:frontend",
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js",
