@@ -9,17 +9,4 @@
         This check is being processed, come back later for confirmation of pupil status
     </div>
 </details>
-<% } else { %>
-    <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-          Steps to take
-        </span>
-        </summary>
-        <div class="govuk-details__text govuk-!-font-weight-bold">
-            <span class="govuk-warning-text__icon warning-text__icon-small" aria-hidden="true">!</span>
-            Window ends in <%= remainingLiveCheckDays %> days. Ensure pupil takes the live MTC before 5pm on <%= liveCheckEndDate %>.
-            Generate PIN at <a href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
-        </div>
-    </details>
 <% } %>

@@ -11,7 +11,7 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
                 This list is taken from your school census data.
-                Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF July 2020.
+                Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF July 2020
             </p>
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card">
                 <div class="govuk-panel__body custom-card-small-text">
@@ -57,51 +57,7 @@
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
                 </div>
             </div>
-            <details class="govuk-details govuk-!-margin-top-5" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                      What does each status mean?
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <dl class="govuk-panel-list">
-                        <dt>
-                            <div><strong>Error in processing</strong></div>
-                            <div>
-                                The pupils check has had an error when being processed.
-                                The pupil will need to take the check again. To do this, assign the pupil a <a href="/restart/select-restart-list">'Restart'</a> and then <a href="/pupil-pin/generate-live-pins-overview">Generate a new PIN</a> for them to take the check again.
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Pupil check not received</strong></div>
-                            <div>
-                                The pupil has started the check but the time allowed has lapsed without a record of submission. The pupil will need to take the check again. A new PIN can be printed from 8am tomorrow morning.This is the default status when a pupil has been added to the school’s register.
-                                This status will show when:
-                                <ul class="govuk-list govuk-list--bullet">
-                                    <li>A PIN has yet to be generated for pupil to start the check</li>
-                                    <li>A PIN has expired before use</li>
-                                </ul>
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Not taking the check</strong></div>
-                            <div>
-                                A reason for "not taking the check" has been applied to the pupil.
-                                If removed the pupil returns to the previous state.
-                                To change this go to <a href="/pupils-not-taking-the-check/pupils-list">"Remove pupil from register"</a> page.
-                                The pupils check is being sent to the MTC data base. For technical reasons this is taking longer than expected.
-                                Please check the pupil status on this page after 8am tomorrow for status confirmation
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Complete</strong></div>
-                            <div>Pupil has completed the check successfully.</div>
-                        </dt>
-                    </dl>
-                </div>
-            </details>
-
-            <details id="red-card-details" class="govuk-details red-card-details" data-module="govuk-details">
+            <details id="red-card-details" class=" govuk-!-margin-top-5 govuk-details red-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
                           Checks with errors
@@ -162,6 +118,13 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
+                        <p class="govuk-body govuk-!-font-weight-bold">
+                            <span class="govuk-warning-text__icon warning-text__icon-small" aria-hidden="true">!</span>
+                            Window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days. Ensure pupil takes the live MTC before 5pm on <%= pupilStatusViewData.liveCheckEndDate %>.
+                            Generate PIN at <a href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
+                        </p>
+                        <% } %>
                         <% pupilStatusViewData.pupilsNotStarted.forEach((p) => { %>
                             <tr class="govuk-table__row">
                                 <td scope="row" class="govuk-table__cell">
@@ -174,9 +137,7 @@
                                     <%= p.status %>
                                     <%- partial('pupil-status/pupil-status-details/not-completed-details',
                                         {
-                                            status: p.status,
-                                            liveCheckEndDate: pupilStatusViewData.liveCheckEndDate,
-                                            remainingLiveCheckDays: pupilStatusViewData.remainingLiveCheckDays
+                                            status: p.status
                                         }
                                         )
                                     %>
