@@ -1,8 +1,8 @@
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupil]') AND NAME ='pupil_group_index')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupil]') AND NAME ='pupil_group_id_index')
 BEGIN
-    DROP INDEX pupil_group_index ON mtc_admin.[pupil];
+    DROP INDEX pupil_group_id_index ON mtc_admin.[pupil];
 END
-CREATE INDEX [pupil_group_index] ON [mtc_admin].[pupil] ([group_id])
+CREATE INDEX [pupil_group_id_index] ON [mtc_admin].[pupil] ([group_id])
 
 
 IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupil]') AND NAME ='pupil_currentCheckId_index')
