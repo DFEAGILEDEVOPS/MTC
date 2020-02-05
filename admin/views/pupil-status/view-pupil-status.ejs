@@ -135,12 +135,7 @@
                                 </td>
                                 <td class="govuk-table__cell">
                                     <%= p.status %>
-                                    <%- partial('pupil-status/pupil-status-details/not-completed-details',
-                                        {
-                                            status: p.status
-                                        }
-                                        )
-                                    %>
+                                    <%- partial('pupil-status/pupil-status-details/not-completed-details', { status: p.status }) %>
                                 </td>
                             </tr>
                         <% }) %>
