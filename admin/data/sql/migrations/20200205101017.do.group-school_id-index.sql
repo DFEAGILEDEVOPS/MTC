@@ -1,5 +1,5 @@
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[group]') AND NAME ='idx_group_school_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[group]') AND NAME ='group_school_id_index')
 BEGIN
-    DROP INDEX idx_group_school_id ON mtc_admin.[group];
+    DROP INDEX group_school_id_index ON mtc_admin.[group];
 END
-CREATE INDEX idx_group_school_id ON mtc_admin.[group] (school_id)
+CREATE INDEX group_school_id_index ON mtc_admin.[group] (school_id)

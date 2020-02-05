@@ -1,1 +1,1 @@
-DROP INDEX IF EXISTS [mtc_admin].[check].[idx_group_school_id]
+DROP INDEX IF EXISTS [mtc_admin].[check].[group_school_id_index]

@@ -1,40 +1,33 @@
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_questionReaderReasons_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='pupilAccessArrangements_questionReaderReasons_id_index')
 BEGIN
-    DROP INDEX idx_pupilAccessArrangements_questionReaderReasons_id ON mtc_admin.[pupilAccessArrangements];
+    DROP INDEX pupilAccessArrangements_questionReaderReasons_id_index ON mtc_admin.[pupilAccessArrangements];
 END
-CREATE INDEX idx_pupilAccessArrangements_questionReaderReasons_id ON mtc_admin.[pupilAccessArrangements] (questionReaderReasons_id)
+CREATE INDEX pupilAccessArrangements_questionReaderReasons_id_index ON mtc_admin.[pupilAccessArrangements] (questionReaderReasons_id)
 
 
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_pupil_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='pupilAccessArrangements_pupil_id_index')
 BEGIN
-    DROP INDEX idx_pupilAccessArrangements_pupil_id ON mtc_admin.[pupilAccessArrangements];
+    DROP INDEX pupilAccessArrangements_pupil_id_index ON mtc_admin.[pupilAccessArrangements];
 END
-CREATE INDEX idx_pupilAccessArrangements_pupil_id ON mtc_admin.[pupilAccessArrangements] (pupil_id)
+CREATE INDEX pupilAccessArrangements_pupil_id_index ON mtc_admin.[pupilAccessArrangements] (pupil_id)
 
 
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_recordedBy_user_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='pupilAccessArrangements_accessArrangements_id_index')
 BEGIN
-    DROP INDEX idx_pupilAccessArrangements_recordedBy_user_id ON mtc_admin.[pupilAccessArrangements];
+    DROP INDEX pupilAccessArrangements_accessArrangements_id_index ON mtc_admin.[pupilAccessArrangements];
 END
-CREATE INDEX idx_pupilAccessArrangements_recordedBy_user_id ON mtc_admin.[pupilAccessArrangements] (recordedBy_user_id)
+CREATE INDEX pupilAccessArrangements_accessArrangements_id_index ON mtc_admin.[pupilAccessArrangements] (accessArrangements_id)
 
 
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_accessArrangements_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='pupilAccessArrangements_pupilFontSizes_id_index')
 BEGIN
-    DROP INDEX idx_pupilAccessArrangements_accessArrangements_id ON mtc_admin.[pupilAccessArrangements];
+    DROP INDEX pupilAccessArrangements_pupilFontSizes_id_index ON mtc_admin.[pupilAccessArrangements];
 END
-CREATE INDEX idx_pupilAccessArrangements_accessArrangements_id ON mtc_admin.[pupilAccessArrangements] (accessArrangements_id)
+CREATE INDEX pupilAccessArrangements_pupilFontSizes_id_index ON mtc_admin.[pupilAccessArrangements] (pupilFontSizes_id)
 
 
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_pupilFontSizes_id')
+IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='pupilAccessArrangements_pupilColourContrasts_id_index')
 BEGIN
-    DROP INDEX idx_pupilAccessArrangements_pupilFontSizes_id ON mtc_admin.[pupilAccessArrangements];
+    DROP INDEX pupilAccessArrangements_pupilColourContrasts_id_index ON mtc_admin.[pupilAccessArrangements];
 END
-CREATE INDEX idx_pupilAccessArrangements_pupilFontSizes_id ON mtc_admin.[pupilAccessArrangements] (pupilFontSizes_id)
-
-
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupilAccessArrangements]') AND NAME ='idx_pupilAccessArrangements_pupilColourContrasts_id')
-BEGIN
-    DROP INDEX idx_pupilAccessArrangements_pupilColourContrasts_id ON mtc_admin.[pupilAccessArrangements];
-END
-CREATE INDEX idx_pupilAccessArrangements_pupilColourContrasts_id ON mtc_admin.[pupilAccessArrangements] (pupilColourContrasts_id)
+CREATE INDEX pupilAccessArrangements_pupilColourContrasts_id_index ON mtc_admin.[pupilAccessArrangements] (pupilColourContrasts_id)

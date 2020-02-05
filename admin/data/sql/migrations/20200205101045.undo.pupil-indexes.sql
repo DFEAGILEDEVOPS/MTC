@@ -1,7 +1,5 @@
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_azure_recommended_pupil_group]
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_azure_recommended_pupil_school]
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_pupil_currentCheckId]
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_pupil_attendanceId]
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_pupil_schoolId]
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_group_index]
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_currentCheckId_index]
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_attendanceId_index]
 
-CREATE INDEX pupil_job_id_index ON mtc_admin.pupil (job_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX pupil_job_id_index ON mtc_admin.pupil (job_id)

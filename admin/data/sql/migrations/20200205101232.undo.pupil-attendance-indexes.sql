@@ -1,3 +1,3 @@
-DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[idx_pupilAttendance_attendanceCode_id]
-DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[idx_pupilAttendance_pupil_id]
-DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[idx_pupilAttendance_user_id]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[pupilAttendance_attendanceCode_id_index]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[pupilAttendance_pupil_id_index]
+DROP INDEX IF EXISTS [mtc_admin].[pupilAttendance].[pupilAttendance_user_id_index]
