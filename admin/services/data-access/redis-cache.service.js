@@ -31,6 +31,7 @@ const redisCacheService = {}
 redisCacheService.get = async key => {
   redisConnect()
   try {
+    logger.debug(`REDIS (get): retrieving ${key}`)
     const cacheEntry = await redis.get(key)
     return unwrap(cacheEntry)
   } catch (err) {
@@ -49,6 +50,7 @@ redisCacheService.get = async key => {
 redisCacheService.set = async (key, value, ttl = undefined) => {
   redisConnect()
   try {
+    logger.debug(`REDIS (set): adding ${key} ttl:${ttl}`)
     const storageItemString = prepareCacheEntry(value)
     if (ttl) {
       await redis.setex(key, ttl, storageItemString)
@@ -79,7 +81,7 @@ redisCacheService.drop = async (cacheKeys = []) => {
     pipeline.del(c)
   })
   await pipeline.exec()
-  logger.info(`REDIS (drop): Dropped \`${cacheKeys.join('`, `')}\``)
+  logger.debug(`REDIS (drop): Dropped \`${cacheKeys.join('`, `')}\``)
   return true
 }
 
@@ -98,13 +100,13 @@ redisCacheService.setMany = async (items) => {
     const item = items[index]
     const storageItem = prepareCacheEntry(item.value)
     if (item.ttl !== undefined) {
-      logger.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
+      logger.debug(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
       multi.setex(item.key, item.ttl, storageItem)
     } else {
       multi.set(item.key, storageItem)
     }
   }
-  logger.info('REDIS (multi:exec)')
+  logger.debug('REDIS (multi:exec)')
   return multi.exec()
 }
 
@@ -120,7 +122,7 @@ redisCacheService.getMany = async (keys) => {
   redisConnect()
   const rawData = await redis.mget(...keys)
   const data = rawData.map(raw => unwrap(raw))
-  logger.info(`(redis) getMany ${keys.join(', ')}`)
+  logger.debug(`(redis) getMany ${keys.join(', ')}`)
   return data
 }
 

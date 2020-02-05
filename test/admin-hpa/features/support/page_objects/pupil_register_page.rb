@@ -5,7 +5,6 @@ class PupilRegisterPage < SitePrism::Page
   element :add_pupil, 'a', text: 'Add pupil'
   element :add_multiple_pupil, 'a', text: 'Add multiple pupils'
   element :info_message, '.govuk-info-message', text: 'Changes to pupil details have been saved'
-  element :incomplete_message, '.govuk-warning-message'
   element :new_pupil_info_message, '.govuk-info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.govuk-info-message'
   element :edited_pupil, '.highlight-item'
@@ -23,9 +22,7 @@ class PupilRegisterPage < SitePrism::Page
     sections :pupil_row, 'tbody tr' do
       element :names, 'td:nth-child(1)'
       element :edited_pupil, '.govuk-highlight-item'
-      element :incomplete_pupil, '.govuk-warning-item'
       element :group, 'td:nth-child(2)'
-      element :status, 'td:nth-child(3)'
       element :edit_pupil_link, 'a'
     end
   end
