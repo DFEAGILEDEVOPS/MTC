@@ -30,11 +30,4 @@ END
 CREATE INDEX idx_pupil_attendanceId ON [mtc_admin].pupil (attendanceId)
 
 
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.[pupil]') AND NAME ='idx_pupil_schoolId')
-BEGIN
-    DROP INDEX idx_pupil_schoolId ON mtc_admin.[pupil];
-END
-CREATE INDEX idx_pupil_schoolId ON [mtc_admin].pupil (school_id)
-
-
 DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_job_id_index];
