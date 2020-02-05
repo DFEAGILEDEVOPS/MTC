@@ -1,97 +1,69 @@
 
--- sql azure recommended...
-CREATE NONCLUSTERED INDEX [idx_azure_recommended_pupil_group] ON [mtc_admin].[pupil] ([group_id]) WITH (ONLINE = ON)
+-- append only table, no application lookups..
+DROP INDEX IF EXISTS [mtc_admin].[adminLogonEvent].[adminLogonEvent_user_id_index];
 
---
-IF NOT EXISTS (SELECT * FROM sys.indexes i
-               WHERE i.object_ID=object_id('mtc_admin.pupil')
-               AND name ='idx_azure_recommended_pupil_school')
-    BEGIN
-        --then the index doesn’t exist
-        CREATE INDEX idx_azure_recommended_pupil_school
-        ON [mtc_admin].[pupil] (school_id) INCLUDE (attendanceId, checkComplete, createdAt, currentCheckId, dateOfBirth,
-                                        foreName, foreNameAlias, gender, group_id, isTestAccount,
-                                        lastName, lastNameAlias, middleNames,
-                                        pupilAgeReason_id, upn, urlSlug)
-        ;
-    END;
-
-
--- jon suggestion
-CREATE INDEX idx_check_received_live_complete ON mtc_admin.[check] (isLiveCheck, received, complete)
-CREATE INDEX idx_check_received_live_failed	ON mtc_admin.[check] (isLiveCheck, received, processingFailed)
-
--- FKs
-CREATE INDEX check_pupil_id_index ON mtc_admin.[check] (pupil_id)
-CREATE INDEX check_checkForm_id_index ON mtc_admin.[check] (checkForm_id)
-CREATE INDEX idx_check_checkStatus_id ON mtc_admin.[check] (checkStatus_id)
-CREATE INDEX idx_checkPin_pin_id ON mtc_admin.[checkPin] (pin_id)
-CREATE INDEX check_checkWindow_id_index ON mtc_admin.[check] (checkWindow_id)
-CREATE INDEX idx_checkConfig_check_id ON mtc_admin.[checkConfig] (check_id)
-CREATE INDEX idx_group_school_id ON mtc_admin.[group] (school_id)
-CREATE INDEX idx_pupil_currentCheckId ON [mtc_admin].pupil (currentCheckId)
-CREATE INDEX idx_pupil_attendanceId ON [mtc_admin].pupil (attendanceId)
-CREATE INDEX idx_pupil_schoolId ON [mtc_admin].pupil (school_id)
-CREATE INDEX idx_pupilAccessArrangements_questionReaderReasons_id ON mtc_admin.[pupilAccessArrangements] (questionReaderReasons_id)
-CREATE INDEX idx_pupilAccessArrangements_pupil_id ON mtc_admin.[pupilAccessArrangements] (pupil_id)
-CREATE INDEX idx_pupilAccessArrangements_recordedBy_user_id ON mtc_admin.[pupilAccessArrangements] (recordedBy_user_id)
-CREATE INDEX idx_pupilAccessArrangements_accessArrangements_id ON mtc_admin.[pupilAccessArrangements] (accessArrangements_id)
-CREATE INDEX idx_pupilAccessArrangements_pupilFontSizes_id ON mtc_admin.[pupilAccessArrangements] (pupilFontSizes_id)
-CREATE INDEX idx_pupilAccessArrangements_pupilColourContrasts_id ON mtc_admin.[pupilAccessArrangements] (pupilColourContrasts_id)
-CREATE INDEX idx_pupilAttendance_attendanceCode_id ON mtc_admin.[pupilAttendance] (attendanceCode_id)
-CREATE INDEX idx_pupilAttendance_pupil_id ON mtc_admin.[pupilAttendance] (pupil_id)
-CREATE INDEX idx_pupilAttendance_user_id ON mtc_admin.[pupilAttendance] (recordedBy_user_id)
-CREATE INDEX idx_pupilRestart_pupil_id ON mtc_admin.[pupilRestart] (pupil_id)
-CREATE INDEX idx_pupilRestart_recordedBy_user_id ON mtc_admin.[pupilRestart] (recordedByUser_id)
-CREATE INDEX idx_pupilRestart_deletedByUser_id ON mtc_admin.[pupilRestart] (deletedByUser_id)
-CREATE INDEX idx_pupilRestart_pupilRestartReason_id ON mtc_admin.[pupilRestart] (pupilRestartReason_id)
-CREATE INDEX idx_pupilRestart_check_id ON mtc_admin.[pupilRestart] (check_id)
-CREATE INDEX idx_pupilRestart_originCheck_id ON mtc_admin.[pupilRestart] (originCheck_id)
-CREATE INDEX idx_sce_school_id ON mtc_admin.[sce] (school_id)
-CREATE INDEX idx_schoolScore_school_id ON mtc_admin.[schoolScore] (school_id)
-CREATE INDEX idx_schoolScore_checkWindow_id ON mtc_admin.[schoolScore] (checkWindow_id)
-CREATE INDEX idx_user_role_id ON mtc_admin.[user] (role_id)
-CREATE INDEX idx_user_school_id ON mtc_admin.[user] (school_id)
-
--- drops
+-- check
+CREATE INDEX check_pupil_id_index ON mtc_admin.[check] (pupil_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX check_checkForm_id_index ON mtc_admin.[check] (checkForm_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_check_checkStatus_id ON mtc_admin.[check] (checkStatus_id) WITH (DROP_EXISTING = ON)
+-- not recommended due to highly active table
 DROP INDEX IF EXISTS [mtc_admin].[check].[check_receivedByServerAt_index];
 DROP INDEX IF EXISTS [mtc_admin].[check].[check_liveFlag_pupilId_index];
-DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_job_id_index];
-DROP INDEX IF EXISTS [mtc_admin].[adminLogonEvent].[adminLogonEvent_user_id_index];
 DROP INDEX IF EXISTS [mtc_admin].[check].[check_checkWindow_id_index];
+-- heavily used lookup
+CREATE INDEX [IX_check_pupil_id] ON [mtc-load].[mtc_admin].[check] ([pupil_id]) INCLUDE ([checkForm_id]) WITH (DROP_EXISTING = ON)
+
+-- check config
+CREATE INDEX idx_checkConfig_check_id ON mtc_admin.[checkConfig] (check_id) WITH (DROP_EXISTING = ON)
+
+-- checkPin
+CREATE INDEX idx_checkPin_pin_id ON mtc_admin.[checkPin] (pin_id) WITH (DROP_EXISTING = ON)
+
+-- group
+CREATE INDEX idx_group_school_id ON mtc_admin.[group] (school_id) WITH (DROP_EXISTING = ON)
+
+-- pupil
+CREATE NONCLUSTERED INDEX [idx_azure_recommended_pupil_group] ON [mtc_admin].[pupil] ([group_id]) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_azure_recommended_pupil_school
+ON [mtc_admin].[pupil] (school_id) INCLUDE (attendanceId, checkComplete, createdAt, currentCheckId, dateOfBirth,
+                                foreName, foreNameAlias, gender, group_id, isTestAccount,
+                                lastName, lastNameAlias, middleNames,
+                                pupilAgeReason_id, upn, urlSlug)  WITH (DROP_EXISTING = ON);
+CREATE INDEX idx_pupil_currentCheckId ON [mtc_admin].pupil (currentCheckId) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupil_attendanceId ON [mtc_admin].pupil (attendanceId) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupil_schoolId ON [mtc_admin].pupil (school_id) WITH (DROP_EXISTING = ON)
+DROP INDEX IF EXISTS [mtc_admin].[pupil].[pupil_job_id_index];
 DROP INDEX IF EXISTS [mtc_admin].[pupil].[idx_azure_recommended_pupil_school];
+DROP INDEX IF EXISTS IX_pupil_pupilAgeReason_id ON mtc_admin.pupil;
 
--- sql authority add recommended (after load test)...
--- ALSO suggested to remove afterward, now says missing!
-IF EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('mtc_admin.pupil') AND NAME ='IX_pupil_pupilAgeReason_id')
-BEGIN
-    DROP INDEX IX_pupil_pupilAgeReason_id ON mtc_admin.pupil;
-END
-CREATE INDEX [IX_check_pupil_id] ON [mtc-load].[mtc_admin].[check] ([pupil_id]) INCLUDE ([checkForm_id])
--- outcome: no noticable difference
+-- pupil access arrangements
+CREATE INDEX idx_pupilAccessArrangements_questionReaderReasons_id ON mtc_admin.[pupilAccessArrangements] (questionReaderReasons_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAccessArrangements_pupil_id ON mtc_admin.[pupilAccessArrangements] (pupil_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAccessArrangements_recordedBy_user_id ON mtc_admin.[pupilAccessArrangements] (recordedBy_user_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAccessArrangements_accessArrangements_id ON mtc_admin.[pupilAccessArrangements] (accessArrangements_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAccessArrangements_pupilFontSizes_id ON mtc_admin.[pupilAccessArrangements] (pupilFontSizes_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAccessArrangements_pupilColourContrasts_id ON mtc_admin.[pupilAccessArrangements] (pupilColourContrasts_id) WITH (DROP_EXISTING = ON)
 
+-- pupil attendance
+CREATE INDEX idx_pupilAttendance_attendanceCode_id ON mtc_admin.[pupilAttendance] (attendanceCode_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAttendance_pupil_id ON mtc_admin.[pupilAttendance] (pupil_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilAttendance_user_id ON mtc_admin.[pupilAttendance] (recordedBy_user_id) WITH (DROP_EXISTING = ON)
 
--- dropping these made performance on pin gen worse...
-/*
-DROP INDEX [check_checkForm_id_index] ON [mtc_admin].[check]
-DROP INDEX [check_pupil_id_index] ON [mtc_admin].[check]
-DROP INDEX [idx_checkPin_pin_id] ON [mtc_admin].[checkPin]
-DROP INDEX [idx_checkConfig_check_id] ON [mtc_admin].[checkConfig]
-*/
+-- pupil restart
+CREATE INDEX idx_pupilRestart_pupil_id ON mtc_admin.[pupilRestart] (pupil_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_recordedBy_user_id ON mtc_admin.[pupilRestart] (recordedByUser_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_deletedByUser_id ON mtc_admin.[pupilRestart] (deletedByUser_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_pupilRestartReason_id ON mtc_admin.[pupilRestart] (pupilRestartReason_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_check_id ON mtc_admin.[pupilRestart] (check_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_pupilRestart_originCheck_id ON mtc_admin.[pupilRestart] (originCheck_id) WITH (DROP_EXISTING = ON)
 
+-- sce schools
+CREATE INDEX idx_sce_school_id ON mtc_admin.[sce] (school_id) WITH (DROP_EXISTING = ON)
 
+-- school score
+CREATE INDEX idx_schoolScore_school_id ON mtc_admin.[schoolScore] (school_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_schoolScore_checkWindow_id ON mtc_admin.[schoolScore] (checkWindow_id) WITH (DROP_EXISTING = ON)
 
--- IDEAS
-
-/*
-for vewPupilsWithActiveLivePins...
-cp.pinExpiresAt
-chkStatus.code
-chk.isLiveCheck
-p.attendanceId
-*/
-
-
-
-
-
+-- user
+CREATE INDEX idx_user_role_id ON mtc_admin.[user] (role_id) WITH (DROP_EXISTING = ON)
+CREATE INDEX idx_user_school_id ON mtc_admin.[user] (school_id) WITH (DROP_EXISTING = ON)
