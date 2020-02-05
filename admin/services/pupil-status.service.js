@@ -3,80 +3,60 @@
 const { isNil } = require('ramda')
 const { isFalse, isTrue, isPositive } = require('ramda-adjunct')
 const moment = require('moment')
+const R = require('ramda')
 
-const pupilRegisterDataService = require('./data-access/pupil-register.data.service')
+const logger = require('./log.service').getLogger()
+const pupilStatusDataService = require('../services/data-access/pupil-status.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const settingService = require('./setting.service')
-const logger = require('./log.service').getLogger()
+const tableSorting = require('../helpers/table-sorting')
 
-const pupilRegisterService = {
+const pupilStatusService = {
   /**
-   * Return the pupil register
+   * Return the pupil status data
    * @param schoolId
    * @return {Promise<*>}
    */
-  getPupilRegister: async function (schoolId) {
+  getPupilStatusData: async function (schoolId) {
     if (!schoolId) {
       throw new Error('School id not found in session')
     }
-    return this.getPupilRegisterViewData(schoolId)
-  },
-
-  /**
-   * Store the pupil register view data in redis and return the data set
-   * @param {Number} schoolId
-   * @return {Array}
-   */
-  getPupilRegisterViewData: async function (schoolId) {
-    const pupilRegisterData = await pupilRegisterDataService.getPupilRegister(schoolId)
     const settings = await settingService.get()
-
-    const pupilRegister = pupilRegisterData.map(d => {
-      return {
-        urlSlug: d.urlSlug,
-        foreName: d.foreName,
-        lastName: d.lastName,
-        middleNames: d.middleNames,
-        dateOfBirth: d.dateOfBirth,
-        upn: d.upn,
-        group: d.groupName,
-        outcome: pupilRegisterService.getProcessStatusV2({
-          attendanceId: d.attendanceId,
-          checkComplete: d.checkComplete,
-          checkReceived: d.checkReceived,
-          checkStatusCode: d.checkStatusCode,
-          currentCheckId: d.currentCheckId,
-          notReceivedExpiryInMinutes: settings.checkTimeLimit,
-          pinExpiresAt: d.pinExpiresAt,
-          pupilCheckComplete: d.pupilCheckComplete,
-          pupilId: d.pupilId,
-          pupilLoginDate: d.pupilLoginDate,
-          restartAvailable: d.restartAvailable
-        })
-      }
-    })
-
-    return pupilIdentificationFlagService.addIdentificationFlags(pupilRegister)
+    const pupils = await pupilStatusDataService.sqlFindPupilsFullStatus(schoolId)
+    const pupilsWithStatus = pupils.map(R.partial(pupilStatusService.addStatus, [settings]))
+    return pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilsWithStatus, 'lastName'))
   },
 
   /**
-   * @typedef {Object} ProcessStatusArg
-   * @property {Number | null} attendanceId
-   * @property {Number | null} currentCheckId
-   * @property {String | null} checkStatusCode
-   * @property {Boolean} restartAvailable
-   * @property {Boolean} checkComplete
-   * @property {Boolean} checkReceived
-   * @property {Moment.moment | null} pupilLoginDate
-   * @property {Number} notReceivedExpiryInMinutes
-   * @property {Boolean} pupilCheckComplete - pupil.checkComplete flag
-   * @property {Moment.moment | null} pinExpiresAt - the date and time in utc the pin expires (and therefore the check)
-   * @property {Number} pupilId - the pupil ID.  Used for support diagnostics only.
+   * Add the pupil `status` field, using the pupil register service to do so.
+   * @param {Object} settings
+   * @param {Object} pupil
+   * @return {Object} partially cloned pupil obj with an additional `status` property
    */
+  addStatus: function (settings, pupil) {
+    const newPupil = R.pickAll(['pupilId', 'foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'checkStatusCode',
+      'group_id', 'reason', 'reasonCode'], pupil)
+    newPupil.status = pupilStatusService.getProcessStatusV2({
+      attendanceId: pupil.attendanceId,
+      checkComplete: pupil.checkComplete,
+      checkReceived: pupil.checkReceived,
+      checkStatusCode: pupil.checkStatusCode,
+      currentCheckId: pupil.currentCheckId,
+      notReceivedExpiryInMinutes: settings.checkTimeLimit,
+      pinExpiresAt: pupil.pinExpiresAt,
+      pupilCheckComplete: pupil.pupilCheckComplete,
+      pupilId: pupil.pupilId,
+      pupilLoginDate: pupil.pupilLoginDate,
+      restartAvailable: pupil.restartAvailable,
+      processingFailed: pupil.processingFailed,
+      reason: pupil.reason
+    })
+    return newPupil
+  },
 
   /**
    * Return the process status using new pupil status fields
-   * @param {ProcessStatusArg} an object containing the parameters
+   * @param {ProcessStatusArg} arg object containing the parameters
    * @return {string}
    */
   getProcessStatusV2: function (arg) {
@@ -93,7 +73,9 @@ const pupilRegisterService = {
       pupilCheckComplete,
       pupilId,
       pupilLoginDate,
-      restartAvailable
+      restartAvailable,
+      processingFailed,
+      reason
     } = arg
 
     if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
@@ -101,7 +83,9 @@ const pupilRegisterService = {
     }
 
     if (isPositive(attendanceId)) {
-      status = 'Not taking the Check'
+      status = reason
+    } else if (isTrue(processingFailed)) {
+      status = 'Error in processing'
     } else if (isTrue(restartAvailable)) {
       status = 'Restart'
     } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
@@ -115,24 +99,15 @@ const pupilRegisterService = {
       if (isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())) {
         status = 'Incomplete'
       }
+    } else if (isTrue(checkReceived) && isFalse(checkComplete)) {
+      status = 'Processing'
     } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode) && isTrue(pupilCheckComplete)) {
       status = 'Complete'
     } else {
       logger.error(`getProcessStatusV2(): ERROR: Unable to determine status for pupil [${pupilId}] arg was: \n` +
         JSON.stringify(arg, ' ', 4))
     }
-
     return status
-  },
-
-  /**
-   * Identifies whether school's register has incomplete checks.
-   * @param {number} schoolId
-   * @return {boolean}
-   */
-  hasIncompleteChecks: async function (schoolId) {
-    const result = await pupilRegisterDataService.getIncompleteChecks(schoolId)
-    return Array.isArray(result) && result.length > 0
   }
 }
 
@@ -167,4 +142,4 @@ function isExpired (date) {
   return moment.utc().isAfter(date)
 }
 
-module.exports = pupilRegisterService
+module.exports = pupilStatusService

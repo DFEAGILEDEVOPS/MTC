@@ -9,11 +9,6 @@ Feature:
     When I am on the Pupil Register page
     Then I should see on Pupil register page that all the pupils who are registered are displayed and sorted by lastname
 
-  Scenario: Pupil register has a section explaining what each status means
-    Given I am logged in
-    And I am on the Pupil Register page
-    Then I should see a toggle that explains each status
-
   Scenario: Sorting Pupil list by Name
     Given I am logged in
     And I am on the Pupil Register page
@@ -44,12 +39,6 @@ Feature:
     Given I have a group of pupils
     When I am on the Pupil Register page
     Then any pupils not part of a group should not have an entry for group
-
-  @incomplete_pupil
-  Scenario: Incomplete pupils are highlighted with a red bar
-    Given there is a pupil with an incomplete status
-    When I am on the Pupil Register page
-    Then these pupils should be highlighted in red
 
   Scenario: Pupil count is displayed on the pupil register page
     Given I am logged in
