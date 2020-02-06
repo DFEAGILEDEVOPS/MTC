@@ -1,0 +1,69 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Check the progress of the multiplication tables check</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">
+                This list is taken from your school census data.
+                Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF
+            </p>
+            <table id="pupil-status" name="filterablePupilsList" class="govuk-table govuk-spacious">
+                <caption class="govuk-body govuk-table__caption">List of pupils with statuses</caption>
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                        <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                        <a class="no-underline sortingLink">Status<span class="sort-icon"><span>Sort by status</span></span></a>
+                    </th>
+                </tr>
+                </thead>
+                <% pupils.forEach((p) => { %>
+                    <tr class="govuk-table__row">
+                        <td scope="row" class="govuk-table__cell">
+                            <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
+                            <% if (p.showDoB) { %>
+                                <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
+                            <% } %>
+                        </td>
+                        <td class="govuk-table__cell"><%= p.status %></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                    </svg>Back to top
+                </a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance (PDF)</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Pupils not taking the check</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Access arrangements</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>
+<script src="/javascripts/pupil-status.js"></script>
