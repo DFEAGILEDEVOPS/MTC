@@ -163,9 +163,8 @@ end
 
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do |restart_status|
   restarts_page.load
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until (restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}).status.text == restart_status}
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
-
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_row.status.text == restart_status}
   expect(pupil_row.status.text).to include(restart_status)
 end
 
