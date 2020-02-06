@@ -89,6 +89,7 @@ gulp.task('bundle-js', function () {
 gulp.task('bundle-func-calls-js', function () {
   const viewJS = [
     'pupil-register.js',
+    'pupil-status.js',
     'pupil-pin.js'
   ]
   const tasks = viewJS.map(v => {

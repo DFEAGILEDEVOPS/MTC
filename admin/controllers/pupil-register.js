@@ -1,8 +1,5 @@
 'use strict'
 
-const featureToggles = require('feature-toggles')
-
-const pupilRegisterService = require('../services/pupil-register.service')
 const pupilRegisterV2Service = require('../services/pupil-register-v2.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -18,13 +15,8 @@ const listPupils = async (req, res, next) => {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData)
-    if (featureToggles.isFeatureEnabled('pupilRegisterV2')) {
-      pupilsFormatted = await pupilRegisterV2Service.getPupilRegister(req.user.schoolId)
-      pupilsListView = 'pupil-register/pupils-list-v2'
-    } else {
-      pupilsFormatted = await pupilRegisterService.getPupilRegister(req.user.schoolId)
-      pupilsListView = 'pupil-register/pupils-list'
-    }
+    pupilsFormatted = await pupilRegisterV2Service.getPupilRegister(req.user.schoolId)
+    pupilsListView = 'pupil-register/pupils-list-v2'
   } catch (error) {
     next(error)
   }
