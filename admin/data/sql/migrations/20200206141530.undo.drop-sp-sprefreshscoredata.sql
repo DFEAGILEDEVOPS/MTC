@@ -1,0 +1,1 @@
+-- no undo as it depends on tables that have been deleted
