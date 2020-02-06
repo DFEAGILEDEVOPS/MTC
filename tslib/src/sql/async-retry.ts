@@ -1,6 +1,15 @@
+import { PreparedStatementError, TransactionError, ConnectionError, RequestError } from 'mssql'
+type MsSqlErrorType = ConnectionError | RequestError | PreparedStatementError | TransactionError
 
 const pause = (milliSeconds: number) => new Promise(res => setTimeout(res, milliSeconds))
-const defaultRetryCondition = () => true
+
+const defaultRetryCondition = (error: MsSqlErrorType) => {
+  if (error.hasOwnProperty('code')) {
+    return error.code === 'ETIMEOUT'
+  }
+  return false
+}
+
 const defaultConfiguration: IRetryPolicy = {
   attempts: 3,
   pauseTimeMs: 5000,
@@ -20,7 +29,7 @@ export interface IRetryPolicy {
  */
 async function asyncRetryHandler<T> (asyncRetryableFunction: () => Promise<T>,
   retryConfiguration: IRetryPolicy = defaultConfiguration,
-  retryCondition: (error: Error) => Boolean = defaultRetryCondition): Promise<T> {
+  retryCondition: (error: MsSqlErrorType) => Boolean = defaultRetryCondition): Promise<T> {
   let result: T
   try {
     result = await asyncRetryableFunction()

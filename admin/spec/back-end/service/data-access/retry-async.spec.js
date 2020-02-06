@@ -25,7 +25,9 @@ describe('async-retry', () => {
     const func = () => {
       callCount++
       if (callCount < 3) {
-        return Promise.reject(new Error(`callCount is ${callCount}`))
+        const error = new Error(`callCount is ${callCount}`)
+        error.code = 'ETIMEOUT'
+        return Promise.reject(error)
       } else {
         return Promise.resolve(callCount)
       }
@@ -34,12 +36,45 @@ describe('async-retry', () => {
     expect(actualCallCount).toBe(3)
   })
 
+  it('function should never retry if code property does not exist on error object', async () => {
+    let callCount = 0
+    const func = () => {
+      callCount++
+      if (callCount === 1) {
+        const error = new Error(`callCount is ${callCount}`)
+        return Promise.reject(error)
+      } else {
+        return Promise.resolve(callCount)
+      }
+    }
+    const actualCallCount = await retry(func, retryPolicy)
+    expect(actualCallCount).toBe(1)
+  })
+
+  it('function should never retry if code property does not equal timeout', async () => {
+    let callCount = 0
+    const func = () => {
+      callCount++
+      if (callCount === 1) {
+        const error = new Error(`callCount is ${callCount}`)
+        error.code = 'not a timeout'
+        return Promise.reject(error)
+      } else {
+        return Promise.resolve(callCount)
+      }
+    }
+    const actualCallCount = await retry(func, retryPolicy)
+    expect(actualCallCount).toBe(1)
+  })
+
   it('function should fail if retries made exceeds configured maximum number of retries', async () => {
     let callCount = 0
     const func = () => {
       callCount++
       if (callCount < 4) {
-        return Promise.reject(new Error(`callCount is ${callCount}`))
+        const error = new Error(`callCount is ${callCount}`)
+        error.code = 'ETIMEOUT'
+        return Promise.reject(error)
       } else {
         return Promise.resolve(callCount)
       }
