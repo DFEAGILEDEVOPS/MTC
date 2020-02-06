@@ -97,14 +97,14 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusCode).toBe('COL') // COLLECTED
     })
 
-    it('can identify an EXPIRED check with a pin', async () => {
+    it('Expired checks are identified as NEW', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW') // Status is NEW, but PIN has expired
     })
 
-    it('can identify an EXPIRED check without a pin', async () => {
+    it('Expired checks are identified as NEW (without a pin)', async () => {
       const id = await createCheck('EXP2', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
