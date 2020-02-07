@@ -1,5 +1,6 @@
 import tz from 'moment-timezone'
 import { SqlService } from '../../sql/sql.service'
+import moment from 'moment'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
@@ -22,11 +23,11 @@ export class SchoolPinReplenishmnentService {
     const allSchools = await this.dataService.getSchoolData()
     for (let index = 0; index < allSchools.length; index++) {
       const school = allSchools[index]
-      if (this.newPinRequiredPredicate.isRequired(school.pinExpiresAt, school.pin)) {
+      if (this.newPinRequiredPredicate.isRequired(school)) {
         let pinUpdated = false
         const update: SchoolPinUpdate = {
           id: school.id,
-          pinExpiresAt: new Date(), // TODO create expiry generator
+          pinExpiresAt: moment(), // TODO create expiry generator
           newPin: this.pinGenerator.generate()
         }
         while (!pinUpdated) {
@@ -68,7 +69,7 @@ export interface ISchoolPinReplenishmentDataService {
 export interface School {
   id: number
   name: string
-  pinExpiresAt?: Date
+  pinExpiresAt?: moment.Moment
   pin?: string
   sceId?: number
   timezone?: string
@@ -77,7 +78,7 @@ export interface School {
 export interface SchoolPinUpdate {
   id: number
   newPin: string
-  pinExpiresAt: Date
+  pinExpiresAt: moment.Moment
 }
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
@@ -91,7 +92,11 @@ export interface ISchoolPinGenerator {
 }
 
 export class SchoolRequiresNewPinPredicate {
-  isRequired (currentPinExpiresAt?: Date, pin?: string): boolean {
+  isRequired (school: School): boolean {
+    if (!school.pin) return true
+    if (!school.pinExpiresAt) return true
+    if (school.pinExpiresAt > moment.utc()) return false
+    if (school.pinExpiresAt <= moment.utc()) return true
     return false
   }
 }
