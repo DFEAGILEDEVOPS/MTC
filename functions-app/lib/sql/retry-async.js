@@ -1,13 +1,21 @@
 'use strict'
-const config = require('../../config')
 
-const pause = (duration) => new Promise(res => setTimeout(res, duration), noReject => undefined)
-const defaultRetryPredicate = () => true
+const logger = require('../log.service').getLogger()
+const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
+
+const sqlTimeoutRetryPredicate = (error) => {
+  if ({}.hasOwnProperty.call(error, 'code')) {
+    return error.code === 'ETIMEOUT'
+  }
+  return false
+}
+
+const defaultRetryPredicate = () => false
 
 const defaultConfiguration = {
-  attempts: config.DatabaseRetry.MaxRetryAttempts,
-  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
-  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
+  attempts: 3,
+  pauseTimeMs: 5000,
+  pauseMultiplier: 1.5
 }
 
 /**
@@ -22,6 +30,7 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
     const result = await asyncRetryableFunction()
     return result
   } catch (error) {
+    logger.warn(`asyncRetryHandler: method call failed with ${error}`)
     if (retryPolicy.attempts > 1 && retryPredicate(error)) {
       await pause(retryPolicy.pauseTimeMs)
       retryPolicy.attempts -= 1
@@ -29,9 +38,13 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
       const result = await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryPredicate)
       return result
     } else {
+      logger.error('max retry count exceeded, failing...')
       throw error
     }
   }
 }
 
-module.exports = asyncRetryHandler
+module.exports = {
+  asyncRetryHandler,
+  sqlTimeoutRetryPredicate
+}

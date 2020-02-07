@@ -1,11 +1,11 @@
 import retry, { IRetryStrategy, sqlTimeoutRetryPredicate } from './async-retry'
 import { ConnectionError, RequestError, PreparedStatementError, TransactionError } from 'mssql'
 
-let standardRetryPolicy: IRetryStrategy
+let retryPolicy: IRetryStrategy
 
 describe('async-retry', () => {
   beforeEach(() => {
-    standardRetryPolicy = {
+    retryPolicy = {
       attempts: 3,
       pauseTimeMs: 50,
       pauseMultiplier: 1.1
@@ -13,7 +13,6 @@ describe('async-retry', () => {
   })
 
   describe('default behaviour', () => {
-
     test('function should execute and return as expected when no error is thrown', async () => {
       let callCount = 0
       const func = (): Promise<number> => {
@@ -68,7 +67,7 @@ describe('async-retry', () => {
         }
       }
       try {
-        await retry<number>(func, standardRetryPolicy, () => true)
+        await retry<number>(func, retryPolicy, () => true)
         expect(callCount).toBe(3)
       } catch (error) {
         fail(`should have completed after 3 attempts. attempts made:${callCount}`)
@@ -87,7 +86,7 @@ describe('async-retry', () => {
         }
       }
       try {
-        await retry<number>(func, standardRetryPolicy, () => true)
+        await retry<number>(func, retryPolicy, () => true)
         fail('should not have completed')
       } catch (error) {
         expect(error).toBeDefined()
@@ -105,7 +104,7 @@ describe('async-retry', () => {
         return Promise.reject(new Error())
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -120,7 +119,7 @@ describe('async-retry', () => {
         return Promise.reject(new ConnectionError('error', 'not a timeout'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -135,7 +134,7 @@ describe('async-retry', () => {
         return Promise.reject(new RequestError('error', 'not a timeout'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -150,7 +149,7 @@ describe('async-retry', () => {
         return Promise.reject(new PreparedStatementError('error', 'not a timeout'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -165,7 +164,7 @@ describe('async-retry', () => {
         return Promise.reject(new TransactionError('error', 'not a timeout'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -180,7 +179,7 @@ describe('async-retry', () => {
         return Promise.reject(new ConnectionError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -195,7 +194,7 @@ describe('async-retry', () => {
         return Promise.reject(new RequestError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -210,7 +209,7 @@ describe('async-retry', () => {
         return Promise.reject(new PreparedStatementError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -225,18 +224,13 @@ describe('async-retry', () => {
         return Promise.reject(new TransactionError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<void>(func, standardRetryPolicy, sqlTimeoutRetryPredicate)
+        await retry<void>(func, retryPolicy, sqlTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(callCount).toBe(3)
       }
     })
-
-
-
-
-
   })
 
 })

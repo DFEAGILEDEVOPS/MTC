@@ -2,12 +2,16 @@
 
 const logger = require('../log.service').getLogger()
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
-const defaultRetryPredicate = (error) => {
+
+const sqlTimeoutRetryPredicate = (error) => {
   if ({}.hasOwnProperty.call(error, 'code')) {
     return error.code === 'ETIMEOUT'
   }
   return false
 }
+
+const defaultRetryPredicate = () => false
+
 const defaultConfiguration = {
   attempts: 3,
   pauseTimeMs: 5000,
@@ -40,4 +44,7 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
   }
 }
 
-module.exports = asyncRetryHandler
+module.exports = {
+  asyncRetryHandler,
+  sqlTimeoutRetryPredicate
+}
