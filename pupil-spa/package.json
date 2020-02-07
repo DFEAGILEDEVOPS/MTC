@@ -19,7 +19,7 @@
     "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
-    "@angular/animations": "^8.2.13",
+    "@angular/animations": "^8.2.14",
     "@angular/common": "^8.2.13",
     "@angular/compiler": "^8.2.13",
     "@angular/core": "^8.2.13",
