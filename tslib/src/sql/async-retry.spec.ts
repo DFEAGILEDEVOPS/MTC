@@ -1,6 +1,6 @@
-import retry, { IRetryPolicy } from './async-retry'
+import retry, { IRetryStrategy } from './async-retry'
 
-const retryPolicy: IRetryPolicy = {
+const retryPolicy: IRetryStrategy = {
   attempts: 3,
   pauseTimeMs: 500,
   pauseMultiplier: 1.5
@@ -18,7 +18,37 @@ describe('async-retry', () => {
     expect(actualCallCount).toBe(1)
   })
 
-  test('function should complete if retries made does not exceed configured maximum number of retries', async () => {
+  test('subsequent attempts should not be made by default', async () => {
+    const errorMessage = 'the error message'
+    const func = (): Promise<number> => {
+      return Promise.reject(new Error(errorMessage))
+    }
+    try {
+      await retry<number>(func)
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error.message).toBe(errorMessage)
+    }
+  })
+
+  test('total number of attempts should match retry strategy', async () => {
+    const maxAttempts = 3
+    const strategy: IRetryStrategy = {
+      attempts: maxAttempts,
+      pauseMultiplier: 1.1,
+      pauseTimeMs: 20
+    }
+    let callCount = 0
+    const func = (): Promise<number> => {
+      callCount++
+      return Promise.reject(callCount)
+    }
+    const actualCallCount = await retry<number>(func, strategy, () => true)
+    expect(actualCallCount).toBe(maxAttempts)
+  })
+
+  test('function should complete if retry attempts do not exceed maximum number of retries in strategy', async () => {
     let callCount = 0
     const func = (): Promise<number> => {
       callCount++
@@ -32,7 +62,7 @@ describe('async-retry', () => {
     expect(actualCallCount).toBe(3)
   })
 
-  test.only('function should fail if retries made exceeds configured maximum number of retries', async () => {
+  test('function should fail if retries made exceeds configured maximum number of retries', async () => {
     let callCount = 0
     const func = (): Promise<number> => {
       callCount++

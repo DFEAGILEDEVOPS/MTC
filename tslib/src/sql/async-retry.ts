@@ -1,45 +1,67 @@
 import { PreparedStatementError, TransactionError, ConnectionError, RequestError } from 'mssql'
-type MsSqlErrorType = ConnectionError | RequestError | PreparedStatementError | TransactionError
+const waitAsync = (milliSeconds: number) => new Promise(res => setTimeout(res, milliSeconds))
 
-const pause = (milliSeconds: number) => new Promise(res => setTimeout(res, milliSeconds))
+/**
+ * @description function signature for retry condition implementations
+ */
+export interface IRetryPredicate {
+  (error: Error): boolean
+}
 
-const defaultRetryCondition = (error: MsSqlErrorType) => {
-  if (error.hasOwnProperty('code')) {
-    return error.code === 'ETIMEOUT'
+/**
+ * default condition: do not retry
+ */
+export const defaultRetryCondition: IRetryPredicate = () => {
+  return false
+}
+
+/**
+ *
+ * @description mssql specific predicate that will only signal for a retry if a timeout occured
+ * @param {Error} error the error thrown that needs inspecting to determine whether a retry should be invoked
+ */
+export const sqlTimeoutRetryPredicate: IRetryPredicate = (error: Error) => {
+  if (error instanceof ConnectionError ||
+      error instanceof RequestError ||
+      error instanceof PreparedStatementError ||
+      error instanceof TransactionError) {
+    if ({}.hasOwnProperty.call(error, 'code')) {
+      return error.code === 'ETIMEOUT'
+    }
   }
   return false
 }
 
-const defaultConfiguration: IRetryPolicy = {
-  attempts: 3,
-  pauseTimeMs: 5000,
-  pauseMultiplier: 1.5
-}
-
-export interface IRetryPolicy {
+export interface IRetryStrategy {
   attempts: number
   pauseTimeMs: number
   pauseMultiplier: number
 }
 
+export const defaultRetryStrategy: IRetryStrategy = {
+  attempts: 3,
+  pauseTimeMs: 2500,
+  pauseMultiplier: 1.5
+}
+
 /**
- * @param {function} asyncRetryableFunction - the function to execute with retry behaviour
- * @param {object} retryConfiguration - the behaviour of the retry policy.  Default settings are provided
- * @param {function(Error):Boolean} retryCondition - predicate function to determine if the function should be retried.  Defaults to true
+ * @param {function} asyncMethod - the function to execute with retry behaviour
+ * @param {IRetryStrategy} retryStrategy - the behaviour of the retry policy.  Default settings are provided
+ * @param {IRetryPredicate} retryPredicate - predicate function to determine if the function should be retried.  Defaults to true
  */
-async function asyncRetryHandler<T> (asyncRetryableFunction: () => Promise<T>,
-  retryConfiguration: IRetryPolicy = defaultConfiguration,
-  retryCondition: (error: MsSqlErrorType) => Boolean = defaultRetryCondition): Promise<T> {
+async function asyncRetryHandler<T> (asyncMethod: () => Promise<T>,
+  retryStrategy: IRetryStrategy = defaultRetryStrategy,
+  retryPredicate: IRetryPredicate = defaultRetryCondition): Promise<T> {
   let result: T
   try {
-    result = await asyncRetryableFunction()
+    result = await asyncMethod()
     return result
   } catch (error) {
-    if (retryConfiguration.attempts > 1 && retryCondition(error)) {
-      await pause(retryConfiguration.pauseTimeMs)
-      retryConfiguration.attempts --
-      retryConfiguration.pauseTimeMs *= retryConfiguration.pauseMultiplier
-      result = await asyncRetryHandler(asyncRetryableFunction, retryConfiguration, retryCondition)
+    if (retryStrategy.attempts > 1 && retryPredicate(error)) {
+      await waitAsync(retryStrategy.pauseTimeMs)
+      retryStrategy.attempts --
+      retryStrategy.pauseTimeMs *= retryStrategy.pauseMultiplier
+      result = await asyncRetryHandler(asyncMethod, retryStrategy, retryPredicate)
     } else {
       throw error
     }
