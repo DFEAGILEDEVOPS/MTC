@@ -9,10 +9,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@azure/amqp-common@1.0.0-preview.8":
-  version "1.0.0-preview.8"
-  resolved "https://registry.yarnpkg.com/@azure/amqp-common/-/amqp-common-1.0.0-preview.8.tgz#9ab48ff059c3c0b5d1d7328d560d429634821df1"
-  integrity sha512-Fn13SPn03FaWXeh07/QKGrX2KKszxly74hapQ0jAAoA6iwD3YlPaqEg/FoX6Sd7MSIldJrPqjNADlrtPVPmjTA==
+"@azure/amqp-common@1.0.0-preview.9":
+  version "1.0.0-preview.9"
+  resolved "https://registry.yarnpkg.com/@azure/amqp-common/-/amqp-common-1.0.0-preview.9.tgz#9c4bb1185a31442f69a35fb5d1dcde36e90bd42e"
+  integrity sha512-RVG1Ad3Afv9gwFFmpeCXQAm+Sa0L8KEZRJJAAZEGoYDb6EoO1iQDVmoBz720h8mdrGpi0D60xNU/KhriIwuZfQ==
   dependencies:
     "@azure/ms-rest-nodeauth" "^0.9.2"
     "@types/async-lock" "^1.1.0"
@@ -24,6 +24,8 @@
     is-buffer "^2.0.3"
     jssha "^2.3.1"
     process "^0.11.10"
+    rhea "^1.0.15"
+    rhea-promise "^0.1.15"
     stream-browserify "^2.0.2"
     tslib "^1.9.3"
     url "^0.11.0"
@@ -101,12 +103,12 @@
     "@azure/ms-rest-js" "^1.8.1"
     adal-node "^0.1.22"
 
-"@azure/service-bus@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-1.1.1.tgz#e372f14fc56ba7b4b4d177a72be23d9100f0dab0"
-  integrity sha512-8qt351Bhl+392sQ7CWuqZMVdzbJm4zk24YF5uN+XpWUW2kGHqiT+FGhU6hBhgLQxZ4lWSYqkZVLGRtLxMacClg==
+"@azure/service-bus@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-1.1.2.tgz#4486e5561fa609c8eca99ca6ec7f7d5bb2c7ecf4"
+  integrity sha512-UcYUgB7UFwZwCQgMlxvD/1Izwj0a+Cs0pH6kJ7RL5nAVkN9/3pVUaKERkarf0VwmHmH+0kxOdaO+aPL5ppnqeg==
   dependencies:
-    "@azure/amqp-common" "1.0.0-preview.8"
+    "@azure/amqp-common" "1.0.0-preview.9"
     "@azure/core-http" "^1.0.0"
     "@azure/ms-rest-nodeauth" "^0.9.2"
     "@opentelemetry/types" "^0.2.0"
@@ -117,7 +119,7 @@
     is-buffer "^2.0.3"
     long "^4.0.0"
     process "^0.11.10"
-    rhea "^1.0.4"
+    rhea "^1.0.15"
     rhea-promise "^0.1.15"
     tslib "^1.9.3"
 
@@ -5670,6 +5672,13 @@ rhea-promise@^0.1.15:
     debug "^3.1.0"
     rhea "^1.0.4"
     tslib "^1.9.3"
+
+rhea@^1.0.15:
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/rhea/-/rhea-1.0.18.tgz#32c85a0277a4de266957ac55d61e91cdf0792b1c"
+  integrity sha512-30wUB3fLXnMT8FDksNtoeHbg85GbT0qdei9FOn5eb/dqFOtuJu2oze1kf4YQkDvj/lZZAAx6Ol0NEwEiIBeIeg==
+  dependencies:
+    debug "0.8.0 - 3.5.0"
 
 rhea@^1.0.4:
   version "1.0.13"
