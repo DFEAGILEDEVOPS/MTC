@@ -44,11 +44,14 @@ describe('async-retry', () => {
       callCount++
       return Promise.reject(callCount)
     }
-    const actualCallCount = await retry<number>(func, strategy, () => true)
-    expect(actualCallCount).toBe(maxAttempts)
+    try {
+      await retry<number>(func, strategy, () => true)
+    } catch (error) {
+      expect(callCount).toBe(maxAttempts)
+    }
   })
 
-  test('function should complete if retry attempts do not exceed maximum number of retries in strategy', async () => {
+  test('should complete if retry attempts do not exceed maximum number of retries in strategy', async () => {
     let callCount = 0
     const func = (): Promise<number> => {
       callCount++
@@ -58,26 +61,31 @@ describe('async-retry', () => {
         return Promise.resolve(callCount)
       }
     }
-    const actualCallCount = await retry<number>(func, retryPolicy)
-    expect(actualCallCount).toBe(3)
+    try {
+      await retry<number>(func, retryPolicy, () => true)
+      expect(callCount).toBe(3)
+    } catch (error) {
+      fail(`should have completed after 3 attempts. attempts made:${callCount}`)
+    }
   })
 
-  test('function should fail if retries made exceeds configured maximum number of retries', async () => {
+  test('should fail if retries made exceeds configured maximum number of retries', async () => {
     let callCount = 0
+    const errorMessage = 'this is the error message'
     const func = (): Promise<number> => {
       callCount++
       if (callCount < 4) {
-        return Promise.reject(new Error(`callCount is ${callCount}`))
+        return Promise.reject(new Error(errorMessage))
       } else {
         return Promise.resolve(callCount)
       }
     }
     try {
-      await retry<number>(func, retryPolicy)
+      await retry<number>(func, retryPolicy, () => true)
       fail('should not have completed')
     } catch (error) {
-      expect(error.message).toBe('callCount is 3')
+      expect(error).toBeDefined()
+      expect(error.message).toBe(errorMessage)
     }
-
   })
 })
