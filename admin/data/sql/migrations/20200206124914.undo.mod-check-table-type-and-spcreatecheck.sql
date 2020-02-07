@@ -1,3 +1,18 @@
+-- DROP PROCEDURE IN ORDER TO RECREATE THE CHECK TABLE TYPE
+DROP PROCEDURE IF EXISTS [mtc_admin].[spCreateChecks];
+DROP TYPE IF EXISTS [mtc_admin].[checkTableType];
+
+CREATE TYPE [mtc_admin].[checkTableType] AS TABLE (
+  pupil_id int,
+  checkForm_id int,
+  checkWindow_id int,
+  isLiveCheck bit,
+  pinExpiresAt datetimeoffset(3),
+  school_id int
+);
+
+GO
+
 CREATE OR ALTER PROCEDURE [mtc_admin].[spCreateChecks]
   @TVP [mtc_admin].[CheckTableType] READONLY
   AS
@@ -128,17 +143,3 @@ CREATE OR ALTER PROCEDURE [mtc_admin].[spCreateChecks]
           @ErrorState -- State.
           );
   END CATCH
-
-GO
-
-DROP PROCEDURE IF EXISTS [mtc_admin].[spCreateChecks];
-DROP TYPE IF EXISTS [mtc_admin].[checkTableType];
-
-CREATE TYPE [mtc_admin].[checkTableType] AS TABLE (
-  pupil_id int,
-  checkForm_id int,
-  checkWindow_id int,
-  isLiveCheck bit,
-  pinExpiresAt datetimeoffset(3),
-  school_id int
-);
