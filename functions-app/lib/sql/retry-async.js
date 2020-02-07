@@ -1,6 +1,5 @@
 'use strict'
 
-const logger = require('../log.service').getLogger()
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 
 const sqlTimeoutRetryPredicate = (error) => {
@@ -30,7 +29,6 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
     const result = await asyncRetryableFunction()
     return result
   } catch (error) {
-    logger.warn(`asyncRetryHandler: method call failed with ${error}`)
     if (retryPolicy.attempts > 1 && retryPredicate(error)) {
       await pause(retryPolicy.pauseTimeMs)
       retryPolicy.attempts -= 1
@@ -38,7 +36,6 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
       const result = await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryPredicate)
       return result
     } else {
-      logger.error('max retry count exceeded, failing...')
       throw error
     }
   }
