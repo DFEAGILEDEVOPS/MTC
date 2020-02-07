@@ -19,7 +19,7 @@
     "@azure/service-bus": "^1.1.1",
     "applicationinsights": "^1.0.8",
     "azure-storage": "^2.10.1",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "dotenv": "^8.1.0",
