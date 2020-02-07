@@ -7,7 +7,7 @@ const poolConfig = require('../../config/sql.config')
 const readonlyPoolConfig = require('../../config/sql.readonly.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
-const retry = require('./retry-async')
+const retry = require('./retry-async').asyncRetryHandler
 const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
 

@@ -28,7 +28,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
   })
 
   function createQuery (checkId) {
-    return `SELECT code from [mtc_admin].[checkStatus] where id = dbo.ufnCalcCheckStatusID(${Number(checkId)})`
+    return `SELECT code from [mtc_admin].[checkStatus] where id = [mtc_admin].ufnCalcCheckStatusID(${Number(checkId)})`
   }
 
   describe('live checks', () => {
