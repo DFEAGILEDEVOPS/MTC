@@ -1,28 +1,58 @@
 import tz from 'moment-timezone'
+import { SqlService } from '../../sql/sql.service'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
+  private newPinRequiredPredicate: SchoolRequiresNewPinPredicate
+  private pinGenerator: ISchoolPinGenerator
 
-  constructor (dataService?: ISchoolPinReplenishmentDataService) {
+  constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator) {
     if (dataService === undefined) {
       dataService = new SchoolPinReplenishmentDataService()
     }
     this.dataService = dataService
+    if (pinGenerator === undefined) {
+      pinGenerator = new SchoolPinGenerator()
+    }
+    this.pinGenerator = pinGenerator
+    this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
   }
 
   async process (): Promise<void> {
-    const x = await this.dataService.getSchoolData()
-    throw new Error(x.toString())
+    const allSchools = await this.dataService.getSchoolData()
+    for (let index = 0; index < allSchools.length; index++) {
+      const school = allSchools[index]
+      if (this.newPinRequiredPredicate.isRequired(school.pinExpiresAt, school.pin)) {
+        let pinUpdated = false
+        const update: SchoolPinUpdate = {
+          id: school.id,
+          pinExpiresAt: new Date(), // TODO create expiry generator
+          newPin: this.pinGenerator.generate()
+        }
+        while (!pinUpdated) {
+          try {
+            await this.dataService.updatePin(update)
+            pinUpdated = true
+          } catch (error) {
+            update.newPin = this.pinGenerator.generate()
+          }
+        }
+      }
+    }
   }
 }
 
 export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmentDataService {
+  private sqlService: SqlService
+  constructor () {
+    this.sqlService = new SqlService()
+  }
   getSchoolData (): Promise<School[]> {
-/*     const getSchoolSql = `
+    const sql = `
     SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.id, sce.timezone
     FROM mtc_admin.school s
-    LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id` */
-    throw new Error('Method not implemented.')
+    LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id`
+    return this.sqlService.query(sql)
   }
 
   updatePin (school: SchoolPinUpdate): Promise<void> {
@@ -50,14 +80,20 @@ export interface SchoolPinUpdate {
   pinExpiresAt: Date
 }
 
-export class SchoolPinGenerator {
+export class SchoolPinGenerator implements ISchoolPinGenerator {
   generate (): string {
     return 'abc12def'
   }
 }
 
-export interface ISchoolRequiresNewPinPredicate {
-  (currentPinExpiresAt?: Date, pin?: string): boolean
+export interface ISchoolPinGenerator {
+  generate (): string
+}
+
+export class SchoolRequiresNewPinPredicate {
+  isRequired (currentPinExpiresAt?: Date, pin?: string): boolean {
+    return false
+  }
 }
 
 export class UtcOffsetResolver {

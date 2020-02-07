@@ -48,7 +48,8 @@ describe('school-pin-replenishment.service', () => {
     await sut.process()
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
-    expect(update?.id).toEqual(2)
+    // optional chaining not currently supported in our ts-jest setup
+    expect(update ? update.id : undefined).toEqual(2)
   })
 })
 
