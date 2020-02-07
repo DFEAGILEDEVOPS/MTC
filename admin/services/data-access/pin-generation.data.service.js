@@ -63,7 +63,9 @@ const serviceToExport = {
                          AND c.id IN (${checkIdentifiers.join(', ')})
                          AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
     const sql = [select, whereClause].join('\n')
-    return sqlService.readonlyQuery(sql, [schoolParam].concat(checkParams).concat(pupilParams))
+    // We need to query the master DB, so make sure to use `query` and not `readOnlyQuery`.  This read is executed
+    // directly after the write.
+    return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
   },
 
   /**
