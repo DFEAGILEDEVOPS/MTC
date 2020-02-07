@@ -73,5 +73,9 @@ export default {
   CheckNotifier: {
     MessagesPerBatch: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
     BatchesPerExecution: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_BATCH_COUNT, 5), 10)
+  },
+  SchoolPinGenerator: {
+    AllowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
+    OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false
   }
 }

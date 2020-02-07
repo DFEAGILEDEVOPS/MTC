@@ -1,45 +1,22 @@
 import moment from 'moment'
-
-export interface IDateTimeService {
-  utcNow (): moment.Moment
-}
-
-export class DateTimeService implements IDateTimeService {
-  utcNow (): moment.Moment {
-    return moment().utc()
-  }
-}
-
-export class SchoolPinExpiryGenerator {
-  dateTimeService: IDateTimeService
-  constructor (dateTimeService?: IDateTimeService) {
-    if (dateTimeService === undefined) {
-      dateTimeService = new DateTimeService()
-    }
-    this.dateTimeService = dateTimeService
-  }
-  generate (): moment.Moment {
-    const currentTime = this.dateTimeService.utcNow()
-    const expiry = moment(currentTime)
-    expiry.hour(16)
-    expiry.minute(0)
-    if (currentTime.hour() > 15) {
-      expiry.add(1, 'days')
-    }
-    return expiry
-  }
-}
+import { SchoolPinExpiryGenerator, IDateTimeService, IConfigProvider } from './school-pin-expiry-generator'
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn()
 }))
 
+const ConfigProviderMock = jest.fn<IConfigProvider, any>(() => ({
+  OverridePinExpiry: jest.fn()
+}))
+
 let sut: SchoolPinExpiryGenerator
 let dateTimeServiceMock: IDateTimeService
+let configProviderMock: IConfigProvider
 
 describe('school-pin-expiry-generator', () => {
   beforeEach(() => {
     dateTimeServiceMock = new DateTimeServiceMock()
+    configProviderMock = new ConfigProviderMock()
     sut = new SchoolPinExpiryGenerator(dateTimeServiceMock)
   })
 
@@ -63,5 +40,22 @@ describe('school-pin-expiry-generator', () => {
     })
     const actual = sut.generate()
     expect(actual.toISOString().substring(0,16)).toEqual('2020-02-07T16:00')
+  })
+
+  test('if override expiry flag set to true, expire at end of day', () => {
+    const endOfDay = moment().endOf('day')
+    configProviderMock.OverridePinExpiry = jest.fn(() => {
+      return true
+    })
+    const timeBefore4pm = moment('2020-02-06 03:55')
+    dateTimeServiceMock.utcNow = jest.fn(() => {
+      return timeBefore4pm
+    })
+    const actual = sut.generate()
+    expect(actual).toEqual(endOfDay)
+  })
+
+  test('if school in specific timezone, utc value is offset appropriately', () => {
+    fail('not yet implemented')
   })
 })

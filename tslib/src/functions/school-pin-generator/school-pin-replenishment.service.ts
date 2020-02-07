@@ -2,7 +2,7 @@ import tz from 'moment-timezone'
 import moment from 'moment'
 import { SchoolPinReplenishmentDataService, ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
-import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator.spec'
+import { SchoolPinExpiryGenerator } from "./school-pin-expiry-generator"
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
