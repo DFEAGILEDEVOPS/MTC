@@ -1,13 +1,20 @@
 'use strict'
-const config = require('../../config')
 
-const pause = (duration) => new Promise(res => setTimeout(res, duration), noReject => undefined)
-const defaultRetryPredicate = () => true
+const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
+
+const sqlTimeoutRetryPredicate = (error) => {
+  if ({}.hasOwnProperty.call(error, 'code')) {
+    return error.code === 'ETIMEOUT'
+  }
+  return false
+}
+
+const defaultRetryPredicate = () => false
 
 const defaultConfiguration = {
-  attempts: config.DatabaseRetry.MaxRetryAttempts,
-  pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
-  pauseMultiplier: config.DatabaseRetry.PauseMultiplier
+  attempts: 3,
+  pauseTimeMs: 5000,
+  pauseMultiplier: 1.5
 }
 
 /**
@@ -34,4 +41,7 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
   }
 }
 
-module.exports = asyncRetryHandler
+module.exports = {
+  asyncRetryHandler,
+  sqlTimeoutRetryPredicate
+}
