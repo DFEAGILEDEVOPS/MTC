@@ -5,7 +5,7 @@ const moment = require('moment')
 let cache = {}
 const { mssql, poolPromise } = require('./pool-config')
 const dateService = require('./date.service')
-const retry = require('./retry-async')
+const { asyncRetryHandler, sqlTimeoutRetryPredicate } = require('./retry-async')
 let pool
 
 const retryConfig = {
@@ -14,7 +14,16 @@ const retryConfig = {
   pauseMultiplier: 1.5
 }
 
+/*
+retained for future reference.
+currently we are checking for mssql specific 'ETIMEOUT' via the included sqlTimeoutRetryPredicate
+this will be enhanced to include all 'sql azure limit reached' codes in a future PR
 const connectionLimitReachedErrorCode = 10928
+const dbLimitReached = (error) => {
+  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
+  return error.number === connectionLimitReachedErrorCode // || error.message.indexOf('request limit') !== -1
+}
+*/
 
 /** Utility functions **/
 
@@ -228,11 +237,6 @@ function addParamsToRequestSimple (params, request) {
   }
 }
 
-const dbLimitReached = (error) => {
-  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
-  return error.number === connectionLimitReachedErrorCode // || error.message.indexOf('request limit') !== -1
-}
-
 /**
  * Query data from SQL Server via mssql
  * @param {string} sql - The SELECT statement to execute
@@ -249,7 +253,7 @@ sqlService.query = async function query (sql, params = []) {
     return sqlService.transformResult(result)
   }
 
-  return retry(query, retryConfig, dbLimitReached)
+  return asyncRetryHandler(query, retryConfig, sqlTimeoutRetryPredicate)
 }
 
 /**
@@ -321,7 +325,7 @@ sqlService.modify = async function modify (sql, params = []) {
   const returnValue = {}
   const insertIds = []
 
-  const rawResponse = await retry(modify, retryConfig, dbLimitReached)
+  const rawResponse = await asyncRetryHandler(modify, retryConfig, sqlTimeoutRetryPredicate)
 
   if (rawResponse && rawResponse.recordset) {
     for (const obj of rawResponse.recordset) {
@@ -355,7 +359,7 @@ sqlService.findOneById = async (table, id, schema = '[mtc_admin]') => {
     value: id
   }
   const sql = `
-      SELECT *    
+      SELECT *
       FROM ${schema}.${table}
       WHERE id = @id
     `
@@ -364,7 +368,7 @@ sqlService.findOneById = async (table, id, schema = '[mtc_admin]') => {
     return sqlService.query(sql, [paramId])
   }
 
-  const rows = await retry(query, retryConfig, dbLimitReached)
+  const rows = await asyncRetryHandler(query, retryConfig, sqlTimeoutRetryPredicate)
   return R.head(rows)
 }
 
@@ -479,7 +483,7 @@ sqlService.create = async (tableName, data) => {
   const create = async () => {
     return sqlService.modify(sql, params, outputParams)
   }
-  return retry(create, retryConfig, dbLimitReached)
+  return asyncRetryHandler(create, retryConfig, sqlTimeoutRetryPredicate)
 }
 
 /**
@@ -488,12 +492,12 @@ sqlService.create = async (tableName, data) => {
  */
 sqlService.updateDataTypeCache = async function () {
   const sql =
-    `SELECT  
-      TABLE_NAME, 
-      COLUMN_NAME, 
-      DATA_TYPE, 
-      NUMERIC_PRECISION, 
-      NUMERIC_SCALE, 
+    `SELECT
+      TABLE_NAME,
+      COLUMN_NAME,
+      DATA_TYPE,
+      NUMERIC_PRECISION,
+      NUMERIC_SCALE,
       CHARACTER_MAXIMUM_LENGTH
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema
@@ -541,7 +545,7 @@ sqlService.update = async function (tableName, data) {
     return sqlService.modify(sql, params)
   }
 
-  return retry(update, retryConfig, dbLimitReached)
+  return asyncRetryHandler(update, retryConfig, sqlTimeoutRetryPredicate)
 }
 
 /**
@@ -599,7 +603,7 @@ BEGIN CATCH
 END CATCH
   `
   const modify = async () => sqlService.modify(wrappedSQL, params)
-  return retry(modify, retryConfig, dbLimitReached)
+  return asyncRetryHandler(modify, retryConfig, sqlTimeoutRetryPredicate)
 }
 
 module.exports = sqlService
