@@ -1,5 +1,6 @@
-import { SchoolPinReplenishmnentService, ISchoolPinReplenishmentDataService, UtcOffsetResolver, School, SchoolPinUpdate, SchoolRequiresNewPinPredicate } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService, UtcOffsetResolver, School, SchoolPinUpdate, SchoolRequiresNewPinPredicate } from './school-pin-replenishment.service'
 import moment from 'moment'
+import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getSchoolData: jest.fn(),
@@ -127,15 +128,6 @@ describe('school-requires-new-pin-predicate', () => {
     expect(sut.isRequired(school)).toBe(true)
   })
 })
-
-
-
-
-
-
-
-
-
 
 describe('utc-offset-resolver', () => {
   let sut: UtcOffsetResolver

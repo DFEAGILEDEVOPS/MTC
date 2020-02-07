@@ -1,11 +1,14 @@
 import tz from 'moment-timezone'
-import { SqlService } from '../../sql/sql.service'
 import moment from 'moment'
+import { SchoolPinReplenishmentDataService, ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
+import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
+import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator.spec'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
   private newPinRequiredPredicate: SchoolRequiresNewPinPredicate
   private pinGenerator: ISchoolPinGenerator
+  private expiryGenerator: SchoolPinExpiryGenerator
 
   constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator) {
     if (dataService === undefined) {
@@ -17,6 +20,7 @@ export class SchoolPinReplenishmnentService {
     }
     this.pinGenerator = pinGenerator
     this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
+    this.expiryGenerator = new SchoolPinExpiryGenerator()
   }
 
   async process (): Promise<void> {
@@ -27,7 +31,7 @@ export class SchoolPinReplenishmnentService {
         let pinUpdated = false
         const update: SchoolPinUpdate = {
           id: school.id,
-          pinExpiresAt: moment(), // TODO create expiry generator
+          pinExpiresAt: this.expiryGenerator.generate(),
           newPin: this.pinGenerator.generate()
         }
         while (!pinUpdated) {
@@ -43,29 +47,6 @@ export class SchoolPinReplenishmnentService {
   }
 }
 
-export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmentDataService {
-  private sqlService: SqlService
-  constructor () {
-    this.sqlService = new SqlService()
-  }
-  getSchoolData (): Promise<School[]> {
-    const sql = `
-    SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.id, sce.timezone
-    FROM mtc_admin.school s
-    LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id`
-    return this.sqlService.query(sql)
-  }
-
-  updatePin (school: SchoolPinUpdate): Promise<void> {
-    throw new Error('not implemented')
-  }
-}
-
-export interface ISchoolPinReplenishmentDataService {
-  getSchoolData (): Promise<School[]>
-  updatePin (schoolPinUpdate: SchoolPinUpdate): Promise<void>
-}
-
 export interface School {
   id: number
   name: string
@@ -79,16 +60,6 @@ export interface SchoolPinUpdate {
   id: number
   newPin: string
   pinExpiresAt: moment.Moment
-}
-
-export class SchoolPinGenerator implements ISchoolPinGenerator {
-  generate (): string {
-    return 'abc12def'
-  }
-}
-
-export interface ISchoolPinGenerator {
-  generate (): string
 }
 
 export class SchoolRequiresNewPinPredicate {
