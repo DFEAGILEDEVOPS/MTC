@@ -30,17 +30,33 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
     const result = await asyncRetryableFunction()
     return result
   } catch (error) {
-    logger.warn(`asyncRetryHandler: method call failed with ${error}`)
+    const attemptsLeft = retryPolicy.attempts
+    const meetsRetryCondition = retryPredicate(error)
+    logger.warn(`asyncRetryHandler: error thrown ${error.message}`)
+    logger.error(tryParseErrorObjectToString(error))
     if (retryPolicy.attempts > 1 && retryPredicate(error)) {
       await pause(retryPolicy.pauseTimeMs)
+      logger.info('asyncRetryHandler: re-attempting call')
       retryPolicy.attempts -= 1
       retryPolicy.pauseTimeMs *= retryConfiguration.pauseMultiplier
       const result = await asyncRetryHandler(asyncRetryableFunction, retryPolicy, retryPredicate)
       return result
     } else {
-      logger.error('max retry count exceeded, failing...')
+      logger.error(`asyncRetryHandler: giving up. attemptsLeft:${attemptsLeft},
+      meetsCondition:${meetsRetryCondition},
+      error.message:${error.message}`)
+      logger.error(tryParseErrorObjectToString(error))
       throw error
     }
+  }
+}
+
+function tryParseErrorObjectToString (error) {
+  try {
+    const formattedErrorObject = JSON.stringify(error, null, 2)
+    return `error object:\n${formattedErrorObject}`
+  } catch (e) {
+    return `unable to parse error:${e.message}`
   }
 }
 
