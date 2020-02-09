@@ -2,6 +2,7 @@
 
 const logger = require('../log.service').getLogger()
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
+const util = require('util')
 
 const sqlTimeoutRetryPredicate = (error) => {
   if ({}.hasOwnProperty.call(error, 'code')) {
@@ -32,7 +33,7 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
   } catch (error) {
     const attemptsLeft = retryPolicy.attempts
     const meetsRetryCondition = retryPredicate(error)
-    logger.warn(`asyncRetryHandler: error thrown ${error.message}`)
+    logger.error(`asyncRetryHandler: error thrown '${error.message}'`)
     logger.error(tryParseErrorObjectToString(error))
     if (retryPolicy.attempts > 1 && retryPredicate(error)) {
       await pause(retryPolicy.pauseTimeMs)
@@ -53,10 +54,10 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
 
 function tryParseErrorObjectToString (error) {
   try {
-    const formattedErrorObject = JSON.stringify(error, null, 2)
-    return `error object:\n${formattedErrorObject}`
+    const errorAsString = util.inspect(error, true)
+    return `error object:\n${errorAsString}`
   } catch (e) {
-    return `unable to parse error:${e.message}`
+    return `unable to parse error. reason:${e.message}`
   }
 }
 
