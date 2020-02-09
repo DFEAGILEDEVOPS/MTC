@@ -45,7 +45,7 @@ const configDataService = {
       { name: 'schoolId', value: schoolId, type: TYPES.Int }
     ].concat(pupilParams)
 
-    return sqlService.readonlyQuery(sql, params)
+    return sqlService.query(sql, params)
   }
 }
 
