@@ -1,3 +1,5 @@
+import * as R from 'ramda'
+import * as moment from 'moment'
 import { IRedisService, RedisService } from './redis.service'
 import * as azureQueueService from './azure-queue.service'
 import config from '../config'
@@ -37,6 +39,12 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
     if (!preparedCheckEntry) {
+      return
+    }
+    const pinExpiresAt = R.prop('pinExpiresAt', preparedCheckEntry)
+    const pinValidFrom = R.prop('pinValidFrom', preparedCheckEntry)
+    const currentDateTime = moment.utc()
+    if (moment.utc(pinValidFrom).isAfter(currentDateTime) || moment.utc(pinExpiresAt).isBefore(currentDateTime)) {
       return
     }
 
