@@ -293,6 +293,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,
         pinExpiresAt: o.pupil_pinExpiresAt,
+        pinValidFrom: o.pupil_pinValidFrom,
         uuid: o.pupil_uuid
       },
       school: {

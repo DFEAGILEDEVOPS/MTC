@@ -14,6 +14,7 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       chk.isLiveCheck as check_isLiveCheck,
       pin.val as pupil_pin,
       cp.pinExpiresAt as pupil_pinExpiresAt,
+      cp.pinValidFrom as pupil_pinValidFrom,
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,
