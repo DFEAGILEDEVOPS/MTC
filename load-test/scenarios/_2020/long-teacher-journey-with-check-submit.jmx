@@ -165,7 +165,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get csrf token" enabled="true">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get csrf token" enabled="false">
             <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">pupilEditCsrfToken</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
@@ -175,7 +175,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get urlSlug" enabled="true">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get urlSlug" enabled="false">
             <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">pupilEditUrlSlug</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
@@ -185,11 +185,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get upn" enabled="true">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get upn" enabled="false">
             <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">pupilEditUpn</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
-            <stringProp name="XPathExtractor.xpathQuery">//*/input[@id=&apos;upn&apos;]/@value</stringProp>
+            <stringProp name="XPathExtractor.xpathQuery">/html/body//input[contains(@id,&apos;upn&apos;)]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
@@ -201,7 +201,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="RandomTimer.range">15000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST pupil edit form" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST pupil edit form" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="urlSlug" elementType="HTTPArgument">
@@ -301,7 +301,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/pupil-pin/generate-live-pins</stringProp>
+          <stringProp name="HTTPSampler.path">/pupil-register/pupil/edit</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -317,7 +317,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="RandomTimer.range">10000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -336,11 +336,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="false">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-        </ConstantTimer>
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: look at home page (10 - 15 secs)" enabled="true">
+          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,10000)}</stringProp>
+          <stringProp name="RandomTimer.range">5000</stringProp>
+        </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Generate Pins" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Generate Pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -359,7 +360,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil IDs from list" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil IDs from list" enabled="true">
             <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
             <stringProp name="XPathExtractor.refname">PUPIL_ID</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
@@ -370,7 +371,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.report_errors">true</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract CSRF Token" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract CSRF Token" enabled="true">
             <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
             <stringProp name="XPathExtractor.refname">CSRF_TOKEN</stringProp>
             <stringProp name="XPathExtractor.matchNumber">1</stringProp>
@@ -382,11 +383,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
         </hashTree>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="false">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-        </ConstantTimer>
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: select pupils for pin gen (15 - 60 secs)" enabled="true">
+          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,15000)}</stringProp>
+          <stringProp name="RandomTimer.range">45000</stringProp>
+        </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Generate Pins" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Generate Pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="pupil[0]" elementType="HTTPArgument">
@@ -452,153 +454,6 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">pupil[8]</stringProp>
               </elementProp>
-              <elementProp name="pupil[9]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_10}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[9]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[10]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_11}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[10]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[11]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_12}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[11]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[12]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_13}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[12]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[13]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_14}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[13]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[14]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_15}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[14]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[15]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_16}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[15]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[16]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_17}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[16]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[17]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_18}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[17]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[18]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_19}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[18]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[19]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_20}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[19]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[20]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_21}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[20]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[21]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_22}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[21]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[22]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_23}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[22]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[23]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_24}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[23]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[24]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_25}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[24]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[25]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_26}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[25]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[26]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_27}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[26]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[27]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_28}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[27]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[28]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_29}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[28]</stringProp>
-              </elementProp>
-              <elementProp name="pupil[29]" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${PUPIL_ID_30}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">pupil[29]</stringProp>
-              </elementProp>
               <elementProp name="_csrf" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">${CSRF_TOKEN}</stringProp>
@@ -623,11 +478,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="false">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-        </ConstantTimer>
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view and print pins (60 - 120 secs)" enabled="true">
+          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,60000)}</stringProp>
+          <stringProp name="RandomTimer.range">60000</stringProp>
+        </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -646,11 +502,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="false">
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: look for pin link (5 - 20 secs)" enabled="true">
           <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-        </ConstantTimer>
+          <stringProp name="RandomTimer.range">15000</stringProp>
+        </UniformRandomTimer>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET view pins" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET view pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -692,10 +549,6 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
         </hashTree>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="WAIT" enabled="false">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-        </ConstantTimer>
-        <hashTree/>
         <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="false">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
