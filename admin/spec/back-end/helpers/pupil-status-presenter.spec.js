@@ -70,6 +70,19 @@ describe('pupilStatusPresenter', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.pupilsCompleted.length).toBe(1)
     })
+    it('displays pupils that have unused restarts as not started', () => {
+      const notStartedPupils = [
+        {
+          status: 'Not started'
+        },
+        {
+          status: 'Restart'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
+      expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
+      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
+    })
     it('collects total pupil count', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.totalPupilsCount).toBe(14)

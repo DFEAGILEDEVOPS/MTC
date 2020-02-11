@@ -13,10 +13,14 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  pupilStatusViewData.pupilsWithErrors = R.filter(p => pupilStatusPresenter.findPupilsByCategory(['Error in processing', 'Incomplete'], p), pupilStatusData)
-  pupilStatusViewData.pupilsNotStarted = R.filter(p => pupilStatusPresenter.findPupilsByCategory(['Not started', 'Processing'], p), pupilStatusData)
+  pupilStatusViewData.pupilsWithErrors = R.filter(p => R.includes(p.status, ['Error in processing', 'Incomplete'], p), pupilStatusData)
+  pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
+    R.filter(p => R.includes(p.status, ['Not started', 'Processing', 'Restart'], p), pupilStatusData),
+    ['Restart'],
+    'Not started'
+  )
   pupilStatusViewData.pupilsNotAttending = R.filter(p => !!p.reason, pupilStatusData)
-  pupilStatusViewData.pupilsCompleted = R.filter(p => pupilStatusPresenter.findPupilsByCategory(['Complete'], p), pupilStatusData)
+  pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p), pupilStatusData)
 
   pupilStatusViewData.pupilsWithErrorsCount = pupilStatusViewData.pupilsWithErrors.length || 0
   pupilStatusViewData.pupilsNotStartedCount = pupilStatusViewData.pupilsNotStarted.length || 0
@@ -29,6 +33,21 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
   return pupilStatusViewData
 }
 
-pupilStatusPresenter.findPupilsByCategory = (categories, pupil) => R.includes(pupil.status, categories)
+/**
+ * Change status description for specific pupil statuses
+ * @param {Array} pupilData
+ * @param {Array} statuses
+ * @param {String} statusDescription
+ * @returns {Array}
+ */
+pupilStatusPresenter.applyStatusDescriptionChange = (pupilData, statuses, statusDescription) => {
+  const changeDescription = p => {
+    if (statuses.includes(p.status)) {
+      p.status = statusDescription
+    }
+    return p
+  }
+  return R.map(p => changeDescription(p), pupilData)
+}
 
 module.exports = pupilStatusPresenter
