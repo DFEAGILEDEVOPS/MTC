@@ -1,19 +1,19 @@
 'use strict'
 
 /* global describe it expect beforeEach spyOn fail */
-const checkFormAllocationDataService = require('../../../services/data-access/check-form-allocation.data.service')
-const checkFormService = require('../../../services/check-form.service')
-const checkStartDataService = require('../../../services/check-start.service/data-access/check-start.data.service')
-const checkStartService = require('../../../services/check-start.service/check-start.service')
-const checkWindowMock = require('../mocks/check-window-2')
-const configService = require('../../../services/config.service')
-const logger = require('../../../services/log.service.js').getLogger()
-const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
-const prepareCheckService = require('../../../services/prepare-check.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const sasTokenService = require('../../../services/sas-token.service')
-const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const pinGenerationService = require('../../../services/pin-generation.service')
+const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
+const checkFormService = require('../check-form.service')
+const checkStartDataService = require('./data-access/check-start.data.service')
+const checkStartService = require('./check-start.service')
+const checkWindowMock = require('../../spec/back-end/mocks/check-window-2')
+const configService = require('../config.service')
+const logger = require('../log.service.js').getLogger()
+const pinGenerationDataService = require('../data-access/pin-generation.data.service')
+const prepareCheckService = require('../prepare-check.service')
+const pupilDataService = require('../data-access/pupil.data.service')
+const sasTokenService = require('../sas-token.service')
+const redisCacheService = require('../data-access/redis-cache.service')
+const pinGenerationService = require('../pin-generation.service')
 
 const checkFormMock = {
   id: 100,
@@ -188,8 +188,8 @@ describe('check-start.service', () => {
   })
 
   describe('#prepareCheckQueueMessages', () => {
-    const mockCheckFormAllocationLive = require('../mocks/check-form-allocation')
-    const mockCheckFormAllocationFamiliarisation = require('../mocks/check-form-allocation-familiarisation')
+    const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
+    const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
