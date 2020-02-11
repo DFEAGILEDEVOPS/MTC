@@ -1,0 +1,46 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,Latency,IdleTime,Connect
+1581442017389,139,POST Admin Sign-In,200,OK,Teacher Journey 1-1,text,true,,30773,489,1,1,115,0,1
+1581442017389,115,POST Admin Sign-In-0,302,Found,Teacher Journey 1-1,text,true,,2269,246,1,1,115,0,1
+1581442017504,24,POST Admin Sign-In-1,200,OK,Teacher Journey 1-1,text,true,,28504,243,1,1,23,0,0
+1581442017529,22,GET Pupil Register,200,OK,Teacher Journey 1-1,text,true,,255142,251,1,1,21,0,0
+1581442017570,13,GET pupil edit form,200,OK,Teacher Journey 1-1,text,true,,24216,287,1,1,12,0,0
+1581442017590,92,POST pupil edit form,200,OK,Teacher Journey 1-1,text,true,,204833,886,1,1,6,0,1
+1581442017590,7,POST pupil edit form-0,302,Found,Teacher Journey 1-1,text,true,,2299,628,1,1,6,0,1
+1581442017597,85,POST pupil edit form-1,200,OK,Teacher Journey 1-1,text,true,,202534,258,1,1,84,0,1
+1581442017683,0,Debug Sampler,200,OK,Teacher Journey 1-1,text,true,,24957,0,1,1,0,0,0
+1581442018396,107,POST Admin Sign-In,200,OK,Teacher Journey 1-2,text,true,,30777,491,1,1,90,0,1
+1581442018396,91,POST Admin Sign-In-0,302,Found,Teacher Journey 1-2,text,true,,2271,246,1,1,90,0,1
+1581442018487,16,POST Admin Sign-In-1,200,OK,Teacher Journey 1-2,text,true,,28506,245,1,1,15,0,1
+1581442018504,21,GET Pupil Register,200,OK,Teacher Journey 1-2,text,true,,255144,253,1,1,20,0,0
+1581442018542,12,GET pupil edit form,200,OK,Teacher Journey 1-2,text,true,,24218,289,1,1,11,0,0
+1581442018560,51,POST pupil edit form,200,OK,Teacher Journey 1-2,text,true,,205038,890,1,1,5,0,1
+1581442018560,6,POST pupil edit form-0,302,Found,Teacher Journey 1-2,text,true,,2301,630,1,1,5,0,1
+1581442018566,45,POST pupil edit form-1,200,OK,Teacher Journey 1-2,text,true,,202737,260,1,1,44,0,0
+1581442018611,0,Debug Sampler,200,OK,Teacher Journey 1-2,text,true,,24957,0,1,1,0,0,0
+1581442019392,108,POST Admin Sign-In,200,OK,Teacher Journey 1-3,text,true,,30785,495,1,1,91,0,0
+1581442019392,91,POST Admin Sign-In-0,302,Found,Teacher Journey 1-3,text,true,,2275,246,1,1,91,0,0
+1581442019484,16,POST Admin Sign-In-1,200,OK,Teacher Journey 1-3,text,true,,28510,249,1,1,15,0,0
+1581442019500,18,GET Pupil Register,200,OK,Teacher Journey 1-3,text,true,,255148,257,1,1,17,0,1
+1581442019534,13,GET pupil edit form,200,OK,Teacher Journey 1-3,text,true,,24222,293,1,1,12,0,0
+1581442019555,51,POST pupil edit form,200,OK,Teacher Journey 1-3,text,true,,205295,898,1,1,5,0,1
+1581442019555,6,POST pupil edit form-0,302,Found,Teacher Journey 1-3,text,true,,2305,634,1,1,5,0,1
+1581442019561,45,POST pupil edit form-1,200,OK,Teacher Journey 1-3,text,true,,202990,264,1,1,42,0,0
+1581442019606,1,Debug Sampler,200,OK,Teacher Journey 1-3,text,true,,24957,0,1,1,0,0,0
+1581442020393,108,POST Admin Sign-In,200,OK,Teacher Journey 1-4,text,true,,30773,489,1,1,89,0,1
+1581442020393,90,POST Admin Sign-In-0,302,Found,Teacher Journey 1-4,text,true,,2269,246,1,1,89,0,1
+1581442020483,18,POST Admin Sign-In-1,200,OK,Teacher Journey 1-4,text,true,,28504,243,1,1,17,0,1
+1581442020501,20,GET Pupil Register,200,OK,Teacher Journey 1-4,text,true,,255142,251,1,1,19,0,1
+1581442020538,12,GET pupil edit form,200,OK,Teacher Journey 1-4,text,true,,24216,287,1,1,11,0,0
+1581442020556,63,POST pupil edit form,200,OK,Teacher Journey 1-4,text,true,,280135,886,1,1,5,0,1
+1581442020556,6,POST pupil edit form-0,302,Found,Teacher Journey 1-4,text,true,,2299,628,1,1,5,0,1
+1581442020562,57,POST pupil edit form-1,200,OK,Teacher Journey 1-4,text,true,,277836,258,1,1,54,0,0
+1581442020619,1,Debug Sampler,200,OK,Teacher Journey 1-4,text,true,,24957,0,1,1,0,0,0
+1581442021392,110,POST Admin Sign-In,200,OK,Teacher Journey 1-5,text,true,,30785,495,1,1,91,0,0
+1581442021392,93,POST Admin Sign-In-0,302,Found,Teacher Journey 1-5,text,true,,2275,246,1,1,91,0,0
+1581442021485,17,POST Admin Sign-In-1,200,OK,Teacher Journey 1-5,text,true,,28510,249,1,1,17,0,0
+1581442021503,22,GET Pupil Register,200,OK,Teacher Journey 1-5,text,true,,255148,257,1,1,21,0,1
+1581442021543,13,GET pupil edit form,200,OK,Teacher Journey 1-5,text,true,,24222,293,1,1,12,0,1
+1581442021562,72,POST pupil edit form,200,OK,Teacher Journey 1-5,text,true,,355003,898,1,1,6,0,1
+1581442021562,6,POST pupil edit form-0,302,Found,Teacher Journey 1-5,text,true,,2305,634,1,1,6,0,1
+1581442021569,65,POST pupil edit form-1,200,OK,Teacher Journey 1-5,text,true,,352698,264,1,1,63,0,0
+1581442021635,0,Debug Sampler,200,OK,Teacher Journey 1-5,text,true,,24957,0,1,1,0,0,0
