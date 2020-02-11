@@ -51,7 +51,7 @@ async function main () {
           type: TYPES.DateTimeOffset
         },
         {
-          name: 'pinExpiresAt',
+          name: 'pinExpiresAtUtc',
           value: pinExpiryDate,
           type: TYPES.DateTimeOffset
         }
@@ -75,8 +75,8 @@ async function main () {
             INSERT INTO ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount)
             VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1);
 
-            INSERT INTO @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
-            VALUES (scope_identity(), 1, 1, 1, @pinExpiresAt, @schoolId);
+            INSERT INTO @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAtUtc, pinValidFromUtc school_id)
+            VALUES (scope_identity(), 1, 1, 1, @pinExpiresAtUtc, @pinValidFromUtc, @schoolId);
 
           END TRY
           BEGIN CATCH

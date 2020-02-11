@@ -1,19 +1,3 @@
--- DROP PROCEDURE IN ORDER TO RECREATE THE CHECK TABLE TYPE
-DROP PROCEDURE IF EXISTS [mtc_admin].[spCreateChecks];
-DROP TYPE IF EXISTS [mtc_admin].[checkTableType];
-
-CREATE TYPE [mtc_admin].[checkTableType] AS TABLE (
-  pupil_id int,
-  checkForm_id int,
-  checkWindow_id int,
-  isLiveCheck bit,
-  pinExpiresAt datetimeoffset(3),
-  pinValidFrom datetimeoffset(3),
-  school_id int
-);
-
-GO
-
 CREATE OR ALTER PROCEDURE [mtc_admin].[spCreateChecks]
 @TVP [mtc_admin].[CheckTableType] READONLY
 AS
@@ -30,7 +14,7 @@ BEGIN TRY
     BEGIN TRANSACTION
 
         DECLARE checkArgsList CURSOR
-            FOR SELECT pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, pinValidFrom, school_id
+            FOR SELECT pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id
                 FROM @TVP
             FOR READ ONLY
 
@@ -39,7 +23,6 @@ BEGIN TRY
         DECLARE @checkWindowId int
         DECLARE @isLiveCheck bit
         DECLARE @pinExpiresAt datetimeoffset
-        DECLARE @pinValidFrom datetimeoffset
         DECLARE @schoolId int
         DEClARE @checkId int
         DECLARE @output TABLE (id int);
@@ -47,7 +30,7 @@ BEGIN TRY
         DECLARE @pupilRestartId int;
 
         OPEN checkArgsList
-        FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @pinValidFrom, @schoolId
+        FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @schoolId
         WHILE (@@FETCH_STATUS = 0) BEGIN
 
             -- Create the check
@@ -59,12 +42,11 @@ BEGIN TRY
             SET @checkId = SCOPE_IDENTITY();
 
             -- Assign a pin to the check
-            INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pinExpiresAt, pinValidFrom, pin_id)
+            INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pinExpiresAt, pin_id)
             VALUES (
                 @schoolId,
                 @checkId,
                 @pinExpiresAt,
-                @pinValidFrom,
                 (SELECT TOP 1 id
                    FROM (SELECT id
                            FROM mtc_admin.pin EXCEPT
@@ -117,7 +99,7 @@ BEGIN TRY
             -- Store the check.id in the output table
             INSERT INTO @output (id) (SELECT @checkId);
 
-            FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @pinValidFrom, @schoolId
+            FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @schoolId
         END
 
     COMMIT TRANSACTION

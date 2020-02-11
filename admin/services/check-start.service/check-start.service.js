@@ -213,8 +213,8 @@ checkStartService.initialisePupilCheck = async function (
     isLiveCheck: isLiveCheck
   }
 
-  checkData.pinValidFrom = pinGenerationService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay, eightAmToday, schoolTimezone)
-  checkData.pinExpiresAt = pinGenerationService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, schoolTimezone)
+  checkData.pinValidFromUtc = pinGenerationService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay, eightAmToday, schoolTimezone)
+  checkData.pinExpiresAtUtc = pinGenerationService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, schoolTimezone)
   checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert
@@ -292,8 +292,8 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,
-        pinExpiresAt: o.pupil_pinExpiresAt,
-        pinValidFrom: o.pupil_pinValidFrom,
+        pinExpiresAtUtc: o.pupil_pinExpiresAtUtc,
+        pinValidFromUtc: o.pupil_pinValidFromUtc,
         uuid: o.pupil_uuid
       },
       school: {

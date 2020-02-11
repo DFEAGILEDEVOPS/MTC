@@ -15,7 +15,7 @@ describe('prepare-check.service', () => {
       pupilPin: 'pupil-pin',
       pupil: {
         checkCode: 'checkCode',
-        pinExpiresAt: moment().add(5, 'hours').toDate(),
+        pinExpiresAtUtc: moment().add(5, 'hours').toDate(),
         id: 123
       },
       school: {
@@ -78,7 +78,7 @@ describe('prepare-check.service', () => {
     expect(cachedObject.checkCode).toEqual(check.pupil.checkCode)
     expect(cachedObject.config).toEqual(check.config)
     expect(cachedObject.createdAt).toBeDefined()
-    expect(cachedObject.pinExpiresAt).toBeDefined()
+    expect(cachedObject.pinExpiresAtUtc).toBeDefined()
     expect(cachedObject.pupilId).toBe(check.pupil.id)
     expect(cachedObject.questions).toBe(check.questions)
     expect(cachedObject.school).toBe(check.school)

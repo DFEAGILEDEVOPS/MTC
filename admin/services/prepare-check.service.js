@@ -23,7 +23,7 @@ const service = {
     const cacheItems = checks.map(check => {
       const preparedCheck = constructPreparedCheck(check)
       const preparedCheckKey = redisKeyService.getPreparedCheckKey(check.schoolPin, check.pupilPin)
-      const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAt)
+      const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAtUtc)
       lookupKeys.push({
         key: redisKeyService.getPreparedCheckLookup(check.checkCode),
         value: preparedCheckKey,
@@ -87,9 +87,9 @@ function constructPreparedCheck (check) {
     checkCode: check.pupil.checkCode,
     config: check.config,
     createdAt: moment(),
-    pinExpiresAt: moment(check.pupil.pinExpiresAt),
-    pinValidFrom: moment(check.pupil.pinValidFrom),
-    pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt', 'pinValidFrom'], check.pupil),
+    pinExpiresAtUtc: moment(check.pupil.pinExpiresAtUtc),
+    pinValidFromUtc: moment(check.pupil.pinValidFromUtc),
+    pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAtUtc', 'pinValidFromUtc'], check.pupil),
     pupilId: check.pupil.id,
     questions: check.questions,
     school: check.school,

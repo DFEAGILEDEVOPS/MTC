@@ -41,10 +41,10 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     if (!preparedCheckEntry) {
       return
     }
-    const pinExpiresAt = R.prop('pinExpiresAt', preparedCheckEntry)
-    const pinValidFrom = R.prop('pinValidFrom', preparedCheckEntry)
+    const pinExpiresAtUtc = R.prop('pinExpiresAtUtc', preparedCheckEntry)
+    const pinValidFromUtc = R.prop('pinValidFromUtc', preparedCheckEntry)
     const currentDateTime = moment.utc()
-    if (moment.utc(pinValidFrom).isAfter(currentDateTime) || moment.utc(pinExpiresAt).isBefore(currentDateTime)) {
+    if (moment.utc(pinValidFromUtc).isAfter(currentDateTime) || moment.utc(pinExpiresAtUtc).isBefore(currentDateTime)) {
       return
     }
 

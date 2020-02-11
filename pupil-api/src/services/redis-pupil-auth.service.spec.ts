@@ -67,14 +67,14 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('the check payload should be returned if item found in cache', async () => {
-    const pinValidFrom = moment().startOf('day')
-    const pinExpiresAt = moment().endOf('day')
+    const pinValidFromUtc = moment().startOf('day')
+    const pinExpiresAtUtc = moment().endOf('day')
     const expectedPayload = {
       config: {
         practice: true
       },
-      pinValidFrom: pinValidFrom,
-      pinExpiresAt: pinExpiresAt
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
     }
     redisServiceMock.get = jest.fn(async (key: string) => {
       return expectedPayload
@@ -85,16 +85,16 @@ describe('redis-pupil-auth.service', () => {
     expect(payload).toEqual(expectedPayload)
   })
 
-  test('the check payload should not be returned if check pinValidFrom timestamp is after current date', async () => {
+  test('the check payload should not be returned if check pinValidFromUtc timestamp is after current date', async () => {
     const currentDateTime = moment.utc()
-    const pinValidFrom = moment().add(1, 'hour')
-    const pinExpiresAt = moment().add(2, 'hour')
+    const pinValidFromUtc = moment().add(1, 'hour')
+    const pinExpiresAtUtc = moment().add(2, 'hour')
     const expectedPayload = {
       config: {
         practice: false
       },
-      pinValidFrom: pinValidFrom,
-      pinExpiresAt: pinExpiresAt
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
     }
     redisServiceMock.get = jest.fn(async (key: string) => {
       return expectedPayload
@@ -105,16 +105,16 @@ describe('redis-pupil-auth.service', () => {
     expect(payload).toBeUndefined()
   })
 
-  test('the check payload should not be returned if check pinExpiresAt timestamp is before current date', async () => {
+  test('the check payload should not be returned if check pinExpiresAtUtc timestamp is before current date', async () => {
     const currentDateTime = moment.utc()
-    const pinValidFrom = moment().subtract(2, 'hour')
-    const pinExpiresAt = moment().subtract(1, 'hour')
+    const pinValidFromUtc = moment().subtract(2, 'hour')
+    const pinExpiresAtUtc = moment().subtract(1, 'hour')
     const expectedPayload = {
       config: {
         practice: false
       },
-      pinValidFrom: pinValidFrom,
-      pinExpiresAt: pinExpiresAt
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
     }
     redisServiceMock.get = jest.fn(async (key: string) => {
       return expectedPayload

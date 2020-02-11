@@ -43,7 +43,7 @@ const pupilStatusService = {
       checkStatusCode: pupil.checkStatusCode,
       currentCheckId: pupil.currentCheckId,
       notReceivedExpiryInMinutes: settings.checkTimeLimit,
-      pinExpiresAt: pupil.pinExpiresAt,
+      pinExpiresAtUtc: pupil.pinExpiresAtUtc,
       pupilCheckComplete: pupil.pupilCheckComplete,
       pupilId: pupil.pupilId,
       pupilLoginDate: pupil.pupilLoginDate,
@@ -69,7 +69,7 @@ const pupilStatusService = {
       checkStatusCode,
       currentCheckId,
       notReceivedExpiryInMinutes,
-      pinExpiresAt,
+      pinExpiresAtUtc,
       pupilCheckComplete,
       pupilId,
       pupilLoginDate,
@@ -78,8 +78,8 @@ const pupilStatusService = {
       reason
     } = arg
 
-    if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
-      throw new Error('pinExpiresAt must be null or a Moment.moment datetime')
+    if (pinExpiresAtUtc && !moment.isMoment(pinExpiresAtUtc)) {
+      throw new Error('pinExpiresAtUtc must be null or a Moment.moment datetime')
     }
 
     if (isPositive(attendanceId)) {
@@ -90,7 +90,7 @@ const pupilStatusService = {
       status = 'Restart'
     } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
       (isPositive(currentCheckId) && isNew(checkStatusCode) &&
-        (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) {
+        (isNil(pinExpiresAtUtc) || isExpired(pinExpiresAtUtc)))) {
       status = 'Not started'
     } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
       status = 'PIN generated'

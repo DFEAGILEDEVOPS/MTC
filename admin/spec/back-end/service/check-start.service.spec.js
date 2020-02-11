@@ -145,7 +145,7 @@ describe('check-start.service', () => {
     beforeEach(() => {
       spyOn(pinGenerationService, 'generatePinTimestamp')
     })
-    it('calls generatePinTimestamp to generate pinExpiresAt and pinValidFrom for a pupil', async () => {
+    it('calls generatePinTimestamp to generate pinExpiresAtUtc and pinValidFromUtc for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
       await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
       expect(pinGenerationService.generatePinTimestamp).toHaveBeenCalledTimes(2)

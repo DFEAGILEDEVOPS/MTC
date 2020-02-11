@@ -109,7 +109,7 @@ const generateEntity = (schoolPin, pupilPin) => {
     isCollected: 'false',
     createdAt: 'a date',
     updatedAt: 'a date',
-    pinExpiresAt: 'a date',
+    pinExpiresAtUtc: 'a date',
     pupil: JSON.stringify(pupil),
     school: JSON.stringify(school),
     tokens: JSON.stringify(tokenPayload),

@@ -24,7 +24,7 @@ const pinGenerationService = {}
 const chars = '23456789'
 
 /**
- * Generate timestamp value for pinExpiresAt and pinValidFrom fields
+ * Generate timestamp value for pinExpiresAtUtc and pinValidFromUtc fields
  * @param {boolean} overrideEnabled
  * @param {moment} overrideValue
  * @param {moment} defaultValue
