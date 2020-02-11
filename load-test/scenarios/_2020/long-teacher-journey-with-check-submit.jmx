@@ -526,7 +526,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract School Pin from list" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract School Pin from list" enabled="true">
             <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
             <stringProp name="XPathExtractor.refname">SCHOOL_PIN</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
@@ -537,7 +537,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.report_errors">true</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil Pin from list" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil Pin from list" enabled="true">
             <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
             <stringProp name="XPathExtractor.refname">PUPIL_PIN</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
@@ -549,7 +549,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="false">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
