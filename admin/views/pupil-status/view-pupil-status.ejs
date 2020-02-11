@@ -3,7 +3,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
-                <div class="govuk-warning-message govuk-!-margin-bottom-7">
+                <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
                     <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'issues' : 'issue'  %> with pupils' checks
                 </div>
             <% } %>
