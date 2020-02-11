@@ -777,7 +777,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">../load-test/scenarios/_2020/long-teacher-journey-with-check-submit.csv</stringProp>
+          <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
