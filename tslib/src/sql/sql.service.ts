@@ -233,37 +233,6 @@ export class SqlService {
   }
 
   /**
-   * Executes sql requests in parallel, rolls back if one fails.
-   * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
-   * @param {array} params - Array of parameters for SQL statement
-   * @return {Promise}
-   */
-  async modifyWithTransactionParallel (requests: Array<ITransactionRequest>): Promise<any> {
-
-    const transaction = new Transaction(await ConnectionPoolService.getInstance())
-    const tasks = new Array<any>()
-    await transaction.begin()
-    for (let index = 0; index < requests.length; index++) {
-      const request = requests[index]
-      const modify = async () => {
-        const req = new Request(transaction)
-        this.addParamsToRequest(request.params, req)
-        return req.query(request.sql)
-      }
-      tasks.push(modify)
-    }
-    try {
-      await Promise.all(tasks)
-      await transaction.commit()
-    } catch (error) {
-      this.logger.error(`error thrown from statement within transaction:${error.message}`)
-      this.logger.error('rolling back transaction...')
-      await transaction.rollback()
-      throw error
-    }
-  }
-
-  /**
    * Add parameters to an SQL request
    * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
    * @param {{input}} request -  mssql request

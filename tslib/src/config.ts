@@ -66,5 +66,12 @@ export default {
   PupilAuth: {
     PreparedCheckExpiryAfterLoginSeconds: parseInt(optionalValueParser(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
     CorsWhitelist: process.env.CORS_WHITELIST || ''
+  },
+  ServiceBus: {
+    ConnectionString: process.env.ServiceBusConnection
+  },
+  CheckNotifier: {
+    MessagesPerBatch: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
+    BatchesPerExecution: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_BATCH_COUNT, 5), 10)
   }
 }
