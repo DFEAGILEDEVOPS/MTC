@@ -120,7 +120,7 @@
                         <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
                         <p class="govuk-body govuk-!-font-weight-bold">
                             <span class="govuk-warning-text__icon warning-text__icon-small" aria-hidden="true">!</span>
-                            Window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days. Ensure pupil takes the live MTC before 5pm on <%= pupilStatusViewData.liveCheckEndDate %>.
+                            Window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days. Ensure pupil takes the live MTC before 4pm on <%= pupilStatusViewData.liveCheckEndDate %>.
                             Generate PIN at <a href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
                         </p>
                         <% } %>
@@ -134,7 +134,6 @@
                                 </td>
                                 <td class="govuk-table__cell">
                                     <%= p.status %>
-                                    <%- partial('pupil-status/pupil-status-details/not-completed-details', { status: p.status }) %>
                                 </td>
                             </tr>
                         <% }) %>
@@ -175,7 +174,6 @@
                                 </td>
                                 <td class="govuk-table__cell">
                                     <%= p.reason %>
-                                    <%- partial('pupil-status/pupil-status-details/not-taking-check-details') %>
                                 </td>
                             </tr>
                         <% }) %>
