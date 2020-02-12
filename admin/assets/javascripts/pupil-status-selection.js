@@ -9,13 +9,14 @@ if (!window.MTCAdmin) {
  */
 (function () {
   window.MTCAdmin.pupilStatusSelection = function () {
-    document.querySelectorAll('.custom-card').forEach(card => {
-      card.addEventListener('click', function () {
-        const relatedDetailsEl = document.getElementById(`${card.id}-details`)
+    const cards = document.querySelectorAll('.custom-card')
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].addEventListener('click', function () {
+        const relatedDetailsEl = document.getElementById(`${cards[i].id}-details`)
         if (relatedDetailsEl) {
           relatedDetailsEl.open = !relatedDetailsEl.open
         }
       })
-    })
+    }
   }
 })()
