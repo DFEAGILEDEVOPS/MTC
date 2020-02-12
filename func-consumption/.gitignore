@@ -4,6 +4,7 @@ csx
 .vs
 edge
 Publish
+extensions.csproj
 
 *.user
 *.suo
