@@ -11,7 +11,6 @@ module.exports.States = Object.freeze({
   Collected: 'Collected',
   Complete: 'Complete',
   Error: 'Error',
-  Expired: 'Expired',
   New: 'New',
   NotReceived: 'Not Received',
   Void: 'Void'
@@ -24,7 +23,6 @@ const checkStatusCodes = Object.freeze({
   Collected: { code: 'COL' },
   Complete: { code: 'CMP' },
   Error: { code: 'ERR' },
-  Expired: { code: 'EXP' },
   New: { code: 'NEW' },
   NotReceived: { code: 'NTR' },
   Void: { code: 'VOD' }
