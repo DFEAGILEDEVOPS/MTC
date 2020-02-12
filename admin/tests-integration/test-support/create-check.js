@@ -86,18 +86,6 @@ const createCheck = async function createCheck (code, isLiveCheck) {
     await sqlService.modify(sql)
   }
 
-  if (code === 'EXP3' && isLiveCheck === 0) {
-    const sql = `UPDATE [mtc_admin].[check]
-                 SET pupilLoginDate = GETUTCDATE()
-                 WHERE id = ${checkId};
-
-                UPDATE [mtc_admin].[checkPin]
-                SET pinExpiresAt = DATEADD(minute, -1, GETUTCDATE())
-                WHERE check_id = ${checkId};
-                `
-    await sqlService.modifyWithTransaction(sql)
-  }
-
   if (code === 'ERR' && isLiveCheck === 1) {
     const sql = `UPDATE [mtc_admin].[check]
                  SET pupilLoginDate= GETUTCDATE(),
