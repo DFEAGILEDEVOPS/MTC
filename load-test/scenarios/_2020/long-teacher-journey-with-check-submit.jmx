@@ -97,12 +97,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: Look at home page (10 - 20 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,10000)}</stringProp>
-          <stringProp name="RandomTimer.range">10000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 20 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(10000,20000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Pupil Register" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -132,20 +132,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPath2Extractor guiclass="XPath2ExtractorGui" testclass="XPath2Extractor" testname="XPath2 Extractor" enabled="false">
-            <stringProp name="XPathExtractor2.default"></stringProp>
-            <stringProp name="XPathExtractor2.refname">pupilEditUrl</stringProp>
-            <stringProp name="XPathExtractor2.matchNumber">0</stringProp>
-            <stringProp name="XPathExtractor2.xpathQuery">/html/body//a[contains(@id,&apos;pupilName&apos;)]/@href</stringProp>
-            <stringProp name="XPathExtractor2.namespaces"></stringProp>
-          </XPath2Extractor>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 30 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(15000,30000)}</stringProp>
+          </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: Look at register (15 - 25 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,15000)}</stringProp>
-          <stringProp name="RandomTimer.range">10000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET pupil edit form" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -195,12 +186,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 30 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(15000,30000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: Edit pupil (15 - 30 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,15000)}</stringProp>
-          <stringProp name="RandomTimer.range">15000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST pupil edit form" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -335,12 +325,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: look at home page (10 - 15 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,10000)}</stringProp>
-          <stringProp name="RandomTimer.range">5000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Generate Pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -382,12 +372,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.report_errors">true</boolProp>
           </XPathExtractor>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 60 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(15000,60000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: select pupils for pin gen (15 - 60 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,15000)}</stringProp>
-          <stringProp name="RandomTimer.range">45000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Generate Pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -477,12 +466,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view and print pins (60 - 120 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,60000)}</stringProp>
-          <stringProp name="RandomTimer.range">60000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 60 - 120 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -501,12 +490,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: look for pin link (5 - 20 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-          <stringProp name="RandomTimer.range">15000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 - 20 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(5000,20000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET view pins" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -548,12 +537,11 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
             <boolProp name="XPathExtractor.report_errors">true</boolProp>
           </XPathExtractor>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 2 - 5 minutes" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(120000,300000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: give pins to pupils (2 - 5 minutes)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,120000)}</stringProp>
-          <stringProp name="RandomTimer.range">180000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
         <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
