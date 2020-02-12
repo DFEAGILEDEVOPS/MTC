@@ -9,6 +9,7 @@
     "rebuild": "yarn clean && yarn build",
     "lint": "standard && tslint --project .",
     "test": "yarn lint && yarn jest",
+    "test:watch": "yarn lint && yarn jest --watchAll",
     "watch:all": "yarn jest --watchAll",
     "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist",
