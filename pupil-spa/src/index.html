@@ -33,7 +33,7 @@
       }
     });
     // Disable Right-click context menu
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   </script>
   <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
   <script>
