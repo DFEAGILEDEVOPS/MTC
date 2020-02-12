@@ -4,6 +4,11 @@ import { PreparedCheckSyncService } from './prepared-check-sync.service'
 import { IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
 const functionName = 'check-sync'
 
+/**
+ * Synchronise access arrangements from SQL server to the prepared check(s) for a pupil.
+ * @param context
+ * @param preparedCheckSyncMessage
+ */
 const queueTrigger: AzureFunction = async function (context: Context, preparedCheckSyncMessage: IPreparedCheckSyncMessage): Promise<void> {
   const start = performance.now()
   const version = preparedCheckSyncMessage.version
