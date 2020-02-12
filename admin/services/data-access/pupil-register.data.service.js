@@ -19,19 +19,19 @@ const service = {
   },
 
   /**
-   * Fetches incomplete checks based on school id.
+   * Fetches incomplete checks based on school id.  Incomplete is defined as pupils who have
+   * logged in, but not returned their answers.  This is a visual aid for the teacher.
    * @param {number} schoolId
-   * @return {Promise<Array>} pupils
+   * @return {Promise<Number[]>} Array containing a single pupil id
    */
   getIncompleteChecks: async function (schoolId) {
     const sql = `
-    SELECT TOP 1 *
-    FROM [mtc_admin].[vewPupilRegister]
-    WHERE school_id = @schoolId
-    AND currentCheckId IS NOT NULL
-    AND checkComplete = 0
-    AND pupilLoginDate IS NOT NULL
-    AND checkStatusCode <> 'EXP'
+        SELECT TOP 1 p.id
+          FROM [mtc_admin].[pupil] p
+               JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
+         WHERE p.school_id = @schoolId
+           AND c.received = 0
+           AND c.pupilLoginDate IS NOT NULL
     `
 
     const params = [
