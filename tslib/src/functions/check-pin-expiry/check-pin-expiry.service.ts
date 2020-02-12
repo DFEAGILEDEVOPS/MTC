@@ -8,9 +8,7 @@ export class CheckPinExpiryService {
   }
 
   async process () {
-    console.log('process() called')
     const sql = `DELETE FROM [mtc_admin].[checkPin] WHERE pinExpiresAt < GETUTCDATE()`
-    const res = await this.sqlService.modify(sql, [])
-    console.log('res', res)
+    return this.sqlService.modify(sql, [])
   }
 }
