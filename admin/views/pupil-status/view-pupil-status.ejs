@@ -78,8 +78,8 @@
                         </thead>
                         <tbody>
                         <% pupilStatusViewData.pupilsWithErrors.forEach((p) => { %>
-                            <tr class="govuk-table__row govuk-warning-item">
-                                <td scope="row" class="govuk-table__cell">
+                            <tr class="govuk-table__row">
+                                <td scope="row" class="govuk-!-display-block govuk-table__cell govuk-warning-item">
                                     <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                     <% if (p.showDoB) { %>
                                         <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>

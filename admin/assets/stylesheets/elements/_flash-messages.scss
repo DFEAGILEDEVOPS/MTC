@@ -58,16 +58,12 @@
 
 // Red border to display warning on table cell content
 .govuk-warning-item {
-  display: flex;
-
-  &:before {
-    content: '';
-    border-left: 7px solid govuk-colour("red");
-    display: table-cell;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
+  border-left: 7px solid govuk-colour("red");
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  min-height: 50px;
+  border-bottom: none;
 
   .govuk-highlight-wrapper {
     display: table-cell;
