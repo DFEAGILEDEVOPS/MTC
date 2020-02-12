@@ -160,10 +160,6 @@ describe('async-retry', () => {
       }
     })
 
-
-
-
-
     test('should not attempt retry if mssql transaction error not a timeout', async () => {
       let callCount = 0
       const func = () => {
