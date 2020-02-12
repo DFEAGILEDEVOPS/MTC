@@ -1,5 +1,6 @@
 'use strict'
 
+const moment = require('moment')
 const R = require('ramda')
 const dateService = require('../services/date.service')
 
@@ -13,7 +14,11 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  pupilStatusViewData.pupilsWithErrors = R.filter(p => R.includes(p.status, ['Error in processing', 'Incomplete'], p), pupilStatusData)
+  pupilStatusViewData.pupilsWithErrors = pupilStatusPresenter.applyStatusDescriptionChange(
+    R.filter(p => R.includes(p.status, ['Error in processing', 'Incomplete'], p), pupilStatusData),
+    ['Incomplete'],
+    'Pupil check not received'
+  )
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
     R.filter(p => R.includes(p.status, ['Not started', 'Processing', 'Restart'], p), pupilStatusData),
     ['Restart'],
@@ -29,7 +34,7 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
   pupilStatusViewData.totalPupilsCount = pupilStatusData.length || 0
 
   pupilStatusViewData.liveCheckEndDate = dateService.formatFullGdsDate(checkWindowData.checkEndDate)
-  pupilStatusViewData.remainingLiveCheckDays = checkWindowData.checkEndDate.diff(checkWindowData.checkStartDate, 'days')
+  pupilStatusViewData.remainingLiveCheckDays = checkWindowData.checkEndDate.diff(moment.utc(), 'days')
   return pupilStatusViewData
 }
 

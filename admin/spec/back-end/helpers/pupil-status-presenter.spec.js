@@ -83,6 +83,19 @@ describe('pupilStatusPresenter', () => {
       expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
       expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
     })
+    it('displays pupils with incomplete status as "Pupil check not received"', () => {
+      const pupilsWithErrors = [
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Incomplete'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsWithErrors, checkWindowData)
+      expect(pupilStatusViewData.pupilsWithErrors[0].status).toBe('Error in processing')
+      expect(pupilStatusViewData.pupilsWithErrors[1].status).toBe('Pupil check not received')
+    })
     it('collects total pupil count', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.totalPupilsCount).toBe(14)
@@ -93,7 +106,7 @@ describe('pupilStatusPresenter', () => {
     })
     it('collects remaining live check days', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.remainingLiveCheckDays).toBe(checkWindowData.checkEndDate.diff(checkWindowData.checkStartDate, 'days'))
+      expect(pupilStatusViewData.remainingLiveCheckDays).toBe(checkWindowData.checkEndDate.diff(moment.utc(), 'days'))
     })
   })
 })
