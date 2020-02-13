@@ -13,7 +13,7 @@ let sut: SchoolPinExpiryGenerator
 let dateTimeServiceMock: IDateTimeService
 let configProviderMock: IConfigProvider
 
-describe.only('school-pin-expiry-generator', () => {
+describe('school-pin-expiry-generator', () => {
   beforeEach(() => {
     dateTimeServiceMock = new DateTimeServiceMock()
     configProviderMock = new ConfigProviderMock()
@@ -43,7 +43,7 @@ describe.only('school-pin-expiry-generator', () => {
   })
 
   test('if override expiry flag set to true, expire at end of day', () => {
-    const endOfDay = moment().endOf('day')
+    const endOfDay = moment('2020-02-06').endOf('day').toISOString()
     configProviderMock.OverridePinExpiry = jest.fn(() => {
       return true
     })
@@ -51,11 +51,11 @@ describe.only('school-pin-expiry-generator', () => {
     dateTimeServiceMock.utcNow = jest.fn(() => {
       return timeBefore4pm
     })
-    const actual = sut.generate()
+    const actual = sut.generate().toISOString()
     expect(actual).toEqual(endOfDay)
   })
 
-  test.only('if school in specific timezone, utc value is offset appropriately', () => {
+  test('if school in specific timezone, utc value is offset appropriately', () => {
     configProviderMock.OverridePinExpiry = jest.fn(() => {
       return false
     })
