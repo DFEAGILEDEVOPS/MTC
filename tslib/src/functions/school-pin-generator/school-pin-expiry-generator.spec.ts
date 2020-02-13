@@ -81,7 +81,7 @@ describe('school-pin-expiry-generator', () => {
       expect(actual.toISOString().substring(0, 16)).toEqual('2020-02-07T12:00')
     })
 
-    test('if override expiry flag set to true, expire at end of day if before 4pm', () => {
+    test('if override expiry flag set to true, expire at end of day', () => {
       configProviderMock.OverridePinExpiry = jest.fn(() => {
         return true
       })
