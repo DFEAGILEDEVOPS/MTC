@@ -19,13 +19,22 @@ const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CO
 const queues = require('./queues-topics.json').queues
 
 const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
-  sbService.deleteQueue(queueName, function (error) {
-    if (!error) {
-      console.log(`${queueName} queue deleted`)
-      resolve()
-    } else {
-      reject(error)
+  // There is no counterpart to createQueueIfNotExists, although deleteQueueIfNotExists is available
+  // for StorageQueues
+  sbService.getQueue(queueName, (error, res) => {
+    if (error) {
+      console.log(`${queueName} queue not found`)
+      return
     }
+    sbService.deleteQueue(queueName, function (error) {
+      if (!error) {
+        console.log(`${queueName} queue deleted`)
+        resolve()
+      } else {
+        console.log(`ignoring error deleting '${queueName}': ${error.message}`)
+        reject(error)
+      }
+    })
   })
 }))
 
