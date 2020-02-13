@@ -20,8 +20,8 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
     'Pupil check not received'
   )
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
-    R.filter(p => R.includes(p.status, ['Not started', 'Processing', 'Restart'], p), pupilStatusData),
-    ['Restart'],
+    R.filter(p => R.includes(p.status, ['Not started', 'PIN generated', 'Logged in', 'Processing', 'Restart'], p), pupilStatusData),
+    ['Restart', 'PIN generated', 'Logged in'],
     'Not started'
   )
   pupilStatusViewData.pupilsNotAttending = R.filter(p => !!p.reason, pupilStatusData)

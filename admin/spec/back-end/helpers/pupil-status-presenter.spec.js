@@ -70,6 +70,32 @@ describe('pupilStatusPresenter', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.pupilsCompleted.length).toBe(1)
     })
+    it('displays pupils that have pin generated as not started', () => {
+      const notStartedPupils = [
+        {
+          status: 'Not started'
+        },
+        {
+          status: 'PIN generated'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
+      expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
+      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
+    })
+    it('displays pupils that have logged in as not started', () => {
+      const notStartedPupils = [
+        {
+          status: 'Not started'
+        },
+        {
+          status: 'Logged in'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
+      expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
+      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
+    })
     it('displays pupils that have unused restarts as not started', () => {
       const notStartedPupils = [
         {
