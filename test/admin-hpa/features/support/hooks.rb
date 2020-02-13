@@ -80,8 +80,8 @@ Before("@hdf") do
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
   pupil_status_page.load
-  invalid_status = pupil_status_page.pupil_list.pupil_row.map{|row| row.status.text != 'Incorrect registration' && row.status.text != 'Left school' && row.status.text != 'Working below expectation' && row.status.text != 'Absent' && row.status.text != 'Unable to access' && row.status.text != 'Just arrived with EAL' && row.status.text != 'Complete'}
-  expect(invalid_status).to_not include true
+  @number_of_pupils = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@teacher)['school_id']).count
+  expect(pupil_status_page.not_taking_checks.count.text.to_i + pupil_status_page.completed_checks.count.text.to_i).to eql @number_of_pupils
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 

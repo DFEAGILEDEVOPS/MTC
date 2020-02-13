@@ -47,13 +47,15 @@ end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   pupil_status_page.load
-  p @details_hash[:first_name]
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_status_page.find_pupil_row(@details_hash[:first_name]).status.text == status}
+  pupil_row =  pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
+  expect(pupil_row.status.text).to include status unless status == 'Restart'
+  expect(pupil_row.status.text).to eql 'Not started' if status == 'Restart'
 end
 
-Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
-  pupil_row = pupil_status_page.find_pupil_row(@pupil['lastName'])
-  expect(pupil_row.status.text).to eql(status)
+Then(/^I can see the status for the pupil is (.*) for pupil not taking the check$/) do |status|
+  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
+  pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil['lastName']}
+  expect(pupil_row.status.text).to include status
 end
 
 Then(/^I should see each pupil row have the group coloumn populated with the group name$/) do
@@ -91,4 +93,12 @@ Then(/^I should see the pupil register data stored in redis$/) do
   pupils_from_register = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text.split("\n")[0]}
   pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
   expect(pupils_from_redis.sort).to eql pupils_from_register.sort
+end
+
+
+Given(/^I have a pupil not taking the check with the reason (.*)$/) do |reason|
+  step 'I am on the pupil reason page for new pupil'
+  step "I add #{reason} as a reason for a particular pupil"
+  step "the #{reason} reason should be stored against the pupils"
+  sleep 3
 end
