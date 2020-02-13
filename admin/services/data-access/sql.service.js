@@ -7,7 +7,11 @@ const poolConfig = require('../../config/sql.config')
 const readonlyPoolConfig = require('../../config/sql.readonly.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
-const { asyncRetryHandler, sqlTimeoutRetryPredicate } = require('./retry-async')
+const {
+  asyncRetryHandler,
+  sqlAzureTimeoutRetryPredicate,
+  sqlAzureResourceLimitReachedPredicate
+} = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
 
@@ -15,6 +19,12 @@ const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
   pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
   pauseMultiplier: config.DatabaseRetry.PauseMultiplier
+}
+
+// only retry if request times out or azure db limit reached
+const combinedTimeoutAndResourceLimitsReachedPredicate = (error) => {
+  return sqlAzureResourceLimitReachedPredicate(error) ||
+    sqlAzureTimeoutRetryPredicate(error)
 }
 
 // code preserved while alternatives are under consideration
@@ -318,7 +328,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
     return sqlService.transformResult(result)
   }
 
-  return asyncRetryHandler(query, retryConfig, sqlTimeoutRetryPredicate)
+  return asyncRetryHandler(query, retryConfig, combinedTimeoutAndResourceLimitsReachedPredicate)
 }
 
 /**
@@ -359,7 +369,7 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey = '') => {
     return sqlService.transformResult(result)
   }
 
-  return asyncRetryHandler(query, retryConfig, sqlTimeoutRetryPredicate)
+  return asyncRetryHandler(query, retryConfig, combinedTimeoutAndResourceLimitsReachedPredicate)
 }
 
 /**
@@ -420,7 +430,8 @@ sqlService.modify = async (sql, params = []) => {
   const returnValue = {}
   const insertIds = []
 
-  const rawResponse = await asyncRetryHandler(modify, retryConfig, sqlTimeoutRetryPredicate)
+  const rawResponse = await asyncRetryHandler(modify, retryConfig,
+    combinedTimeoutAndResourceLimitsReachedPredicate)
 
   if (rawResponse && rawResponse.recordset) {
     for (const obj of rawResponse.recordset) {
@@ -456,7 +467,8 @@ sqlService.modifyWithResponse = async (sql, params = []) => {
     return request.query(sql)
   }
 
-  const rawResponse = await asyncRetryHandler(modify, retryConfig, sqlTimeoutRetryPredicate)
+  const rawResponse = await asyncRetryHandler(modify, retryConfig,
+    combinedTimeoutAndResourceLimitsReachedPredicate)
 
   const returnValue = {}
 

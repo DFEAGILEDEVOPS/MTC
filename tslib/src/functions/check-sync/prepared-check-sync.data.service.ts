@@ -15,39 +15,31 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
 
   async getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]> {
     const liveCheckSql = `
-    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
-      FROM [mtc_admin].[check] chk
-    INNER JOIN [mtc_admin].checkStatus cs
-      ON cs.id = chk.checkStatus_id
-    INNER JOIN mtc_admin.pupil p
-      ON p.id = chk.pupil_id
-    INNER JOIN [mtc_admin].school s
-      ON s.id = p.school_id
-    INNER JOIN [mtc_admin].checkPin cp
-      ON chk.id = cp.check_id
-    INNER JOIN [mtc_admin].pin pn
-      ON cp.pin_id = pn.id
-    WHERE chk.isLiveCheck = 1
-      AND cs.code NOT IN ('CMP', 'EXP', 'NTR')
-      AND p.urlSlug = @pupilUUID
-    ORDER BY chk.createdAt DESC`
+        SELECT chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
+          FROM [mtc_admin].pupil p
+               INNER JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
+               INNER JOIN [mtc_admin].school s ON (s.id = p.school_id)
+               INNER JOIN [mtc_admin].checkPin cp ON (chk.id = cp.check_id)
+               INNER JOIN [mtc_admin].pin pn ON (cp.pin_id = pn.id)
+         WHERE chk.isLiveCheck = 1
+         -- Is there any point in updating checks that have been collected?
+           AND chk.received = 0
+         -- Exclude expired checks.  If the is deallocated the check will not be included due to the inner join.
+           AND cp.pinExpiresAt > GETUTCDATE() -- pin expiry in the future
+           AND p.urlSlug = @pupilUUID`
+
     const tioCheckSql = `
-    SELECT TOP 1 chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
-      FROM [mtc_admin].[check] chk
-    INNER JOIN [mtc_admin].checkStatus cs
-      ON cs.id = chk.checkStatus_id
-    INNER JOIN mtc_admin.pupil p
-      ON p.id = chk.pupil_id
-    INNER JOIN [mtc_admin].school s
-      ON s.id = p.school_id
-    INNER JOIN [mtc_admin].checkPin cp
-      ON chk.id = cp.check_id
-    INNER JOIN [mtc_admin].pin pn
-      ON cp.pin_id = pn.id
-    WHERE chk.isLiveCheck = 0
-      AND cs.code != 'EXP'
-      AND p.urlSlug = @pupilUUID
-    ORDER BY chk.createdAt DESC`
+        SELECT chk.checkCode, pn.val as pupilPin, s.pin as schoolPin
+          FROM [mtc_admin].[check] chk
+               INNER JOIN mtc_admin.pupil p ON p.id = chk.pupil_id
+               INNER JOIN [mtc_admin].school s ON s.id = p.school_id
+               INNER JOIN [mtc_admin].checkPin cp ON chk.id = cp.check_id
+               INNER JOIN [mtc_admin].pin pn ON cp.pin_id = pn.id
+         WHERE chk.isLiveCheck = 0
+           -- Ensure the pin is valid  If the pin is deallocated the check will not be included due to the inner join.
+           AND cp.pinExpiresAt > GETUTCDATE() -- pin expiry in the future
+           AND p.urlSlug = @pupilUUID`
+
     const pupilUuidParam = {
       name: 'pupilUUID',
       type: TYPES.NVarChar,
