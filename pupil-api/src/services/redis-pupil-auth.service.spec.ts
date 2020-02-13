@@ -66,7 +66,7 @@ describe('redis-pupil-auth.service', () => {
     expect(redisServiceMock.get).not.toHaveBeenCalled()
   })
 
-  test('the check payload should be returned if item found in cache', async () => {
+  test('the check payload should be returned if item found in cache and the pin is valid', async () => {
     const pinValidFromUtc = moment().startOf('day')
     const pinExpiresAtUtc = moment().endOf('day')
     const expectedPayload = {
