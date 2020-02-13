@@ -5,6 +5,8 @@ const config = require('../config')
 const { performance } = require('perf_hooks')
 
 const schoolCount = config.DummyData.SchoolCount
+const schoolOffset = config.DummyData.SchoolOffset
+const schoolUpperLimit = schoolCount + schoolOffset
 
 const table = new sql.Table('mtc_admin.school')
 table.create = false
@@ -13,7 +15,7 @@ table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
 table.columns.add('name', sql.NVarChar, { length: 'max', nullable: false })
 table.columns.add('urn', sql.Int, { nullable: false })
 table.columns.add('dfeNumber', sql.Int, { nullable: false })
-for (let idx = 0; idx < schoolCount; idx++) {
+for (let idx = schoolOffset; idx < schoolUpperLimit; idx++) {
   table.rows.add(777, 'estab', `bulk school ${idx + 1}`, idx + 1, idx + 1)
 }
 
