@@ -51,6 +51,7 @@ module.exports = {
     PauseMultiplier: parseFloat(process.env.RETRY_PAUSE_MULTIPLIER) || 1.5
   },
   DummyData: {
-    SchoolCount: parseInt(process.env.DUMMY_SCHOOL_COUNT, 10) || 100
+    SchoolCount: parseInt(process.env.DUMMY_SCHOOL_COUNT, 10) || 100,
+    SchoolOffset: parseInt(process.env.DUMMY_SCHOOL_OFFSET, 10) || 10
   }
 }
