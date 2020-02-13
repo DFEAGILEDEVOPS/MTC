@@ -1,3 +1,4 @@
+import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 
 /*
 import config from '../../config'
@@ -13,8 +14,24 @@ const bannedWords = [
 const chars = '23456789' */
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
+
+  private configProvider: IConfigProvider
+  private allowedWords: Set<string>
+
+  constructor (configProvider?: IConfigProvider) {
+    if (configProvider === undefined) {
+      configProvider = new ConfigFileProvider()
+    }
+    this.configProvider = configProvider
+    const words = this.configProvider.AllowedWords()
+    this.allowedWords = new Set(
+      (words && words.split(',')) || []
+    )
+  }
+
+
   generate (): string {
-    return 'abc12def'
+    return this.allowedWords.keys.toString()
   }
 }
 
