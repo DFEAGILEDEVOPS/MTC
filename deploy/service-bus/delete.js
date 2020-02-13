@@ -31,7 +31,6 @@ const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
         console.log(`${queueName} queue deleted`)
         resolve()
       } else {
-        console.log(`ignoring error deleting '${queueName}': ${error.message}`)
         reject(error)
       }
     })
