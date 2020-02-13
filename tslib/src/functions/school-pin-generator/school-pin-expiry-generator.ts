@@ -1,26 +1,7 @@
 import moment from 'moment'
 import * as tz from 'moment-timezone'
-import config from '../../config'
-
-export interface IDateTimeService {
-  utcNow (): moment.Moment
-}
-
-export class DateTimeService implements IDateTimeService {
-  utcNow (): moment.Moment {
-    return moment().utc()
-  }
-}
-
-export interface IConfigProvider {
-  OverridePinExpiry (): boolean
-}
-
-export class ConfigFileProvider implements IConfigProvider {
-  OverridePinExpiry (): boolean {
-    return config.SchoolPinGenerator.OverridePinExpiry
-  }
-}
+import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
 export class SchoolPinExpiryGenerator {
 
