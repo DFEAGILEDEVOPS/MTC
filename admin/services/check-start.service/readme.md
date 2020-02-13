@@ -22,6 +22,9 @@
   - store check configs
 
 ## proposals
+- spCreateChecks returns check payload data, rather than just ids
+  - this eliminates 2 calls
+- cache sas tokens for 1 hour (configurable)
 - new service 'check allocation / preparation'
 - smaller distinct services with single purpose
 - more robust (include rollbacks)
