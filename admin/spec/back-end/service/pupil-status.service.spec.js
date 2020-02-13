@@ -15,26 +15,26 @@ describe('pupil-status.service', () => {
       expect(typeof pupilStatusService.getProcessStatusV2).toBe('function')
     })
 
-    test('it throws an error if pinExpiresAtUtc is an object', () => {
+    test('it throws an error if pinExpiresAt is an object', () => {
       expect(() => {
         pupilStatusService.getProcessStatusV2({
-          pinExpiresAtUtc: { not: 'a moment object' }
+          pinExpiresAt: { not: 'a moment object' }
         })
-      }).toThrow('pinExpiresAtUtc must be null or a Moment.moment datetime')
+      }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
     })
 
-    test('it throws an error if pinExpiresAtUtc is a number', () => {
+    test('it throws an error if pinExpiresAt is a number', () => {
       expect(() => {
         pupilStatusService.getProcessStatusV2({
-          pinExpiresAtUtc: 66
+          pinExpiresAt: 66
         })
-      }).toThrow('pinExpiresAtUtc must be null or a Moment.moment datetime')
+      }).toThrow('pinExpiresAt must be null or a Moment.moment datetime')
     })
 
-    test('does not throw if pinExpiresAtUtc is null', () => {
+    test('does not throw if pinExpiresAt is null', () => {
       expect(() => {
         pupilStatusService.getProcessStatusV2({
-          pinExpiresAtUtc: null
+          pinExpiresAt: null
         })
       }).not.toThrow()
     })
@@ -50,7 +50,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: null,
+        pinExpiresAt: null,
         reason: 'Just arrived with EAL'
       })
       expect(status).toBe('Just arrived with EAL')
@@ -67,7 +67,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().add(4, 'hours')
+        pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Not started')
     })
@@ -83,7 +83,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().add(7, 'hours')
+        pinExpiresAt: moment().add(7, 'hours')
       })
       expect(status).toBe('PIN generated')
     })
@@ -99,7 +99,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().add(4, 'hours')
+        pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Logged in')
     })
@@ -115,7 +115,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: null
+        pinExpiresAt: null
       })
       expect(status).toBe('Processing')
     })
@@ -131,7 +131,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: null,
+        pinExpiresAt: null,
         processingFailed: true
       })
       expect(status).toBe('Error in processing')
@@ -148,7 +148,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: true,
-        pinExpiresAtUtc: null
+        pinExpiresAt: null
       })
       expect(status).toBe('Complete')
     })
@@ -164,7 +164,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: null
+        pinExpiresAt: null
       })
       expect(status).toBe('Restart')
     })
@@ -180,7 +180,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment().subtract(31, 'minutes'),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().add(3, 'hours')
+        pinExpiresAt: moment().add(3, 'hours')
       })
       expect(status).toBe('Incomplete')
     })
@@ -196,7 +196,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().subtract(1, 'minutes')
+        pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('Not started')
     })
@@ -214,7 +214,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().subtract(1, 'minutes')
+        pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('N/A')
       expect(logger.error).toHaveBeenCalled()
@@ -231,7 +231,7 @@ describe('pupil-status.service', () => {
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAtUtc: moment().subtract(3, 'minutes')
+        pinExpiresAt: moment().subtract(3, 'minutes')
       })
       // Ideally this would show 'Restart' as it would show the teacher that the pupil was a Restart case.  However,
       // this would need the 'restartAvailable' flag to be true, or alternatively an 'isRestart' or a 'checkCount' field

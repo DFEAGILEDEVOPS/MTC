@@ -2,6 +2,7 @@
 
 /* global describe it expect beforeEach spyOn fail */
 const sut = require('../../../services/prepare-check.service')
+const pinTimestampService = require('../../../services/pin-timestamp.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
 const moment = require('moment')
 
@@ -9,13 +10,14 @@ let check
 
 describe('prepare-check.service', () => {
   beforeEach(() => {
+    spyOn(pinTimestampService, 'generatePinTimestamp')
     check = {
       checkCode: 'check-code',
       schoolPin: 'school-pin',
       pupilPin: 'pupil-pin',
       pupil: {
         checkCode: 'checkCode',
-        pinExpiresAtUtc: moment().add(5, 'hours').toDate(),
+        pinExpiresAt: moment().add(5, 'hours').toDate(),
         id: 123
       },
       school: {

@@ -287,7 +287,7 @@ describe('pupilPin controller:', () => {
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
-        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAtUtc: '' })
+        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
 
@@ -352,7 +352,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
-        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAtUtc: '' })
+        spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
 

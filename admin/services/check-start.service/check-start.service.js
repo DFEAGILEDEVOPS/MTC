@@ -17,7 +17,7 @@ const checkFormService = require('../check-form.service')
 const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
-const pinGenerationService = require('../pin-generation.service')
+const pinTimestampService = require('../pin-timestamp.service')
 const prepareCheckService = require('../prepare-check.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
@@ -25,9 +25,7 @@ const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
 
-const startOfDay = moment().startOf('day')
 const fourPmToday = moment().startOf('day').add(16, 'hours')
-const eightAmToday = moment().startOf('day').add(8, 'hours')
 const endOfDay = moment().endOf('day')
 
 const checkStartService = {
@@ -212,9 +210,7 @@ checkStartService.initialisePupilCheck = async function (
     checkWindow_id: checkWindow.id,
     isLiveCheck: isLiveCheck
   }
-
-  checkData.pinValidFromUtc = pinGenerationService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay, eightAmToday, schoolTimezone)
-  checkData.pinExpiresAtUtc = pinGenerationService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, schoolTimezone)
+  checkData.pinExpiresAt = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, schoolTimezone)
   checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert
@@ -292,8 +288,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
         checkCode: o.check_checkCode,
         check_id: o.check_check_id,
-        pinExpiresAtUtc: o.pupil_pinExpiresAtUtc,
-        pinValidFromUtc: o.pupil_pinValidFromUtc,
+        pinExpiresAt: o.pupil_pinExpiresAt,
         uuid: o.pupil_uuid
       },
       school: {

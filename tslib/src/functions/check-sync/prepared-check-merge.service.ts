@@ -118,7 +118,7 @@ export interface IPreparedCheck {
   checkCode: string
   config: ICheckConfig
   createdAt: moment.Moment
-  pinExpiresAtUtc: moment.Moment
+  pinExpiresAt: moment.Moment
   pupil: {
     firstName: string,
     lastName: string,

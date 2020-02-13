@@ -3,25 +3,31 @@
 const moment = require('moment')
 const R = require('ramda')
 
+const config = require('../config')
 const logger = require('./log.service').getLogger()
+const pinTimestampService = require('./pin-timestamp.service')
 const prepareCheckDataService = require('./data-access/prepare-check.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const redisService = require('./data-access/redis-cache.service')
 
+const startOfDay = moment().startOf('day')
+const eightAmToday = moment().startOf('day').add(8, 'hours')
+
 const service = {
   /**
    * Create the prepared Check and store it in Redis for login at scale
    * @param {[{object}]} checks the pupil checks to prepare
+   * @param {string} schoolTimezone
    * @returns {Promise<void>}
    */
-  prepareChecks: (checks) => {
+  prepareChecks: (checks, schoolTimezone) => {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
     const lookupKeys = []
     const cacheItems = checks.map(check => {
-      const preparedCheck = constructPreparedCheck(check)
+      const preparedCheck = constructPreparedCheck(check, schoolTimezone)
       const preparedCheckKey = redisKeyService.getPreparedCheckKey(check.schoolPin, check.pupilPin)
       const ttl = secondsBetweenNowAndPinExpiryTime(preparedCheck.pinExpiresAtUtc)
       lookupKeys.push({
@@ -80,16 +86,18 @@ function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
 /**
  * Return an entity suitable for inserting into the `preparedCheck` table
  * @param {object} check
+ * @param {string} schoolTimezone
  * @return {object}
  */
-function constructPreparedCheck (check) {
+function constructPreparedCheck (check, schoolTimezone) {
+  const pinValidFromUtc = pinTimestampService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay, eightAmToday, schoolTimezone)
   const entity = {
     checkCode: check.pupil.checkCode,
     config: check.config,
     createdAt: moment(),
-    pinExpiresAtUtc: moment(check.pupil.pinExpiresAtUtc),
-    pinValidFromUtc: moment(check.pupil.pinValidFromUtc),
-    pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAtUtc', 'pinValidFromUtc'], check.pupil),
+    pinExpiresAtUtc: moment(check.pupil.pinExpiresAt),
+    pinValidFromUtc: pinValidFromUtc,
+    pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], check.pupil),
     pupilId: check.pupil.id,
     questions: check.questions,
     school: check.school,
