@@ -85,7 +85,7 @@ export class CheckValidatorV1 {
   }
 
   private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity) {
-    receivedCheck.validationError = errorMessage
+    receivedCheck.processingError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false
     await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
