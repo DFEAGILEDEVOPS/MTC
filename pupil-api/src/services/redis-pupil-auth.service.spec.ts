@@ -105,7 +105,7 @@ describe('redis-pupil-auth.service', () => {
     expect(payload).toBeUndefined()
   })
 
-  test('the check payload should not be returned if check pinExpiresAtUtc timestamp is before current date', async () => {
+  test('authorisation is denied if the pin was valid in the past', async () => {
     const currentDateTime = moment.utc()
     const pinValidFromUtc = moment().subtract(2, 'hour')
     const pinExpiresAtUtc = moment().subtract(1, 'hour')
