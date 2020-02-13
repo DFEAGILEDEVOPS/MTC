@@ -28,7 +28,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
   })
 
   function createQuery (checkId) {
-    return `SELECT code from [mtc_admin].[checkStatus] where id = dbo.ufnCalcCheckStatusID(${Number(checkId)})`
+    return `SELECT code from [mtc_admin].[checkStatus] where id = [mtc_admin].ufnCalcCheckStatusID(${Number(checkId)})`
   }
 
   describe('live checks', () => {
@@ -57,14 +57,14 @@ describe('DB function: udfCalcCheckStatusID', () => {
       const id = await createCheck('EXP1', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
-      expect(checkStatusCode).toBe('EXP') // COMPLETED
+      expect(checkStatusCode).toBe('NEW')
     })
 
     it('can identify a EXPIRED check without a pin', async () => {
       const id = await createCheck('EXP2', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
-      expect(checkStatusCode).toBe('EXP') // COMPLETED
+      expect(checkStatusCode).toBe('NEW')
     })
 
     it('can identify a NOT RECEIVED check', async () => {
@@ -97,25 +97,18 @@ describe('DB function: udfCalcCheckStatusID', () => {
       expect(checkStatusCode).toBe('COL') // COLLECTED
     })
 
-    it('can identify an EXPIRED check with a pin', async () => {
+    it('Expired checks are identified as NEW', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
-      expect(checkStatusCode).toBe('EXP') // COMPLETED
+      expect(checkStatusCode).toBe('NEW') // Status is NEW, but PIN has expired
     })
 
-    it('can identify an EXPIRED check without a pin', async () => {
+    it('Expired checks are identified as NEW (without a pin)', async () => {
       const id = await createCheck('EXP2', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
-      expect(checkStatusCode).toBe('EXP') // COMPLETED
-    })
-
-    it('can identify an EXPIRED check that has been started', async () => {
-      const id = await createCheck('EXP3', 0)
-      const res = await sql.query(createQuery(id))
-      const checkStatusCode = res[0].code
-      expect(checkStatusCode).toBe('EXP') // COMPLETED
+      expect(checkStatusCode).toBe('NEW') // Status is NEW, pin has expired and been deleted
     })
 
     it('does not class a try it out check as not received', async () => {
