@@ -3,7 +3,6 @@ const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 
 const config = require('../config')
-const dateService = require('../services/date.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const pinTimestampService = require('../services/pin-timestamp.service')
 const logger = require('./log.service').getLogger()
@@ -23,29 +22,6 @@ const endOfDay = moment().endOf('day')
 
 const pinGenerationService = {}
 const chars = '23456789'
-
-/**
- * Generate timestamp value based on parameters
- * @param {boolean} overrideEnabled
- * @param {moment} overrideValue
- * @param {moment} defaultValue
- * @param {string} schoolTimezone
- * @return {moment} pinTimestamp
- */
-
-pinGenerationService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
-  let pinTimestamp
-  if (overrideEnabled) {
-    pinTimestamp = overrideValue
-  } else {
-    pinTimestamp = defaultValue
-  }
-  if (schoolTimezone) {
-    // needed to parse the date in the specified timezone and convert to utc for storing
-    pinTimestamp = moment.tz(dateService.formatIso8601WithoutTimezone(pinTimestamp), schoolTimezone).utc()
-  }
-  return pinTimestamp
-}
 
 /**
  * Find groups that have pupils that can get PINs assigned.
