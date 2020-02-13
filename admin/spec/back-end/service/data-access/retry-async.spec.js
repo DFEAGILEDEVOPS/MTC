@@ -1,9 +1,11 @@
 'use strict'
 /* global describe, expect, fail beforeEach, test */
 
-const { asyncRetryHandler, sqlTimeoutRetryPredicate } =
-  require('../../../../services/data-access/retry-async')
-const { ConnectionError, RequestError, PreparedStatementError, TransactionError } = require('mssql')
+const {
+  asyncRetryHandler,
+  sqlAzureTimeoutRetryPredicate,
+  sqlAzureResourceLimitReachedPredicate
+} = require('../../../../services/data-access/retry-async')
 
 let retryPolicy
 
@@ -99,15 +101,15 @@ describe('async-retry', () => {
     })
   })
 
-  describe('sql specific behaviour', () => {
-    test('should not attempt retry if not one of mssql error types', async () => {
+  describe('sql timeout retry predicate', () => {
+    test('should not attempt retry if does not have a name property', async () => {
       let callCount = 0
       const func = () => {
         callCount++
         return Promise.reject(new Error())
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -115,14 +117,16 @@ describe('async-retry', () => {
       }
     })
 
-    test('should not attempt retry if mssql connection error not a timeout', async () => {
+    test('should not attempt retry if name is not TimeoutError', async () => {
       let callCount = 0
       const func = () => {
         callCount++
-        return Promise.reject(new ConnectionError('error', 'not a timeout'))
+        const error = new Error()
+        error.name = 'SomeError'
+        return Promise.reject(error)
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -130,104 +134,67 @@ describe('async-retry', () => {
       }
     })
 
-    test('should not attempt retry if mssql request error not a timeout', async () => {
+    test('should attempt retry if name is TimeoutError', async () => {
       let callCount = 0
       const func = () => {
         callCount++
-        return Promise.reject(new RequestError('error', 'not a timeout'))
+        const error = new Error('this is a timeout error')
+        error.name = 'TimeoutError'
+        return Promise.reject(error)
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
-        fail('error should have thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(callCount).toBe(1)
-      }
-    })
-
-    test('should not attempt retry if mssql prepared statement error not a timeout', async () => {
-      let callCount = 0
-      const func = () => {
-        callCount++
-        return Promise.reject(new PreparedStatementError('error', 'not a timeout'))
-      }
-      try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
-        fail('error should have thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(callCount).toBe(1)
-      }
-    })
-
-    test('should not attempt retry if mssql transaction error not a timeout', async () => {
-      let callCount = 0
-      const func = () => {
-        callCount++
-        return Promise.reject(new TransactionError('error', 'not a timeout'))
-      }
-      try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
-        fail('error should have thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(callCount).toBe(1)
-      }
-    })
-
-    test('should attempt retry if mssql connection error a timeout', async () => {
-      let callCount = 0
-      const func = () => {
-        callCount++
-        return Promise.reject(new ConnectionError('error', 'ETIMEOUT'))
-      }
-      try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(callCount).toBe(3)
       }
     })
+  })
 
-    test('should attempt retry if mssql request error a timeout', async () => {
+  describe('sql azure resource limit reached predicate', () => {
+    test('should not attempt retry if error does not have a number property', async () => {
       let callCount = 0
       const func = () => {
         callCount++
-        return Promise.reject(new RequestError('error', 'ETIMEOUT'))
+        return Promise.reject(new Error())
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(callCount).toBe(3)
+        expect(callCount).toBe(1)
       }
     })
 
-    test('should attempt retry if mssql prepared statement error a timeout', async () => {
+    test('should not attempt retry if error.number is not 10928', async () => {
       let callCount = 0
       const func = () => {
         callCount++
-        return Promise.reject(new PreparedStatementError('error', 'ETIMEOUT'))
+        const error = new Error()
+        error.number = 12345
+        return Promise.reject(error)
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(callCount).toBe(3)
+        expect(callCount).toBe(1)
       }
     })
 
-    test('should attempt retry if mssql transaction error a timeout', async () => {
+    test('should attempt retry if error.number is 10928', async () => {
       let callCount = 0
       const func = () => {
         callCount++
-        return Promise.reject(new TransactionError('error', 'ETIMEOUT'))
+        const error = new Error()
+        error.number = 10928
+        return Promise.reject(error)
       }
       try {
-        await asyncRetryHandler(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await asyncRetryHandler(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
