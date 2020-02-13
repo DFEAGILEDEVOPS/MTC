@@ -1,4 +1,5 @@
 import moment from 'moment'
+import * as tz from 'moment-timezone'
 import config from '../../config'
 
 export interface IDateTimeService {
@@ -26,7 +27,7 @@ export class SchoolPinExpiryGenerator {
   dateTimeService: IDateTimeService
   configProvider: IConfigProvider
 
-  constructor(dateTimeService?: IDateTimeService, configProvider?: IConfigProvider) {
+  constructor (dateTimeService?: IDateTimeService, configProvider?: IConfigProvider) {
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
     }
@@ -37,17 +38,27 @@ export class SchoolPinExpiryGenerator {
     this.configProvider = configProvider
   }
 
-  generate (): moment.Moment {
-    const currentTime = this.dateTimeService.utcNow()
-    const expiry = moment(currentTime)
-    if (this.configProvider.OverridePinExpiry()) {
-      return expiry.endOf('day')
+  generate (timezone?: string): moment.Moment {
+    const currentUtc = this.dateTimeService.utcNow()
+    console.log(`timezone:${timezone}`)
+    console.log(`utcNow:${currentUtc}`)
+    let localTime: moment.Moment
+    if (timezone) {
+      localTime = tz.tz(currentUtc, timezone)
+    } else {
+      localTime = currentUtc
     }
-    expiry.hour(16)
-    expiry.minute(0)
-    if (currentTime.hour() > 15) {
+    console.log(`localTime:${localTime}`)
+    let expiry = localTime.clone()
+    expiry = expiry.startOf('day').hours(16)
+    if (localTime.hour() > 15) {
       expiry.add(1, 'days')
     }
-    return expiry
+    if (this.configProvider.OverridePinExpiry()) {
+      console.log(`overriding pin expiry and returning end of day`)
+      return expiry.endOf('day')
+    }
+    console.log(`expiry.utc:${expiry.utc()}`)
+    return expiry.utc()
   }
 }

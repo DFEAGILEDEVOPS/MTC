@@ -28,7 +28,7 @@ const pinExpiryTime = (schoolTimezone = null) => {
   }
   if (schoolTimezone) {
     // needed to parse the date in the specified timezone and convert to utc for storing
-    toReturn = moment.tz(dateService.formatIso8601WithoutTimezone(toReturn), schoolTimezone).utc()
+    toReturn = moment.tz(dateService.formatIso861WithoutTimezone(toReturn), schoolTimezone).utc()
   }
   return toReturn
 }
