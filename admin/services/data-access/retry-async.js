@@ -3,10 +3,19 @@
 const logger = require('../log.service').getLogger()
 const pause = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 const util = require('util')
+const R = require('ramda')
 
-const sqlTimeoutRetryPredicate = (error) => {
-  if ({}.hasOwnProperty.call(error, 'code')) {
-    return error.code === 'ETIMEOUT'
+const sqlAzureTimeoutRetryPredicate = (error) => {
+  if ({}.hasOwnProperty.call(error, 'name')) {
+    return error.name === 'TimeoutError'
+  }
+  return false
+}
+
+const sqlAzureResourceLimitReachedPredicate = (error) => {
+  if (error && {}.hasOwnProperty.call(error, 'number')) {
+    // https://docs.microsoft.com/en-gb/azure/sql-database/troubleshoot-connectivity-issues-microsoft-azure-sql-database#resource-governance-errors
+    return error.number === 10928
   }
   return false
 }
@@ -54,7 +63,8 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
 
 function tryParseErrorObjectToString (error) {
   try {
-    const errorAsString = util.inspect(error, true)
+    const reducedError = R.omit(['stack'], error)
+    const errorAsString = util.inspect(reducedError, true)
     return `error object:\n${errorAsString}`
   } catch (e) {
     return `unable to parse error. reason:${e.message}`
@@ -63,5 +73,6 @@ function tryParseErrorObjectToString (error) {
 
 module.exports = {
   asyncRetryHandler,
-  sqlTimeoutRetryPredicate
+  sqlAzureTimeoutRetryPredicate,
+  sqlAzureResourceLimitReachedPredicate
 }

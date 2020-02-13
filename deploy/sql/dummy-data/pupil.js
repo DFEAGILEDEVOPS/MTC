@@ -48,6 +48,5 @@ pool.connect()
   })
 
 function genFakeUpn () {
-  var id = uuid()
-  return id.replace('-', '').substr(0, 13)
+  return uuid().replace(/-/g, '').substr(0, 13)
 }
