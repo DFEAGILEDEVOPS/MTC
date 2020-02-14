@@ -1,6 +1,6 @@
 import { SchoolPinGenerator } from './school-pin-generator'
 import { IConfigProvider } from './config-file-provider'
-import { IRandomGenerator } from './random-number-generator.spec'
+import { IRandomGenerator } from './random-generator'
 
 let sut: SchoolPinGenerator
 const configProviderMock: IConfigProvider = {
@@ -11,7 +11,8 @@ const configProviderMock: IConfigProvider = {
 
 let randomGeneratorMock: IRandomGenerator
 const RandomGeneratorMock = jest.fn<IRandomGenerator, any>(() => ({
-  generate: jest.fn(() => '42')
+  generateFromChars: jest.fn(() => '42'),
+  generateNumberFromRange: jest.fn(() => 2)
 }))
 
 describe('school-pin-generator', () => {
@@ -35,10 +36,11 @@ describe('school-pin-generator', () => {
     expect(/^[a-z]{3}[2-9]{2}[a-z]{3}$/.test(actual)).toBe(true)
   })
 
-  test('it sources 2 digit number from random generator on each generation', () => {
+  test('it sources 2 digit number and both random words from generator on each call', () => {
     sut.generate()
     sut.generate()
-    expect(randomGeneratorMock.generate).toHaveBeenCalledTimes(2)
+    expect(randomGeneratorMock.generateFromChars).toHaveBeenCalledTimes(2)
+    expect(randomGeneratorMock.generateNumberFromRange).toHaveBeenCalledTimes(4)
   })
 
 })

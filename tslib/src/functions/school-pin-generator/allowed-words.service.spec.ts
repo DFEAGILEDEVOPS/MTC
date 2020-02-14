@@ -26,5 +26,3 @@ describe('allowed-words.service', () => {
     expect(actual).toEqual(expected)
   })
 })
-
-
