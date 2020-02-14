@@ -8,34 +8,42 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is 'Not started'
 
   @manual
+  Scenario: Pupil status is Not Started when a pupil has started the check but not completed yet
+    Given I have started the check
+    Then I can see the status for the pupil is 'Not started'
+
+  @manual
   Scenario: Pupil status is Not Started when PIN is expired
     Given I have generated a live pin for a pupil
     And I expired the pupil pin
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Not started'
 
-  Scenario: Pupil status is Pin Generated when PIN is generated and active
-    Given I have generated a live pin for a pupil
+  Scenario: Pupil status is 'Not started' when a pupil has logged in
+    Given I have logged in to the check
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'PIN generated'
-
-  @manual
-  Scenario: Pupil status is IN Progress when a pupil is logged in
-    Given I have a pupil who has started a warm up question
-    When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'In Progress'
-
-  @manual
-  Scenario: Pupil status is Check Completed when a pupil completed its check
-    Given I have a pupil who has completed the check
-    When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'In Progress'
+    Then I can see the status for the pupil is 'Not started'
 
   @pupil_not_taking_check
-  Scenario: Pupil Status is Not Taking the Check when a pupil is not taking the check
-    Given I have a pupil not taking the check
+  Scenario Outline: Pupil Status is Not Taking the Check when a pupil is not taking the check
+    Given I have a pupil not taking the check with the reason <reason>
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Absent' for pupil not taking the check
+    Then I can see the status for the pupil is <reason> for pupil not taking the check
+    And I should see how many days I have left and when the check window closes
+
+    Examples:
+      | reason                    |
+      | Absent                    |
+      | Incorrect registration    |
+      | Left school               |
+      | Working below expectation |
+      | Unable to access          |
+      | Just arrived with EAL     |
+
+  Scenario: Counts displayed in the 4 status boxes should equal total pupils
+    Given I am logged in
+    When I am on the Pupil Status page
+    Then the counts should equal the total number of pupils in the school
 
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
@@ -48,9 +56,21 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Complete'
 
-  @manual
-  Scenario: Pupil status is Restart when a Restart is taken and PIN is expired
-    Given I submitted pupils for Restart
-    And I expired the pupil pin
+  @incomplete_pupil
+  Scenario: Pupil status is Incomplete when a check is not completed
+    Given there is a pupil with an incomplete status
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Restart'
+    Then I can see the status for the pupil is 'Pupil check not received'
+    And I should see a red error box at the top of the page
+
+  Scenario: Pupil status is shown as Processing error when there is a error in processing
+    Given there is a processing error with a check
+    When I am on the Pupil Status page
+    Then I can see the status for the pupil is 'Error in processing'
+
+  Scenario: Pupil status page should have a related links section
+    Given I am logged in
+    When I am on the Pupil Status page
+    Then I should see the related links and step navigation
+
+
