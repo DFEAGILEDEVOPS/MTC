@@ -1,5 +1,5 @@
-
-const timezones = [
+// one for each offset
+export const timezones = [
   { 'International Day Line West': '-12' },
   { 'New Zealand Standard Time': '-11' },
   { 'Samoa Standard Time': '-10' },
@@ -27,6 +27,3 @@ const timezones = [
   { 'Phoenix Island Time': '13' },
   { 'Line Islands Time': '14' }
 ]
-describe('school-pin-replenishment-service', () => {
-
-})
