@@ -72,6 +72,16 @@ describe('check-start.service', () => {
     }
   ]
 
+  beforeEach(() => {
+    spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
+      return {
+        token: '<someToken>',
+        url: `http://localhost/${s}`,
+        queueName: 'abc'
+      }
+    })
+  })
+
   describe('#prepareCheck2', () => {
     beforeEach(() => {
       spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
@@ -183,15 +193,9 @@ describe('check-start.service', () => {
     const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
-      spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
-        return {
-          token: '<someToken',
-          url: `http://localhost/${s}`,
-          queueName: 'abc'
-        }
-      })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
     })
+
     describe('when live checks are generated', () => {
       beforeEach(() => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
@@ -233,6 +237,7 @@ describe('check-start.service', () => {
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
       })
     })
+
     describe('when familiarisation checks are generated', () => {
       beforeEach(() => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))

@@ -4,8 +4,11 @@ const azure = require('azure-storage')
 const moment = require('moment')
 const logger = require('./log.service').getLogger()
 const config = require('../config')
+const redisKeyService = require('./redis-key.service')
+const redisCacheService = require('./data-access/redis-cache.service')
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
+const oneHourInSeconds = 1 * 60 * 60
 let azureQueueService
 
 const sasTokenService = {
@@ -16,7 +19,19 @@ const sasTokenService = {
    * @param {Object} serviceImplementation
    * @return {{token: string, url: string, queueName: string}}
    */
-  generateSasToken: function (queueName, expiryDate, serviceImplementation) {
+  generateSasToken: async function (queueName, expiryDate, serviceImplementation) {
+    // See if a valid token can be retrieved from redis
+    const redisKeyName = redisKeyService.getSasTokenKey(queueName)
+    try {
+      const token = await redisCacheService.get(redisKeyName)
+      if (token) {
+        return token
+      }
+    } catch (error) {
+      logger.error(`Error retrieving cached cached sasToken for ${queueName}`)
+    }
+
+    // Token not found in cache, so create a new one
     if (!serviceImplementation) {
       if (!azureQueueService) {
         if (!config.AZURE_STORAGE_CONNECTION_STRING) {
@@ -32,7 +47,7 @@ const sasTokenService = {
       throw new Error('Invalid expiryDate')
     }
 
-    // Create a SAS token that expires in an hour
+    // Create a SAS token
     // Set start time to five minutes ago to avoid clock skew.
     const startDate = new Date()
     startDate.setMinutes(startDate.getMinutes() - 5)
@@ -49,11 +64,22 @@ const sasTokenService = {
 
     const sasToken = serviceImplementation.generateSharedAccessSignature(queueName, sharedAccessPolicy)
 
-    return {
+    const tokenObject = {
       token: sasToken,
       url: serviceImplementation.getUrl(queueName),
       queueName: queueName
     }
+
+    // Store the sasToken in redis
+    if (redisKeyName) {
+      try {
+        await redisCacheService.set(redisKeyName, tokenObject, oneHourInSeconds)
+      } catch (error) {
+        logger.error(`Failed to cache sasToken for ${queueName}`, error)
+      }
+    }
+
+    return tokenObject
   }
 }
 

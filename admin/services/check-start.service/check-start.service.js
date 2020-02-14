@@ -241,21 +241,21 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
   let checkSubmitSasToken
 
-  const checkStartedSasToken = sasTokenService.generateSasToken(
+  const checkStartedSasToken = await sasTokenService.generateSasToken(
     queueNameService.NAMES.CHECK_STARTED,
     sasExpiryDate
   )
-  const pupilPreferencesSasToken = sasTokenService.generateSasToken(
+  const pupilPreferencesSasToken = await sasTokenService.generateSasToken(
     queueNameService.NAMES.PUPIL_PREFS,
     sasExpiryDate
   )
   if (hasLiveChecks) {
-    checkSubmitSasToken = sasTokenService.generateSasToken(
+    checkSubmitSasToken = await sasTokenService.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
   }
-  const pupilFeedbackSasToken = sasTokenService.generateSasToken(
+  const pupilFeedbackSasToken = await sasTokenService.generateSasToken(
     queueNameService.NAMES.PUPIL_FEEDBACK,
     sasExpiryDate
   )
