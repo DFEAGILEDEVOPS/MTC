@@ -7,11 +7,6 @@
                     <%= messages.info %>
                 </div>
             <% } %>
-            <% if (incompletePupils && incompletePupils.length > 0) { %>
-                <div class="govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= incompletePupils.length %> <%= incompletePupils.length > 1 ? 'pupils have' : 'pupil has'  %> an Incomplete status
-                </div>
-            <% } %>
             <%- partial('partials/_readonly', {availabilityData}) %>
             <h1 class="govuk-heading-xl">Pupil register</h1>
             <%- partial('partials/_gds_session_expiry') %>
