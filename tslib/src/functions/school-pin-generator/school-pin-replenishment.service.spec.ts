@@ -23,13 +23,13 @@ describe('school-pin-replenishment.service', () => {
 
   it('should create a new pin for each school that requires one', async () => {
     const oneHourAgo = moment().add(-1, 'hours')
-    const oneHourAway = moment().add(1, 'hours')
+    const oneHourFromNow = moment().add(1, 'hours')
 
     const schools: School[] = [
       {
         id: 1,
         name: 'school 1',
-        pinExpiresAt: oneHourAway,
+        pinExpiresAt: oneHourFromNow,
         pin: 'abc12def'
       },
       {
@@ -41,7 +41,7 @@ describe('school-pin-replenishment.service', () => {
       {
         id: 3,
         name: 'school 3',
-        pinExpiresAt: oneHourAway,
+        pinExpiresAt: oneHourFromNow,
         pin: 'baz44bug'
       }
     ]
@@ -145,4 +145,6 @@ describe('utc-offset-resolver', () => {
     const actual = sut.resolveToHours(tz)
     expect(actual).toEqual(expected)
   })
+
+  test.todo('remove utcOffsetResolver if not used')
 })

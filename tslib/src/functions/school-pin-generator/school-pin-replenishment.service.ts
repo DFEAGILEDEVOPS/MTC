@@ -74,7 +74,7 @@ export class SchoolRequiresNewPinPredicate {
 
 export class UtcOffsetResolver {
   resolveToHours (timezone: string): number {
-    const minutesOffset = tz.tz(timezone).utcOffset() // .format('Z')
+    const minutesOffset = tz.tz(timezone).utcOffset()
     return minutesOffset / 60
   }
 }
