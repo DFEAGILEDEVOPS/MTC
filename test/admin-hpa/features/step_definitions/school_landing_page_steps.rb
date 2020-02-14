@@ -120,6 +120,7 @@ end
 Given(/^there is a pupil with an incomplete status$/) do
   step 'I have generated a live pin for a pupil'
   RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  sleep 65
 end
 
 Then(/^I should see a incomplete banner$/) do

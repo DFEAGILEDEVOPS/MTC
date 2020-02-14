@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-  window.MTCAdmin.tableSort.applySorting(window.document, 'pupil-status', {
-    sortNullsLast: true,
-    ignoredStrings: ['-']
-  })
-  window.MTCAdmin.pupilFilter()
+  const element = document.getElementById('step-by-step-navigation')
+  // eslint-disable-next-line no-undef
+  const stepByStepNavigation = new GOVUK.Modules.StepByStepNavigation()
+  stepByStepNavigation.start(element)
+  window.MTCAdmin.pupilStatusSelection()
 })
