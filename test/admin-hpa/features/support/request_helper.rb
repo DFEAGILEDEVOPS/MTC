@@ -29,7 +29,7 @@ class RequestHelper
     builder.to_xml
   end
 
-  def self.build_payload_json(parsed_response_pupil_auth,correct_answers=nil)
+  def self.build_payload_json(parsed_response_pupil_auth, correct_answers = nil)
     ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
     {
       "answers": [
@@ -375,10 +375,11 @@ class RequestHelper
     }
   end
 
-  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers=nil)
-   correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
+  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers = nil, remove_answers = nil)
+    correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
     payload = build_payload_json(parsed_response_pupil_auth)
     payload[:answers][0..correct_answers].each {|q| q[:answer] = q[:factor1] * q[:factor2]} unless correct_answers.nil?
+    payload.delete(:answers) unless remove_answers.nil?
     {"version": 2, "checkCode": parsed_response_pupil_auth['checkCode'],
      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
      "archive": LZString::UTF16.compress(payload.to_json)
