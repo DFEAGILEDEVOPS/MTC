@@ -9,6 +9,7 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   convertMomentToJsDate: jest.fn(),
   formatIso8601: jest.fn()
 }))
+
 const configProviderMock: IConfigProvider = {
   AllowedWords: '',
   BannedWords: '',
