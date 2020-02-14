@@ -35,7 +35,7 @@ export class SchoolPinExpiryGenerator {
     if (localTime.hour() > 15) {
       expiry.add(1, 'days')
     }
-    if (this.configProvider.OverridePinExpiry()) {
+    if (this.configProvider.OverridePinExpiry) {
       console.log(`overriding pin expiry and returning end of day`)
       return expiry.endOf('day')
     }

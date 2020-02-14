@@ -1,3 +1,4 @@
+import { AllowedWordsService } from './allowed-words.service'
 
 let sut: AllowedWordsService
 
@@ -7,7 +8,7 @@ describe('allowed-words.service', () => {
   })
 
   test('subject should be defined', () => {
-    expect(sut).toBeDefined()
+    expect(sut).toBeInstanceOf(AllowedWordsService)
   })
 
   test('allowed words must be a minimum set of 5', () => {
@@ -26,17 +27,4 @@ describe('allowed-words.service', () => {
   })
 })
 
-export class AllowedWordsService {
-  parse (wordset: string, bannedWords: string): Set<string> {
-    const allowedWordsArray: Array<string> = wordset.split(',')
-    const bannedWordsArray: Array<string> = bannedWords.split(',')
-    const allowedWords = new Set<string>(allowedWordsArray)
-    if (allowedWordsArray.length < 5) throw new Error('set of allowed words must be a minimum of 5')
-    bannedWordsArray.forEach(word => {
-      if (allowedWords.has(word)) {
-        allowedWords.delete(word)
-      }
-    })
-    return allowedWords
-  }
-}
+

@@ -18,7 +18,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   it('should be defined', () => {
-    expect(sut).toBeDefined()
+    expect(sut).toBeInstanceOf(SchoolPinReplenishmnentService)
   })
 
   it('should create a new pin for each school that requires one', async () => {

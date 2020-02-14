@@ -1,15 +1,19 @@
 import config from '../../config'
 
 export interface IConfigProvider {
-  OverridePinExpiry (): boolean
-  AllowedWords (): string
+  OverridePinExpiry: boolean
+  AllowedWords: string
+  BannedWords: string
 }
 
 export class ConfigFileProvider implements IConfigProvider {
-  OverridePinExpiry (): boolean {
-    return config.SchoolPinGenerator.OverridePinExpiry
+  constructor () {
+    this.AllowedWords = config.SchoolPinGenerator.AllowedWords
+    this.OverridePinExpiry = config.SchoolPinGenerator.OverridePinExpiry
+    this.BannedWords = config.SchoolPinGenerator.BannedWords
   }
-  AllowedWords (): string {
-    return config.SchoolPinGenerator.AllowedWords
-  }
+
+  OverridePinExpiry: boolean
+  AllowedWords: string
+  BannedWords: string
 }

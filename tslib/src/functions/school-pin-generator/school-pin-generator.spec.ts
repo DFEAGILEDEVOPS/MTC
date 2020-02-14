@@ -2,22 +2,20 @@ import { SchoolPinGenerator } from './school-pin-generator'
 import { IConfigProvider } from './config-file-provider'
 
 let sut: SchoolPinGenerator
-let configProviderMock: IConfigProvider
-
-const ConfigProviderMock = jest.fn<IConfigProvider, any>(() => ({
-  OverridePinExpiry: jest.fn(),
-  AllowedWords: jest.fn(() => 'foo,bar,baz,qix,bix')
-}))
+const configProviderMock: IConfigProvider = {
+  AllowedWords: '',
+  BannedWords: '',
+  OverridePinExpiry: false
+}
 
 describe('school-pin-generator', () => {
 
   beforeEach(() => {
-    configProviderMock = new ConfigProviderMock()
     sut = new SchoolPinGenerator(configProviderMock)
   })
 
   test('subject is defined', () => {
-    expect(sut).toBeDefined()
+    expect(sut).toBeInstanceOf(SchoolPinGenerator)
   })
 
   test.todo('first 3 chars of pin must be word from allowed words set')
@@ -25,5 +23,3 @@ describe('school-pin-generator', () => {
   test.todo('last 3 chars of pin must be word from allowed words set')
 
 })
-
-
