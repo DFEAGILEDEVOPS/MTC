@@ -11,8 +11,8 @@ const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const redisService = require('./data-access/redis-cache.service')
 
-const startOfDay = moment().startOf('day')
-const eightAmToday = moment().startOf('day').add(8, 'hours')
+const startOfDay = () => moment().startOf('day')
+const eightAmToday = () => moment().startOf('day').add(8, 'hours')
 
 const service = {
   /**
@@ -90,7 +90,7 @@ function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
  * @return {object}
  */
 function constructPreparedCheck (check, schoolTimezone) {
-  const pinValidFromUtc = pinTimestampService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay, eightAmToday, schoolTimezone)
+  const pinValidFromUtc = pinTimestampService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay(), eightAmToday(), schoolTimezone)
   const entity = {
     checkCode: check.pupil.checkCode,
     config: check.config,

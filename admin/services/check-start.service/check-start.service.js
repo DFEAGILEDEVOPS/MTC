@@ -25,8 +25,8 @@ const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
 
-const fourPmToday = moment().startOf('day').add(16, 'hours')
-const endOfDay = moment().endOf('day')
+const fourPmToday = () => moment().startOf('day').add(16, 'hours')
+const endOfDay = () => moment().endOf('day')
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -210,7 +210,7 @@ checkStartService.initialisePupilCheck = async function (
     checkWindow_id: checkWindow.id,
     isLiveCheck: isLiveCheck
   }
-  checkData.pinExpiresAt = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, schoolTimezone)
+  checkData.pinExpiresAt = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
   checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert

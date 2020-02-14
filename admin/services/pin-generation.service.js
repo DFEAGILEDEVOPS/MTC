@@ -17,8 +17,8 @@ const bannedWords = [
   'dim'
 ]
 
-const fourPmToday = moment().startOf('day').add(16, 'hours')
-const endOfDay = moment().endOf('day')
+const fourPmToday = () => moment().startOf('day').add(16, 'hours')
+const endOfDay = () => moment().endOf('day')
 
 const pinGenerationService = {}
 const chars = '23456789'
@@ -61,7 +61,7 @@ pinGenerationService.generateSchoolPassword = school => {
     wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay, fourPmToday, school.timezone)
+  const newExpiry = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), school.timezone)
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 
