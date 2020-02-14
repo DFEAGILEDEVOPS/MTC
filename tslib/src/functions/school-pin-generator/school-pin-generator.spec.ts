@@ -1,25 +1,44 @@
 import { SchoolPinGenerator } from './school-pin-generator'
 import { IConfigProvider } from './config-file-provider'
+import { IRandomGenerator } from './random-number-generator.spec'
 
 let sut: SchoolPinGenerator
 const configProviderMock: IConfigProvider = {
-  AllowedWords: '',
+  AllowedWords: 'foo,bar,baz,qix,mix',
   BannedWords: '',
   OverridePinExpiry: false
 }
 
+let randomGeneratorMock: IRandomGenerator
+const RandomGeneratorMock = jest.fn<IRandomGenerator, any>(() => ({
+  generate: jest.fn(() => '42')
+}))
+
 describe('school-pin-generator', () => {
 
   beforeEach(() => {
-    sut = new SchoolPinGenerator(configProviderMock)
+    randomGeneratorMock = new RandomGeneratorMock()
+    sut = new SchoolPinGenerator(configProviderMock, randomGeneratorMock)
   })
 
   test('subject is defined', () => {
     expect(sut).toBeInstanceOf(SchoolPinGenerator)
   })
 
-  test.todo('first 3 chars of pin must be word from allowed words set')
-  test.todo('chars 4 and 5 must be 2 digit number constructed from 23456789')
-  test.todo('last 3 chars of pin must be word from allowed words set')
+  test('school pin must be 8 chars in length', () => {
+    const actual = sut.generate()
+    expect(actual.length).toBe(8)
+  })
+
+  test('school pin must be 3 char word + 2 digits + 3 char word', () => {
+    const actual = sut.generate()
+    expect(/^[a-z]{3}[2-9]{2}[a-z]{3}$/.test(actual)).toBe(true)
+  })
+
+  test('it sources 2 digit number from random generator on each generation', () => {
+    sut.generate()
+    sut.generate()
+    expect(randomGeneratorMock.generate).toHaveBeenCalledTimes(2)
+  })
 
 })

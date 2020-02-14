@@ -1,37 +1,33 @@
 import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { AllowedWordsService } from './allowed-words.service'
-
-/*
-import config from '../../config'
-
- const allowedWords = new Set(
-  (config.SchoolPinGenerator.AllowedWords && config.SchoolPinGenerator.AllowedWords.split(',')) || []
-)
-
-const bannedWords = [
-  'dim'
-]
-
-const chars = '23456789' */
+import { IRandomGenerator, RandomGenerator } from './random-number-generator.spec'
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
 
   private configProvider: IConfigProvider
+  private randomGenerator: IRandomGenerator
   private allowedWordsService: AllowedWordsService
+  private chars = '23456789'
 
-  constructor (configProvider?: IConfigProvider) {
+  constructor (configProvider?: IConfigProvider, randomGenerator?: IRandomGenerator) {
     if (configProvider === undefined) {
       configProvider = new ConfigFileProvider()
     }
     this.configProvider = configProvider
+    if (randomGenerator === undefined) {
+      randomGenerator = new RandomGenerator()
+    }
+    this.randomGenerator = randomGenerator
     this.allowedWordsService = new AllowedWordsService()
   }
 
   generate (): string {
-    return this.allowedWordsService.parse(
+    const wordSet = this.allowedWordsService.parse(
       this.configProvider.AllowedWords,
       this.configProvider.BannedWords)
-      .keys.toString()
+    const wordArray = Array.from(wordSet)
+    const twoDigitNum = this.randomGenerator.generate(2, this.chars)
+    return `${wordArray[0]}${twoDigitNum}${wordArray[1]}`
   }
 }
 
