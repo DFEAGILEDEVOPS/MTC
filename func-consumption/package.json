@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
-    "@types/moment-timezone": "^0.5.12",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
     "dotenv": "^8.1.0",

@@ -4,7 +4,8 @@
       "name": "timer",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "0 */5 * * * *"
+      "schedule": "*/5 * * * * *"
     }
-  ]
+  ],
+  "scriptFile": "../dist/functions/school-pin-generator/index.js"
 }

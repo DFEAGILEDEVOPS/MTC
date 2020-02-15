@@ -1,14 +1,19 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-// import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service'
 const functionName = 'school-pin-generator'
 
 const schoolPinGenerator: AzureFunction = async function (context: Context, timer: any): Promise<void> {
 
+  if (timer.IsPastDue) {
+    context.log('timer is past due, exiting...')
+    return
+  }
+
   const start = performance.now()
   // TODO: configure cron schedule
-  // const replenishmentService = new SchoolPinReplenishmnentService()
-  // await replenishmentService.process()
+  const replenishmentService = new SchoolPinReplenishmnentService()
+  await replenishmentService.process(context.log)
   finish(start, context)
 }
 

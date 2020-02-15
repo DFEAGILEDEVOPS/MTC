@@ -1,8 +1,8 @@
-import tz from 'moment-timezone'
 import moment from 'moment'
 import { SchoolPinReplenishmentDataService, ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
+import { ILogger } from '../../common/logger'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
@@ -23,22 +23,29 @@ export class SchoolPinReplenishmnentService {
     this.expiryGenerator = new SchoolPinExpiryGenerator()
   }
 
-  async process (): Promise<void> {
+  async process (logger: ILogger): Promise<void> {
     const allSchools = await this.dataService.getSchoolData()
+    logger.info(`identified ${allSchools.length} schools to process...`)
     for (let index = 0; index < allSchools.length; index++) {
       const school = allSchools[index]
       if (this.newPinRequiredPredicate.isRequired(school)) {
+        logger.info(`new pin required for school.id:${school.id}`)
         let pinUpdated = false
         const update: SchoolPinUpdate = {
           id: school.id,
           pinExpiresAt: this.expiryGenerator.generate(),
-          newPin: this.pinGenerator.generate()
+          newPin: this.pinGenerator.generate(),
+          attempts: 5
         }
-        while (!pinUpdated) {
+        let attemptsMade = 0
+        while (!pinUpdated && (attemptsMade < update.attempts)) {
           try {
+            logger.info(`school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt} pin:${update.newPin}`)
             await this.dataService.updatePin(update)
             pinUpdated = true
           } catch (error) {
+            attemptsMade++
+            logger.error(`error thrown attempting sql update:${error.message}`)
             update.newPin = this.pinGenerator.generate()
           }
         }
@@ -60,6 +67,7 @@ export interface SchoolPinUpdate {
   id: number
   newPin: string
   pinExpiresAt: moment.Moment
+  attempts: number
 }
 
 export class SchoolRequiresNewPinPredicate {
@@ -72,9 +80,4 @@ export class SchoolRequiresNewPinPredicate {
   }
 }
 
-export class UtcOffsetResolver {
-  resolveToHours (timezone: string): number {
-    const minutesOffset = tz.tz(timezone).utcOffset()
-    return minutesOffset / 60
-  }
-}
+
