@@ -12,7 +12,8 @@ class CheckReceiver {
       RowKey: receivedCheck.checkCode,
       archive: receivedCheck.archive,
       checkReceivedAt: Moment().toDate(),
-      checkVersion: +receivedCheck.version
+      checkVersion: +receivedCheck.version,
+      processingError: ''
     }
 
     await tableService.insertEntityAsync('receivedCheck', receivedCheckEntity)
