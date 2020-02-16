@@ -3,6 +3,7 @@
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const fileValidator = require('../lib/validator/file-validator')
 
+const config = require('../config')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
@@ -261,7 +262,12 @@ const postEditPupil = async (req, res, next) => {
     next(error)
   }
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
-  res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
+  const successUrl = `/pupil-register/pupils-list?hl=${highlight}`
+  const WaitTimeBeforeRedirectInSeconds = config.WaitTimeBeforeRedirectInSeconds
+  res.render('redirect-delay.ejs', {
+    url: successUrl,
+    WaitTimeBeforeRedirectInSeconds: WaitTimeBeforeRedirectInSeconds
+  })
 }
 
 module.exports = {
