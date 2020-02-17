@@ -33,15 +33,15 @@ export interface MarkCheckMessageV1 {
 export interface ReceivedCheckTableEntity {
   PartitionKey: string // schoolUUID
   RowKey: string // checkCode
+  answers?: string
   archive: string
   checkReceivedAt: Date
   checkVersion: number
   isValid?: boolean
-  validatedAt?: Date
-  validationError?: string
-  answers?: string
   mark?: number
-  markedAt?: Date
   markError?: string
+  markedAt?: Date
   maxMarks?: number
+  processingError?: string
+  validatedAt?: Date
 }

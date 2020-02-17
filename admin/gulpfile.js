@@ -48,7 +48,8 @@ const jsBundleFiles = [
   './assets/javascripts/autocomplete.js',
   './assets/javascripts/pupil-access-arrangements-selection.js',
   './assets/javascripts/check-forms.js',
-  './assets/javascripts/pupil-form.js'
+  './assets/javascripts/pupil-form.js',
+  './assets/javascripts/pupil-status-selection.js'
 ]
 
 /*
