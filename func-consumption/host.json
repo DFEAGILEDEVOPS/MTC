@@ -19,11 +19,6 @@
         "X-XSS-Protection": "1; mode=block",
         "X-DNS-Prefetch-Control": "off"
       }
-    },
-    "serviceBus": {
-      "messageHandlerOptions": {
-        "maxConcurrentCalls": 1
-      }
     }
   }
 }
