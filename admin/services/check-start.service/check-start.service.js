@@ -237,28 +237,8 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
     checkIds
   )
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
-
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
-  let checkSubmitSasToken
-
-  const checkStartedSasToken = await sasTokenService.generateSasToken(
-    queueNameService.NAMES.CHECK_STARTED,
-    sasExpiryDate
-  )
-  const pupilPreferencesSasToken = await sasTokenService.generateSasToken(
-    queueNameService.NAMES.PUPIL_PREFS,
-    sasExpiryDate
-  )
-  if (hasLiveChecks) {
-    checkSubmitSasToken = await sasTokenService.generateSasToken(
-      queueNameService.NAMES.CHECK_SUBMIT,
-      sasExpiryDate
-    )
-  }
-  const pupilFeedbackSasToken = await sasTokenService.generateSasToken(
-    queueNameService.NAMES.PUPIL_FEEDBACK,
-    sasExpiryDate
-  )
+  const tokens = await sasTokenService.getTokens(hasLiveChecks, sasExpiryDate)
 
   // Get check config for all pupils
   const pupilIds = checks.map(check => check.pupil_id)
@@ -294,9 +274,9 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
         uuid: o.school_uuid
       },
       tokens: {
-        checkStarted: checkStartedSasToken,
-        pupilPreferences: pupilPreferencesSasToken,
-        pupilFeedback: pupilFeedbackSasToken,
+        checkStarted: tokens[queueNameService.NAMES.CHECK_STARTED],
+        pupilPreferences: tokens[queueNameService.NAMES.PUPIL_PREFS],
+        pupilFeedback: tokens[queueNameService.NAMES.PUPIL_FEEDBACK],
         jwt: {
           token: 'token-disabled' // o.pupil_jwtToken
         }
@@ -307,7 +287,7 @@ checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId)
       config: pupilConfig
     }
     if (o.check_isLiveCheck) {
-      payload.tokens.checkComplete = checkSubmitSasToken
+      payload.tokens.checkComplete = tokens[queueNameService.NAMES.CHECK_SUBMIT]
     }
     payloads.push(payload)
   }

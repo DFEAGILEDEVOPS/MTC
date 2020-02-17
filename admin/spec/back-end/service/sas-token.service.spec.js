@@ -3,7 +3,9 @@
 const sasTokenService = require('../../../services/sas-token.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
+const queueNameService = require('../../../services/queue-name-service')
 const moment = require('moment')
+const sut = sasTokenService
 
 describe('sas-token.service', () => {
   describe('generateSasToken', () => {
@@ -100,6 +102,85 @@ describe('sas-token.service', () => {
         expect(redisCacheService.get).toHaveBeenCalled()
         expect(redisCacheService.set).not.toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('getTokens', () => {
+    it('calls redis once to retrieve all the tokens', async () => {
+      // mock a response where the values are found in the cache
+      const mockRedisResponse = [
+        { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
+        { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
+        { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
+        { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
+      ]
+      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
+      spyOn(sasTokenService, 'generateSasToken')
+      await sut.getTokens(true, moment().add(4, 'hours'))
+      expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
+      expect(sasTokenService.generateSasToken).not.toHaveBeenCalled()
+    })
+
+    it('calls out to generate sas tokens if not found in redis', async () => {
+      // mock a response where the values are not found in the cache
+      const mockRedisResponse = [
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]
+      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
+      spyOn(sasTokenService, 'generateSasToken').and.callFake(function (queueName) {
+        console.log('call fake faked')
+        return {
+          queueName,
+          token: 'test token',
+          url: 'test url'
+        }
+      })
+      await sut.getTokens(true, moment().add(4, 'hours'))
+      expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
+      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
+    })
+
+    it('calls out to generate sas tokens if any are not found in redis', async () => {
+      // mock a response where the values are partially found in the cache
+      const mockRedisResponse = [
+        { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
+        { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
+        undefined,
+        undefined
+      ]
+      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
+      spyOn(sasTokenService, 'generateSasToken').and.callFake(function (queueName) {
+        console.log('call fake faked')
+        return {
+          queueName,
+          token: 'test token',
+          url: 'test url'
+        }
+      })
+      const res = await sut.getTokens(true, moment().add(4, 'hours'))
+      expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
+      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(2)
+      // Expect `res` to have 4 properties, 2 from redis, and 2 generated
+      expect(Object.keys(res).length).toBe(4)
+    })
+
+    it('does not return the check-submitted token for tio checks', async () => {
+      // mock a response where the values are found in the cache
+      const mockRedisResponse = [
+        { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
+        { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
+        { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' }
+      ]
+      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
+      spyOn(sasTokenService, 'generateSasToken')
+      const result = await sut.getTokens(false, moment().add(4, 'hours'))
+      expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
+      expect(sasTokenService.generateSasToken).not.toHaveBeenCalled()
+      expect(Object.keys(result).length).toBe(3)
+      expect(result[queueNameService.NAMES.CHECK_SUBMIT]).toBeUndefined()
     })
   })
 })

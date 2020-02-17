@@ -8,6 +8,7 @@ const logger = require('./log.service').getLogger()
 const config = require('../config')
 const redisKeyService = require('./redis-key.service')
 const redisCacheService = require('./data-access/redis-cache.service')
+const queueNameService = require('./queue-name-service')
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 const oneHourInSeconds = 1 * 60 * 60
@@ -86,6 +87,39 @@ const sasTokenService = {
     const end = performance.now()
     logger.debug(`generateSasToken(): took ${end - start} ms`)
     return tokenObject
+  },
+
+  getTokens: async function (hasLiveChecks, expiryDate) {
+    const start = performance.now()
+    const queueNames = [
+      queueNameService.NAMES.CHECK_STARTED,
+      queueNameService.NAMES.PUPIL_PREFS,
+      queueNameService.NAMES.PUPIL_FEEDBACK
+    ]
+    if (hasLiveChecks) {
+      queueNames.push(queueNameService.NAMES.CHECK_SUBMIT)
+    }
+
+    // Attempt to retrieve all tokens from redis
+    const redisKeys = queueNames.map(redisKeyService.getSasTokenKey)
+    const cached = await redisCacheService.getMany(redisKeys)
+    const result = {}
+    cached.map(o => {
+      if (o && o.queueName) {
+        result[o.queueName] = o
+      }
+    })
+
+    // validate we have all the required sasTokens, and create new ones if missing
+    for (const name of queueNames) {
+      if (!result[name]) {
+        logger.debug(`getTokens(): cache miss ${name}`)
+        result[name] = await this.generateSasToken(name, expiryDate)
+      }
+    }
+    const end = performance.now()
+    logger.debug(`getTokens() took ${end - start} ms`)
+    return result
   }
 }
 
