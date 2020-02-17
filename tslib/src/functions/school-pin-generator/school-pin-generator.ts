@@ -25,9 +25,9 @@ export class SchoolPinGenerator implements ISchoolPinGenerator {
     const wordSet = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
     const wordArray = Array.from(wordSet)
     const twoDigitNum = this.randomGenerator.generateFromChars(2, this.chars)
-    const firstRandomIndex = this.randomGenerator.generateNumberFromRange(0, wordArray.length - 1)
+    const firstRandomIndex = this.randomGenerator.generateNumberFromRangeInclusive(0, wordArray.length - 1)
     const firstRandomWord = wordArray[firstRandomIndex]
-    const secondRandomIndex = this.randomGenerator.generateNumberFromRange(0, wordArray.length - 1)
+    const secondRandomIndex = this.randomGenerator.generateNumberFromRangeInclusive(0, wordArray.length - 1)
     const secondRandomWord = wordArray[secondRandomIndex]
     return `${firstRandomWord}${twoDigitNum}${secondRandomWord}`
   }

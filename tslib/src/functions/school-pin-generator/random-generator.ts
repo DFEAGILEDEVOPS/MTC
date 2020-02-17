@@ -1,11 +1,11 @@
 import crypto from 'crypto'
 export interface IRandomGenerator {
   generateFromChars (length: number, chars: string): string
-  generateNumberFromRange (minimum: number, maximum: number): number
+  generateNumberFromRangeInclusive (minimum: number, maximum: number): number
 }
 export class RandomGenerator implements IRandomGenerator {
 
-  generateNumberFromRange (minimum: number, maximum: number): number {
+  generateNumberFromRangeInclusive (minimum: number, maximum: number): number {
     const maxDec = 281474976710656
     const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
     return Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)

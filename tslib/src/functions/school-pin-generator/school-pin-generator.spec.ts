@@ -12,7 +12,7 @@ const configProviderMock: IConfigProvider = {
 let randomGeneratorMock: IRandomGenerator
 const RandomGeneratorMock = jest.fn<IRandomGenerator, any>(() => ({
   generateFromChars: jest.fn(() => '42'),
-  generateNumberFromRange: jest.fn(() => 2)
+  generateNumberFromRangeInclusive: jest.fn(() => 2)
 }))
 
 describe('school-pin-generator', () => {
@@ -40,7 +40,7 @@ describe('school-pin-generator', () => {
     sut.generate()
     sut.generate()
     expect(randomGeneratorMock.generateFromChars).toHaveBeenCalledTimes(2)
-    expect(randomGeneratorMock.generateNumberFromRange).toHaveBeenCalledTimes(4)
+    expect(randomGeneratorMock.generateNumberFromRangeInclusive).toHaveBeenCalledTimes(4)
   })
 
 })

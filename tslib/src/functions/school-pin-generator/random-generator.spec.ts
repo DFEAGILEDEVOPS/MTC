@@ -36,7 +36,7 @@ describe('random-generator', () => {
 
   describe('generateNumberFromRange', () => {
     test('should generate a random number in specific range', () => {
-      const actual = sut.generateNumberFromRange(1, 6)
+      const actual = sut.generateNumberFromRangeInclusive(1, 6)
       expect(typeof actual).toBe('number')
       expect(actual >= 0 || actual <= 6).toBeTruthy()
     })
