@@ -262,12 +262,10 @@ const postEditPupil = async (req, res, next) => {
     next(error)
   }
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
-  const successUrl = `/pupil-register/pupils-list?hl=${highlight}`
-  const WaitTimeBeforeRedirectInSeconds = config.WaitTimeBeforeRedirectInSeconds
-  res.render('redirect-delay.ejs', {
-    url: successUrl,
-    WaitTimeBeforeRedirectInSeconds: WaitTimeBeforeRedirectInSeconds
-  })
+  res.locals.isSubmitMetaRedirectUrl = true
+  res.locals.metaRedirectUrl = `/pupil-register/pupils-list?hl=${highlight}`
+  res.locals.waitTimeBeforeMetaRedirectInSeconds = config.WaitTimeBeforeMetaRedirectInSeconds
+  res.render('redirect-delay.ejs')
 }
 
 module.exports = {

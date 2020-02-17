@@ -65,4 +65,7 @@ module.exports = async function (app) {
   app.locals.guidancePdf = 'https://www.gov.uk/government/publications/multiplication-tables-check-administration-guidance'
   app.locals.roles = roles
   app.locals.isSubmitImpersonationUrl = false
+  app.locals.isSubmitMetaRedirectUrl = false
+  app.locals.metaRedirectUrl = null
+  app.locals.waitTimeBeforeMetaRedirectInSeconds = null
 }
