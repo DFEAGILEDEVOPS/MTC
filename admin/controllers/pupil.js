@@ -265,7 +265,9 @@ const postEditPupil = async (req, res, next) => {
   res.locals.isSubmitMetaRedirectUrl = true
   res.locals.metaRedirectUrl = `/pupil-register/pupils-list?hl=${highlight}`
   res.locals.waitTimeBeforeMetaRedirectInSeconds = config.WaitTimeBeforeMetaRedirectInSeconds
-  res.render('redirect-delay.ejs')
+  res.render('redirect-delay.ejs', {
+    redirectMessage: 'Saving changes...'
+  })
 }
 
 module.exports = {
