@@ -150,7 +150,7 @@ export class CheckMarkerV1 {
   }
 
   private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string) {
-    receivedCheck.markError = markingError
+    receivedCheck.processingError = markingError
     receivedCheck.markedAt = moment().toDate()
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
