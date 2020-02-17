@@ -13,6 +13,7 @@ const prepareCheckService = require('../prepare-check.service')
 const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
+const queueNameService = require('../queue-name-service')
 
 const checkFormMock = {
   id: 100,
@@ -188,9 +189,10 @@ describe('check-start.service', () => {
     })
   })
 
-  describe('#prepareCheckQueueMessages', () => {
+  describe('#createPupilCheckPayloads', () => {
     const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
     const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
+
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
@@ -199,6 +201,12 @@ describe('check-start.service', () => {
     describe('when live checks are generated', () => {
       beforeEach(() => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
+        spyOn(sasTokenService, 'getTokens').and.returnValue([
+          { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
+          { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
+          { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
+          { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
+        ])
       })
 
       it('throws an error if the check form allocation IDs are not supplied', async () => {
@@ -231,9 +239,9 @@ describe('check-start.service', () => {
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
       })
+
       it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
       })
     })
@@ -241,10 +249,14 @@ describe('check-start.service', () => {
     describe('when familiarisation checks are generated', () => {
       beforeEach(() => {
         spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
+        spyOn(sasTokenService, 'getTokens').and.returnValue([
+          { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
+          { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
+          { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' }
+        ])
       })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
         expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
       })
     })
