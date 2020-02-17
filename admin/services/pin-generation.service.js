@@ -4,7 +4,7 @@ const crypto = bluebird.promisifyAll(require('crypto'))
 
 const config = require('../config')
 const groupDataService = require('../services/data-access/group.data.service')
-const pinTimestampService = require('../services/pin-timestamp.service')
+const pinValidityGeneratorService = require('./pin-validity-generator.service')
 const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
 const randomGenerator = require('../lib/random-generator')
@@ -61,7 +61,7 @@ pinGenerationService.generateSchoolPassword = school => {
     wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), school.timezone)
+  const newExpiry = pinValidityGeneratorService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), school.timezone)
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 

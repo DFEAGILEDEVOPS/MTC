@@ -17,7 +17,7 @@ const checkFormService = require('../check-form.service')
 const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
-const pinTimestampService = require('../pin-timestamp.service')
+const pinValidityGeneratorService = require('../pin-validity-generator.service')
 const prepareCheckService = require('../prepare-check.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
@@ -210,7 +210,7 @@ checkStartService.initialisePupilCheck = async function (
     checkWindow_id: checkWindow.id,
     isLiveCheck: isLiveCheck
   }
-  checkData.pinExpiresAt = pinTimestampService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
+  checkData.pinExpiresAt = pinValidityGeneratorService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
   checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert

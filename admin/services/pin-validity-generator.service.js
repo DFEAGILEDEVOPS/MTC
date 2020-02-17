@@ -2,7 +2,7 @@ const moment = require('moment')
 
 const dateService = require('../services/date.service')
 
-const pinTimestampService = {}
+const pinValidityGeneratorService = {}
 
 /**
  * Generate timestamp value based on parameters
@@ -13,7 +13,7 @@ const pinTimestampService = {}
  * @return {moment} pinTimestamp
  */
 
-pinTimestampService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
+pinValidityGeneratorService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
   let pinTimestamp
   if (overrideEnabled) {
     pinTimestamp = overrideValue
@@ -27,4 +27,4 @@ pinTimestampService.generatePinTimestamp = (overrideEnabled, overrideValue, defa
   return pinTimestamp
 }
 
-module.exports = pinTimestampService
+module.exports = pinValidityGeneratorService
