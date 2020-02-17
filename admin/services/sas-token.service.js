@@ -2,6 +2,8 @@
 
 const azure = require('azure-storage')
 const moment = require('moment')
+const { performance } = require('perf_hooks')
+
 const logger = require('./log.service').getLogger()
 const config = require('../config')
 const redisKeyService = require('./redis-key.service')
@@ -20,11 +22,14 @@ const sasTokenService = {
    * @return {{token: string, url: string, queueName: string}}
    */
   generateSasToken: async function (queueName, expiryDate, serviceImplementation) {
+    const start = performance.now()
     // See if a valid token can be retrieved from redis
     const redisKeyName = redisKeyService.getSasTokenKey(queueName)
     try {
       const token = await redisCacheService.get(redisKeyName)
       if (token) {
+        const end = performance.now()
+        logger.debug(`generateSasToken(): took ${end - start} ms`)
         return token
       }
     } catch (error) {
@@ -78,7 +83,8 @@ const sasTokenService = {
         logger.error(`Failed to cache sasToken for ${queueName}`, error)
       }
     }
-
+    const end = performance.now()
+    logger.debug(`generateSasToken(): took ${end - start} ms`)
     return tokenObject
   }
 }
