@@ -26,7 +26,7 @@
     "express": "^4.16.2",
     "express-winston": "^4.0.2",
     "feature-toggles": "^1.4.0",
-    "helmet": "^3.12.0",
+    "helmet": "^3.21.2",
     "ioredis": "^4.9.0",
     "ioredis-ratelimit": "^2.0.1",
     "moment": "^2.22.1",
