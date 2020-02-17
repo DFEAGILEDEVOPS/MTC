@@ -90,7 +90,7 @@ const dbLimitReached = (error: SqlServerError) => {
   return error.number === connectionLimitReachedErrorCode
 }
 
-export class SqlService {
+export class SqlService implements ISqlService {
 
   private dateTimeService: IDateTimeService
   private logger: ILogger
@@ -303,4 +303,10 @@ export interface ISqlParameter {
 export interface ITransactionRequest {
   sql: string
   params: Array<ISqlParameter>
+}
+
+export interface ISqlService {
+  query (sql: string, params?: Array<ISqlParameter>): Promise<any>,
+  modify (sql: string, params: Array<ISqlParameter>): Promise<any>,
+  modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any>
 }
