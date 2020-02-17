@@ -88,7 +88,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('answers property not populated')
+    expect(actualEntity.processingError).toBe('answers property not populated')
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -119,7 +119,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('answers data is not an array')
+    expect(actualEntity.processingError).toBe('answers data is not an array')
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -154,7 +154,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('associated checkForm could not be found by checkCode')
+    expect(actualEntity.processingError).toBe('associated checkForm could not be found by checkCode')
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -189,7 +189,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('associated checkForm data is not valid JSON')
+    expect(actualEntity.processingError).toBe('associated checkForm data is not valid JSON')
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -225,7 +225,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
+    expect(actualEntity.processingError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -260,7 +260,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('check form data is either empty or not an array')
+    expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeTruthy()
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -270,7 +270,7 @@ describe('check-marker/v1', () => {
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.markError).toBe('check form data is either empty or not an array')
+    expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -333,7 +333,7 @@ describe('check-marker/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(2)
     expect(actualEntity.maxMarks).toBe(2)
-    expect(actualEntity.markError).toBeUndefined()
+    expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -396,7 +396,7 @@ describe('check-marker/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(1)
     expect(actualEntity.maxMarks).toBe(2)
-    expect(actualEntity.markError).toBeUndefined()
+    expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
@@ -459,7 +459,7 @@ describe('check-marker/v1', () => {
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.mark).toBe(0)
     expect(actualEntity.maxMarks).toBe(2)
-    expect(actualEntity.markError).toBeUndefined()
+    expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.markedAt).toBeTruthy()
   })
 
