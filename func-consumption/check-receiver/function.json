@@ -9,13 +9,6 @@
     },
     {
       "direction": "out",
-      "type": "table",
-      "name": "receivedCheckTable",
-      "tableName": "receivedCheck",
-      "connection": "AZURE_STORAGE_CONNECTION_STRING"
-    },
-    {
-      "direction": "out",
       "type": "serviceBus",
       "name": "checkValidationQueue",
       "queueName": "check-validation",

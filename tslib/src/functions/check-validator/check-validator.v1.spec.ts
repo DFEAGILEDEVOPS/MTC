@@ -84,7 +84,7 @@ describe('check-validator/v1', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.validationError).toBe('message is missing [archive] property')
+    expect(actualEntity.processingError).toBe('message is missing [archive] property')
     expect(actualEntity.isValid).toBe(false)
   })
 
@@ -132,7 +132,7 @@ describe('check-validator/v1', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.validationError).toBe('submitted check is missing the following properties: answers,audit,checkCode,config,inputs,pupil,questions,school,tokens')
+    expect(actualEntity.processingError).toBe('submitted check is missing the following properties: answers,audit,checkCode,config,inputs,pupil,questions,school,tokens')
     expect(actualEntity.isValid).toBe(false)
   })
 
@@ -190,7 +190,7 @@ describe('check-validator/v1', () => {
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.validationError).toBeUndefined()
+    expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.isValid).toBe(true)
   })
 
@@ -218,7 +218,7 @@ describe('check-validator/v1', () => {
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.validationError).toBeUndefined()
+    expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.answers).toEqual(JSON.stringify(checkSchema.answers))
   })
 
