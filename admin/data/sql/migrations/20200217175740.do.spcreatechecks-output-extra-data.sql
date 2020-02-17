@@ -109,7 +109,7 @@ BEGIN TRY
 
     COMMIT TRANSACTION
 
-    -- OUTPUT newly created check IDs to the caller
+    -- OUTPUT newly created checks to the caller
     SELECT
       chk.id as check_id,
       chk.checkCode as check_checkCode,
