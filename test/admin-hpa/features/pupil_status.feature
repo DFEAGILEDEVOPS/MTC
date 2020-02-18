@@ -50,18 +50,18 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Restart'
 
-  Scenario: Pupil status changes to Complete when pupil take 2nd check
-    Given I submitted pupils for Restart
-    And Pupil has taken a 2nd check
-    When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Complete'
-
   @incomplete_pupil
   Scenario: Pupil status is Incomplete when a check is not completed
     Given there is a pupil with an incomplete status
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Pupil check not received'
     And I should see a red error box at the top of the page
+
+  Scenario: Pupil status changes to Complete when pupil take 2nd check
+    Given I submitted pupils for Restart
+    And Pupil has taken a 2nd check
+    When I am on the Pupil Status page
+    Then I can see the status for the pupil is 'Complete'
 
   Scenario: Pupil status is shown as Processing error when there is a error in processing
     Given there is a processing error with a check
