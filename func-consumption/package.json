@@ -13,9 +13,10 @@
     "sync": "node ./sync-tslib-deps.js && yarn install",
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
+    "prestart": "yarn build",
     "start:host": "func start",
     "start": "yarn start:host",
-    "start:dev": "yarn build && yarn start"
+    "start:dev": "echo \"Deprecated: please use 'yarn start' instead\" && yarn start"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
