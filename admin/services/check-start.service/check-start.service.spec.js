@@ -239,26 +239,6 @@ describe('check-start.service', () => {
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
       })
-
-      it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(Object.keys(res[0].tokens)).toContain('checkComplete')
-      })
-    })
-
-    describe('when familiarisation checks are generated', () => {
-      beforeEach(() => {
-        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
-        spyOn(sasTokenService, 'getTokens').and.returnValue([
-          { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
-          { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
-          { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' }
-        ])
-      })
-      it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
-      })
     })
   })
 })
