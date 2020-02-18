@@ -13,7 +13,7 @@ const prepareCheckService = require('../prepare-check.service')
 const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
-const pinValidityGeneratorService = require('../pin-validity-generator.service')
+const pinService = require('../pin.service')
 
 const checkFormMock = {
   id: 100,
@@ -143,12 +143,12 @@ describe('check-start.service', () => {
 
   describe('#initialisePupilCheck', () => {
     beforeEach(() => {
-      spyOn(pinValidityGeneratorService, 'generatePinTimestamp')
+      spyOn(pinService, 'generatePinTimestamp')
     })
     it('calls generatePinTimestamp to generate pinExpiresAt for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
       await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
-      expect(pinValidityGeneratorService.generatePinTimestamp).toHaveBeenCalledTimes(1)
+      expect(pinService.generatePinTimestamp).toHaveBeenCalledTimes(1)
     })
     it('calls allocateCheckForm for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)

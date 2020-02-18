@@ -5,7 +5,7 @@ const R = require('ramda')
 
 const config = require('../config')
 const logger = require('./log.service').getLogger()
-const pinValidityGeneratorService = require('./pin-validity-generator.service')
+const pinService = require('./pin.service')
 const prepareCheckDataService = require('./data-access/prepare-check.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
@@ -90,7 +90,7 @@ function secondsBetweenNowAndPinExpiryTime (pinExpiry) {
  * @return {object}
  */
 function constructPreparedCheck (check, schoolTimezone) {
-  const pinValidFromUtc = pinValidityGeneratorService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay(), eightAmToday(), schoolTimezone)
+  const pinValidFromUtc = pinService.generatePinTimestamp(config.OverridePinValidFrom, startOfDay(), eightAmToday(), schoolTimezone)
   const entity = {
     checkCode: check.pupil.checkCode,
     config: check.config,

@@ -1,3 +1,6 @@
+const moment = require('moment-timezone')
+const dateService = require('../services/date.service')
+
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
@@ -13,6 +16,29 @@ pinService.getActiveSchool = async (dfeNumber) => {
     return null
   }
   return school
+}
+
+/**
+ * Generate timestamp value based on parameters
+ * @param {boolean} overrideEnabled
+ * @param {moment} overrideValue
+ * @param {moment} defaultValue
+ * @param {string} schoolTimezone
+ * @return {moment} pinTimestamp
+ */
+
+pinService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
+  let pinTimestamp
+  if (overrideEnabled) {
+    pinTimestamp = overrideValue
+  } else {
+    pinTimestamp = defaultValue
+  }
+  if (schoolTimezone) {
+    // needed to parse the date in the specified timezone and convert to utc for storing
+    pinTimestamp = moment.tz(dateService.formatIso8601WithoutTimezone(pinTimestamp), schoolTimezone).utc()
+  }
+  return pinTimestamp
 }
 
 module.exports = pinService
