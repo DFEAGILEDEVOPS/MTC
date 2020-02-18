@@ -76,7 +76,9 @@ describe('check-start.service', () => {
       spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
+      
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
@@ -178,6 +180,8 @@ describe('check-start.service', () => {
   })
 
   describe('#prepareCheckQueueMessages', () => {
+    const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
+    const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
@@ -190,6 +194,10 @@ describe('check-start.service', () => {
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
     })
     describe('when live checks are generated', () => {
+      beforeEach(() => {
+        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
+      })
+
       it('throws an error if the check form allocation IDs are not supplied', async () => {
         try {
           await checkStartService.createPupilCheckPayloads()
@@ -208,6 +216,11 @@ describe('check-start.service', () => {
         }
       })
 
+      it('makes a call to fetch the check form allocations from the db', async () => {
+        await checkStartService.createPupilCheckPayloads([1], 1)
+        expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
+      })
+
       it('prepares the question data', async () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
@@ -222,6 +235,9 @@ describe('check-start.service', () => {
       })
     })
     describe('when familiarisation checks are generated', () => {
+      beforeEach(() => {
+        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
+      })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
         const res = await checkStartService.createPupilCheckPayloads([1], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
