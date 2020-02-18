@@ -34,9 +34,9 @@ describe('check-start.service', () => {
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockNewChecks = [
-    { id: 1, checkCode: '1A', pupil_id: 1 },
-    { id: 1, checkCode: '2A', pupil_id: 2 },
-    { id: 3, checkCode: '3A', pupil_id: 3 }
+    { id: 1, check_checkCode: '1A', pupil_id: 1 },
+    { id: 1, check_checkCode: '2A', pupil_id: 2 },
+    { id: 3, check_checkCode: '3A', pupil_id: 3 }
   ]
   const mockCreatePupilCheckPayloads = [
     {
@@ -77,10 +77,9 @@ describe('check-start.service', () => {
       spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
 
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
-      
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(mockNewChecks))
+
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
-      spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
       spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
@@ -194,16 +193,12 @@ describe('check-start.service', () => {
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
     })
     describe('when live checks are generated', () => {
-      beforeEach(() => {
-        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
-      })
-
       it('throws an error if the check form allocation IDs are not supplied', async () => {
         try {
           await checkStartService.createPupilCheckPayloads()
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe('checkIds is not defined')
+          expect(error.message).toBe('checks is not defined')
         }
       })
 
@@ -212,34 +207,27 @@ describe('check-start.service', () => {
           await checkStartService.createPupilCheckPayloads({})
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe('checkIds must be an array')
+          expect(error.message).toBe('checks must be an array')
         }
       })
 
-      it('makes a call to fetch the check form allocations from the db', async () => {
-        await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
-      })
-
       it('prepares the question data', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
       })
       it('does generate and include check complete & check submit sas tokens when live checks are generated', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
         expect(Object.keys(res[0].tokens)).toContain('checkComplete')
       })
     })
+
     describe('when familiarisation checks are generated', () => {
-      beforeEach(() => {
-        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
-      })
       it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationFamiliarisation], 1)
         expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
         expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
       })

@@ -120,6 +120,7 @@ checkStartService.prepareCheck2 = async function (
   }
   // Create and return checks via spCreateChecks
   const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+  console.dir(newChecks)
   // phase 1 (will be obsolete when we remove createPupilCheckPayloads)
 
   let pupilChecks
@@ -258,9 +259,11 @@ checkStartService.createPupilCheckPayloads = async function (checks, schoolId) {
     logger.error('Error generating pupil configs', error)
     throw error
   }
+  console.dir(pupilConfigs)
 
   for (const o of checks) {
     // Pass the isLiveCheck config in to the SPA
+    console.log(`o.pupil_id:${o.pupil_id}`)
     const pupilConfig = pupilConfigs[o.pupil_id]
     pupilConfig.practice = !o.check_isLiveCheck
     pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
