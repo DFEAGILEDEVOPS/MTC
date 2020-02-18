@@ -29,7 +29,8 @@
       ],
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--vram", "32" ],
-        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_ssh,tcp,,2122,,22" ]
+        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_ssh,tcp,,2122,,22" ],
+        [ "guestproperty", "set", "{{.Name}}", "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", "5000"]
       ],
       "boot_wait": "10s",
       "disk_size": "{{user `disk_size`}}",
