@@ -46,6 +46,8 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['processingFailed']} if status == 'Error in processing'
   pupil_status_page.load
   pupil_row =  pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
   expect(pupil_row.status.text).to include status unless status == 'Restart'
