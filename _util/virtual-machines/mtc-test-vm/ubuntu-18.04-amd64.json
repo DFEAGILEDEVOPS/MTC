@@ -52,7 +52,7 @@
       "memory": "{{ user `memory` }}",
       "cpus": "{{ user `cpus` }}",
       "virtualbox_version_file": ".vbox_version",
-      "vm_name": "mtc-test"
+      "vm_name": "mtc-test-{{isotime \"2006-01-02\"}}"
     }
   ],
   "provisioners": [
@@ -63,7 +63,7 @@
     },
     {
       "environment_vars": [
-        "HOME_DIR=/home/mtc",     
+        "HOME_DIR=/home/mtc",
         "http_proxy={{user `http_proxy`}}",
         "https_proxy={{user `https_proxy`}}",
         "no_proxy={{user `no_proxy`}}"
@@ -104,12 +104,12 @@
     "hyperv_generation": "2",
     "hyperv_switch": "{{env `hyperv_switch`}}",
     "guest_additions_url": "",
-    "iso_checksum": "7d8e0055d663bffa27c1718685085626cb59346e7626ba3d3f476322271f573e",
+    "iso_checksum": "e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b",
     "iso_checksum_type": "sha256",
-    "iso_name": "ubuntu-18.04.3-server-amd64.iso",
+    "iso_name": "ubuntu-18.04.4-server-amd64.iso",
     "memory": "1024",
     "mirror": "http://cdimage.ubuntu.com",
-    "mirror_directory": "ubuntu/releases/18.04.3/release",
+    "mirror_directory": "ubuntu/releases/18.04.4/release",
     "name": "ubuntu-18.04",
     "no_proxy": "{{env `no_proxy`}}",
     "preseed_path": "preseed.cfg",
