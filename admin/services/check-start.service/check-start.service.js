@@ -258,7 +258,7 @@ checkStartService.createPupilCheckPayloads = async function (checks, schoolId) {
     logger.error('Error generating pupil configs', error)
     throw error
   }
-  console.dir(checks[0])
+
   for (const o of checks) {
     // Pass the isLiveCheck config in to the SPA
     const pupilConfig = pupilConfigs[o.pupil_id]
