@@ -95,12 +95,7 @@ const serviceToExport = {
     const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
     const insertSql = insertHeader + inserts.join(',\n')
     const sql = [declareTable, insertSql, exec].join(';\n')
-    const res = await sqlService.query(sql, params)
-    const insertedIds = []
-    res.forEach(row => {
-      insertedIds.push(row.id)
-    })
-    return { insertId: insertedIds }
+    return sqlService.query(sql, params)
   },
 
   sqlFindActivePinRecordsByPupilUrlSlug: async (urlSlug) => {

@@ -119,17 +119,10 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  // Create Checks in the Database
-  const res = await pinGenerationDataService.sqlCreateBatch(checks)
-  const newCheckIds = Array.isArray(res.insertId)
-    ? res.insertId
-    : [res.insertId]
-
-  const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
-    schoolId,
-    newCheckIds,
-    pupilIds
-  )
+  // Create and return checks via spCreateChecks
+  const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+  // phase 1 (will be obsolete when we remove createPupilCheckPayloads)
+  const newCheckIds = newChecks.map(c => c.check_id)
 
   let pupilChecks
   try {
