@@ -77,12 +77,10 @@ const sasTokenService = {
     }
 
     // Store the sasToken in redis
-    if (redisKeyName) {
-      try {
-        await redisCacheService.set(redisKeyName, tokenObject, oneHourInSeconds)
-      } catch (error) {
-        logger.error(`Failed to cache sasToken for ${queueName}`, error)
-      }
+    try {
+      await redisCacheService.set(redisKeyName, tokenObject, oneHourInSeconds)
+    } catch (error) {
+      logger.error(`Failed to cache sasToken for ${queueName}`, error)
     }
     const end = performance.now()
     logger.debug(`generateSasToken(): took ${end - start} ms`)
