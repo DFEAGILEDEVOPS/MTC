@@ -8,7 +8,7 @@ cd $HOME
 
 # Install single-user rvm + ruby
 
-# Install ruby 
+# Install ruby
 sudo apt-get -y install gnupg2
 gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 \curl -sSL https://get.rvm.io | bash -s stable
@@ -25,17 +25,17 @@ git clone https://github.com/DFEAGILEDEVOPS/MTC.git
 cd MTC
 
 # get the variables from the user
-echo 
+echo
 echo
 echo "Setting up MTC Environment"
 echo
-echo  
-echo -n "Enter AZURE_STORAGE_CONNECTION_STRING " 
+echo
+echo -n "Enter AZURE_STORAGE_CONNECTION_STRING "
 read AzureStorageConnectionString
-echo 
+echo
 echo -n "Enter AZURE_SERVICE_BUS_CONNECTION_STRING "
 read  AzureServiceBusConnectionString
-echo 
+echo
 
 
 cat > .env  << ENV
@@ -56,7 +56,7 @@ cat > ./func-consumption/local.settings.json << FC
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "AzureWebJobsStorage": "{AzureWebJobsStorage}",
+    "AzureWebJobsStorage": "${AzureStorageConnectionString}",
     "AZURE_STORAGE_CONNECTION_STRING": "${AzureStorageConnectionString}",
     "ServiceBusConnection": "${AzureServiceBusConnectionString}",
     "CORS_WHITELIST": "http://localhost:4200"
@@ -97,8 +97,8 @@ cd ~/MTC/pupil-spa && nvm use && yarn install --frozen-lockfile
 cd ~/MTC/pupil-api && nvm use && yarn install --frozen-lockfile
 cd ~/MTC/func-consumption && nvm use && yarn install --frozen-lockfile
 cd ~/MTC/functions-app && nvm use && yarn install --frozen-lockfile
-cd ~/MTC/test/admin-hpa && bundle install 
-cd ~/MTC/test/pupil-hpa && bundle install 
+cd ~/MTC/test/admin-hpa && bundle install
+cd ~/MTC/test/pupil-hpa && bundle install
 
 echo "All Done - installed versions to follow"
 echo -n "rvm version: "
