@@ -3,14 +3,17 @@ import { SchoolPinReplenishmentDataService, ISchoolPinReplenishmentDataService }
 import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { ILogger } from '../../common/logger'
+import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
   private newPinRequiredPredicate: SchoolRequiresNewPinPredicate
   private pinGenerator: ISchoolPinGenerator
   private expiryGenerator: SchoolPinExpiryGenerator
+  private configProvider: IConfigProvider
 
-  constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator) {
+  constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator,
+    configProvider?: IConfigProvider) {
     if (dataService === undefined) {
       dataService = new SchoolPinReplenishmentDataService()
     }
@@ -20,11 +23,16 @@ export class SchoolPinReplenishmnentService {
     }
     this.pinGenerator = pinGenerator
 
+    if (configProvider === undefined) {
+      configProvider = new ConfigFileProvider()
+    }
+    this.configProvider = configProvider
+
     this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
     this.expiryGenerator = new SchoolPinExpiryGenerator()
   }
 
-  async process (logger: ILogger): Promise<void> {
+  async process (logger: ILogger, schoolUUID?: string): Promise<void> {
     const allSchools = await this.dataService.getSchoolData()
     logger.info(`identified ${allSchools.length} schools to process...`)
     for (let index = 0; index < allSchools.length; index++) {
@@ -36,7 +44,7 @@ export class SchoolPinReplenishmnentService {
           id: school.id,
           pinExpiresAt: this.expiryGenerator.generate(),
           newPin: this.pinGenerator.generate(),
-          attempts: 5
+          attempts: this.configProvider.PinUpdateMaxAttempts
         }
         let attemptsMade = 0
         while (!pinUpdated && (attemptsMade < update.attempts)) {

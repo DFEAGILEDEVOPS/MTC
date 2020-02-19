@@ -2,6 +2,7 @@ import { SchoolPinReplenishmnentService, School, SchoolPinUpdate, SchoolRequires
 import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { ILogger } from '../../common/logger'
+import { ConfigFileProvider } from './config-file-provider'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getSchoolData: jest.fn(),
@@ -21,14 +22,14 @@ describe('school-pin-replenishment.service', () => {
 
   beforeEach(() => {
     dataService = new SchoolPinGeneratorDataServiceMock()
-    sut = new SchoolPinReplenishmnentService(dataService)
+    sut = new SchoolPinReplenishmnentService(dataService, undefined, new ConfigFileProvider())
   })
 
   it('should be defined', () => {
     expect(sut).toBeInstanceOf(SchoolPinReplenishmnentService)
   })
 
-  it('should create a new pin for each school that requires one', async () => {
+  it('should create a new pin for each school that requires one when no school uuid provided', async () => {
     const oneHourAgo = moment().add(-1, 'hours')
     const oneHourFromNow = moment().add(1, 'hours')
 
@@ -66,7 +67,7 @@ describe('school-pin-replenishment.service', () => {
     expect(update ? update.id : undefined).toEqual(2)
   })
 
-  test('it should fail after trying x number of times', async () => {
+  test('it should fail after making configured number of attempts', async () => {
     const oneHourAgo = moment().add(-1, 'hours')
 
     const schools: School[] = [
@@ -84,7 +85,7 @@ describe('school-pin-replenishment.service', () => {
       throw new Error('mock error')
     })
     await sut.process(logger)
-    expect(dataService.updatePin).toHaveBeenCalledTimes(5)
+    expect(dataService.updatePin).toHaveBeenCalledTimes(new ConfigFileProvider().PinUpdateMaxAttempts)
   })
 })
 

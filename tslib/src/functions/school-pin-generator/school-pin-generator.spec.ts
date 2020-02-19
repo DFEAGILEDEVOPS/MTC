@@ -6,7 +6,8 @@ let sut: SchoolPinGenerator
 const configProviderMock: IConfigProvider = {
   AllowedWords: 'foo,bar,baz,qix,mix',
   BannedWords: '',
-  OverridePinExpiry: false
+  OverridePinExpiry: false,
+  PinUpdateMaxAttempts: 10
 }
 
 let randomGeneratorMock: IRandomGenerator
