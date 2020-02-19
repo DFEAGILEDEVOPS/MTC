@@ -12,6 +12,13 @@ const sqlAzureTimeoutRetryPredicate = (error) => {
   return false
 }
 
+const sqlAzureRequestTimeoutRetryPredicate = (error) => {
+  if ({}.hasOwnProperty.call(error, 'code')) {
+    return error.code === 'ETIMEOUT'
+  }
+  return false
+}
+
 const sqlAzureResourceLimitReachedPredicate = (error) => {
   if (error && {}.hasOwnProperty.call(error, 'number')) {
     // https://docs.microsoft.com/en-gb/azure/sql-database/troubleshoot-connectivity-issues-microsoft-azure-sql-database#resource-governance-errors
@@ -74,5 +81,6 @@ function tryParseErrorObjectToString (error) {
 module.exports = {
   asyncRetryHandler,
   sqlAzureTimeoutRetryPredicate,
-  sqlAzureResourceLimitReachedPredicate
+  sqlAzureResourceLimitReachedPredicate,
+  sqlAzureRequestTimeoutRetryPredicate
 }
