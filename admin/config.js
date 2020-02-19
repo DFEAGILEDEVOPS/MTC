@@ -133,7 +133,7 @@ module.exports = {
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
-    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 24
+    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 25
   },
   Azure: {
     queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',

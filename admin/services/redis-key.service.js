@@ -46,6 +46,15 @@ const redisKeyService = {
    */
   getCheckFormsKey (checkWindowId, isLiveCheck) {
     return `checkForms:${checkWindowId}:live:${isLiveCheck}`
+  },
+
+  /**
+   * Return the key used to store sas token, using the queue name
+   * @param queueName
+   * @return {string}
+   */
+  getSasTokenKey (queueName) {
+    return `sasToken:${queueName}`
   }
 }
 
