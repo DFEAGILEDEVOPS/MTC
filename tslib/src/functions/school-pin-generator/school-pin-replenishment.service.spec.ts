@@ -1,12 +1,14 @@
-import { SchoolPinReplenishmnentService, School, SchoolPinUpdate, SchoolRequiresNewPinPredicate } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService, School, SchoolPinUpdate } from './school-pin-replenishment.service'
 import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { ILogger } from '../../common/logger'
 import { ConfigFileProvider } from './config-file-provider'
+import * as uuid from 'uuid'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
-  getSchoolData: jest.fn(),
-  updatePin: jest.fn()
+  getAllSchools: jest.fn(),
+  updatePin: jest.fn(),
+  getSchoolByUuid: jest.fn()
 }))
 
 let sut: SchoolPinReplenishmnentService
@@ -53,7 +55,7 @@ describe('school-pin-replenishment.service', () => {
         pin: 'baz44bug'
       }
     ]
-    dataService.getSchoolData = jest.fn(async () => {
+    dataService.getAllSchools = jest.fn(async () => {
       return schools
     })
     let update: SchoolPinUpdate | undefined
@@ -78,7 +80,7 @@ describe('school-pin-replenishment.service', () => {
         pin: 'foo23bar'
       }
     ]
-    dataService.getSchoolData = jest.fn(async () => {
+    dataService.getAllSchools = jest.fn(async () => {
       return schools
     })
     dataService.updatePin = jest.fn(async (schoolUpdate) => {
@@ -87,73 +89,26 @@ describe('school-pin-replenishment.service', () => {
     await sut.process(logger)
     expect(dataService.updatePin).toHaveBeenCalledTimes(new ConfigFileProvider().PinUpdateMaxAttempts)
   })
-})
 
-describe('school-requires-new-pin-predicate', () => {
-  let sut: SchoolRequiresNewPinPredicate
-
-  beforeEach(() => {
-    sut = new SchoolRequiresNewPinPredicate()
+  test('if no schools to process, service returns early', async () => {
+    dataService.getAllSchools = jest.fn(async () => {
+      return []
+    })
+    await sut.process(logger)
+    expect(dataService.updatePin).not.toHaveBeenCalled()
   })
 
-  test('subject should be defined', () => {
-    expect(sut).toBeDefined()
-  })
-
-  test('indicates pin required when pin is undefined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school'
-    }
-    const isRequired = sut.isRequired(school)
-    expect(isRequired).toBe(true)
-  })
-
-  test('indicates pin required when pin is undefined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school'
-    }
-    expect(sut.isRequired(school)).toBe(true)
-  })
-
-  test('indicates pin not required when expiry date in future', () => {
-    const school: School = {
-      id: 1,
-      name: 'school',
-      pin: 'abc12def',
-      pinExpiresAt: moment().add(1,'hours')
-    }
-    expect(sut.isRequired(school)).toBe(false)
-  })
-
-  test('indicates pin required when expiry date in future but pin not defined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school',
-      pin: undefined,
-      pinExpiresAt: moment().add(1,'hours')
-    }
-    expect(sut.isRequired(school)).toBe(true)
-  })
-
-  test('indicates pin required when expiry date not defined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school',
-      pin: 'acb12def',
-      pinExpiresAt: undefined
-    }
-    expect(sut.isRequired(school)).toBe(true)
-  })
-
-  test('indicates pin required when expiry date has passed', () => {
-    const school: School = {
-      id: 1,
-      name: 'school',
-      pin: 'acb12def',
-      pinExpiresAt: moment().add(-1,'hours')
-    }
-    expect(sut.isRequired(school)).toBe(true)
+  test('only updates single school specified when schoolUUID passed as param', async () => {
+    dataService.getSchoolByUuid = jest.fn(async (uuid: string) => {
+      const school: School = {
+        id: 1,
+        name: 'x'
+      }
+      return school
+    })
+    const schoolUuid = uuid.v4()
+    await sut.process(logger, schoolUuid)
+    expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
+    expect(dataService.updatePin).toHaveBeenCalledTimes(1)
   })
 })

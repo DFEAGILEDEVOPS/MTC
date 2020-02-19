@@ -4,6 +4,7 @@ import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { ILogger } from '../../common/logger'
 import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
@@ -33,10 +34,20 @@ export class SchoolPinReplenishmnentService {
   }
 
   async process (logger: ILogger, schoolUUID?: string): Promise<void> {
-    const allSchools = await this.dataService.getSchoolData()
-    logger.info(`identified ${allSchools.length} schools to process...`)
-    for (let index = 0; index < allSchools.length; index++) {
-      const school = allSchools[index]
+    let schoolsToProcess: Array<School>
+    if (schoolUUID === undefined) {
+      schoolsToProcess = await this.dataService.getAllSchools()
+    } else {
+      const school = await this.dataService.getSchoolByUuid(schoolUUID)
+      schoolsToProcess = [school]
+    }
+    if (schoolsToProcess.length === 0) {
+      logger.info('no schools to process, exiting...')
+      return
+    }
+    logger.info(`identified ${schoolsToProcess.length} schools to process...`)
+    for (let index = 0; index < schoolsToProcess.length; index++) {
+      const school = schoolsToProcess[index]
       if (this.newPinRequiredPredicate.isRequired(school)) {
         logger.info(`new pin required for school.id:${school.id}`)
         let pinUpdated = false
@@ -77,16 +88,6 @@ export interface SchoolPinUpdate {
   newPin: string
   pinExpiresAt: moment.Moment
   attempts: number
-}
-
-export class SchoolRequiresNewPinPredicate {
-  isRequired (school: School): boolean {
-    if (!school.pin) return true
-    if (!school.pinExpiresAt) return true
-    if (school.pinExpiresAt > moment.utc()) return false
-    if (school.pinExpiresAt <= moment.utc()) return true
-    return false
-  }
 }
 
 

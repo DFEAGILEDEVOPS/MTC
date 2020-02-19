@@ -3,8 +3,9 @@ import { School, SchoolPinUpdate } from './school-pin-replenishment.service'
 import { TYPES } from 'mssql'
 
 export interface ISchoolPinReplenishmentDataService {
-  getSchoolData (): Promise<School[]>
+  getAllSchools (): Promise<School[]>
   updatePin (schoolPinUpdate: SchoolPinUpdate): Promise<void>
+  getSchoolByUuid (uuid: string): Promise<School>
 }
 
 export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmentDataService {
@@ -14,7 +15,21 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
     this.sqlService = new SqlService()
   }
 
-  getSchoolData (): Promise<School[]> {
+  getSchoolByUuid (uuid: string): Promise<School> {
+    const sql = `
+    SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.id, sce.timezone
+    FROM mtc_admin.school s
+    LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id
+    WHERE s.urlSlug = @schoolId`
+    const param: ISqlParameter = {
+      name: 'schoolId',
+      type: TYPES.UniqueIdentifier,
+      value: uuid
+    }
+    return this.sqlService.query(sql, [param])
+  }
+
+  getAllSchools (): Promise<School[]> {
     const sql = `
     SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.id, sce.timezone
     FROM mtc_admin.school s
