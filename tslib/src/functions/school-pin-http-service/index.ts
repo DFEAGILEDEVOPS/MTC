@@ -1,7 +1,8 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { SchoolPinReplenishmnentService } from '../school-pin-generator/school-pin-replenishment.service'
 
-const schoolPinHttpService: AzureFunction = function (context: Context, req: HttpRequest): void {
+const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
   const schoolUuid = req.body.school_uuid
 
@@ -12,6 +13,9 @@ const schoolPinHttpService: AzureFunction = function (context: Context, req: Htt
     }
     context.done()
   }
+  const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
+  await schoolPinReplenishmentService.process(context.log, schoolUuid)
+  context.done()
 }
 
 export default schoolPinHttpService

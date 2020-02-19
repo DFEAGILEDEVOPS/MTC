@@ -20,9 +20,10 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
     SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.id, sce.timezone
     FROM mtc_admin.school s
     LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id
-    WHERE s.urlSlug = @schoolId`
+    WHERE s.urlSlug = @schoolUuid`
+    // TODO do only if expired?????
     const param: ISqlParameter = {
-      name: 'schoolId',
+      name: 'schoolUuid',
       type: TYPES.UniqueIdentifier,
       value: uuid
     }
