@@ -1,8 +1,7 @@
-import * as csv from 'fast-csv'
+
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { IDateTimeService } from '../../common/datetime.service'
 import { IConfigProvider } from './config-file-provider'
-import * as tzMetaData from 'moment-timezone/data/meta/latest.json'
 import moment from 'moment'
 
 let sut: SchoolPinExpiryGenerator
@@ -20,34 +19,6 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   convertMomentToJsDate: jest.fn(),
   formatIso8601: jest.fn()
 }))
-
-function getTimezoneList (): Array<any> {
-  const countryZonesCache: Array<any> = []
-
-  if (countryZonesCache.length > 0) return countryZonesCache
-
-  const getOffset = (zone: string) => {
-    return moment().tz(zone).format('Z')
-  }
-
-  Object.values(tzMetaData.countries).forEach(val => {
-    if (val.zones.length > 1) {
-      val.zones.forEach(z => {
-        const lastElement = z.split('/').pop()
-        let zoneName
-        if (lastElement) {
-          zoneName = lastElement.replace('_', ' ')
-          countryZonesCache.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z, countryCode: val.abbr })
-        }
-      })
-    } else {
-      const z = val.zones[0]
-      countryZonesCache.push({ name: `${val.name} (GMT ${getOffset(z)})`, zone: z, countryCode: val.abbr })
-    }
-  })
-  return countryZonesCache
-
-}
 
 describe.only('create csv', () => {
   beforeEach(() => {

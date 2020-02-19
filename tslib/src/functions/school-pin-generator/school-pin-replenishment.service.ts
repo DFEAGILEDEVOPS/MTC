@@ -19,6 +19,7 @@ export class SchoolPinReplenishmnentService {
       pinGenerator = new SchoolPinGenerator()
     }
     this.pinGenerator = pinGenerator
+
     this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
     this.expiryGenerator = new SchoolPinExpiryGenerator()
   }

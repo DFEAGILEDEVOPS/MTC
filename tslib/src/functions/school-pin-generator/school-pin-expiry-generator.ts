@@ -5,8 +5,8 @@ import { IDateTimeService, DateTimeService } from '../../common/datetime.service
 
 export class SchoolPinExpiryGenerator {
 
-  dateTimeService: IDateTimeService
-  configProvider: IConfigProvider
+  private dateTimeService: IDateTimeService
+  private configProvider: IConfigProvider
 
   constructor (dateTimeService?: IDateTimeService, configProvider?: IConfigProvider) {
     if (dateTimeService === undefined) {
