@@ -16,17 +16,13 @@ const jobDataService = {}
  */
 jobDataService.sqlUpdateStatus = async (pool, urlSlug, jobStatusCode, jobOutput = undefined, errorOutput = undefined) => {
   const sql = `UPDATE [mtc_admin].[job]
-  SET
-  jobStatus_id = (
-    SELECT id
-    FROM [mtc_admin].[jobStatus]
-    WHERE jobStatusCode = @jobStatusCode
-  ),
-  jobOutput=@jobOutput,
-  errorOutput=@errorOutput
-  OUTPUT Inserted.id
-  WHERE urlSlug=@urlSlug`
-
+                  SET jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode),
+                      jobOutput=@jobOutput,
+                      errorOutput=@errorOutput
+                WHERE urlSlug = @urlSlug;
+               SELECT id
+                 FROM [mtc_admin].[job]
+                WHERE urlSlug = @urlSlug;`
   const request = new mssql.Request(pool)
   request.input('urlSlug', mssql.UniqueIdentifier, urlSlug)
   request.input('jobStatusCode', mssql.Char(3), jobStatusCode)
