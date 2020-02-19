@@ -75,7 +75,7 @@ export default {
     BatchesPerExecution: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_BATCH_COUNT, 5), 10)
   },
   SchoolPinGenerator: {
-    AllowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
+    AllowedWords: process.env.ALLOWED_WORDS || 'aaa,bbb,ccc,ddd,eee,dim',
     BannedWords: process.env.BANNED_WORDS || 'dim',
     OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
     PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS, 10), 10)
