@@ -39,7 +39,11 @@ export class SchoolPinReplenishmnentService {
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
       const school = await this.dataService.getSchoolByUuid(schoolUUID)
-      schoolsToProcess = [school]
+      console.dir(school)
+      schoolsToProcess = []
+      if (school !== undefined) {
+        schoolsToProcess.push(school)
+      }
     }
     if (schoolsToProcess.length === 0) {
       logger.info('no schools to process, exiting...')
@@ -79,7 +83,6 @@ export interface School {
   name: string
   pinExpiresAt?: moment.Moment
   pin?: string
-  sceId?: number
   timezone?: string
 }
 

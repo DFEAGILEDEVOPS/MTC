@@ -13,7 +13,8 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
 const configProviderMock: IConfigProvider = {
   AllowedWords: '',
   BannedWords: '',
-  OverridePinExpiry: false
+  OverridePinExpiry: false,
+  PinUpdateMaxAttempts: 5
 }
 
 let sut: SchoolPinExpiryGenerator

@@ -1,7 +1,7 @@
 import { SchoolPinReplenishmnentService, School, SchoolPinUpdate } from './school-pin-replenishment.service'
 import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
-import { ILogger } from '../../common/logger'
+import { ILogger, ConsoleLogger } from '../../common/logger'
 import { ConfigFileProvider } from './config-file-provider'
 import * as uuid from 'uuid'
 
@@ -13,12 +13,7 @@ const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataSer
 
 let sut: SchoolPinReplenishmnentService
 let dataService: ISchoolPinReplenishmentDataService
-let logger: ILogger = {
-  error: jest.fn(),
-  info: jest.fn(),
-  verbose: jest.fn(),
-  warn: jest.fn()
-}
+let logger: ILogger = new ConsoleLogger()
 
 describe('school-pin-replenishment.service', () => {
 
