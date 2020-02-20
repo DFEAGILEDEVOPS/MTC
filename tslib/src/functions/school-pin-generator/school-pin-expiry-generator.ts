@@ -1,5 +1,5 @@
-import moment from 'moment'
-import * as tz from 'moment-timezone'
+
+import * as momentTz from 'moment-timezone'
 import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
@@ -19,11 +19,11 @@ export class SchoolPinExpiryGenerator {
     this.configProvider = configProvider
   }
 
-  generate (timezone?: string): moment.Moment {
+  generate (timezone?: string): momentTz.Moment {
     const currentUtc = this.dateTimeService.utcNow()
-    let localTime: moment.Moment
+    let localTime: momentTz.Moment
     if (timezone) {
-      localTime = tz.tz(currentUtc, timezone)
+      localTime = momentTz.tz(currentUtc, timezone)
     } else {
       localTime = currentUtc
     }

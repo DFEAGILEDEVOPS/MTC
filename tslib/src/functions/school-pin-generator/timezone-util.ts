@@ -1,5 +1,4 @@
-import tz from 'moment-timezone'
-import * as moment from 'moment'
+import momentTz from 'moment-timezone'
 import * as tzMetaData from 'moment-timezone/data/meta/latest.json'
 
 export interface Timezone {
@@ -9,7 +8,7 @@ export interface Timezone {
 }
 export class TimezoneUtil {
   resolveToHours (timezone: string): number {
-    const minutesOffset = tz.tz(timezone).utcOffset()
+    const minutesOffset = momentTz.tz(timezone).utcOffset()
     return minutesOffset / 60
   }
 
@@ -19,7 +18,7 @@ export class TimezoneUtil {
     if (countryZonesCache.length > 0) return countryZonesCache
 
     const getOffset = (zone: string) => {
-      return moment.tz(zone).format('Z')
+      return momentTz.tz(zone).format('Z')
     }
 
     Object.values(tzMetaData.countries).forEach(val => {

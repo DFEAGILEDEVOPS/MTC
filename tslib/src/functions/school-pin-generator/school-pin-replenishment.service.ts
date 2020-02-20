@@ -39,7 +39,6 @@ export class SchoolPinReplenishmnentService {
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
       const school = await this.dataService.getSchoolByUuid(schoolUUID)
-      console.dir(school)
       schoolsToProcess = []
       if (school !== undefined) {
         schoolsToProcess.push(school)
@@ -92,5 +91,3 @@ export interface SchoolPinUpdate {
   pinExpiresAt: moment.Moment
   attempts: number
 }
-
-
