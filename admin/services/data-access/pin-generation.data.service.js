@@ -15,8 +15,7 @@ const serviceToExport = {
     const sql = `SELECT
                   *
                 FROM ${sqlService.adminSchema}.${view}
-                WHERE school_id=@schoolId
-                ORDER BY lastName asc, foreName asc, middleNames asc `
+                WHERE school_id=@schoolId`
     const params = [
       {
         name: 'schoolId',
