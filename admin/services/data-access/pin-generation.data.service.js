@@ -41,34 +41,6 @@ const serviceToExport = {
   },
 
   /**
-   * Find checks that are being re-started
-   * @param {number} schoolId
-   * @param {[number]} checkIds - all check Ids generated during pin generation
-   * @param {[number]} pupilIds - pupils known to be doing a restart
-   */
-  sqlFindChecksForPupilsById: async (schoolId, checkIds, pupilIds) => {
-    const select = `SELECT c.*
-                    FROM ${sqlService.adminSchema}.[check] c
-                      JOIN ${sqlService.adminSchema}.[pupil] p ON (c.pupil_id = p.id)`
-    const schoolParam = {
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    }
-    const checkParams = checkIds.map((checkId, index) => { return { name: `checkId${index}`, value: checkId, type: TYPES.Int } })
-    const checkIdentifiers = checkIds.map((checkId, index) => `@checkId${index}`)
-    const pupilParams = pupilIds.map((pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } })
-    const pupilIdentifiers = pupilIds.map((pupilId, index) => `@pupilId${index}`)
-    const whereClause = `WHERE p.school_id = @schoolId
-                         AND c.id IN (${checkIdentifiers.join(', ')})
-                         AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
-    const sql = [select, whereClause].join('\n')
-    // We need to query the master DB, so make sure to use `query` and not `readOnlyQuery`.  This read is executed
-    // directly after the write.
-    return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
-  },
-
-  /**
    * Batch create checks with pins, now using a stored procedure
    * A pin will be randomly allocated
    *
@@ -95,12 +67,7 @@ const serviceToExport = {
     const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
     const insertSql = insertHeader + inserts.join(',\n')
     const sql = [declareTable, insertSql, exec].join(';\n')
-    const res = await sqlService.query(sql, params)
-    const insertedIds = []
-    res.forEach(row => {
-      insertedIds.push(row.id)
-    })
-    return { insertId: insertedIds }
+    return sqlService.query(sql, params)
   },
 
   sqlFindActivePinRecordsByPupilUrlSlug: async (urlSlug) => {

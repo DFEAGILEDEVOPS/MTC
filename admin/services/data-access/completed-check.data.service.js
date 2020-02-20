@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
+const logger = require('../log.service').getLogger()
 
 const completedCheckDataService = {}
 const checkDataService = require('./check.data.service')
@@ -183,7 +184,7 @@ function parseData (check) {
     const decoded = JSON.parse(check.data)
     check.data = decoded.data
   } catch (error) {
-    console.error(`Error: failed to decode JSON for check [${check.id}]: ${error.message}`)
+    logger.error(`Error: failed to decode JSON for check [${check.id}]: ${error.message}`)
   }
 
   return check
