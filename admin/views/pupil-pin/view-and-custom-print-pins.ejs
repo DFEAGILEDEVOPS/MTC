@@ -33,7 +33,7 @@
             <h1 class="no-print govuk-heading-xl">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="no-print govuk-body">
-                Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
+                PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
                 <% if (pupils && pupils.length > 0) { %>
                     You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
                 <% } %>
