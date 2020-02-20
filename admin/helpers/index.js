@@ -62,7 +62,7 @@ module.exports = async function (app) {
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
-  app.locals.guidancePdf = 'www.gov.uk/government/collections/multiplication-tables-check'
+  app.locals.guidancePdf = 'https://www.gov.uk/government/collections/multiplication-tables-check'
   app.locals.roles = roles
   app.locals.isSubmitImpersonationUrl = false
 }
