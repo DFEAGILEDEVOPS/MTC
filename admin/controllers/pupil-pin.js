@@ -22,7 +22,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs'
+  res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
@@ -75,7 +75,7 @@ const getGeneratePinsList = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -182,7 +182,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'View and custom print PINs'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 

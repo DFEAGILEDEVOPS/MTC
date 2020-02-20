@@ -19,7 +19,7 @@ const controller = {}
  * @returns {Promise.<void>}
  */
 controller.getOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Access arrangements'
+  res.locals.pageTitle = 'Set access arrangements for pupils that need them'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let pinGenerationEligibilityData
@@ -63,7 +63,7 @@ controller.getOverview = async (req, res, next) => {
  */
 controller.getSelectAccessArrangements = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Select access arrangement for pupil'
-  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
   req.breadcrumbs('Select pupils and access arrangements')
   let accessArrangements
   let questionReaderReasons
@@ -140,7 +140,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  */
 controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
-  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
 
   try {

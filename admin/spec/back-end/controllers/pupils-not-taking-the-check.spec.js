@@ -4,6 +4,7 @@
 const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
+const attendanceCodesPresenter = require('../../../helpers/attendance-codes-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
@@ -69,7 +70,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe('Pupils not taking the check')
+        expect(res.locals.pageTitle).toBe('Give a reason why a Pupil is not taking the check')
         expect(next).not.toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
@@ -87,7 +88,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Pupils not taking the check')
+        expect(res.locals.pageTitle).toBe('Give a reason why a Pupil is not taking the check')
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
@@ -96,6 +97,9 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
+      beforeEach(() => {
+        spyOn(attendanceCodesPresenter, 'getPresentationData')
+      })
       it('happy path', async () => {
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(pupilsWithReasonsMock)

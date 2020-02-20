@@ -11,6 +11,7 @@
     @include govuk-media-query($from: desktop) {
       width: 50%;
       float: left;
+      min-height: 65px;
     }
     @include govuk-media-query($until: tablet) {
       margin-top: 5px;

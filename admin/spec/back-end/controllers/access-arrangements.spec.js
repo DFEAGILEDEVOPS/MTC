@@ -53,7 +53,7 @@ describe('access arrangements controller:', () => {
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
-      expect(res.locals.pageTitle).toBe('Access arrangements')
+      expect(res.locals.pageTitle).toBe('Set access arrangements for pupils that need them')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()

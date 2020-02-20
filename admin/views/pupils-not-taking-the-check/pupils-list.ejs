@@ -7,11 +7,11 @@
         <% if (pupilsList && pupilsList.length > 0) { %>
             <form method="post" action="/pupils-not-taking-the-check/save-pupils">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-                <% if (attendanceCodes && attendanceCodes.length > 1) { %>
+                <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                 <h2 class="govuk-heading-m">1. Select reason</h2>
                 <ul class="govuk-list attendance-code-list">
                     <div class="govuk-radios">
-                        <% attendanceCodes.forEach( (aValues) => { %>
+                        <% attendanceCodesPresentationData.forEach( (aValues) => { %>
                             <li>
                                 <div class="govuk-radios__item">
                                     <input

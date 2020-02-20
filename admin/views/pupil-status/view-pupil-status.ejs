@@ -7,11 +7,10 @@
                     <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'issues' : 'issue'  %> with pupils' checks
                 </div>
             <% } %>
-            <h1 class="govuk-heading-xl">Check the progress of the multiplication tables check</h1>
+            <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                This list is taken from your school census data.
-                Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF July 2020
+                Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the headteacher declaration form
             </p>
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card">
                 <div class="govuk-panel__body custom-card-small-text">
@@ -237,174 +236,152 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title">
-                    Related
+            <div class="app-step-nav-related app-step-nav-related--singular-v2">
+                <h2 class="app-step-nav-related__heading">
+                    <span class="app-step-nav-related__pretitle govuk-heading-m">What does each status mean?</span>
                 </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Pupils not taking the check</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Access arrangements</a>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="govuk-!-margin-top-9"></div>
-                <div class="app-step-nav-related app-step-nav-related--singular-v2">
-                    <h2 class="app-step-nav-related__heading">
-                        <span class="app-step-nav-related__pretitle govuk-heading-m">What does each status mean?</span>
-                    </h2>
-                </div>
-                <div id="step-by-step-navigation" data-module="gemstepnav" class="app-step-nav app-step-nav--active govuk-!-margin-top-0" data-id="e01e924b-9c7c-4c71-8241-66a575c2f62f" data-show-text="show" data-hide-text="hide" data-show-all-text="Show all" data-hide-all-text="Hide all">
-                    <ol class="app-step-nav__steps">
-                        <li class="app-step-nav__step js-step step-is-shown" id="check-with-errors">
-                            <div class="app-step-nav__header js-toggle-panel" data-position="1">
-                                <h3 class="app-step-nav__title">
-                            <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 1
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
-                                  </span>
-                                </span>
+            </div>
+            <div id="step-by-step-navigation" data-module="gemstepnav" class="app-step-nav app-step-nav--active govuk-!-margin-top-0" data-id="e01e924b-9c7c-4c71-8241-66a575c2f62f" data-show-text="show" data-hide-text="hide" data-show-all-text="Show all" data-hide-all-text="Hide all">
+                <ol class="app-step-nav__steps">
+                    <li class="app-step-nav__step js-step step-is-shown" id="check-with-errors">
+                        <div class="app-step-nav__header js-toggle-panel" data-position="1">
+                            <h3 class="app-step-nav__title">
+                        <span class="app-step-nav__circle app-step-nav__circle--number">
+                            <span class="app-step-nav__circle-inner">
+                              <span class="app-step-nav__circle-background">
+                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 1
+                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
                               </span>
-                                    <span class="js-step-title">
-                                <button
-                                        class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                        aria-expanded="true"
-                                        aria-controls="step-panel-1">
-                                    <span class="js-step-title-text">
-                                        Checks with errors
-                                    </span>
-                                    <span class="app-step-nav__toggle-link js-toggle-link"
-                                          aria-hidden="true">hide</span></button></span>
-                                </h3>
-                            </div>
-                            <div class="app-step-nav__panel js-panel" id="step-panel-1">
-                                <p class="app-step-nav__paragraph">
-                                    <span class="govuk-!-font-weight-bold">Pupil check not received:</span>
-                                    It may still be held on the device that the pupil sat the check on.
-                                    If this device is known please go to the pupil check home page and it will try to recover the data if possible.
-                                    If this does not work please <a href="/restart/select-restart-list">Select pupils to restart the check</a>
-                                </p>
-                                <p class="app-step-nav__paragraph">
-                                    <span class="govuk-!-font-weight-bold">Error in processing:</span>
-                                    The pupils check was received but was corrupt or unreadable.
-                                    The pupil will need to sit the check again.
-                                    To enable this <a href="/restart/select-restart-list">Select pupils to restart the check</a>
-                                    then
-                                    <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-started-check">
-                            <div class="app-step-nav__header js-toggle-panel" data-position="2">
-                                <h3 class="app-step-nav__title">
-                              <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 2
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
-                                  </span>
+                            </span>
+                          </span>
+                                <span class="js-step-title">
+                            <button
+                                    class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                                    aria-expanded="true"
+                                    aria-controls="step-panel-1">
+                                <span class="js-step-title-text">
+                                    Checks with errors
                                 </span>
+                                <span class="app-step-nav__toggle-link js-toggle-link"
+                                      aria-hidden="true">hide</span></button></span>
+                            </h3>
+                        </div>
+                        <div class="app-step-nav__panel js-panel" id="step-panel-1">
+                            <p class="app-step-nav__paragraph">
+                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span>
+                                It may still be held on the device that the pupil sat the check on.
+                                If this device is known please go to the pupil check home page and it will try to recover the data if possible.
+                                If this does not work please <a href="/restart/select-restart-list">Select pupils to restart the check</a>
+                            </p>
+                            <p class="app-step-nav__paragraph">
+                                <span class="govuk-!-font-weight-bold">Error in processing:</span>
+                                The pupils check was received but was corrupt or unreadable.
+                                The pupil will need to sit the check again.
+                                To enable this <a href="/restart/select-restart-list">Select pupils to restart the check</a>
+                                then
+                                <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
+                            </p>
+                        </div>
+                    </li>
+                    <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-started-check">
+                        <div class="app-step-nav__header js-toggle-panel" data-position="2">
+                            <h3 class="app-step-nav__title">
+                          <span class="app-step-nav__circle app-step-nav__circle--number">
+                            <span class="app-step-nav__circle-inner">
+                              <span class="app-step-nav__circle-background">
+                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 2
+                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
                               </span>
-                                    <span class="js-step-title">
-                                  <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                          aria-expanded="true" aria-controls="step-panel-2">
-                                      <span class="js-step-title-text">
-                                        Pupils that have not started the check yet
-                                       </span>
-                                      <span class="app-step-nav__toggle-link js-toggle-link"
-                                            aria-hidden="true">hide</span></button></span>
-                                </h3>
-                            </div>
+                            </span>
+                          </span>
+                                <span class="js-step-title">
+                              <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                                      aria-expanded="true" aria-controls="step-panel-2">
+                                  <span class="js-step-title-text">
+                                    Pupils that have not started the check yet
+                                   </span>
+                                  <span class="app-step-nav__toggle-link js-toggle-link"
+                                        aria-hidden="true">hide</span></button></span>
+                            </h3>
+                        </div>
 
-                            <div class="app-step-nav__panel js-panel" id="step-panel-2">
-                                <p class="app-step-nav__paragraph">
-                                    <span class="govuk-!-font-weight-bold">Not started</span>: The pupil has yet to take the official check.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
-                                </p>
-                                <p class="app-step-nav__paragraph">
-                                    <span class="govuk-!-font-weight-bold">Processing</span>: We are aware the pupil has taken the official check.
-                                    The service may be in high demand and taking longer than normal.  Please check tomorrow to ensure the status shows as 'Complete'
-                                </p>
-                                <p class="app-step-nav__paragraph">
-                                    <span class="govuk-!-font-weight-bold">Restart</span>: A new official PIN must be generated when the pupil is ready to take the check again
-                                    <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-taking-check">
-                            <div class="app-step-nav__header js-toggle-panel" data-position="3">
-                                <h3 class="app-step-nav__title">
-                              <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 3
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
-                                  </span>
-                                </span>
+                        <div class="app-step-nav__panel js-panel" id="step-panel-2">
+                            <p class="app-step-nav__paragraph">
+                                <span class="govuk-!-font-weight-bold">Not started</span>: The pupil has yet to take the official check.
+                                Go to <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
+                            </p>
+                            <p class="app-step-nav__paragraph">
+                                <span class="govuk-!-font-weight-bold">Processing</span>: We are aware the pupil has taken the official check.
+                                The service may be in high demand and taking longer than normal.  Please check tomorrow to ensure the status shows as 'Complete'
+                            </p>
+                            <p class="app-step-nav__paragraph">
+                                <span class="govuk-!-font-weight-bold">Restart</span>: A new official PIN must be generated when the pupil is ready to take the check again
+                                <a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and PINs</a>
+                            </p>
+                        </div>
+                    </li>
+                    <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-taking-check">
+                        <div class="app-step-nav__header js-toggle-panel" data-position="3">
+                            <h3 class="app-step-nav__title">
+                          <span class="app-step-nav__circle app-step-nav__circle--number">
+                            <span class="app-step-nav__circle-inner">
+                              <span class="app-step-nav__circle-background">
+                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 3
+                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
                               </span>
-                                    <span class="js-step-title">
-                                  <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                          aria-expanded="true" aria-controls="step-panel-3">
-                                      <span class="js-step-title-text">
-                                        Pupils not taking the check
-                                       </span>
-                                      <span class="app-step-nav__toggle-link js-toggle-link"
-                                            aria-hidden="true">hide</span></button></span>
-                                </h3>
-                            </div>
+                            </span>
+                          </span>
+                                <span class="js-step-title">
+                              <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                                      aria-expanded="true" aria-controls="step-panel-3">
+                                  <span class="js-step-title-text">
+                                    Pupils not taking the check
+                                   </span>
+                                  <span class="app-step-nav__toggle-link js-toggle-link"
+                                        aria-hidden="true">hide</span></button></span>
+                            </h3>
+                        </div>
 
-                            <div class="app-step-nav__panel js-panel" id="step-panel-3">
-                                <p class="app-step-nav__paragraph">
-                                    You have advised that the pupil is not taking the check.  If this is incorrect please go to
-                                    <a href="/pupils-not-taking-the-check/pupils-list">Tell us why a pupil is not taking the check</a>
-                                    and remove or amend the correct reason
-                                </p>
-                            </div>
-                        </li>
-                        <li class="app-step-nav__step js-step step-is-shown" id="completed-checks">
-                            <div class="app-step-nav__header js-toggle-panel" data-position="4">
-                                <h3 class="app-step-nav__title">
-                              <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 4
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
-                                  </span>
-                                </span>
+                        <div class="app-step-nav__panel js-panel" id="step-panel-3">
+                            <p class="app-step-nav__paragraph">
+                                You have advised that the pupil is not taking the check.  If this is incorrect please go to
+                                <a href="/pupils-not-taking-the-check/pupils-list">Tell us why a pupil is not taking the check</a>
+                                and remove or amend the correct reason
+                            </p>
+                        </div>
+                    </li>
+                    <li class="app-step-nav__step js-step step-is-shown" id="completed-checks">
+                        <div class="app-step-nav__header js-toggle-panel" data-position="4">
+                            <h3 class="app-step-nav__title">
+                          <span class="app-step-nav__circle app-step-nav__circle--number">
+                            <span class="app-step-nav__circle-inner">
+                              <span class="app-step-nav__circle-background">
+                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 4
+                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
                               </span>
-                                    <span class="js-step-title">
-                                  <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                          aria-expanded="true" aria-controls="step-panel-4">
-                                      <span class="js-step-title-text">
-                                        Completed checks
-                                       </span>
-                                      <span class="app-step-nav__toggle-link js-toggle-link"
-                                            aria-hidden="true">hide</span></button></span>
-                                </h3>
-                            </div>
+                            </span>
+                          </span>
+                                <span class="js-step-title">
+                              <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                                      aria-expanded="true" aria-controls="step-panel-4">
+                                  <span class="js-step-title-text">
+                                    Completed checks
+                                   </span>
+                                  <span class="app-step-nav__toggle-link js-toggle-link"
+                                        aria-hidden="true">hide</span></button></span>
+                            </h3>
+                        </div>
 
-                            <div class="app-step-nav__panel js-panel" id="step-panel-4">
-                                <p class="app-step-nav__paragraph">
-                                    The pupil has successfully completed the check and no further action is required.
-                                    Once all pupils have completed the check, or have a reason for not taking the check applied,
-                                    then you can proceed to sign the headteacher declaration form
-                                </p>
-                            </div>
-                        </li>
-                    </ol>
-                </div>
-            </aside>
+                        <div class="app-step-nav__panel js-panel" id="step-panel-4">
+                            <p class="app-step-nav__paragraph">
+                                The pupil has successfully completed the check and no further action is required.
+                                Once all pupils have completed the check, or have a reason for not taking the check applied,
+                                then you can proceed to sign the headteacher declaration form
+                            </p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
         </div>
     </div>
 </main>

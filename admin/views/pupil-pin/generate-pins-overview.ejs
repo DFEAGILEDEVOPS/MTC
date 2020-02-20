@@ -12,11 +12,14 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs' %></h1>
+            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ?
+                        'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
+                %>
+            </h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>.<br />
-                The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:<br />
+                Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : 'try it out area' %>.
+                The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:
                 <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
                 <div class="govuk-body">These expire at 4pm daily.</div>
             </p>
@@ -89,7 +92,7 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
                         <li>
                             <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>

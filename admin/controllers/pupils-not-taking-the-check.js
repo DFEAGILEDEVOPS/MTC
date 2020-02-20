@@ -8,6 +8,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../services/business-availability.service')
+const attendanceCodesPresenter = require('../helpers/attendance-codes-presenter')
 
 /**
  * Pupils not taking the check: initial page.
@@ -17,7 +18,7 @@ const businessAvailabilityService = require('../services/business-availability.s
  * @returns {Promise.<void>}
  */
 const getPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Pupils not taking the check'
+  res.locals.pageTitle = 'Give a reason why a Pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
   let pupils
@@ -51,10 +52,11 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupil and reason'
-  req.breadcrumbs('Pupils not taking the check', '/pupils-not-taking-the-check')
+  req.breadcrumbs('Give a reason why a Pupil is not taking the check', '/pupils-not-taking-the-check')
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
+  let attendanceCodesPresentationData
   let pupilsList
   let groups = []
   const groupIds = req.params.groupIds || ''
@@ -69,6 +71,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
       })
     }
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
+    attendanceCodesPresentationData = attendanceCodesPresenter.getPresentationData(attendanceCodes)
     pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasons(req.user.schoolId)
   } catch (error) {
     return next(error)
@@ -82,7 +85,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   return res.render('pupils-not-taking-the-check/pupils-list', {
     breadcrumbs: req.breadcrumbs(),
-    attendanceCodes,
+    attendanceCodesPresentationData,
     pupilsList,
     highlight: [],
     groups,

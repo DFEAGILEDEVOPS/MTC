@@ -8,19 +8,19 @@
                 </div>
             <% } %>
             <%- partial('partials/_readonly', { availabilityData: { hdfSubmitted } }) %>
-            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Pupils not taking the check</h1>
+            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Give a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                All pupils must be considered for the multiplication tables check at the end of year 4.
-                If a pupil is not going to take the check, a reason must be provided.
+                All pupils must be considered to take the multiplication tables check at the end of year 4.
+                If a pupil is working below expectation or has left your school, a reason must be provided.
             </p>
         <% if (hdfSubmitted) { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                Select pupil and reason
+                Select pupil and reasons
             </button>
         <% } else { %>
             <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Select pupil and reason
+                Select pupil and reasons
             </a>
         <% } %>
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -76,16 +76,11 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
                         <li>
-                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Access arrangements</a>
+                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Set access arrangements for pupils that need them</a>
                         </li>
-                        <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                            <li>
-                                <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Start the MTC - password and PINs</a>
-                            </li>
-                        <% } %>
                     </ul>
                 </nav>
             </aside>
