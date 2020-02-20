@@ -15,3 +15,10 @@ From the `functions` directory, execute `func function new`.
 ## Installing package dependencies
 
 yarn packages should be installed in the `functions` root folder, not in each function directory.
+
+## Environment Variables
+
+| Env Var name | Default Value | Component |
+| --- | --- | --- |
+| SQL_CENSUS_REQUEST_TIMEOUT | 2 hours | Census Upload |
+

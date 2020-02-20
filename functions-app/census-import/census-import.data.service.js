@@ -9,13 +9,13 @@ module.exports.initPool = async function initPool (context) {
     database: config.Sql.Database,
     server: config.Sql.Server,
     port: config.Sql.Port,
-    requestTimeout: 10 * 60 * 1000,
-    connectionTimeout: config.Sql.Timeout,
+    requestTimeout: config.Sql.censusRequestTimeout,
+    connectionTimeout: config.Sql.connectionTimeout,
     user: config.Sql.PupilCensus.Username,
     password: config.Sql.PupilCensus.Password,
     pool: {
-      min: 1,
-      max: 3
+      min: config.Sql.Pooling.MinCount,
+      max: config.Sql.Pooling.MaxCount
     },
     options: {
       appName: config.Sql.Application.Name, // docker default
