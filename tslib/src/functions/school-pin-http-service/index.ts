@@ -11,11 +11,10 @@ const schoolPinHttpService: AzureFunction = async function (context: Context, re
       status: 400,
       body: 'school_uuid is required'
     }
-    context.done()
+    return
   }
   const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
   await schoolPinReplenishmentService.process(context.log, schoolUuid)
-  context.done()
 }
 
 export default schoolPinHttpService

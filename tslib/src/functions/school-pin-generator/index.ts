@@ -8,7 +8,6 @@ function finish (start: number, context: Context) {
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
-  context.done()
 }
 
 const schoolPinGenerator: AzureFunction = async function (context: Context, timer: any): Promise<void> {
