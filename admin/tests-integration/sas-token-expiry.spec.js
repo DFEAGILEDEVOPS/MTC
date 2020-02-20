@@ -42,7 +42,7 @@ const createQueueService = async (sasToken) => {
 describe('sas-token-expiry', () => {
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
-    const checkCompleteSasToken = sasTokenService.generateSasToken(
+    const checkCompleteSasToken = await sasTokenService.generateSasToken(
       queueNameService.NAMES.CHECK_COMPLETE,
       sasExpiryDate
     )

@@ -9,7 +9,7 @@
     "start": "yarn genconfig && yarn run gulp setSecretEnvVars && yarn build --prod && yarn run http-server dist/ -p 4200 --proxy http://localhost:4200?",
     "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && concurrently \"ng serve --host 0.0.0.0\" \"yarn sasswatch\" ",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
-    "build": "yarn genconfig && ng build",
+    "build": "yarn genconfig && yarn sass && ng build",
     "test": "yarn genconfig && ng test",
     "test-single": "yarn sass && yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
