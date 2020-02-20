@@ -58,6 +58,7 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   WEBSITE_OFFLINE: {}.hasOwnProperty.call(process.env, 'WEBSITE_OFFLINE') ? toBool(process.env.WEBSITE_OFFLINE) : false,
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
+  WaitTimeBeforeMetaRedirectInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_REDIRECT, 10) || 2,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
@@ -134,7 +135,7 @@ module.exports = {
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
-    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 24
+    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 25
   },
   Azure: {
     queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',

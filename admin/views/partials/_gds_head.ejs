@@ -17,4 +17,8 @@
 
 
   <meta property="og:image" content="<%= assetPath %>vendor/govuk-frontend/images/govuk-opengraph-image.png">
+
+  <% if (isSubmitMetaRedirectUrl) { %>
+  <meta http-equiv="refresh" content="<%= waitTimeBeforeMetaRedirectInSeconds %>;url=<%= metaRedirectUrl %>" />
+  <% } %>
 </head>

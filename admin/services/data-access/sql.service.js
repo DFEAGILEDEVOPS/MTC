@@ -10,7 +10,8 @@ const logger = require('../log.service').getLogger()
 const {
   asyncRetryHandler,
   sqlAzureTimeoutRetryPredicate,
-  sqlAzureResourceLimitReachedPredicate
+  sqlAzureResourceLimitReachedPredicate,
+  sqlAzureRequestTimeoutRetryPredicate
 } = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
@@ -24,16 +25,9 @@ const retryConfig = {
 // only retry if request times out or azure db limit reached
 const combinedTimeoutAndResourceLimitsReachedPredicate = (error) => {
   return sqlAzureResourceLimitReachedPredicate(error) ||
-    sqlAzureTimeoutRetryPredicate(error)
+    sqlAzureTimeoutRetryPredicate(error) ||
+    sqlAzureRequestTimeoutRetryPredicate(error)
 }
-
-// code preserved while alternatives are under consideration
-// this may be combined with alternative
-/* const connectionLimitReachedErrorCode = 10928
-const dbLimitReached = (error) => {
-  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
-  return error.number === connectionLimitReachedErrorCode
-} */
 
 let cache = {}
 /* @var mssql.ConnectionPool */

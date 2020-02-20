@@ -46,17 +46,21 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['processingFailed']} if status == 'Error in processing'
+  unless status == 'Not started'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['processingFailed']} if status == 'Error in processing'
+  end
+  status == 'Restart' ? status = 'Not started' : status = status
   pupil_status_page.load
-  pupil_row =  pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
-  expect(pupil_row.status.text).to include status unless status == 'Restart'
-  expect(pupil_row.status.text).to eql 'Not started' if status == 'Restart'
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {pupil_status_page.load until pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])}
+  pupil_row = pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
+  expect(pupil_row.status.text).to include status
+  # expect(pupil_row.status.text).to eql 'Not started' if status == 'Restart'
 end
 
 Then(/^I can see the status for the pupil is (.*) for pupil not taking the check$/) do |status|
-  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
-  pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil['lastName']}
+  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible?}
+  pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find {|r| r.text.include? @pupil['lastName']}
   expect(pupil_row.status.text).to include status
 end
 
@@ -67,7 +71,7 @@ end
 
 Then(/^any pupils not part of a group should not have an entry for group$/) do
   pupils_with_no_group = pupil_register_page.pupil_list.pupil_row.map! {|row| row.names.text if row.group.text != @group_name}.compact
-  empty_group_value = pupil_register_page.pupil_list.pupil_row.map! {|row|row.names.text if  row.group.text == '-'}.compact
+  empty_group_value = pupil_register_page.pupil_list.pupil_row.map! {|row| row.names.text if row.group.text == '-'}.compact
   expect(pupils_with_no_group).to eql empty_group_value
 end
 
@@ -93,7 +97,7 @@ end
 
 Then(/^I should see the pupil register data stored in redis$/) do
   pupils_from_register = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text.split("\n")[0]}
-  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
+  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map {|x| x['fullName']}
   expect(pupils_from_redis.sort).to eql pupils_from_register.sort
 end
 
