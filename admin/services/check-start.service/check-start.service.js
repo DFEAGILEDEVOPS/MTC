@@ -12,7 +12,6 @@ const setValidationService = require('../set-validation.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 
 // to be moved to the module
-const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
 const checkFormService = require('../check-form.service')
 const configService = require('../config.service')
 const dateService = require('../date.service')
@@ -119,22 +118,13 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  // Create Checks in the Database
-  const res = await pinGenerationDataService.sqlCreateBatch(checks)
-  const newCheckIds = Array.isArray(res.insertId)
-    ? res.insertId
-    : [res.insertId]
-
-  const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
-    schoolId,
-    newCheckIds,
-    pupilIds
-  )
+  // Create and return checks via spCreateChecks
+  const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
 
   let pupilChecks
   try {
     pupilChecks = await checkStartService
-      .createPupilCheckPayloads(newCheckIds, schoolId)
+      .createPupilCheckPayloads(newChecks, schoolId)
   } catch (error) {
     logger.error('Unable to prepare check messages', error)
     throw error
@@ -156,9 +146,9 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
   }
   const config = preparedChecks.map(pcheck => {
     return {
-      checkCode: pcheck.checkCode,
+      checkCode: pcheck.check_checkCode,
       config: pcheck.config,
-      checkId: newChecks.find(check => check.checkCode === pcheck.checkCode).id
+      checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
     }
   })
   checkStartDataService.sqlStoreBatchConfigs(config)
@@ -223,19 +213,17 @@ checkStartService.initialisePupilCheck = async function (
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
-checkStartService.createPupilCheckPayloads = async function (checkIds, schoolId) {
-  if (!checkIds) {
-    throw new Error('checkIds is not defined')
+checkStartService.createPupilCheckPayloads = async function (checks, schoolId) {
+  if (!checks) {
+    throw new Error('checks is not defined')
   }
 
-  if (!Array.isArray(checkIds)) {
-    throw new Error('checkIds must be an array')
+  if (!Array.isArray(checks)) {
+    throw new Error('checks must be an array')
   }
 
   const payloads = []
-  const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(
-    checkIds
-  )
+
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
   const tokens = await sasTokenService.getTokens(hasLiveChecks, sasExpiryDate)
