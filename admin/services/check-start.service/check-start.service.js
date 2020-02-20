@@ -134,7 +134,7 @@ checkStartService.prepareCheck2 = async function (
   }
 
   // Put the checks into redis for pupil-login at scale
-  await prepareCheckService.prepareChecks(pupilChecks)
+  await prepareCheckService.prepareChecks(pupilChecks, schoolTimezone)
 
   // Store the `config` section from the preparedCheckMessages into the DB
   return this.storeCheckConfigs(pupilChecks, newChecks)
