@@ -2,8 +2,19 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { SchoolPinSampler } from './school-pin-sampler'
+const functionName = 'util-school-pin-sampler'
+
+function finish (start: number, context: Context) {
+  const end = performance.now()
+  const durationInMilliseconds = end - start
+  const timeStamp = new Date().toISOString()
+  context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
+  // required as non-async
+  context.done()
+}
 
 const schoolPinSampler: AzureFunction = function (context: Context, req: HttpRequest): void {
+  const start = performance.now()
   if (req.body === undefined) req.body = {}
   const utcNow = req.body.utcnow ? moment(req.body.utcnow) : moment.utc()
   const sampleSize = req.body.samplesize || 20
@@ -17,7 +28,7 @@ const schoolPinSampler: AzureFunction = function (context: Context, req: HttpReq
       'Content-Type': 'application/json'
     }
   }
-  context.done()
+  finish(start, context)
 }
 
 export default schoolPinSampler
