@@ -3,6 +3,7 @@
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 const R = require('ramda')
+const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
 const pupilAttendanceDataService = {}
@@ -16,9 +17,9 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
       recordedBy_user_id = @userId
     WHERE
         pupil_id IN (${where.paramIdentifiers.join(', ')});
-    
-    UPDATE [mtc_admin].[pupil] 
-    SET 
+
+    UPDATE [mtc_admin].[pupil]
+    SET
         attendanceId = @attendanceCodeId
     WHERE
         id IN (${where.paramIdentifiers.join(', ')});
@@ -82,7 +83,7 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
  * @return {Promise<*>}
  */
 pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, schoolId) => {
-  console.log(`Got code ${code}`)
+  logger.debug(`pupilAttendanceDataService.markAsNotAttending called with code ${code}`)
   if (!Array.isArray(slugs)) {
     throw new Error('slugs is not an array')
   }
