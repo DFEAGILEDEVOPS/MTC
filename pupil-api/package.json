@@ -33,7 +33,7 @@
     "morgan": "^1.9.0",
     "ramda": "^0.26.1",
     "to-bool": "0.0.1",
-    "uuid": "^3.3.2",
+    "uuid": "^3.4.0",
     "winston": "^3.2.1",
     "winston-azure-application-insights": "^2.0.0"
   },
