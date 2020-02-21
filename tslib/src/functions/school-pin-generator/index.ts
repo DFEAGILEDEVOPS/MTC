@@ -12,11 +12,6 @@ function finish (start: number, context: Context) {
 
 const schoolPinGenerator: AzureFunction = async function (context: Context, timer: any): Promise<void> {
 
-  if (timer.IsPastDue) {
-    context.log('timer is past due, exiting...')
-    return
-  }
-
   const start = performance.now()
   const replenishmentService = new SchoolPinReplenishmnentService()
   await replenishmentService.process(context.log)
