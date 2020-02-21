@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.0",
-    "applicationinsights": "^1.0.8",
+    "applicationinsights": "^1.7.2",
     "axios": "^0.19.0",
     "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
