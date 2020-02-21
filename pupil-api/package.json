@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.1",
-    "applicationinsights": "^1.0.8",
+    "applicationinsights": "^1.7.0",
     "azure-storage": "^2.10.1",
     "bluebird": "^3.7.2",
     "body-parser": "^1.18.2",
