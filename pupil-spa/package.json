@@ -38,7 +38,7 @@
     "ngx-logger": "4.1.1",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
