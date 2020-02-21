@@ -22,7 +22,7 @@
     "bluebird": "^3.7.2",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
-    "dotenv": "^8.1.0",
+    "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "express-winston": "^4.0.2",
     "feature-toggles": "^1.4.0",
