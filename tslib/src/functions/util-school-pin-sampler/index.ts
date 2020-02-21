@@ -3,6 +3,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { SchoolPinSampler } from './school-pin-sampler'
 const functionName = 'util-school-pin-sampler'
+import { performance } from 'perf_hooks'
 
 function finish (start: number, context: Context) {
   const end = performance.now()

@@ -2,6 +2,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { SchoolPinReplenishmnentService } from '../school-pin-generator/school-pin-replenishment.service'
 const functionName = 'school-pin-http-service'
+import { performance } from 'perf_hooks'
 
 function finish (start: number, context: Context) {
   const end = performance.now()
