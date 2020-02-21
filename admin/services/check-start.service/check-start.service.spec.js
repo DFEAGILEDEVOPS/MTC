@@ -1,7 +1,6 @@
 'use strict'
 
 /* global describe it expect beforeEach spyOn fail */
-const checkFormAllocationDataService = require('../data-access/check-form-allocation.data.service')
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
@@ -36,9 +35,9 @@ describe('check-start.service', () => {
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockNewChecks = [
-    { id: 1, checkCode: '1A', pupil_id: 1 },
-    { id: 1, checkCode: '2A', pupil_id: 2 },
-    { id: 3, checkCode: '3A', pupil_id: 3 }
+    { id: 1, check_checkCode: '1A', pupil_id: 1 },
+    { id: 1, check_checkCode: '2A', pupil_id: 2 },
+    { id: 3, check_checkCode: '3A', pupil_id: 3 }
   ]
   const mockCreatePupilCheckPayloads = [
     {
@@ -88,9 +87,10 @@ describe('check-start.service', () => {
       spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
       spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
+
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(mockNewChecks))
+
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
-      spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.resolve(mockNewChecks))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
       spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
@@ -191,8 +191,6 @@ describe('check-start.service', () => {
 
   describe('#createPupilCheckPayloads', () => {
     const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
-    const mockCheckFormAllocationFamiliarisation = require('../../spec/back-end/mocks/check-form-allocation-familiarisation')
-
     beforeEach(() => {
       spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
@@ -200,7 +198,6 @@ describe('check-start.service', () => {
 
     describe('when live checks are generated', () => {
       beforeEach(() => {
-        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
         spyOn(sasTokenService, 'getTokens').and.returnValue([
           { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
           { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
@@ -214,7 +211,7 @@ describe('check-start.service', () => {
           await checkStartService.createPupilCheckPayloads()
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe('checkIds is not defined')
+          expect(error.message).toBe('checks is not defined')
         }
       })
 
@@ -223,17 +220,12 @@ describe('check-start.service', () => {
           await checkStartService.createPupilCheckPayloads({})
           fail('expected to throw')
         } catch (error) {
-          expect(error.message).toBe('checkIds must be an array')
+          expect(error.message).toBe('checks must be an array')
         }
       })
 
-      it('makes a call to fetch the check form allocations from the db', async () => {
-        await checkStartService.createPupilCheckPayloads([1], 1)
-        expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
-      })
-
       it('prepares the question data', async () => {
-        const res = await checkStartService.createPupilCheckPayloads([1], 1)
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')

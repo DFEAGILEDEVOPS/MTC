@@ -8,9 +8,9 @@ When(/^I fill in details of a valid check window$/) do
   @admin_start_date = today_date + 2
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 3
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -49,9 +49,9 @@ When(/^I try to submit a check name that is less than (\d+) character long$/) do
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "W" * (arg - 1)
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -268,9 +268,9 @@ When(/^I enter a familiarisation start date that is in the past compared to the 
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 2
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -308,9 +308,9 @@ When(/^I enter a familiarisation start date that is a day after the live check s
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -460,9 +460,9 @@ When(/^I enter all the days for each of the dates with more than (\d+) digits$/)
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '111',
@@ -506,9 +506,9 @@ When(/^I enter all the days for each of the dates with an invalid day in a month
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '39',
@@ -552,9 +552,9 @@ When(/^I enter all the months for each of the dates with more than (\d+) digits$
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -598,9 +598,9 @@ When(/^I enter all the months for each of the dates with an invalid month in a y
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -644,9 +644,9 @@ When(/^I enter all the years for each of the dates with more than (\d+) digits$/
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -690,9 +690,9 @@ When(/^I enter all the years for each of the dates with an invalid year$/) do
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 4
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -748,9 +748,9 @@ When(/^I enter a admin start date that is after the start dates for familiarisat
   @admin_start_date = today_date + 6
   @admin_end_date = today_date + 11
   @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 9
+  @familiarisation_end_date = today_date + 10
   @live_start_date = today_date + 5
-  @live_end_date = today_date + 9
+  @live_end_date = today_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
