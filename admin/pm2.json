@@ -4,6 +4,7 @@
     "script"      : "server.js",
     "watch"       : false,
     "instances"   : "max",
-    "exec_mode"   : "cluster"
+    "exec_mode"   : "cluster",
+    "node_args"   : "--max-http-header-size 15000"
   }]
 }
