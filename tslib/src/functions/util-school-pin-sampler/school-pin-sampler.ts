@@ -39,7 +39,7 @@ export class SchoolPinSampler {
     return reducedZoneset.map((z: tzutil.Timezone) => {
       const upd: SchoolPinSample = {
         pin: pinGenerator.generate(),
-        pinExpiresAt: expiryGenerator.generate(),
+        pinExpiresAt: expiryGenerator.generate(z.zone),
         timezone: z.name
       }
       return upd
