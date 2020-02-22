@@ -20,7 +20,7 @@
     "ioredis": "^4.14.1",
     "number-to-words": "^1.2.3",
     "ramda": "^0.26.1",
-    "tedious": "^6.4.0",
+    "tedious": "^6.7.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   }
