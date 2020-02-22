@@ -30,7 +30,7 @@
     "@angular/platform-server": "^8.2.13",
     "@angular/router": "^8.2.13",
     "angulartics2": "8.3.0",
-    "applicationinsights-js": "^1.0.18",
+    "applicationinsights-js": "^1.0.21",
     "bluebird": "^3.7.1",
     "core-js": "2.6.10",
     "dotenv": "^8.2.0",
