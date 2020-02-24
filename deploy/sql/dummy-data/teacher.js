@@ -18,7 +18,7 @@ table.columns.add('identifier', sql.NVarChar(64), { nullable: false })
 table.columns.add('passwordHash', sql.NVarChar, { length: 'max' })
 table.columns.add('school_id', sql.Int)
 table.columns.add('role_id', sql.Int, { nullable: false })
-
+console.log(`attempting to insert ${teacherCount} teachers for schools ${teacherIndex} to ${teacherUpperLimit}`)
 for (teacherIndex = 10001; teacherIndex < teacherUpperLimit; teacherIndex++) {
   table.rows.add(`bulk-teacher${teacherIndex + 1}`, password, schoolId++, teacherRoleId)
 }

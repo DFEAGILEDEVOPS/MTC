@@ -15,8 +15,17 @@ table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
 table.columns.add('name', sql.NVarChar, { length: 'max', nullable: false })
 table.columns.add('urn', sql.Int, { nullable: false })
 table.columns.add('dfeNumber', sql.Int, { nullable: false })
+
+let estabBase = 1000
+let urnBase = 10000
+let leaCode = 777
 for (let idx = schoolOffset; idx < schoolUpperLimit; idx++) {
-  table.rows.add(777, 'estab', `bulk school ${idx + 1}`, idx + 1, idx + 1)
+  if (estabBase > 9999) {
+    estabBase = 1000
+    leaCode++
+  }
+  const dfeNumber = `${leaCode}${estabBase}`
+  table.rows.add(leaCode, estabBase++, `bulk school ${idx + 1}`, urnBase++, dfeNumber)
 }
 
 const pool = new sql.ConnectionPool(config.Sql)
