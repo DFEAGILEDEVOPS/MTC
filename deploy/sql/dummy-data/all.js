@@ -38,6 +38,7 @@ function generateUpn (dfeNumber, currentPupilIndex) {
 const pool = new sql.ConnectionPool(config.Sql)
 pool.connect()
   .then(async () => {
+    // schools
     console.log('connected')
     console.log(`inserting ${schoolCount} schools...`)
     const table = new sql.Table('mtc_admin.school')
