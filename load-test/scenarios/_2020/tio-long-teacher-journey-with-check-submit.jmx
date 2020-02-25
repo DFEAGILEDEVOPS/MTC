@@ -123,9 +123,9 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
         </HTTPSamplerProxy>
         <hashTree>
           <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get pupil edit URL" enabled="true">
-            <stringProp name="XPathExtractor.default"></stringProp>
-            <stringProp name="XPathExtractor.refname">pupilEditUrl</stringProp>
-            <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
+            <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
+            <stringProp name="XPathExtractor.refname">PUPIL_EDIT_URL</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">0</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">/html/body//a[contains(@id,&apos;pupilName&apos;)]/@href</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
@@ -145,7 +145,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pupilEditUrl_3}</stringProp>
+          <stringProp name="HTTPSampler.path">${PUPIL_EDIT_URL}</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -156,30 +156,30 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get csrf token" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get csrf token" enabled="true">
             <stringProp name="XPathExtractor.default"></stringProp>
-            <stringProp name="XPathExtractor.refname">pupilEditCsrfToken</stringProp>
-            <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
+            <stringProp name="XPathExtractor.refname">PUPIL_EDIT_CSRF_TOKEN</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">0</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">//*/input[@name=&apos;_csrf&apos;]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get urlSlug" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get urlSlug" enabled="true">
             <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">pupilEditUrlSlug</stringProp>
-            <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">0</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">//*/input[@name=&apos;urlSlug&apos;]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get upn" enabled="false">
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get upn" enabled="true">
             <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">pupilEditUpn</stringProp>
-            <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">0</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">/html/body//input[contains(@id,&apos;upn&apos;)]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
@@ -203,7 +203,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               </elementProp>
               <elementProp name="_csrf" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${pupilEditCsrfToken}</stringProp>
+                <stringProp name="Argument.value">${PUPIL_EDIT_CSRF_TOKEN}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">_csrf</stringProp>
@@ -301,13 +301,14 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view edited pupil (5 - 15 secs)" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
-          <stringProp name="RandomTimer.range">10000</stringProp>
-        </UniformRandomTimer>
-        <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="true">
+        <hashTree>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view edited pupil (5 - 15 secs)" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
+            <stringProp name="RandomTimer.range">10000</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -317,6 +318,124 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/school/school-home</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET AA overview" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/access-arrangements/overview</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET AA selection" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/access-arrangements/select-access-arrangements</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="get csrf token" enabled="true">
+            <stringProp name="XPathExtractor.default"></stringProp>
+            <stringProp name="XPathExtractor.refname">AA_CSRF_TOKEN</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
+            <stringProp name="XPathExtractor.xpathQuery">//*/input[@name=&apos;_csrf&apos;]/@value</stringProp>
+            <boolProp name="XPathExtractor.validate">false</boolProp>
+            <boolProp name="XPathExtractor.tolerant">true</boolProp>
+            <boolProp name="XPathExtractor.namespace">false</boolProp>
+          </XPathExtractor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST AA preferences" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="_csrf" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${AA_CSRF_TOKEN}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">_csrf</stringProp>
+              </elementProp>
+              <elementProp name="pupilUrlSlug" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${pupilEditUrlSlug}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">pupilUrlSlug</stringProp>
+              </elementProp>
+              <elementProp name="accessArrangements[0]" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">ATA</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">accessArrangements[0]</stringProp>
+              </elementProp>
+              <elementProp name="accessArrangements[1]" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">CCT</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">accessArrangements[1]</stringProp>
+              </elementProp>
+              <elementProp name="accessArrangements[2]" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">FTS</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">accessArrangements[2]</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/access-arrangements/submit</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
@@ -351,7 +470,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
         </HTTPSamplerProxy>
         <hashTree>
           <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract Pupil IDs from list" enabled="true">
-            <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
+            <stringProp name="XPathExtractor.default"></stringProp>
             <stringProp name="XPathExtractor.refname">PUPIL_ID</stringProp>
             <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">//*[1]/input[@type=&apos;checkbox&apos;]/@value</stringProp>
@@ -362,9 +481,9 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </XPathExtractor>
           <hashTree/>
           <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Extract CSRF Token" enabled="true">
-            <stringProp name="XPathExtractor.default">NOT_FOUND</stringProp>
-            <stringProp name="XPathExtractor.refname">CSRF_TOKEN</stringProp>
-            <stringProp name="XPathExtractor.matchNumber">1</stringProp>
+            <stringProp name="XPathExtractor.default"></stringProp>
+            <stringProp name="XPathExtractor.refname">PINGEN_CSRF_TOKEN</stringProp>
+            <stringProp name="XPathExtractor.matchNumber">0</stringProp>
             <stringProp name="XPathExtractor.xpathQuery">//*/input[@name=&apos;_csrf&apos;]/@value</stringProp>
             <boolProp name="XPathExtractor.validate">false</boolProp>
             <boolProp name="XPathExtractor.tolerant">true</boolProp>
@@ -445,7 +564,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               </elementProp>
               <elementProp name="_csrf" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${CSRF_TOKEN}</stringProp>
+                <stringProp name="Argument.value">${PINGEN_CSRF_TOKEN}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">_csrf</stringProp>
@@ -472,7 +591,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET home page" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home " enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -607,7 +726,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check submission payload" enabled="true">
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check submission payload" enabled="false">
               <stringProp name="JSONPostProcessor.referenceNames">checkPayload</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
@@ -619,7 +738,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check-submitted sas token" enabled="true">
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check-submitted sas token" enabled="false">
               <stringProp name="JSONPostProcessor.referenceNames">checkSubmittedSasToken</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkComplete.token</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
@@ -685,7 +804,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit function proxy" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit function proxy" enabled="false">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
