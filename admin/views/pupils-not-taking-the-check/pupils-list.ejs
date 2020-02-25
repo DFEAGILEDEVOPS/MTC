@@ -9,6 +9,7 @@
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                 <h2 class="govuk-heading-m">1. Select reason</h2>
+                <%- partial('partials/_attendance_code_reasons') %>
                 <ul class="govuk-list attendance-code-list">
                     <div class="govuk-radios">
                         <% attendanceCodesPresentationData.forEach( (aValues) => { %>
@@ -30,8 +31,7 @@
                     </div>
                 </ul>
                 <% } %>
-                <%- partial('partials/_attendance_code_reasons') %>
-                <h2 class="govuk-heading-m">2. Select pupils</h2>
+                <h2 class="govuk-heading-m">2. Select pupils to remove</h2>
                 <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
                 <table id="pupilsList" class="govuk-table govuk-spacious">
                     <caption class="govuk-body govuk-table__caption">Pupil register</caption>

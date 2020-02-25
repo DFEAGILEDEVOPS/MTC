@@ -8,6 +8,7 @@ const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-fe
 const accessArrangementsOverviewPresenter = require('../helpers/access-arrangements-overview-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
+const accessArrangementsDescriptionsPresenter = require('../helpers/access-arrangements-descriptions-presenter')
 
 const controller = {}
 
@@ -66,11 +67,13 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
   req.breadcrumbs('Select pupils and access arrangements')
   let accessArrangements
+  let accessArrangementsViewData
   let questionReaderReasons
   let pupils
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     accessArrangements = await accessArrangementsService.getAccessArrangements()
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements)
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
@@ -85,7 +88,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   }
   return res.render('access-arrangements/select-access-arrangements', {
     breadcrumbs: req.breadcrumbs(),
-    accessArrangements,
+    accessArrangementsViewData,
     questionReaderReasons,
     pupils,
     formData: req.body,

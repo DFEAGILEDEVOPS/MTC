@@ -20,11 +20,11 @@
             </p>
         <% if (!availabilityData.canEditArrangements) { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                Select pupil and arrangement
+                View pupils and assign arrangement
             </button>
         <% } else { %>
             <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Select pupil and arrangement
+                View pupils and assign arrangement
             </a>
         <% } %>
         <%if (pupilsFormatted.length > 0) { %>
@@ -90,19 +90,14 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
                         <li>
-                            <a class="govuk-link" href="/pupil-register/pupils-list" rel="noopener noreferrer">Pupil register</a>
+                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list">Give a reason why a pupil is not taking the check</a>
                         </li>
                         <li>
                             <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                                <a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Try it out - password and PINs</a>
-                            <% } %>
-                        </li>
-                        <li>
-                            <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
-                                <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview">Start the MTC - password and PINs</a>
+                                <a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Generate passwords and PINs for the try it out check</a>
                             <% } %>
                         </li>
                     </ul>

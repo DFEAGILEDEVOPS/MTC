@@ -18,7 +18,7 @@ const attendanceCodesPresenter = require('../helpers/attendance-codes-presenter'
  * @returns {Promise.<void>}
  */
 const getPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Give a reason why a Pupil is not taking the check'
+  res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
   let pupils
@@ -52,7 +52,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupil and reason'
-  req.breadcrumbs('Give a reason why a Pupil is not taking the check', '/pupils-not-taking-the-check')
+  req.breadcrumbs('Give a reason why a pupil is not taking the check', '/pupils-not-taking-the-check')
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
@@ -159,7 +159,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
  * @return {Promise<*>}
  */
 const viewPupilsNotTakingTheCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'View pupils not taking the check'
+  res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
   let checkWindowData

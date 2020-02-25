@@ -27,8 +27,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
     id,
     code,
     description
-  FROM ${sqlService.adminSchema}.[accessArrangements]
-  ORDER BY displayOrder ASC`
+  FROM ${sqlService.adminSchema}.[accessArrangements]`
   return sqlService.readonlyQuery(sql)
 }
 

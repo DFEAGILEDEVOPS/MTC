@@ -15,6 +15,7 @@ const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-h
 const accessArrangementsOverviewPresenter = require('../../../helpers/access-arrangements-overview-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const ValidationError = require('../../../lib/validation-error')
+const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
 
 describe('access arrangements controller:', () => {
   let next
@@ -88,6 +89,7 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
       spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
@@ -107,6 +109,7 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'render')
       const error = new Error('error')
       spyOn(accessArrangementsService, 'getAccessArrangements').and.returnValue(Promise.reject(error))
+      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
       spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData')
