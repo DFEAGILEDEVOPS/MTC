@@ -191,7 +191,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST pupil edit form" enabled="false">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST pupil edit form" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="urlSlug" elementType="HTTPArgument">
@@ -302,7 +302,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view edited pupil (5 - 15 secs)" enabled="false">
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="WAIT: view edited pupil (5 - 15 secs)" enabled="true">
           <stringProp name="ConstantTimer.delay">${__P(waitTimeMs,5000)}</stringProp>
           <stringProp name="RandomTimer.range">10000</stringProp>
         </UniformRandomTimer>
