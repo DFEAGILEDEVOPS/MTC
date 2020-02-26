@@ -1,7 +1,7 @@
 DECLARE @schoolId INT
 
 BEGIN TRY
-INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name, pin, pinExpiresAt) VALUES (999, '1001', 89001, 9991001, 'Example School One', 'aaa11aaa', DATEADD(DAY, 1, GETUTCDATE()));
+INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name, pin, pinExpiresAt) VALUES (999, '1001', 89001, 9991001, 'Example School One', 'aaa22aaa', DATEADD(DAY, 1, GETUTCDATE()));
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
