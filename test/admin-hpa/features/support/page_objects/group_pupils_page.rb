@@ -1,13 +1,13 @@
 class GroupPupilsPage < SitePrism::Page
   set_url '/group/pupils-list'
 
-  element :heading, '.govuk-heading-xl', text: 'Group pupils'
-  element :intro, '.govuk-body', text: 'Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.'
-  element :create_group, ".govuk-button", text: 'Create new group'
+  element :heading, '.govuk-heading-xl', text: 'Organise pupils into groups'
+  element :intro, '.govuk-body', text: 'Sort pupils by classroom or ability. You can filter by these groups when printing pupil PINs'
+  element :create_group, ".govuk-button", text: 'View pupils and create new group'
   element :related_heading, "#subsection-title", text: 'Related'
-  element :guidance, "a", text: 'Guidance'
-  element :pupil_register, "a[href='/pupil-register/pupils-list']", text: 'Pupil register'
-  element :generate_pins, "a[href='/pupil-pin/generate-live-pins-overview']", text: 'Start the MTC - password and PINs'
+  element :guidance, "a", text: 'Read the guidance and watch videos'
+  element :not_taking_check, "a[href='/pupils-not-taking-the-check/pupils-list']", text: 'Give a reason why pupil is not taking the check'
+  element :access_arrangment, "a[href='/access-arrangements/overview']", text: 'Set access arrangements for pupils that need them'
   element :info_message, '.govuk-info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 

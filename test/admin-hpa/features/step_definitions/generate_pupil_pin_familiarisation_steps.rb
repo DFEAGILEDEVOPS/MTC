@@ -7,7 +7,6 @@ Then(/^I should see generate pin familiarisation overview page as per design$/) 
   expect(generate_pins_familiarisation_overview_page).to have_generate_pin_message
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_text
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_link
-  expect(generate_pins_familiarisation_overview_page).to have_instruction_section
   expect(generate_pins_familiarisation_overview_page).to have_generate_pin_btn
 end
 

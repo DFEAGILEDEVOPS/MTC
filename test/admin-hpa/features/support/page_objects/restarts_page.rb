@@ -3,7 +3,7 @@ class RestartsPage < SitePrism::Page
 
   element :heading, '.govuk-heading-xl'
   element :restarts_message, 'p.govuk-body'
-  element :select_pupil_to_restart_btn, 'a', text: "Select pupils to restart"
+  element :select_pupil_to_restart_btn, 'a', text: "Generate restart for pupils"
   element :reasons_list, '.govuk-radios'
   element :reason_1, '#restart-reason-0'
   element :reason_2, '#restart-reason-1'
