@@ -154,6 +154,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   }
 
   let accessArrangements
+  let accessArrangementsViewData
   let questionReaderReasons
   let formData
   const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
@@ -170,13 +171,14 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     ], req.body)
     formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, dfeNumber)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements)
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
   } catch (error) {
     return next(error)
   }
   return res.render('access-arrangements/select-access-arrangements', {
     breadcrumbs: req.breadcrumbs(),
-    accessArrangements,
+    accessArrangementsViewData,
     questionReaderReasons,
     formData,
     error: error || new ValidationError()
