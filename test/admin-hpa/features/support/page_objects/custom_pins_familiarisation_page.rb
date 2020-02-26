@@ -2,10 +2,10 @@ class CustomPinsFamiliarisationPage < SitePrism::Page
   set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
   element :heading, '.govuk-heading-xl'
-  element :pin_message, '.govuk-body', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily. You can generate additional PINs for pupils you have missed.'
+  element :pin_message, '.govuk-body', text: 'PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily. You can generate additional PINs for pupils you have missed.'
   element :filter_by_name, '#search-name'
 
-  element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]', text: 'Try it out - password and PINs'
+  element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]', text: 'Generate passwords and PINs for the try it out check'
 
   section :group_filter, GroupFilter, '#filterByGroup'
 
