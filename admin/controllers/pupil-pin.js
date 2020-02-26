@@ -1,4 +1,3 @@
-const R = require('ramda')
 
 const businessAvailabilityService = require('../services/business-availability.service')
 const checkStartService = require('../services/check-start.service/check-start.service')
@@ -7,7 +6,6 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
 const dateService = require('../services/date.service')
 const groupService = require('../services/group.service')
-const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinService = require('../services/pin.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')

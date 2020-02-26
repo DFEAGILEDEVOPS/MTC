@@ -120,17 +120,6 @@ module.exports = {
     },
     SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
   },
-  Certificates: {
-    Azure: {
-      BlobContainer: process.env.CERT_BLOB_CONTAINER,
-      NcaToolsPublicKeyName: process.env.CERT_NCATOOLS_PUBLIC_KEY_NAME,
-      MtcPrivateKeyName: process.env.CERT_MTC_PRIVATE_KEY_NAME
-    },
-    Local: {
-      NcaToolsPublicKey: process.env.TSO_AUTH_PUBLIC_KEY,
-      MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
-    }
-  },
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
@@ -168,9 +157,6 @@ module.exports = {
         audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
       },
       signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL
-    },
-    ncaTools: {
-      authUrl: process.env.NCA_TOOLS_AUTH_URL
     }
   },
   Runtime: {
