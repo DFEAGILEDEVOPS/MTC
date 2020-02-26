@@ -1,0 +1,18 @@
+{
+  "bindings": [
+    {
+      "name": "schoolImportInput",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "school-import/{name}",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "name": "schoolImportStdout",
+      "type": "blob",
+      "path": "school-import/{name}-stdout.txt",
+      "connection": "AzureWebJobsStorage",
+      "direction": "out"
+    }
+  ]
+}

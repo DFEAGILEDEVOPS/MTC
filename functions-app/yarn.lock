@@ -683,6 +683,11 @@ cross-spawn@^7.0.0:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+csv-string@^3.1.8:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-3.1.8.tgz#732ac993420a505471106aab00ab0183ba194fc2"
+  integrity sha512-5Mwdju/gmAhAyJu0WBG+v0GgaQrlSVVg9qrywcgADegyne2NwrdDAOIQ+CpalgwkodrhqcP55juua924psyRpQ==
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
