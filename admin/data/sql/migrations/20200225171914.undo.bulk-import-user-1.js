@@ -1,0 +1,11 @@
+'use strict'
+
+const config = require('../../../config')
+
+module.exports.generateSql = function () {
+  return `   
+    -- CREATE SCHEMA [mtc_census_import];
+    -- GO       
+    REVOKE UPDATE,INSERT ON [mtc_admin].[school] TO [${config.Sql.PupilCensus.Username}];
+    `
+}
