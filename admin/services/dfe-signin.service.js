@@ -79,7 +79,7 @@ const service = {
     // auth success
     const logonEvent = {
       sessionId: 'unavailable', // req.session.id,
-      body: 'unavailable', // JSON.stringify(req.body),
+      body: JSON.stringify(dfeUser),
       remoteIp: 'unavailable', // (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
       userAgent: 'unavailable', // req.headers['user-agent'],
       loginMethod: 'dfe-sign-in',
