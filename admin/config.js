@@ -188,5 +188,8 @@ module.exports = {
     newCheckWindow: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_WINDOW') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) : true,
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true
+  },
+  SchoolPinGeneratorFunction: {
+    HttpAuthToken: process.env.SCHOOL_PIN_GEN_FUNCTION_AUTH_TOKEN || ''
   }
 }

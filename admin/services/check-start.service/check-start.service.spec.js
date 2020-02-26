@@ -13,6 +13,7 @@ const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const queueNameService = require('../queue-name-service')
+const schoolPinService = require('../school-pin-service')
 
 const checkFormMock = {
   id: 100,
@@ -148,6 +149,24 @@ describe('check-start.service', () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
+    })
+
+    it('attempts to generate school pin if not found in checks', async () => {
+      spyOn(schoolPinService, 'generateSchoolPin')
+      const checksWithNoSchoolPins = [
+        { id: 1, check_checkCode: '1A', pupil_id: 1 },
+        { id: 1, check_checkCode: '2A', pupil_id: 2 },
+        { id: 3, check_checkCode: '3A', pupil_id: 3 }
+      ]
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(checksWithNoSchoolPins))
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not attempt to generate school pin if found against checks', async () => {
+      spyOn(schoolPinService, 'generateSchoolPin')
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
   })
 

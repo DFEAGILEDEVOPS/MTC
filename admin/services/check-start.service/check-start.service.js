@@ -2,6 +2,7 @@
 
 const moment = require('moment-timezone')
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 const logger = require('../log.service').getLogger()
 
 // Libraries used
@@ -23,6 +24,7 @@ const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
+const schoolPinService = require('../school-pin-service')
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -120,6 +122,18 @@ checkStartService.prepareCheck2 = async function (
   }
   // Create and return checks via spCreateChecks
   const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+
+  // if the school pin generator has failed to generate a pin for this school, create one now...
+  console.log(`GUY: ${newChecks[0].school_pin}`)
+  if (RA.isNilOrEmpty(newChecks[0].school_pin)) {
+    // call the API to generate a pin...
+    const schoolPin = await schoolPinService.generateSchoolPin(newChecks[0].school_uuid)
+    // patch payload...
+    for (let index = 0; index < newChecks.length; index++) {
+      const entry = newChecks[index]
+      entry.school_pin = schoolPin
+    }
+  }
 
   let pupilChecks
   try {
