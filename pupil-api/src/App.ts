@@ -84,6 +84,8 @@ class App {
       }
     })
 
+    // AFAICT tslint is just wrong here.
+    // tslint:disable-next-line
     this.express.use(bodyParser.json())
   }
 
