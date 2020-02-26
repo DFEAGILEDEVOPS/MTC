@@ -5,32 +5,32 @@ end
 
 When(/^I fill in details of a valid check window$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 2
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 3
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 2
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 3
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
 end
@@ -46,32 +46,32 @@ end
 
 When(/^I try to submit a check name that is less than (\d+) character long$/) do |arg|
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "W" * (arg - 1)
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -128,32 +128,32 @@ end
 
 When(/^I enter end dates that are on the same day as the start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 3
-  @familiarisation_start_date = today_date + 3
-  @familiarisation_end_date = today_date + 3
-  @live_start_date = today_date + 3
-  @live_end_date = today_date +3
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 3
+  @familiarisation_start_date = today_date.next_year(5) + 3
+  @familiarisation_end_date = today_date.next_year(5) + 3
+  @live_start_date = today_date.next_year(5) + 3
+  @live_end_date = today_date.next_year(5) +3
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -221,32 +221,32 @@ end
 
 When(/^I enter a admin end date that is before the end dates for familiarisation and live check$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 3
-  @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 5
-  @live_start_date = today_date + 5
-  @live_end_date = today_date +5
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 3
+  @familiarisation_start_date = today_date.next_year(5) + 5
+  @familiarisation_end_date = today_date.next_year(5) + 5
+  @live_start_date = today_date.next_year(5) + 5
+  @live_end_date = today_date.next_year(5) +5
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -265,32 +265,32 @@ end
 
 When(/^I enter a familiarisation start date that is in the past compared to the admin start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 2
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 2
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -305,32 +305,32 @@ end
 
 When(/^I enter a familiarisation start date that is a day after the live check start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 5
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -345,32 +345,32 @@ end
 
 When(/^I enter a familiarisation end date that is a day before the familiarisation start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 8
-  @familiarisation_end_date = today_date + 7
-  @live_start_date = today_date + 8
-  @live_end_date = today_date + 7
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 8
+  @familiarisation_end_date = today_date.next_year(5) + 7
+  @live_start_date = today_date.next_year(5) + 8
+  @live_end_date = today_date.next_year(5) + 7
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -387,32 +387,32 @@ end
 
 When(/^I enter a live start date that is a day before the familiarisation start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 7
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 7
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 5
+  @familiarisation_end_date = today_date.next_year(5) + 7
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 7
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -457,32 +457,32 @@ end
 
 When(/^I enter all the days for each of the dates with more than (\d+) digits$/) do |arg|
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '111',
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: '111',
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: '111',
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: '111',
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: '111',
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: '111',
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -503,32 +503,32 @@ end
 
 When(/^I enter all the days for each of the dates with an invalid day in a month$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '39',
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: '39',
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: '39',
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: '39',
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: '39',
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: '39',
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -549,32 +549,32 @@ end
 
 When(/^I enter all the months for each of the dates with more than (\d+) digits$/) do |arg|
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: '122',
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: '122',
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: '122',
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: '122',
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: '122',
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: '122',
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -595,32 +595,32 @@ end
 
 When(/^I enter all the months for each of the dates with an invalid month in a year$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: '13',
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: '13',
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: '13',
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: '13',
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: '13',
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: '13',
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -641,12 +641,12 @@ end
 
 When(/^I enter all the years for each of the dates with more than (\d+) digits$/) do |arg|
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -687,12 +687,12 @@ end
 
 When(/^I enter all the years for each of the dates with an invalid year$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 4
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 4
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 3
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 4
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 4
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
@@ -745,32 +745,32 @@ end
 
 When(/^I enter a admin start date that is after the start dates for familiarisation and live check$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 6
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 5
-  @familiarisation_end_date = today_date + 10
-  @live_start_date = today_date + 5
-  @live_end_date = today_date + 10
+  @admin_start_date = today_date.next_year(5) + 6
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 5
+  @familiarisation_end_date = today_date.next_year(5) + 10
+  @live_start_date = today_date.next_year(5) + 5
+  @live_end_date = today_date.next_year(5) + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -788,32 +788,32 @@ end
 
 When(/^I enter a live end date that is before the admin start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 6
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 7
-  @familiarisation_end_date = today_date + 8
-  @live_start_date = today_date + 7
-  @live_end_date = today_date + 5
+  @admin_start_date = today_date.next_year(5) + 6
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 7
+  @familiarisation_end_date = today_date.next_year(5) + 8
+  @live_start_date = today_date.next_year(5) + 7
+  @live_end_date = today_date.next_year(5) + 5
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
@@ -831,32 +831,32 @@ end
 
 When(/^I enter a familirisation end date that is before the admin start date$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 6
-  @admin_end_date = today_date + 11
-  @familiarisation_start_date = today_date + 7
-  @familiarisation_end_date = today_date + 5
-  @live_start_date = today_date + 7
-  @live_end_date = today_date + 8
+  @admin_start_date = today_date.next_year(5) + 6
+  @admin_end_date = today_date.next_year(5) + 11
+  @familiarisation_start_date = today_date.next_year(5) + 7
+  @familiarisation_end_date = today_date.next_year(5) + 5
+  @live_start_date = today_date.next_year(5) + 7
+  @live_end_date = today_date.next_year(5) + 8
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year + 5,
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year + 5,
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year + 5,
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year + 5,
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year + 5,
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year + 5
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click

@@ -1,5 +1,4 @@
 import { PreparedCheckMergeService, ICheckConfig, IPreparedCheckMergeDataService } from './prepared-check-merge.service'
-import { PreparedCheckSyncDataService } from './prepared-check-sync.data.service'
 
 let sut: PreparedCheckMergeService
 let dataServiceMock: IPreparedCheckMergeDataService
@@ -56,12 +55,6 @@ describe('prepared-check-merge.service', () => {
     const actualConfig = await sut.merge(checkConfig, [])
     expect(actualConfig.colourContrast).toBe(false)
     expect(actualConfig.fontSize).toBe(false)
-  })
-
-  test.skip('examine data', async () => {
-    const ds = new PreparedCheckSyncDataService()
-    const data = await ds.getAccessArrangementsByCheckCode('B5438EE9-D8D6-45E0-B4E9-644AFA33ED69')
-    console.dir(data)
   })
 
   test('creates a new config based on the new aa settings and the config supplied', async () => {
