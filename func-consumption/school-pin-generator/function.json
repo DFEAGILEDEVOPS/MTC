@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "timer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule-description": "every hour, on the hour",
+      "schedule": "0 0 * * * *"
+    }
+  ],
+  "scriptFile": "../dist/functions/school-pin-generator/index.js"
+}
