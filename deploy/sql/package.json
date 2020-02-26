@@ -11,10 +11,7 @@
     "db:seed": "node ./schema-WIP/seed.js",
     "new:migration": "node ./schema-WIP/create-migration.js",
     "new:seed": "node ./schema-WIP/create-seed.js",
-    "dummy:schools": "node ./dummy-data/school.js",
-    "dummy:pupils": "node ./dummy-data/pupil.js",
-    "dummy:teachers": "node ./dummy-data/teacher.js",
-    "dummy:all": "node ./dummy-data/school.js && node ./dummy-data/teacher.js && node ./dummy-data/pupil.js"
+    "dummy:all": "node ./dummy-data/all.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
