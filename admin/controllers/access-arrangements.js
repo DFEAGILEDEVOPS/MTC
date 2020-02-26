@@ -73,7 +73,8 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     accessArrangements = await accessArrangementsService.getAccessArrangements()
-    accessArrangementsViewData = accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements)
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter
+      .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
@@ -171,7 +172,8 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     ], req.body)
     formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, dfeNumber)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
-    accessArrangementsViewData = accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements)
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter
+      .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
   } catch (error) {
     return next(error)

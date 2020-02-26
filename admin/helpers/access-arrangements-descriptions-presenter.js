@@ -13,5 +13,21 @@ accessArrangementsDescriptionsPresenter.getPresentationData = (accessArrangement
   const diff = (a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())
   return R.sort(diff, accessArrangements)
 }
+/**
+ * Add reason required indication for specific access arrangements
+ * @param {Array} accessArrangements
+ * @returns {Array} attendanceCodesPresentationData
+ */
+accessArrangementsDescriptionsPresenter.addReasonRequiredIndication = (accessArrangements) => {
+  return accessArrangements.map(aa => {
+    if (aa.code === 'QNR' || aa.code === 'NBQ') {
+      aa.description = `${aa.description} (reason required)`
+    }
+    if (aa.code === 'ITA') {
+      aa.description = `${aa.description} (reason and input assistant's name required)`
+    }
+    return aa
+  })
+}
 
 module.exports = accessArrangementsDescriptionsPresenter
