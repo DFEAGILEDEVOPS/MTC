@@ -29,7 +29,8 @@ export class CheckStartedService {
     const preparedCheck = await this.redisService.get(preparedCheckKey)
 
     if (R.path(['config', 'practice'], preparedCheck) === false) {
-      return this.redisService.drop([preparedCheckKey])
+      await this.redisService.drop([preparedCheckKey])
+      return
     }
   }
 
