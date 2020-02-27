@@ -127,7 +127,6 @@ checkStartService.prepareCheck2 = async function (
   const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
 
   // if the school pin generator has failed to generate a pin for this school, create one now...
-  console.log(`GUY: ${newChecks[0].school_pin}`)
   if (RA.isNilOrEmpty(newChecks[0].school_pin)) {
     // call the API to generate a pin...
     const schoolPin = await schoolPinService.generateSchoolPin(newChecks[0].school_uuid)
