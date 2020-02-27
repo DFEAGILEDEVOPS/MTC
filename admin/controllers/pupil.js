@@ -29,7 +29,7 @@ const getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
-    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
+    req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
@@ -97,7 +97,7 @@ const getAddMultiplePupils = async (req, res, next) => {
     }
     templateFileSize = uploadedFileService.getFilesize(templateFile)
     csvErrorFileSize = await uploadedFileService.getAzureBlobFileSize(csvErrorFile)
-    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
+    req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
@@ -200,7 +200,7 @@ const getEditPupilById = async (req, res, next) => {
 
     const pupilData = pupilAddService.formatPupilData(pupil)
 
-    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
+    req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/edit-pupil', {
       formData: pupilData,
@@ -245,7 +245,7 @@ const postEditPupil = async (req, res, next) => {
 
   if (validationError.hasError()) {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
-    req.breadcrumbs('Pupil register', '/pupil-register/pupils-list')
+    req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('pupil-register/edit-pupil', {
       school,

@@ -1,4 +1,4 @@
-const R = require('ramda')
+'use strict'
 
 const businessAvailabilityService = require('../services/business-availability.service')
 const checkStartService = require('../services/check-start.service/check-start.service')
@@ -7,7 +7,6 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
 const dateService = require('../services/date.service')
 const groupService = require('../services/group.service')
-const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinService = require('../services/pin.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
@@ -22,7 +21,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs'
+  res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
@@ -75,7 +74,7 @@ const getGeneratePinsList = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -177,7 +176,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'View and custom print PINs'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 

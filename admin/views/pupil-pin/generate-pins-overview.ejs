@@ -12,31 +12,20 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs' %></h1>
+            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ?
+                        'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
+                %>
+            </h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Pupils will need a personal identification number (PIN) and school password to start the <%= pinEnv === 'live' ? 'MTC' : '‘Try it out’ area' %>.<br />
-                The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:<br />
+                Pupils will need a PIN and school password to <%= pinEnv === 'live' ? 'start the MTC' : 'sign into the try it out area' %>.
+                The link for pupils to <%= pinEnv === 'live' ? 'start the check' : 'try it out' %> is:
                 <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
                 <div class="govuk-body">These expire at 4pm daily.</div>
             </p>
             <div class="govuk-inset-text">
                 Select <a class="govuk-link" href="/access-arrangements/overview">access arrangements</a> for pupils who need it before generating PINs
             </div>
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                          Instructions
-                        </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <ol class="govuk-list govuk-list--number">
-                        <li>Press 'Generate PINs' button.</li>
-                        <li>Select which pupils you are generating pins for.</li>
-                        <li>Distribute pupil PINs and school password to your pupils.</li>
-                    </ol>
-                </div>
-            </details>
             <% if(pupils && pupils.length > 0) { %>
                 <table id="generatePins" role="listbox" aria-label="Select pupils." class="govuk-table govuk-!-margin-bottom-9">
                     <thead class="govuk-table__head">
@@ -89,11 +78,13 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
+                        <% if (pinEnv === 'live') { %>
                         <li>
-                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
+                            <a class="govuk-link" href="/restart/overview" rel="noopener noreferrer">Select pupils to restart the check</a>
                         </li>
+                        <% } %>
                     </ul>
                 </nav>
             </aside>

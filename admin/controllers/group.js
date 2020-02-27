@@ -14,7 +14,7 @@ const businessAvailabilityService = require('../services/business-availability.s
  * @returns {Promise<void>}
  */
 const groupPupilsPage = async (req, res, next) => {
-  res.locals.pageTitle = 'Group pupils'
+  res.locals.pageTitle = 'Organise pupils into groups'
 
   let checkWindowData
   let groups
@@ -90,7 +90,7 @@ const manageGroupPage = async (req, res, next) => {
     return next(error)
   }
 
-  req.breadcrumbs('Group pupils', '/group/pupils-list')
+  req.breadcrumbs('Organise pupils into groups', '/group/pupils-list')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/manage-group.ejs', {
     breadcrumbs: req.breadcrumbs(),
@@ -148,7 +148,7 @@ const addGroup = async (req, res, next) => {
     selectedPupilsIds.map((s) => { selectedPupils[s] = true })
 
     req.body.pupils = req.body.pupil
-    req.breadcrumbs('Group pupils', '/group/pupils-list')
+    req.breadcrumbs('Organise pupils into groups', '/group/pupils-list')
     res.locals.pageTitle = 'Create group'
     req.breadcrumbs(res.locals.pageTitle)
 
@@ -224,7 +224,7 @@ const editGroup = async (req, res, next) => {
     const selectedPupilIds = Object.values(req.body.pupil)
     selectedPupilIds.map((p) => { selectedPupils[p] = true })
 
-    req.breadcrumbs('Group pupils', '/group/pupils-list')
+    req.breadcrumbs('Organise pupils into groups', '/group/pupils-list')
     res.locals.pageTitle = 'Edit group'
     req.breadcrumbs(res.locals.pageTitle)
 

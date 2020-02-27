@@ -8,6 +8,7 @@ const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-fe
 const accessArrangementsOverviewPresenter = require('../helpers/access-arrangements-overview-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
+const accessArrangementsDescriptionsPresenter = require('../helpers/access-arrangements-descriptions-presenter')
 
 const controller = {}
 
@@ -19,7 +20,7 @@ const controller = {}
  * @returns {Promise.<void>}
  */
 controller.getOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Access arrangements'
+  res.locals.pageTitle = 'Set access arrangements for pupils that need them'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let pinGenerationEligibilityData
@@ -63,14 +64,17 @@ controller.getOverview = async (req, res, next) => {
  */
 controller.getSelectAccessArrangements = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Select access arrangement for pupil'
-  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
   req.breadcrumbs('Select pupils and access arrangements')
   let accessArrangements
+  let accessArrangementsViewData
   let questionReaderReasons
   let pupils
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     accessArrangements = await accessArrangementsService.getAccessArrangements()
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter
+      .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
@@ -85,7 +89,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
   }
   return res.render('access-arrangements/select-access-arrangements', {
     breadcrumbs: req.breadcrumbs(),
-    accessArrangements,
+    accessArrangementsViewData,
     questionReaderReasons,
     pupils,
     formData: req.body,
@@ -140,7 +144,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  */
 controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
-  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
 
   try {
@@ -151,6 +155,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   }
 
   let accessArrangements
+  let accessArrangementsViewData
   let questionReaderReasons
   let formData
   const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
@@ -167,13 +172,15 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     ], req.body)
     formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, dfeNumber)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
+    accessArrangementsViewData = accessArrangementsDescriptionsPresenter
+      .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
   } catch (error) {
     return next(error)
   }
   return res.render('access-arrangements/select-access-arrangements', {
     breadcrumbs: req.breadcrumbs(),
-    accessArrangements,
+    accessArrangementsViewData,
     questionReaderReasons,
     formData,
     error: error || new ValidationError()

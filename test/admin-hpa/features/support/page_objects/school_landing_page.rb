@@ -4,24 +4,19 @@ class SchoolLandingPage < SitePrism::Page
   element :heading, '.govuk-heading-xl'
   # prepare for the check
 
-  element :guidance, 'a', text: 'Guidance documents'
-  element :guidance_text, '.govuk-body-m', text: 'Read the three guidance documents and watch the guidance videos to ensure best use and understanding of how to administer the MTC to pupils'
+  element :guidance, 'a', text: 'Read guidance and watch videos'
 
   # pupil register
-  element :pupil_register, 'a', text: 'Pupil register'
-  element :pupil_register_text, '.govuk-body-m', text: 'Add, edit and review pupils'
+  element :pupil_register, 'a', text: "View, add or edit pupils on your school's register"
 
   # groups
   element :group_pupils, 'a[href="/group/pupils-list'
-  element :group_pupils_text, 'p', text: "Create groups e.g. by class or ability. These can be used as a filter when generating and printing PINs for the 'Try it out' and official MTC check"
 
   # pupils not taking check
   element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check/pupils-list"]'
-  element :pupils_not_taking_check_text, 'p', text: 'Enter a reason for pupils who were unable to take the check. This includes pupils who have left the school and those with circumstances that exempts them from taking the check'
 
   # access arrangements
-  element :access_arrangements, 'a', text: 'Access arrangements'
-  element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with special educational needs or disabilities'
+  element :access_arrangements, 'a', text: 'Set access arrangements for pupils that need them'
 
 
   # preview check
@@ -31,24 +26,20 @@ class SchoolLandingPage < SitePrism::Page
   # live check
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-live-pins-overview"]'
   element :generate_pupil_pin_disabled, '.disabled-link', text: 'Start the multiplication tables check - password and PINs'
-  element :generate_pupil_pin_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can take the MTC'
 
 
   element :incomplete_banner, '.warning-banner', text: 'REVIEW PUPIL STATUS'
   element :incomplete_banner_text, '.govuk-font-greyed-out', text: 'Ensure all pupils have successfully completed the check'
 
   # review check
-  element :pupil_status, 'a', text: 'Pupil status'
+  element :pupil_status, 'a', text: 'See how many of your pupils have completed the official check'
   element :restarts, 'a[href="/restart/overview"]'
-  element :restarts_text, 'p', text: 'Select pupils to restart because of an interrupted check'
 
   # After check
-  element :hdf, 'a', text: "Headteacher's declaration form"
-  element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
-  element :hdf_text, 'p', text: "Complete headteacher's declaration form once all pupils have completed or have a reason for not taking the check"
+  element :hdf, 'a', text: "Complete the headteacher's declaration form"
+  element :hdf_disabled, '.heading-small', text: "Complete the headteacher's declaration form"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
-  element :results, '.govuk-disabled-link', text: 'Results'
-  element :results_text, 'span', text: "View pupils' results"
+  element :results, '.govuk-disabled-link', text: 'View pupil results'
 
   element :teacher_name, '.signed-in-as'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'

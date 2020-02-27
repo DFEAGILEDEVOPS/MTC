@@ -2,7 +2,6 @@
 
 const dataService = require('./data-access/school-pin.data.service')
 
-
 const service = {
   /**
    * @description calls the school pin http service to allocate a school pin on demand

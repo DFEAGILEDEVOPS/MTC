@@ -1,12 +1,12 @@
 class AccessArrangementsPage < SitePrism::Page
   set_url '/access-arrangements/overview'
 
-  element :heading, '.govuk-heading-xl', text: 'Access arrangements'
-  element :information, '.govuk-body', text: "Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the 'Try it out' area opens"
+  element :heading, '.govuk-heading-xl', text: 'Set access arrangements for pupils that need them'
+  element :information, '.govuk-body', text: "Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area opens"
   element :select_pupil_and_arrangement_btn, 'a[href="/access-arrangements/select-access-arrangements"]'
 
   element :success_message, '.govuk-info-message'
-  element :no_pupils_message, '.govuk-body', text: 'No pupils with access arrangements or modifications selected.'
+  element :no_pupils_message, '.govuk-body', text: 'No pupils with access arrangements.'
   section :pupil_list, '#submitted-pupil-access-arrangements' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
