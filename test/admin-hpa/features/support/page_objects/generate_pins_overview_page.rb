@@ -12,9 +12,8 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'
-  element :guidance, "a", text: 'Guidance'
-  element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
-  element :restarts, "a[href='/restart/overview']", text: 'Restarts'
+  element :guidance, "a", text: 'Read the guidance and watch videos'
+  element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
   element :csrf, 'input[name="_csrf"]', visible: false
 
   section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'

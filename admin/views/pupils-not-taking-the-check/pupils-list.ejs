@@ -2,16 +2,17 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Select pupils not taking the check</h1>
+            <h1 class="govuk-heading-xl">Give a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
         <% if (pupilsList && pupilsList.length > 0) { %>
             <form method="post" action="/pupils-not-taking-the-check/save-pupils">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-                <% if (attendanceCodes && attendanceCodes.length > 1) { %>
+                <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                 <h2 class="govuk-heading-m">1. Select reason</h2>
+                <%- partial('partials/_attendance_code_reasons') %>
                 <ul class="govuk-list attendance-code-list">
                     <div class="govuk-radios">
-                        <% attendanceCodes.forEach( (aValues) => { %>
+                        <% attendanceCodesPresentationData.forEach( (aValues) => { %>
                             <li>
                                 <div class="govuk-radios__item">
                                     <input
@@ -30,8 +31,7 @@
                     </div>
                 </ul>
                 <% } %>
-                <%- partial('partials/_attendance_code_reasons') %>
-                <h2 class="govuk-heading-m">2. Select pupils</h2>
+                <h2 class="govuk-heading-m">2. Select pupils to remove</h2>
                 <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
                 <table id="pupilsList" class="govuk-table govuk-spacious">
                     <caption class="govuk-body govuk-table__caption">Pupil register</caption>

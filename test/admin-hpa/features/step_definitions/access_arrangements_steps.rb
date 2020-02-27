@@ -17,21 +17,21 @@ end
 
 Then(/^I should see the select access arrangements page matches design$/) do
   expected_list = SqlDbHelper.access_arrangements.map{|a| a['description']}
-  actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text}
-  expect(actual_list).to eql expected_list
+  actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text.split(' (')[0]}
+  expect(actual_list).to eql expected_list.sort
   expect(select_access_arrangements_page).to have_drop_down
   expect(select_access_arrangements_page).to have_save
   expect(select_access_arrangements_page).to have_cancel
   expect(select_access_arrangements_page).to have_back_to_top
 
-  select_access_arrangements_page.select_access_arrangement("Input assistance (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Input assistance (reason and input assistant's name required)")
   expect(select_access_arrangements_page).to have_input_assistance_info
   expect(select_access_arrangements_page).to have_input_assistance_reason
   expect(select_access_arrangements_page).to have_input_assistance_notice
 
-  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
   expected_list = SqlDbHelper.question_reader_reasons.map{|a| a['description']}
-  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
   actual_list = question_reader_access_arrangement_row.question_reader_reason.map {|a| a.question_reader_reason_name.text}
   expect(actual_list).to eql expected_list
 end
@@ -81,29 +81,29 @@ end
 When(/^I save access arrangements without providing explanation for input assistance$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("Input assistance (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Input assistance (reason and input assistant's name required)")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without providing explanation for next between questions$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("'Next' button between questions")
+  select_access_arrangements_page.select_access_arrangement("Pause - 'next' button between questions")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without selecting any question reader reason$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without providing explanation for other reason for question reader$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
-  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
+  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
   question_reader_access_arrangement_row.question_reader_reason[3].question_reader_reason_radio.click
   select_access_arrangements_page.save.click
 end
@@ -163,7 +163,7 @@ Given(/^I have a pupil who needs all possible access arrangements$/) do
   end
   select_access_arrangements_page.input_assistance_reason.set 'This is a reason for input assistance'
   select_access_arrangements_page.next_button_reason.set 'This is a reason for next between questions'
-  question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
   question_reader_row.question_reader_reason[2].question_reader_reason_radio.click
   select_access_arrangements_page.save.click
 end
@@ -171,7 +171,7 @@ end
 Then(/^the arrangements should be listed against the pupil$/) do
   pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
   aa_array = SqlDbHelper.access_arrangements.map{|a| a['description'].gsub('(reason required)','').strip}
-  expect(aa_array).to eql pupil_row.access_arrangement_name.map{|a| a.text}
+  expect(aa_array.sort).to eql pupil_row.access_arrangement_name.map{|a| a.text}
 end
 
 And(/^I add a new access arrangement$/) do
