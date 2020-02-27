@@ -13,7 +13,7 @@ const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const queueNameService = require('../queue-name-service')
-const schoolPinService = require('../school-pin-service')
+const schoolPinService = require('./school-pin.service')
 
 const checkFormMock = {
   id: 100,
@@ -36,9 +36,9 @@ describe('check-start.service', () => {
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockNewChecks = [
-    { id: 1, check_checkCode: '1A', pupil_id: 1 },
-    { id: 1, check_checkCode: '2A', pupil_id: 2 },
-    { id: 3, check_checkCode: '3A', pupil_id: 3 }
+    { id: 1, check_checkCode: '1A', pupil_id: 1, school_pin: 'abc12xyz' },
+    { id: 1, check_checkCode: '2A', pupil_id: 2, school_pin: 'abc12xyz' },
+    { id: 3, check_checkCode: '3A', pupil_id: 3, school_pin: 'abc12xyz' }
   ]
   const mockCreatePupilCheckPayloads = [
     {

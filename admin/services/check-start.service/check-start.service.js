@@ -24,7 +24,7 @@ const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
-const schoolPinService = require('../school-pin-service')
+const schoolPinService = require('./school-pin.service')
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
