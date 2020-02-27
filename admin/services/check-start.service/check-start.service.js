@@ -16,13 +16,16 @@ const checkFormService = require('../check-form.service')
 const configService = require('../config.service')
 const dateService = require('../date.service')
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
-const pinGenerationService = require('../pin-generation.service')
+const pinService = require('../pin.service')
 const prepareCheckService = require('../prepare-check.service')
 const queueNameService = require('../queue-name-service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
+
+const fourPmToday = () => moment().startOf('day').add(16, 'hours')
+const endOfDay = () => moment().endOf('day')
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -131,7 +134,7 @@ checkStartService.prepareCheck2 = async function (
   }
 
   // Put the checks into redis for pupil-login at scale
-  await prepareCheckService.prepareChecks(pupilChecks)
+  await prepareCheckService.prepareChecks(pupilChecks, schoolTimezone)
 
   // Store the `config` section from the preparedCheckMessages into the DB
   return this.storeCheckConfigs(pupilChecks, newChecks)
@@ -197,8 +200,7 @@ checkStartService.initialisePupilCheck = async function (
     checkWindow_id: checkWindow.id,
     isLiveCheck: isLiveCheck
   }
-
-  checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime(schoolTimezone)
+  checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
   checkData.school_id = schoolId
 
   // checkCode will be created by the database on insert

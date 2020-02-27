@@ -72,7 +72,7 @@ schoolHomeFeatureEligibilityPresenter.isWithinLivePeriod = (currentDate, checkWi
  */
 schoolHomeFeatureEligibilityPresenter.isFamiliarisationPinGenerationAllowed = (currentDate, checkWindowData) => {
   const isWithinFamiliarisationPeriod = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate) && currentDate.isBefore(checkWindowData.familiarisationCheckEndDate)
-  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
+  const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   const overridePinGenerationEligibility = config.OverridePinExpiry
   return (isWithinFamiliarisationPeriod && isWithinOpeningHours) || overridePinGenerationEligibility
 }
@@ -95,7 +95,7 @@ schoolHomeFeatureEligibilityPresenter.isFamiliarisationInTheFuture = (currentDat
  */
 schoolHomeFeatureEligibilityPresenter.isWithinFamiliarisationUnavailableHours = (currentDate, checkWindowData) => {
   const isWithinFamiliarisationPeriod = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate) && currentDate.isBefore(checkWindowData.familiarisationCheckEndDate)
-  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
+  const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   return isWithinFamiliarisationPeriod && !isWithinOpeningHours
 }
 
@@ -107,7 +107,7 @@ schoolHomeFeatureEligibilityPresenter.isWithinFamiliarisationUnavailableHours = 
  */
 schoolHomeFeatureEligibilityPresenter.isLivePinGenerationAllowed = (currentDate, checkWindowData) => {
   const isWithinLivePeriod = currentDate.isAfter(checkWindowData.checkStartDate) && currentDate.isBefore(checkWindowData.checkEndDate)
-  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
+  const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   const overridePinGenerationEligibility = config.OverridePinExpiry
   return (isWithinLivePeriod && isWithinOpeningHours) || overridePinGenerationEligibility
 }
@@ -130,7 +130,7 @@ schoolHomeFeatureEligibilityPresenter.isLiveInTheFuture = (currentDate, checkWin
  */
 schoolHomeFeatureEligibilityPresenter.isWithinLiveUnavailableHours = (currentDate, checkWindowData) => {
   const isWithinLivePeriod = currentDate.isAfter(checkWindowData.checkStartDate) && currentDate.isBefore(checkWindowData.checkEndDate)
-  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
+  const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   return isWithinLivePeriod && !isWithinOpeningHours
 }
 

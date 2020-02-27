@@ -114,7 +114,7 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  */
 businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-  const isWithinOpeningHours = currentDate.hour() >= 8 && currentDate.hour() < 16
+  const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowData.id)
   const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
   const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
