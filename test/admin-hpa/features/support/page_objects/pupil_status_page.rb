@@ -1,16 +1,16 @@
 class PupilStatusPage < SitePrism::Page
   set_url '/pupil-status'
 
-  element :heading, '.heading-xlarge', text: 'Check the progress of the multiplication tables check'
-  element :info, '.govuk-body', text: 'This list is taken from your school census data. Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF'
+  element :heading, '.heading-xlarge', text: 'See how many pupils have completed the official check'
+  element :info, '.govuk-body', text: 'Review the status of the pupils to ensure the pupils have all successfully completed the check before you sign the HDF'
   element :warning_message, '.govuk-warning-message'
 
   section :related, '.app-related-items' do
-    element :heading, '.govuk-heading-m', text: 'Related'
-    element :guidance, '.govuk-link', text: 'Guidance'
-    element :group_pupils, '.govuk-link', text: 'Group pupils'
-    element :pupils_not_taking_check, '.govuk-link', text: 'Pupils not taking the check'
-    element :access_arrangements, '.govuk-link', text: 'Access arrangements'
+    # element :heading, '.govuk-heading-m', text: 'Related'
+    # element :guidance, '.govuk-link', text: 'Guidance'
+    # element :group_pupils, '.govuk-link', text: 'Group pupils'
+    # element :pupils_not_taking_check, '.govuk-link', text: 'Pupils not taking the check'
+    # element :access_arrangements, '.govuk-link', text: 'Access arrangements'
     element :nav_title, '.app-step-nav-related__pretitle', text: 'What does each status mean?'
 
     section :status_meanings, '#step-by-step-navigation' do

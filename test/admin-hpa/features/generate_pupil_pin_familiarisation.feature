@@ -5,7 +5,6 @@ Feature: Generate Pupil PINs Familiarisation
     Given I have signed in with teacher2
     When I navigate to generate pupil pins familiarisation page
     Then I should see generate pin familiarisation overview page as per design
-    And I can see instructions for generating pin for familiarisation
 
   Scenario: Generate Pins familiarisation Pupil List page display pupil with active pin
     Given I have generated a live pin for a pupil

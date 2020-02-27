@@ -114,7 +114,7 @@ if (formData.urlSlug) {
                     </summary>
                     <div class="govuk-details__text">
                         <p>
-                            The unique pupil number (UPN) is a 13-character code that identifies each pupil in the
+                            The UPN is a 13-character code that identifies each pupil in the
                             local authority maintained school system.
                         </p>
                         <p>
@@ -135,7 +135,7 @@ if (formData.urlSlug) {
                             <span class="govuk-label govuk-!-font-weight-bold" id="date-of-birth">Date of birth</span>
                         </legend>
                         <span id="date-of-birth-hint" class="govuk-hint">
-                          For example, 30 6 <%= pupilExampleYear %>
+                          For example: 30 6 <%= pupilExampleYear %>
                         </span>
                         <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
                         <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>

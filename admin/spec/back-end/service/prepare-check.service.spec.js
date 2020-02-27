@@ -2,6 +2,7 @@
 
 /* global describe it expect beforeEach spyOn fail */
 const sut = require('../../../services/prepare-check.service')
+const pinService = require('../../../services/pin.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
 const moment = require('moment')
 
@@ -9,6 +10,7 @@ let check
 
 describe('prepare-check.service', () => {
   beforeEach(() => {
+    spyOn(pinService, 'generatePinTimestamp')
     check = {
       checkCode: 'check-code',
       schoolPin: 'school-pin',
@@ -78,7 +80,7 @@ describe('prepare-check.service', () => {
     expect(cachedObject.checkCode).toEqual(check.pupil.checkCode)
     expect(cachedObject.config).toEqual(check.config)
     expect(cachedObject.createdAt).toBeDefined()
-    expect(cachedObject.pinExpiresAt).toBeDefined()
+    expect(cachedObject.pinExpiresAtUtc).toBeDefined()
     expect(cachedObject.pupilId).toBe(check.pupil.id)
     expect(cachedObject.questions).toBe(check.questions)
     expect(cachedObject.school).toBe(check.school)

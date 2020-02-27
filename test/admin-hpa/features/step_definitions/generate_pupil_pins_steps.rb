@@ -15,11 +15,6 @@ Then(/^generate pin overview page for live check is displayed as per design$/) d
   expect(generate_pins_overview_page).to have_generate_pin_message
   expect(generate_pins_overview_page).to have_access_arrangment_text
   expect(generate_pins_overview_page).to have_access_arrangment_link
-  expect(generate_pins_overview_page).to have_instruction_section
-  generate_pins_overview_page.instruction_section.toggle.click
-  expect(generate_pins_overview_page.instruction_section.info_message[0].text).to include "Press 'Generate PINs' button."
-  expect(generate_pins_overview_page.instruction_section.info_message[1].text).to include "Select which pupils you are generating pins for."
-  expect(generate_pins_overview_page.instruction_section.info_message[2].text).to include "Distribute pupil PINs and school password to your pupils."
 end
 
 Then(/^generated pin overview page for live check with some pin generated is displayed as per design$/) do
@@ -33,8 +28,8 @@ end
 
 Given(/^I have a pupil not taking the check$/) do
   step 'I am on the pupil reason page for new pupil'
-  step 'I add Absent as a reason for a particular pupil'
-  step 'the Absent reason should be stored against the pupils'
+  step 'I add Absent during check window as a reason for a particular pupil'
+  step 'the Absent during check window reason should be stored against the pupils'
   sleep 3
 end
 
@@ -389,7 +384,7 @@ end
 Then(/^I should see related content on the generate pins page$/) do
   expect(generate_pins_overview_page).to have_related_heading
   expect(generate_pins_overview_page).to have_guidance
-  expect(generate_pins_overview_page).to have_group_pupil
+  # expect(generate_pins_overview_page).to have_group_pupil
 end
 
 Then(/^I should see generated pin page as per design$/) do

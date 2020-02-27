@@ -7,14 +7,14 @@
                 <%= messages.info[0] %>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl">Restarts</h1>
+            <h1 class="govuk-heading-xl">Select pupils to restart the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                If a pupil was significantly interrupted during the check, use this page to tell us that they will restart the check.
-                The pupil will take a different set of questions from their previous attempt and the final completed attempt will be reported.
+                If a pupil was significantly interrupted during the check, use this page to notify us that they will restart the check.
+                The pupil will get a different set of questions from their previous attempt. Only the last completed attempt will be reported.
             </p>
             <a href="/restart/select-restart-list" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Select pupils to restart
+                Generate restart for pupils
             </a>
         <%if (restarts.length > 0) { %>
             <form method="post" action="/restart/delete/" autocomplete="off">
@@ -70,16 +70,13 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
                         <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
                             <li>
-                                <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Start the MTC - password and PINs</a>
+                                <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Generate passwords and PINs for the official check</a>
                             </li>
                         <% } %>
-                        <li>
-                            <a class="govuk-link" href="/pupil-register/pupils-list" rel="noopener noreferrer">Pupil register</a>
-                        </li>
                     </ul>
                 </nav>
             </aside>

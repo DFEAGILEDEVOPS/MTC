@@ -8,7 +8,6 @@ Then(/^pupil not taking check page is displayed as per design$/) do
   expect(pupils_not_taking_check_page).to have_info_text
   expect(pupils_not_taking_check_page).to have_add_reason
   expect(pupils_not_taking_check_page).to have_back_to_top
-  expect(pupils_not_taking_check_page).to have_generate_pins
   step 'I should see related content on the pupils not taking a check page'
 end
 
@@ -217,8 +216,8 @@ end
 
 Given(/^I have previously added a reason for a pupil$/) do
   step 'I am on the pupil reason page for new pupil'
-  step 'I add Absent as a reason for a particular pupil'
-  step 'the Absent reason should be stored against the pupils'
+  step 'I add Absent during check window as a reason for a particular pupil'
+  step 'the Absent during check window reason should be stored against the pupils'
   step 'I should see the updated pupil on the hub page'
 end
 
@@ -332,5 +331,4 @@ Then(/^I should see related content on the pupils not taking a check page$/) do
   expect(pupils_not_taking_check_page).to have_related_heading
   expect(pupils_not_taking_check_page).to have_guidance
   expect(pupils_not_taking_check_page).to have_access_arrangements
-  expect(pupils_not_taking_check_page).to have_generate_pins
 end
