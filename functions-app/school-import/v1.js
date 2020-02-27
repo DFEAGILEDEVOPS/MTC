@@ -4,7 +4,6 @@ const schoolDataService = require('./service/data-access/school.data.service')
 const name = 'school-import'
 
 const schoolImport = {
-
   async process (context, blob) {
     context.log.verbose('school-import.v1.process() called')
     const csvParsed = csv.parse(blob.toString())
@@ -15,17 +14,25 @@ const schoolImport = {
       ['EstablishmentName', 'name'],
       ['StatutoryLowAge', 'statLowAge'],
       ['StatutoryHighAge', 'statHighAge'],
-      ['EstablishmentStatus (code)', 'estabStatusCode']
+      ['EstablishmentStatus (code)', 'estabStatusCode'],
+      ['TypeOfEstablishment (code)', 'estabTypeCode']
     ]
     // mapColumns() will throw if it can't find the headers it needs
     const mapping = this.mapColumns(csvParsed.shift(), mapper)
     context.log.verbose(`${name} mapping `, mapping)
-    const jobResult = await schoolDataService.bulkUpload(context, csvParsed, mapping)
-    context.log.verbose(`${name}  bulkUpload complete`)
-    this.exportJobResults(context, jobResult)
-    context.log.verbose(`${name} job results exported`)
-    const meta = { linesProcessed: jobResult.linesProcessed, processCount: jobResult.schoolsLoaded }
-    return meta
+
+    try {
+      const jobResult = await schoolDataService.bulkUpload(context, csvParsed, mapping)
+      context.log.verbose(`${name}  bulkUpload complete`)
+      this.exportJobResults(context, jobResult)
+      context.log.verbose(`${name} job results exported`)
+      return { linesProcessed: jobResult.linesProcessed, processCount: jobResult.schoolsLoaded }
+    } catch (error) {
+      if (error.jobResult) {
+        this.exportJobResults(context, error.jobResult)
+      }
+      throw error
+    }
   },
 
   /**
@@ -56,9 +63,22 @@ const schoolImport = {
     return mapping
   },
 
+  /**
+   * Write to output bindings so that they can be written to blob storage
+   * @param context
+   * @param jobResult
+   */
   exportJobResults (context, jobResult) {
+    context.log.verbose(`${name} exportJobResults() called`)
+    if (!jobResult) {
+      console.log(`${name} exportJobResults() - missing jobResult param`)
+      return
+    }
     if (Array.isArray(jobResult.stdout) && jobResult.stdout.length > 0) {
       context.bindings.schoolImportStdout = jobResult.stdout.join('\n')
+    }
+    if (Array.isArray(jobResult.stderr) && jobResult.stderr.length > 0) {
+      context.bindings.schoolImportStderr = jobResult.stderr.join('\n')
     }
   }
 }

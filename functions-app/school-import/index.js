@@ -13,9 +13,8 @@ module.exports = async function schoolImportIndex (context, blob) {
   try {
     meta = await v1.process(context, blob)
   } catch (error) {
-    context.log.error(`${name}: ERROR: ${error.message}`)
-    context.log.verbose(error)
-    throw error
+    meta = { processCount: 'n/a' }
+    context.log.error(`${name}: ERROR: ${error.message}`, error)
   }
 
   const end = performance.now()

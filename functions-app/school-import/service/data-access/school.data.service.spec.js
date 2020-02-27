@@ -1,7 +1,8 @@
 'use strict'
 
-/* global describe expect it */
+/* global describe expect it spyOn */
 
+const predicates = require('./predicates')
 const sut = require('./school.data.service')
 
 describe('#getMappedData', () => {
@@ -21,5 +22,31 @@ describe('#getMappedData', () => {
       urn: 123456,
       dfeNumber: 9991111
     })
+  })
+})
+
+describe('#isPredicated', () => {
+  it('is defined', () => {
+    expect(sut.isPredicated).toBeDefined()
+  })
+
+  const school = {
+    urn: '1',
+    name: 'test school',
+    estabStatusCode: '1', // open
+    estabTypeCode: '30',
+    statLowAge: '7',
+    statHighAge: '12'
+  }
+
+  it('calls the predicates', () => {
+    spyOn(predicates, 'isSchoolOpen').and.callThrough()
+    spyOn(predicates, 'isNotBritishOverseas').and.callThrough()
+    spyOn(predicates, 'isAgeInRange').and.callThrough()
+    const res = sut.isPredicated(school)
+    expect(res).toBe(true)
+    expect(predicates.isSchoolOpen).toHaveBeenCalled()
+    expect(predicates.isNotBritishOverseas).toHaveBeenCalled()
+    expect(predicates.isAgeInRange).toHaveBeenCalled()
   })
 })

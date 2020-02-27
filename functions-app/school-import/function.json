@@ -4,13 +4,20 @@
       "name": "schoolImportInput",
       "type": "blobTrigger",
       "direction": "in",
-      "path": "school-import/{name}",
+      "path": "school-import/{name}.csv",
       "connection": "AzureWebJobsStorage"
     },
     {
       "name": "schoolImportStdout",
       "type": "blob",
-      "path": "school-import/{name}-stdout.txt",
+      "path": "school-import/{name}-output-log.txt",
+      "connection": "AzureWebJobsStorage",
+      "direction": "out"
+    },
+    {
+      "name": "schoolImportStderr",
+      "type": "blob",
+      "path": "school-import/{name}-error-log.txt",
       "connection": "AzureWebJobsStorage",
       "direction": "out"
     }

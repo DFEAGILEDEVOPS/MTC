@@ -1,8 +1,9 @@
-
 'use strict'
 
 const mssql = require('mssql')
 const config = require('../../../config')
+const predicates = require('./predicates')
+
 let pool
 const name = 'school-import'
 let meta = {}
@@ -22,7 +23,7 @@ const schoolDataService = {
       meta.stderr = []
     }
     if (msg) {
-      meta.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+      meta.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
     }
   },
 
@@ -69,26 +70,14 @@ const schoolDataService = {
 
   /**
    * Determine if the record should be loaded
-   * @param mapped - school attributes with our mapped property names
+   * @param school - school attributes with our mapped property names
    * @return {boolean}
    */
-  isPredicated (mapped) {
-    const low = mapped.statLowAge
-    const high = mapped.statHighAge
-    if (low === undefined || high === undefined) {
-      this.logError(`${name} Missing data for school URN [${mapped.urn}] obj ${JSON.stringify(mapped)}`)
-    }
-    if (mapped.estabStatusCode !== '1' || mapped.estabStatusCode !== '3' || mapped.estabStatusCode !== '4') {
-      // 1 - open, 2 - closed, 3 - open proposed to close, 4 - Proposed to open
-      this.log(`school ${mapped.urn} will not be loaded - estabStatusCode is [${mapped.estabStatusCode}]`)
-      return false
-    }
+  isPredicated (school) {
     const targetAge = 9
-    if (low < targetAge && high >= targetAge) {
-      return true
-    }
-    this.log(`school ${mapped.urn} does not meet age criteria ${mapped.statLowAge}-${mapped.statHighAge}`)
-    return false
+    return predicates.isSchoolOpen(this.log, school) &&
+      predicates.isNotBritishOverseas(this.log, school) &&
+      predicates.isAgeInRange(this.log, targetAge, school)
   },
 
   /**
@@ -108,29 +97,37 @@ const schoolDataService = {
     const table = new mssql.Table('[mtc_admin].[school]')
     table.create = false
     table.columns.add('dfeNumber', mssql.Int, { nullable: false })
-    table.columns.add('estabCode', mssql.NVarChar(4000), { nullable: true })
+    table.columns.add('estabCode', mssql.NVarChar(mssql.MAX), { nullable: true })
     table.columns.add('leaCode', mssql.Int, { nullable: true })
-    table.columns.add('name', mssql.NVarChar(4000), { nullable: false })
+    table.columns.add('name', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('urn', mssql.Int, { nullable: false })
 
     for (let i = 0; i < data.length; i++) {
       const mapped = this.getMappedData(data[i], mapping)
       meta.linesProcessed += 1
+
       if (this.isPredicated(mapped)) {
         meta.schoolsLoaded += 1
         const dfeNumber = parseInt('' + mapped.leaCode + mapped.estabCode, 10)
-        if (dfeNumber.length !== 7) {
-          this.logError(`${name} school [${mapped.urn}] has a bad dfeNumber [${dfeNumber}]`)
+        if (dfeNumber.toString().length !== 7) {
+          this.logError(`${name} school [${mapped.urn}] has a short dfeNumber [${dfeNumber}]`)
         }
         table.rows.add(dfeNumber, mapped.estabCode, parseInt(mapped.leaCode, 10), mapped.name, parseInt(mapped.urn, 10))
       }
     }
-
     context.log.verbose(`${name} data rows added for bulk upload`)
     const request = new mssql.Request(pool)
     context.log.verbose(`${name} new request obj created`)
-    await request.bulk(table)
-    context.log(`${name} bulk request complete`)
+    if (meta.schoolsLoaded > 0) {
+      try {
+        const res = await request.bulk(table)
+        context.log(`${name} bulk request complete: `, res)
+      } catch (error) {
+        this.logError(`Bulk request failed. Error was:\n ${error.message}`)
+        error.jobResult = meta
+        throw error
+      }
+    }
     return meta
   }
 }

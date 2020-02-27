@@ -28,7 +28,7 @@ describe('#v1', () => {
       expect(mapping).toEqual({
         rowA: 0,
         rowB: 1,
-        rowC: 4
+        rowC: 5
       })
     })
 
