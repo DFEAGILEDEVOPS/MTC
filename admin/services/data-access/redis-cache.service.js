@@ -15,11 +15,13 @@ if (config.Redis.useTLS) {
 
 let redis
 
-const redisConnect = () => {
+const redisConnect = async () => {
   if (!redis) {
     redis = new Redis(redisConfig)
   }
 }
+
+redisConnect()
 
 const redisCacheService = {}
 
@@ -29,7 +31,7 @@ const redisCacheService = {}
  * @returns {Promise<any>}
  */
 redisCacheService.get = async key => {
-  redisConnect()
+  await redisConnect()
   try {
     logger.debug(`REDIS (get): retrieving ${key}`)
     const cacheEntry = await redis.get(key)
@@ -48,7 +50,7 @@ redisCacheService.get = async key => {
  * @returns {Promise<void>}
  */
 redisCacheService.set = async (key, value, ttl = undefined) => {
-  redisConnect()
+  await redisConnect()
   try {
     logger.debug(`REDIS (set): adding ${key} ttl:${ttl}`)
     const storageItemString = prepareCacheEntry(value)
@@ -72,7 +74,7 @@ redisCacheService.drop = async (cacheKeys = []) => {
   if (Array.isArray(cacheKeys) && cacheKeys.length === 0) {
     return false
   }
-  redisConnect()
+  await redisConnect()
   if (typeof cacheKeys === 'string') {
     cacheKeys = [cacheKeys]
   }
@@ -94,7 +96,7 @@ redisCacheService.setMany = async (items) => {
   if (!Array.isArray(items)) {
     throw new Error('items is not an array')
   }
-  redisConnect()
+  await redisConnect()
   const multi = redis.multi()
   for (let index = 0; index < items.length; index++) {
     const item = items[index]
@@ -119,11 +121,22 @@ redisCacheService.getMany = async (keys) => {
   if (!Array.isArray(keys)) {
     throw new Error('keys is not an array')
   }
-  redisConnect()
+  await redisConnect()
   const rawData = await redis.mget(...keys)
   const data = rawData.map(raw => unwrap(raw))
   logger.debug(`(redis) getMany ${keys.join(', ')}`)
   return data
+}
+
+/**
+ * returns the internal redis client instance
+ * @return {Promise<Redis>}
+ */
+redisCacheService.getClientInstance = async () => {
+  if (!redis) {
+    await redisConnect()
+  }
+  return redis
 }
 
 /**

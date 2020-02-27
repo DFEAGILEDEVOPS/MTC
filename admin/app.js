@@ -45,6 +45,9 @@ const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
+// const redisService = require('./services/data-access/redis-cache.service')
+// const ioRedisClient = redisService.getClientInstance()
+const Redis = require('ioredis')
 
 const app = express()
 setupLogging(app)
@@ -181,38 +184,45 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }))
 
-const RedisStore = require('connect-redis')(session)
-const options = {
-  host: config.Redis.Host,
-  port: config.Redis.Port
+const redisConfig = {
+  port: config.Redis.Port,
+  host: config.Redis.Host
 }
 if (config.Redis.Key) {
-  options.auth_pass = config.Redis.Key
+  redisConfig.password = config.Redis.Key
 }
 if (config.Redis.useTLS) {
-  options.tls = { servername: config.Redis.Host }
-}
-const sessionStore = new RedisStore(options)
-
-const sessionOptions = {
-  name: 'mtc-admin-session-id',
-  secret: config.SESSION_SECRET,
-  resave: false,
-  rolling: true,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000,
-    httpOnly: true,
-    secure: secureCookie
-  },
-  store: sessionStore
+  redisConfig.tls = { host: config.Redis.Host }
 }
 
-app.use(session(sessionOptions))
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(flash())
-app.use(expressValidator())
+const setupSessionStore = async (app) => {
+  const redisClient = await new Redis(redisConfig)
+  const RedisStore = require('connect-redis')(session)
+  const options = {
+    client: redisClient
+  }
+  logger.debug(`ioredis status:${redisClient.status}`)
+  const sessionStore = new RedisStore(options)
+  const sessionOptions = {
+    name: 'mtc-admin-session-id',
+    secret: config.SESSION_SECRET,
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000,
+      httpOnly: true,
+      secure: secureCookie
+    },
+    store: sessionStore
+  }
+  app.use(session(sessionOptions))
+  app.use(passport.initialize())
+  app.use(passport.session())
+  app.use(flash())
+  app.use(expressValidator())
+}
+setupSessionStore(app)
 
 // Breadcrumbs
 app.use(breadcrumbs.init())
