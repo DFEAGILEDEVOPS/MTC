@@ -21,33 +21,67 @@
         <%- partial('partials/_gds_session_expiry') %>
         <form id="submitAccessArrangements" method="post" action="/access-arrangements/submit" autocomplete="off">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-          <% if(!formData['isEditView']) { %>
-            <div id="selectAccessArrangementsPupil"
-                 class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
-                <h2 class="govuk-heading-l">1. Search for pupil name</h2>
-                <div id="pupilFormControl" class="govuk-body govuk-!-width-one-half">
-                    <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
-                    <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
-                        <option value="">Select a pupil</option>
-                        <% pupils.map(p => { %>
-                            <option
-                                    value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
-                        <% }) %>
-                    </select>
+            <h2 class="govuk-heading-l">1. Select access arrangements</h2>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What do these access arrangements mean?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <dl class="govuk-panel-list">
+                        <dt>
+                            <div><strong>Audible time alert</strong></div>
+                            <div>A beep that sounds two seconds before the end of each question, and at the end of each question.
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Audio version</strong></div>
+                            <div>The screen reader will read out all text displayed on screen in the MTC.
+                                This includes instructions and questions. Please note, the MTC does not support third-party screen
+                                readers.
+                                All pupils requiring this functionality will need to use the in-built screen reader due to
+                                compatibility with the timed function.
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Colour contrast</strong></div>
+                            <div>Change the font and background colours.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Font size</strong></div>
+                            <div>Increase or decrease the size of the font and number pad on the screen.</div>
+                        </dt>
+                        <dt>
+                            <div><strong>Input assistance</strong></div>
+                            <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be
+                                used when a pupil is physically:
+                                <ul class="govuk-list govuk-list--bullet">
+                                    <li>unable to enter their own answers</li>
+                                    <li>able to input but inputting causes physical discomfort</li>
+                                    <li>able to input but inputs very slowly</li>
+                                    <li>able to input but finds inputting very difficult</li>
+                                </ul>
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Pause - 'next' button between questions</strong></div>
+                            <div>Instead of a 3-second pause between questions, the pupil can press a ‘Next’ button when they are
+                                ready for a new question.
+                                There is a 30-minute time limit to complete the check
+                            </div>
+                        </dt>
+                        <dt>
+                            <div><strong>Remove on-screen number pad</strong></div>
+                            <div>Only the question and answer box will show on screen.</div>
+                        </dt>
+                    </dl>
                 </div>
-            </div>
-            <% } else { %>
-                <div class="govuk-inset-text">
-                    <p class="govuk-body">
-                        For <%= formData['lastName'] %>, <%= formData['foreName'] %>
-                    </p>
-                </div>
-            <% } %>
-            <h2 class="govuk-heading-l">2. Select access arrangements</h2>
+            </details>
             <div class="govuk-form-group <%= error.isError('accessArrangementsList') ? 'govuk-form-group--error' : '' %>">
                 <span class="govuk-error-message"><%= error.get('accessArrangementsList') %></span>
-                <ul class="govuk-list checkbox-list govuk-!-margin-left-0 govuk-!-margin-bottom-9" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
-                <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                <ul class="govuk-list checkbox-list govuk-!-margin-left-0 govuk-!-margin-bottom-4" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                <% Array.isArray(accessArrangementsViewData) && accessArrangementsViewData.forEach( (accessArrangement, index) => { %>
                     <li>
                         <div class="govuk-!-font-size-16">
                             <label class="govuk-label" for="accessArrangements-<%= index %>">
@@ -159,62 +193,28 @@
                     <% }) %>
                 </ul>
             </div>
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        What do these access arrangements mean?
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <dl class="govuk-panel-list">
-                        <dt>
-                            <div><strong>Audible time alert</strong></div>
-                            <div>A beep that sounds two seconds before the end of each question, and at the end of each question.
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Colour contrast</strong></div>
-                            <div>Change the font and background colours.</div>
-                        </dt>
-                        <dt>
-                            <div><strong>Font size</strong></div>
-                            <div>Increase or decrease the size of the font and number pad on the screen.</div>
-                        </dt>
-                        <dt>
-                            <div><strong>Input assistance</strong></div>
-                            <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be
-                                used when a pupil is physically:
-                                <ul class="govuk-list govuk-list--bullet">
-                                    <li>unable to enter their own answers</li>
-                                    <li>able to input but inputting causes physical discomfort</li>
-                                    <li>able to input but inputs very slowly</li>
-                                    <li>able to input but finds inputting very difficult</li>
-                                </ul>
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>'Next' button between questions</strong></div>
-                            <div>Instead of a 3-second pause between questions, the pupil can press a ‘Next’ button when they are
-                                ready for a new question.
-                                There is a 30-minute time limit to complete the check
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Question reader</strong></div>
-                            <div>The screen reader will read out all text displayed on screen in the MTC.
-                                This includes instructions and questions. Please note, the MTC does not support third-party screen
-                                readers.
-                                All pupils requiring this functionality will need to use the in-built screen reader due to
-                                compatibility with the timed function.
-                            </div>
-                        </dt>
-                        <dt>
-                            <div><strong>Remove on-screen number pad</strong></div>
-                            <div>Only the question and answer box will show on screen.</div>
-                        </dt>
-                    </dl>
+            <% if(!formData['isEditView']) { %>
+                <div id="selectAccessArrangementsPupil"
+                     class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
+                    <h2 class="govuk-heading-l">2. Search for pupil name</h2>
+                    <div id="pupilFormControl" class="govuk-body govuk-!-width-one-half">
+                        <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
+                        <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
+                            <option value="">Select a pupil</option>
+                            <% pupils.map(p => { %>
+                                <option
+                                        value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
+                            <% }) %>
+                        </select>
+                    </div>
                 </div>
-            </details>
+            <% } else { %>
+                <div class="govuk-inset-text">
+                    <p class="govuk-body">
+                        For <%= formData['lastName'] %>, <%= formData['foreName'] %>
+                    </p>
+                </div>
+            <% } %>
             <button type="submit" id="save-access-arrangement" class="govuk-button govuk-!-margin-right-2">Save</button>
             <a href="/access-arrangements/overview" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                 Cancel

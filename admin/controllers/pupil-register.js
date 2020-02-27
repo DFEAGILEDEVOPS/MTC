@@ -6,7 +6,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const incompleteChecksPresenter = require('../helpers/incomplete-checks-presenter')
 
 const listPupils = async (req, res, next) => {
-  res.locals.pageTitle = 'Pupil register'
+  res.locals.pageTitle = 'View, add or edit pupils on your school\'s register'
 
   let checkWindowData
   let availabilityData

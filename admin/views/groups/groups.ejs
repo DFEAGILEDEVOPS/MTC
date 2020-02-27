@@ -22,18 +22,18 @@
             </div>
         <% } %>
 
-            <h1 class="govuk-heading-xl">Group pupils</h1>
+            <h1 class="govuk-heading-xl">Organise pupils into groups</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
+                Sort pupils by classroom or ability. You can filter by these groups when printing pupil PINs.
             </p>
         <% if (isFeatureEnabled('groupCreate')) { %>
             <a href="/group/pupils-list/add" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Create new group
+                View pupils and create new group
             </a>
         <% } else { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                Create new group
+                View pupils and create new group
             </button>
         <% } %>
         <% if (Array.isArray(groups) && groups.length > 0) { %>
@@ -81,16 +81,14 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
                         <li>
-                            <a class="govuk-link" href="/pupil-register/pupils-list" rel="noopener noreferrer">Pupil register</a>
+                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Give a reason why pupil is not taking the check</a>
                         </li>
-                    <% if (pinGenerationEligibilityData.isLivePinGenerationAllowed) { %>
                         <li>
-                            <a class="govuk-link" href="/pupil-pin/generate-live-pins-overview" rel="noopener noreferrer">Start the MTC - password and PINs</a>
+                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Set access arrangements for pupils that need them</a>
                         </li>
-                    <% } %>
                     </ul>
                 </nav>
             </aside>

@@ -33,7 +33,7 @@
             <h1 class="no-print govuk-heading-xl">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="no-print govuk-body">
-                Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
+                PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
                 <% if (pupils && pupils.length > 0) { %>
                     You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
                 <% } %>
@@ -157,14 +157,13 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
-                        <li>
-                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Group pupils</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/restart/overview" rel="noopener noreferrer">Restarts</a>
-                        </li>
+                        <% if (pinEnv === 'live') { %>
+                            <li>
+                                <a class="govuk-link" href="/restart/overview" rel="noopener noreferrer">Select pupils to restart the check</a>
+                            </li>
+                        <% } %>
                     </ul>
                 </nav>
             </aside>
