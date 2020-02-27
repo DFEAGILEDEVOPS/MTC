@@ -190,6 +190,6 @@ module.exports = {
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true
   },
   SchoolPinGeneratorFunction: {
-    FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || ''
+    FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || 'http://localhost:7071/api/school-pin-http-service'
   }
 }
