@@ -13,9 +13,7 @@ function finish (start: number, context: Context) {
 
 const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
-  const schoolUuid = req.body.school_uuid
-
-  if (!schoolUuid) {
+  if (!req.body || !req.body.school_uuid) {
     context.res = {
       status: 400,
       body: 'school_uuid is required'
@@ -23,9 +21,17 @@ const schoolPinHttpService: AzureFunction = async function (context: Context, re
     return
   }
 
+  const schoolUuid = req.body.school_uuid
+
   const start = performance.now()
   const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
-  await schoolPinReplenishmentService.process(context.log, schoolUuid)
+  const newPin = await schoolPinReplenishmentService.process(context.log, schoolUuid)
+  context.res = {
+    status: 200,
+    body: {
+      pin: newPin
+    }
+  }
   finish(start, context)
 }
 

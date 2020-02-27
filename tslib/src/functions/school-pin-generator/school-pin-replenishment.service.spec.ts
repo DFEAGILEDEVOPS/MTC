@@ -106,4 +106,19 @@ describe('school-pin-replenishment.service', () => {
     expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
   })
+
+  test('returns generated pin when single schoolUUID passed as param', async () => {
+    dataService.getSchoolByUuid = jest.fn(async (uuid: string) => {
+      const school: School = {
+        id: 1,
+        name: 'x'
+      }
+      return school
+    })
+    const schoolUuid = uuid.v4()
+    const generatedPin = await sut.process(logger, schoolUuid)
+    expect(generatedPin).toBeDefined()
+    expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
+    expect(dataService.updatePin).toHaveBeenCalledTimes(1)
+  })
 })

@@ -33,11 +33,14 @@ export class SchoolPinReplenishmnentService {
     this.expiryGenerator = new SchoolPinExpiryGenerator()
   }
 
-  async process (logger: ILogger, schoolUUID?: string): Promise<void> {
+  async process (logger: ILogger, schoolUUID?: string): Promise<void | string> {
     let schoolsToProcess: Array<School>
+    let returnGeneratedPin: boolean = false
+    let pinToReturn: string = ''
     if (schoolUUID === undefined) {
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
+      returnGeneratedPin = true
       const school = await this.dataService.getSchoolByUuid(schoolUUID)
       schoolsToProcess = []
       if (school !== undefined) {
@@ -60,6 +63,9 @@ export class SchoolPinReplenishmnentService {
           newPin: this.pinGenerator.generate(),
           attempts: this.configProvider.PinUpdateMaxAttempts
         }
+        if (returnGeneratedPin === true) {
+          pinToReturn = update.newPin
+        }
         let attemptsMade = 0
         while (!pinUpdated && (attemptsMade < update.attempts)) {
           try {
@@ -74,6 +80,7 @@ export class SchoolPinReplenishmnentService {
         }
       }
     }
+    if (returnGeneratedPin) return pinToReturn
   }
 }
 
