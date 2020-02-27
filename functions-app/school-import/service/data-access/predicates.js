@@ -3,9 +3,10 @@ const RA = require('ramda-adjunct')
 
 const predicates = {
   isSchoolOpen (logger, school) {
+    const schoolClosed = 2
     // we want to load all schools that are open, proposed to open, proposed to close
     // this is the same as every school that isn't closed
-    if (school.estabStatusCode === '2') {
+    if (Number(school.estabStatusCode) === schoolClosed) {
       // 1 - open, 2 - closed, 3 - open proposed to close, 4 - Proposed to open
       logger(`Excluding school ${school.urn} it is closed - estabStatusCode is [${school.estabStatusCode}]`)
       return false
