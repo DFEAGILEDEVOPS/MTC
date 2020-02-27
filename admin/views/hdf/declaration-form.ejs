@@ -24,12 +24,12 @@
         <% if (!hdfEligibility) { %>
             <span class="govuk-heading-m">Currently unavailable</span>
             <p class="govuk-body">
-                All pupils should have completed a check or have a reason for not taking the check.
-                Access to this section will then become available.
+                Access to this section will become available when all pupils have completed the official live check or have a reason for not taking the check.
+                Go to <a href="/pupil-status">pupil status</a> to check these and follow the steps required.
             </p>
         <% } else { %>
             <p class="govuk-body govuk-!-font-size-24">
-                Confirm all pupils taking the check completed it according to <a class="govuk-link" href="<%= locals.guidancePdf %>" target="_blank">MTC guidance</a>.
+                Confirm all pupils taking the check completed it according to <a class="govuk-link" href="<%= locals.guidancePdf %>" target="_blank">administration guidance</a>.
                 In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
             </p>
             <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">

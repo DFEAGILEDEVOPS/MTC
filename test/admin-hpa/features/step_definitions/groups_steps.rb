@@ -19,8 +19,8 @@ end
 Then(/^I should see related content$/) do
   expect(group_pupils_page).to have_related_heading
   expect(group_pupils_page).to have_guidance
-  expect(group_pupils_page).to have_pupil_register
-  expect(group_pupils_page).to have_generate_pins
+  expect(group_pupils_page).to have_not_taking_check
+  expect(group_pupils_page).to have_access_arrangment
 end
 
 Given(/^I am on the create group page$/) do
