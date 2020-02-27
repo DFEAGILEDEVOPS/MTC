@@ -17,7 +17,7 @@ end
 
 Then(/^I should see the select access arrangements page matches design$/) do
   expected_list = SqlDbHelper.access_arrangements.map{|a| a['description']}
-  actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text}
+  actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text.split(' (')[0]}
   expect(actual_list).to eql expected_list.sort
   expect(select_access_arrangements_page).to have_drop_down
   expect(select_access_arrangements_page).to have_save

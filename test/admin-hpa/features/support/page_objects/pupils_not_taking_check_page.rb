@@ -3,7 +3,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
 
   element :heading, '.govuk-heading-xl', text: 'Give a reason why a pupil is not taking the check'
   element :info_text, 'p.govuk-body', text: "All pupils must be considered to take the multiplication tables check at the end of year 4. If a pupil is working below expectation or has left your school, a reason must be provided."
-  element :add_reason, 'a', text: "Select pupil and reason"
+  element :add_reason, 'a', text: "Select pupils and reason"
   element :back_to_top, 'a', text: "Back to top"
   element :flash_message, '.govuk-info-message'
   element :signed_in_as, '.signed-in-as'

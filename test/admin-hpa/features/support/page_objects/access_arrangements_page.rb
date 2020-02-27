@@ -6,7 +6,7 @@ class AccessArrangementsPage < SitePrism::Page
   element :select_pupil_and_arrangement_btn, 'a[href="/access-arrangements/select-access-arrangements"]'
 
   element :success_message, '.govuk-info-message'
-  element :no_pupils_message, '.govuk-body', text: 'No pupils with access arrangements or modifications selected.'
+  element :no_pupils_message, '.govuk-body', text: 'No pupils with access arrangements.'
   section :pupil_list, '#submitted-pupil-access-arrangements' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
