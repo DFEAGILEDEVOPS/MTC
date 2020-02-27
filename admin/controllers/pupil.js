@@ -123,7 +123,7 @@ const postAddMultiplePupils = async (req, res, next) => {
   try {
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
-      throw new Error(`School [${req.user.school}] not found`)
+      throw new Error(`School with id [${req.user.schoolId}] not found`)
     }
   } catch (error) {
     return next(error)

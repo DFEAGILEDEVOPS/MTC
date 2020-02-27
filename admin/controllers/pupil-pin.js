@@ -95,7 +95,7 @@ const getGeneratePinsList = async (req, res, next) => {
     }
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
+      return next(Error(`School with id [${req.user.schoolId}] not found`))
     }
 
     pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id, isLiveCheck)
@@ -148,14 +148,9 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-    const update = pinGenerationService.generateSchoolPassword(school)
-    if (update) {
-      await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+      return next(Error(`School with id [${req.user.schoolId}] not found`))
     }
 
-    // depends on school pin being ready
     await checkStartService.prepareCheck2(
       pupilsList,
       req.user.School,
