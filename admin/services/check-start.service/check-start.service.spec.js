@@ -150,6 +150,27 @@ describe('check-start.service', () => {
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
+  })
+
+  describe('prepareCheck2:school password generation', () => {
+    beforeEach(() => {
+      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
+      spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
+      spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
+      spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
+      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
+      spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
+      spyOn(configService, 'getBatchConfig').and.returnValue(
+        {
+          1: configService.getBaseConfig(),
+          2: configService.getBaseConfig(),
+          3: configService.getBaseConfig()
+        })
+      spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
+      spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve())
+      spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
+    })
 
     it('attempts to generate school pin if not found in checks', async () => {
       spyOn(schoolPinService, 'generateSchoolPin')
@@ -158,13 +179,24 @@ describe('check-start.service', () => {
         { id: 1, check_checkCode: '2A', pupil_id: 2 },
         { id: 3, check_checkCode: '3A', pupil_id: 3 }
       ]
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(checksWithNoSchoolPins))
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+        return Promise.resolve(checksWithNoSchoolPins)
+      })
+      // s
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(1)
     })
 
     it('does not attempt to generate school pin if found against checks', async () => {
       spyOn(schoolPinService, 'generateSchoolPin')
+      const checksWithNoSchoolPins = [
+        { id: 1, check_checkCode: '1A', pupil_id: 1, school_pin: 'aaa11aaa' },
+        { id: 1, check_checkCode: '2A', pupil_id: 2, school_pin: 'aaa11aaa' },
+        { id: 3, check_checkCode: '3A', pupil_id: 3, school_pin: 'aaa11aaa' }
+      ]
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+        return Promise.resolve(checksWithNoSchoolPins)
+      })
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
