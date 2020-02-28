@@ -49,6 +49,7 @@ module.exports = {
   OVERRIDE_AVAILABILITY_CHECKS: false,
   OVERRIDE_AVAILABILITY_MIDDLEWARE: false,
   OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
+  OverridePinValidFrom: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_VALIDITY_TIME') ? toBool(process.env.OVERRIDE_PIN_VALIDITY_TIME) : false,
   PORT: process.env.PORT || '3001',
   prepareCheckMessageBatchSize: {}.hasOwnProperty.call(process.env, 'PREPARE_CHECK_MESSAGE_BATCH_SIZE') ? parseInt(process.env.PREPARE_CHECK_MESSAGE_BATCH_SIZE, 10) : 5,
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,

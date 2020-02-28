@@ -51,11 +51,6 @@ Given(/^there is a processing error with a check$/) do
   AzureTableHelper.wait_for_received_check(school_uuid, check_code)
 end
 
-
-Then(/^I should see the related links and step navigation$/) do
-  expect(pupil_status_page.related).to be_all_there
-end
-
 And(/^I should see how many days I have left and when the check window closes$/) do
   check_end_date = SqlDbHelper.check_window_details('Development Phase')['checkEndDate']
   expected_days_left = pupil_status_page.not_started_checks_details.window_info.text.split('.')[0].scan(/\d/).join('').to_i

@@ -32,13 +32,13 @@ Feature: Pupil Status Outcome
     And I should see how many days I have left and when the check window closes
 
     Examples:
-      | reason                    |
-      | Absent                    |
-      | Incorrect registration    |
-      | Left school               |
-      | Working below expectation |
-      | Unable to access          |
-      | Just arrived with EAL     |
+      | reason                                         |
+      | Absent during check window                     |
+      | Incorrect registration                         |
+      | Left school                                    |
+      | Working below expectation                      |
+      | Unable to access                               |
+      | Just arrived and unable to establish abilities |
 
   Scenario: Counts displayed in the 4 status boxes should equal total pupils
     Given I am logged in
@@ -68,9 +68,6 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Error in processing'
 
-  Scenario: Pupil status page should have a related links section
-    Given I am logged in
-    When I am on the Pupil Status page
-    Then I should see the related links and step navigation
+
 
 
