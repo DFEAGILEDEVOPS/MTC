@@ -73,11 +73,8 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * LOG_LEVEL - set to one of `debug`, `info`, `warning`, `error`, `alert`.  Default is `info`.
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there
     is a tracking code and in production mode, eg `NODE_ENV=production`
-* MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation
-* NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
 * SESSION_SECRET - random string; required for session support
-* TSO_AUTH_PUBLIC_KEY - Third party Public RSA key in PEM format used during Authorisation
 * JWT_TIMEOUT_HOURS - number - the timeout in hours of the JSON Web Token
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`

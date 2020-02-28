@@ -65,18 +65,6 @@ if (config.Auth.mode === authModes.local) {
 
 /* federated auth callbacks */
 
-/* NCA Tools */
-if (config.Auth.mode === authModes.ncaTools) {
-  router.post('/auth',
-    function (req, res, next) {
-      next()
-    },
-    passport.authenticate(authModes.ncaTools, {
-      failureRedirect: signInFailureRedirect
-    }), (req, res) => postSignIn(req, res)
-  )
-}
-
 /* Dfe Sign-in */
 
 if (config.Auth.mode === authModes.dfeSignIn) {
