@@ -1,3 +1,4 @@
+'use strict'
 
 const businessAvailabilityService = require('../services/business-availability.service')
 const checkStartService = require('../services/check-start.service/check-start.service')
