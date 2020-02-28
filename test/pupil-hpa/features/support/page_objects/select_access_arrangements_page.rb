@@ -40,8 +40,8 @@ class SelectAccessArrangementsPage < SitePrism::Page
     case access_arrangment_name
       when 'Input assistance'
         input_assistance_reason.set 'A reason for requiring this access arrangement'
-      when 'Question reader'
-        question_reader = select_access_arrangements_page.find_access_arrangement_row('Question reader')
+      when 'Audio version (reason required)'
+        question_reader = select_access_arrangements_page.find_access_arrangement_row('Audio version (reason required)')
         question_reader.question_reader_reason[1].question_reader_reason_radio.click
     end
   end
