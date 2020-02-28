@@ -25,14 +25,14 @@ Feature: Access Arrangements
       | Enter a last name  |
 
   Scenario: Setting page is displayed as per design for Question reader access arrangement
-    Given I logged in with user with access arrangement 'Question reader'
+    Given I logged in with user with access arrangement 'Audio version (reason required)'
     Then I can see setting page as per design
     And I can see following access arrangement
       | access_arrangement_type |
       | Question reader         |
 
   Scenario: Setting page is displayed as per design for Question reader access arrangement
-    Given I logged in with user with access arrangement 'Question reader'
+    Given I logged in with user with access arrangement 'Audio version (reason required)'
     Then I can see setting page as per design
     And I can see following access arrangement
       | access_arrangement_type |
