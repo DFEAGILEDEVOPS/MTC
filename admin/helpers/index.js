@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const { version: appVersion } = require('../package.json')
 const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 const roles = require('../lib/consts/roles.js')
@@ -58,7 +57,7 @@ module.exports = async function (app) {
   app.locals.crownCopyrightMessage = null
   app.locals.googleTrackingId = config.GOOGLE_TRACKING_ID
   app.locals.appInsightsClientKey = config.Monitoring.ApplicationInsights.Key
-  app.locals.deployVersion = appVersion
+  app.locals.deployVersion = buildNumber
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
