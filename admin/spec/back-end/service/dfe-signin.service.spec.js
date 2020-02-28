@@ -56,7 +56,7 @@ describe('dfe-signin.service', () => {
     }
   })
 
-  it('does look up school if teacher', async () => {
+  it('does look up school if role is teacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
@@ -68,7 +68,7 @@ describe('dfe-signin.service', () => {
     expect(schoolDataService.sqlFindOneByUrn).toHaveBeenCalledWith(12345)
   })
 
-  it('does look up school if headteacher', async () => {
+  it('does look up school if role is headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_headteacher'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2 }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
@@ -80,7 +80,7 @@ describe('dfe-signin.service', () => {
     expect(schoolDataService.sqlFindOneByUrn).toHaveBeenCalledWith(123)
   })
 
-  it('does not look up school if not teacher or headteacher', async () => {
+  it('does not look up school if role is not teacher or headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
@@ -256,11 +256,17 @@ describe('dfe-signin.service', () => {
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
     spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-    spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+    let persistedAdminLogonEventData
+    spyOn(adminLogonEventDataService, 'sqlCreate').and.callFake((logonEvent) => {
+      persistedAdminLogonEventData = logonEvent
+    })
     const user = await sut.initialiseUser({ organisation: { urn: 12345 }, sub: 'external-user-id' }, token)
     expect(user).toBeDefined()
     expect(user.providerUserId).toBe('external-user-id')
     expect(user.id).toBe(567)
     expect(adminLogonEventDataService.sqlCreate).toHaveBeenCalled()
+    delete user.id
+    delete user.school_id
+    expect(persistedAdminLogonEventData.body).toEqual(JSON.stringify(user))
   })
 })

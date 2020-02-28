@@ -44,8 +44,8 @@ export default {
       appName: process.env.SQL_APP_NAME || 'mtc-local-dev' // docker default
     },
     Pooling: {
-      MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
-      MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
+      MinCount: Number(process.env.SQL_POOL_MIN_COUNT) || 5,
+      MaxCount: Number(process.env.SQL_POOL_MAX_COUNT) || 10,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
     }
   },
@@ -56,12 +56,12 @@ export default {
   },
   Redis: {
     Host: process.env.REDIS_HOST || 'localhost',
-    Port: process.env.REDIS_PORT || 6379,
+    Port: Number(process.env.REDIS_PORT) || 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   CheckAllocation: {
-    ExpiryTimeInSeconds: process.env.CHECK_ALLOCATION_EXPIRY_SECONDS || 15778476 // 6 months
+    ExpiryTimeInSeconds: Number(process.env.CHECK_ALLOCATION_EXPIRY_SECONDS) || 15778476 // 6 months
   },
   PupilAuth: {
     PreparedCheckExpiryAfterLoginSeconds: parseInt(optionalValueParser(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
