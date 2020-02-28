@@ -10,7 +10,7 @@ const adminLogonEventDataService = require('./data-access/admin-logon-event.data
 
 const service = {
   /**
-   * @description maps an authenticated NCA Tools user to an MTC user, school and role
+   * @description maps an authenticated dfe sign-in user to an MTC user, school and role
    * @param {object} dfeUser all decrypted user information sent in the request payload
    */
   initialiseUser: async (dfeUser, tokenset) => {
@@ -79,7 +79,7 @@ const service = {
     // auth success
     const logonEvent = {
       sessionId: 'unavailable', // req.session.id,
-      body: 'unavailable', // JSON.stringify(req.body),
+      body: JSON.stringify(dfeUser),
       remoteIp: 'unavailable', // (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
       userAgent: 'unavailable', // req.headers['user-agent'],
       loginMethod: 'dfe-sign-in',

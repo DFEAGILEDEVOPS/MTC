@@ -30,8 +30,8 @@ module.exports = {
   user: config.Sql.Application.Username,
   password: config.Sql.Application.Password,
   pool: {
-    min: process.env.SQL_POOL_MIN_COUNT_REPLICA || 0,
-    max: process.env.SQL_POOL_MAX_COUNT_REPLICA || 5,
+    min: parseInt(process.env.SQL_POOL_MIN_COUNT_REPLICA, 10) || 0,
+    max: parseInt(process.env.SQL_POOL_MAX_COUNT_REPLICA, 10) || 5,
     acquireTimeoutMillis: parseInt(process.env.SQL_POOL_ACQUIRE_TIMEOUT_REPLICA, 10) || thirtySecondsInMilliseconds
   },
   options: {
