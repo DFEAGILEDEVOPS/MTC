@@ -1,7 +1,7 @@
 class PupilReasonPage < SitePrism::Page
   set_url '/pupils-not-taking-the-check/select-pupils'
 
-  element :heading, '.govuk-heading-xl', text: 'Select pupils not taking the check'
+  element :heading, '.govuk-heading-xl', text: 'Give a reason why a pupil is not taking the check'
   element :select_reason_text, 'h2', '1. Select reason'
   elements :attendance_codes, 'input[id^=attendance-code-]'
   element :back_to_top, 'a', text: 'Back to top'
@@ -26,26 +26,26 @@ class PupilReasonPage < SitePrism::Page
 
   section :explanation_section, 'details' do
     element :toggle, '.govuk-details__summary'
-    element :absent, 'strong', text: 'Absent'
-    element :absent_explanation, 'div', text: 'Pupil did not take the check due to absence.'
+    element :absent, 'strong', text: 'Absent during the whole check window'
+    element :absent_explanation, 'div', text: 'Pupil did not take the check due to absence during the check window.'
     element :left_school, 'strong', text: 'Left school'
     element :left_school_explanation, 'div', text: 'Pupil has left the school.'
     element :unable_to_access, 'strong', text: 'Unable to access'
     element :unable_to_access_explanation, 'div', text: 'Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.'
     element :below_standard, 'strong', text: 'Working below expectation'
-    element :below_standard_explanation, 'div', text: "Headteachers should use their knowledge of each pupil when considering whether it's appropriate to administer the check. The headteacher should consider entering any pupils who know, apply and understand the matters, skills and processes specified in the key stage 1 programme of study in relation to multiplication tables."
-    element :just_arrived, 'strong', text: 'Just arrived with EAL'
-    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has arrived during the check period and there isn't enough time to establish their abilities."
+    element :below_standard_explanation, 'div', text: "Headteachers should use their knowledge of each pupil to decide whether it is appropriate for them to take the check. Consider omitting pupils who do not possess the skills specified in the key stage 1 programme of study for multiplication tables. For example, pupils who cannot recall their 2, 5 and 10 times tables."
+    element :just_arrived, 'strong', text: 'Just arrived and unable to establish abilities'
+    element :just_arrived_explanation, 'div', text: "Pupil has arrived during the check window and there isn't enough time to establish their abilities. This may be for example a pupil with English as an additional language and not being able to communicate with the pupil."
   end
 
 
   def attendance_code_mapping
-    {'attendance-code-ABSNT' => 'Absent',
+    {'attendance-code-ABSNT' => 'Absent during check window',
      'attendance-code-INCRG' => 'Incorrect registration',
      'attendance-code-LEFTT' => 'Left school',
      'attendance-code-NOACC' => 'Unable to access',
      'attendance-code-BLSTD' => 'Working below expectation',
-     'attendance-code-JSTAR' => 'Just arrived with EAL'
+     'attendance-code-JSTAR' => 'Just arrived and unable to establish abilities'
     }
   end
 

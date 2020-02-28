@@ -24,7 +24,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: Array<string>): Promise<void>
+  drop (keys: Array<string>): Promise<Array<[Error | null, any]>>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -127,7 +127,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<void> {
+  async drop (keys: string[]): Promise<Array<[Error | null, any]>> {
     if (keys.length === 0) {
       return
     }

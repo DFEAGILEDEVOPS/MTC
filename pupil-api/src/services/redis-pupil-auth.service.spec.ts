@@ -1,3 +1,5 @@
+import * as moment from 'moment'
+
 import { RedisPupilAuthenticationService, IPupilLoginMessage } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
 import { IQueueMessageService, IServiceBusQueueMessage } from './queue-message.service'
@@ -64,11 +66,15 @@ describe('redis-pupil-auth.service', () => {
     expect(redisServiceMock.get).not.toHaveBeenCalled()
   })
 
-  test('the check payload should be returned if item found in cache', async () => {
+  test('the check payload should be returned if item found in cache and the pin is valid', async () => {
+    const pinValidFromUtc = moment().startOf('day')
+    const pinExpiresAtUtc = moment().endOf('day')
     const expectedPayload = {
       config: {
         practice: true
-      }
+      },
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
     }
     redisServiceMock.get = jest.fn(async (key: string) => {
       return expectedPayload
@@ -77,6 +83,46 @@ describe('redis-pupil-auth.service', () => {
     const pupilPin = '5678'
     const payload = await sut.authenticate(schoolPin, pupilPin)
     expect(payload).toEqual(expectedPayload)
+  })
+
+  test('authorisation is denied if the pin is not yet valid', async () => {
+    const currentDateTime = moment.utc()
+    const pinValidFromUtc = moment().add(1, 'hour')
+    const pinExpiresAtUtc = moment().add(2, 'hour')
+    const expectedPayload = {
+      config: {
+        practice: false
+      },
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
+    }
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    const payload = await sut.authenticate(schoolPin, pupilPin)
+    expect(payload).toBeUndefined()
+  })
+
+  test('authorisation is denied if the pin was valid in the past', async () => {
+    const currentDateTime = moment.utc()
+    const pinValidFromUtc = moment().subtract(2, 'hour')
+    const pinExpiresAtUtc = moment().subtract(1, 'hour')
+    const expectedPayload = {
+      config: {
+        practice: false
+      },
+      pinValidFromUtc: pinValidFromUtc,
+      pinExpiresAtUtc: pinExpiresAtUtc
+    }
+    redisServiceMock.get = jest.fn(async (key: string) => {
+      return expectedPayload
+    })
+    const schoolPin = 'abc12def'
+    const pupilPin = '5678'
+    const payload = await sut.authenticate(schoolPin, pupilPin)
+    expect(payload).toBeUndefined()
   })
 
   test('null should be returned if item not found in cache', async () => {

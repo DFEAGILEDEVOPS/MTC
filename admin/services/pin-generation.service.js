@@ -3,8 +3,8 @@ const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 
 const config = require('../config')
-const dateService = require('../services/date.service')
 const groupDataService = require('../services/data-access/group.data.service')
+const pinService = require('./pin.service')
 const logger = require('./log.service').getLogger()
 const pinValidator = require('../lib/validator/pin-validator')
 const randomGenerator = require('../lib/random-generator')
@@ -18,29 +18,10 @@ const bannedWords = [
 ]
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
-
-const pinExpiryTime = (schoolTimezone = null) => {
-  let toReturn
-  if (config.OverridePinExpiry) {
-    toReturn = moment().endOf('day')
-  } else {
-    toReturn = fourPmToday()
-  }
-  if (schoolTimezone) {
-    // needed to parse the date in the specified timezone and convert to utc for storing
-    toReturn = moment.tz(dateService.formatIso8601WithoutTimezone(toReturn), schoolTimezone).utc()
-  }
-  return toReturn
-}
+const endOfDay = () => moment().endOf('day')
 
 const pinGenerationService = {}
 const chars = '23456789'
-
-/**
- * Get the expiry time for a pin
- *
- */
-pinGenerationService.getPinExpiryTime = pinExpiryTime
 
 /**
  * Find groups that have pupils that can get PINs assigned.
@@ -80,7 +61,7 @@ pinGenerationService.generateSchoolPassword = school => {
     wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = pinExpiryTime(school.timezone)
+  const newExpiry = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), school.timezone)
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 

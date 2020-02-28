@@ -23,7 +23,7 @@
                 <p class="govuk-!-font-size-19"><%= cw.name %></p>
                 <div id="<%= `${cw.urlSlug.toString()}-familiarisation` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-familiarisation`)) { %> class="assigned-forms-highlight govuk-highlight-item"<% } %>>
               <span class="govuk-!-font-weight-bold govuk-!-font-size-19">
-                <a class="govuk-link" href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">'Try it out' period
+                <a class="govuk-link" href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">Try it out period
                 </a>
               </span>
                   <span class="govuk-body govuk-!-font-size-19">(<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</span>

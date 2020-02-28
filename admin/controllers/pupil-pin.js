@@ -22,7 +22,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs'
+  res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
@@ -75,7 +75,7 @@ const getGeneratePinsList = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -95,7 +95,7 @@ const getGeneratePinsList = async (req, res, next) => {
     }
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
+      return next(Error(`School with id [${req.user.schoolId}] not found`))
     }
 
     pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id, isLiveCheck)
@@ -148,14 +148,9 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
     school = await schoolDataService.sqlFindOneById(req.user.schoolId)
     if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-    const update = pinGenerationService.generateSchoolPassword(school)
-    if (update) {
-      await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+      return next(Error(`School with id [${req.user.schoolId}] not found`))
     }
 
-    // depends on school pin being ready
     await checkStartService.prepareCheck2(
       pupilsList,
       req.user.School,
@@ -182,7 +177,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'View and custom print PINs'
   req.breadcrumbs(
-    isLiveCheck ? 'Start the MTC - password and PINs' : 'Try it out - password and PINs',
+    isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 

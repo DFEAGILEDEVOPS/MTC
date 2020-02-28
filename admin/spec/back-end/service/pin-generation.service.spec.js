@@ -1,7 +1,7 @@
 'use strict'
 /* global describe, beforeEach, afterEach, it, expect */
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 const sinon = require('sinon')
 
 const pinGenerationService = require('../../../services/pin-generation.service')
