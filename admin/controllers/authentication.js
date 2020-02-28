@@ -25,8 +25,6 @@ const home = (req, res) => {
     switch (config.Auth.mode) {
       case authModes.dfeSignIn:
         return res.redirect(dfeSignInRedirect)
-      case authModes.ncaTools:
-        return res.redirect(config.Auth.ncaTools.authUrl)
       default:
         return res.redirect('/sign-in')
     }
@@ -35,9 +33,6 @@ const home = (req, res) => {
 
 const redirectToAuthModeSignIn = (res) => {
   switch (config.Auth.mode) {
-    case authModes.ncaTools:
-      res.redirect(dfeSignInRedirect)
-      break
     case authModes.dfeSignIn:
       res.redirect(config.Auth.dfeSignIn.authUrl)
       break
@@ -90,8 +85,6 @@ const getSignOut = (req, res) => {
   req.session.regenerate(function () {
     logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {
-      case authModes.ncaTools:
-        return res.redirect(config.Auth.ncaTools.authUrl)
       case authModes.dfeSignIn:
         return res.redirect(dfeSignOutUrl)
       default: //  local
@@ -106,18 +99,8 @@ const getSignInFailure = (req, res) => {
 }
 
 const getUnauthorised = (req, res) => {
-  switch (config.Auth.mode) {
-    case authModes.ncaTools:
-      res.redirect(config.Auth.ncaTools.authUrl)
-      break
-    /*     case authModes.dfeSignIn:
-      res.redirect(config.Auth.dfeSignIn.authUrl)
-      break */
-    default: //  local
-      res.locals.pageTitle = 'Access Unauthorised'
-      res.render('unauthorised')
-      break
-  }
+  res.locals.pageTitle = 'Access Unauthorised'
+  res.render('unauthorised')
 }
 
 const getSignedOut = (req, res) => {
