@@ -15,6 +15,7 @@
     "archiver": "^3.1.1",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.2",
+    "csv-string": "^3.1.7",
     "device": "^0.3.9",
     "dotenv": "^8.2.0",
     "fast-csv": "^4.1.1",
