@@ -132,30 +132,107 @@ describe('#isAgeInRange', () => {
   })
 })
 
-describe('#isNotBritishOverseas', () => {
+describe('#isRequiredEstablishmentTypeGroup', () => {
   beforeEach(() => {
     mockLogger = jasmine.createSpy('mockLogger')
   })
 
-  it('returns false when the school is british overseas school', () => {
+  it('is defined', () => {
+    expect(sut.isRequiredEstablishmentTypeGroup).toBeDefined()
+  })
+
+  it('loads estabTypeGroupCode 4', () => {
     const school = {
-      estabTypeCode: '37'
+      estabTypeGroupCode: '4'
     }
-    expect(sut.isNotBritishOverseas(mockLogger, school)).toBe(false)
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('does not load estabGroupCode 3', () => {
+    const school = {
+      estabTypeGroupCode: '3'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(false)
+  })
+
+  it('loads estabTypeGroupCode 10', () => {
+    const school = {
+      estabTypeGroupCode: '10'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('loads estabTypeGroupCode 11', () => {
+    const school = {
+      estabTypeGroupCode: '11'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('loads estabTypeGroupCode 5 and TypeOfEstablishment = Community special school', () => {
+    const school = {
+      estabTypeGroupCode: '5',
+      estabTypeCode: '7' // Community special school
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('loads estabTypeGroupCode 5 and TypeOfEstablishment = Foundation special school', () => {
+    const school = {
+      estabTypeGroupCode: '5',
+      estabTypeCode: '12' // Foundation special school
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('loads estabTypeGroupCode 9 for estabTypeCode 26 only', () => {
+    const school = {
+      estabTypeGroupCode: '9',
+      estabTypeCode: '26'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+  })
+
+  it('does not loads estabTypeGroupCode 9 for estabTypeCode 25', () => {
+    const school = {
+      estabTypeGroupCode: '9',
+      estabTypeCode: '25'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(false)
+  })
+
+  it('loads estabTypeGroupCode 9 for estabTypeCode 26 only with LA code of 704', () => {
+    const school = {
+      estabTypeGroupCode: '9',
+      estabTypeCode: '26',
+      leaCode: '704'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(false)
+  })
+
+  it('loads estabTypeGroupCode 9 for estabTypeCode 26 with LA code of 703', () => {
+    const school = {
+      estabTypeGroupCode: '9',
+      estabTypeCode: '26',
+      leaCode: '703'
+    }
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
   })
 
   it('logs when it returns false', () => {
     const school = {
-      estabTypeCode: '37'
+      estabTypeGroupCode: '1',
     }
-    expect(sut.isNotBritishOverseas(mockLogger, school)).toBe(false)
-    expect(mockLogger).toHaveBeenCalledTimes(1)
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(false)
+    expect(mockLogger).toHaveBeenCalled()
   })
 
-  it('returns true when the school is not an overseas school', () => {
+  it('does not log when it returns true', () => {
     const school = {
-      estabTypeCode: '1'
+      estabTypeGroupCode: '4',
     }
-    expect(sut.isNotBritishOverseas(mockLogger, school)).toBe(true)
+    expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
+    expect(mockLogger).not.toHaveBeenCalled()
   })
+
 })

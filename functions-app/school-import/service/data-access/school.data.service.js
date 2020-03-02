@@ -76,7 +76,7 @@ const schoolDataService = {
   isPredicated (school) {
     const targetAge = 9
     return predicates.isSchoolOpen(this.log, school) &&
-      predicates.isNotBritishOverseas(this.log, school) &&
+      predicates.isRequiredEstablishmentTypeGroup(this.log, school) &&
       predicates.isAgeInRange(this.log, targetAge, school)
   },
 
@@ -110,7 +110,7 @@ const schoolDataService = {
         meta.schoolsLoaded += 1
         const dfeNumber = parseInt('' + mapped.leaCode + mapped.estabCode, 10)
         if (dfeNumber.toString().length !== 7) {
-          this.logError(`${name} school [${mapped.urn}] has a short dfeNumber [${dfeNumber}]`)
+          this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
         }
         table.rows.add(dfeNumber, mapped.estabCode, parseInt(mapped.leaCode, 10), mapped.name, parseInt(mapped.urn, 10))
       }

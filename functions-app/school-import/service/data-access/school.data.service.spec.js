@@ -33,20 +33,22 @@ describe('#isPredicated', () => {
   const school = {
     urn: '1',
     name: 'test school',
-    estabStatusCode: '1', // open
-    estabTypeCode: '30',
+    leaCode: '999',
+    estabTypeGroupCode: '9',
+    estabTypeCode: '26',
+    estabStatusCode: '1',
     statLowAge: '7',
     statHighAge: '12'
   }
 
   it('calls the predicates', () => {
     spyOn(predicates, 'isSchoolOpen').and.callThrough()
-    spyOn(predicates, 'isNotBritishOverseas').and.callThrough()
     spyOn(predicates, 'isAgeInRange').and.callThrough()
+    spyOn(predicates, 'isRequiredEstablishmentTypeGroup').and.callThrough()
     const res = sut.isPredicated(school)
     expect(res).toBe(true)
     expect(predicates.isSchoolOpen).toHaveBeenCalled()
-    expect(predicates.isNotBritishOverseas).toHaveBeenCalled()
     expect(predicates.isAgeInRange).toHaveBeenCalled()
+    expect(predicates.isRequiredEstablishmentTypeGroup).toHaveBeenCalled()
   })
 })

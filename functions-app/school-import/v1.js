@@ -15,11 +15,19 @@ const schoolImport = {
       ['StatutoryLowAge', 'statLowAge'],
       ['StatutoryHighAge', 'statHighAge'],
       ['EstablishmentStatus (code)', 'estabStatusCode'],
-      ['TypeOfEstablishment (code)', 'estabTypeCode']
+      ['TypeOfEstablishment (code)', 'estabTypeCode'],
+      ['EstablishmentTypeGroup (code)', 'estabTypeGroupCode']
     ]
-    // mapColumns() will throw if it can't find the headers it needs
-    const mapping = this.mapColumns(csvParsed.shift(), mapper)
-    context.log.verbose(`${name} mapping `, mapping)
+
+    let mapping
+    try {
+      mapping = this.mapColumns(csvParsed.shift(), mapper)
+      context.log.verbose(`${name} mapping `, mapping)
+    } catch (error) {
+      this.exportJobResults(context, { stderr: [`Failed to map columns, error raised was ${error.message}`]})
+      throw error
+    }
+
 
     try {
       const jobResult = await schoolDataService.bulkUpload(context, csvParsed, mapping)

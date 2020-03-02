@@ -35,6 +35,38 @@ const predicates = {
       return false
     }
     return true
+  },
+
+  isRequiredEstablishmentTypeGroup (logger, school) {
+    const estabTypeGroupCodes = {
+      academies: '10',
+      freeSchools: '11',
+      localAuthorityMaintainedSchools: '4',
+      otherTypes: '9',
+      specialSchools: '5',
+    }
+
+    const estabTypeCodes = {
+      communitySpecialSchool: '7',
+      foundationSpecialSchool: '12',
+      serviceChildrensEducation: '26'
+    }
+
+    switch (school.estabTypeGroupCode) {
+      case estabTypeGroupCodes.localAuthorityMaintainedSchools:
+      case estabTypeGroupCodes.academies:
+      case estabTypeGroupCodes.freeSchools:
+        return true
+      case estabTypeGroupCodes.specialSchools:
+        return school.estabTypeCode === estabTypeCodes.communitySpecialSchool ||
+          school.estabTypeCode === estabTypeCodes.foundationSpecialSchool
+      case estabTypeGroupCodes.otherTypes:
+        return school.estabTypeCode == estabTypeCodes.serviceChildrensEducation &&
+          school.leaCode !== '704'
+      default:
+        logger(`Excluding school ${school.urn} estab filter ${JSON.stringify(school)}`)
+        return false
+    }
   }
 }
 
