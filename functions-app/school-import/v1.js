@@ -24,10 +24,9 @@ const schoolImport = {
       mapping = this.mapColumns(csvParsed.shift(), mapper)
       context.log.verbose(`${name} mapping `, mapping)
     } catch (error) {
-      this.exportJobResults(context, { stderr: [`Failed to map columns, error raised was ${error.message}`]})
+      this.exportJobResults(context, { stderr: [`Failed to map columns, error raised was ${error.message}`] })
       throw error
     }
-
 
     try {
       const jobResult = await schoolDataService.bulkUpload(context, csvParsed, mapping)

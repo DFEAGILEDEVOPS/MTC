@@ -221,7 +221,7 @@ describe('#isRequiredEstablishmentTypeGroup', () => {
 
   it('logs when it returns false', () => {
     const school = {
-      estabTypeGroupCode: '1',
+      estabTypeGroupCode: '1'
     }
     expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(false)
     expect(mockLogger).toHaveBeenCalled()
@@ -229,10 +229,9 @@ describe('#isRequiredEstablishmentTypeGroup', () => {
 
   it('does not log when it returns true', () => {
     const school = {
-      estabTypeGroupCode: '4',
+      estabTypeGroupCode: '4'
     }
     expect(sut.isRequiredEstablishmentTypeGroup(mockLogger, school)).toBe(true)
     expect(mockLogger).not.toHaveBeenCalled()
   })
-
 })

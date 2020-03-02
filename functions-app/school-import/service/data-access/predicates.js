@@ -43,7 +43,7 @@ const predicates = {
       freeSchools: '11',
       localAuthorityMaintainedSchools: '4',
       otherTypes: '9',
-      specialSchools: '5',
+      specialSchools: '5'
     }
 
     const estabTypeCodes = {
@@ -61,7 +61,7 @@ const predicates = {
         return school.estabTypeCode === estabTypeCodes.communitySpecialSchool ||
           school.estabTypeCode === estabTypeCodes.foundationSpecialSchool
       case estabTypeGroupCodes.otherTypes:
-        return school.estabTypeCode == estabTypeCodes.serviceChildrensEducation &&
+        return school.estabTypeCode === estabTypeCodes.serviceChildrensEducation &&
           school.leaCode !== '704'
       default:
         logger(`Excluding school ${school.urn} estab filter ${JSON.stringify(school)}`)
