@@ -129,7 +129,9 @@ checkStartService.prepareCheck2 = async function (
   // if the school pin generator has failed to generate a pin for this school, create one now...
   if (RA.isNilOrEmpty(newChecks[0].school_pin)) {
     // call the API to generate a pin...
+    logger.warn(`school.id ${schoolId} does not have a valid pin, calling http service to generate one now...`)
     const schoolPin = await schoolPinService.generateSchoolPin(newChecks[0].school_uuid)
+    logger.warn(`pin generated via http service for school.id ${schoolId} pin:${schoolPin}`)
     // patch payload...
     for (let index = 0; index < newChecks.length; index++) {
       const entry = newChecks[index]
