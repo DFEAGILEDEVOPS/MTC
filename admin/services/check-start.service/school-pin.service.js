@@ -12,7 +12,10 @@ const service = {
     if (!urlSlug) {
       throw new Error('urlSlug is required')
     }
-    return dataService.callFunctionApi(urlSlug)
+    const result = await dataService.callFunctionApi(urlSlug)
+    if (!result || result.length !== 8) {
+      throw new Error(`unable to generate pin for school.urlSlug:${urlSlug}`)
+    }
   }
 }
 

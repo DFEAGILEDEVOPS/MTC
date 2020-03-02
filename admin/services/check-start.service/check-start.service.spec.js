@@ -183,7 +183,6 @@ describe('check-start.service', () => {
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         return Promise.resolve(checksWithNoSchoolPins)
       })
-      // s
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(1)
     })
@@ -200,6 +199,25 @@ describe('check-start.service', () => {
       })
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
+    })
+
+    it('throws an error if school pin generation failed', async () => {
+      spyOn(schoolPinService, 'generateSchoolPin').and.throwError('test case: unable to generate pin')
+      const checksWithNoSchoolPins = [
+        { id: 1, check_checkCode: '1A', pupil_id: 1 },
+        { id: 1, check_checkCode: '2A', pupil_id: 2 },
+        { id: 3, check_checkCode: '3A', pupil_id: 3 }
+      ]
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+        return Promise.resolve(checksWithNoSchoolPins)
+      })
+      try {
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toBe('test case: unable to generate pin')
+      }
     })
   })
 
