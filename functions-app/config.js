@@ -17,6 +17,7 @@ const os = require('os')
 const toBool = require('to-bool')
 const oneMinuteInMilliseconds = 60000
 const fiveMinutesInMilliseconds = oneMinuteInMilliseconds * 5
+const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -31,6 +32,7 @@ module.exports = {
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || fiveMinutesInMilliseconds,
+    censusRequestTimeout: parseInt(process.env.SQL_CENSUS_REQUEST_TIMEOUT, 10) || twoHoursInMilliseconds,
     connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
     Encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
@@ -43,8 +45,8 @@ module.exports = {
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Pooling: {
-      MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
-      MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
+      MinCount: parseInt(process.env.SQL_POOL_MIN_COUNT, 10) || 5,
+      MaxCount: parseInt(process.env.SQL_POOL_MAX_COUNT, 10) || 10,
       LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     Azure: {
