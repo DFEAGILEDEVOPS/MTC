@@ -28,15 +28,6 @@ const predicates = {
     return false
   },
 
-  isNotBritishOverseas (logger, school) {
-    const britishOverseasEstabType = 37
-    if (Number(school.estabTypeCode) === britishOverseasEstabType) {
-      logger(`Excluding school ${school.urn} as it is a British overseas school`)
-      return false
-    }
-    return true
-  },
-
   isRequiredEstablishmentTypeGroup (logger, school) {
     const estabTypeGroupCodes = {
       academies: '10',
