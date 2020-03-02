@@ -6,17 +6,17 @@
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="<%= assetPath %>vendor/govuk-frontend/images/favicon.ico" type="image/x-icon" />
-  <link rel="mask-icon" href="<%= assetPath %>vendor/govuk-frontend/images/govuk-mask-icon.svg" color="#0b0c0c">
-  <link rel="apple-touch-icon" sizes="180x180" href="<%= assetPath %>vendor/govuk-frontend/images/govuk-apple-touch-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="<%= assetPath %>vendor/govuk-frontend/images/govuk-apple-touch-icon-167x167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="<%= assetPath %>vendor/govuk-frontend/images/govuk-apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" href="<%= assetPath %>vendor/govuk-frontend/images/govuk-apple-touch-icon.png">
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="<%= getVersionedPath('/vendor/govuk-frontend/images/favicon.ico') %>" type="image/x-icon" />
+  <link rel="mask-icon" href="<%= getVersionedPath('/vendor/govuk-frontend/images/govuk-mask-icon.svg') %>" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="<%= getVersionedPath('/vendor/govuk-frontend/images/govuk-apple-touch-icon-180x180.png') %>">
+  <link rel="apple-touch-icon" sizes="167x167" href="<%= getVersionedPath('/vendor/govuk-frontend/images/govuk-apple-touch-icon-167x167.png') %>">
+  <link rel="apple-touch-icon" sizes="152x152" href="<%= getVersionedPath('/vendor/govuk-frontend/images/govuk-apple-touch-icon-152x152.png') %>">
+  <link rel="apple-touch-icon" href="<%= getVersionedPath('/vendor/govuk-frontend/images/govuk-apple-touch-icon.png') %>">
 
-  <link href="<%= assetPath %>stylesheets/application.css" rel="stylesheet" />
+  <link href="<%= getVersionedPath('/stylesheets/application.css') %>" rel="stylesheet" />
 
 
-  <meta property="og:image" content="<%= assetPath %>vendor/govuk-frontend/images/govuk-opengraph-image.png">
+  <meta property="og:image" content="<%= getVersionedPath('/vendor/govuk-frontend/images/favicon.ico') %>vendor/govuk-frontend/images/govuk-opengraph-image.png">
 
   <% if (isSubmitMetaRedirectUrl) { %>
   <meta http-equiv="refresh" content="<%= waitTimeBeforeMetaRedirectInSeconds %>;url=<%= metaRedirectUrl %>" />

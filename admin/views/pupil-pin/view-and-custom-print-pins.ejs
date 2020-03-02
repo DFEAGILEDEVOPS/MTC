@@ -7,7 +7,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="print-only">
-                <img class="sta-horizontal-logo govuk-!-margin-bottom-5" width="200" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
+                <img class="sta-horizontal-logo govuk-!-margin-bottom-5" width="200" src="<%= getVersionedPath('/images/sta-horizontal-logo.jpg') %>" />
                 <h3 class="govuk-heading-m">Multiplication Table Check <%= pinEnv !== 'live' ? '- Try it out' : '' %></h3>
                 <ul class="govuk-list govuk-list--bullet" role="listbox">
                     <li class="govuk-!-font-size-14" role="listitem">Please cut out and distribute to pupils</li>
@@ -170,5 +170,5 @@
         </div>
     </div>
 </main>
-<script src="/javascripts/pupil-pin.js"></script>
+<script src="<%= getVersionedPath('/javascripts/pupil-pin.js') %>"></script>
 

@@ -1,9 +1,13 @@
 'use strict'
 
 const moment = require('moment')
+const path = require('path')
 const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 const roles = require('../lib/consts/roles.js')
+
+const assetPath = config.Environment === 'Local-Dev' ? `${path.join(__dirname, '..')}` : config.AssetPath
+const staticify = require('staticify')(path.join(assetPath, 'public'))
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
@@ -33,6 +37,7 @@ const formatFullGdsDate = function (date) {
 
 module.exports = async function (app) {
   'use strict'
+  app.use(staticify.middleware)
   if (typeof app === 'undefined') throw new Error('express application object required')
   let buildNumber
   try {
@@ -43,7 +48,6 @@ module.exports = async function (app) {
   // Ensure we initialise the `isAuthenticated` variable so that it is defined
   // even if the database is not yet up.
   app.locals.isAuthenticated = false
-  app.locals.assetPath = config.AssetPath
   app.locals.bodyClasses = ''
   app.locals.formatPageTitle = formatPageTitle
   app.locals.govukRoot = 'https://gov.uk'
@@ -57,7 +61,6 @@ module.exports = async function (app) {
   app.locals.crownCopyrightMessage = null
   app.locals.googleTrackingId = config.GOOGLE_TRACKING_ID
   app.locals.appInsightsClientKey = config.Monitoring.ApplicationInsights.Key
-  app.locals.deployVersion = buildNumber
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
@@ -67,4 +70,5 @@ module.exports = async function (app) {
   app.locals.isSubmitMetaRedirectUrl = false
   app.locals.metaRedirectUrl = null
   app.locals.waitTimeBeforeMetaRedirectInSeconds = null
+  app.locals.getVersionedPath = staticify.getVersionedPath
 }
