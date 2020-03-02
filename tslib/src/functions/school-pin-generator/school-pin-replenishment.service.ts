@@ -5,6 +5,8 @@ import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { ILogger } from '../../common/logger'
 import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
+import { MaxAttemptsCalculator } from './max-attemps-calculator.spec'
+import { AllowedWordsService } from './allowed-words.service'
 export class SchoolPinReplenishmnentService {
 
   private dataService: ISchoolPinReplenishmentDataService
@@ -12,6 +14,8 @@ export class SchoolPinReplenishmnentService {
   private pinGenerator: ISchoolPinGenerator
   private expiryGenerator: SchoolPinExpiryGenerator
   private configProvider: IConfigProvider
+  private maxAttemptsCalculator: MaxAttemptsCalculator
+  private allowedWordsService: AllowedWordsService
 
   constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator,
     configProvider?: IConfigProvider) {
@@ -28,9 +32,10 @@ export class SchoolPinReplenishmnentService {
       configProvider = new ConfigFileProvider()
     }
     this.configProvider = configProvider
-
+    this.maxAttemptsCalculator = new MaxAttemptsCalculator()
     this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
     this.expiryGenerator = new SchoolPinExpiryGenerator()
+    this.allowedWordsService = new AllowedWordsService()
   }
 
   async process (logger: ILogger, schoolUUID?: string): Promise<void | string> {
@@ -52,6 +57,11 @@ export class SchoolPinReplenishmnentService {
       return
     }
     logger.info(`identified ${schoolsToProcess.length} schools to process...`)
+    const allowedWords = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
+    let maxAttemptsAtSchoolPinUpdate = this.configProvider.PinUpdateMaxAttempts
+    if (maxAttemptsAtSchoolPinUpdate === 0) {
+      maxAttemptsAtSchoolPinUpdate = this.maxAttemptsCalculator.calculate(allowedWords.size, this.configProvider.DigitChars.length)
+    }
     for (let index = 0; index < schoolsToProcess.length; index++) {
       const school = schoolsToProcess[index]
       if (this.newPinRequiredPredicate.isRequired(school)) {
@@ -61,7 +71,7 @@ export class SchoolPinReplenishmnentService {
           id: school.id,
           pinExpiresAt: this.expiryGenerator.generate(),
           newPin: this.pinGenerator.generate(),
-          attempts: this.configProvider.PinUpdateMaxAttempts
+          attempts: maxAttemptsAtSchoolPinUpdate
         }
         if (returnGeneratedPin === true) {
           pinToReturn = update.newPin
