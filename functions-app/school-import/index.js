@@ -20,5 +20,5 @@ module.exports = async function schoolImportIndex (context, blob) {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} processed ${meta.processCount} checks, run took ${durationInMilliseconds} ms`)
+  context.log(`${name}: ${timeStamp} processed ${meta.processCount} schools, run took ${durationInMilliseconds} ms`)
 }
