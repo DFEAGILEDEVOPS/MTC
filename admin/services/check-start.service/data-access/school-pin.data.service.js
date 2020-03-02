@@ -6,11 +6,15 @@ const config = require('../../../config')
 const functionUrl = config.SchoolPinGeneratorFunction.FunctionUrl
 
 const service = {
-  callFunctionApi: async (schoolUuid) => {
+  callFunctionApi: async (schoolId) => {
     const response = await axios.post(functionUrl, {
-      school_uuid: schoolUuid
+      school_id: schoolId
     })
-    return response.pin
+    if (response.status === 200) {
+      return response.data.pin
+    } else {
+      throw new Error(`non 200 status code returned. ${response.status}:${response.statusText}`)
+    }
   }
 }
 

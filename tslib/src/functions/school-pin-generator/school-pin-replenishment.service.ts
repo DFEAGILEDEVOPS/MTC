@@ -5,7 +5,7 @@ import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { ILogger } from '../../common/logger'
 import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
-import { MaxAttemptsCalculator } from './max-attemps-calculator.spec'
+import { MaxAttemptsCalculator } from './max-attempts-calculator'
 import { AllowedWordsService } from './allowed-words.service'
 export class SchoolPinReplenishmnentService {
 
@@ -38,15 +38,15 @@ export class SchoolPinReplenishmnentService {
     this.allowedWordsService = new AllowedWordsService()
   }
 
-  async process (logger: ILogger, schoolUUID?: string): Promise<void | string> {
+  async process (logger: ILogger, schoolId?: number): Promise<void | string> {
     let schoolsToProcess: Array<School>
     let returnGeneratedPin: boolean = false
     let pinToReturn: string = ''
-    if (schoolUUID === undefined) {
+    if (schoolId === undefined) {
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
       returnGeneratedPin = true
-      const school = await this.dataService.getSchoolByUuid(schoolUUID)
+      const school = await this.dataService.getSchoolById(schoolId)
       schoolsToProcess = []
       if (school !== undefined) {
         schoolsToProcess.push(school)

@@ -1,9 +1,4 @@
-
-export class MaxAttemptsCalculator {
-  calculate (wordCount: number, charCount: number) {
-    return (wordCount * wordCount) * (charCount * charCount)
-  }
-}
+import { MaxAttemptsCalculator } from './max-attempts-calculator'
 
 let sut: MaxAttemptsCalculator
 

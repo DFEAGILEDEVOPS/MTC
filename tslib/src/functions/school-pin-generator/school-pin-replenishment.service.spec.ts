@@ -3,12 +3,11 @@ import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
 import { IConfigProvider } from './config-file-provider'
-import * as uuid from 'uuid'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),
   updatePin: jest.fn(),
-  getSchoolByUuid: jest.fn()
+  getSchoolById: jest.fn()
 }))
 
 const configProviderMock: IConfigProvider = {
@@ -102,31 +101,31 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('only updates single school specified when schoolUUID passed as param', async () => {
-    dataService.getSchoolByUuid = jest.fn(async (uuid: string) => {
+    dataService.getSchoolById = jest.fn(async (id: number) => {
       const school: School = {
         id: 1,
         name: 'x'
       }
       return school
     })
-    const schoolUuid = uuid.v4()
-    await sut.process(logger, schoolUuid)
-    expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
+    const schoolId = 42
+    await sut.process(logger, schoolId)
+    expect(dataService.getSchoolById).toHaveBeenCalledTimes(1)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
   })
 
   test('returns generated pin when single schoolUUID passed as param', async () => {
-    dataService.getSchoolByUuid = jest.fn(async (uuid: string) => {
+    dataService.getSchoolById = jest.fn(async (id: number) => {
       const school: School = {
         id: 1,
         name: 'x'
       }
       return school
     })
-    const schoolUuid = uuid.v4()
-    const generatedPin = await sut.process(logger, schoolUuid)
+    const schoolId = 42
+    const generatedPin = await sut.process(logger, schoolId)
     expect(generatedPin).toBeDefined()
-    expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
+    expect(dataService.getSchoolById).toHaveBeenCalledTimes(1)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
   })
 })

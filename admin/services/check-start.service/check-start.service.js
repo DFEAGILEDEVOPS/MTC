@@ -2,7 +2,6 @@
 
 const moment = require('moment-timezone')
 const R = require('ramda')
-const RA = require('ramda-adjunct')
 const logger = require('../log.service').getLogger()
 
 // Libraries used
@@ -25,6 +24,7 @@ const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
 const schoolPinService = require('./school-pin.service')
+const sqlErrorMessages = require('../data-access/sql-mtc-error-codes')
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 const endOfDay = () => moment().endOf('day')
@@ -123,19 +123,22 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  // Create and return checks via spCreateChecks
-  const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
 
-  // if the school pin generator has failed to generate a pin for this school, create one now...
-  if (RA.isNilOrEmpty(newChecks[0].school_pin)) {
-    // call the API to generate a pin...
-    logger.warn(`school.id ${schoolId} does not have a valid pin, calling http service to generate one now...`)
-    const schoolPin = await schoolPinService.generateSchoolPin(newChecks[0].school_uuid)
-    logger.warn(`pin generated via http service for school.id ${schoolId} pin:${schoolPin}`)
-    // patch payload...
-    for (let index = 0; index < newChecks.length; index++) {
-      const entry = newChecks[index]
-      entry.school_pin = schoolPin
+  let newChecks
+
+  try {
+    // Create and return checks via spCreateChecks
+    newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+  } catch (error) {
+    if (error.number === sqlErrorMessages.NoActiveSchoolPin) {
+      logger.warn(`school.id:${schoolId} does not have a valid pin, calling http service to generate one now...`)
+      const schoolPin = await schoolPinService.generateSchoolPin(schoolId)
+      logger.warn(`pin generated via http service for school.id:${schoolId} pin:${schoolPin}`)
+      logger.warn(`2nd attempt at creating checks for school.id:${schoolId}...`)
+      newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+    } else {
+      // some other error occured...
+      throw error
     }
   }
 
