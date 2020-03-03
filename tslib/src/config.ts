@@ -68,7 +68,7 @@ export default {
     CorsWhitelist: process.env.CORS_WHITELIST || ''
   },
   ServiceBus: {
-    ConnectionString: process.env.ServiceBusConnection
+    ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   },
   CheckNotifier: {
     MessagesPerBatch: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
