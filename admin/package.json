@@ -22,6 +22,9 @@
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js",
     "watch": "yarn test:watch"
   },
+  "mtc": {
+    "assets-version": "2c8bde8dabf32d6b9b64059875461c22"
+  },
   "engines": {
     "node": ">= 10.16.3"
   },
@@ -36,6 +39,7 @@
     "connect-redis": "^3.4.0",
     "csurf": "^1.9.0",
     "dotenv": "^8.1.0",
+    "edit-json-file": "^1.4.0",
     "ejs": "^3.0.1",
     "express": "^4.16.2",
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
@@ -54,11 +58,13 @@
     "ioredis": "4.16.0",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
+    "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.9.0",
     "mssql": "6.1.0",
+    "node-dir": "^0.1.17",
     "openid-client": "^3.7.3",
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
@@ -150,5 +156,6 @@
       "<rootDir>/services/data-access"
     ],
     "verbose": false
-  }
+  },
+  "mtc[assets-version]": "2c8bde8dabf32d6b9b64059875461c22"
 }
