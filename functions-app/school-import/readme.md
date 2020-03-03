@@ -1,14 +1,13 @@
-# BlobTrigger - JavaScript
+# School-Import
 
-The `BlobTrigger` makes it incredibly easy to react to new Blobs inside of Azure Blob Storage. This sample demonstrates 
-a simple use case of processing data from a given Blob using JavaScript.
+Public data can be downloaded from https://get-information-schools.service.gov.uk/Downloads  
 
-## How it works
+E.g. 'All Establishment Data', choose establishment fields CSV (around 54MB).
 
-For a `BlobTrigger` to work, you provide a path which dictates where the blobs are located inside your container, and 
-can also help restrict the types of blobs you wish to return. For instance, you can set the path to `samples/{name}.png` 
-to restrict the trigger to only the samples path and only blobs with ".png" at the end of their name.
+Steps to upload:
 
-## Learn more
+1. Create a new Blob container in Azure Storage called `school-import`
+2. Upload the Blob manually to the container (e.g. using Azure Storage Explorer)
 
-<TODO> Documentation
+
+Job output, both stderr and stdout, will be placed in the container.
