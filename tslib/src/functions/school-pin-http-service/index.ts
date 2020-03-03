@@ -27,7 +27,7 @@ const schoolPinHttpService: AzureFunction = async function (context: Context, re
   const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
   context.log(`requesting pin for school:${schoolId}`)
   const newPin = await schoolPinReplenishmentService.process(context.log, schoolId)
-  context.log(`pin created is ${newPin}`)
+  context.log(`pin:${newPin} generated for school:${schoolId}`)
   context.res = {
     status: 200,
     body: {

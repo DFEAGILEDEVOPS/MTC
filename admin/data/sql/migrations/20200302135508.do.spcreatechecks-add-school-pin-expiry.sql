@@ -11,8 +11,8 @@ SET ANSI_PADDING ON
 -- only proceed if school has an active pin
 DECLARE @school_id int
 SELECT TOP 1 @school_id = school_id FROM @TVP
-IF NOT EXISTS (SELECT id FROM mtc_admin.school 
-    WHERE (id = @school_id AND pin IS NOT NULL 
+IF NOT EXISTS (SELECT id FROM mtc_admin.school
+    WHERE (id = @school_id AND pin IS NOT NULL
     AND (pinExpiresAt IS NOT NULL AND pinExpiresAt > GETUTCDATE())))
     RAISERROR (50001, 18, 1)
 
@@ -173,4 +173,3 @@ BEGIN CATCH
         @ErrorState -- State.
         );
 END CATCH
-GO

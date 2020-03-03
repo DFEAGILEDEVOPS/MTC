@@ -163,4 +163,3 @@ BEGIN CATCH
         @ErrorState -- State.
         );
 END CATCH
-GO
