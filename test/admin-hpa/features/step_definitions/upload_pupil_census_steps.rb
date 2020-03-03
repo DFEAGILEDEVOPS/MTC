@@ -29,10 +29,10 @@ When(/^I have chosen a file to submit$/) do
   @old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["881", "2879", @upn, @pupil_name, @pupil_name, @pupil_name, "F", @old_date1]
+  pupil_detail_array = ["999", "1004", @upn, @pupil_name, @pupil_name, @pupil_name, "F", @old_date1]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = ["881", "2879", @upn2, @pupil_name, @pupil_name, @pupil_name, "M", @old_date2]
+  pupil_detail_array2 = ["999", "1004", @upn2, @pupil_name, @pupil_name, @pupil_name, "M", @old_date2]
 
   upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click

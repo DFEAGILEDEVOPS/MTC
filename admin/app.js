@@ -26,7 +26,6 @@ const breadcrumbs = require('express-breadcrumbs')
 const busboy = require('express-busboy')
 const config = require('./config')
 const csurf = require('csurf')
-const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
 const expressValidator = require('express-validator')
 const featureToggles = require('feature-toggles')
@@ -243,11 +242,6 @@ if (config.Auth.mode === authModes.dfeSignIn) {
 } else {
   // initialise chosen auth strategy only
   switch (config.Auth.mode) {
-    case authModes.ncaTools:
-      passport.use(authModes.ncaTools, new CustomStrategy(
-        require('./authentication/nca-tools-authentication-strategy')
-      ))
-      break
     default:
       passport.use(authModes.local,
         new LocalStrategy({
