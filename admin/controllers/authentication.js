@@ -109,4 +109,5 @@ module.exports = {
   getSignOut,
   getSignInFailure,
   getUnauthorised,
-getSignedOut}
+  getSignedOut
+}
