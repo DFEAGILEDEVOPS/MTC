@@ -22,22 +22,17 @@ const home = (req, res) => {
         return res.redirect(homeRoutes.schoolHomeRoute)
     }
   } else {
-    switch (config.Auth.mode) {
-      case authModes.dfeSignIn:
-        return res.redirect(dfeSignInRedirect)
-      default:
-        return res.redirect('/sign-in')
-    }
+    redirectToAuthModeSignIn(res)
   }
 }
 
 const redirectToAuthModeSignIn = (res) => {
   switch (config.Auth.mode) {
     case authModes.dfeSignIn:
-      res.redirect(config.Auth.dfeSignIn.authUrl)
+      res.redirect(dfeSignInRedirect)
       break
     default: //  local
-      res.render('sign-in')
+      res.redirect('sign-in')
       break
   }
 }
@@ -83,7 +78,6 @@ const getSignOut = (req, res) => {
   req.logout()
 
   req.session.regenerate(function () {
-    logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {
       case authModes.dfeSignIn:
         return res.redirect(dfeSignOutUrl)
@@ -115,5 +109,4 @@ module.exports = {
   getSignOut,
   getSignInFailure,
   getUnauthorised,
-  getSignedOut
-}
+getSignedOut}
