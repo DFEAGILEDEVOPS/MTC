@@ -1,12 +1,12 @@
 Then(/^I should see (.*)'s school name$/) do |teacher|
   school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_name = SqlDbHelper.find_school(school_id)['name']
-  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
+  expect(school_landing_page.heading.text).to eql "Manage the multiplication tables check for " + school_name
 end
 
 Then(/^I should see the school name corresponding to that (.*)$/) do |dfe_number|
   school_name = SqlDbHelper.find_school_by_dfeNumber(dfe_number)['name']
-  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
+  expect(school_landing_page.heading.text).to eql "Manage the multiplication tables check for " + school_name
 end
 
 Given(/^I am on the school landing page$/) do
@@ -22,12 +22,10 @@ end
 
 Then(/^I should see an option to go to the submit the attendance register area$/) do
   expect(school_landing_page).to have_submit_attendance_register
-  expect(school_landing_page).to have_submit_attendance_register_instructions
 end
 
 Then(/^I should see an option to view the results$/) do
   expect(school_landing_page).to have_results
-  expect(school_landing_page).to have_results_text
 end
 
 When(/^I decide to logout$/) do
@@ -41,7 +39,6 @@ end
 
 Then(/^I should see option to view guidance in the before you start section$/) do
   expect(school_landing_page).to have_guidance
-  expect(school_landing_page).to have_guidance_text
 end
 
 Then(/^I should see option to manage check forms in the before you start section$/) do
@@ -54,42 +51,34 @@ end
 
 Then(/^I should see an option to view the pupil register$/) do
   expect(school_landing_page).to have_pupil_register
-  expect(school_landing_page).to have_pupil_register_text
 end
 
 Then(/^I should see an option to group pupils$/) do
   expect(school_landing_page).to have_group_pupils
-  expect(school_landing_page).to have_group_pupils_text
 end
 
 Then(/^I should see an option to select pupils not taking the check$/) do
   expect(school_landing_page).to have_pupils_not_taking_check
-  expect(school_landing_page).to have_pupils_not_taking_check_text
 end
 
 Then(/^I should see an option to manage access arrangements$/) do
   expect(school_landing_page).to have_access_arrangements
-  expect(school_landing_page).to have_access_arrangements_text
 end
 
 Then(/^I should see an option to generate pins$/) do
   expect(school_landing_page).to have_generate_pupil_pin
-  expect(school_landing_page).to have_generate_pupil_pin_text
 end
 
 Then(/^I should see an option to generate pins familiarisation$/) do
   expect(school_landing_page).to have_generate_pupil_pin_familiarisation
-  expect(school_landing_page).to have_generate_pupil_pin_familiarisation_text
 end
 
 Then(/^I should see an option to manage restarts$/) do
   expect(school_landing_page).to have_restarts
-  expect(school_landing_page).to have_restarts_text
 end
 
 Then(/^I should see an option to complete the hdf$/) do
   expect(school_landing_page).to have_hdf
-  expect(school_landing_page).to have_hdf_text
 end
 
 Then(/^I should see a disabled option for the hdf$/) do
@@ -110,7 +99,6 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see an option to view the results"
   step "I should see option to view guidance in the before you start section"
   step "I should see an option to generate pins familiarisation"
-  step "I should see a step by step navigation section"
 end
 
 Given(/^I should see a step by step navigation section$/) do
@@ -142,7 +130,7 @@ end
 
 Then(/^I should be taken to the teachers school homepage corresponding to that (.*)$/) do |dfenumber|
   school_name = SqlDbHelper.find_school_by_dfeNumber(dfenumber)['name']
-  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
+  expect(school_landing_page.heading.text).to eql "Manage the multiplication tables check for " + school_name
   expect(school_landing_page).to have_pupil_register
   expect(school_landing_page).to have_remove_impersonation
 end

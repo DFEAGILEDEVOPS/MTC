@@ -14,21 +14,21 @@ Feature:
   Scenario: Verify breadcrumb on add pupil page
     Given I am logged in
     And I am on the add pupil page
-    Then I should see the breadcrumb as "Home > Pupil register > Add pupil"
+    Then I should see the breadcrumb as "Home > View, add or edit pupils on your school's register > Add pupil"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
   Scenario: Verify breadcrumb on Generate Pin page
     Given I have signed in with teacher1
     And I navigate to generate pupil pins page
-    Then I should see the breadcrumb as "Home > Start the MTC - password and PINs"
+    Then I should see the breadcrumb as "Home > Generate school passwords and PINs for the official check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
   Scenario: Verify breadcrumb on Pupil Register page
     Given I am logged in
     When I click Pupil Register link
-    Then I should see the breadcrumb as "Home > Pupil register"
+    Then I should see the breadcrumb as "Home > View, add or edit pupils on your school's register"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
@@ -36,7 +36,7 @@ Feature:
     Given I am logged in
     When I click Pupil Register link
     And I choose to edit the first pupil in the list
-    Then I should see the breadcrumb as "Home > Pupil register > Edit pupil data"
+    Then I should see the breadcrumb as "Home > View, add or edit pupils on your school's register > Edit pupil data"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
@@ -65,14 +65,14 @@ Feature:
   Scenario: Verify breadcrumb for pupil not taking check page
     Given I am logged in
     When I am on the pupils not taking check page
-    Then I should see the breadcrumb as "Home > Pupils not taking the check"
+    Then I should see the breadcrumb as "Home > Give a reason why a pupil is not taking the check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
   Scenario: Verify breadcrumb on restarts page
     Given I am logged in
     And I navigate to Restarts page
-    Then I should see the breadcrumb as "Home > Restarts"
+    Then I should see the breadcrumb as "Home > Select pupils to restart the check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 

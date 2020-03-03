@@ -95,7 +95,7 @@ Feature: Generate Pupil PINs
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
 
-  @bug_18993
+  @bug_18993 @manual
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters

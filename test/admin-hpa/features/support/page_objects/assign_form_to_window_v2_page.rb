@@ -11,7 +11,7 @@ class AssignFormToWindowV2Page < SitePrism::Page
   section :check_windows, '.assigned-check-windows' do
     sections :rows, 'dd' do
       element :name_of_window, 'p[class="govuk-!-font-size-19"]'
-      element :try_it_out_check_link, '.govuk-link', text: "'Try it out' period"
+      element :try_it_out_check_link, '.govuk-link', text: "Try it out period"
       element :try_it_out_check_link_text, "div[id$='-familiarisation']"
       element :try_it_out_check_date, "div[id*='familiarisation-period']"
       element :mtc_check_link, '.govuk-link', text: "Multiplication tables check period"

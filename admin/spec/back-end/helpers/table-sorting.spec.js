@@ -113,4 +113,36 @@ describe('tableSort', function () {
       expect(result).toBe(0)
     })
   })
+
+  describe('sortByProps', () => {
+    it('sorts strings', () => {
+      const strings = [{ a: 'bbb' }, { a: 'aaa' }, { a: 'ccc' }]
+      const res = tableSort.sortByProps(['a'], strings)
+      expect(res).toEqual([{ a: 'aaa' }, { a: 'bbb' }, { a: 'ccc' }])
+    })
+
+    it('sorts numbers', () => {
+      const list = [{ a: 4 }, { a: 3 }, { a: 10 }]
+      const res = tableSort.sortByProps(['a'], list)
+      expect(res).toEqual([{ a: 3 }, { a: 4 }, { a: 10 }])
+    })
+
+    it('does secondary and tertiary sort', () => {
+      const list = [
+        { a: 1, b: 2, c: 3 },
+        { a: 10, b: 10, c: 10 },
+        { a: 10, b: 6, c: 0 },
+        { a: 1, b: 2, c: 1 },
+        { a: 100 }
+      ]
+      const res = tableSort.sortByProps(['a', 'b', 'c'], list)
+      expect(res).toEqual([
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 2, c: 3 },
+        { a: 10, b: 6, c: 0 },
+        { a: 10, b: 10, c: 10 },
+        { a: 100 }
+      ])
+    })
+  })
 })

@@ -64,7 +64,7 @@ describe('group controller', () => {
           spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller.groupPupilsPage(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Group pupils')
+          expect(res.locals.pageTitle).toBe('Organise pupils into groups')
           expect(groupService.getGroups).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
@@ -90,7 +90,7 @@ describe('group controller', () => {
           spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Group pupils')
+          expect(res.locals.pageTitle).toBe('Organise pupils into groups')
           expect(groupService.getGroups).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()

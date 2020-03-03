@@ -219,7 +219,7 @@ Then(/^I can see add pupil page as per the design$/) do
   expect(@page).to have_female
   expect(@page).to have_male
   expect(@page).to have_what_is_upn
-  expect(@page.what_is_upn.explanatory_text.map {|a| a.text}.join(' ')).to eql "The unique pupil number (UPN) is a 13-character code that identifies each pupil in the local authority maintained school system. If your pupil does not have a UPN please follow the guidance on how to generate UPNs (link opens in a new window)."
+  expect(@page.what_is_upn.explanatory_text.map {|a| a.text}.join(' ')).to eql "The UPN is a 13-character code that identifies each pupil in the local authority maintained school system. If your pupil does not have a UPN please follow the guidance on how to generate UPNs (link opens in a new window)."
   expect(@page.what_is_upn).to have_more_details
 end
 

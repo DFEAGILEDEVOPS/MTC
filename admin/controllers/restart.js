@@ -12,7 +12,7 @@ const logger = require('../services/log.service').getLogger()
 const controller = {}
 
 controller.getRestartOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Restarts'
+  res.locals.pageTitle = 'Select pupils to restart the check'
   req.breadcrumbs(res.locals.pageTitle)
 
   let checkWindowData
@@ -48,7 +48,7 @@ controller.getRestartOverview = async (req, res, next) => {
 
 controller.getSelectRestartList = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils for restart'
-  req.breadcrumbs('Restarts', '/restart/overview')
+  req.breadcrumbs('Select pupils to restart the check', '/restart/overview')
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let reasons
@@ -107,7 +107,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   if (validationError.hasError()) {
     const pageTitle = 'Select pupils for restart'
     res.locals.pageTitle = `Error: ${pageTitle}`
-    req.breadcrumbs('Restarts', '/restart/overview')
+    req.breadcrumbs('Select pupils to restart the check', '/restart/overview')
     req.breadcrumbs(pageTitle)
     let pupils
     let reasons

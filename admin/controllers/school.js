@@ -4,7 +4,6 @@ const moment = require('moment-timezone')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
-const featureToggles = require('feature-toggles')
 const helpdeskService = require('../services/helpdesk.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const schoolService = require('../services/school.service')
@@ -36,9 +35,7 @@ controller.getSchoolLandingPage = async (req, res, next) => {
     const resultsOpeningDay = resultPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
     const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDay)
     const serviceMessage = await administrationMessageService.getMessage()
-    const schoolHomeView = featureToggles.isFeatureEnabled('schoolHomeViewV2')
-      ? 'school/school-home-v2' : 'school/school-home'
-    return res.render(schoolHomeView, {
+    return res.render('school/school-home', {
       breadcrumbs: [{ name: 'School Home' }],
       featureEligibilityData,
       isResultsFeatureAccessible,

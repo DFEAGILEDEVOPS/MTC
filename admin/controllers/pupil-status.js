@@ -12,7 +12,7 @@ const controller = {}
  * @returns {Promise.<*>}
  */
 controller.getViewPupilStatus = async (req, res, next) => {
-  res.locals.pageTitle = 'Pupil Status'
+  res.locals.pageTitle = 'See how many pupils have completed the official check'
   req.breadcrumbs(res.locals.pageTitle)
   let pupilStatusData
   let pupilStatusViewData
