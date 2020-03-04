@@ -156,6 +156,5 @@
       "<rootDir>/services/data-access"
     ],
     "verbose": false
-  },
-  "mtc[assets-version]": "2c8bde8dabf32d6b9b64059875461c22"
+  }
 }
