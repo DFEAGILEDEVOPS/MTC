@@ -161,7 +161,7 @@ gulp.task('generate-assets-version', function (done) {
   let assetBuffer = ''
   dir.readFiles('./public/', {
     // match only filenames with a .js and .css extensions and that don't start with a `.´
-    match: /\.(js|css)(?:\?.*|)$/i,
+    match: /\.(js|css)$/i,
     exclude: /^\./
   }, function (err, content, next) {
     if (err) throw err
