@@ -158,19 +158,18 @@ gulp.task('realclean', gulp.series('clean'), function () {
 })
 
 gulp.task('generate-assets-version', function (done) {
-  let assetBuffer = ''
+  let assetsContent = ''
   dir.readFiles('./public/', {
     // match only filenames with a .js and .css extensions and that don't start with a `.´
-    match: /\.(js|css)$/i,
-    exclude: /^\./
+    match: /^[^.].+\.(js|css)$/i
   }, function (err, content, next) {
     if (err) throw err
-    assetBuffer = assetBuffer + content
+    assetsContent = assetsContent.concat(content)
     next()
   },
-  function (err, files) {
+  function (err) {
     if (err) throw err
-    const md5hash = md5(assetBuffer)
+    const md5hash = md5(assetsContent)
     const dest = jedit('./package.json')
     dest.set('mtc.assets-version', md5hash)
     dest.save()
