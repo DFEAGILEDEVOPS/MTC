@@ -1,15 +1,15 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
+import * as uuid from 'uuid'
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
-import { ICheckMarkerFunctionBindings, MarkingData, Mark } from './models'
+import { ICheckMarkerFunctionBindings, MarkingData, CheckResult } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
 
 export class CheckMarkerV1 {
-
   private tableService: IAsyncTableService
   private sqlService: ICheckFormService
 
@@ -28,17 +28,19 @@ export class CheckMarkerV1 {
   }
 
   async mark (functionBindings: ICheckMarkerFunctionBindings, logger: ILogger): Promise<void> {
-
+    logger.verbose('mark() called')
     const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
+    functionBindings.checkResultTable = []
     functionBindings.checkNotificationQueue = []
     if (markingData === undefined) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
     }
     try {
-      const results = this.markCheck(markingData)
-      await this.persistMark(results, validatedCheck)
+      const checkResult = this.markCheck(markingData, validatedCheck.PartitionKey)
+      logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
+      this.persistMark(checkResult, functionBindings)
     } catch (error) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
@@ -48,6 +50,7 @@ export class CheckMarkerV1 {
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
+    logger.verbose(`mark() setting notification msg to ${JSON.stringify(notification)}`)
     functionBindings.checkNotificationQueue.push(notification)
   }
 
@@ -68,7 +71,7 @@ export class CheckMarkerV1 {
     let parsedAnswersJson: any
     try {
       // tsc does not recognise the RA.IsNilOrEmpty check above
-      // therefore we use the exclamanation to assert non null guarantee
+      // therefore we use the exclamation to assert non null guarantee
       parsedAnswersJson = JSON.parse(validatedCheck.answers!)
     } catch (error) {
       logger.error(error)
@@ -83,6 +86,7 @@ export class CheckMarkerV1 {
     let rawCheckForm
 
     try {
+      // TODO: jms move this to a service that checks redis first
       rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
@@ -107,39 +111,49 @@ export class CheckMarkerV1 {
     }
 
     const toReturn: MarkingData = {
-      answers: parsedAnswersJson,
+      answers: parsedAnswersJson, // TODO: jms return marked answers here
       formQuestions: checkForm,
       results: []
     }
     return toReturn
   }
 
-  private markCheck (markingData: MarkingData): Mark {
-    const results: Mark = {
+  private markCheck (markingData: MarkingData, checkCode: string): CheckResult {
+    const results: CheckResult = {
       mark: 0,
+      checkCode: checkCode,
       maxMarks: markingData.formQuestions.length,
-      processedAt: moment.utc().toDate()
+      markedAnswers: [],
+      processedAt: moment.utc().toDate() // TODO: jms: this is converted to a string in table storage 🙈
     }
 
     let questionNumber = 1
     for (let question of markingData.formQuestions) {
       const currentIndex = questionNumber - 1
-      const answerRecord = markingData.answers[currentIndex]
+      const answerRecord = markingData.answers[currentIndex] // TODO JMS: find the answers as per the spec
+      const markedAnswer = { ...answerRecord } // clone
       const answer = (answerRecord && answerRecord.answer) || ''
       questionNumber += 1
 
       if (answer && question.f1 * question.f2 === parseInt(answer, 10)) {
-        results.mark += 1
+        markedAnswer.isCorrect = true
+      } else {
+        markedAnswer.isCorrect = false
       }
+      results.markedAnswers.push(markedAnswer)
     }
+    results.mark = results.markedAnswers.filter(o => o.isCorrect === true).length
     return results
   }
 
-  private async persistMark (mark: Mark, receivedCheck: ReceivedCheckTableEntity) {
-    receivedCheck.mark = mark.mark
-    receivedCheck.markedAt = mark.processedAt
-    receivedCheck.maxMarks = mark.maxMarks
-    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings) {
+    if (!functionBindings.checkResultTable) {
+      functionBindings.checkResultTable = []
+    }
+    const markingEntity: any = R.omit(['checkCode'], checkResult)
+    markingEntity.PartitionKey = checkResult.checkCode
+    markingEntity.RowKey = uuid.v4()
+    functionBindings.checkResultTable.push(markingEntity)
   }
 
   private findValidatedCheck (receivedCheckRef: Array<any>): ReceivedCheckTableEntity {

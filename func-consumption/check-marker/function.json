@@ -22,6 +22,13 @@
       "name": "checkNotificationQueue",
       "queueName": "check-notification",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "table",
+      "name": "checkResultTable",
+      "tableName": "checkResult",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/check-marker/index.js"
