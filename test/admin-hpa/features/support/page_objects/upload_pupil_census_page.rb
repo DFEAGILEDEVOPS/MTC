@@ -1,19 +1,19 @@
 class UploadPupilCensusPage < SitePrism::Page
   set_url '/service-manager/upload-pupil-census'
 
-  element :heading, '.heading-xlarge', text: 'Upload pupil census'
+  element :heading, '.govuk-heading-xl', text: 'Upload pupil census'
   element :file_upload, '#file-upload'
   element :upload, '#upload-form-submit'
   element :cancel, 'a[href="/service-manager/home"]'
-  element :uploaded_title, '.bold-small'
+  element :uploaded_title, ".govuk-body", text: "Uploaded file"
   element :download_template, 'a[href="/csv/mtc-census-headers.csv"]'
   element :csrf, 'input[name="_csrf"]', visible: false
-  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
+  section :error_summary, 'div[aria-labelledby="error-summary-title"]' do
     element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
     element :error_text, 'p', text: 'See highlighted errors below'
-    elements :error_messages, '.error-summary-list li'
+    elements :error_messages, '.govuk-error-summary__list li'
   end
-  element :error_message, '.error-message'
+  element :error_message, '.govuk-error-message'
 
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
     element :file, 'dd:nth-of-type(1)'
