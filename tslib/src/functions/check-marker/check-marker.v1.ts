@@ -111,7 +111,7 @@ export class CheckMarkerV1 {
     }
 
     const toReturn: MarkingData = {
-      answers: parsedAnswersJson, // TODO: jms return marked answers here
+      answers: parsedAnswersJson,
       formQuestions: checkForm,
       results: []
     }
@@ -124,7 +124,7 @@ export class CheckMarkerV1 {
       checkCode: checkCode,
       maxMarks: markingData.formQuestions.length,
       markedAnswers: [],
-      processedAt: moment.utc().toDate() // TODO: jms: this is converted to a string in table storage 🙈
+      markedAt: moment.utc().toDate() // TODO: jms: this is converted to a string in table storage 🙈
     }
 
     let questionNumber = 1

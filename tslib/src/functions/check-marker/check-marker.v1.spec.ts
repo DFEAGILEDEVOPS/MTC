@@ -336,7 +336,7 @@ describe('check-marker/v1', () => {
     expect(checkResult.mark).toBe(2)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
-    expect(checkResult.processedAt).toBeTruthy()
+    expect(checkResult.markedAt).toBeTruthy()
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(true)
 
@@ -398,7 +398,7 @@ describe('check-marker/v1', () => {
     expect(checkResult.mark).toBe(1)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
-    expect(checkResult.processedAt).toBeInstanceOf(Date)
+    expect(checkResult.markedAt).toBeInstanceOf(Date)
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(false)
 
@@ -459,7 +459,7 @@ describe('check-marker/v1', () => {
     const checkResult: any = persistMarkSpy.mock.calls[0][0]
     expect(checkResult.mark).toBe(0)
     expect(checkResult.maxMarks).toBe(2)
-    expect(checkResult.processedAt).toBeInstanceOf(Date)
+    expect(checkResult.markedAt).toBeInstanceOf(Date)
     expect(checkResult.markedAnswers[0].isCorrect).toBe(false)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(false)
 

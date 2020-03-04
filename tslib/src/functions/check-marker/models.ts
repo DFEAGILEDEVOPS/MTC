@@ -40,5 +40,5 @@ export interface CheckResult {
   mark: number,
   maxMarks: number,
   markedAnswers: MarkedAnswer[]
-  processedAt: Date
+  markedAt: Date
 }
