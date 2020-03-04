@@ -38,7 +38,7 @@ export class CheckMarkerV1 {
       return
     }
     try {
-      const checkResult = this.markCheck(markingData, validatedCheck.PartitionKey)
+      const checkResult = this.markCheck(markingData, validatedCheck.RowKey)
       logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
       this.persistMark(checkResult, functionBindings)
     } catch (error) {
