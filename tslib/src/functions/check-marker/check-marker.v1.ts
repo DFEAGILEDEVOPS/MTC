@@ -89,7 +89,6 @@ export class CheckMarkerV1 {
     let rawCheckForm
 
     try {
-      // TODO: jms move this to a service that checks redis first
       rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
