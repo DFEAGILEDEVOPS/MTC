@@ -5,7 +5,7 @@ class AdminSignInPage < SitePrism::Page
   element :instructions, 'p.govuk-body', text: 'Sign-in to access the Check Development Service'
   element :username_field, '#username'
   element :password_field, '#password'
-  element :sign_in, 'button[type="submit"]'
+  element :sign_in, 'button[type="submit"]', text: 'Sign in'
   element :contact, "a[href='/contact']"
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 
