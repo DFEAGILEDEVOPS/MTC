@@ -10,7 +10,7 @@ services:
       ACCEPT_EULA: "Y"
       HOMEBREW_NO_ENV_FILTERING: 1
   redis:
-    image: "redis:3-alpine"
+    image: "redis:4.0-alpine"
     container_name: mtc_redis
     ports:
       - "6379:6379"
