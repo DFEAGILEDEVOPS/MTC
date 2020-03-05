@@ -23,7 +23,9 @@ When(/^I update a school to be of a different time zone$/) do
   update_school_page.country.set 'Germany'
   update_school_page.country_auto_complete[0].click
   @timezone_set = update_school_page.country.value
+  sleep 2
   update_school_page.save.click
+  sleep 2
 end
 
 Then(/^the MOD schools page should reflect this$/) do

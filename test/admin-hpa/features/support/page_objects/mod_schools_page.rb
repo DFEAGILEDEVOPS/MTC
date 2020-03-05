@@ -5,7 +5,7 @@ class ModSchoolsPage < SitePrism::Page
   element :info_text, '#lead-paragraph'
   element :update_to_mod_school_button, 'a[href="/service-manager/mod-settings/add-school"]'
   element :disabled_save, 'button[disabled="disabled"]'
-  element :save, '.govuk-button[type="submit"]'
+  element :save, 'form .govuk-button[type="submit"]'
   element :cancel, 'a[href="/service-manager/mod-settings/cancel"]'
   element :flash_message, '.govuk-info-message'
   element :confirm_removal, '#js-modal-confirmation-button'
