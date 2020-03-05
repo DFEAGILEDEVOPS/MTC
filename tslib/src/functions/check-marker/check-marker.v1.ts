@@ -127,7 +127,8 @@ export class CheckMarkerV1 {
       checkCode: checkCode,
       maxMarks: markingData.formQuestions.length,
       markedAnswers: [],
-      markedAt: moment.utc().toDate() // even using the entityGenerator it appears to be impossible to make this appear as a date in table storage
+      markedAt: moment.utc().toDate() // even using the entityGenerator it appears to be impossible to make this a date in table storage
+      // this message is a warning for people in the future not to waste their time here.
     }
 
     let questionNumber = 1
