@@ -6,7 +6,7 @@ import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
-import {ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer} from './models';
+import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
 
 export class CheckMarkerV1 {
