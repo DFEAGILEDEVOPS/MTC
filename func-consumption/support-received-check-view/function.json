@@ -1,0 +1,28 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "name": "receivedCheck",
+      "type": "table",
+      "tableName": "receivedCheck",
+      "take": "1",
+      "filter": "(PartitionKey eq '{school_uuid}') and (RowKey eq '{checkCode}')",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING",
+      "direction": "in"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}
