@@ -58,7 +58,7 @@
                                 <% if (p.showDoB) { %>
                                     <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
                                 <% } %>
-                                <input type="hidden" id="pupilUpn" name="pupilUpn" value="<%= p.upn %>"/>
+                                <input type="hidden" id="pupilUpn-<%= p.upn %>" name="pupilUpn" value="<%= p.upn %>"/>
                             </div>
                         </td>
                         <td class="govuk-table__cell"><%= p.group %></td>
