@@ -11,7 +11,7 @@ class PupilReasonPage < SitePrism::Page
   element :csrf, 'input[name="_csrf"]', visible: false
 
   section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
-  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
+  section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'
