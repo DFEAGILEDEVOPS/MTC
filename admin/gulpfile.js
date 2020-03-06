@@ -30,6 +30,8 @@ const config = require('./config')
 const jsBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
   './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/gds-cookie-functions.js',
+  './assets/javascripts/gds-cookie-settings.js',
   './assets/javascripts/gds-cookie-banner.js',
   './assets/javascripts/gds-table-sorting.js',
   './assets/javascripts/gds-print-popup.js',
@@ -89,6 +91,9 @@ gulp.task('bundle-js', function () {
 
 gulp.task('bundle-func-calls-js', function () {
   const viewJS = [
+    'cookie-form.js',
+    'google-analytics.js',
+    'layout.js',
     'pupil-register.js',
     'pupil-status.js',
     'pupil-pin.js'

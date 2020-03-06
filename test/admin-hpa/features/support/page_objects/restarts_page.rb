@@ -28,7 +28,7 @@ class RestartsPage < SitePrism::Page
     end
   end
 
-  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
+  section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
   section :restarts_pupil_list, '#submitted-restarts tbody' do
     sections :rows, 'tr' do

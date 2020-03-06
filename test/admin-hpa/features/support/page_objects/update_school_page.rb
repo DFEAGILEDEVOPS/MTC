@@ -9,7 +9,7 @@ class UpdateSchoolPage < SitePrism::Page
   elements :urn_auto_complete, '#urn__listbox li'
   elements :country_auto_complete, '#timezone__listbox li'
   element :timezone_selected, '#timezone__listbox option[selected]'
-  element :save, '.govuk-button[value="Save"]'
+  element :save, 'form .govuk-button[value="Save"]'
   element :cancel, 'a[href="/service-manager/mod-settings"]'
   elements :error_summary,'.govuk-error-summary__list li'
   elements :error_message,'.govuk-error-message'

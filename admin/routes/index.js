@@ -7,7 +7,7 @@ const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
 const { getPrivacyPage } = require('../controllers/privacy')
-const { getCookiesPage } = require('../controllers/cookies')
+const { getCookiesForm, getCookiesMtc } = require('../controllers/cookies')
 const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const testDeveloperController = require('../controllers/test-developer')
@@ -44,7 +44,8 @@ router.get('/service-manager', isAuthenticated(roles.serviceManager), (req, res,
 router.get('/contact', (req, res) => getContactPage(req, res))
 router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 /* Cookies page */
-router.get('/cookies', (req, res) => getCookiesPage(req, res))
+router.get('/cookies-form', (req, res) => getCookiesForm(req, res))
+router.get('/cookies-mtc', (req, res) => getCookiesMtc(req, res))
 /* ccessibility statement */
 router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPage(req, res))
 
