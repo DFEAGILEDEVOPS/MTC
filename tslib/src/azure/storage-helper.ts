@@ -20,11 +20,20 @@ export interface TableStorageEntity {
   RowKey: string
 }
 
+export interface InsertResponse {
+  '.metadata': { etag: string }
+}
+
+export interface DeleteResponse {
+  isSuccessful: boolean,
+  statusCode: number // e.g. 204
+}
+
 export interface IAsyncTableService {
   replaceEntityAsync (table: string, entity: any): Promise<Error | TableStorageEntity>
-  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<any>
-  deleteEntityAsync (table: string, entityDescriptor: any): Promise<any>
-  insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>
+  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any>
+  deleteEntityAsync (table: string, entityDescriptor: any): Promise<Error | DeleteResponse>
+  insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<Error | InsertResponse>
 }
 
 export class AsyncTableService extends az.TableService implements IAsyncTableService {
@@ -40,7 +49,8 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
       })
     })
   }
-  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<any> {
+
+  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any> {
     return new Promise((resolve, reject) => {
       this.queryEntities(table, tableQuery, currentToken, (error, result) => {
         if (error) {
@@ -52,7 +62,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  deleteEntityAsync (table: string, entityDescriptor: any): Promise<any> {
+  deleteEntityAsync (table: string, entityDescriptor: any): Promise<Error | DeleteResponse> {
     return new Promise((resolve, reject) => {
       this.deleteEntity(table, entityDescriptor, (error, result) => {
         if (error) {
@@ -64,7 +74,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  insertEntityAsync (table: string, entityDescriptor: unknown): Promise<any> {
+  insertEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | InsertResponse> {
     return new Promise((resolve, reject) => {
       this.insertEntity(table, entityDescriptor, (error, result) => {
         if (error) {
