@@ -1,7 +1,7 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import * as uuid from 'uuid'
-import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
+import { IAsyncTableService, AsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
@@ -63,7 +63,7 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ReceivedCheckTableEntity, logger: ILogger): Promise<MarkingData | void> {
+  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ReceivedCheckTableEntity, logger: ILogger): Promise<MarkingData | undefined> {
     if (RA.isNilOrEmpty(validatedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
@@ -75,11 +75,13 @@ export class CheckMarkerV1 {
       parsedAnswersJson = JSON.parse(validatedCheck.answers!)
     } catch (error) {
       logger.error(error)
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
+      return
     }
 
     if (!RA.isArray(parsedAnswersJson)) {
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
+      return
     }
 
     // Sort the answers by clientTimeStamp, so that we get a sequential timeline of events
@@ -92,11 +94,13 @@ export class CheckMarkerV1 {
       rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
+      return
     }
 
     if (R.isNil(rawCheckForm)) {
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm could not be found by checkCode')
+      return
     }
 
     let checkForm: any
@@ -105,11 +109,13 @@ export class CheckMarkerV1 {
       checkForm = JSON.parse(rawCheckForm)
     } catch (error) {
       logger.error(error)
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm data is not valid JSON')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'associated checkForm data is not valid JSON')
+      return
     }
 
     if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
-      return this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
+      return
     }
 
     const toReturn: MarkingData = {
@@ -183,7 +189,7 @@ export class CheckMarkerV1 {
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string) {
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<Error | TableStorageEntity> {
     receivedCheck.processingError = markingError
     receivedCheck.markedAt = moment().toDate()
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)

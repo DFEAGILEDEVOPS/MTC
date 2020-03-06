@@ -15,8 +15,13 @@ try {
 }
 import * as az from 'azure-storage'
 
+export interface TableStorageEntity {
+  PartitionKey: string,
+  RowKey: string
+}
+
 export interface IAsyncTableService {
-  replaceEntityAsync (table: string, entity: any): Promise<any>
+  replaceEntityAsync (table: string, entity: any): Promise<Error | TableStorageEntity>
   queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<any>
   deleteEntityAsync (table: string, entityDescriptor: any): Promise<any>
   insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<any>

@@ -1,7 +1,7 @@
 import * as Subject from './check-marker.v1'
 import uuid = require('uuid')
 import moment = require('moment')
-import { IAsyncTableService } from '../../azure/storage-helper'
+import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
 import { ILogger } from '../../common/logger'
@@ -82,9 +82,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     await sut.mark(functionBindings, loggerMock)
@@ -114,9 +118,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     await sut.mark(functionBindings, loggerMock)
@@ -146,9 +154,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -182,9 +194,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -218,9 +234,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     const expectedErrorMessage = 'sql error'
@@ -255,9 +275,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
