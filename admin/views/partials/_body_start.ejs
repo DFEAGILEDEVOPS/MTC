@@ -2,12 +2,9 @@
 <!-- Global Site Tag (gtag.js) - Google Analytics -->
 <script async src='https://www.googletagmanager.com/gtag/js?id=<%= googleTrackingId %>'></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '<%= googleTrackingId %>', { 'anonymize_ip': true });
+  var googleTrackingId = '<%= googleTrackingId %>'
 </script>
+<script src="/javascripts/google-analytics.js"></script>
 <% } %>
 <% if (appInsightsClientKey) { %>
 <script type="text/javascript">

@@ -16,7 +16,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
+  section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
