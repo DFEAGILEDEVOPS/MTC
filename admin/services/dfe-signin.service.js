@@ -72,7 +72,7 @@ const service = {
       // user exists - check requested school
       if (schoolRecord && (userRecord.school_id !== schoolRecord.id)) {
         await userDataService.sqlUpdateSchool(userRecord.id, schoolRecord.id)
-        userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.id)
+        userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.providerUserId)
       }
     }
 
