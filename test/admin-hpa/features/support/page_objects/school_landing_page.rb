@@ -16,7 +16,7 @@ class SchoolLandingPage < SitePrism::Page
   element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check/pupils-list"]'
 
   # access arrangements
-  element :access_arrangements, 'a', text: 'Set access arrangements for pupils that need them'
+  element :access_arrangements, 'a', text: 'Enable access arrangements for pupils who need them'
 
 
   # preview check
