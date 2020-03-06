@@ -1,6 +1,43 @@
-<div class="app-cookie-banner js-cookie-banner" id="global-cookie-message">
-  <p class="govuk-width-container">
-    The Multiplication tables check service uses cookies to make the site simpler.
-    <a href="/cookies" class="govuk-link">Find out more about cookies</a> or <a id="close-cookie-message" href="#">hide this message</a>
-  </p>
+<div id="global-cookie-message" class="gem-c-cookie-banner govuk-clearfix" data-module="cookie-banner" role="region"
+     aria-label="cookie banner" data-nosnippet="" style="display: block;">
+    <div class="gem-c-cookie-banner__wrapper govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class=" govuk-grid-column-two-thirds">
+                <div class="gem-c-cookie-banner__message">
+                    <span class="govuk-heading-m">Tell us whether you accept cookies</span>
+                    <p class="govuk-body">We use <a class="govuk-link" href="/cookies-form">cookies to collect
+                            information</a> about how you use GOV.UK. We use this information to make the website work
+                        as well as possible and improve government services.</p>
+                </div>
+                <div class="gem-c-cookie-banner__buttons">
+                    <div class="gem-c-cookie-banner__button gem-c-cookie-banner__button-accept govuk-grid-column-full govuk-grid-column-one-half-from-desktop">
+
+                        <button class="gem-c-button govuk-button gem-c-button--inline" type="submit"
+                                data-module="track-click" data-accept-cookies="true" data-track-category="cookieBanner"
+                                data-track-action="Cookie banner accepted">Accept all cookies
+                        </button>
+
+                    </div>
+                    <div class="gem-c-cookie-banner__button gem-c-cookie-banner__button-settings govuk-grid-column-full govuk-grid-column-one-half-from-desktop">
+
+                        <a class="gem-c-button govuk-button gem-c-button--inline" role="button"
+                           data-module="track-click" data-track-category="cookieBanner"
+                           data-track-action="Cookie banner settings clicked" href="/cookies-form">Set cookie
+                            preferences</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="gem-c-cookie-banner__confirmation govuk-width-container" tabindex="-1">
+        <p class="gem-c-cookie-banner__confirmation-message">
+            You’ve accepted all cookies. You can <a class="govuk-link" href="/cookies-form" data-module="track-click"
+                                                    data-track-category="cookieBanner"
+                                                    data-track-action="Cookie banner settings clicked from confirmation">change
+                your cookie settings</a> at any time.
+        </p>
+        <button class="gem-c-cookie-banner__hide-button" data-hide-cookie-banner="true" data-module="track-click"
+                data-track-category="cookieBanner" data-track-action="Hide cookie banner">Hide
+        </button>
+    </div>
 </div>

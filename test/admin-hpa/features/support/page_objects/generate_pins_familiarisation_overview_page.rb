@@ -22,7 +22,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     element :generate_additional_pins_btn, 'a', text: "Generate PINs"
   end
 
-  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
+  section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
