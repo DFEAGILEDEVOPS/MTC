@@ -14,7 +14,7 @@ SELECT TOP 1 @school_id = school_id FROM @TVP
 IF NOT EXISTS (SELECT id FROM mtc_admin.school
     WHERE (id = @school_id AND pin IS NOT NULL
     AND (pinExpiresAt IS NOT NULL AND pinExpiresAt > GETUTCDATE())))
-    RAISERROR (50001, 18, 1)
+    RAISERROR ('50001: School has no valid pin', 18, 1)
 
 -- Connection pooling is enabled - make sure we are not in an existing transaction
 IF @@TRANCOUNT <> 0  -- Rollback old transactions before starting another

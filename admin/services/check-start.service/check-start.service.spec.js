@@ -176,9 +176,7 @@ describe('check-start.service', () => {
     test('attempts to generate school pin if error 50001 thrown when creating check records', async () => {
       spyOn(schoolPinService, 'generateSchoolPin')
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
-        const err = new Error()
-        err.number = 50001
-        throw err
+        throw new Error('50001: no school pin found')
       })
       try {
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
