@@ -174,7 +174,8 @@ module.exports = {
     newCheckForm: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_FORM') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) : true,
     newCheckWindow: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_WINDOW') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) : true,
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
-    schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true
+    schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true,
+    schoolPinGenFallbackEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK) : false
   },
   SchoolPinGeneratorFunction: {
     FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || 'http://localhost:7071/api/school-pin-http-service'
