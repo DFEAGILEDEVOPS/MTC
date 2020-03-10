@@ -294,7 +294,10 @@ var checkboxUtil = {
       }
       paramIds.map(function (pId) {
         $(sel + '.' + param + '-id-' + pId).removeClass('filter-hidden-group')
-        document.querySelector(`${sel}.${param}-id-${pId} > td > .multiple-choice-mtc`).classList.remove('filter-hidden-group')
+        const groupCheckBoxEls = document.querySelectorAll(`${sel}.${param}-id-${pId} > td > .multiple-choice-mtc`)
+        for (let i = 0; i < groupCheckBoxEls.length; i++) {
+          groupCheckBoxEls[i].classList.remove('filter-hidden-group')
+        }
       })
       $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
     }
