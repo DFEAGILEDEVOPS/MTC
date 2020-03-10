@@ -57,7 +57,7 @@ const service = {
   mapDfeRoleToMtcRole: (dfeRoleCode) => {
     const mapping = {
       mtc_service_manager: 'SERVICE-MANAGER',
-      mtc_headteacher: 'HEADTEACHER',
+      mtc_headteacher: 'TEACHER',
       mtc_teacher: 'TEACHER',
       mtc_helpdesk: 'HELPDESK',
       mtc_test_developer: 'TEST-DEVELOPER'
