@@ -29,14 +29,14 @@ Feature: Access Arrangements
     Then I can see setting page as per design
     And I can see following access arrangement
       | access_arrangement_type |
-      | Question reader         |
+      | Audio version           |
 
   Scenario: Setting page is displayed as per design for Question reader access arrangement
     Given I logged in with user with access arrangement 'Audio version (reason required)'
     Then I can see setting page as per design
     And I can see following access arrangement
       | access_arrangement_type |
-      | Question reader         |
+      | Audio version           |
 
   Scenario: Font size setting page is displayed as per design
     Given I logged in with user with the access arrangement 'Font size'
