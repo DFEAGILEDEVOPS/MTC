@@ -4,8 +4,6 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 
-const table = '[user]'
-
 const userDataService = {
 
   /**
@@ -17,8 +15,9 @@ const userDataService = {
   sqlFindOneByIdentifier: async (identifier) => {
     const paramIdentifier = { name: 'identifier', type: TYPES.NVarChar, value: identifier }
     const sql = `
-      SELECT *
-      FROM ${table}
+      SELECT u.id, u.identifier, u.school_id, u.role_id, u.displayName, r.title as [roleTitle]
+      FROM mtc_admin.[user] u
+      INNER JOIN mtc_admin.role r ON u.role_id = r.id
       WHERE identifier = @identifier
     `
     const rows = await sqlService.query(sql, [paramIdentifier])

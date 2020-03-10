@@ -27,8 +27,8 @@ const service = {
 
     const dfeRole = await dfeSigninDataService.getDfeRole(dfeUser)
     const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
-    dfeUser.role = mtcRoleTitle
     const roleRecord = await roleService.findByTitle(mtcRoleTitle)
+    dfeUser.role = mtcRoleTitle
 
     let schoolRecord
     // lookup school if in teacher or headteacher role
@@ -69,10 +69,14 @@ const service = {
         throw new Error('unable to find user record')
       }
     } else {
-      // user exists - check requested school
+      // user exists - check if school has changed
       if (schoolRecord && (userRecord.school_id !== schoolRecord.id)) {
         await userDataService.sqlUpdateSchool(userRecord.id, schoolRecord.id)
         userRecord = await userDataService.sqlFindOneByIdentifier(dfeUser.providerUserId)
+      }
+      // user exists - check if role has changed
+      if (userRecord.roleTitle !== dfeUser.role) {
+        await userDataService.sqlUpdateRole(userRecord.id, roleRecord.id)
       }
     }
 
