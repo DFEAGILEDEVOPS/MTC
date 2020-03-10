@@ -153,7 +153,7 @@ var inputStatus = {
     */
   countCheckedCheckboxes: function (checkboxParent) {
     // Exclude from counter pupils that are filtered
-    var el = document.querySelectorAll((checkboxParent || '.multiple-choice-mtc:not(.filter-hidden-group)') +
+    var el = document.querySelectorAll((checkboxParent || '.multiple-choice-mtc:not(.js-filter-hidden-group)') +
       ' > input[type=checkbox]:checked:not(#tickAllCheckboxes)')
     return el.length || 0
   },
@@ -283,20 +283,20 @@ var checkboxUtil = {
     var sel = document.getElementsByClassName('govuk-template').length === 1 ? '.govuk-spacious > tbody > tr' : '.spacious > tbody > tr'
     const checkBoxEls = document.querySelectorAll(sel.concat(' > td > .multiple-choice-mtc'))
     if (paramIds.length < 1 || paramIds[0].length < 1) {
-      $(sel).removeClass('filter-hidden-group')
+      $(sel).removeClass('js-filter-hidden-group')
       for (let i = 0; i < checkBoxEls.length; i++) {
-        checkBoxEls[i].classList.remove('filter-hidden-group')
+        checkBoxEls[i].classList.remove('js-filter-hidden-group')
       }
     } else {
-      $(sel).addClass('filter-hidden-group')
+      $(sel).addClass('js-filter-hidden-group')
       for (let i = 0; i < checkBoxEls.length; i++) {
-        checkBoxEls[i].classList.add('filter-hidden-group')
+        checkBoxEls[i].classList.add('js-filter-hidden-group')
       }
       paramIds.map(function (pId) {
-        $(sel + '.' + param + '-id-' + pId).removeClass('filter-hidden-group')
+        $(sel + '.' + param + '-id-' + pId).removeClass('js-filter-hidden-group')
         const groupCheckBoxEls = document.querySelectorAll(`${sel}.${param}-id-${pId} > td > .multiple-choice-mtc`)
         for (let i = 0; i < groupCheckBoxEls.length; i++) {
-          groupCheckBoxEls[i].classList.remove('filter-hidden-group')
+          groupCheckBoxEls[i].classList.remove('js-filter-hidden-group')
         }
       })
       $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
