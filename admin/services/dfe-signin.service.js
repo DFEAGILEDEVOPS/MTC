@@ -26,13 +26,15 @@ const service = {
     dfeUser.providerUserId = dfeUser.sub
 
     const dfeRole = await dfeSigninDataService.getDfeRole(dfeUser)
+    console.log(`GUY: dfeRole is ${dfeRole}`)
     const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
+    console.log(`GUY: mtc inferred role is ${mtcRoleTitle}`)
     dfeUser.role = mtcRoleTitle
     const roleRecord = await roleService.findByTitle(mtcRoleTitle)
 
     let schoolRecord
     // lookup school if in teacher or headteacher role
-    if (dfeUser.role === roles.teacher || dfeUser.role === roles.headTeacher) {
+    if (dfeUser.role === roles.teacher) {
       if (dfeUser.organisation && dfeUser.organisation.urn) {
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
