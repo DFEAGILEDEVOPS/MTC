@@ -2,6 +2,7 @@ Before do
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
   p Time.now
+  sign_in_page.cookies_banner.accept_all.click
 end
 
 Before('@service_manager_message') do
@@ -12,7 +13,12 @@ Before('@service_manager_message') do
 end
 
 Before('@incomplete_pupil') do
+  REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(1)
+  step "I am logged in with a service manager"
+  step "I am on the check settings page"
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
 end
 
 After('@service_manager_message') do
@@ -156,7 +162,12 @@ After('@remove_mod_school') do
 end
 
 After('@incomplete_pupil') do
+  REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(30)
+  step "I am logged in with a service manager"
+  step "I am on the check settings page"
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
 end
 
 After("@no_active_check_window") do

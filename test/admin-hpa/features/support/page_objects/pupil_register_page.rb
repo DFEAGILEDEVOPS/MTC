@@ -10,6 +10,7 @@ class PupilRegisterPage < SitePrism::Page
   element :edited_pupil, '.highlight-item'
   element :pupil_status_explanation, '.govuk-details__summary-text'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
+  section :cookies_banner, CookiesBannerSection, '#global-cookie-message'
 
   section :pupil_list_column_heading, '#register-pupils thead tr' do
     element :name_heading, 'th:nth-child(1)'

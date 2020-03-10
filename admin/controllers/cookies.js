@@ -1,11 +1,19 @@
 'use strict'
 
-const getCookiesPage = async (req, res) => {
-  res.locals.pageTitle = 'Cookies'
+const getCookiesForm = async (req, res) => {
+  res.locals.pageTitle = 'Cookies on MTC'
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('cookies.ejs', {
+  res.render('cookies-form.ejs', {
     breadcrumbs: req.breadcrumbs()
   })
 }
 
-module.exports = { getCookiesPage }
+const getCookiesMtc = async (req, res) => {
+  res.locals.pageTitle = 'Cookies'
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('cookies-mtc.ejs', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
+module.exports = { getCookiesForm, getCookiesMtc }
