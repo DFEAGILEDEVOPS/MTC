@@ -26,9 +26,7 @@ const service = {
     dfeUser.providerUserId = dfeUser.sub
 
     const dfeRole = await dfeSigninDataService.getDfeRole(dfeUser)
-    console.log(`GUY: dfeRole is ${dfeRole}`)
     const mtcRoleTitle = roleService.mapDfeRoleToMtcRole(dfeRole)
-    console.log(`GUY: mtc inferred role is ${mtcRoleTitle}`)
     dfeUser.role = mtcRoleTitle
     const roleRecord = await roleService.findByTitle(mtcRoleTitle)
 
