@@ -5,20 +5,20 @@ const homeRoutes = require('../lib/consts/home-routes')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
 const url = require('url')
+const roles = require('../lib/consts/roles')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
     switch (req.user.role) {
-      case 'TEACHER':
-      case 'HEADTEACHER':
+      case roles.teacher:
         return res.redirect(homeRoutes.schoolHomeRoute)
-      case 'TEST-DEVELOPER':
+      case roles.testDeveloper:
         return res.redirect(homeRoutes.testDeveloperHomeRoute)
-      case 'SERVICE-MANAGER':
+      case roles.serviceManager:
         return res.redirect(homeRoutes.serviceManagerHomeRoute)
-      case 'HELPDESK':
+      case roles.helpdesk:
         return res.redirect(homeRoutes.schoolHomeRoute)
     }
   } else {
@@ -34,7 +34,7 @@ const home = (req, res) => {
 const redirectToAuthModeSignIn = (res) => {
   switch (config.Auth.mode) {
     case authModes.dfeSignIn:
-      res.redirect(config.Auth.dfeSignIn.authUrl)
+      res.redirect(dfeSignInRedirect)
       break
     default: //  local
       res.render('sign-in')
@@ -59,13 +59,12 @@ const postSignIn = (req, res) => {
     timezone:"${req.user.timezone}"`)
 
   switch (req.user.role) {
-    case 'TEACHER':
-    case 'HEADTEACHER':
-    case 'HELPDESK':
+    case roles.teacher:
+    case roles.helpdesk:
       return res.redirect(homeRoutes.schoolHomeRoute)
-    case 'TEST-DEVELOPER':
+    case roles.testDeveloper:
       return res.redirect(homeRoutes.testDeveloperHomeRoute)
-    case 'SERVICE-MANAGER':
+    case roles.serviceManager:
       return res.redirect(homeRoutes.serviceManagerHomeRoute)
     default:
       return res.redirect(homeRoutes.schoolHomeRoute)
@@ -83,7 +82,6 @@ const getSignOut = (req, res) => {
   req.logout()
 
   req.session.regenerate(function () {
-    logger.debug(`req.session.regenerate. Auth.mode:${config.Auth.mode}`)
     switch (config.Auth.mode) {
       case authModes.dfeSignIn:
         return res.redirect(dfeSignOutUrl)
