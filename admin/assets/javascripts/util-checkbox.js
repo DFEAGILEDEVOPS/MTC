@@ -152,9 +152,7 @@ var inputStatus = {
     * @param checkboxParent
     */
   countCheckedCheckboxes: function (checkboxParent) {
-    // Exclude from counter pupils that are filtered
-    var el = document.querySelectorAll((checkboxParent || '.multiple-choice-mtc:not(.js-filter-hidden-group)') +
-      ' > input[type=checkbox]:checked:not(#tickAllCheckboxes)')
+    var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
     return el.length || 0
   },
 
@@ -280,26 +278,30 @@ var checkboxUtil = {
     * @param paramIds
     */
   tableRowVisibility: function (param, paramIds) {
-    var sel = document.getElementsByClassName('govuk-template').length === 1 ? '.govuk-spacious > tbody > tr' : '.spacious > tbody > tr'
-    const checkBoxEls = document.querySelectorAll(sel.concat(' > td > .multiple-choice-mtc'))
+    const sel = '.govuk-spacious > tbody > tr'
     if (paramIds.length < 1 || paramIds[0].length < 1) {
       $(sel).removeClass('js-filter-hidden-group')
-      for (let i = 0; i < checkBoxEls.length; i++) {
-        checkBoxEls[i].classList.remove('js-filter-hidden-group')
-      }
     } else {
       $(sel).addClass('js-filter-hidden-group')
-      for (let i = 0; i < checkBoxEls.length; i++) {
-        checkBoxEls[i].classList.add('js-filter-hidden-group')
-      }
       paramIds.map(function (pId) {
         $(sel + '.' + param + '-id-' + pId).removeClass('js-filter-hidden-group')
-        const groupCheckBoxEls = document.querySelectorAll(`${sel}.${param}-id-${pId} > td > .multiple-choice-mtc`)
-        for (let i = 0; i < groupCheckBoxEls.length; i++) {
-          groupCheckBoxEls[i].classList.remove('js-filter-hidden-group')
-        }
       })
       $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
+    }
+  },
+
+  /**
+   * Unselect row checkboxes that do not belong to the relevant group
+   * @param paramId
+   */
+  unselectUngroupedCheckboxes: function (paramId) {
+    const tableRows = document.querySelectorAll('.govuk-spacious > tbody > tr')
+    for (let i = 0; i < tableRows.length; i++) {
+      const rowClasses = [].slice.apply(tableRows[i].classList).join(' ')
+      if (rowClasses.indexOf(`group-id-${paramId}`) < 0) {
+        const checkBoxEl = tableRows[i].querySelector('td > .multiple-choice-mtc > .govuk-checkboxes__input')
+        checkBoxEl.checked = false
+      }
     }
   },
 
