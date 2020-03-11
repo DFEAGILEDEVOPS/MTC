@@ -17,7 +17,7 @@ const initSignOnAsync = async () => {
   let issuer
   try {
     issuer = await asyncRetry(async () =>
-      Issuer.discover(config.Auth.dfeSignIn.authUrl), asyncRetry.strategies.apiStrategy)
+      Issuer.discover(config.Auth.dfeSignIn.issuerUrl), asyncRetry.strategies.apiStrategy)
   } catch (error) {
     logger.error(`error discovering dfe signin service:${error.message}`)
     throw error
@@ -59,7 +59,7 @@ const initSignOnAsync = async () => {
 const initSignOnSync = () => {
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   logger.debug('discovering dfe signin service issuer...')
-  Issuer.discover(config.Auth.dfeSignIn.authUrl)
+  Issuer.discover(config.Auth.dfeSignIn.issuerUrl)
     .then((issuer) => {
       logger.info('dfe sign on discovered successfully')
       const client = new issuer.Client({
