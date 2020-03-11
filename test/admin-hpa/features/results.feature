@@ -4,7 +4,7 @@ Feature: Results tests
   I need to see individual scores of pupils
   so i can assess the overall performance of my school
 
-  @result @redis
+  @result @redis @wip
   Scenario: Viewing result Page in the first week of check end date and hdf is not submitted
     Given multiple pupil has completed the check
     When we are in 1st week of check end date without submitted HDF
