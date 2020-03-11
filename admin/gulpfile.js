@@ -12,6 +12,9 @@ const merge = require('merge-stream')
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '.env')
+const dir = require('node-dir')
+const md5 = require('md5')
+const jedit = require('edit-json-file')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -159,12 +162,36 @@ gulp.task('realclean', gulp.series('clean'), function () {
     .pipe(clean())
 })
 
+gulp.task('generate-assets-version', function (done) {
+  let assetsContent = ''
+  dir.readFiles('./public/', {
+    // match only filenames with a .js and .css extensions and that don't start with a `.´
+    match: /^[^.].+\.(js|css)$/i
+  }, function (err, content, next) {
+    if (err) throw err
+    assetsContent = assetsContent.concat(content)
+    next()
+  },
+  function (err) {
+    if (err) throw err
+    const md5hash = md5(assetsContent)
+    const dest = jedit('./package.json')
+    dest.set('mtc.assets-version', md5hash)
+    dest.save()
+  })
+  done()
+})
+
 gulp.task('build',
-  gulp.parallel('sass',
-    'bundle-js',
-    'bundle-func-calls-js',
-    'copy-images',
-    'copy-gds-images',
-    'copy-gds-fonts',
-    'copy-pdfs',
-    'copy-csv-files'))
+  gulp.series(
+    gulp.parallel('sass',
+      'bundle-js',
+      'bundle-func-calls-js',
+      'copy-images',
+      'copy-gds-images',
+      'copy-gds-fonts',
+      'copy-pdfs',
+      'copy-csv-files'),
+    'generate-assets-version'
+  )
+)
