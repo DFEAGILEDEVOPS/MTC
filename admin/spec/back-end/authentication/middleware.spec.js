@@ -4,6 +4,7 @@
 
 const httpMocks = require('node-mocks-http')
 const isAuthenticated = require('../../../authentication/middleware')
+const roles = require('../../../lib/consts/roles')
 
 describe('isAuthenticated', () => {
   let next
@@ -24,12 +25,12 @@ describe('isAuthenticated', () => {
         user: {
           id: 1,
           UserName: 'UserName',
-          role: 'SERVICE-MANAGER'
+          role: roles.serviceManager
         }
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
-      const func = isAuthenticated('SERVICE-MANAGER')
+      const func = isAuthenticated(roles.serviceManager)
       func(req, res, next)
       expect(next).toHaveBeenCalled()
     })
@@ -37,11 +38,11 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'SERVICE-MANAGER'
+        role: roles.serviceManager
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
-      const allowedRoles = ['SERVICE-MANAGER', 'TEACHER']
+      const allowedRoles = [roles.serviceManager, roles.teacher]
       const func = isAuthenticated(allowedRoles)
       func(req, res, next)
       expect(next).toHaveBeenCalled()
@@ -50,12 +51,12 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
       spyOn(res, 'redirect')
-      const allowedRole = 'TEACHER'
+      const allowedRole = roles.teacher
       const func = isAuthenticated(allowedRole)
       func(req, res, next)
       expect(next).not.toHaveBeenCalled()
@@ -65,12 +66,12 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
       spyOn(res, 'redirect')
-      const allowedRoles = ['SERVICE-MANAGER', 'TEACHER']
+      const allowedRoles = [roles.serviceManager, roles.teacher]
       const func = isAuthenticated(allowedRoles)
       func(req, res, next)
       expect(next).not.toHaveBeenCalled()
@@ -80,7 +81,7 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
@@ -94,7 +95,7 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
@@ -108,7 +109,7 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
@@ -122,7 +123,7 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
@@ -142,7 +143,7 @@ describe('isAuthenticated', () => {
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(true)
       spyOn(res, 'redirect')
-      const func = isAuthenticated('TEST-DEVELOPER')
+      const func = isAuthenticated(roles.testDeveloper)
       func(req, res, next)
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
@@ -191,7 +192,7 @@ describe('isAuthenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',
-        role: 'TEST-DEVELOPER'
+        role: roles.testDeveloper
       }
       const req = httpMocks.createRequest(reqParams)
       spyOn(req, 'isAuthenticated').and.returnValue(false)

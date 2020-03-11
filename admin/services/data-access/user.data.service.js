@@ -4,8 +4,6 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 
-const table = '[user]'
-
 const userDataService = {
 
   /**
@@ -17,8 +15,9 @@ const userDataService = {
   sqlFindOneByIdentifier: async (identifier) => {
     const paramIdentifier = { name: 'identifier', type: TYPES.NVarChar, value: identifier }
     const sql = `
-      SELECT *    
-      FROM ${table}
+      SELECT u.id, u.identifier, u.school_id, u.role_id, u.displayName, r.title as [roleTitle]
+      FROM mtc_admin.[user] u
+      INNER JOIN mtc_admin.role r ON u.role_id = r.id
       WHERE identifier = @identifier
     `
     const rows = await sqlService.query(sql, [paramIdentifier])
@@ -62,8 +61,23 @@ const userDataService = {
   sqlCreate: async (user) => {
     return sqlService.create('[user]', user)
   },
+  /**
+   * update a user record with a new school id
+   * @param userId number
+   * @param newSchoolId number
+   * @returns a promise containing the update work
+   */
   sqlUpdateSchool: async (userId, newSchoolId) => {
     return sqlService.update('[user]', { id: userId, school_id: newSchoolId })
+  },
+  /**
+   * update a user record with a new role id
+   * @param userId number
+   * @param newRoleId number
+   * @returns a promise containing the update work
+   */
+  sqlUpdateRole: async (userId, newRoleId) => {
+    return sqlService.update('[user]', { id: userId, role_id: newRoleId })
   }
 }
 
