@@ -130,7 +130,9 @@ checkStartService.prepareCheck2 = async function (
     // Create and return checks via spCreateChecks
     newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
   } catch (error) {
-    if (error.message.indexOf(sqlErrorMessages.NoActiveSchoolPin) !== -1) {
+    const pinGenerationFallbackEnabled = config.FeatureToggles.schoolPinGenFallbackEnabled
+    const errorMessageMatchesNoActiveSchoolPin = error.message.indexOf(sqlErrorMessages.NoActiveSchoolPin) !== -1
+    if (pinGenerationFallbackEnabled && errorMessageMatchesNoActiveSchoolPin) {
       logger.warn(`school.id:${schoolId} does not have a valid pin, calling http service to generate one now...`)
       const schoolPin = await schoolPinService.generateSchoolPin(schoolId)
       logger.warn(`pin generated via http service for school.id:${schoolId} pin:${schoolPin}`)

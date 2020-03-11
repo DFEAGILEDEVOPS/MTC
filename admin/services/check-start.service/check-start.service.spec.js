@@ -15,6 +15,7 @@ const redisCacheService = require('../data-access/redis-cache.service')
 const queueNameService = require('../queue-name-service')
 const schoolPinService = require('./school-pin.service')
 const pinService = require('../pin.service')
+const config = require('../../config')
 
 const checkFormMock = {
   id: 100,
@@ -173,8 +174,9 @@ describe('check-start.service', () => {
       spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
     })
 
-    test('attempts to generate school pin if error 50001 thrown when creating check records', async () => {
+    test('attempts to generate school pin if error 50001 thrown and setting enabled', async () => {
       spyOn(schoolPinService, 'generateSchoolPin')
+      config.FeatureToggles.schoolPinGenFallbackEnabled = true
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         throw new Error('50001: no school pin found')
       })
@@ -188,8 +190,25 @@ describe('check-start.service', () => {
       }
     })
 
+    test('does not attempt to generate school pin if error 50001 thrown and setting disabled', async () => {
+      spyOn(schoolPinService, 'generateSchoolPin')
+      config.FeatureToggles.schoolPinGenFallbackEnabled = false
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+        throw new Error('50001: no school pin found')
+      })
+      try {
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
+        expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+      }
+    })
+
     test('does not attempt to generate school pin if error.number is not 50001', async () => {
       spyOn(schoolPinService, 'generateSchoolPin')
+      config.FeatureToggles.schoolPinGenFallbackEnabled = true
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         const err = new Error()
         err.number = 49999
