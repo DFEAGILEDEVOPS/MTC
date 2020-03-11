@@ -37,7 +37,7 @@ describe('dfe-signin.service', () => {
   test('throws an error if dfeUser object does not have a defined organisation property', async () => {
     try {
       spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
-      spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+      spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
       await sut.initialiseUser({ organisation: undefined }, token)
       fail('expected error to be thrown')
     } catch (error) {
@@ -47,7 +47,7 @@ describe('dfe-signin.service', () => {
   })
   test('throws an error if dfeUser object does not have a defined organisation.urn property', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     try {
       await sut.initialiseUser({ organisation: { urn: undefined } }, token)
       fail('expected error to be thrown')
@@ -59,9 +59,9 @@ describe('dfe-signin.service', () => {
 
   test('does look up school if role is teacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: roles.teacher }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
@@ -71,9 +71,9 @@ describe('dfe-signin.service', () => {
 
   test('does look up school if role is headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_headteacher'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: roles.teacher }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
@@ -83,9 +83,9 @@ describe('dfe-signin.service', () => {
 
   test('does not look up school if role is not teacher or headteacher', async () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue({ id: 1 })
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: 'TEST-DEVELOPER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: null, roleTitle: roles.testDeveloper }))
     spyOn(userDataService, 'sqlUpdateSchool')
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
@@ -97,10 +97,10 @@ describe('dfe-signin.service', () => {
     spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
       Promise.resolve(undefined),
-      Promise.resolve({ school_id: 1, roleTitle: 'TEST-DEVELOPER' })
+      Promise.resolve({ school_id: 1, roleTitle: roles.testDeveloper })
     )
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -114,7 +114,7 @@ describe('dfe-signin.service', () => {
       Promise.resolve()
     )
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     try {
       await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -128,12 +128,12 @@ describe('dfe-signin.service', () => {
   test('updates user school if different to current one and refetches the object', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValues(
-      Promise.resolve({ school_id: 999, roleTitle: 'TEACHER' }),
-      Promise.resolve({ school_id: 998, roleTitle: 'TEACHER' })
+      Promise.resolve({ school_id: 999, roleTitle: roles.teacher }),
+      Promise.resolve({ school_id: 998, roleTitle: roles.teacher })
     )
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -145,10 +145,10 @@ describe('dfe-signin.service', () => {
 
   test('maps role title to user object before it is returned', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -158,10 +158,10 @@ describe('dfe-signin.service', () => {
 
   test('displayName is constructed from given name family name and email', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEST-DEVELOPER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.testDeveloper }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const firstName = 'chuckie'
     const lastName = 'egg'
@@ -174,10 +174,10 @@ describe('dfe-signin.service', () => {
 
   test('id_token is set on user from token object', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 1 }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEST-DEVELOPER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.testDeveloper }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ }, token)
@@ -188,10 +188,10 @@ describe('dfe-signin.service', () => {
 
   test('dfeNumber and schoolId are set on user from school record', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(Promise.resolve({ id: 123, dfeNumber: 567 }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
 
@@ -206,10 +206,10 @@ describe('dfe-signin.service', () => {
   test('sets timezone to assigned school timezone when provided', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: 'the timezone' }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -221,10 +221,10 @@ describe('dfe-signin.service', () => {
   test('sets timezone to system default when no schoo timezone is set', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
@@ -236,10 +236,10 @@ describe('dfe-signin.service', () => {
   test('sets externalUserId to the provided user id and id to the user record id', async () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and.returnValue(
       Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
-    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: 'TEACHER' }))
+    spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     const user = await sut.initialiseUser({ organisation: { urn: 12345 }, sub: 'external-user-id' }, token)
@@ -252,10 +252,10 @@ describe('dfe-signin.service', () => {
     spyOn(schoolDataService, 'sqlFindOneByUrn').and
       .returnValue(Promise.resolve({ id: 123, dfeNumber: 567, timezone: undefined }))
     spyOn(userDataService, 'sqlFindOneByIdentifier').and
-      .returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: 'TEACHER' }))
+      .returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: roles.teacher }))
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_teacher'))
     spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: 'TEACHER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 3, title: roles.teacher }))
     spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
     let persistedAdminLogonEventData
     spyOn(adminLogonEventDataService, 'sqlCreate').and.callFake((logonEvent) => {
@@ -275,9 +275,9 @@ describe('dfe-signin.service', () => {
     spyOn(dfeDataService, 'getDfeRole').and.returnValue(Promise.resolve('mtc_test_developer'))
     spyOn(userDataService, 'sqlUpdateRole').and.returnValue(Promise.resolve())
     spyOn(userDataService, 'sqlFindOneByIdentifier').and
-      .returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: 'SERVICE-MANAGER' }))
+      .returnValue(Promise.resolve({ school_id: 999, id: 567, roleTitle: roles.serviceManager }))
     spyOn(adminLogonEventDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: 'TEST-DEVELOPER' }))
+    spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 2, title: roles.testDeveloper }))
 
     const user = await sut.initialiseUser({ organisation: { urn: 12345 } }, token)
     expect(userDataService.sqlUpdateRole).toHaveBeenCalled()
