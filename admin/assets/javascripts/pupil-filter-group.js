@@ -10,7 +10,6 @@ $(function () {
         $(this).attr('data-checked', true)
         const groupId = $(this).val()
         groupIds.push(groupId)
-        checkboxUtil.unselectUngroupedCheckboxes(groupId)
       } else {
         $(this).attr('data-checked', false)
         groupIds.splice($.inArray($(this).val(), groupIds), 1)

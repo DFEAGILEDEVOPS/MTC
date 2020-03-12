@@ -285,6 +285,7 @@ var checkboxUtil = {
       $(sel).addClass('js-filter-hidden-group')
       paramIds.map(function (pId) {
         $(sel + '.' + param + '-id-' + pId).removeClass('js-filter-hidden-group')
+        checkboxUtil.unselectUngroupedCheckboxes(pId)
       })
       $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
     }
