@@ -146,7 +146,7 @@ module.exports = {
   Auth: {
     mode: process.env.AUTH_MODE || authModes.local, // see ./lib/consts/auth-modes.js for valid options
     dfeSignIn: {
-      authUrl: process.env.DFE_SIGNON_AUTH_URL,
+      issuerUrl: process.env.DFE_SIGNON_AUTH_URL,
       clientId: process.env.DFE_SIGNON_CLIENT_ID,
       clientSecret: process.env.DFE_SIGNON_CLIENT_SECRET,
       clockToleranceSeconds: process.env.DFE_SIGNON_CLOCK_TOLERANCE_SECONDS || 300,
