@@ -5,7 +5,7 @@
       "type": "serviceBusTrigger",
       "direction": "in",
       "queueName": "check-notification",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/check-notifier/index.js"
