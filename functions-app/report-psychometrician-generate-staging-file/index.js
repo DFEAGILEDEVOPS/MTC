@@ -5,13 +5,19 @@ const { performance } = require('perf_hooks')
 const v1 = require('./v1')
 const name = 'report-psychometrician-generate-input-files'
 
-module.exports = async function (context, message) {
+module.exports = async function (context, req) {
   const start = performance.now()
 
   try {
     await v1.process(context.log)
   } catch (error) {
     context.log.error(`${name}: ERROR run failed: ${error.message}`)
+    context.res = {
+      body: {
+        complete: 'no',
+        error: error.message
+      }
+    }
     throw error
   }
 
@@ -19,4 +25,7 @@ module.exports = async function (context, message) {
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${name}: ${timeStamp} run took ${Math.round(durationInMilliseconds) / 1000} seconds`)
+  context.res = {
+    body: 'Completed OK'
+  }
 }

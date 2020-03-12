@@ -6,6 +6,7 @@ const R = require('ramda')
 const RA = require('ramda-adjunct')
 const { performance } = require('perf_hooks')
 
+const azure = require('azure-storage')
 const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const config = require('../../config')
@@ -93,10 +94,10 @@ checkProcessingService.writeCsv = async function writeCsv (inputStream, csvStrea
 /**
  * Read the input file line by line and output the ps and anomaly reports as we go.
  * @param logger
- * @param filename
+ * @param stagingFileProperties
  * @return {Promise<unknown>}
  */
-checkProcessingService.generateReportsFromFile = async function (logger, filename) {
+checkProcessingService.generateReportsFromFile = async function (logger, filename, stagingFileProperties) {
   const meta = { errorCount: 0, processCount: 0 }
   const start = performance.now()
 
@@ -112,7 +113,6 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
     logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
     throw error // unrecoverable - no work can be done.
   }
-
   // Azure!? - check the directory actually exists
   await mtcFsUtils.validateDirectory(newTmpDir)
 
@@ -137,7 +137,8 @@ checkProcessingService.generateReportsFromFile = async function (logger, filenam
 
   return new Promise((resolve, reject) => {
     // Open the input file for reading
-    const inputStream = fs.createReadStream(filename)
+    const blobService = azure.createBlobService()
+    const inputStream = blobService.createReadStream(stagingFileProperties.container, stagingFileProperties.name)
       .on('error', error => {
         console.error(`${functionName}: Error reading CSV: ${error}`)
         psReportCsvStream.end()

@@ -14,6 +14,8 @@ const mtcFsUtils = {
    * @return {Promise<string|*>}
    */
   getDirectoryOrFallback: async function getDirectoryOrFallback (dir) {
+    // TODO: For Functions on Azure the os.tmpdir() should not be used, because of their complex network fileshare mounts
+    // we need to find an actual home dir on locally attached storage.
     if (!dir) return os.tmpdir()
     try {
       await this.validateDirectory(dir)

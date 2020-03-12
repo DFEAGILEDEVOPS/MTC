@@ -19,6 +19,16 @@ const dateService = {
     } catch (ignore) {}
   },
 
+  formatIso8601: function (momentDate) {
+    if (!moment.isMoment(momentDate)) {
+      throw new Error('Parameter must be of type Moment')
+    }
+    if (!momentDate.isValid()) {
+      throw new Error('Not a valid date')
+    }
+    return momentDate.format(iso8601WithMsPrecisionAndTimeZone)
+  },
+
   /**
    * Get the number of seconds betwen two moment objects, rounded to 1 decimal place
    * @param { moment.Moment} m1

@@ -20,13 +20,20 @@ const functionName = 'report-psychometrician v2'
 let logger
 
 const v2 = {
-  process: async function exec (loggerArg) {
+  process: async function exec (loggerArg, blob) {
     logger = loggerArg
     logger.info(`${functionName}: v2.process() called`)
     let meta = {}
 
     try {
-      meta = await checkProcessingService.generateReportsFromFile(logger, process.env.PS_INPUT_FILE)
+      const stagingFileProperties = JSON.parse(blob)
+    } catch (error) {
+      logger.error('Failed to parse trigger details')
+      throw error
+    }
+
+    try {
+      meta = await checkProcessingService.generateReportsFromFile(logger, stagingFileProperties)
     } catch (error) {
       logger.error(`${functionName}: Error during processing: ${error.message}`, error)
     }
