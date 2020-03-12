@@ -20,7 +20,7 @@
       "type": "serviceBus",
       "name": "pupilLoginQueue",
       "queueName": "pupil-login",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/pupil-auth/index.js"
