@@ -23,7 +23,7 @@
     "watch": "yarn test:watch"
   },
   "mtc": {
-    "assets-version": "2c8bde8dabf32d6b9b64059875461c22"
+    "assets-version": "6554b3fbaff7b7e0e144936769ec6f7d"
   },
   "engines": {
     "node": ">= 10.16.3"
@@ -58,6 +58,7 @@
     "ioredis": "4.16.0",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
+    "lz-string": "^1.4.4",
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
     "moment": "^2.20.1",
