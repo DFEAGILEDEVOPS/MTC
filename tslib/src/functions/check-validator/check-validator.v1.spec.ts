@@ -1,5 +1,5 @@
 import * as CheckValidator from './check-validator.v1'
-import { IAsyncTableService } from '../../azure/storage-helper'
+import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import checkSchema from '../../schemas/complete-check.v1.json'
@@ -9,10 +9,28 @@ import moment from 'moment'
 import { CheckNotificationType } from '../check-notifier/check-notification-message'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
-  replaceEntityAsync: jest.fn(),
-  queryEntitiesAsync: jest.fn(),
-  deleteEntityAsync: jest.fn(),
-  insertEntityAsync: jest.fn()
+  replaceEntityAsync: jest.fn(async (): Promise<TableStorageEntity> => {
+    return {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4()
+    }
+  }),
+
+  queryEntitiesAsync: jest.fn(async (): Promise<TableStorageEntity[]> => {
+    return [
+      {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }, {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
+    ]
+  }),
+
+  deleteEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve('mock') }),
+
+  insertEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) })
 }))
 
 const LoggerMock = jest.fn<ILogger, any>(() => ({
@@ -75,6 +93,10 @@ describe('check-validator/v1', () => {
     tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
       receivedCheckTable: [{}],
@@ -118,6 +140,10 @@ describe('check-validator/v1', () => {
     tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
     compressionServiceMock.decompress = jest.fn((input: string) => {
       return JSON.stringify({
@@ -179,6 +205,10 @@ describe('check-validator/v1', () => {
     tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
     compressionServiceMock.decompress = jest.fn((input: string) => {
       return JSON.stringify(checkSchema)
@@ -207,6 +237,10 @@ describe('check-validator/v1', () => {
     tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
+      return {
+        PartitionKey: uuid.v4(),
+        RowKey: uuid.v4()
+      }
     })
     compressionServiceMock.decompress = jest.fn((input: string) => {
       return JSON.stringify(checkSchema)
