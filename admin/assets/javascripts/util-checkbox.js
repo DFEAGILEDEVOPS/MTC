@@ -300,7 +300,7 @@ var checkboxUtil = {
     for (let i = 0; i < tableRows.length; i++) {
       const rowClasses = [].slice.apply(tableRows[i].classList).join(' ')
       if (rowClasses.indexOf(`group-id-${paramId}`) < 0) {
-        const checkBoxEl = tableRows[i].querySelector('td > .multiple-choice-mtc > .govuk-checkboxes__input')
+        const checkBoxEl = tableRows[i].querySelector('td > .multiple-choice-mtc > input[type=checkbox]')
         checkBoxEl.checked = false
       }
     }
