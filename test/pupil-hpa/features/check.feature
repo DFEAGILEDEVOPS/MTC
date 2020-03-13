@@ -45,10 +45,15 @@ Feature: Check questions
 
   Scenario Outline: Pupil Score is calculated after the check is completed
     Given I have just completed the check with only <correct_answers> correct answers
-    Then my score should be calculated as <correct_answers> and stored in the DB
+    Then my score should be calculated as <correct_answers> and stored
 
     Examples:
       | correct_answers |
-      | 4               |
-      | 8               |
+      | 0               |
+      | 1               |
       | 3               |
+      | 5               |
+      | 8               |
+      | 13              |
+      | 21              |
+      | 25              |

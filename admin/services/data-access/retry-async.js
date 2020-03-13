@@ -70,7 +70,9 @@ const asyncRetryHandler = async (asyncRetryableFunction, retryConfiguration = de
 
 function tryParseErrorObjectToString (error) {
   try {
-    const reducedError = R.omit(['stack'], error)
+    // R.over(R.lensProp('audience_sizes'), R.omit(['fb']), R.omit(['id'], obj))
+    // const reducedError = R.omit(['stack', 'originalError'], error)
+    const reducedError = R.over(R.lensProp('originalError'), R.omit(['stack']), R.omit(['stack'], error))
     const errorAsString = util.inspect(reducedError, true)
     return `error object:\n${errorAsString}`
   } catch (e) {
