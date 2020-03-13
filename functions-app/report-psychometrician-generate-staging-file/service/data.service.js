@@ -110,13 +110,13 @@ const dataService = {
         response: o.answer,
         factor1: o.factor1,
         factor2: o.factor2,
-        isCorrect: o.isCorrect === true? 1 : 0
+        isCorrect: o.isCorrect === true ? 1 : 0
       }
     }, sorted)
   },
 
   writeStage2File: function writeStage2File (stage1Filename) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => { // eslint-disable-line no-async-promise-executor
       let newTmpDir
 
       try {
@@ -129,7 +129,7 @@ const dataService = {
       const fileNameWithPath = `${newTmpDir}${path.sep}ps-stage-2.csv`
       let writeStream
       try {
-        writeStream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
+        writeStream = fs.createWriteStream (fileNameWithPath, { mode: 0o600 })
       } catch (error) {
         return reject(error)
       }
@@ -141,7 +141,7 @@ const dataService = {
       const markingTable = 'checkResult'
 
       /**
-       * Mutate `data` with additional properties looked up from Table Storaged
+       * Mutate `data` with additional properties looked up from Table Storage
        * Properties added: checkPayload, checkReceivedByServerAt, mark, markedAt, maxMark, markedAnswers
        * @param {object} data
        * @return {Promise<void>}
@@ -155,16 +155,13 @@ const dataService = {
         let tableStorageData
 
         try {
-            tableStorageData = await async.parallel({
-              marking: async () => azureTableService.queryEntitiesAsync(markingTable, query, null, null),
-              payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
-            }
-          )
+          tableStorageData = await async.parallel({
+            marking: async () => azureTableService.queryEntitiesAsync(markingTable, query, null, null),
+            payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
+          })
         } catch (error) {
           console.error(`writeStage2File() worker Lookup failed for checkCode [${data.checkCode}]`, error)
         }
-
-        // console.log('ts data', tableStorageData)
 
         try {
           const archive = R.path(['payload', 'result', 'archive', '_'], tableStorageData)
@@ -178,31 +175,32 @@ const dataService = {
           throw error
         }
 
-        const entity = R.head(R.pathOr([{}], ['marking', 'result', 'entries',], tableStorageData))
+        const entity = R.head(R.pathOr([{}], ['marking', 'result', 'entries'], tableStorageData))
 
         try {
           const markingData = JSON.parse(R.path(['markedAnswers', '_'], entity))
           const answerData = dataService.transformMarkingData(markingData)
+          console.log('staging answerdata is ', answerData)
           data.mark = R.path(['mark', '_'], entity)
           data.markedAt = R.path(['markedAt', '_'], entity)
           data.maxMark = R.path(['maxMarks', '_'], entity)
           data.markedAnswers = JSON.stringify(answerData)
         } catch (error) {
-         console.log('Failed to parse:', entity)
+          console.log('Failed to parse:', entity)
         }
 
         // Write the data, which is now populated with additional entities, to csv file
-        if(!csvWriteStream.write(data)) {
+        if (!csvWriteStream.write(data)) {
           csvWriteStream.pause()
           csvWriteStream.once('drain', function () {
             csvWriteStream.resume()
           })
         }
-      }
+      } // end worker()
 
       const readStream = fs.createReadStream(stage1Filename)
       const concurrency = 32 // TODO: make this a config variable so we can fine tune in load-test env
-      const streamQueue = async.queue(worker, concurrency);
+      const streamQueue = async.queue(worker, concurrency)
 
       csv
         .parseStream(readStream, { headers: true, objectMode: true })
@@ -210,7 +208,7 @@ const dataService = {
         .on('data', row => streamQueue.push(row))
         .on('end', rowCount => {
           console.log(`Parsed ${rowCount} rows`)
-          if(!streamQueue.started) {
+          if (!streamQueue.started) {
             console.log('stream queue never started')
             csvWriteStream.end(() => {
               resolve(fileNameWithPath)
@@ -241,7 +239,7 @@ const dataService = {
     // This kicks off the ps-report process
     const remoteTriggerFileName = `${name}.trigger.json`
     await azureFileDataService.azureCreateBlobFromText(blobUploadContainerName, remoteTriggerFileName, JSON.stringify(properties))
-    return triggerDetails
+    return properties
   }
 }
 

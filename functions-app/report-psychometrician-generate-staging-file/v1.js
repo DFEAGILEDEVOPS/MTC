@@ -6,7 +6,7 @@ const async = require('async')
 const path = require('path')
 
 const dataService = require('./service/data.service')
-const dateService = require('./service/date.service')
+const dateService = require('../lib/date.service')
 
 const v1 = {
   process: async function exec (logger) {
@@ -22,7 +22,7 @@ const v1 = {
       console.log('Got stage2 ', stage2Filename)
 
       logger.verbose(`Uploading ${stage2Filename} to blob storage`)
-      const uploadData = await dataService.uploadToBlobStorage(stage2Filename)
+      await dataService.uploadToBlobStorage(stage2Filename)
 
       // Cleanup
       logger.verbose('About to delete staging files')

@@ -97,7 +97,7 @@ checkProcessingService.writeCsv = async function writeCsv (inputStream, csvStrea
  * @param stagingFileProperties
  * @return {Promise<unknown>}
  */
-checkProcessingService.generateReportsFromFile = async function (logger, filename, stagingFileProperties) {
+checkProcessingService.generateReportsFromFile = async function (logger, stagingFileProperties) {
   const meta = { errorCount: 0, processCount: 0 }
   const start = performance.now()
 

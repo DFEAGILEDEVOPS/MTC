@@ -35,9 +35,9 @@ const azureFileDataService = {
     })
     await new Promise((resolve, reject) => {
       blobService.createBlockBlobFromText(container, remoteFilename, text, (error, result) => {
-          if (error) { return reject(error) }
-          resolve(result)
-        }
+        if (error) { return reject(error) }
+        resolve(result)
+      }
       )
     })
 
@@ -53,7 +53,7 @@ const azureFileDataService = {
    * @param remoteFilename
    * @return {Promise<void>}
    */
-  azureGetBlobProperties:  async function azureGetBlobProperties (container, remoteFilename) {
+  azureGetBlobProperties: async function azureGetBlobProperties (container, remoteFilename) {
     const blobService = azure.createBlobService()
     const blobProperties = await new Promise((resolve, reject) => {
       blobService.getBlobProperties(container, remoteFilename, function (error, result) {

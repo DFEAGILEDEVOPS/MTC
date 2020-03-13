@@ -1,6 +1,8 @@
 'use strict'
 
 const moment = require('moment')
+const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+const UKFormat = 'DD/MM/YYYY'
 
 const dateService = {
   /**
@@ -27,6 +29,22 @@ const dateService = {
       throw new Error('Not a valid date')
     }
     return momentDate.format(iso8601WithMsPrecisionAndTimeZone)
+  },
+
+  formatUKDate: function formatukDate (date) {
+    return dateService.checkAndFormat(date, UKFormat)
+  },
+
+  checkAndFormat: function (date, format) {
+    if (!(date instanceof Date || moment.isMoment(date))) {
+      logger.warn(`Date parameter is not a Date or Moment object: ${date}`)
+      return ''
+    }
+    const m = moment(date)
+    if (!m.isValid()) {
+      return ''
+    }
+    return m.format(format)
   },
 
   /**

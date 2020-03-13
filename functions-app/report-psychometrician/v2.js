@@ -24,9 +24,10 @@ const v2 = {
     logger = loggerArg
     logger.info(`${functionName}: v2.process() called`)
     let meta = {}
+    let stagingFileProperties
 
     try {
-      const stagingFileProperties = JSON.parse(blob)
+      stagingFileProperties = JSON.parse(blob)
     } catch (error) {
       logger.error('Failed to parse trigger details')
       throw error

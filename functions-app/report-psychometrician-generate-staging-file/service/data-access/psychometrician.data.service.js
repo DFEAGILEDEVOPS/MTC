@@ -2,11 +2,11 @@
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 const R = require('ramda')
+const moment = require('moment')
 
 const sqlService = require('../../../lib/sql/sql.service')
-// const { TYPES } = sqlService
 const base = require('../../../lib/logger')
-const dateService = require('../date.service')
+const dateService = require('../../../lib/date.service')
 
 const psychometricianDataService = {
   /**
@@ -25,13 +25,12 @@ const psychometricianDataService = {
       const recordSetFunc = () => {}
 
       const rowFunc = (row) => {
+        console.log('row', row)
         const transformations = {
-          checkCreatedAt: dateService.formatIso8601,
-          markedAt: dateService.formatIso8601,
-          pupilLoginDate: dateService.formatIso8601,
-          checkReceivedByServerAt: dateService.formatIso8601,
-          checkStartedAt: dateService.formatIso8601,
-          dateOfBirth: dateService.formatUKDate,
+          checkCreatedAt: (s) => { return dateService.formatIso8601(moment(s)) },
+          pupilLoginDate: (s) => { return dateService.formatIso8601(moment(s)) },
+          checkStartedAt: (s) => { return dateService.formatIso8601(moment(s)) },
+          dateOfBirth: (s) => { return dateService.formatUKDate(moment(s)) },
           isLiveCheck: v => v ? 1 : 0
         }
         try {
@@ -46,7 +45,7 @@ const psychometricianDataService = {
             })
           }
         } catch (error) {
-          console.error(`streamReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message}`)
+          console.error(`streamReport(): [onRow]: Failed to write data for ${row.checkId}: ${error.message} for row ${JSON.stringify(row)}`, error)
         }
       }
 

@@ -224,7 +224,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
 
   const markedAnswersString = R.prop('markedAnswers', data)
   if (!markedAnswersString) {
-    console.error(`Missing markedAnswers data: ${data.checkCode}`)
+    console.error(`Missing markedAnswers data: ${data.checkCode}: got ${markedAnswersString}`)
     return psData
   }
 
@@ -235,8 +235,8 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     return psData
   }
 
-  if (!(markedAnswers && markedAnswers.answer && Array.isArray(markedAnswers.answer))) {
-    console.error(`PS Report: missing markedAnswers: ${data.checkCode}`)
+  if (!Array.isArray(markedAnswers)) {
+    console.error(`PS Report: marking error: ${data.checkCode} got ${JSON.stringify(markedAnswers)}`)
     return psData
   }
 
@@ -245,7 +245,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     return psData
   }
 
-  markedAnswers.answer.forEach(answer => {
+  markedAnswers.forEach(answer => {
     const q = answer.questionNumber
     const inputs = R.filter(
       i => i.sequenceNumber === answer.questionNumber &&
