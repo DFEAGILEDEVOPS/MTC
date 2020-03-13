@@ -133,7 +133,6 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   const p = (idx) => 'Q' + (idx + 1).toString()
   if (check.data && Object.keys(check.data).length > 0) {
     checkForm.formData.forEach((question, idx) => {
-      // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
       const markedAnswer = markedAnswers.find(a => a.factor1 === question.f1 && a.factor2 === question.f2)
       const inputs = R.filter(
         i => i.sequenceNumber === (idx + 1) &&
@@ -171,9 +170,18 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
  * @return {Object}
  */
 psychometricianReportService.produceReportDataV2 = function (data) {
-  const payload = JSON.parse(R.prop('checkPayload', data))
+  let payload
+  try {
+    const payloadString = R.prop('checkPayload', data)
+    if (payloadString.length > 0) { // payload can be missing for pupils who are absent
+      payload = JSON.parse(payloadString)
+    }
+  } catch (error) {
+    console.log('Failed to parse payload',  error)
+  }
+
   const config = R.propOr({}, 'config', payload)
-  const userAgent = R.pathOr('unknown', ['device', 'navigator', 'userAgent'], payload)
+  const userAgent = R.pathOr('', ['device', 'navigator', 'userAgent'], payload)
 
   const deviceOptions = R.path(['device'], payload)
   const { type: deviceType, model: deviceModel } = psUtilService.getDeviceTypeAndModel(userAgent)

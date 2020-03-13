@@ -147,44 +147,53 @@ const dataService = {
        * @return {Promise<void>}
        */
       async function worker (data) {
-        const query = new azure.TableQuery()
-          .top(1)
-          .where('PartitionKey eq ?', data.checkCode)
-
         let tableStorageData
 
-        try {
-          tableStorageData = await async.parallel({
-            marking: async () => azureTableService.queryEntitiesAsync(markingTable, query, null, null),
-            payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
-          })
-        } catch (error) {
-          console.error(`writeStage2File() worker Lookup failed for checkCode [${data.checkCode}]`, error)
-        }
+        if (data.checkCode) { // condition as some pupils may not have taken checks
+          const query = new azure.TableQuery()
+            .top(1)
+            .where('PartitionKey eq ?', data.checkCode)
 
-        try {
-          const archive = R.path(['payload', 'result', 'archive', '_'], tableStorageData)
-          if (archive.length > 0) {
-            const decompressedString = compressionService.decompress(archive)
-            data.checkPayload = decompressedString
+          try {
+            tableStorageData = await async.parallel({
+              marking: async () => azureTableService.queryEntitiesAsync(markingTable, query, null, null),
+              payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
+            })
+          } catch (error) {
+            console.error(`writeStage2File() worker Lookup failed for checkCode [${data.checkCode}]`, error)
           }
-          data.checkReceivedByServerAt = R.pathOr('', ['payload', 'result', 'checkReceivedAt', '_'], tableStorageData)
-        } catch (error) {
-          console.error('worker() Failed lookups', error)
-          throw error
-        }
 
-        const entity = R.head(R.pathOr([{}], ['marking', 'result', 'entries'], tableStorageData))
+          try {
+            const archive = R.path(['payload', 'result', 'archive', '_'], tableStorageData)
+            if (archive.length > 0) {
+              const decompressedString = compressionService.decompress(archive)
+              data.checkPayload = decompressedString
+            }
+            data.checkReceivedByServerAt = R.pathOr('', ['payload', 'result', 'checkReceivedAt', '_'], tableStorageData)
+          } catch (error) {
+            console.error('worker() Failed lookups', error)
+            throw error
+          }
 
-        try {
-          const markingData = JSON.parse(R.path(['markedAnswers', '_'], entity))
-          const answerData = dataService.transformMarkingData(markingData)
-          data.mark = R.path(['mark', '_'], entity)
-          data.markedAt = R.path(['markedAt', '_'], entity)
-          data.maxMark = R.path(['maxMarks', '_'], entity)
-          data.markedAnswers = JSON.stringify(answerData)
-        } catch (error) {
-          this.logger.error(`${functionName} : ERROR : failed to parse: ${JSON.stringify(entity)}`)
+          const entity = R.head(R.pathOr([{}], ['marking', 'result', 'entries'], tableStorageData))
+
+          try {
+            const markingData = JSON.parse(R.path(['markedAnswers', '_'], entity))
+            const answerData = dataService.transformMarkingData(markingData)
+            data.mark = R.path(['mark', '_'], entity)
+            data.markedAt = R.path(['markedAt', '_'], entity)
+            data.maxMark = R.path(['maxMarks', '_'], entity)
+            data.markedAnswers = JSON.stringify(answerData)
+          } catch (error) {
+            this.logger.error(`${functionName} : ERROR : failed to parse: ${JSON.stringify(entity)}`)
+          }
+        } else {
+          data.mark = ''
+          data.markedAt = ''
+          data.maxMark = ''
+          data.markedAnswers = ''
+          data.checkPayload = ''
+          data.checkReceivedByServerAt = ''
         }
 
         // Write the data, which is now populated with additional entities, to csv file

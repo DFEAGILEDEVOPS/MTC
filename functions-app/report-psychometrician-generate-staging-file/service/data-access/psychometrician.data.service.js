@@ -26,10 +26,10 @@ const psychometricianDataService = {
 
       const rowFunc = (row) => {
         const transformations = {
-          checkCreatedAt: (s) => { return dateService.formatIso8601(moment(s)) },
-          pupilLoginDate: (s) => { return dateService.formatIso8601(moment(s)) },
-          checkStartedAt: (s) => { return dateService.formatIso8601(moment(s)) },
-          dateOfBirth: (s) => { return dateService.formatUKDate(moment(s)) },
+          checkCreatedAt: (s) => { return s && dateService.formatIso8601(moment(s)) },
+          pupilLoginDate: (s) => { return s && dateService.formatIso8601(moment(s)) },
+          checkStartedAt: (s) => { return s && dateService.formatIso8601(moment(s)) },
+          dateOfBirth: (s) => { return s && dateService.formatUKDate(moment(s)) },
           isLiveCheck: v => v ? 1 : 0
         }
         try {
