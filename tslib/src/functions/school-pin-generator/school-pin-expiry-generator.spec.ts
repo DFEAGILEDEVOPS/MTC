@@ -14,7 +14,8 @@ const configProviderMock: IConfigProvider = {
   AllowedWords: '',
   BannedWords: '',
   OverridePinExpiry: false,
-  PinUpdateMaxAttempts: 5
+  PinUpdateMaxAttempts: 5,
+  DigitChars: '23456'
 }
 
 let sut: SchoolPinExpiryGenerator

@@ -193,14 +193,16 @@ Given(/^I have just completed the check with only (\d+) correct answers$/) do |c
 end
 
 
-Then(/^my score should be calculated as (\d+) and stored in the DB$/) do |expected_score|
+Then(/^my score should be calculated as (\d+) and stored$/) do |expected_score|
   ls_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  ls_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_code = ls_pupil['checkCode']
-  school_uuid = ls_school['uuid']
-  p 'pupil check code ' + check_code
-  p 'school_uuid ' + school_uuid
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until !AzureTableHelper.wait_for_received_check(school_uuid, check_code)['mark'].nil?}
-  check_result = AzureTableHelper.wait_for_received_check(school_uuid, check_code)
-  expect(check_result['mark']).to eql expected_score
+  check_result = AzureTableHelper.get_check_result(check_code)
+  time = Time.now
+  expect((time - Time.parse(check_result.properties['markedAt']))/60).to be <= 1
+  expect(check_result.properties['mark']).to eql expected_score
+  expect(check_result.properties['maxMarks']).to eql 25
+  correct_answers = JSON.parse(check_result.properties['markedAnswers']).select {|x| x['isCorrect'] == true}
+  incorrect_answers = JSON.parse(check_result.properties['markedAnswers']).select {|x| x['isCorrect'] == false}
+  expect(correct_answers.count).to eql expected_score
+  expect(incorrect_answers.count).to eql (25 -expected_score)
 end

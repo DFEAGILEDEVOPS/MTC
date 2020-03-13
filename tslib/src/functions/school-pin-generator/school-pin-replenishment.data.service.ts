@@ -5,7 +5,7 @@ import { TYPES } from 'mssql'
 export interface ISchoolPinReplenishmentDataService {
   getAllSchools (): Promise<School[]>
   updatePin (schoolPinUpdate: SchoolPinUpdate): Promise<void>
-  getSchoolByUuid (uuid: string): Promise<School | undefined>
+  getSchoolById (id: number): Promise<School | undefined>
 }
 
 export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmentDataService {
@@ -15,17 +15,17 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
     this.sqlService = new SqlService()
   }
 
-  async getSchoolByUuid (uuid: string): Promise<School | undefined> {
+  async getSchoolById (id: number): Promise<School | undefined> {
     const sql = `
     SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.timezone
     FROM mtc_admin.school s
     LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id
-    WHERE s.urlSlug = @schoolUuid AND
+    WHERE s.id = @school_id AND
     (s.pinExpiresAt <= GETUTCDATE() OR s.pinExpiresAt IS NULL)`
     const param: ISqlParameter = {
-      name: 'schoolUuid',
-      type: TYPES.UniqueIdentifier,
-      value: uuid
+      name: 'school_id',
+      type: TYPES.Int,
+      value: id
     }
     const result = await this.sqlService.query(sql, [param])
     if (!result || result.length === 0) return undefined
