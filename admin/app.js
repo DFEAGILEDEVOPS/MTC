@@ -180,6 +180,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }))
 
+if (!config.Redis.useTLS) {
+  logger.warn('redis running in non-secure mode')
+}
+
 const RedisStore = require('connect-redis')(session)
 const options = {
   host: config.Redis.Host,

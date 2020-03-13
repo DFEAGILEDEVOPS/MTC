@@ -12,7 +12,7 @@
       "type": "serviceBus",
       "name": "checkSyncQueue",
       "queueName": "check-sync",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/pupil-prefs/index.js"

@@ -2,6 +2,7 @@
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
   checkNotificationQueue: Array<any>
+  checkResultTable: Array<any>
 }
 
 export interface Answer {
@@ -12,17 +13,32 @@ export interface Answer {
   question: string
   clientTimestamp: string
 }
+
+export interface MarkedAnswer extends Answer {
+  isCorrect: boolean
+}
+
 export interface CheckFormQuestion {
   f1: number
   f2: number
 }
+
 export interface MarkingData {
-  answers: Array<Answer>
+  answers: Array<MarkedAnswer>
   formQuestions: Array<CheckFormQuestion>
   results: any
 }
+
 export interface Mark {
   mark: number
   maxMarks: number
   processedAt: Date
+}
+
+export interface CheckResult {
+  checkCode: string,
+  mark: number,
+  maxMarks: number,
+  markedAnswers: MarkedAnswer[]
+  markedAt: Date
 }

@@ -7,7 +7,8 @@ const configProviderMock: IConfigProvider = {
   AllowedWords: 'foo,bar,baz,qix,mix',
   BannedWords: '',
   OverridePinExpiry: false,
-  PinUpdateMaxAttempts: 10
+  PinUpdateMaxAttempts: 10,
+  DigitChars: '23456'
 }
 
 let randomGeneratorMock: IRandomGenerator
