@@ -9,7 +9,7 @@ module.exports = async function (context, message) {
   const start = performance.now()
 
   try {
-    await v1.process(context.log)
+    // await v1.process(context.log)
   } catch (error) {
     context.log.error(`${name}: ERROR run failed: ${error.message}`)
     throw error
