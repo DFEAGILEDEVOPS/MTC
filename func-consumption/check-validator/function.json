@@ -5,7 +5,7 @@
       "type": "serviceBusTrigger",
       "name": "validateCheckMessage",
       "queueName": "check-validation",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
       "direction": "in",
@@ -21,14 +21,14 @@
       "type": "serviceBus",
       "name": "checkMarkingQueue",
       "queueName": "check-marking",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
       "direction": "out",
       "type": "serviceBus",
       "name": "checkNotificationQueue",
       "queueName": "check-notification",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/check-validator/index.js"

@@ -5,7 +5,7 @@
       "type": "serviceBusTrigger",
       "direction": "in",
       "queueName": "pupil-login",
-      "connection": "ServiceBusConnection"
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
       "direction": "out",

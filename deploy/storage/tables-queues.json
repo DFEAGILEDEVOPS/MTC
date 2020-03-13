@@ -7,8 +7,9 @@
     "test-pupil-connection"
   ],
   "tables": [
-    "receivedCheck",
+    "checkResult",
     "pupilEvent",
-    "pupilFeedback"
+    "pupilFeedback",
+    "receivedCheck"
   ]
 }

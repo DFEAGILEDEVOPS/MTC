@@ -7,7 +7,6 @@ export class SchoolPinGenerator implements ISchoolPinGenerator {
   private configProvider: IConfigProvider
   private randomGenerator: IRandomGenerator
   private allowedWordsService: AllowedWordsService
-  private chars = '23456789'
 
   constructor (configProvider?: IConfigProvider, randomGenerator?: IRandomGenerator) {
     if (configProvider === undefined) {
@@ -24,7 +23,7 @@ export class SchoolPinGenerator implements ISchoolPinGenerator {
   generate (): string {
     const wordSet = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
     const wordArray = Array.from(wordSet)
-    const twoDigitNum = this.randomGenerator.generateFromChars(2, this.chars)
+    const twoDigitNum = this.randomGenerator.generateFromChars(2, this.configProvider.DigitChars)
     const firstRandomIndex = this.randomGenerator.generateNumberFromRangeInclusive(0, wordArray.length - 1)
     const firstRandomWord = wordArray[firstRandomIndex]
     const secondRandomIndex = this.randomGenerator.generateNumberFromRangeInclusive(0, wordArray.length - 1)
