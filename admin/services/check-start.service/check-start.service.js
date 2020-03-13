@@ -23,6 +23,8 @@ const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
+const schoolPinService = require('./school-pin.service')
+const sqlErrorMessages = require('../data-access/sql-mtc-error-codes')
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 const endOfDay = () => moment().endOf('day')
@@ -121,8 +123,26 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  // Create and return checks via spCreateChecks
-  const newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+
+  let newChecks
+
+  try {
+    // Create and return checks via spCreateChecks
+    newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+  } catch (error) {
+    const pinGenerationFallbackEnabled = config.FeatureToggles.schoolPinGenFallbackEnabled
+    const errorMessageMatchesNoActiveSchoolPin = error.message.indexOf(sqlErrorMessages.NoActiveSchoolPin) !== -1
+    if (pinGenerationFallbackEnabled && errorMessageMatchesNoActiveSchoolPin) {
+      logger.warn(`school.id:${schoolId} does not have a valid pin, calling http service to generate one now...`)
+      const schoolPin = await schoolPinService.generateSchoolPin(schoolId)
+      logger.warn(`pin generated via http service for school.id:${schoolId} pin:${schoolPin}`)
+      logger.warn(`2nd attempt at creating checks for school.id:${schoolId}...`)
+      newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
+    } else {
+      // some other error occured...
+      throw error
+    }
+  }
 
   let pupilChecks
   try {
