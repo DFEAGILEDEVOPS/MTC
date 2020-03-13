@@ -51,7 +51,7 @@ When(/^I feedback on the ways to improve$/) do
 end
 
 When(/^I select the feedback link from the header$/) do
-  confirmation_page.phase_banner.feedback.link.click
+  # confirmation_page.phase_banner.feedback.link.click
 end
 
 Then(/^I should be taken to the feedback page$/) do
@@ -59,7 +59,7 @@ Then(/^I should be taken to the feedback page$/) do
 end
 
 Then(/^I select the feedback link from the complete page$/) do
-  complete_page.feedback.click
+  # complete_page.feedback.click
 end
 
 Then(/^I should be able to give feedback on ways to make the check better$/) do
