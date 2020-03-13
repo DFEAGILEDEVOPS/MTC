@@ -5,17 +5,22 @@ const path = require('path')
 const R = require('ramda')
 const RA = require('ramda-adjunct')
 const { performance } = require('perf_hooks')
+const moment = require('moment')
 
 const azure = require('azure-storage')
+const base = require('../../lib/logger')
+const azureFileDataService = require('../../lib/azure-file.data.service')
 const anomalyFileReportService = require('./anomaly-file-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const config = require('../../config')
 const mtcFsUtils = require('../../lib/mtc-fs-utils')
 const psychometricianReportDataService = require('./data-service/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('./psychometrician-report.service')
+const zipService = require('./zip.service')
 
 const checkProcessingService = {}
 const functionName = 'psychometricReport'
+const psUploadContainer = 'ps-report'
 
 /**
  * Get checks ids that will be used to cache psychometrician report data
@@ -92,13 +97,13 @@ checkProcessingService.writeCsv = async function writeCsv (inputStream, csvStrea
 }
 
 /**
- * Read the input file line by line and output the ps and anomaly reports as we go.
+ * Read the intermediary staging file and generate the ps and anomaly reports to local disk
  * @param logger
  * @param stagingFileProperties
  * @return {Promise<unknown>}
  */
 checkProcessingService.generateReportsFromFile = async function (logger, stagingFileProperties) {
-  const meta = { errorCount: 0, processCount: 0 }
+  const meta = { errorCount: 0, processCount: 0, anomaly: { localFilename: '' }, psreport: { localFilename: '' } }
   const start = performance.now()
 
   // Get the parser for later use
@@ -117,8 +122,11 @@ checkProcessingService.generateReportsFromFile = async function (logger, staging
   await mtcFsUtils.validateDirectory(newTmpDir)
 
   // Create two write streams for our output files
-  const anomalyOutputStream = fs.createWriteStream(path.join(newTmpDir, 'anomalyReport.csv'), { mode: 0o600 })
-  const psReportOutputStream = fs.createWriteStream(path.join(newTmpDir, 'psychometricReport.csv'), { mode: 0o600 })
+  const anomalyFilename = path.join(newTmpDir, 'anomalyReport.csv')
+  const psReportFilename = path.join(newTmpDir, 'psychometricReport.csv')
+  const anomalyOutputStream = fs.createWriteStream(anomalyFilename, { mode: 0o600 })
+  const psReportOutputStream = fs.createWriteStream(psReportFilename, { mode: 0o600 })
+
   // ... and 2 CSV streams to pipe into them
   const anomalyCsvStream = csv.format({ headers: true })
   const psReportCsvStream = csv.format({ headers: true })
@@ -129,6 +137,8 @@ checkProcessingService.generateReportsFromFile = async function (logger, staging
 
   function waitForEnd (predicate, cb) {
     if (predicate()) {
+      meta.anomaly.localFilename = anomalyFilename
+      meta.psreport.localFilename = psReportFilename
       cb()
     } else {
       setTimeout(waitForEnd, 250, predicate, cb)
@@ -197,4 +207,42 @@ checkProcessingService.generateReportsFromFile = async function (logger, staging
   })
 }
 
-module.exports = checkProcessingService
+checkProcessingService.makeReportsAvailable = async function (filesToZip) {
+  const psychometricianReportCode = 'PSR'
+  const zipFilename = `pupil-check-data-${moment().format('YYYY-MM-DD HHmm')}.zip`
+  zipService.setLogger(console.log)
+  const zipFilenameWithPath = await zipService.createZip(zipFilename, filesToZip)
+  const zipStat = await fs.stat(zipFilenameWithPath)
+  this.logger.verbose(`${functionName}: ZIP archive size: ${Math.round(zipStat.size / 1024 / 1024)} MB`)
+
+  // Upload to Azure Storage
+  try {
+    const blobProperties = await azureFileDataService.azureUploadFromLocalFile(psUploadContainer, zipFilename, zipFilenameWithPath)
+    this.logger(`${functionName}: uploaded '${blobProperties.name}' to '${psUploadContainer}' container`)
+    const base64MD5 = R.path(['contentSettings', 'contentMD5'], blobProperties)
+    if (base64MD5) {
+      const md5 = Buffer.from(base64MD5, 'base64')
+      await psychometricianReportDataService.sqlSaveFileUploadMeta(
+        blobProperties.container,
+        blobProperties.name,
+        blobProperties.etag,
+        md5,
+        psychometricianReportCode)
+    } else {
+      this.logger.error(`${functionName}: ERROR: unable to upload the blob details to the SQL DB.  Returned blobProperties was ${JSON.stringify(blobProperties)}`)
+    }
+  } catch (error) {
+    this.logger.error(`Failed to upload to azure Storage: ${error.message}`)
+  }
+
+  try {
+    const dir = path.dirname(filesToZip[0])
+    if (dir.length > 0) {
+      await fs.remove(dir)
+    }
+  } catch (error) {
+    this.logger.warn(`${functionName}: error in cleanup (ignored): ${error.message}`)
+  }
+}
+
+module.exports = Object.assign(checkProcessingService, base)

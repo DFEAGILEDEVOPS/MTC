@@ -37,7 +37,7 @@ const dateService = {
 
   checkAndFormat: function (date, format) {
     if (!(date instanceof Date || moment.isMoment(date))) {
-      logger.warn(`Date parameter is not a Date or Moment object: ${date}`)
+      console.warn(`Date parameter is not a Date or Moment object: ${date}`)
       return ''
     }
     const m = moment(date)

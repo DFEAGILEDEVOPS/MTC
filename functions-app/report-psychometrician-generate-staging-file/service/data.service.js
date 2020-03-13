@@ -17,7 +17,7 @@ const config = require('../../config')
 const mtcFsUtils = require('../../lib/mtc-fs-utils')
 const psychometricianDataService = require('./data-access/psychometrician.data.service')
 
-const functionName = 'data.service'
+const functionName = 'ps-report-staging: data.service'
 
 // https://docs.microsoft.com/en-us/rest/api/storageservices/Naming-and-Referencing-Containers--Blobs--and-Metadata
 // Container names must be lowercase.
@@ -92,7 +92,7 @@ const dataService = {
       newTmpDir = await mtcFsUtils.createTmpDir('PS-STAGE-1-', config.PsReportTemp)
       this.logger.info(`${functionName}: tmp directory created: ${newTmpDir}`)
     } catch (error) {
-      this.logger.error(`${functionName}: Failed to created a new tmp directory: ${error.message}`)
+      this.logger.error(`${functionName}: failed to created a new tmp directory: ${error.message}`)
       throw error // unrecoverable - no work can be done.
     }
 
@@ -129,7 +129,7 @@ const dataService = {
       const fileNameWithPath = `${newTmpDir}${path.sep}ps-stage-2.csv`
       let writeStream
       try {
-        writeStream = fs.createWriteStream (fileNameWithPath, { mode: 0o600 })
+        writeStream = fs.createWriteStream(fileNameWithPath, { mode: 0o600 })
       } catch (error) {
         return reject(error)
       }
@@ -147,7 +147,6 @@ const dataService = {
        * @return {Promise<void>}
        */
       async function worker (data) {
-        console.log('worker called')
         const query = new azure.TableQuery()
           .top(1)
           .where('PartitionKey eq ?', data.checkCode)
@@ -180,13 +179,12 @@ const dataService = {
         try {
           const markingData = JSON.parse(R.path(['markedAnswers', '_'], entity))
           const answerData = dataService.transformMarkingData(markingData)
-          console.log('staging answerdata is ', answerData)
           data.mark = R.path(['mark', '_'], entity)
           data.markedAt = R.path(['markedAt', '_'], entity)
           data.maxMark = R.path(['maxMarks', '_'], entity)
           data.markedAnswers = JSON.stringify(answerData)
         } catch (error) {
-          console.log('Failed to parse:', entity)
+          this.logger.error(`${functionName} : ERROR : failed to parse: ${JSON.stringify(entity)}`)
         }
 
         // Write the data, which is now populated with additional entities, to csv file
@@ -207,9 +205,8 @@ const dataService = {
         .on('error', error => console.error(error))
         .on('data', row => streamQueue.push(row))
         .on('end', rowCount => {
-          console.log(`Parsed ${rowCount} rows`)
+          this.logger.info(`Parsed ${rowCount} rows`)
           if (!streamQueue.started) {
-            console.log('stream queue never started')
             csvWriteStream.end(() => {
               resolve(fileNameWithPath)
             })
@@ -230,7 +227,7 @@ const dataService = {
    * @return {Promise<{container:  string, name: string}>}
    */
   uploadToBlobStorage: async function uploadToBlobStorage (localFilenameWithPath) {
-    console.log('ps-staging: uploadToBlobStorage() called')
+    console.log(`${functionName}: uploadToBlobStorage() called`)
     const name = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}`
     const remoteFilename = `${name}.csv`
     const properties = await azureFileDataService.azureUploadFromLocalFile(blobUploadContainerName, remoteFilename, localFilenameWithPath)

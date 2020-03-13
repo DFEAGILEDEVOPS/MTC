@@ -7,25 +7,25 @@ const path = require('path')
 
 const dataService = require('./service/data.service')
 const dateService = require('../lib/date.service')
+const functionName = 'ps-report-staging'
 
 const v1 = {
   process: async function exec (logger) {
     try {
       const startDate = moment()
       const startTs = dateService.formatIso8601(startDate)
-      logger.info(`v1: starting work: ${startTs}`)
+      logger.info(`${functionName} v1: starting work: ${startTs}`)
       dataService.setLogger(logger)
-      logger.verbose('Fetching SQL details')
+      logger.verbose(`${functionName} fetching SQL details...`)
       const stage1Filename = await dataService.dumpStage1File()
-      logger.verbose('Fetching Table Storage details')
+      logger.verbose(`${functionName} fetching table storage entities`)
       const stage2Filename = await dataService.writeStage2File(stage1Filename)
-      console.log('Got stage2 ', stage2Filename)
 
-      logger.verbose(`Uploading ${stage2Filename} to blob storage`)
+      logger.verbose(`${functionName} uploading ${stage2Filename} to blob storage`)
       await dataService.uploadToBlobStorage(stage2Filename)
 
       // Cleanup
-      logger.verbose('About to delete staging files')
+      logger.verbose(`${functionName}: about to delete staging files`)
       await async.parallel({
         deleteStage1: async () => fse.unlink(stage1Filename),
         deleteStage2: async () => fse.unlink(stage2Filename)
@@ -34,13 +34,13 @@ const v1 = {
         deleteStage1Dir: async () => fse.rmdir(path.dirname(stage1Filename)),
         deleteStage2Dir: async () => fse.rmdir(path.dirname(stage2Filename))
       })
-      logger.verbose('Deleted staging files')
+      logger.verbose(`${functionName}: deleted remote staging files (stage1, stage2)`)
 
       const endDate = moment()
       const endTs = dateService.formatIso8601(endDate)
-      logger.info(`v1: completed work: ${endTs}`)
+      logger.info(`${functionName} v1: completed work: ${endTs}`)
     } catch (error) {
-      logger.error('ERROR: v1.process(): ' + error.message)
+      logger.error(`${functionName} ERROR: v1.process(): ` + error.message)
       throw error
     }
   }

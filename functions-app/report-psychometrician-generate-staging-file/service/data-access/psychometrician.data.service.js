@@ -25,7 +25,6 @@ const psychometricianDataService = {
       const recordSetFunc = () => {}
 
       const rowFunc = (row) => {
-        console.log('row', row)
         const transformations = {
           checkCreatedAt: (s) => { return dateService.formatIso8601(moment(s)) },
           pupilLoginDate: (s) => { return dateService.formatIso8601(moment(s)) },
@@ -63,7 +62,6 @@ const psychometricianDataService = {
       }
 
       csvStream.on('end', function () {
-        console.log('cvsStream end')
         resolve()
       })
 
