@@ -1,17 +1,10 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
-      "type": "httpTrigger",
-      "direction": "in",
-      "name": "req",
-      "methods": [ "get" ],
-      "route": "psreport"
-    },
-    {
-      "type": "http",
-      "direction": "out",
-      "name": "res"
+      "schedule": "45 0 6,10,14,18,22 * * *",
+      "name": "psStaging",
+      "type": "timerTrigger",
+      "direction": "in"
     }
   ]
 }

@@ -12,12 +12,6 @@ module.exports = async function (context, req) {
     await v1.process(context.log)
   } catch (error) {
     context.log.error(`${name}: ERROR run failed: ${error.message}`)
-    context.res = {
-      body: {
-        complete: 'no',
-        error: error.message
-      }
-    }
     throw error
   }
 
@@ -25,7 +19,4 @@ module.exports = async function (context, req) {
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${name}: ${timeStamp} run took ${Math.round(durationInMilliseconds) / 1000} seconds`)
-  context.res = {
-    body: 'Completed OK'
-  }
 }
