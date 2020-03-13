@@ -2,6 +2,7 @@
   "bindings": [
     {
       "schedule": "45 0 6,10,14,18,22 * * *",
+      "schedule-description": "Run at 45 seconds past the hour at: 6am, 10am, 2pm, 6pm, 10pm",
       "name": "psStaging",
       "type": "timerTrigger",
       "direction": "in"
