@@ -2,14 +2,21 @@ import { SchoolPinReplenishmnentService, School, SchoolPinUpdate } from './schoo
 import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
-import { ConfigFileProvider } from './config-file-provider'
-import * as uuid from 'uuid'
+import { IConfigProvider } from './config-file-provider'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),
   updatePin: jest.fn(),
-  getSchoolByUuid: jest.fn()
+  getSchoolById: jest.fn()
 }))
+
+const configProviderMock: IConfigProvider = {
+  AllowedWords: 'aaa,bbb,ccc,ddd,eee',
+  BannedWords: 'dim',
+  OverridePinExpiry: false,
+  PinUpdateMaxAttempts: 5,
+  DigitChars: '234'
+}
 
 let sut: SchoolPinReplenishmnentService
 let dataService: ISchoolPinReplenishmentDataService
@@ -19,7 +26,7 @@ describe('school-pin-replenishment.service', () => {
 
   beforeEach(() => {
     dataService = new SchoolPinGeneratorDataServiceMock()
-    sut = new SchoolPinReplenishmnentService(dataService, undefined, new ConfigFileProvider())
+    sut = new SchoolPinReplenishmnentService(dataService, undefined, configProviderMock)
   })
 
   it('should be defined', () => {
@@ -82,7 +89,7 @@ describe('school-pin-replenishment.service', () => {
       throw new Error('mock error')
     })
     await sut.process(logger)
-    expect(dataService.updatePin).toHaveBeenCalledTimes(new ConfigFileProvider().PinUpdateMaxAttempts)
+    expect(dataService.updatePin).toHaveBeenCalledTimes(configProviderMock.PinUpdateMaxAttempts)
   })
 
   test('if no schools to process, service returns early', async () => {
@@ -94,16 +101,31 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('only updates single school specified when schoolUUID passed as param', async () => {
-    dataService.getSchoolByUuid = jest.fn(async (uuid: string) => {
+    dataService.getSchoolById = jest.fn(async (id: number) => {
       const school: School = {
         id: 1,
         name: 'x'
       }
       return school
     })
-    const schoolUuid = uuid.v4()
-    await sut.process(logger, schoolUuid)
-    expect(dataService.getSchoolByUuid).toHaveBeenCalledTimes(1)
+    const schoolId = 42
+    await sut.process(logger, schoolId)
+    expect(dataService.getSchoolById).toHaveBeenCalledTimes(1)
+    expect(dataService.updatePin).toHaveBeenCalledTimes(1)
+  })
+
+  test('returns generated pin when single schoolUUID passed as param', async () => {
+    dataService.getSchoolById = jest.fn(async (id: number) => {
+      const school: School = {
+        id: 1,
+        name: 'x'
+      }
+      return school
+    })
+    const schoolId = 42
+    const generatedPin = await sut.process(logger, schoolId)
+    expect(generatedPin).toBeDefined()
+    expect(dataService.getSchoolById).toHaveBeenCalledTimes(1)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
   })
 })
