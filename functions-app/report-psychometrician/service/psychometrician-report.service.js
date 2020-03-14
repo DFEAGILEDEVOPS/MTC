@@ -177,7 +177,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
       payload = JSON.parse(payloadString)
     }
   } catch (error) {
-    console.log('Failed to parse payload',  error)
+    console.log('Failed to parse payload', error)
   }
 
   const config = R.propOr({}, 'config', payload)

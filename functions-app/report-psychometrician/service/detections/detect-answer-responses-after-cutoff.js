@@ -14,7 +14,7 @@ const detectAnswerResponsesAfterCutoff = function (data) {
   if (!RA.isPlainObj(data)) {
     throw new TypeError('data should be an object')
   }
-  const markedAnswers = R.pathOr([], ['markedAnswers', 'answer'], data)
+  const markedAnswers = R.pathOr([], ['markedAnswers'], data)
   if (!RA.isArray(markedAnswers)) { return }
   if (R.length(markedAnswers) === 0) { return }
   const answers = R.path(['checkPayload', 'answers'], data)

@@ -26,7 +26,7 @@ const checkTookTooLong = function (data) {
     return
   }
 
-  const markedAnswers = R.pathOr([], ['markedAnswers', 'answer'], data) // contains the question info
+  const markedAnswers = R.pathOr([], ['markedAnswers'], data) // contains the question info
   const config = R.pathOr({}, ['checkPayload', 'config'], data)
   const numberOfQuestions = R.length(markedAnswers) || 0
 
