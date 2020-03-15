@@ -35,7 +35,6 @@ const anomalyFileReportService = {
   detectAnomalies: function (row, logger) {
     if (row.attendanceCode) {
       // don't attempt anomaly detection if there is an attendance code
-      console.log('returning early jms', row)
       return []
     }
     const data = R.evolve(rowToDataTransformations, row)

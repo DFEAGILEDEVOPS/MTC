@@ -253,7 +253,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
 
   const markedAnswersString = R.prop('markedAnswers', data)
   if (!markedAnswersString) {
-    console.error(`Missing markedAnswers data: ${data.checkCode}: got ${markedAnswersString}`)
+    console.error(`Missing markedAnswers data: ${data.checkCode}`)
     return psData
   }
 
