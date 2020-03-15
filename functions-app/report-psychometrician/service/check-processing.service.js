@@ -130,6 +130,7 @@ checkProcessingService.generateReportsFromFile = async function (logger, staging
   // ... and 2 CSV streams to pipe into them
   const anomalyCsvStream = csv.format({ headers: true })
   const psReportCsvStream = csv.format({ headers: true })
+
   psReportCsvStream.pipe(psReportOutputStream)
   anomalyCsvStream.pipe(anomalyOutputStream)
   let anomalyEndDetected = false

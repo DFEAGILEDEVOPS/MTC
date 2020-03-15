@@ -226,9 +226,30 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     TimeTaken: psUtilService.getTimeDiff(startTime, endTime)
   }
 
-  // // Add information for each question asked
+  // Add information for each question
   const p = (num) => `Q${num}`
   let markedAnswers
+
+  // Complete the dataset by adding in blanks for pupils not attending
+  //
+  R.range(1, 26).forEach(q => {
+    psData[p(q) + 'ID'] = ''
+    psData[p(q) + 'Response'] = ''
+    psData[p(q) + 'InputMethods'] = ''
+    psData[p(q) + 'K'] = ''
+    psData[p(q) + 'Sco'] = ''
+    psData[p(q) + 'ResponseTime'] = ''
+    psData[p(q) + 'TimeOut'] = ''
+    psData[p(q) + 'TimeOutResponse'] = ''
+    psData[p(q) + 'TimeOutSco'] = ''
+    psData[p(q) + 'tLoad'] = ''
+    psData[p(q) + 'tFirstKey'] = ''
+    psData[p(q) + 'tLastKey'] = ''
+    psData[p(q) + 'OverallTime'] = ''
+    psData[p(q) + 'RecallTime'] = ''
+    psData[p(q) + 'ReaderStart'] = ''
+    psData[p(q) + 'ReaderEnd'] = ''
+  })
 
   const markedAnswersString = R.prop('markedAnswers', data)
   if (!markedAnswersString) {
@@ -257,7 +278,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     const q = answer.questionNumber
     const inputs = R.filter(
       i => i.sequenceNumber === answer.questionNumber &&
-          i.question === `${answer.factor1}x${answer.factor2}`,
+        i.question === `${answer.factor1}x${answer.factor2}`,
       R.propOr([], 'inputs', payload))
     const audits = R.propOr([], 'audit', payload)
     psData[p(q) + 'ID'] = answer.factor1 + ' x ' + answer.factor2
@@ -280,6 +301,7 @@ psychometricianReportService.produceReportDataV2 = function (data) {
     psData[p(q) + 'ReaderStart'] = psUtilService.getReaderStartTime(q, audits)
     psData[p(q) + 'ReaderEnd'] = psUtilService.getReaderEndTime(q, audits)
   })
+
   return psData
 }
 
