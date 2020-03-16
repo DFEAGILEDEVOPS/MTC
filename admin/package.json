@@ -24,7 +24,7 @@
     "watch": "yarn test:watch"
   },
   "mtc": {
-    "assets-version": "6554b3fbaff7b7e0e144936769ec6f7d"
+    "assets-version": "fb6ea204a64e6870f950aa7f3deffa44"
   },
   "engines": {
     "node": ">= 10.16.3"
