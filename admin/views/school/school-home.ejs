@@ -52,10 +52,10 @@
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Generate passwords and PINs for the try it out check</a></h2>
                         <strong class="disabled-banner">UNAVAILABLE</strong>
                         <% if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 8am - 4pm</span>
+                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm</span>
                         <% } %>
                         <% if (featureEligibilityData.isFamiliarisationInTheFuture) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 8am - 4pm on <%= featureEligibilityData.familiarisationCheckStartDate %> - <%= featureEligibilityData.familiarisationCheckEndDate %></span>
+                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm on <%= featureEligibilityData.familiarisationCheckStartDate %> - <%= featureEligibilityData.familiarisationCheckEndDate %></span>
                         <% } %>
                     <% } %>
                 </li>
@@ -69,10 +69,10 @@
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Generate passwords and PINs for the official check</a></h2>
                         <strong class="disabled-banner">UNAVAILABLE</strong>
                         <% if (featureEligibilityData.isWithinLiveUnavailableHours) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 8am - 4pm</span>
+                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm</span>
                         <% } %>
                         <% if (featureEligibilityData.isLiveInTheFuture) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 8am - 4pm on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
+                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm on <%= featureEligibilityData.liveCheckStartDate %> - <%= featureEligibilityData.liveCheckEndDate %></span>
                         <% } %>
                     <% } %>
                 </li>
@@ -80,7 +80,13 @@
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Review the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">
+                    <% if (featureEligibilityData.isHdfPageAccessible) { %>
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-status">See how many of your pupils have completed the official check</a></h2>
+                    <% } else { %>
+                        <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">See how many of your pupils have completed the official check</a></h2>
+                        <strong class="disabled-banner">UNAVAILABLE</strong>
+                        <span class="govuk-!-font-size-14 govuk-font-greyed-out">Opens <%= featureEligibilityData.liveCheckStartDate %></span>
+                    <% } %>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
                     <% if (featureEligibilityData.isRestartsPageAccessible) { %>
@@ -96,11 +102,11 @@
                 <li class="govuk-!-margin-bottom-4">
                     <% if (featureEligibilityData.isHdfPageAccessible) { %>
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/attendance/declaration-form">Complete the headteacher's declaration form</a></h2>
+                    <p>All pupils must have a status 'Completed' or a reason for not taking the check.</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Complete the headteacher's declaration form</a></h2>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <br />
-                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">All pupils must have a status 'Completed' or a reason for not taking the check.</span>
+                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Opens <%= featureEligibilityData.liveCheckStartDate %></span>
                     <% } %>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
@@ -109,7 +115,7 @@
                     <% } else { %>
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">View pupil results</a></h2>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 8am - 4pm starting from <%= featureEligibilityData.resultsPublishedDate %></span>
+                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Results available <%= featureEligibilityData.resultsPublishedDate %></span>
                     <% } %>
                 </li>
             </ol>
