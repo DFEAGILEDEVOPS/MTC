@@ -401,6 +401,10 @@ describe('CheckComponent', () => {
         component.viewState = 'submission-pending';
         expect(component.canDeactivate()).toBeTruthy();
       });
+      it('can deactivate on preload view state to allow out of time rendering', () => {
+        component.viewState = 'preload';
+        expect(component.canDeactivate()).toBeTruthy();
+      });
       it('can deactivate on submission pending view state', () => {
         component.viewState = 'warmup-complete';
         expect(component.canDeactivate()).toBeTruthy();
@@ -413,8 +417,6 @@ describe('CheckComponent', () => {
         component.viewState = 'spoken-practice-question';
         expect(component.canDeactivate()).toBeFalsy();
         component.viewState = 'questions-intro';
-        expect(component.canDeactivate()).toBeFalsy();
-        component.viewState = 'preload';
         expect(component.canDeactivate()).toBeFalsy();
         component.viewState = 'question';
         expect(component.canDeactivate()).toBeFalsy();
