@@ -16,7 +16,7 @@ const listPupils = async (req, res, next) => {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData)
     pupilsFormatted = await pupilRegisterV2Service.getPupilRegister(req.user.schoolId)
-    pupilsListView = 'pupil-register/pupils-list-v2'
+    pupilsListView = 'pupil-register/pupils-list'
   } catch (error) {
     next(error)
   }

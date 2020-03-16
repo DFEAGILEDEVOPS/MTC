@@ -1,7 +1,7 @@
 class CookiesFormPage < SitePrism::Page
   set_url '/cookies-form'
 
-  element :heading, '.govuk-heading-xl', text: 'Cookies on GOV.UK'
+  element :heading, '.govuk-heading-xl', text: 'Cookies on the multiplication tables check (MTC)'
   element :gov_speak_text, '.govuk-govspeak'
   element :settings_heading, '.govuk-heading-m', text: 'Cookie settings'
   element :website_use_heading, 'legend', text: 'Cookies that measure website use'
