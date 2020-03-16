@@ -7,7 +7,7 @@ class GroupPupilsPage < SitePrism::Page
   element :related_heading, "#subsection-title", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'
   element :not_taking_check, "a[href='/pupils-not-taking-the-check/pupils-list']", text: 'Give a reason why pupil is not taking the check'
-  element :access_arrangment, "a[href='/access-arrangements/overview']", text: 'Set access arrangements for pupils that need them'
+  element :access_arrangment, "a[href='/access-arrangements/overview']", text: 'Enable access arrangements for pupils who need them'
   element :info_message, '.govuk-info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 

@@ -12,7 +12,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
   element :related_heading, ".govuk-heading-m", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'
-  element :access_arrangements, "a", text: 'Set access arrangements for pupils that need them'
+  element :access_arrangements, "a", text: 'Enable access arrangements for pupils who need them'
 
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do

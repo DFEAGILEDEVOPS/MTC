@@ -54,12 +54,33 @@ describe('access arrangements controller:', () => {
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
-      expect(res.locals.pageTitle).toBe('Set access arrangements for pupils that need them')
+      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(accessArrangementsOverviewPresenter.getPresentationData).toHaveBeenCalled()
+    })
+    it('displays the access arrangements unavailable page when the feature is not accessible', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: false })
+      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      await controller.getOverview(req, res, next)
+      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+      expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
+        availabilityData: { accessArrangementsAvailable: false },
+        breadcrumbs: undefined,
+        title: 'Enable access arrangements for pupils who need them'
+      })
     })
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
       const res = getRes()

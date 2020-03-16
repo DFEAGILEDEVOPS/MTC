@@ -20,7 +20,7 @@ const controller = {}
  * @returns {Promise.<void>}
  */
 controller.getOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Set access arrangements for pupils that need them'
+  res.locals.pageTitle = 'Enable access arrangements for pupils who need them'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let pinGenerationEligibilityData
@@ -32,9 +32,10 @@ controller.getOverview = async (req, res, next) => {
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     if (!availabilityData.accessArrangementsAvailable) {
-      return res.render('availability/section-unavailable', {
+      return res.render('access-arrangements/unavailable-access-arrangements', {
         title: res.locals.pageTitle,
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        availabilityData
       })
     }
   } catch (error) {
@@ -64,7 +65,7 @@ controller.getOverview = async (req, res, next) => {
  */
 controller.getSelectAccessArrangements = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Select access arrangement for pupil'
-  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
+  req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
   req.breadcrumbs('Select pupils and access arrangements')
   let accessArrangements
   let accessArrangementsViewData
@@ -144,7 +145,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  */
 controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
-  req.breadcrumbs('Set access arrangements for pupils that need them', '/access-arrangements/overview')
+  req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
 
   try {
