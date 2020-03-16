@@ -36,7 +36,7 @@ describe('TimerService', () => {
     it('should start the timer and set time remaining', () => {
         spyOn(window, 'setInterval').and.callThrough();
         service.startCheckTimer();
-        expect(service.timeRemaining).toBe(600000);
+        expect(Math.abs(service.timeRemaining - 600000)).toBeLessThan(10);
         expect(window.setInterval).toHaveBeenCalledTimes(1);
         service.stopCheckTimer();
     });
@@ -54,7 +54,7 @@ describe('TimerService', () => {
         spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t}`);
         service.startCheckTimer();
         expect(mockStorageService.getCheckStartTime).toHaveBeenCalledTimes(1);
-        expect(service.timeRemaining).toBe(t + 600000);
+        expect(Math.abs(service.timeRemaining - 600000)).toBeLessThan(10);
         service.stopCheckTimer();
     });
 

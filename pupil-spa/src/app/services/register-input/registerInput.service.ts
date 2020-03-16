@@ -24,7 +24,7 @@ export class RegisterInputService {
     const questionInput = {
       input: eventValue,
       eventType: eventType,
-      clientTimestamp:  new Date(eventTimeStamp) || new Date(),
+      clientTimestamp:  eventTimeStamp ? (new Date(eventTimeStamp)).toISOString() : (new Date()).toISOString(),
       question: question,
       sequenceNumber: questionNumber
     };
