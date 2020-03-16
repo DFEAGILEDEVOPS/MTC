@@ -3,6 +3,7 @@ const moment = require('moment')
 const R = require('ramda')
 
 const payloadDataService = require('./data-access/payload.data.service')
+const compressionService = require('./compression.service')
 
 const payloadService = {
   /**
@@ -70,13 +71,16 @@ const payloadService = {
       throw new Error('Missing checkCode')
     }
 
-    const p = await payloadDataService.sqlFindOneByCheckCode(checkCode)
+    const entity = await payloadDataService.sqlFindOneByCheckCode(checkCode)
+    const archive = R.pathOr('', ['result', 'archive', '_'], entity)
 
-    if (!p) {
-      throw new Error('Not found')
+    if (archive.length === 0) {
+      throw new Error('archive not found')
     }
 
-    return this.addRelativeTimings(p)
+    const payloadString = compressionService.decompress(archive)
+    const payload = JSON.parse(payloadString)
+    return this.addRelativeTimings(payload)
   }
 }
 

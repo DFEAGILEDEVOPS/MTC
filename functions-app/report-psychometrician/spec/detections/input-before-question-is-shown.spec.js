@@ -6,18 +6,16 @@ const detectInputBeforeQuestionIsShown = require('../../service/detections/detec
 describe('#detectInputBeforeQuestionIsShown', () => {
   it('detects input shown before the question timer is started', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         inputs: [
           {
@@ -77,18 +75,16 @@ describe('#detectInputBeforeQuestionIsShown', () => {
 
   it('does not report anything if there is nothing to report', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         inputs: [
           {
@@ -129,18 +125,16 @@ describe('#detectInputBeforeQuestionIsShown', () => {
 
   it('reports if it cannot find the questionTimerStartedAudit', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       audit: []
     }
     const res = detectInputBeforeQuestionIsShown(mockData)
@@ -149,18 +143,16 @@ describe('#detectInputBeforeQuestionIsShown', () => {
 
   it('reports if the QuestionTimerStarted timestamp is not valid', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 10,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 10,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         audit: [
           {
@@ -185,18 +177,16 @@ describe('#detectInputBeforeQuestionIsShown', () => {
 
   it('returns an empty array if there arent any inputs', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 10,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 10,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         audit: [
           {
@@ -221,18 +211,16 @@ describe('#detectInputBeforeQuestionIsShown', () => {
 
   it('ignores inputs that have invalid timestamps', () => {
     const mockData = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 10,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 10,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         inputs: [
           {

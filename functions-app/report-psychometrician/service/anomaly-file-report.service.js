@@ -15,10 +15,10 @@ const detections = {
 }
 
 const rowToDataTransformations = {
-  checkPayload: JSON.parse,
-  markedAnswers: JSON.parse,
-  checkCreatedAt: moment,
-  checkStartedAt: moment
+  checkPayload: (s) => { try { return JSON.parse(s) } catch (unhandled) { return '' } },
+  markedAnswers: (s) => { try { return JSON.parse(s) } catch (unhandled) { return '' } },
+  checkCreatedAt: (s) => { return s && moment(s) },
+  checkStartedAt: (s) => { return s && moment(s) }
 }
 
 /**
@@ -33,6 +33,10 @@ const anomalyFileReportService = {
    * @return {Object[]}
    */
   detectAnomalies: function (row, logger) {
+    if (row.attendanceCode) {
+      // don't attempt anomaly detection if there is an attendance code
+      return []
+    }
     const data = R.evolve(rowToDataTransformations, row)
     // run all anomaly detections against the data and return the result
     return R.values(detections).map(f => f(data, logger))

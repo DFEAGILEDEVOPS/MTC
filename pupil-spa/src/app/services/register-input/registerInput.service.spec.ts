@@ -47,13 +47,14 @@ describe('RegisterInputService', () => {
       const entry = {
         input: '0',
         eventType: 'keydown',
-        clientTimestamp: new Date(),
+        clientTimestamp: (new Date()).toISOString(),
         question: '2x3',
         sequenceNumber: 7,
       };
       service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question );
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
-      expect(storageServiceSetInputSpy.calls.all()[0].args[0]).toEqual(entry);
+      const arg = storageServiceSetInputSpy.calls.all()[0].args[0];
+      expect(arg).toEqual(entry);
     }));
 
   it('StoreEntry will generate new Date if the event timestamp is undefined',
@@ -64,7 +65,10 @@ describe('RegisterInputService', () => {
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
       const clientTimestamp = storageServiceSetInputSpy.calls.all()[0].args[0].clientTimestamp;
       expect(clientTimestamp).toBeDefined();
-      expect(clientTimestamp instanceof Date).toBeTruthy();
+      expect(clientTimestamp).toBeTruthy();
+      const cts = new Date(clientTimestamp);
+      const now = new Date();
+      expect(Math.abs(cts.getTime() - now.getTime())).toBeLessThan(10); // Should be set to this year not 1970
     }));
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {

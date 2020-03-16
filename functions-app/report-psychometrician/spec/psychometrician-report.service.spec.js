@@ -217,8 +217,8 @@ describe('psychometricians-report.service', () => {
         checkFormName: 'MTC100',
         pupilLoginDate: '2018-02-11T15:42:18.062Z',
         checkStartedAt: '2018-02-11T15:42:38.787Z',
-        markedAnswers: JSON.stringify({
-          answer: [
+        markedAnswers: JSON.stringify(
+          [
             {
               id: 1,
               factor1: 2,
@@ -228,7 +228,7 @@ describe('psychometricians-report.service', () => {
               questionNumber: 1
             }
           ]
-        })
+        )
       }
     })
 

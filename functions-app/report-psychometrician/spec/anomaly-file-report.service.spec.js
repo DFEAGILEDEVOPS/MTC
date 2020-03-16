@@ -21,7 +21,7 @@ describe('#anomaly-file-report.service', () => {
       checkPayload: JSON.stringify(R.prop('data', completedCheckMockOrig)),
       restartCode: 'CLD',
       restartCount: 1,
-      attendanceCode: 'JSTAR',
+      attendanceCode: '',
       schoolName: 'Wacky Races Driving School',
       schoolEstabCode: '1999',
       schoolUrn: 89000,
@@ -30,18 +30,16 @@ describe('#anomaly-file-report.service', () => {
       checkFormName: 'MTC100',
       pupilLoginDate: '2018-02-11T15:42:18.062Z',
       checkStartedAt: '2018-02-11T15:42:38.787Z',
-      markedAnswers: JSON.stringify({
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      })
+      markedAnswers: JSON.stringify([
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ])
     }
   })
 
