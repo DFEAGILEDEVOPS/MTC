@@ -53,6 +53,9 @@ $(function () {
       sessionExpirationError.addClass('error-session-expiration')
     },
 
+    /**
+     * Display the banner with the expired content
+     */
     displayExpiredBanner: function (sessionExpirationError, sessionExpirationErrorBody) {
       // Replace the content of the session expiration body
       sessionExpirationErrorBody.innerHTML = `
