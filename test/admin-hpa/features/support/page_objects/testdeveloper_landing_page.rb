@@ -10,7 +10,7 @@ class TestdeveloperLandingPage < SitePrism::Page
   element :assign_forms_to_check_windows_text, 'p', text: 'Select uploaded forms and assign them to check windows'
   element :download_pupil_check_data, 'a', text: 'Download pupil check data'
   element :download_pupil_check_data_text, 'p', text: 'Generate and download detailed raw pupil check data'
-  element :guidance, 'aside.support-column nav li a', text: 'Guidance'
+  element :guidance, 'aside.support-column nav li a', text: 'Read the guidance and watch videos'
   element :back_to_top, 'a', text: 'Back to top'
 
 end
