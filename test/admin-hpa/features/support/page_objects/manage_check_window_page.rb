@@ -5,7 +5,7 @@ class ManageCheckWindowPage < SitePrism::Page
   element :page_instructions, '.govuk-body', text: 'Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.'
   element :create_new_window, 'a', text: 'Create new check window'
   element :panel, '.govuk-inset-text', text: 'Check will be available for schools on weekdays from 8am to 4pm'
-  element :guidance, 'a', text: 'Guidance'
+  element :guidance, 'a', text: 'Read the guidance and watch videos'
   element :adjust_timings, '.app-related-items li a', text: 'Settings on pupil check'
   element :progress_report, '.govuk-disabled-link', text: 'Progress reports'
   element :info_message, '.info-message', text: 'Changes have been saved'
