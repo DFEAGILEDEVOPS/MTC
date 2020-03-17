@@ -8,8 +8,19 @@
   ],
   "tables": [
     "checkResult",
+    "checkStartedEvents",
     "pupilEvent",
     "pupilFeedback",
     "receivedCheck"
+  ],
+  "blobcontainers": [
+    "admin-app-uploaded-files",
+    "censusupload",
+    "certs",
+    "csvuploads",
+    "ps-report",
+    "ps-report-staging",
+    "psychometricianreportupload",
+    "school-import"
   ]
 }
