@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect, fail, spyOn */
+/* global describe, it, expect, fail, spyOn, xit */
 const R = require('ramda')
 const service = require('../../../services/payload.service')
 const payloadDataService = require('../../../services/data-access/payload.data.service')
@@ -15,7 +15,7 @@ describe('payload.service', () => {
       }
     })
 
-    it('adds relativeTimings', async () => {
+    xit('adds relativeTimings', async () => {
       spyOn(service, 'addRelativeTimings')
       spyOn(payloadDataService, 'sqlFindOneByCheckCode').and.returnValue({
         inputs: [],

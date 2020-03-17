@@ -52,18 +52,16 @@ describe('detect answer responses after cutoff', () => {
 
   it('reports on answers that are registered after the cutoff', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -116,18 +114,16 @@ describe('detect answer responses after cutoff', () => {
 
   it('does not report on answers that are registered inside the cutoff', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -178,26 +174,24 @@ describe('detect answer responses after cutoff', () => {
 
   it('reports on multiple answers that are registered after the cutoff', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          },
-          {
-            id: 1,
-            factor1: 3,
-            factor2: 6,
-            response: '15',
-            isCorrect: false,
-            questionNumber: 2
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        },
+        {
+          id: 1,
+          factor1: 3,
+          factor2: 6,
+          response: '15',
+          isCorrect: false,
+          questionNumber: 2
+        }
+      ],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -249,26 +243,24 @@ describe('detect answer responses after cutoff', () => {
 
   it('returns an empty array  if it can\'t find a valid answer', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          },
-          {
-            id: 2,
-            factor1: 3,
-            factor2: 6,
-            response: '15',
-            isCorrect: false,
-            questionNumber: 2
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        },
+        {
+          id: 2,
+          factor1: 3,
+          factor2: 6,
+          response: '15',
+          isCorrect: false,
+          questionNumber: 2
+        }
+      ],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -301,18 +293,16 @@ describe('detect answer responses after cutoff', () => {
 
   it('returns an empty array  if it can\'t find a valid timestamp on the answer', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            factor1: 2,
-            factor2: 5,
-            response: '10',
-            isCorrect: true,
-            questionNumber: 1
-          }
-        ]
-      },
+      markedAnswers: [
+        {
+          id: 1,
+          factor1: 2,
+          factor2: 5,
+          response: '10',
+          isCorrect: true,
+          questionNumber: 1
+        }
+      ],
       checkPayload: {
         config: {
           loadingTime: 3,

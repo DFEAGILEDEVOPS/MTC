@@ -2,14 +2,14 @@
 
 const { performance } = require('perf_hooks')
 
-const v1 = require('./v1')
+// const v1 = require('./v1')
 const name = 'report-psychometrician-create-download'
 
 module.exports = async function (context, message) {
   const start = performance.now()
 
   try {
-    await v1.process(context.log)
+    // await v1.process(context.log)
   } catch (error) {
     context.log.error(`${name}: ERROR run failed: ${error.message}`)
     throw error

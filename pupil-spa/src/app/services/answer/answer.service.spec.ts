@@ -27,6 +27,10 @@ describe('AnswerService', () => {
     jasmine.clock().mockDate(new Date('1970-01-01'));
   });
 
+  afterEach(() => {
+    jasmine.clock().uninstall();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });

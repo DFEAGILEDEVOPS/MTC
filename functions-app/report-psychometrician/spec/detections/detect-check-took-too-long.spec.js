@@ -22,9 +22,7 @@ describe('check took too long', () => {
   it('reports when the check is over time', () => {
     // 10 * (3 + 6) , no QR = 90
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -47,9 +45,7 @@ describe('check took too long', () => {
 
   it('does not report when the check is under time', () => {
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -69,9 +65,7 @@ describe('check took too long', () => {
   it('reports when the check is over time with the questionReader', () => {
     // 10 * (3 + 6) + (2.5 * 10), with QR = 115
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -95,9 +89,7 @@ describe('check took too long', () => {
   it('does not report when the check is on time with the questionReader', () => {
     // 10 * (3 + 6) + (2.5 * 10), with QR = 115
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -116,9 +108,7 @@ describe('check took too long', () => {
 
   it('does not report when the checkStarted time is missing', () => {
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -135,9 +125,7 @@ describe('check took too long', () => {
 
   it('does not report when the check completed time is missing', () => {
     const data = {
-      markedAnswers: {
-        answer: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-      },
+      markedAnswers: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -154,11 +142,7 @@ describe('check took too long', () => {
 
   it('ignores checks that have the next button between questions', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {}
-        ]
-      },
+      markedAnswers: [{}],
       checkPayload: {
         config: {
           loadingTime: 3,
@@ -177,11 +161,7 @@ describe('check took too long', () => {
 
   it('ignores checks that have a refresh', () => {
     const data = {
-      markedAnswers: {
-        answer: [
-          {}
-        ]
-      },
+      markedAnswers: [{}],
       checkPayload: {
         config: {
           loadingTime: 3,

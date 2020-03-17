@@ -2,15 +2,15 @@
 
 const { performance } = require('perf_hooks')
 
-const v1 = require('./v1')
+const v2 = require('./v2')
 const name = 'report-psychometrician'
 
-module.exports = async function (context, message) {
+module.exports = async function (context, blob) {
   const start = performance.now()
 
   let meta
   try {
-    meta = await v1.process(context.log)
+    meta = await v2.process(context.log, blob)
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`)
     throw error

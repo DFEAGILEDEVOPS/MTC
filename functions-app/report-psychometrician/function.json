@@ -1,10 +1,11 @@
 {
   "bindings": [
     {
-      "schedule": "15 0 17 * * *",
-      "name": "psychometricianReport",
-      "type": "timerTrigger",
-      "direction": "in"
+      "name": "stagingFile",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "ps-report-staging/{name}.trigger.json",
+      "connection": "AzureWebJobsStorage"
     }
   ]
 }

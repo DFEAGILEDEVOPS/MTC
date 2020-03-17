@@ -19,7 +19,7 @@ const detectInputAfterTimerHasCompleted = function (data) {
 
   // For each question we need to check that the inputs were not
   // received after the questionTimer completed
-  const markedAnswers = R.pathOr([], ['markedAnswers', 'answer'], data) // contains the question info
+  const markedAnswers = R.pathOr([], ['markedAnswers'], data) // contains the question info
   const audits = R.pathOr([], ['checkPayload', 'audit'], data)
 
   markedAnswers.forEach(markedAnswer => {

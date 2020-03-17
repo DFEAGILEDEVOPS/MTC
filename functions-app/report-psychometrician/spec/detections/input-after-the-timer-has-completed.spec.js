@@ -29,17 +29,15 @@ describe('input after the timer has completed', () => {
       checkPayload: {
         audit: []
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('QuestionTimerCancelled event not found for question')
     expect(r[0]['Question number']).toBe(1)
@@ -59,17 +57,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('QuestionTimerCancelledEvent timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
@@ -89,17 +85,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('QuestionTimerCancelledEvent missing its timestamp')
     expect(r[0]['Question number']).toBe(1)
@@ -143,17 +137,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('QuestionTimerCancelledEvent missing its timestamp')
     expect(r[0]['Question number']).toBe(1)
@@ -189,17 +181,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('input timestamp is missing')
     expect(r[0]['Question number']).toBe(1)
@@ -228,17 +218,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
@@ -267,17 +255,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('input timestamp is not valid')
     expect(r[0]['Question number']).toBe(1)
@@ -306,17 +292,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r).toEqual([]) // no output, all pass
   })
@@ -344,17 +328,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r[0].Message).toBe('Input received after timer cut-off')
     expect(r[0]['Question number']).toBe(1)
@@ -392,17 +374,15 @@ describe('input after the timer has completed', () => {
           }
         ]
       },
-      markedAnswers: {
-        answer: [
-          {
-            id: 1,
-            answer: '10',
-            factor1: 1,
-            factor2: 10,
-            questionNumber: 1
-          }
-        ]
-      }
+      markedAnswers: [
+        {
+          id: 1,
+          answer: '10',
+          factor1: 1,
+          factor2: 10,
+          questionNumber: 1
+        }
+      ]
     })
     expect(r.length).toBe(1)
   })
