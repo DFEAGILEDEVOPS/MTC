@@ -166,6 +166,23 @@ checkStartService.prepareCheck2 = async function (
   return this.storeCheckConfigs(pupilChecks, newChecks)
 }
 
+checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
+  if (!Array.isArray(preparedChecks)) {
+    throw new Error('`preparedChecks is not an array')
+  }
+  if (!preparedChecks.length) {
+    return
+  }
+  const config = preparedChecks.map(pcheck => {
+    return {
+      checkCode: pcheck.check_checkCode,
+      config: pcheck.config,
+      checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
+    }
+  })
+  checkStartDataService.sqlStoreBatchConfigs(config)
+}
+
 /**
  * Return a new pupil check object. Saving the data is handled in a batch process by the caller
  * @param {number} pupilId
@@ -218,23 +235,6 @@ checkStartService.initialisePupilCheck = async function (
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
   return checkData
-}
-
-checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
-  if (!Array.isArray(preparedChecks)) {
-    throw new Error('`preparedChecks is not an array')
-  }
-  if (!preparedChecks.length) {
-    return
-  }
-  const config = preparedChecks.map(pcheck => {
-    return {
-      checkCode: pcheck.check_checkCode,
-      config: pcheck.config,
-      checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
-    }
-  })
-  checkStartDataService.sqlStoreBatchConfigs(config)
 }
 
 /**
