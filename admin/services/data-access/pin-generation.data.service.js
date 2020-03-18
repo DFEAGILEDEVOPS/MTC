@@ -49,7 +49,7 @@ const serviceToExport = {
   sqlCreateBatch: async (checks) => {
     const declareTable = 'declare @tvp as [mtc_admin].CheckTableType'
     const insertHeader = `INSERT into @tvp
-        (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
+        (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id, createdBy_userId)
         VALUES`
     const inserts = checks.map((check, index) => {
       return `(@pupilId${index}, @checkFormId${index}, @checkWindowId${index}, @isLiveCheck${index}, @pinExpiresAt${index}, @schoolId${index}, @createdBy_userId${index})`
