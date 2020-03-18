@@ -60,6 +60,7 @@ const checkStartService = {
  * @param { number[] } pupilIds - pupils selected from the UI/form
  * @param { number } dfeNumber - school dfeNumber that the teachers works at
  * @param { number } schoolId - school ID that the teacher works at
+ * @param { number } userId - user ID of the teacher
  * @param { boolean } isLiveCheck
  * @param { null | string } schoolTimezone - e.g 'Europe/London'
  * @param { {id: number} } checkWindow
@@ -69,6 +70,7 @@ checkStartService.prepareCheck2 = async function (
   pupilIds,
   dfeNumber,
   schoolId,
+  userId,
   isLiveCheck,
   schoolTimezone = null,
   checkWindow
@@ -78,6 +80,9 @@ checkStartService.prepareCheck2 = async function (
   }
   if (!schoolId) {
     throw new Error('schoolId is required')
+  }
+  if (!userId) {
+    throw new Error('userId is required')
   }
 
   const pupils = await checkStartDataService.sqlFindPupilsEligibleForPinGenerationById(
@@ -118,6 +123,7 @@ checkStartService.prepareCheck2 = async function (
       allForms,
       usedFormIds,
       isLiveCheck,
+      userId,
       schoolId,
       schoolTimezone
     )
@@ -160,23 +166,6 @@ checkStartService.prepareCheck2 = async function (
   return this.storeCheckConfigs(pupilChecks, newChecks)
 }
 
-checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
-  if (!Array.isArray(preparedChecks)) {
-    throw new Error('`preparedChecks is not an array')
-  }
-  if (!preparedChecks.length) {
-    return
-  }
-  const config = preparedChecks.map(pcheck => {
-    return {
-      checkCode: pcheck.check_checkCode,
-      config: pcheck.config,
-      checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
-    }
-  })
-  checkStartDataService.sqlStoreBatchConfigs(config)
-}
-
 /**
  * Return a new pupil check object. Saving the data is handled in a batch process by the caller
  * @param {number} pupilId
@@ -184,6 +173,7 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
  * @param { {id: number}[] } availableForms
  * @param {Array.<number>} usedFormIds
  * @param {boolean} isLiveCheck
+ * @param {number} userId
  * @param {number} schoolId
  * @param {null | String} schoolTimezone
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
@@ -194,6 +184,7 @@ checkStartService.initialisePupilCheck = async function (
   availableForms,
   usedFormIds,
   isLiveCheck,
+  userId,
   schoolId = null,
   schoolTimezone = null
 ) {
@@ -222,10 +213,28 @@ checkStartService.initialisePupilCheck = async function (
   }
   checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
   checkData.school_id = schoolId
+  checkData.createdBy_userId = userId
 
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
   return checkData
+}
+
+checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks) {
+  if (!Array.isArray(preparedChecks)) {
+    throw new Error('`preparedChecks is not an array')
+  }
+  if (!preparedChecks.length) {
+    return
+  }
+  const config = preparedChecks.map(pcheck => {
+    return {
+      checkCode: pcheck.check_checkCode,
+      config: pcheck.config,
+      checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
+    }
+  })
+  checkStartDataService.sqlStoreBatchConfigs(config)
 }
 
 /**

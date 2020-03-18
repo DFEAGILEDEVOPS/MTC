@@ -43,7 +43,7 @@ const serviceToExport = {
    * Batch create checks with pins, now using a stored procedure
    * A pin will be randomly allocated
    *
-   * @param {[{pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id}]} checks - array of check objects to create
+   * @param {[{pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id, createdBy_userId}]} checks - array of check objects to create
    * @return {Promise<object>}
    */
   sqlCreateBatch: async (checks) => {
@@ -52,7 +52,7 @@ const serviceToExport = {
         (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
         VALUES`
     const inserts = checks.map((check, index) => {
-      return `(@pupilId${index}, @checkFormId${index}, @checkWindowId${index}, @isLiveCheck${index}, @pinExpiresAt${index}, @schoolId${index})`
+      return `(@pupilId${index}, @checkFormId${index}, @checkWindowId${index}, @isLiveCheck${index}, @pinExpiresAt${index}, @schoolId${index}, @createdBy_userId${index})`
     })
     const params = []
     checks.map((check, index) => {
@@ -62,6 +62,7 @@ const serviceToExport = {
       params.push({ name: `isLiveCheck${index}`, value: check.isLiveCheck, type: TYPES.Bit })
       params.push({ name: `pinExpiresAt${index}`, value: check.pinExpiresAt.toDate(), type: TYPES.DateTimeOffset })
       params.push({ name: `schoolId${index}`, value: check.school_id, type: TYPES.Int })
+      params.push({ name: `createdBy_userId${index}`, value: check.createdBy_userId, type: TYPES.Int })
     })
     const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
     const insertSql = insertHeader + inserts.join(',\n')
