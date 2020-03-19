@@ -104,9 +104,10 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
       }
     ]
     const result = await this.sqlService.query(sql, params)
-    if (result.length === 1) {
-      return result[0].pupilUUID
+    if (result.length !== 1) {
+      throw new Error(`pupil-prefs: pupil UUID lookup has ${result.length} rows, when expecting 1 only`)
     }
+    return result[0].pupilUUID
   }
 
   private buildUpdateRequest (dataUpdate: IPupilPreferenceDataUpdate): ITransactionRequest {
