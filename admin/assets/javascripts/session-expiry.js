@@ -9,18 +9,6 @@ $(function () {
   }
   window.GOVUK.sessionExpiry = {
     /**
-     * Helper to logout the user by redirecting to the sign-out page
-     */
-    redirectToLogout: function () {
-      window.location.href = '/sign-out'
-    },
-    /**
-     * Helper to call window reload
-     */
-    reloadPage: function () {
-      window.location.reload()
-    },
-    /**
      * Set the formatted text on minutesCountdown to the count of `minutes`
      */
     setCountdownText: function (minutesCountdown, minutes) {
@@ -35,7 +23,11 @@ $(function () {
       window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, remainingMinutes)
       window.setInterval(function () {
         window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, --remainingMinutes)
-        if (remainingMinutes <= 0) window.GOVUK.sessionExpiry.redirectToLogout()
+        const remainingSeconds = remainingMinutes * 60
+        if (remainingSeconds <= 5) {
+          const sessionExpirationErrorBody = document.getElementById('error-session-expiration-body')
+          window.GOVUK.sessionExpiry.displayExpiredBanner(sessionExpirationError, sessionExpirationErrorBody, sessionExpirationErrorBody)
+        }
       }, tickMs)
     },
     /**
@@ -47,10 +39,30 @@ $(function () {
 
       continueSessionButton.click(function (e) {
         e.preventDefault()
-        window.GOVUK.sessionExpiry.reloadPage(true)
+        window.GOVUK.sessionExpiry.hideExpiryBanner(sessionExpirationError)
       })
 
       window.GOVUK.sessionExpiry.startTimer(minutesCountdown, 60 * 1000)
+    },
+
+    /**
+     * Hide the expiration banner
+     */
+    hideExpiryBanner: function (sessionExpirationError) {
+      sessionExpirationError.removeClass('error-about-to-expire-session')
+      sessionExpirationError.addClass('error-session-expiration')
+    },
+
+    /**
+     * Display the banner with the expired content
+     */
+    displayExpiredBanner: function (sessionExpirationError, sessionExpirationErrorBody) {
+      // Replace the content of the session expiration body
+      sessionExpirationErrorBody.innerHTML = `
+      <p>You have been logged out of the MTC service. Please <a href="/sign-in">sign in</a></p>
+      `
+      sessionExpirationError.removeClass('error-session-expiration')
+      sessionExpirationError.addClass('error-about-to-expire-session')
     }
   }
 
@@ -61,7 +73,5 @@ $(function () {
     window.setTimeout(function () {
       window.GOVUK.sessionExpiry.displayExpiryBanner(sessionExpirationError, minutesCountdown, continueSessionButton)
     }, SESSION_DISPLAY_NOTICE_TIME * 1000)
-    // defensive programming, always redirect
-    window.setTimeout(window.GOVUK.sessionExpiry.redirectToLogout, SESSION_EXPIRATION_TIME * 1000)
   }
 })

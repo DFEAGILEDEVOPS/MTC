@@ -34,8 +34,8 @@ const getLinesPerCheck = () => {
 }
 
 module.exports = {
-  ADMIN_SESSION_DISPLAY_NOTICE_AFTER: (process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER || 5) * 60, // Display notice after 5 minutes by default
-  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: (process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS || 10) * 60, // Expire after 10 minutes inactivity by default
+  ADMIN_SESSION_DISPLAY_NOTICE_AFTER: parseInt(process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER) || 300, // Display notice after 5 minutes by default
+  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: parseInt(process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS) || 600, // Expire after 10 minutes inactivity by default
   AssetPath: process.env.ASSET_PATH || '/',
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
