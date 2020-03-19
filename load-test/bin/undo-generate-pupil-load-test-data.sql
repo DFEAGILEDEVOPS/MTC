@@ -16,7 +16,5 @@ TRUNCATE TABLE mtc_admin.auditLog
 TRUNCATE TABLE mtc_admin.pupilAccessArrangements
 TRUNCATE TABLE mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilAgeReason
-DELETE FROM mtc_admin.pupilColourContrasts
-DELETE FROM mtc_admin.pupilFontSizes
 DELETE FROM mtc_admin.[group]
 

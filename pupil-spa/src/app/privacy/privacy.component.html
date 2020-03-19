@@ -1,120 +1,139 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
-<a name="top" id="top"></a>
-<app-breadcrumbs [breadcrumbs]="[{ url: '.', name: 'Home' }, { name: 'Privacy Notice' } ]"></app-breadcrumbs>
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <h1 class="heading-xlarge">Privacy notice</h1>
-    <ul class="list list-contents">
-      <li>Contents</li>
-      <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="overview">Overview</a></li>
-      <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="data-collection-and-access">What data will be collected and who can
-        access it?</a></li>
-      <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="retaining-personal-data">How long will we keep your data?</a></li>
-      <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="legal">What is the legal basis for collecting and processing data?</a></li>
-      <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="contact">Who can I contact about the use of personal data?</a></li>
-    </ul>
-    <hr />
-    <div id="overview">
-      <h3 class="heading-medium">Overview</h3>
-      <p>
-        The Standards and Testing Agency (STA) will use the results of the final 2019 multiplication tables check (MTC) trial and national pilot to:
-      </p>
-      <ul class="list list-bullet">
-        <li>
-          collect evidence on the performance of check items and forms to evaluate their comparable difficulty and inform future form construction
-        </li>
-        <li>
-          develop and refine the live pilot digital service for implementing MTC as a final live service development
-        </li>
+  <a name="top" id="top"></a>
+  <app-breadcrumbs [breadcrumbs]="[{ url: '.', name: 'Home' }, { name: 'Privacy Notice' } ]"></app-breadcrumbs>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">Privacy notice: multiplication tables check (MTC)</h1>
+      <ul class="c list-contents">
+        <li>Contents</li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="who-we-are">Who we are</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="how-we-will-use-information">How we will use your information
+        </a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="nature-personal-data">The nature of personal data we will be using</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="legal">Why our use of your pupils’ personal data is lawful</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="personal-data-available">Who we will make your pupils’ personal data available to</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="personal-data">How long we will keep your pupils’ personal data</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="rights">Your data protection rights</a></li>
+        <li class="list-item--dashed"><a [routerLink]="['/privacy']" fragment="last-updated">Last updated</a></li>
       </ul>
-
-      <p>
-        As data processor, STA is responsible for securely storing and handling any personal data required to
-        administer both the final trial and national pilot checks. We will keep data for only as long as it is
-        required for research and operational purposes, and will regularly review retention of the data, in
-        accordance and in line with the requirements of UK data protection legislation and the
-        <a target="_blank" rel="noopener noreferrer"
-           href="https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr">
-          General Data Protection Regulation (GDPR)
-        </a>. <img alt="" src="assets/images/icon-link.png"/>
-      </p>
+      <hr />
+      <br />
+      <div id="who-we-are">
+        <h3 class="heading-medium">Who we are</h3>
+        <p>
+          This work is being carried out by the Standards and Testing Agency (STA) which is part of the Department for Education (DfE).
+          For the purpose of data protection legislation, DfE is the data controller for the personal data processed as part of MTC.
+        </p>
+      </div>
+      <div id="how-we-will-use-information">
+        <h3 class="heading-medium">How we will use your information</h3>
+        <p>We receive your pupils’ personal data from your school.</p>
+        <p>The aim of this project is to determine whether pupils can recall their times tables fluently,
+          which is essential for future success in mathematics. It will help schools to identify pupils who have not yet mastered their times tables,
+          so that additional support can be provided. Further <a href="https://www.gov.uk/government/collections/multiplication-tables-check">information about MTC</a> is available on GOV.UK.
+        </p>
+      </div>
+      <div id="nature-personal-data">
+        <h3 class="heading-medium">The nature of personal data we will be using</h3>
+        <p>
+          The categories of your pupils’ personal data that we will be using for this project are:
+        </p>
+        <ul class="list list-bullet">
+          <li>full name</li>
+          <li>gender</li>
+          <li>date of birth</li>
+          <li>unique pupil number (UPN)</li>
+        </ul>
+      </div>
+      <div id="legal">
+        <h3 class="heading-medium">Why our use of your pupils’ personal data is lawful</h3>
+        <p>
+          In order for our use of personal data to be lawful,
+          we need to meet one (or more) conditions in the data protection legislation.
+          For the purpose of this project, the relevant condition is:
+        </p>
+        <ul class="list list-bullet">
+          <li>Article 6(1)(e) GDPR, to perform a public task as part of our function as a department</li>
+        </ul>
+        <p>
+          The Data Protection Act 2018, Part 2 Chapter 2 Lawfulness of processing Section 8 (d) allows
+          for when (data) processing is necessary for the exercise of a function of the Crown,
+          a Minister of the Crown or a government department.
+        </p>
+      </div>
+      <div id="personal-data-available">
+        <h3 class="heading-medium">Who we will make your pupils’ personal data available to</h3>
+        <p>
+          We sometimes need to make personal data available to other organisations.
+        </p>
+        <p>
+          Where we need to share your pupils’ personal data with others, we will only do this where the law allows us to.
+        </p>
+      </div>
+      <div id="personal-data">
+        <h3 class="heading-medium">How long we will keep your pupils’ personal data</h3>
+        <p>
+          DfE will keep your pupils’ personal data, that is the personal details listed above, alongside the pupils’ MTC score for 2 years.
+        </p>
+        <p>
+          The MTC database for each annual test cycle will (in line with STA data retention policy) be retained for a maximum of 2 years
+          after each cycle (encrypted at rest in Enterprise Azure).
+          This is in case we need to extract the data again (for disaster recovery purposes) or to retrieve
+          to inform any subsequently received allegation of test maladministration. The data will be securely destroyed once it is no longer required.
+          Please note, under section 33 of the Data Protection Act 1998, and in compliance with the relevant conditions,
+          we can lawfully keep personal data processed purely for research purposes indefinitely,
+          although the personal data at this point is now anonymised.
+        </p>
+      </div>
+      <div id="rights">
+        <h3 class="heading-medium">Your data protection rights</h3>
+        <p>
+          <a href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">
+            https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter
+          </a>
+        </p>
+        <p>
+          Under the Data Protection Act 2018, you are entitled to ask if we hold information relating to you and ask for a copy,
+          by making a ‘subject access request’.
+        </p>
+        <p>
+          For further information and how to request your data, please use the <a href="https://www.education.gov.uk/help/contactus">contact form</a> in the Personal Information Charter at
+          <a href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter</a>
+          under the ‘How to find out what personal information we hold about you’ section.
+        </p>
+        <p>
+          If you need to contact us regarding any of the above,
+          please do so via the GOV.UK at: <a href="https://www.gov.uk/contact-dfe">https://www.gov.uk/contact-dfe</a>.
+        </p>
+        <p>
+          Further information about your data protection rights appears on the Information Commissioner’s website at:
+          <a href="https://ico.org.uk/for-organisations/guide-to-data-protection/principle-6-rights/">https://ico.org.uk/for-organisations/guide-to-data-protection/principle-6-rights/</a>.
+        </p>
+      </div>
+      <div id="last-updated">
+        <h3 class="heading-medium">Last updated</h3>
+        <p>
+          We may need to update this privacy notice periodically so we recommend that you revisit this information from time to time. This version was last updated on 23 March 2020.
+        </p>
+      </div>
+      <div class="back-to-top-container">
+        <a [routerLink]="['/privacy']" fragment="top">Back to top</a>
+      </div>
     </div>
-
-
-    <div id="data-collection-and-access">
-      <h3 class="heading-medium">What data will be collected and who can access it?</h3>
-      <p>We will collect and hold the following categories of data:</p>
-
-      <ul class="list list-bullet">
-        <li>participating pupils’ names</li>
-        <li>participating pupils’ dates of birth</li>
-        <li>participating pupils’ unique pupil numbers</li>
-        <li>names of participating schools</li>
-      </ul>
-      <p>
-        The MTC check will be completed online by all eligible year 4 pupils (age 8-9) who schools agree and
-        decide to enter for the trial or national pilot in 2019.
-      </p>
-      <p>
-        STA will store the data collected securely within its own system and retain it in line with the agency’s
-        data retention policy. Access within STA will be restricted to those employees who need to see the pupil
-        data. Schools will also see the data for their participating pupils.
-      </p>
-    </div>
-
-
-    <div id="retaining-personal-data">
-      <h3 class="heading-medium">How long will we keep your data?</h3>
-      <p>
-        STA will only keep personal data for as long as it is needed for the purpose of the trialling and
-        service development of the live check. STA will retain the data for no longer than necessary, in
-        accordance with the law, and will systematically review and manage retention. The data will be securely
-        destroyed once it is no longer required. Please note, under section 33 of the Data Protection Act 1998,
-        and in compliance with the relevant conditions, we can lawfully keep personal data processed purely for
-        research purposes indefinitely.
-      </p>
-    </div>
-
-    <div id="legal">
-      <h3 class="heading-medium">What is the legal basis for collecting and processing the data?</h3>
-      <p>
-        The Data Protection Act 2018, Part 2 Chapter 2 Lawfulness of processing Section 8 (d) allows for when
-        (data) processing is necessary for the exercise of a function of the Crown, a Minister of the Crown or a
-        government department. For the processing of personal data, the relevant condition is Article 6 (1) (e)
-        of GDPR.
-      </p>
-    </div>
-
-    <div id="contact">
-      <h3 class="heading-medium">Who can I contact about the use of personal data?</h3>
-      <p>
-        As an executive agency of the Department for Education (DfE), STA determines the purposes and means of
-        processing personal data as part of the MTC project. You can find more information about this in DfE’s
-        <a target="_blank" rel="noopener noreferrer"
-           href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">
-          personal information charter</a>. <img alt="" src="assets/images/icon-link.png"/>
-      </p>
-      <p>
-        If you have any questions about how we use your personal information, please
-        <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/contact-dfe">contact DfE</a>
-        <img alt="" src="assets/images/icon-link.png"/> and
-        quote ‘Use of multiplication tables check data’ as a reference. If you want to get in touch with the Data
-        Protection Officer (DPO), please contact DfE and mark it ‘for the attention of the DPO’.
-      </p>
-      <p>
-        You have the right to lodge a complaint about data protection issues with the Information Commissioner’s
-        Office. For more information, visit the
-        <a target="_blank" rel="noopener noreferrer"
-           href="https://ico.org.uk/make-a-complaint">ICO website</a>.
-        <img alt="" src="assets/images/icon-link.png"/>
-      </p>
-    </div>
-    <span class="font-xsmall">Last updated 31 January 2019</span>
-    <div class="back-to-top-container">
-      <a [routerLink]="['/privacy']" fragment="top">Back to top</a>
+    <div class="column-one-third add-title-margin">
+      <br />
+      <aside role="complementary" class="support-column">
+        <h3 class="heading-medium">Related</h3>
+        <nav role="navigation">
+          <ul class="list">
+            <li>
+              <a href="/">Home</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
     </div>
   </div>
-</div>
 </main>
 <app-footer></app-footer>
