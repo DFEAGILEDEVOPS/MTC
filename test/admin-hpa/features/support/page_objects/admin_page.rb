@@ -26,7 +26,7 @@ class AdminPage < SitePrism::Page
   element :manage_restart_requests_text, 'p', text: 'Approve or reject restart requests'
   element :view_progress_reports, 'a', text: 'View progress reports'
   element :view_progress_reports_text, 'p', text: 'View reports of this check window'
-  element :guidance, 'a', text: 'Guidance'
+  element :guidance, 'a', text: 'Read the guidance and watch videos'
   element :back_to_top, 'a', text: 'Back to top'
 
 end
