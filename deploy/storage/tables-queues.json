@@ -15,14 +15,11 @@
   ],
   "blobcontainers": [
     "admin-app-uploaded-files",
-    "census",
     "censusupload",
     "certs",
-    "check-development-app-upload-files",
     "csvuploads",
     "ps-report",
     "ps-report-staging",
-    "psychometricianreportupload",
     "school-import"
   ]
 }

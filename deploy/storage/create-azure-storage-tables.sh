@@ -8,3 +8,5 @@ az storage table create --name pupilEvent --account-name $STORAGE_ACCOUNT
 az storage table create --name pupilFeedback --account-name $STORAGE_ACCOUNT
 az storage table create --name receivedCheck --account-name $STORAGE_ACCOUNT
 
+az storage table
+
