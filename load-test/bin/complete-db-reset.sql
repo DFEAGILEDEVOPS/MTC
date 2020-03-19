@@ -16,9 +16,7 @@ TRUNCATE TABLE mtc_admin.checkPin
 TRUNCATE TABLE mtc_admin.checkConfig
 TRUNCATE TABLE mtc_admin.pupilAccessArrangements
 TRUNCATE TABLE mtc_admin.pupilAttendance
-DELETE FROM mtc_admin.pupilColourContrasts
 DELETE FROM mtc_admin.pupilResultsDiagnosticCache
-DELETE FROM mtc_admin.pupilFontSizes
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
 DELETE FROM mtc_admin.[schoolScore]
