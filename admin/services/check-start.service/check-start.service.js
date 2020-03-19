@@ -202,7 +202,7 @@ checkStartService.initialisePupilCheck = async function (
   usedFormIds,
   isLiveCheck,
   userId,
-  schoolId = null,
+  schoolId,
   schoolTimezone = null
 ) {
   const checkForm = await checkFormService.allocateCheckForm(
