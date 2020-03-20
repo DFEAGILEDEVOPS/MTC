@@ -10,7 +10,7 @@
     "purgestorage": "bin/init-dev-storage.js"
   },
   "dependencies": {
-    "artillery": "^1.6.0-12",
+    "artillery": "^1.6.0",
     "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
