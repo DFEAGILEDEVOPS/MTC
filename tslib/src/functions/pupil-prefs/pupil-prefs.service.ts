@@ -111,21 +111,31 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
   }
 
   private buildUpdateRequest (dataUpdate: IPupilPreferenceDataUpdate): ITransactionRequest {
-    const sql = `UPDATE mtc_admin.[pupilAccessArrangements]
-    SET ${dataUpdate.prefField} = (
-     SELECT id FROM mtc_admin.${dataUpdate.prefTable}
-     WHERE code = @prefCode
-    )
-    WHERE pupil_Id = (
-       SELECT p.id FROM mtc_admin.[pupil] p
-       INNER JOIN mtc_admin.[check] chk
-       ON chk.pupil_id = p.id
-       WHERE chk.checkCode = @checkCode
-    ) AND accessArrangements_id = (
-       SELECT id FROM mtc_admin.[accessArrangements]
-       WHERE code = @accessArrangementCode
-    )`
+    const sql = `
+DECLARE @pupilId INT;
+DECLARE @prefCodeId INT;
+DECLARE @accessArrangementsId INT;
+DECLARE @errorMessage NVARCHAR(max);
 
+SET @prefCodeId = (SELECT id FROM mtc_admin.${dataUpdate.prefTable} WHERE code = @prefCode);
+SET @errorMessage = (SELECT concat('ID not found for code "', @prefCode, '"'));
+IF @prefCodeId IS NULL THROW 50002, @errorMessage, 1;
+
+SET @pupilId = (SELECT p.id
+                  FROM mtc_admin.[pupil] p
+                       INNER JOIN mtc_admin.[check] chk ON chk.pupil_id = p.id
+                 WHERE chk.checkCode = @checkCode);
+IF @pupilId IS NULL THROW 50002, 'pupilId not found', 1;
+
+SET @accessArrangementsId = (SELECT id FROM mtc_admin.[accessArrangements] WHERE code = @accessArrangementCode);
+SET @errorMessage = (SELECT concat('accessArrangements_id not found for "', @accessArrangementCode, '"'));
+IF @accessArrangementsId IS NULL THROW 50002, @errorMessage, 1;
+
+UPDATE mtc_admin.[pupilAccessArrangements]
+   SET ${dataUpdate.prefField} = @prefCodeId
+ WHERE pupil_Id = @pupilId
+   AND accessArrangements_id = @accessArrangementsId;
+    `
     const params = [
       {
         name: 'checkCode',
