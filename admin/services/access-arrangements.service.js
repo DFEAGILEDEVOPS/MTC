@@ -30,8 +30,10 @@ accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
     throw validationError
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
-  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, schoolId, userId)
-  const displayData = await accessArrangementsService.save(processedData, pupil)
+  const existingAccessArrangements = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
+  const hasExistingAccessArrangements = !!existingAccessArrangements && existingAccessArrangements.length > 0
+  const processedData = await accessArrangementsService.prepareData(submittedData, pupil, schoolId, userId, hasExistingAccessArrangements)
+  const displayData = await accessArrangementsService.save(processedData, pupil, hasExistingAccessArrangements)
   await preparedCheckSyncService.addMessages(urlSlug)
   return displayData
 }
@@ -42,9 +44,10 @@ accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
  * @param {Object} pupil
  * @param {Number} schoolId
  * @param {Number} userId
+ * @param {Boolean} hasExistingAccessArrangements
  * @returns {Object}
  */
-accessArrangementsService.prepareData = async (requestData, pupil, schoolId, userId) => {
+accessArrangementsService.prepareData = async (requestData, pupil, schoolId, userId, hasExistingAccessArrangements) => {
   const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
   const pupilAccessArrangements = R.clone(requestData)
   pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)
@@ -57,7 +60,11 @@ accessArrangementsService.prepareData = async (requestData, pupil, schoolId, use
   }
   const omittedFields = []
   pupilAccessArrangements.pupil_id = pupil.id
-  pupilAccessArrangements.recordedBy_user_id = userId
+  if (hasExistingAccessArrangements) {
+    pupilAccessArrangements.modifiedBy_userId = userId
+  } else {
+    pupilAccessArrangements.createdBy_userId = userId
+  }
   pupilAccessArrangements.questionReaderReasonCode = questionReaderReason
   if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
     omittedFields.push('inputAssistanceInformation')
@@ -93,13 +100,13 @@ accessArrangementsService.prepareData = async (requestData, pupil, schoolId, use
  * Save access arrangements data
  * @param {Object} pupilAccessArrangements
  * @param {Object} pupil
+ * @param {Boolean} hasExistingAccessArrangements
  * @returns {Object}
  */
 
-accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
+accessArrangementsService.save = async (pupilAccessArrangements, pupil, hasExistingAccessArrangements) => {
   const { urlSlug, foreName, lastName } = pupil
-  const pupilAccessArrangement = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
-  if (pupilAccessArrangement && pupilAccessArrangement.length) {
+  if (hasExistingAccessArrangements) {
     const isUpdate = true
     await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements, isUpdate)
   } else {
