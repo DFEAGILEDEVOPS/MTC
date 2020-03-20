@@ -68,4 +68,5 @@ module.exports = async function (app) {
   app.locals.isSubmitMetaRedirectUrl = false
   app.locals.metaRedirectUrl = null
   app.locals.waitTimeBeforeMetaRedirectInSeconds = null
+  app.locals.pupilAppURL = config.PUPIL_APP_URL
 }
