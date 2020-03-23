@@ -14,7 +14,6 @@ export interface IAppConfig {
   checkStartAPIErrorMaxAttempts: number;
   checkSubmissionApiErrorDelay: number;
   checkSubmissionAPIErrorMaxAttempts: number;
-  googleAnalyticsTrackingCode: string;
   production: boolean;
   submissionPendingViewMinDisplay: number;
   supportNumber: string;
@@ -38,7 +37,6 @@ export class AppConfig implements IAppConfig {
   readonly connectivityCheckViewMinDisplay: number;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
-  readonly googleAnalyticsTrackingCode: string;
   readonly loginPendingViewMinDisplay: number;
   readonly production: boolean;
   readonly pupilPrefsAPIErrorDelay: number;
