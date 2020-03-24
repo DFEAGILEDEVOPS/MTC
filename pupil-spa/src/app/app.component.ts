@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service';
 import { AppInsights } from 'applicationinsights-js';
@@ -26,17 +25,12 @@ export class AppComponent {
   protected window: any;
 
   constructor(
-    protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
     protected windowRefService: WindowRefService,
     private meta: Meta,
     private routeService: RouteService,
     private router: Router
   ) {
     this.window = windowRefService.nativeWindow;
-    if (APP_CONFIG.googleAnalyticsTrackingCode) {
-      this.window.ga('create', APP_CONFIG.googleAnalyticsTrackingCode, 'auto');
-      this.window.ga('set', 'anonymizeIp', true);
-    }
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       AppInsights.downloadAndSetup({
         instrumentationKey: APP_CONFIG.applicationInsightsInstrumentationKey
