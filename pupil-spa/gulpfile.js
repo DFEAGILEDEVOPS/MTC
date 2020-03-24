@@ -26,8 +26,17 @@ gulp.task('setRuntimeConfigURL', () => {
 })
 
 gulp.task('setSecretEnvVars', () => {
-  return gulp.src('src/public/config.json', { base: './' })
+  console.log('testPupilConnectionQueueUrlValue is:', process.env.TEST_PUPIL_CONNECTION_QUEUE_URL)
+  console.log('testPupilConnectionQueueTokenValue is:', process.env.TEST_PUPIL_CONNECTION_QUEUE_TOKEN)
+  console.log('connectivityCheckEnabled is:', process.env.CONNECTIVITY_CHECK_ENABLED)
+  console.log('testPupilConnectionDelay is:', process.env.TEST_PUPIL_CONNECTION_ERROR_DELAY)
+  console.log('testPupilConnectionMaxAttempts is:', process.env.TEST_PUPIL_CONNECTION_MAX_ATTEMPTS)
+
+  return gulp.src('src/public/config.json')
     .pipe(replace('testPupilConnectionQueueUrlValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_URL || ''))
     .pipe(replace('testPupilConnectionQueueTokenValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_TOKEN || ''))
-    .pipe(gulp.dest('./'))
+    .pipe(replace('connectivityCheckEnabled', process.env.CONNECTIVITY_CHECK_ENABLED || false))
+    .pipe(replace('testPupilConnectionDelay', process.env.TEST_PUPIL_CONNECTION_ERROR_DELAY || 3000))
+    .pipe(replace('testPupilConnectionMaxAttempts', process.env.TEST_PUPIL_CONNECTION_MAX_ATTEMPTS, 1))
+    .pipe(gulp.dest('src/public'))
 })
