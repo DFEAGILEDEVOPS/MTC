@@ -1,6 +1,6 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
-  <div class="grid-row">
+  <div *ngIf="isUnsupportedBrowser === false" class="grid-row">
     <div class="column-full">
       <div class="connectivity-description">
         <app-svg-loading aria-hidden="true"></app-svg-loading>
@@ -9,6 +9,15 @@
           </span>
       </div>
     </div>
+  </div>
+  <div *ngIf="isUnsupportedBrowser === true" class="grid-row">
+    <header>
+      <h1 class="heading-xlarge">This broswer is not supported</h1>
+    </header>
+    <p class="lede" tabindex="0">
+      You can view additional information on supported browsers
+      in the MTC technical guidance on GOV.UK: <a href="https://www.gov.uk/government/collections/multiplication-tables-check">https://www.gov.uk/government/collections/multiplication-tables-check</a>
+    </p>
   </div>
 </main>
 <app-footer></app-footer>
