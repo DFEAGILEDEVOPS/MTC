@@ -8,6 +8,9 @@ import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { ConnectivityService } from '../services/connectivity-service/connectivity-service';
+import { DeviceService } from '../services/device/device.service';
+import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { Router } from '@angular/router';
 
@@ -34,6 +37,9 @@ describe('ConnectivityCheckComponent', () => {
         AzureQueueService,
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         ConnectivityService,
+        DeviceService,
+        StorageService,
+        WindowRefService,
         { provide: QUEUE_STORAGE_TOKEN },
         { provide: Router, useValue: mockRouter },
       ]
