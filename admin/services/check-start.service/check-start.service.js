@@ -60,6 +60,7 @@ const checkStartService = {
  * @param { number[] } pupilIds - pupils selected from the UI/form
  * @param { number } dfeNumber - school dfeNumber that the teachers works at
  * @param { number } schoolId - school ID that the teacher works at
+ * @param { number } userId - user ID of the teacher
  * @param { boolean } isLiveCheck
  * @param { null | string } schoolTimezone - e.g 'Europe/London'
  * @param { {id: number} } checkWindow
@@ -69,6 +70,7 @@ checkStartService.prepareCheck2 = async function (
   pupilIds,
   dfeNumber,
   schoolId,
+  userId,
   isLiveCheck,
   schoolTimezone = null,
   checkWindow
@@ -78,6 +80,9 @@ checkStartService.prepareCheck2 = async function (
   }
   if (!schoolId) {
     throw new Error('schoolId is required')
+  }
+  if (!userId) {
+    throw new Error('userId is required')
   }
 
   const pupils = await checkStartDataService.sqlFindPupilsEligibleForPinGenerationById(
@@ -118,6 +123,7 @@ checkStartService.prepareCheck2 = async function (
       allForms,
       usedFormIds,
       isLiveCheck,
+      userId,
       schoolId,
       schoolTimezone
     )
@@ -184,6 +190,7 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
  * @param { {id: number}[] } availableForms
  * @param {Array.<number>} usedFormIds
  * @param {boolean} isLiveCheck
+ * @param {number} userId
  * @param {number} schoolId
  * @param {null | String} schoolTimezone
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
@@ -194,7 +201,8 @@ checkStartService.initialisePupilCheck = async function (
   availableForms,
   usedFormIds,
   isLiveCheck,
-  schoolId = null,
+  userId,
+  schoolId,
   schoolTimezone = null
 ) {
   const checkForm = await checkFormService.allocateCheckForm(
@@ -222,6 +230,7 @@ checkStartService.initialisePupilCheck = async function (
   }
   checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
   checkData.school_id = schoolId
+  checkData.createdBy_userId = userId
 
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
