@@ -14,18 +14,20 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
+## Dependencies
+The Pupil Check SPA requires the `pupil-api` to be up and running to serve authentication requests.
+
 ## Environment variables
-For local development a `.env` file is required at the project's root directory which provides the following environment
+The default configuration works 'out of the box' for local development of the SPA.  Default values can be overridden via the solution root `.env` file.
+
+As the SPA is purely client side there is a process that runs during `yarn build` to create a json file which is output to `src/public/config.json`.  This is done in 2 steps...
+- `gen_config.sh` creates the json file with default values
+- `gulp setConfigVars` replaces any default values with overrides sourced from the solution root `.env` file
 
 |Variable   |Type/Accepted Values   |Description   |
 |---|---|---|
 |`TEST_PUPIL_CONNECTION_QUEUE_URL`   |`url`   | The test pupil connectivity queue URL required for submitting a test message |
 |`TEST_PUPIL_CONNECTION_QUEUE_TOKEN`   |`url`   | The test pupil connectivity queue token required for submitting a test message | 
-
-The following environment variables can be injected at start up...
-
-|Variable   |Type/Accepted Values   |Description   |
-|---|---|---|
 |`API_URL`   |`url`   |in HPA mode this should target the pupil API.  In legacy mode it should be the base URL of the admin app   |
 |`AUTH_URL`   |`url`   | The full URL for pupil authentication   |
 |`AUTH_PING_URL`   |`url`   | The full URL for pinging pupil authentication |
