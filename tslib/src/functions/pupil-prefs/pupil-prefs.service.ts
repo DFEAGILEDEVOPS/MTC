@@ -2,14 +2,19 @@ import { SqlService, ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 import { RedisService } from '../../caching/redis-service'
+import { ILogger } from '../../common/logger'
 
 export class PupilPrefsService {
 
   private dataService: IPupilPrefsDataService
+  private logger: ILogger | undefined
 
-  constructor (pupilPrefsDataService?: IPupilPrefsDataService) {
+  constructor (pupilPrefsDataService?: IPupilPrefsDataService, logger?: ILogger) {
+    if (logger !== undefined) {
+      this.logger = logger
+    }
     if (pupilPrefsDataService === undefined) {
-      pupilPrefsDataService = new PupilPrefsDataService()
+      pupilPrefsDataService = new PupilPrefsDataService(this.logger)
     }
     this.dataService = pupilPrefsDataService
   }
@@ -75,8 +80,8 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
   private sqlService: SqlService
   private redisService: RedisService
 
-  constructor () {
-    this.sqlService = new SqlService()
+  constructor (logger?: ILogger) {
+    this.sqlService = new SqlService(logger)
     this.redisService = new RedisService()
   }
 
