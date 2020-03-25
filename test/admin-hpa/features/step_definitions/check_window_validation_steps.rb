@@ -4,7 +4,7 @@ Given(/^I navigate to the create check window page$/) do
 end
 
 When(/^I fill in details of a valid check window$/) do
-  today_date = Date.today
+  today_date = Date.parse('1/1/2020')
   @admin_start_date = today_date.next_year(5) + 2
   @admin_end_date = today_date.next_year(5) + 11
   @familiarisation_start_date = today_date.next_year(5) + 3
@@ -33,6 +33,7 @@ When(/^I fill in details of a valid check window$/) do
                         live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
+  p check_window_name
 end
 
 But(/^decide I against creating it$/) do
