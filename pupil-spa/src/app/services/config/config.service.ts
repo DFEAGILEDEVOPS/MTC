@@ -9,7 +9,7 @@ import { default as connectivityErrorMessages} from '../connectivity-service/con
 export interface IAppConfig {
   applicationInsightsInstrumentationKey: string;
   authURL: string;
-  authPingURL: string;
+  authPingUrl: string;
   checkStartAPIErrorDelay: number;
   checkStartAPIErrorMaxAttempts: number;
   checkSubmissionApiErrorDelay: number;
@@ -27,7 +27,7 @@ export interface IAppConfig {
 
 export class AppConfig implements IAppConfig {
   readonly applicationInsightsInstrumentationKey: string;
-  readonly authPingURL: string;
+  readonly authPingUrl: string;
   readonly authURL: string;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
