@@ -9,7 +9,8 @@ import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 import { APP_CONFIG } from '../config/config.service';
 
 /**
- * Declaration of azure queue service
+ * Implementation is sourced from /src/public/azure-storage/azure-storage.queue.min.js
+ * inclusion is configured in /angular.json
  */
 
 @Injectable()
