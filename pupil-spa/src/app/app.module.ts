@@ -3,8 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { GlobalErrorHandler } from './error-handler';
 import { AppConfigService, loadConfigService } from './services/config/config.service';
 
@@ -167,13 +165,6 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    Angulartics2Module.forRoot({
-      pageTracking: {
-        excludedRoutes: [
-          'check',
-        ]
-      }
-    })
   ],
   providers: [
     AppConfigService,

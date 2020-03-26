@@ -1347,13 +1347,6 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
-angulartics2@8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/angulartics2/-/angulartics2-8.3.0.tgz#a20c954a27f93d60a6d62bc3a038dfaf785079a7"
-  integrity sha512-gbInN/QPkR8VeL+4N+RDKjLBmJ2DM1AZgvxdr7Eu4cPRxfl2rNMvwuAUCaC+m1In/QSteWXwDkyuupVrNBd+Gg==
-  dependencies:
-    tslib "^1.9.0"
-
 ansi-colors@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.1.1.tgz#cbb9ae256bf750af1eab344f229aa27fe94ba348"
