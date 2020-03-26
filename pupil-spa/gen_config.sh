@@ -1,4 +1,15 @@
 #!/bin/bash
+
+# support root .env file for local development scenarios...
+if [ -f ../.env ]
+then
+  # enables all following variable definitions to be exported...
+  set -o allexport
+  source ../.env
+  # disable it again
+  set +o allexport
+fi
+
 authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
 authPingUrl=${AUTH_PING_URL:-"http://localhost:3003/ping"}
 production=${PRODUCTION:-"false"}
