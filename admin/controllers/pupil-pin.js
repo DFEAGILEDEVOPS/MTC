@@ -154,6 +154,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
       pupilsList,
       req.user.School,
       req.user.schoolId,
+      req.user.id,
       isLiveCheck,
       school.timezone,
       checkWindowData

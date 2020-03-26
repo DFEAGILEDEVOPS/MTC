@@ -28,6 +28,7 @@ describe('check-start.service', () => {
   const service = checkStartService
   const dfeNumber = 9991999
   const schoolId = 42
+  const userId = 5
 
   const mockPupils = [
     { id: 1 },
@@ -110,7 +111,7 @@ describe('check-start.service', () => {
 
     test('throws an error if the pupilIds are not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, true, checkWindowMock)
+        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds is required')
@@ -119,17 +120,26 @@ describe('check-start.service', () => {
 
     test('throws an error if the schoolId is not provided', async () => {
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, true, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, userId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('schoolId is required')
       }
     })
 
+    test('throws an error if the userId is not provided', async () => {
+      try {
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, undefined, true, checkWindowMock)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('userId is required')
+      }
+    })
+
     test('throws an error if provided with pupilIds that are not a part of the school', async () => {
       try {
         spyOn(logger, 'error')
-        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Validation failed')
@@ -137,18 +147,18 @@ describe('check-start.service', () => {
     })
 
     test('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
       expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     test('calls initialisePupilCheck to randomly select a check form', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('adds config to the database', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
@@ -181,7 +191,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -197,7 +207,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -215,7 +225,7 @@ describe('check-start.service', () => {
         throw err
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -234,7 +244,7 @@ describe('check-start.service', () => {
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         return Promise.resolve(checksWithNoSchoolPins)
       })
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
   })
@@ -245,19 +255,19 @@ describe('check-start.service', () => {
     })
     test('calls generatePinTimestamp to generate pinExpiresAt for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-      await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
+      await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
       expect(pinService.generatePinTimestamp).toHaveBeenCalledTimes(1)
     })
     test('calls allocateCheckForm for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-      await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
+      await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
       expect(checkFormService.allocateCheckForm).toHaveBeenCalledTimes(1)
     })
 
     test('throws an error if a checkform is not returned', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(null)
       try {
-        await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
+        await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('CheckForm not allocated')
@@ -267,20 +277,22 @@ describe('check-start.service', () => {
     describe('for live pins', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true)
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true, userId, schoolId)
         expect({}.hasOwnProperty.call(c, 'pupil_id'))
         expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
         expect({}.hasOwnProperty.call(c, 'checkForm_id'))
+        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
       })
     })
 
     describe('for test pins', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false)
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false, userId, schoolId)
         expect({}.hasOwnProperty.call(c, 'pupil_id'))
         expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
         expect({}.hasOwnProperty.call(c, 'checkForm_id'))
+        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
       })
     })
   })

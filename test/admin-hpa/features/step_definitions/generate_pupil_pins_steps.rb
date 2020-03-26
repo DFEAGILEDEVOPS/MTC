@@ -439,3 +439,12 @@ Given(/^I am on the generate pupil pins page after logging in with teacher2$/) d
   Timeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
   expect(JSON.parse(JSON.parse(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow"))['value'])['recordset']).to be_empty
 end
+
+
+Then(/^the user should be stored to identify who created the check$/) do
+  pupil_upn = @stored_pupil_details['upn'].to_s
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  check_entry = SqlDbHelper.check_details(pupil_id)
+  user_id = SqlDbHelper.find_teacher(@user)['id']
+  expect(check_entry['createdBy_userId']).to eql user_id
+end
