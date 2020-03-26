@@ -59,8 +59,9 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
+    LEFT JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
     WHERE p.school_id = @schoolId
-    AND (p.attendanceId IS NULL AND p.checkComplete <> 1)
+    AND (p.attendanceId IS NULL AND chk.complete <> 1)
   `
 
   const params = [
@@ -86,6 +87,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
     WHERE (p.attendanceId IS NULL
           AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
           AND p.school_id = @schoolId
+          AND chk.complete <> 1
   `
 
   const params = [
