@@ -166,3 +166,7 @@ Feature: Generate Pupil PINs
     When I select all 250 pupils
     Then I should be able to generate pins
 
+  Scenario: Users are recorded against the checks they create
+    Given I have generated a live pin for a pupil
+    Then the user should be stored to identify who created the check
+
