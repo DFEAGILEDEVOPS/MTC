@@ -52,8 +52,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils,
-    pupilAppURL: config.PUPIL_APP_URL
+    pupils
   })
 }
 
