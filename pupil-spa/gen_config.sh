@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # support root .env file for local development scenarios...
-if [ -f ../.env ]
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+if [ -f ${scriptDir}/../.env ]
 then
   # enables all following variable definitions to be exported...
   set -o allexport
