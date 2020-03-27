@@ -28,8 +28,6 @@ controller.getViewResultsPage = async (req, res, next) => {
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    redisResult = await resultService.getPupilResultData(req.user.schoolId)
-    pupilResultData = redisResult && redisResult.pupilResultData
     generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
@@ -57,6 +55,13 @@ controller.getViewResultsPage = async (req, res, next) => {
       resultsOpeningDate: resultPresenter.formatResultsOpeningDate(resultsOpeningDay),
       breadcrumbs: req.breadcrumbs()
     })
+  }
+
+  try {
+    redisResult = await resultService.getPupilResultData(req.user.schoolId)
+    pupilResultData = redisResult && redisResult.pupilResultData
+  } catch (error) {
+    return next(error)
   }
 
   if (!redisResult) {
