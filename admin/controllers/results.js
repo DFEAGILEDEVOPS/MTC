@@ -64,7 +64,7 @@ controller.getViewResultsPage = async (req, res, next) => {
     return next(error)
   }
 
-  if (!redisResult) {
+  if (!pupilResultData) {
     return res.render('results/view-results-not-found', {
       breadcrumbs: req.breadcrumbs()
     })
