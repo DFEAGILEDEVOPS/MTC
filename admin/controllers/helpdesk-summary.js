@@ -16,8 +16,9 @@ controller.getSummary = async (req, res, next) => {
       schoolName: 'School One',
       items: [{}]
     } // schoolSummaryService.getData(req.user.schoolId)
+    req.breadcrumbs(res.locals.pageTitle)
     return res.render('helpdesk/school-summary', {
-      breadcrumbs: req.breadcrumbs(res.locals.pageTitle),
+      breadcrumbs: req.breadcrumbs(),
       summary: summaryData
     })
   } catch (error) {
