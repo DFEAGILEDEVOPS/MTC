@@ -1,68 +1,71 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-      <%- partial('partials/_name_and_sign_out') %>
-  </div>
-</div>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-          <% if (messages && messages.info && messages.info.length) { %>
-              <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                  <span><%= messages.info %></span>
-              </div>
-          <% } %>
-          <% if (err.hasError()) { %>
-              <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-                  <h2 class="govuk-error-summary__title" id="error-summary-title">
-                      You need to fix the errors on this page before continuing.
-                  </h2>
-                  <div class="govuk-error-summary__body">
-                      <p>See highlighted errors below.</p>
-                      <ul class="govuk-list govuk-error-summary__list">
-                          <% err.getUniqueFields(['dfeNumber']).map(f => { %>
-                              <% const errors = err.get(f) %>
-                              <% if (Array.isArray(errors)) { %>
-                                  <%  errors.map(e => { %>
-                                      <li><a href="#<%= f %>"><%= e %></a></li>
-                              <% }) } else { %>
-                                  <li><a href="#<%= f %>"><%= errors %></a></li>
-                              <% } %>
-                          <% }) %>
-                      </ul>
-                  </div>
-              </div>
-          <% } %>
-          <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
-          <%- partial('partials/_gds_session_expiry') %>
-          <form action="/helpdesk/add-school-impersonation" id="schoolImpersonationForm" method="post" autocomplete="off">
-              <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-              <div class="govuk-form-group <%= err.isError('dfeNumber') ? 'govuk-form-group--error' : '' %>">
-                  <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">DfE Number</label>
-                  <% if (err.isError('dfeNumber')) { %>
-                      <span class="govuk-error-message"><%= err.get('dfeNumber') %></span>
-                  <% } %>
-                  <input type="text"
-                         id="dfeNumber"
-                         class="govuk-input govuk-!-width-three-quarters <%= err.isError('dfeNumber') ? 'govuk-input--error' : '' %>"
-                         name="dfeNumber"
-                         value="<%= formData['dfeNumber'] %>"/>
-              </div>
-              <button type="submit" id="submit-dfew-number" class="govuk-button">Submit</button>
-          </form>
+    <div class="govuk-grid-column-two-thirds">
+      <% if (messages && messages.info && messages.info.length) { %>
+      <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+        <%= messages.info %>
       </div>
-      <div class="govuk-grid-column-one-third" aria-label="sidebar">
-          <aside class="app-related-items" role="complementary">
-              <h2 class="govuk-heading-m" id="subsection-title">
-                  Related
-              </h2>
-              <nav role="navigation" aria-labelledby="subsection-title">
-                  <ul class="govuk-list govuk-!-font-size-16">
-                      <li>
-                          <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
-                      </li>
-                  </ul>
-              </nav>
-          </aside>
+      <% } %>
+      <h1 class="govuk-heading-xl">Check Summary for <%= summary.schoolName %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Table Caption</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+              <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <% summary.items.forEach((p, i) => { %>
+          <tr class="govuk-table__row">
+            <td scope="row">
+              Data Row, cell 0
+            </td>
+            <td class="govuk-table__cell">Data Row, cell 1</td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="govuk-back-to-top">
+        <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+          <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg"
+            width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+          </svg>Back to top
+        </a>
       </div>
+    </div>
+    <!-- <div class="govuk-grid-column-one-third" aria-label="sidebar">
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                guidance and watch videos</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Organise pupils into groups</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Give a
+                reason why pupil is not taking the check</a>
+            </li>
+            <li>
+              <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Enable access
+                arrangements for pupils who need them</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+    </div> -->
   </div>
 </main>

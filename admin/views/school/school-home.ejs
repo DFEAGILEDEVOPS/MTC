@@ -16,6 +16,14 @@
             <% } %>
             <h1 class="govuk-heading-xl">Manage the multiplication tables check for <%= schoolName %></h1>
             <%- partial('partials/_gds_session_expiry') %>
+            <% if (user && user.role === roles.helpdesk) { %>
+            <h3 class="govuk-heading-m">Support Tools</h3>
+            <ol class="govuk-list">
+                <li class="govuk-!-margin-bottom-4">
+                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/helpdesk/school-summary">View PIN usage</a></h2>
+                </li>
+            </ol>
+            <% } %>
             <h3 class="govuk-heading-m">Prepare for the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">

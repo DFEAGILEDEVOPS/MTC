@@ -12,6 +12,6 @@ router.get('/school-impersonation', isAuthenticated(roles.helpdesk), (req, res, 
 router.post('/add-school-impersonation', isAuthenticated(roles.helpdesk), (req, res, next) => helpdeskImpersonationController.postAddSchoolImpersonation(req, res, next))
 router.post('/remove-school-impersonation', isAuthenticated(roles.helpdesk), (req, res, next) => helpdeskImpersonationController.postRemoveSchoolImpersonation(req, res, next))
 router.get('/home', isAuthenticated(roles.helpdesk), (req, res, next) => helpdeskImpersonationController.getSchoolLandingPage(req, res, next))
-router.get('school-summary/:dfenumber', isAuthenticated(roles.helpdesk), (req, res, next) => helpdeskSummaryController.getSummary(req, res, next))
-router.get('/helpdesk-home', isAuthenticated(roles.helpdesk), (req, res, next) => )
+router.get('/school-summary', isAuthenticated(roles.helpdesk), (req, res, next) => helpdeskSummaryController.getSummary(req, res, next))
+
 module.exports = router
