@@ -150,7 +150,7 @@ describe('CheckComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
 
       // Some browsers map backspace to go back a page.  If the questions times out
-      // and the user presses backspace on the loading page, you guessed it, thay go back
+      // and the user presses backspace on the loading page, you guessed it, they go back
       // to the previous page. Well played, Mozilla and Microsoft.
       const ev2 = dispatchKeyEvent({ key: 'Backspace' });
       expect(ev2.defaultPrevented).toBe(true);
