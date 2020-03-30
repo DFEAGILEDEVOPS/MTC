@@ -91,6 +91,16 @@ Before("@hdf") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
+After("@live_tio_expired") do
+  SqlDbHelper.update_check_end_date((Date.today) + 7)
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step "I am logged in with a service manager"
+  admin_page.manage_check_windows.click
+  @check_window = manage_check_window_page.find_check_row('Development Phase')
+  @check_window.check_name.click
+  add_edit_check_window_page.save_changes.click
+end
+
 After("@hdf") do
   SqlDbHelper.delete_pupils_not_taking_check
 end
