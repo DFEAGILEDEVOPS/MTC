@@ -7,27 +7,107 @@
         <%= messages.info %>
       </div>
       <% } %>
-      <h1 class="govuk-heading-xl">Check Summary for <%= summary.schoolName %></h1>
+      <h1 class="govuk-heading-xl">Usage Summary for <%= summary.schoolName %></h1>
       <%- partial('partials/_gds_session_expiry') %>
       <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
-        <caption class="govuk-body govuk-table__caption">Table Caption</caption>
-        <!--<thead class="govuk-table__head">
-           <tr class="govuk-table__row">
-             <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-              <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
+        <caption class="govuk-body govuk-table__caption">Pupil Register Summary</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">
+                Not Started
             </th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-              <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
+            <th scope="col" class="govuk-table__header">
+              Completed
+            </th>
+            <th scope="col" class="govuk-table__header">
+              Not Taking
             </th>
           </tr>
-        </thead> -->
+        </thead>
         <tbody class="govuk-table__body">
-          <% summary.LiveCheckSummary.forEach((p, i) => { %>
           <tr class="govuk-table__row">
             <td scope="row">
-              Data Row, cell 0
+              <%= summary.register.notStarted %>
             </td>
-            <td class="govuk-table__cell">Data Row, cell 1</td>
+            <td class="govuk-table__cell">
+              <%= summary.register.completed %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.register.notTaking %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Live Checks</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Date
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Pins Generated
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Started Check
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <% summary.LiveCheckSummary.forEach((lcs, index) => { %>
+          <tr class="govuk-table__row">
+            <td scope="row">
+              <%= lcs.Date %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.PinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.LoggedIn %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.StartedCheck %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Try-it-Out Checks</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Date
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Pins Generated
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Started Check
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <% summary.TioCheckSummary.forEach((tcs, index) => { %>
+          <tr class="govuk-table__row">
+            <td scope="row">
+              <%= tcs.Date %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.PinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.LoggedIn %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.StartedCheck %>
+            </td>
           </tr>
           <% }) %>
         </tbody>
