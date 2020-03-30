@@ -11,18 +11,18 @@
       <%- partial('partials/_gds_session_expiry') %>
       <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">Table Caption</caption>
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+        <!--<thead class="govuk-table__head">
+           <tr class="govuk-table__row">
+             <th scope="col" class="govuk-table__header govuk-!-width-one-half">
               <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
             </th>
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
               <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
             </th>
           </tr>
-        </thead>
+        </thead> -->
         <tbody class="govuk-table__body">
-          <% summary.items.forEach((p, i) => { %>
+          <% summary.LiveCheckSummary.forEach((p, i) => { %>
           <tr class="govuk-table__row">
             <td scope="row">
               Data Row, cell 0
