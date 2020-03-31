@@ -1,5 +1,7 @@
 'use strict'
 
+const dataService = require('./data-access/school-summary.data.service')
+
 const service = {}
 
 /**
@@ -8,13 +10,14 @@ const service = {}
  * @return {Promise<object>}
  */
 service.getSummary = async (schoolId) => {
+  const registerData = await dataService.getRegisterSummaryData(schoolId)
   return {
     schoolName: '[A very good school with a suitably long and descriptive name]',
     dfeNumber: '[DFE Number]',
     register: {
-      completed: 1,
-      notStarted: 3,
-      notTaking: 5
+      completed: registerData.Completed,
+      total: registerData.TotalCount,
+      notTaking: registerData.NotAttending
     },
     LiveCheckSummary: [
       {

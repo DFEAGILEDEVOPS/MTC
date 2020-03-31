@@ -18,9 +18,9 @@ service.getRegisterSummaryData = async (schoolId) => {
       SUM(CASE WHEN p.checkComplete = 1 AND p.attendanceId IS NULL THEN 1 ELSE 0 END) as [Completed],
       SUM(CASE WHEN p.attendanceId IS NOT NULL THEN 1 ELSE 0 END) as [NotAttending]
     FROM
-      mtc_admin.pupil p
+      [mtc_admin].[pupil] p
     WHERE p.school_id = @schoolId`
-  const result = await sqlService.readOnlyQuery(sql, [schoolIdParam])
+  const result = await sqlService.readonlyQuery(sql, [schoolIdParam])
   return R.head(result)
 }
 
