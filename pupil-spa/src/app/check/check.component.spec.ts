@@ -116,18 +116,18 @@ describe('CheckComponent', () => {
     });
   });
 
-  describe('questionTimeoutHandler()', () => {
-    it('calls changeState()', () => {
-      detectStateChange(component, 'questionTimeoutHandler', 'testinput');
-    });
-    it('sets the answer if it is a real question', () => {
-      const answerService = fixture.debugElement.injector.get(AnswerService);
-      spyOn(answerService, 'setAnswer');
-      component[ 'isWarmUp' ] = false;
-      component.questionTimeoutHandler('123');
-      expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
-    });
-  });
+  // describe('questionTimeoutHandler()', () => {
+  //   it('calls changeState()', () => {
+  //     detectStateChange(component, 'questionTimeoutHandler', 'testinput');
+  //   });
+  //   it('sets the answer if it is a real question', () => {
+  //     const answerService = fixture.debugElement.injector.get(AnswerService);
+  //     spyOn(answerService, 'setAnswer');
+  //     component[ 'isWarmUp' ] = false;
+  //     component.questionTimeoutHandler('123');
+  //     expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
+  //   });
+  // });
 
   describe('loadingTimeoutHandler', () => {
     it('increments the state', () => {

@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
+import { AccessArrangements } from '../access-arrangements';
 import { AuditService } from '../services/audit/audit.service';
 import {
   QuestionRendered,
@@ -8,12 +9,11 @@ import {
   QuestionTimerEnded,
   QuestionTimerCancelled
 } from '../services/audit/auditEntry';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Config } from '../config.model';
+import { QuestionService } from '../services/question/question.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
-import { QuestionService } from '../services/question/question.service';
-import { Config } from '../config.model';
-import { AccessArrangements } from '../access-arrangements';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-practice-question',

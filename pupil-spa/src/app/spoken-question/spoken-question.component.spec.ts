@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
@@ -22,6 +23,7 @@ describe('SpokenQuestionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SpokenQuestionComponent ],
       providers: [
+        AnswerService,
         { provide: AuditService, useClass: AuditServiceMock },
         WindowRefService,
         { provide: QuestionService, useClass: QuestionServiceMock },

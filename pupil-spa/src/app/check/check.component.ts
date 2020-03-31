@@ -307,10 +307,10 @@ export class CheckComponent implements OnInit, CanExit {
    */
   manualSubmitHandler(answer: string) {
     // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    if (!this.isWarmUp) {
-      const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
-      this.answerService.setAnswer(answerSet);
-    }
+    // if (!this.isWarmUp) {
+    //   const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
+    //   this.answerService.setAnswer(answerSet);
+    // }
     this.changeState();
   }
 
@@ -320,10 +320,10 @@ export class CheckComponent implements OnInit, CanExit {
    */
   questionTimeoutHandler(answer: string) {
     // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    if (!this.isWarmUp) {
-      const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
-      this.answerService.setAnswer(answerSet);
-    }
+    // if (!this.isWarmUp) {
+    //   const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
+    //   this.answerService.setAnswer(answerSet);
+    // }
     this.changeState();
   }
 

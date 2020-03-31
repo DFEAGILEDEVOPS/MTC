@@ -1,12 +1,14 @@
 import { Component, OnInit, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
-import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
+import { AnswerService } from '../services/answer/answer.service';
+import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
-import { SpeechService } from '../services/speech/speech.service';
+import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
+import { QuestionRendered, QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-question',
@@ -25,7 +27,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
               protected registerInputService: RegisterInputService,
               protected questionService: QuestionService,
               protected storageService: StorageService,
-              protected speechService: SpeechService) {
+              protected speechService: SpeechService,
+              protected answerService: AnswerService) {
     super(auditService, windowRefService, questionService, storageService, speechService);
     this.window = windowRefService.nativeWindow;
   }
@@ -145,6 +148,49 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       event.timeStamp
     );
     this.deleteChar();
+  }
+
+
+  /**
+   * Called from pressing Enter on the virtual Keypad or pressing the enter key on the keyboard
+   * @override
+   * @return {boolean}
+   */
+  onSubmit() {
+    if (this.submitted) {
+      return false;
+    }
+    if (!this.hasAnswer()) {
+      return false;
+    }
+
+    // Prevent the default timeout from firing later
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = undefined;
+    } else {
+      return false;
+    }
+
+    // Store the answer
+    const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
+    this.answerService.setAnswer(answer);
+
+    // Clear the interval timer and add a QuestionTimerCancelled event.question.
+    if (this.countdownInterval) {
+      this.auditService.addEntry(new QuestionTimerCancelled({
+        sequenceNumber: this.sequenceNumber,
+        question: `${this.factor1}x${this.factor2}`
+      }));
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = undefined;
+    }
+
+    this.addQuestionAnsweredEvent();
+    this.submitted = true;
+    this.manualSubmitEvent.emit(this.answer);
+
+    return true;
   }
 
   /**
