@@ -6,6 +6,11 @@ const R = require('ramda')
 
 const service = {}
 
+/**
+ * @description fetches register summary data from SQL data store
+ * @param {number} schoolId
+ * @return {Promise<object>}
+ */
 service.getRegisterSummaryData = async (schoolId) => {
   const schoolIdParam = {
     name: 'schoolId',

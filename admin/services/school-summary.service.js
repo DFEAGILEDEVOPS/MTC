@@ -19,7 +19,7 @@ service.getSummary = async (schoolId) => {
       total: registerData.TotalCount,
       notTaking: registerData.NotAttending
     },
-    LiveCheckSummary: [
+    liveCheckSummary: [
       {
         Date: '7th June',
         PinsGenerated: 59,
@@ -38,7 +38,7 @@ service.getSummary = async (schoolId) => {
         LoggedIn: 8,
         StartedCheck: 8
       }],
-    TioCheckSummary: [
+    tioCheckSummary: [
       {
         Date: '4th April',
         PinsGenerated: 59,
