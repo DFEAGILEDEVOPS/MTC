@@ -310,6 +310,8 @@ class SqlDbHelper
     sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
     result = SQL_CLIENT.execute(sql)
     result.do
+
+
   end
 
 

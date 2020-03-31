@@ -15,9 +15,11 @@ Then(/^I should see assign check window v2 page as per design$/) do
     try_it_out_check_date = row.try_it_out_check_date.text
     window_name = row.name_of_window.text
     fam_start_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckStartDate'].strftime("%-d %B %Y")
-    fam_end_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckEndDate'].strftime("%-d %B %Y")
+    fam_end_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckEndDate']
+    fam_end_date = fam_end_date.utc_offset > 0 ? fam_end_date.in_time_zone(-1).strftime("%-d %B %Y") : fam_end_date.strftime("%-d %B %Y")
     check_start_date = SqlDbHelper.check_window_details(window_name)['checkStartDate'].strftime("%-d %B %Y")
-    check_end_date = SqlDbHelper.check_window_details(window_name)['checkEndDate'].strftime("%-d %B %Y")
+    check_end_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckEndDate']
+    check_end_date = check_end_date.utc_offset > 0 ? check_end_date.in_time_zone(-1).strftime("%-d %B %Y") : check_end_date.strftime("%-d %B %Y")
     expect(mtc_check_date).to eql check_start_date + ' to ' + check_end_date
     expect(try_it_out_check_date).to eql fam_start_date + ' to ' + fam_end_date
   end
@@ -25,13 +27,13 @@ end
 
 
 Then(/^I can assign live check forms to inactive window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   window.mtc_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
   expect(select_form_to_assign_page.sticky_banner.selected_count.text).to eql '1'
   select_form_to_assign_page.sticky_banner.confirm.click
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   expect(window.mtc_check_link_text.text).to include '(1 form assigned)'
   expect(window.try_it_out_check_link_text.text).to include '(0 forms assigned)'
   expect(assign_form_to_window_v2_page.flash_message.text).to eql "1 form has been assigned to #{@check_window_hash[:check_name]}, MTC"
@@ -39,19 +41,19 @@ end
 
 
 Then(/^I can assign familiarisation check forms to inactive window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   window.try_it_out_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
   assign_form_to_window_v2_page.save_button.click
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   expect(window.try_it_out_check_link_text.text).to include '(1 form assigned)'
   expect(window.mtc_check_link_text.text).to include '(0 forms assigned)'
   expect(assign_form_to_window_v2_page.flash_message.text).to eql "1 form has been assigned to #{@check_window_hash[:check_name]}, Try it out"
 end
 
 When(/^I attempt to assign a live form to a active check window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == 'Development Phase'}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == 'Development Phase'}
   window.mtc_check_link.click
 end
 
@@ -61,10 +63,10 @@ end
 
 And(/^form assigned to '(.*)' check window display 'yes'$/) do |window_name|
   case window_name
-    when 'Try it out'
-      form_name = 'MTC0103'
-    when 'Live check'
-      form_name = 'MTC0100'
+  when 'Try it out'
+    form_name = 'MTC0103'
+  when 'Live check'
+    form_name = 'MTC0100'
   end
   select_form_to_assign_page.check_forms.rows.each do |row|
     if row.name_of_form.text.eql?(form_name)
@@ -76,13 +78,13 @@ And(/^form assigned to '(.*)' check window display 'yes'$/) do |window_name|
 end
 
 When(/^I attempt to assign a familiarisation form to a active check window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == 'Development Phase'}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == 'Development Phase'}
   window.try_it_out_check_link.click
 end
 
 
 When(/^I attempt to assign a live form to a inactive check window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   window.mtc_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click
@@ -94,7 +96,7 @@ But(/^decide to cancel assigning$/) do
 end
 
 When(/^I attempt to assign a familiarisation form to a inactive check window$/) do
-  window = assign_form_to_window_v2_page.check_windows.rows.find{|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
   window.try_it_out_check_link.click
   form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
   form.select.click

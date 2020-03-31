@@ -19,6 +19,7 @@ import { LoginErrorService } from '../services/login-error/login-error.service';
 import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { loadConfigMockService } from '../services/config/config.service';
+import { DeviceService } from '../services/device/device.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -76,6 +77,7 @@ describe('LoginComponent', () => {
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        DeviceService,
         LoginErrorService,
         LoginErrorDiagnosticsService,
         StorageService,
