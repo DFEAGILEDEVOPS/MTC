@@ -2,6 +2,11 @@
 
 const service = {}
 
+/**
+ * @description get check activity summary
+ * @param {number} schoolId
+ * @return {Promise<object>}
+ */
 service.getSummary = async (schoolId) => {
   return {
     schoolName: '[A very good school with a suitably long and descriptive name]',
