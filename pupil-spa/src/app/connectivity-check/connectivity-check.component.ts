@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ConnectivityService } from '../services/connectivity-service/connectivity-service';
 import { APP_CONFIG } from '../services/config/config.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
+import { DeviceService } from '../services/device/device.service';
 
 @Component({
   selector: 'app-connectivity-check',
@@ -13,8 +14,10 @@ import { CheckStatusService } from '../services/check-status/check-status.servic
 export class ConnectivityCheckComponent implements OnInit {
 
   connectivityCheckViewMinDisplay;
+  isUnsupportedBrowser;
 
   constructor(
+    private deviceService: DeviceService,
     private connectivityService: ConnectivityService,
     private router: Router,
     private checkStatusService: CheckStatusService
@@ -33,6 +36,7 @@ export class ConnectivityCheckComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.isUnsupportedBrowser = this.deviceService.isUnsupportedBrowser();
     const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
     if (hasUnfinishedCheck) {
       return this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
