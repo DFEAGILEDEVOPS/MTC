@@ -49,6 +49,7 @@ describe('sql.service:integration', () => {
   describe('should not permit', () => {
     it('delete operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('DELETE FROM [mtc_admin].[settings]')
         fail('DELETE operation should not have succeeded')
       } catch (error) {
@@ -59,6 +60,7 @@ describe('sql.service:integration', () => {
 
     it('TRUNCATE TABLE operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('TRUNCATE TABLE Settings')
         fail('TRUNCATE operation should not have succeeded')
       } catch (error) {
@@ -68,6 +70,7 @@ describe('sql.service:integration', () => {
 
     it('the ALTER TABLE operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('ALTER TABLE [mtc_admin].[settings] DROP COLUMN checkTimeLimit')
         fail('the ALTER TABLE operation should not have succeeded')
       } catch (error) {
@@ -77,6 +80,7 @@ describe('sql.service:integration', () => {
 
     it('CREATE VIEW operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query(`
       CREATE VIEW [mtc_admin].[vewSettings]
       AS SELECT * FROM [mtc_admin].settings
@@ -89,6 +93,7 @@ describe('sql.service:integration', () => {
 
     it('ALTER VIEW operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query(`
       ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
       AS SELECT * FROM [mtc_admin].settings
@@ -101,6 +106,7 @@ describe('sql.service:integration', () => {
 
     it('DROP VIEW operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]')
         fail('DROP VIEW operation should not have succeeded')
       } catch (error) {
@@ -110,6 +116,7 @@ describe('sql.service:integration', () => {
 
     it('CREATE TRIGGER operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query(`
       CREATE TRIGGER [mtc_admin].[settingsCreatedAtTrigger]
         ON [mtc_admin].[settings] FOR UPDATE
@@ -129,6 +136,7 @@ describe('sql.service:integration', () => {
 
     it('DROP TRIGGER operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]')
         fail('DROP TRIGGER operation should not have succeeded')
       } catch (error) {
@@ -138,6 +146,7 @@ describe('sql.service:integration', () => {
 
     it('CREATE PROCEDURE operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query(`
       CREATE PROCEDURE [mtc_admin].[spSettings]
         AS SELECT * FROM [mtc_admin].settings
@@ -150,6 +159,7 @@ describe('sql.service:integration', () => {
 
     it('DROP PROCEDURE operation to mtc application user', async () => {
       try {
+        spyOn(logger, 'error')
         await sql.query('DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]')
         fail('DROP PROCEDURE operation should not have succeeded')
       } catch (error) {
@@ -159,8 +169,7 @@ describe('sql.service:integration', () => {
   })
 
   it('should transform the results arrays into a JSON array', async () => {
-    await sql.query('SELECT * FROM [mtc_admin].[settings]')
-    const actual = await sql.query('SELECT * FROM Settings')
+    const actual = await sql.query('SELECT * FROM [mtc_admin].[settings]')
     expect(actual).toBeDefined()
     expect(actual.length).toBe(1)
     const row = actual[0]
@@ -172,8 +181,7 @@ describe('sql.service:integration', () => {
   })
 
   it('should omit the version column from returned set', async () => {
-    await sql.query('SELECT * FROM Settings')
-    const actual = await sql.query('SELECT * FROM Settings')
+    const actual = await sql.query('SELECT * FROM [mtc_admin].[settings]')
     expect(actual).toBeDefined()
     const row = actual[0]
     expect(row.version).toBeUndefined()
@@ -192,14 +200,14 @@ describe('sql.service:integration', () => {
       type: TYPES.Int,
       value: 1
     }
-    const updateSql = 'UPDATE Settings SET questionTimeLimit=6, updatedAt=@updatedAt WHERE id=@id'
+    const updateSql = 'UPDATE mtc_admin.Settings SET questionTimeLimit=6, updatedAt=@updatedAt WHERE id=@id'
     try {
       await sql.modify(updateSql, [updatedAtParam, idParam])
     } catch (err) {
       console.log(err)
       fail(err)
     }
-    const selectSql = 'SELECT updatedAt FROM Settings WHERE id=@id'
+    const selectSql = 'SELECT updatedAt FROM mtc_admin.Settings WHERE id=@id'
     let results
     try {
       results = await sql.query(selectSql, [idParam])
@@ -300,7 +308,6 @@ describe('sql.service:integration', () => {
       expect(results.length).toBe(1)
       const row = results[0]
       expect(row.tDateTime).toBeDefined()
-      console.log('expected:', updatedAtDate.toISOString())
       expect(Object.keys(response).length).toBeGreaterThan(0)
       expect(row.tDateTime.toISOString()).toBe('2017-12-01T23:00:00.000Z')
     } catch (err) {
@@ -319,10 +326,13 @@ describe('sql.service:integration', () => {
   })
 
   it('#findOneById should prevent sql injection', async () => {
-    const row = await sql.findOneById('[user]', '3 OR 1=1')
-    // We still expect to get the object where id=3 as running parseInt('3 OR 1=1')
-    // still gives numeric 3.  If sql injection was allowed we would get all users.
-    expect(typeof row).toBe('object')
+    spyOn(logger, 'error')
+    try {
+      await sql.findOneById('[user]', '3 OR 1=1')
+      fail('not expected to return a result')
+    } catch (error) {
+      expect(error.message).toMatch(/Validation failed/)
+    }
   })
 
   describe('#create', () => {
@@ -346,8 +356,12 @@ describe('sql.service:integration', () => {
 
     it('should allow an nvarchar col to be added', async () => {
       const data = { tNvarCharMax: 'the quick brown fox' }
-      const res = await sql.create('[integrationTest]', data)
-      expect(res.insertId).toBeDefined()
+      try {
+        const res = await sql.create('[integrationTest]', data)
+        expect(res.insertId).toBeDefined()
+      } catch (error) {
+        fail(error)
+      }
     })
 
     it('returns datetimeoffset columns as Moment objects', async () => {
@@ -534,11 +548,17 @@ describe('sql.service:integration', () => {
         value: value,
         type: TYPES.NVarChar
       }]
-      const insertResult = await sql.modify(`
-         INSERT into ${table} (tNvarchar)
+
+      let insertResult
+      try {
+        insertResult = await sql.modify(`
+         INSERT INTO ${table} (tNvarchar)
          VALUES (@tNvarchar);
-         SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY;`,
-      params)
+         SELECT SCOPE_IDENTITY() AS SCOPE_IDENTITY;`, params)
+      } catch (error) {
+        console.trace(error)
+      }
+
       if (!insertResult.insertId) {
         return fail('insertId expected')
       }
@@ -557,6 +577,7 @@ describe('sql.service:integration', () => {
       const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
       // This will generate a warning because of the error, we can shut that up for this test
       spyOn(logger, 'warn')
+      spyOn(logger, 'error')
       try {
         await sql.create(table, data)
         fail('expected to throw')
@@ -627,6 +648,7 @@ describe('sql.service:integration', () => {
     })
 
     it('rolls back on error', async () => {
+      spyOn(logger, 'error')
       const stm = `
         INSERT INTO [mtc_admin].[integrationTest] (tDecimal) VALUES (10.51);
         -- This will fail and cause rollback
