@@ -110,4 +110,13 @@ export class DeviceService {
       type: con.type
     };
   }
+
+  /**
+   * Determines whether the browser used is IE9,IE10
+   * @return {Boolean}
+   */
+  isUnsupportedBrowser(): boolean {
+    const userAgent = this.window.navigator.userAgent;
+    return userAgent.indexOf('MSIE') >= 0;
+  }
 }

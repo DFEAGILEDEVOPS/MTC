@@ -162,7 +162,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
 
                    -- IF the new check is not in NEW status we have to bail out
                    IF @newCheckCode <> 'NEW'
-                    THROW 5100, 'New check cannot be deleted as it does not have a NEW status', 1;
+                    THROW 51000, 'New check cannot be deleted as it does not have a NEW status', 1;
 
                    -- IF there is new check raised that has a NEW status, we must VOID the check
                   UPDATE [mtc_admin].[check]

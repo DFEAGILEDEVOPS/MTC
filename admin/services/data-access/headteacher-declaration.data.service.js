@@ -86,6 +86,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
     WHERE (p.attendanceId IS NULL
           AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
           AND p.school_id = @schoolId
+          AND p.checkComplete <> 1
   `
 
   const params = [

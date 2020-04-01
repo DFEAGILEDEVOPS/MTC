@@ -10,6 +10,7 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
+import { DeviceService } from '../services/device/device.service';
 
 @Component({
   selector: 'app-login',
@@ -25,8 +26,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public connectionFailed: boolean;
   public loginPendingViewMinDisplay: number;
   private errorMessage: string;
+  public isUnsupportedBrowser;
 
   constructor(
+    private deviceService: DeviceService,
     private loginErrorService: LoginErrorService,
     private loginErrorDiagnosticsService: LoginErrorDiagnosticsService,
     private userService: UserService,
@@ -42,6 +45,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.isUnsupportedBrowser = this.deviceService.isUnsupportedBrowser();
     this.loginPending = false;
     const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
     if (hasUnfinishedCheck) {

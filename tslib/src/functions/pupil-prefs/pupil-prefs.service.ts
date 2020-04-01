@@ -2,14 +2,19 @@ import { SqlService, ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 import { RedisService } from '../../caching/redis-service'
+import { ILogger } from '../../common/logger'
 
 export class PupilPrefsService {
 
   private dataService: IPupilPrefsDataService
+  private logger: ILogger | undefined
 
-  constructor (pupilPrefsDataService?: IPupilPrefsDataService) {
+  constructor (pupilPrefsDataService?: IPupilPrefsDataService, logger?: ILogger) {
+    if (logger !== undefined) {
+      this.logger = logger
+    }
     if (pupilPrefsDataService === undefined) {
-      pupilPrefsDataService = new PupilPrefsDataService()
+      pupilPrefsDataService = new PupilPrefsDataService(this.logger)
     }
     this.dataService = pupilPrefsDataService
   }
@@ -75,8 +80,8 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
   private sqlService: SqlService
   private redisService: RedisService
 
-  constructor () {
-    this.sqlService = new SqlService()
+  constructor (logger?: ILogger) {
+    this.sqlService = new SqlService(logger)
     this.redisService = new RedisService()
   }
 
@@ -104,27 +109,38 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
       }
     ]
     const result = await this.sqlService.query(sql, params)
-    if (result.length === 1) {
-      return result[0].pupilUUID
+    if (result.length !== 1) {
+      throw new Error(`pupil-prefs: pupil UUID lookup has ${result.length} rows, when expecting 1 only`)
     }
+    return result[0].pupilUUID
   }
 
   private buildUpdateRequest (dataUpdate: IPupilPreferenceDataUpdate): ITransactionRequest {
-    const sql = `UPDATE mtc_admin.[pupilAccessArrangements]
-    SET ${dataUpdate.prefField} = (
-     SELECT id FROM mtc_admin.${dataUpdate.prefTable}
-     WHERE code = @prefCode
-    )
-    WHERE pupil_Id = (
-       SELECT p.id FROM mtc_admin.[pupil] p
-       INNER JOIN mtc_admin.[check] chk
-       ON chk.pupil_id = p.id
-       WHERE chk.checkCode = @checkCode
-    ) AND accessArrangements_id = (
-       SELECT id FROM mtc_admin.[accessArrangements]
-       WHERE code = @accessArrangementCode
-    )`
+    const sql = `
+DECLARE @pupilId INT;
+DECLARE @prefCodeId INT;
+DECLARE @accessArrangementsId INT;
+DECLARE @errorMessage NVARCHAR(max);
 
+SET @prefCodeId = (SELECT id FROM mtc_admin.${dataUpdate.prefTable} WHERE code = @prefCode);
+SET @errorMessage = (SELECT concat('ID not found for code "', @prefCode, '"'));
+IF @prefCodeId IS NULL THROW 50002, @errorMessage, 1;
+
+SET @pupilId = (SELECT p.id
+                  FROM mtc_admin.[pupil] p
+                       INNER JOIN mtc_admin.[check] chk ON chk.pupil_id = p.id
+                 WHERE chk.checkCode = @checkCode);
+IF @pupilId IS NULL THROW 50002, 'pupilId not found', 1;
+
+SET @accessArrangementsId = (SELECT id FROM mtc_admin.[accessArrangements] WHERE code = @accessArrangementCode);
+SET @errorMessage = (SELECT concat('accessArrangements_id not found for "', @accessArrangementCode, '"'));
+IF @accessArrangementsId IS NULL THROW 50002, @errorMessage, 1;
+
+UPDATE mtc_admin.[pupilAccessArrangements]
+   SET ${dataUpdate.prefField} = @prefCodeId
+ WHERE pupil_Id = @pupilId
+   AND accessArrangements_id = @accessArrangementsId;
+    `
     const params = [
       {
         name: 'checkCode',
