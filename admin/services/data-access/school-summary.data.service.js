@@ -37,7 +37,7 @@ service.getLiveCheckData = async (schoolId) => {
   }
   const sql = `
     SELECT
-        MIN(cast(c.createdAt as Date)) as [Date],
+        MIN(convert(varchar, c.createdAt, 106)) as [Date],
         COUNT(c.id) AS [PinsGenerated],
         SUM(CASE cs.code WHEN 'COL' THEN 1 ELSE 0 END) as [LoggedIn],
         SUM(CASE cs.code WHEN 'CMP' THEN 1 ELSE 0 END) as [Complete]
@@ -58,7 +58,7 @@ service.getTioCheckData = async (schoolId) => {
   }
   const sql = `
     SELECT
-      MIN(cast(c.createdAt as Date)) as [Date],
+      MIN(convert(varchar, c.createdAt, 106)) as [Date],
       COUNT(c.id) AS [PinsGenerated]
     FROM
       [mtc_admin].[check] c
