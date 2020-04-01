@@ -21,9 +21,6 @@ service.getSummary = async (schoolId) => {
   const registerData = data[0]
   const liveCheckData = data[1]
   const tioCheckData = data[2]
-  console.log(`GUY. registerData: ${JSON.stringify(data[0], null, 2)}`)
-  console.log(`GUY. liveCheckData: ${JSON.stringify(data[1], null, 2)}`)
-  console.log(`GUY. tioCheckData: ${JSON.stringify(data[2], null, 2)}`)
   return {
     schoolName: '[A very good school with a suitably long and descriptive name]',
     dfeNumber: '[DFE Number]',
