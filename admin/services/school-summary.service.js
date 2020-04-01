@@ -22,8 +22,8 @@ service.getSummary = async (schoolId) => {
   const liveCheckData = data[1]
   const tioCheckData = data[2]
   return {
-    schoolName: '[A very good school with a suitably long and descriptive name]',
-    dfeNumber: '[DFE Number]',
+    schoolName: registerData.schoolName,
+    dfeNumber: registerData.dfeNumber,
     register: {
       completed: registerData.Completed,
       total: registerData.TotalCount,

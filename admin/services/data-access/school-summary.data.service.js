@@ -65,7 +65,7 @@ service.getTioCheckData = async (schoolId) => {
       COUNT(c.id) AS [PinsGenerated]
     FROM
       [mtc_admin].[check] c
-      INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id)
+      INNER JOIN [mtc_admin].pupil p ON (p.id = c.pupil_id)
     WHERE p.school_id = @schoolId AND c.isLiveCheck = 0
     GROUP BY cast(c.createdAt as date)`
   return sqlService.readonlyQuery(sql, [schoolIdParam])
