@@ -21,9 +21,12 @@ service.getRegisterData = async (schoolId) => {
     SELECT
       COUNT(p.id) as [TotalCount],
       SUM(CASE WHEN p.checkComplete = 1 AND p.attendanceId IS NULL THEN 1 ELSE 0 END) as [Completed],
-      SUM(CASE WHEN p.attendanceId IS NOT NULL THEN 1 ELSE 0 END) as [NotAttending]
+      SUM(CASE WHEN p.attendanceId IS NOT NULL THEN 1 ELSE 0 END) as [NotAttending],
+      MIN(s.name) as [schoolName],
+      MIN(s.dfeNumber) as [dfeNumber]
     FROM
       [mtc_admin].[pupil] p
+      INNER JOIN [mtc_admin].school s ON p.school_id = s.id
     WHERE p.school_id = @schoolId`
   const result = await sqlService.readonlyQuery(sql, [schoolIdParam])
   return R.head(result)
