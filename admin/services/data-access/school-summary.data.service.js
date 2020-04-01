@@ -11,7 +11,7 @@ const service = {}
  * @param {number} schoolId
  * @return {Promise<object>}
  */
-service.getRegisterSummaryData = async (schoolId) => {
+service.getRegisterData = async (schoolId) => {
   const schoolIdParam = {
     name: 'schoolId',
     type: TYPES.Int,
@@ -27,6 +27,45 @@ service.getRegisterSummaryData = async (schoolId) => {
     WHERE p.school_id = @schoolId`
   const result = await sqlService.readonlyQuery(sql, [schoolIdParam])
   return R.head(result)
+}
+
+service.getLiveCheckData = async (schoolId) => {
+  const schoolIdParam = {
+    name: 'schoolId',
+    type: TYPES.Int,
+    value: schoolId
+  }
+  const sql = `
+    SELECT
+        MIN(cast(c.createdAt as Date)) as [Date],
+        COUNT(c.id) AS [PinsGenerated],
+        SUM(CASE cs.code WHEN 'COL' THEN 1 ELSE 0 END) as [LoggedIn],
+        SUM(CASE cs.code WHEN 'CMP' THEN 1 ELSE 0 END) as [Complete]
+    FROM
+        [mtc_admin].[check] c
+        INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id)
+        LEFT JOIN [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+    WHERE p.school_id = @schoolId AND c.isLiveCheck = 1
+    GROUP BY cast(c.createdAt as date)`
+  return sqlService.readonlyQuery(sql, [schoolIdParam])
+}
+
+service.getTioCheckData = async (schoolId) => {
+  const schoolIdParam = {
+    name: 'schoolId',
+    type: TYPES.Int,
+    value: schoolId
+  }
+  const sql = `
+    SELECT
+      MIN(cast(c.createdAt as Date)) as [Date],
+      COUNT(c.id) AS [PinsGenerated]
+    FROM
+      [mtc_admin].[check] c
+      INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id)
+    WHERE p.school_id = @schoolId AND c.isLiveCheck = 0
+    GROUP BY cast(c.createdAt as date)`
+  return sqlService.readonlyQuery(sql, [schoolIdParam])
 }
 
 module.exports = service

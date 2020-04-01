@@ -10,7 +10,14 @@ const service = {}
  * @return {Promise<object>}
  */
 service.getSummary = async (schoolId) => {
-  const registerData = await dataService.getRegisterSummaryData(schoolId)
+  const registerData = dataService.getRegisterData(schoolId)
+  const liveCheckData = dataService.getLiveCheckData(schoolId)
+  const tioCheckData = dataService.getTioCheckData(schoolId)
+  await Promise.all([
+    registerData,
+    liveCheckData,
+    tioCheckData
+  ])
   return {
     schoolName: '[A very good school with a suitably long and descriptive name]',
     dfeNumber: '[DFE Number]',
@@ -19,45 +26,8 @@ service.getSummary = async (schoolId) => {
       total: registerData.TotalCount,
       notTaking: registerData.NotAttending
     },
-    liveCheckSummary: [
-      {
-        Date: '7th June',
-        PinsGenerated: 59,
-        LoggedIn: 52,
-        StartedCheck: 44
-      },
-      {
-        Date: '14th May',
-        PinsGenerated: 13,
-        LoggedIn: 11,
-        StartedCheck: 4
-      },
-      {
-        Date: '3rd May',
-        PinsGenerated: 19,
-        LoggedIn: 8,
-        StartedCheck: 8
-      }],
-    tioCheckSummary: [
-      {
-        Date: '4th April',
-        PinsGenerated: 59,
-        LoggedIn: 52,
-        StartedCheck: 44
-      },
-      {
-        Date: '15th May',
-        PinsGenerated: 13,
-        LoggedIn: 11,
-        StartedCheck: 4
-      },
-      {
-        Date: '16th May',
-        PinsGenerated: 19,
-        LoggedIn: 8,
-        StartedCheck: 8
-      }
-    ]
+    liveCheckSummary: liveCheckData,
+    tioCheckSummary: tioCheckData
   }
 }
 
