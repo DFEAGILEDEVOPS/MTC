@@ -53,8 +53,8 @@ describe('AzureQueueService', () => {
           'token',
           { payloadItem: 'payloadItem' },
           {
-            checkStartAPIErrorMaxAttempts: 1,
-            checkStartAPIErrorDelay: 10000,
+            maxRetryCount: 1,
+            durationBetweenRetriesMs: 10000,
           }
         );
         fail('should have failed');
@@ -83,8 +83,8 @@ describe('AzureQueueService', () => {
         'token',
         { payloadItem: 'payloadItem' },
         {
-          checkStartAPIErrorMaxAttempts: 1,
-          checkStartAPIErrorDelay: 10000,
+          maxRetryCount: 1,
+          durationBetweenRetriesMs: 10000,
         }
       );
       expect(message).toEqual({ messageId: '1' });
@@ -118,8 +118,8 @@ describe('AzureQueueService', () => {
           'token',
           { payloadItem: 'payloadItem' },
           {
-            checkStartAPIErrorMaxAttempts: 1,
-            checkStartAPIErrorDelay: 10000,
+            maxRetryCount: 1,
+            durationBetweenRetriesMs: 10000,
           }
         );
         fail('should have failed');
@@ -148,8 +148,8 @@ describe('AzureQueueService', () => {
         'token',
         { payloadItem: 'payloadItem' },
         {
-          checkStartAPIErrorMaxAttempts: 1,
-          checkStartAPIErrorDelay: 10000,
+          maxRetryCount: 1,
+          durationBetweenRetriesMs: 10000,
         }
       );
       expect(message).toEqual({ messageId: '1' });

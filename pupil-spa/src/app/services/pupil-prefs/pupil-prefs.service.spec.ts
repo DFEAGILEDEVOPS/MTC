@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { APP_INITIALIZER } from '@angular/core';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, IRetryConfig } from '../azure-queue/azure-queue.service';
 import { PupilPrefsService } from './pupil-prefs.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
@@ -74,9 +74,9 @@ describe('PupilPrefsService', () => {
         checkCode: 'checkCode',
         version: 1
       };
-      const retryConfig = {
-        errorDelay: pupilPrefsService.pupilPrefsAPIErrorDelay,
-        errorMaxAttempts: pupilPrefsService.pupilPrefsAPIErrorMaxAttempts
+      const retryConfig: IRetryConfig = {
+        durationBetweenRetriesMs: pupilPrefsService.pupilPrefsAPIErrorDelay,
+        maxRetryCount: pupilPrefsService.pupilPrefsAPIErrorMaxAttempts
       };
       expect(addMessageSpy.calls.all()[0].args[0]).toEqual('the-queue');
       expect(addMessageSpy.calls.all()[0].args[1]).toEqual('url');

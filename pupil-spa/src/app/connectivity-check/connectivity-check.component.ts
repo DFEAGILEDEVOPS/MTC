@@ -13,7 +13,7 @@ import { DeviceService } from '../services/device/device.service';
 })
 export class ConnectivityCheckComponent implements OnInit {
 
-  connectivityCheckViewMinDisplay;
+  testPupilConnectionViewMinDisplay;
   isUnsupportedBrowser;
 
   constructor(
@@ -22,8 +22,8 @@ export class ConnectivityCheckComponent implements OnInit {
     private router: Router,
     private checkStatusService: CheckStatusService
   ) {
-    const { connectivityCheckViewMinDisplay } = APP_CONFIG;
-    this.connectivityCheckViewMinDisplay = connectivityCheckViewMinDisplay;
+    const { testPupilConnectionViewMinDisplayMs: testPupilConnectionViewMinDisplay } = APP_CONFIG;
+    this.testPupilConnectionViewMinDisplay = testPupilConnectionViewMinDisplay;
   }
 
   /**
@@ -60,7 +60,7 @@ export class ConnectivityCheckComponent implements OnInit {
   async displayMinTime(startTime) {
     const endTime = Date.now();
     const duration = endTime - startTime;
-    const minDisplay = this.connectivityCheckViewMinDisplay;
+    const minDisplay = this.testPupilConnectionViewMinDisplay;
     if (duration < minDisplay) {
       const displayTime = minDisplay - duration;
       return this.sleep(displayTime);

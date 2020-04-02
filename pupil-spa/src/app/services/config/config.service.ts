@@ -21,7 +21,7 @@ export interface IAppConfig {
   feedbackAPIErrorMaxAttempts: number;
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
-  connectivityCheckEnabled: boolean;
+  testPupilConnectionEnabled: boolean;
   submitsToCheckReceiver: boolean;
 }
 
@@ -33,8 +33,6 @@ export class AppConfig implements IAppConfig {
   readonly checkStartAPIErrorMaxAttempts: number;
   readonly checkSubmissionApiErrorDelay: number;
   readonly checkSubmissionAPIErrorMaxAttempts: number;
-  readonly connectivityCheckEnabled: boolean;
-  readonly connectivityCheckViewMinDisplay: number;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
   readonly loginPendingViewMinDisplay: number;
@@ -44,11 +42,13 @@ export class AppConfig implements IAppConfig {
   readonly submissionPendingViewMinDisplay: number;
   readonly submitsToCheckReceiver: boolean;
   readonly supportNumber: string;
-  readonly testPupilConnectionDelay: number;
-  readonly testPupilConnectionMaxAttempts: number;
+  readonly testPupilConnectionEnabled: boolean;
+  readonly testPupilConnectionMaxRetries: number;
   readonly testPupilConnectionQueueName: string;
   readonly testPupilConnectionQueueToken: string;
   readonly testPupilConnectionQueueUrl: string;
+  readonly testPupilConnectionRetryDelayMs: number;
+  readonly testPupilConnectionViewMinDisplayMs: number;
   readonly websiteOffline: boolean;
 }
 

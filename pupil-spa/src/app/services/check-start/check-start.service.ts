@@ -5,7 +5,7 @@ import {
   CheckStartedAPICallFailed,
   CheckStartedAPICallSucceeded,
 } from '../audit/auditEntry';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, IRetryConfig } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
@@ -41,9 +41,9 @@ export class CheckStartService {
     const payload = this.storageService.getPupil();
     payload.clientCheckStartedAt = new Date();
     payload.version = 1;
-    const retryConfig = {
-      errorDelay: this.checkStartAPIErrorDelay,
-      errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
+    const retryConfig: IRetryConfig = {
+      durationBetweenRetriesMs: this.checkStartAPIErrorDelay,
+      maxRetryCount: this.checkStartAPIErrorMaxAttempts
     };
     try {
       this.auditService.addEntry(new CheckStartedApiCalled());

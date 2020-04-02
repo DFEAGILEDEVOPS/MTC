@@ -9,8 +9,8 @@ import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 import { APP_CONFIG } from '../config/config.service';
 
 /**
- * Implementation is sourced from /src/public/azure-storage/azure-storage.queue.min.js
- * inclusion is configured in /angular.json
+ *
+ *
  */
 
 @Injectable()
@@ -27,11 +27,11 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Object}
    */
-  public initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
+  public initQueueService(queueName: string, url: string, token: string, retryConfig: IRetryConfig): IQueueService {
     const service = this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(
-        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.errorMaxAttempts, retryConfig.errorDelay)
+        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.maxRetryCount, retryConfig.durationBetweenRetriesMs)
       );
     service.performRequest = bluebird.promisify(service.performRequest, service);
     service.createMessage = bluebird.promisify(service.createMessage, service);
@@ -55,7 +55,7 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+  public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: IRetryConfig): Promise<Object> {
     const queueService = this.initQueueService(queueName, url, token, retryConfig);
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
@@ -70,4 +70,9 @@ export class AzureQueueService {
       return fallbackQueueService.createMessage(queueName, encodedMessage);
     });
   }
+}
+
+export interface IRetryConfig {
+  maxRetryCount: number;
+  durationBetweenRetriesMs: number;
 }

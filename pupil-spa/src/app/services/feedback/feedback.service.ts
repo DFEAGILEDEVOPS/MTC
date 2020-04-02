@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, IRetryConfig } from '../azure-queue/azure-queue.service';
 
 @Injectable()
 export class FeedbackService {
@@ -48,9 +48,9 @@ export class FeedbackService {
   async queueSubmit(payload) {
     const { url, token, queueName } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
-    const retryConfig = {
-      errorDelay: this.feedbackAPIErrorDelay,
-      errorMaxAttempts: this.feedbackAPIErrorMaxAttempts
+    const retryConfig: IRetryConfig = {
+      durationBetweenRetriesMs: this.feedbackAPIErrorDelay,
+      maxRetryCount: this.feedbackAPIErrorMaxAttempts
     };
     await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
   }

@@ -4,7 +4,7 @@ import { first } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 
 import { APP_CONFIG } from '../config/config.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, IRetryConfig } from '../azure-queue/azure-queue.service';
 
 import { default as connectivityErrorMessages } from './connectivity-error-messages';
 
@@ -29,8 +29,8 @@ export class ConnectivityService {
       testPupilConnectionQueueName,
       testPupilConnectionQueueUrl,
       testPupilConnectionQueueToken,
-      testPupilConnectionDelay,
-      testPupilConnectionMaxAttempts
+      testPupilConnectionRetryDelayMs: testPupilConnectionDelay,
+      testPupilConnectionMaxRetries: testPupilConnectionMaxAttempts
     } = APP_CONFIG;
     this.testPupilConnectionQueueName = testPupilConnectionQueueName;
     this.testPupilConnectionQueueUrl = testPupilConnectionQueueUrl;
@@ -68,9 +68,9 @@ export class ConnectivityService {
   }
 
   async canAccessAzureStorageQueue() {
-    const retryConfig = {
-      errorDelay: this.testPupilConnectionDelay,
-      errorMaxAttempts: this.testPupilConnectionMaxAttempts
+    const retryConfig: IRetryConfig = {
+      durationBetweenRetriesMs: this.testPupilConnectionDelay,
+      maxRetryCount: this.testPupilConnectionMaxAttempts
     };
     try {
       await this.azureQueueService.addMessage(
