@@ -47,6 +47,7 @@ The following environment variables can be injected at start up...
 |`TEST_PUPIL_CONNECTION_QUEUE_TOKEN`   |`string`   | The test pupil connectivity queue token required for submitting a test message |
 |`TEST_PUPIL_CONNECTION_RETRY_WAIT_MS`   |`integer`   | The delay in milliseconds between attempts in submitting a message to the test queue   |
 |`TEST_PUPIL_CONNECTION_MAX_RETRIES`   |`integer`   | The max number of attempts in submitting a message to the test queue   | 
+|`TEST_PUPIL_CONNECTION_ENABLED`   |`boolean`   | enable or disable the connectivity check. disabled by default   | 
 
 ## Running unit tests
 
