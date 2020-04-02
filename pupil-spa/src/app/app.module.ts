@@ -60,7 +60,7 @@ import { ConnectivityErrorComponent } from './connectivity-error/connectivity-er
 import { IdleModalComponent } from './modal/idle.modal.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
-import { PageVisibilityComponent } from './page-visibility/page-visibility.component'
+import { PageVisibilityComponent } from './page-visibility/page-visibility.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';

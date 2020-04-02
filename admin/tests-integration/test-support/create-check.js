@@ -26,8 +26,14 @@ const createCheck = async function createCheck (code, isLiveCheck) {
       EXEC [mtc_admin].[spCreateChecks] @tvp;
   `
 
-  const res = await sqlService.modifyWithResponse(sql)
-  const checkId = res.response[0].id
+  let res, checkId
+
+  try {
+    res = await sqlService.modifyWithResponse(sql)
+    checkId = res.response[0].check_id
+  } catch (error) {
+    console.log(`Failed to createCheck() for SQL:\n${sql}\nError was: ${error.message}`)
+  }
 
   if (code === 'COL') {
     const sql = `UPDATE [mtc_admin].[check] 
