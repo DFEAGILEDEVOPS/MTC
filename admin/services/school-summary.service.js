@@ -12,7 +12,7 @@ const service = {}
 service.getSummary = async (schoolId) => {
   const registerCall = dataService.getRegisterData(schoolId)
   const liveCheckCall = dataService.getLiveCheckData(schoolId)
-  const tioCheckCall = dataService.getTioCheckData(schoolId)
+  const tioCheckCall = dataService.getTryItOutCheckData(schoolId)
   const data = await Promise.all([
     registerCall,
     liveCheckCall,
