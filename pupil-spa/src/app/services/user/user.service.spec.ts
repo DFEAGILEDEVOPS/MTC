@@ -50,15 +50,23 @@ describe('UserService', () => {
       const setPupilSpy = spyOn(storageService, 'setPupil');
       const setSchoolSpy = spyOn(storageService, 'setSchool');
       userService.login('abc12345', '9999a').then(() => {
-        console.log(setQuestionsSpy);
-          expect(setQuestionsSpy.calls.allArgs()[0].toString())
-            .toEqual(`${mockLoginResponseBody[questionsDataKey.toString()]}`);
-          expect(setConfigSpy.calls.allArgs()[1].toString())
-            .toEqual(`${mockLoginResponseBody[configDataKey.toString()]}`);
-          expect(setPupilSpy.calls.allArgs()[2].toString())
-            .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`);
-          expect(setSchoolSpy.calls.allArgs()[3].toString())
-            .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`);
+
+        try {
+          const questionSpyArgs = setQuestionsSpy.calls.allArgs();
+          const configSpyCalls = setConfigSpy.calls.allArgs();
+          const pupilSpyArgs = setPupilSpy.calls.allArgs();
+          const schoolSpyArgs = setSchoolSpy.calls.allArgs();
+            expect(questionSpyArgs[0][0].toString())
+              .toEqual(`${mockLoginResponseBody[questionsDataKey.toString()]}`);
+            expect(configSpyCalls[0][0].toString())
+              .toEqual(`${mockLoginResponseBody[configDataKey.toString()]}`);
+            expect(pupilSpyArgs[0][0].toString())
+              .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`);
+            expect(schoolSpyArgs[0][0].toString())
+              .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`);
+          } catch (error) {
+            fail(error);
+          }
         },
         (error) => {
           fail(error);

@@ -13,7 +13,7 @@ const queueTrigger: AzureFunction = async function (context: Context, pupilPrefs
       // dead letter the message as we only support v1
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    const prefsService = new PupilPrefsService()
+    const prefsService = new PupilPrefsService(undefined, context.log)
     await prefsService.update(pupilPrefsMessage, context.bindings as IPupilPrefsFunctionBindings)
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
