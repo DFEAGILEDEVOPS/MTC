@@ -21,7 +21,7 @@ const service = {}
  * @param {number} schoolId
  * @return {Promise<RegisterData>}
  */
-service.getRegisterData = async (schoolId) => {
+service.getRegisterData = async function getRegisterData (schoolId) {
   const schoolIdParam = {
     name: 'schoolId',
     type: TYPES.Int,
@@ -57,7 +57,7 @@ service.getRegisterData = async (schoolId) => {
  * @param {number} schoolId
  * @return {Promise<LiveCheckData>}
  */
-service.getLiveCheckData = async (schoolId) => {
+service.getLiveCheckData = async function getLiveCheckData (schoolId) {
   const schoolIdParam = {
     name: 'schoolId',
     type: TYPES.Int,
@@ -90,7 +90,7 @@ service.getLiveCheckData = async (schoolId) => {
  * @param {number} schoolId
  * @return {Promise<TryItOutCheckData>}
  */
-service.getTryItOutCheckData = async (schoolId) => {
+service.getTryItOutCheckData = async function getTryItOutCheckData (schoolId) {
   const schoolIdParam = {
     name: 'schoolId',
     type: TYPES.Int,
