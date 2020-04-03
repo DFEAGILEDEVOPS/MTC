@@ -9,7 +9,7 @@ const service = {}
  * @param {number} schoolId
  * @return {Promise<object>}
  */
-service.getSummary = async (schoolId) => {
+service.getSummary = async function getSummary (schoolId) {
   const registerCall = dataService.getRegisterData(schoolId)
   const liveCheckCall = dataService.getLiveCheckData(schoolId)
   const tioCheckCall = dataService.getTryItOutCheckData(schoolId)
