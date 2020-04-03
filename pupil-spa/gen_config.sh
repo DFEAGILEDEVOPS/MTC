@@ -68,7 +68,7 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "submitsToCheckReceiver": $submitsToCheckReceiver,
   "supportNumber": "$supportNumber",
-  "testpupilConnectionEnabled": $testPupilConnectionEnabled,
+  "testPupilConnectionEnabled": $testPupilConnectionEnabled,
   "testPupilConnectionMaxRetries": $testPupilConnectionMaxRetries,
   "testPupilConnectionQueueName": "$testPupilConnectionQueueName",
   "testPupilConnectionQueueUrl": "$testPupilConnectionQueueUrl",
