@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@ang
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
-import { QuestionRendered } from '../services/audit/auditEntry';
+import { QuestionRendered, QuestionTimerEnded } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';

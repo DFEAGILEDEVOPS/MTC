@@ -17,7 +17,8 @@ import { SoundComponentMock } from '../sound/sound-component-mock';
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
-  let speechService, storageService;
+  let speechService, storageService, answerService;
+  let answerServiceSpy: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,8 +43,10 @@ describe('SpokenQuestionComponent', () => {
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
     storageService = fixture.debugElement.injector.get(StorageService);
+    answerService = fixture.debugElement.injector.get(AnswerService);
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
+    answerServiceSpy = spyOn(answerService, 'setAnswer');
     fixture.detectChanges();
   });
 
@@ -65,6 +68,14 @@ describe('SpokenQuestionComponent', () => {
       speechService.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
       expect(component['timeout']).toBeDefined();
       expect(component['countdownInterval']).toBeTruthy();
+    });
+  });
+
+  describe('#preSendTimeoutEvent', () => {
+    it('stores the answer', () => {
+      component.answer = '6';
+      component.preSendTimeoutEvent();
+      expect(answerServiceSpy).toHaveBeenCalled();
     });
   });
 });

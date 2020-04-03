@@ -297,4 +297,13 @@ describe('QuestionComponent', () => {
       expect(answerTimestamp.getTime()).toBeGreaterThanOrEqual(questionAnsweredTimestamp.getTime());
     });
   });
+
+  describe('#preSendTimeoutEvent', () => {
+    it('stores the answer', () => {
+      component.answer = '7';
+      auditServiceSpy.calls.reset();
+      component.preSendTimeoutEvent();
+      expect(answerServiceSpy).toHaveBeenCalled();
+    });
+  });
 });

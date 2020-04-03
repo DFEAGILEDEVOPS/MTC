@@ -29,7 +29,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
               protected storageService: StorageService,
               protected speechService: SpeechService,
               protected answerService: AnswerService) {
-    super(auditService, windowRefService, questionService, storageService, speechService);
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService);
     this.window = windowRefService.nativeWindow;
   }
 

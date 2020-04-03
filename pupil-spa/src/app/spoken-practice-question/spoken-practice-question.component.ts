@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 
+import { AnswerService } from '../services/answer/answer.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -22,8 +23,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected speechService: SpeechService,
               protected zone: NgZone,
               protected storageService: StorageService,
-              protected questionService: QuestionService) {
-    super(auditService, windowRefService, questionService, storageService, speechService);
+              protected questionService: QuestionService,
+              protected answerService: AnswerService) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService);
     this.isWarmUpQuestion = true;
   }
 
