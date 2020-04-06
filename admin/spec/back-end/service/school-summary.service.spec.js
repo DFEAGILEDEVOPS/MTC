@@ -37,7 +37,7 @@ describe('schoolSummaryService', () => {
   beforeEach(() => {
     spyOn(schoolSummaryDataService, 'getRegisterData').and.returnValue(mockRegisterData)
     spyOn(schoolSummaryDataService, 'getLiveCheckData').and.returnValue(mockLiveData)
-    spyOn(schoolSummaryDataService, 'getTioCheckData').and.returnValue(mockTioData)
+    spyOn(schoolSummaryDataService, 'getTryItOutCheckData').and.returnValue(mockTioData)
   })
 
   it('should be defined', async () => {
