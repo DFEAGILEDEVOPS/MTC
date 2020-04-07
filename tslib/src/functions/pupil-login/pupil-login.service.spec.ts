@@ -47,7 +47,7 @@ describe('pupil-login.service', () => {
     expect(dataServiceMock.updateCheckWithLoginTimestamp).toHaveBeenCalledWith(message.checkCode, message.loginAt)
   })
 
-  test('data service not called if practice check', async () => {
+  test('data service  called if practice check', async () => {
     const message: IPupilLoginMessage = {
       version: 1,
       checkCode: 'the-check-code',
@@ -55,7 +55,7 @@ describe('pupil-login.service', () => {
       practice: true
     }
     await sut.process(message, bindings)
-    expect(dataServiceMock.updateCheckWithLoginTimestamp).not.toHaveBeenCalledWith()
+    expect(dataServiceMock.updateCheckWithLoginTimestamp).toHaveBeenCalledWith(message.checkCode, message.loginAt)
   })
 
   test('entry is added to pupilEvent table', async () => {
