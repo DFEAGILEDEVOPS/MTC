@@ -7,6 +7,7 @@ import { APP_CONFIG } from '../config/config.service';
 import { AzureQueueService, IRetryConfig } from '../azure-queue/azure-queue.service';
 
 import { default as connectivityErrorMessages } from './connectivity-error-messages';
+import { IQueueServiceProperties } from '../azure-queue/azureStorage'
 
 @Injectable()
 export class ConnectivityService {
@@ -68,6 +69,9 @@ export class ConnectivityService {
   }
 
   async canAccessAzureStorageQueue() {
+    const serviceProperties: IQueueServiceProperties = {
+      clientRequestTimeoutInMs: 2000
+    };
     const retryConfig: IRetryConfig = {
       durationBetweenRetriesMs: this.testPupilConnectionDelay,
       maxRetryCount: this.testPupilConnectionMaxAttempts
@@ -78,7 +82,8 @@ export class ConnectivityService {
         this.testPupilConnectionQueueUrl,
         this.testPupilConnectionQueueToken,
         {},
-        retryConfig);
+        retryConfig,
+        serviceProperties);
     } catch (err) {
       this.errorMessages.push(connectivityErrorMessages.testQueueError);
       return false;

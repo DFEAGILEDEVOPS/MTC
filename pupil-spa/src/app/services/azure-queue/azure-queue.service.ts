@@ -4,6 +4,7 @@ import {
   IQueueStorage,
   IQueueService,
   QUEUE_STORAGE_TOKEN,
+  IQueueServiceProperties
 } from './azureStorage';
 import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 import { APP_CONFIG } from '../config/config.service';
@@ -33,6 +34,7 @@ export class AzureQueueService {
       .withFilter(
         new this.queueStorage.LinearRetryPolicyFilter(retryConfig.maxRetryCount, retryConfig.durationBetweenRetriesMs)
       );
+    service.setServiceProperties = bluebird.promisify(service.setServiceProperties, service);
     service.performRequest = bluebird.promisify(service.performRequest, service);
     service.createMessage = bluebird.promisify(service.createMessage, service);
     return service;
@@ -55,18 +57,27 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: IRetryConfig): Promise<Object> {
+  public async addMessage(queueName: string, url: string, token: string, payload: object,
+     retryConfig: IRetryConfig, serviceProperties?: IQueueServiceProperties): Promise<Object> {
     const queueService = this.initQueueService(queueName, url, token, retryConfig);
+    if (serviceProperties) {
+      console.log(`GUY: setting the service props:${JSON.stringify(serviceProperties, null, 2)}`)
+      const result = await queueService.setServiceProperties(serviceProperties);
+      console.log(`GUY: result of set props:${JSON.stringify(result, null, 2)}`)
+    }
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage).catch(err => {
+    return queueService.createMessage(queueName, encodedMessage).catch(async err => {
       if (!APP_CONFIG.production) {
         throw err;
       }
 
       const fallbackUrl = `${window.location.origin}/queue`;
       const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
+      if (serviceProperties) {
+        await fallbackQueueService.setServiceProperties(serviceProperties);
+      }
       return fallbackQueueService.createMessage(queueName, encodedMessage);
     });
   }
