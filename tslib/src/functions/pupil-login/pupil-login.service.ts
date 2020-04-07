@@ -23,7 +23,7 @@ export interface IPupilEvent {
 export class PupilLoginService {
   private dataService: IPupilLoginDataService
 
-  constructor(dataService?: IPupilLoginDataService) {
+  constructor (dataService?: IPupilLoginDataService) {
     if (dataService === undefined) {
       dataService = new PupilLoginDataService()
     }
