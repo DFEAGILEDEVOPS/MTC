@@ -30,8 +30,6 @@ service.getRegisterData = async function getRegisterData (schoolId) {
   const sql = `
     SELECT
       COUNT(p.id) as [TotalCount],
-      SUM(CASE WHEN p.checkComplete = 1 AND p.attendanceId IS NULL THEN 1 ELSE 0 END) as [Completed],
-      SUM(CASE WHEN p.attendanceId IS NOT NULL THEN 1 ELSE 0 END) as [NotAttending],
       MIN(s.name) as [schoolName],
       MIN(s.dfeNumber) as [dfeNumber]
     FROM
@@ -99,7 +97,8 @@ service.getTryItOutCheckData = async function getTryItOutCheckData (schoolId) {
   const sql = `
     SELECT
       MIN(convert(varchar, c.createdAt, 106)) as [Date],
-      COUNT(c.id) AS [PinsGenerated]
+      COUNT(c.id) AS [PinsGenerated],
+      SUM(CASE WHEN c.pupilLoginDate IS NOT NULL THEN 1 ELSE 0 END) as [LoggedIn]
     FROM
       [mtc_admin].[check] c
       INNER JOIN [mtc_admin].pupil p ON (p.id = c.pupil_id)

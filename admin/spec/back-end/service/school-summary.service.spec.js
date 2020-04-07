@@ -6,9 +6,7 @@ const schoolSummaryDataService = require('../../../services/data-access/school-s
 
 describe('schoolSummaryService', () => {
   const mockRegisterData = {
-    Completed: 5,
-    TotalCount: 10,
-    NotAttending: 5
+    Completed: 5
   }
   const mockLiveData = [
     {
@@ -27,11 +25,13 @@ describe('schoolSummaryService', () => {
   const mockTioData = [
     {
       Date: '5th July',
-      PinsGenerated: 3
+      PinsGenerated: 3,
+      LoggedIn: 2
     },
     {
       Date: '1st July',
-      PinsGenerated: 7
+      PinsGenerated: 7,
+      LoggedIn: 5
     }
   ]
   beforeEach(() => {
@@ -47,8 +47,6 @@ describe('schoolSummaryService', () => {
   it('should transform register data correctly', async () => {
     const summary = await schoolSummaryService.getSummary(1)
     expect(summary.register.total).toBe(mockRegisterData.TotalCount)
-    expect(summary.register.completed).toBe(mockRegisterData.Completed)
-    expect(summary.register.notTaking).toBe(mockRegisterData.NotAttending)
   })
 
   it('should transform live check data correctly', async () => {
@@ -74,10 +72,12 @@ describe('schoolSummaryService', () => {
     const mockTioCheck1 = mockTioData[0]
     expect(tioCheck1.Date).toBe(mockLiveData[0].Date)
     expect(tioCheck1.PinsGenerated).toBe(mockTioCheck1.PinsGenerated)
+    expect(tioCheck1.LoggedIn).toBe(mockTioCheck1.LoggedIn)
 
     const tioCheck2 = summary.tioCheckSummary[1]
     const mockTioCheck2 = mockTioData[1]
     expect(tioCheck2.Date).toBe(mockTioCheck2.Date)
     expect(tioCheck2.PinsGenerated).toBe(mockTioCheck2.PinsGenerated)
+    expect(tioCheck2.LoggedIn).toBe(mockTioCheck2.LoggedIn)
   })
 })

@@ -16,24 +16,12 @@
             <th scope="col" class="govuk-table__header">
               Total
             </th>
-            <th scope="col" class="govuk-table__header">
-              Completed
-            </th>
-            <th scope="col" class="govuk-table__header">
-              Not Taking
-            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <%= summary.register.total %>
-            </td>
-            <td class="govuk-table__cell">
-              <%= summary.register.completed %>
-            </td>
-            <td class="govuk-table__cell">
-              <%= summary.register.notTaking %>
             </td>
           </tr>
         </tbody>
@@ -51,6 +39,9 @@
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
               Users Logged In
             </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Completed
+            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -64,6 +55,9 @@
             </td>
             <td class="govuk-table__cell">
               <%= lcs.LoggedIn %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.Complete %>
             </td>
           </tr>
           <% }) %>
@@ -79,6 +73,9 @@
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
               Pins Generated
             </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -89,6 +86,9 @@
             </td>
             <td class="govuk-table__cell">
               <%= tcs.PinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.LoggedIn %>
             </td>
           </tr>
           <% }) %>
