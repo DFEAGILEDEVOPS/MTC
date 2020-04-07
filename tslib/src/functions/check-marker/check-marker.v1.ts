@@ -1,6 +1,5 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import * as uuid from 'uuid'
 import { IAsyncTableService, AsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
@@ -40,7 +39,7 @@ export class CheckMarkerV1 {
     try {
       const checkResult = this.markCheck(markingData, validatedCheck.RowKey)
       logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
-      this.persistMark(checkResult, functionBindings)
+      this.persistMark(checkResult, functionBindings, validatedCheck.PartitionKey)
     } catch (error) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
@@ -172,13 +171,13 @@ export class CheckMarkerV1 {
     return results
   }
 
-  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings) {
+  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings, schoolUUID: string) {
     if (!functionBindings.checkResultTable) {
       functionBindings.checkResultTable = []
     }
     const markingEntity: any = R.omit(['checkCode'], checkResult)
-    markingEntity.PartitionKey = checkResult.checkCode
-    markingEntity.RowKey = uuid.v4()
+    markingEntity.PartitionKey = schoolUUID
+    markingEntity.RowKey = checkResult.checkCode
     functionBindings.checkResultTable.push(markingEntity)
   }
 
