@@ -9,7 +9,7 @@
       <% } %>
       <h1 class="govuk-heading-xl">Usage Summary for <%= summary.schoolName %> [<%= summary.dfeNumber %>]</h1>
       <%- partial('partials/_gds_session_expiry') %>
-      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+      <table id="registerSummary" name="registerSummary" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">Pupil Register Summary</caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
@@ -26,7 +26,7 @@
           </tr>
         </tbody>
       </table>
-      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+      <table id="liveSummary" name="liveSummary" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">Live Checks</caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
@@ -63,7 +63,7 @@
           <% }) %>
         </tbody>
       </table>
-      <table id="check-summary" name="checkSummary" class="govuk-table govuk-spacious">
+      <table id="tioSummary" name="tioSummary" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">Try-it-Out Checks</caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
