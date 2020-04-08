@@ -9,9 +9,7 @@ const service = {}
 /**
  * Pupil Register Data Object
  * @typedef {Object} RegisterData
- * @property {number} TotalCount - total number of pupils on register
- * @property {number} Completed - number of pupils that have completed the check
- * @property {number} NotAttending - number of pupils not taking the check
+ * @property {number} totalCount - total number of pupils on register
  * @property {string} schoolName - name of the school
  * @property {string} dfeNumber - school dfe number (LA + Estab Code)
  */
@@ -29,9 +27,7 @@ service.getRegisterData = async function getRegisterData (schoolId) {
   }
   const sql = `
     SELECT
-      COUNT(p.id) as [TotalCount],
-      SUM(CASE WHEN p.checkComplete = 1 AND p.attendanceId IS NULL THEN 1 ELSE 0 END) as [Completed],
-      SUM(CASE WHEN p.attendanceId IS NOT NULL THEN 1 ELSE 0 END) as [NotAttending],
+      COUNT(p.id) as [totalCount],
       MIN(s.name) as [schoolName],
       MIN(s.dfeNumber) as [dfeNumber]
     FROM
@@ -46,10 +42,10 @@ service.getRegisterData = async function getRegisterData (schoolId) {
 /**
  * Pupil Register Data Object
  * @typedef {Object} LiveCheckData
- * @property {Date} Date - short string formatted date
- * @property {number} PinsGenerated - number of pupil pins generated
- * @property {number} LoggedIn - number of pupils that have logged in
- * @property {number} Complete - number of pupils that have completed the check
+ * @property {Date} date - short string formatted date
+ * @property {number} pinsGenerated - number of pupil pins generated
+ * @property {number} loggedIn - number of pupils that have logged in
+ * @property {number} complete - number of pupils that have completed the check
  */
 
 /**
@@ -65,10 +61,10 @@ service.getLiveCheckData = async function getLiveCheckData (schoolId) {
   }
   const sql = `
     SELECT
-      MIN(convert(varchar, c.createdAt, 106)) as [Date],
-      COUNT(c.id) AS [PinsGenerated],
-      SUM(CASE WHEN c.pupilLoginDate IS NOT NULL THEN 1 ELSE 0 END) as [LoggedIn],
-      SUM(CAST(c.complete AS INT)) as [Complete]
+      MIN(convert(varchar, c.createdAt, 106)) as [date],
+      COUNT(c.id) AS [pinsGenerated],
+      SUM(CASE WHEN c.pupilLoginDate IS NOT NULL THEN 1 ELSE 0 END) as [loggedIn],
+      SUM(CAST(c.complete AS INT)) as [complete]
     FROM
       [mtc_admin].[check] c
       INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id)
@@ -81,8 +77,8 @@ service.getLiveCheckData = async function getLiveCheckData (schoolId) {
 /**
  * Pupil Register Data Object
  * @typedef {Object} TryItOutCheckData
- * @property {Date} Date - short string formatted date
- * @property {number} PinsGenerated - number of pupil pins generated
+ * @property {Date} date - short string formatted date
+ * @property {number} pinsGenerated - number of pupil pins generated
  */
 
 /**
@@ -98,8 +94,9 @@ service.getTryItOutCheckData = async function getTryItOutCheckData (schoolId) {
   }
   const sql = `
     SELECT
-      MIN(convert(varchar, c.createdAt, 106)) as [Date],
-      COUNT(c.id) AS [PinsGenerated]
+      MIN(convert(varchar, c.createdAt, 106)) as [date],
+      COUNT(c.id) AS [pinsGenerated],
+      SUM(CASE WHEN c.pupilLoginDate IS NOT NULL THEN 1 ELSE 0 END) as [loggedIn]
     FROM
       [mtc_admin].[check] c
       INNER JOIN [mtc_admin].pupil p ON (p.id = c.pupil_id)

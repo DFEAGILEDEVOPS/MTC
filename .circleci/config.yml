@@ -38,6 +38,7 @@ jobs:
       - run: cd functions-app; yarn install --frozen-lockfile
       - run: cd functions-app; yarn test
       - run: cd tslib; yarn install --frozen-lockfile
+      - run: cd tslib; yarn test
       - run: cd admin; yarn test:frontend
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}

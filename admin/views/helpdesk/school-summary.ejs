@@ -16,24 +16,12 @@
             <th scope="col" class="govuk-table__header">
               Total
             </th>
-            <th scope="col" class="govuk-table__header">
-              Completed
-            </th>
-            <th scope="col" class="govuk-table__header">
-              Not Taking
-            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <%= summary.register.total %>
-            </td>
-            <td class="govuk-table__cell">
-              <%= summary.register.completed %>
-            </td>
-            <td class="govuk-table__cell">
-              <%= summary.register.notTaking %>
             </td>
           </tr>
         </tbody>
@@ -51,19 +39,25 @@
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
               Users Logged In
             </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Completed
+            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
           <% summary.liveCheckSummary.forEach((lcs, index) => { %>
           <tr class="govuk-table__row">
             <td scope="row">
-              <%= lcs.Date %>
+              <%= lcs.date %>
             </td>
             <td class="govuk-table__cell">
-              <%= lcs.PinsGenerated %>
+              <%= lcs.pinsGenerated %>
             </td>
             <td class="govuk-table__cell">
-              <%= lcs.LoggedIn %>
+              <%= lcs.loggedIn %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.complete %>
             </td>
           </tr>
           <% }) %>
@@ -79,16 +73,22 @@
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
               Pins Generated
             </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
           <% summary.tioCheckSummary.forEach((tcs, index) => { %>
           <tr class="govuk-table__row">
             <td scope="row">
-              <%= tcs.Date %>
+              <%= tcs.date %>
             </td>
             <td class="govuk-table__cell">
-              <%= tcs.PinsGenerated %>
+              <%= tcs.pinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.loggedIn %>
             </td>
           </tr>
           <% }) %>
