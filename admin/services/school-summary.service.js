@@ -25,7 +25,7 @@ service.getSummary = async function getSummary (schoolId) {
     schoolName: registerData.schoolName,
     dfeNumber: registerData.dfeNumber,
     register: {
-      total: registerData.TotalCount
+      total: registerData.totalCount
     },
     liveCheckSummary: liveCheckData || [],
     tioCheckSummary: tioCheckData || []
