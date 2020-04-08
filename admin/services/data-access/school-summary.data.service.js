@@ -51,7 +51,7 @@ service.getRegisterData = async function getRegisterData (schoolId) {
 /**
  * @description fetches register summary data from SQL data store
  * @param {number} schoolId
- * @return {Promise<LiveCheckData>}
+ * @return {Promise<Array<LiveCheckData>>}
  */
 service.getLiveCheckData = async function getLiveCheckData (schoolId) {
   const schoolIdParam = {
@@ -84,7 +84,7 @@ service.getLiveCheckData = async function getLiveCheckData (schoolId) {
 /**
  * @description fetches register summary data from SQL data store
  * @param {number} schoolId
- * @return {Promise<TryItOutCheckData>}
+ * @return {Promise<Array<TryItOutCheckData>>}
  */
 service.getTryItOutCheckData = async function getTryItOutCheckData (schoolId) {
   const schoolIdParam = {
