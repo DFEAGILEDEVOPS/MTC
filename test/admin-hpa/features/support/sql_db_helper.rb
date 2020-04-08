@@ -376,6 +376,12 @@ class SqlDbHelper
     school_res.values.first
   end
 
+  def self.get_all_checks_from_school(school_id)
+    sql = "SELECT * FROM [mtc_admin].[check] where pupil_id IN (Select id from mtc_admin.pupil where school_id=#{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
   def self.set_check_status(status_id,check_id)
     sql = "UPDATE [mtc_admin].[check] set checkStatus_id=#{status_id} WHERE id=#{check_id}"
     result = SQL_CLIENT.execute(sql)
@@ -460,6 +466,20 @@ class SqlDbHelper
     pupil_details_res = result.first
     result.cancel
     pupil_details_res
+  end
+
+  def self.checks_created_at(date,school_id)
+    sql = "SELECT * from mtc_admin.[check] where CONVERT(DATE, createdAt)='#{date}' AND pupil_id IN (Select id from mtc_admin.pupil where school_id=#{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.count_logins_per_date(date,school_id)
+    sql = "SELECT COUNT(*) FROM [mtc_admin].[check] where CONVERT(DATE, createdAt)='#{date}' AND pupil_id IN (Select id from mtc_admin.pupil where school_id=#{school_id}) AND pupilLoginDate IS NOT NULL"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
   end
 
 end
