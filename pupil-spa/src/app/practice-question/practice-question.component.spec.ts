@@ -10,6 +10,7 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SoundComponentMock } from '../sound/sound-component-mock';
+import {AnswerService} from '../services/answer/answer.service';
 
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
@@ -26,7 +27,8 @@ describe('PractiseQuestionComponent', () => {
         { provide: SpeechService, useValue: mockSpeechService },
         { provide: QuestionService, useClass: QuestionServiceMock },
         StorageService,
-        WindowRefService
+        WindowRefService,
+        AnswerService
       ]
     })
     .compileComponents();
