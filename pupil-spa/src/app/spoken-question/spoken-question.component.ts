@@ -1,13 +1,14 @@
 import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@angular/core';
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
-import { QuestionRendered } from '../services/audit/auditEntry';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
-import { StorageService } from '../services/storage/storage.service';
-import { SpeechService } from '../services/speech/speech.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { Subscription } from 'rxjs';
+import { QuestionRendered, QuestionTimerEnded } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { StorageService } from '../services/storage/storage.service';
+import { Subscription } from 'rxjs';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-spoken-question',
@@ -24,8 +25,9 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected zone: NgZone,
               protected storageService: StorageService,
               protected speechService: SpeechService,
-              protected questionService: QuestionService) {
-    super(auditService, windowRefService, registerInputService, questionService, storageService, speechService);
+              protected questionService: QuestionService,
+              protected answerService: AnswerService) {
+    super(auditService, windowRefService, registerInputService, questionService, storageService, speechService, answerService);
   }
 
   ngOnInit() {

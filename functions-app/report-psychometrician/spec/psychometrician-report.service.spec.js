@@ -414,7 +414,7 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the load time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out.Q1tLoad).toBe('2018-02-11T15:42:24.003Z')
+      expect(out.Q1tLoad).toBe('2018-02-11T15:42:40.796Z')
     })
 
     it('outputs the time of the first key', () => {
@@ -429,12 +429,12 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the overall time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out.Q1OverallTime).toBe(18.297)
+      expect(out.Q1OverallTime).toBe(1.504)
     })
 
     it('outputs the recall time', () => {
       const out = service.produceReportDataV2(row)
-      expect(out.Q1RecallTime).toBe(18.188)
+      expect(out.Q1RecallTime).toBe(1.395)
     })
 
     it('outputs the reader start time', () => {

@@ -120,13 +120,6 @@ describe('CheckComponent', () => {
     it('calls changeState()', () => {
       detectStateChange(component, 'questionTimeoutHandler', 'testinput');
     });
-    it('sets the answer if it is a real question', () => {
-      const answerService = fixture.debugElement.injector.get(AnswerService);
-      spyOn(answerService, 'setAnswer');
-      component[ 'isWarmUp' ] = false;
-      component.questionTimeoutHandler('123');
-      expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('loadingTimeoutHandler', () => {
@@ -150,7 +143,7 @@ describe('CheckComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
 
       // Some browsers map backspace to go back a page.  If the questions times out
-      // and the user presses backspace on the loading page, you guessed it, thay go back
+      // and the user presses backspace on the loading page, you guessed it, they go back
       // to the previous page. Well played, Mozilla and Microsoft.
       const ev2 = dispatchKeyEvent({ key: 'Backspace' });
       expect(ev2.defaultPrevented).toBe(true);

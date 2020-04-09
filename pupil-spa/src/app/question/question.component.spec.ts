@@ -1,24 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuestionComponent } from './question.component';
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { QuestionComponent } from './question.component';
 import { QuestionRendered, QuestionAnswered, QuestionTimerStarted, QuestionTimerCancelled, AuditEntry } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { StorageService } from '../services/storage/storage.service';
-import { SpeechService } from '../services/speech/speech.service';
-import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SoundComponentMock } from '../sound/sound-component-mock';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
+import {audit} from 'rxjs/operators';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
   const auditServiceMock = new AuditServiceMock();
   let registerInputService: RegisterInputService;
+  let answerService: AnswerService;
+  let answerServiceSpy: any;
+  let auditService: AuditService;
+  let auditServiceSpy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,6 +32,7 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
+        AnswerService,
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         StorageService,
@@ -46,6 +53,12 @@ describe('QuestionComponent', () => {
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry');
+
+    answerService = fixture.debugElement.injector.get(AnswerService);
+    answerServiceSpy = spyOn(answerService, 'setAnswer');
+
+    auditService = fixture.debugElement.injector.get(AuditService);
+    auditServiceSpy = spyOn(auditService, 'addEntry');
 
     // Place this last so the spies above are registered.
     fixture.detectChanges();
@@ -175,23 +188,17 @@ describe('QuestionComponent', () => {
   });
 
   describe('audit entry', () => {
-    let auditEntryInserted: AuditEntry;
-    beforeEach(() => {
-      const auditService = fixture.debugElement.injector.get(AuditService);
-      spyOn(auditService, 'addEntry').and.callFake((entry) => {
-        auditEntryInserted = entry;
-      });
-    });
     it('is added on question rendered', () => {
       component.sequenceNumber = 1;
       component.factor1 = 2;
       component.factor2 = 3;
+      auditServiceSpy.calls.reset();
       component.ngAfterViewInit();
-      expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2); // two times, timer event + render event
-      expect(auditEntryInserted instanceof QuestionRendered
-            || auditEntryInserted instanceof QuestionTimerStarted).toBeTruthy();
-      expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
-      expect((<any> auditEntryInserted.data).question).toBe('2x3');
+      expect(auditServiceSpy).toHaveBeenCalledTimes(2); // two times, timer event + render event
+      const auditEntryArgs = auditServiceSpy.calls.allArgs();
+      const questionRendered = auditEntryArgs.find(o => o[0].type === 'QuestionRendered');
+      expect((<any> questionRendered[0].data).sequenceNumber).toBe(1);
+      expect((<any> questionRendered[0].data).question).toBe('2x3');
     });
 
     it('is added on answer submitted', () => {
@@ -199,8 +206,12 @@ describe('QuestionComponent', () => {
       component.factor1 = 2;
       component.factor2 = 3;
       component.answer = '42';
+      auditServiceSpy.calls.reset();
       component.onSubmit();
-      expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2); // two times, timer event + answer event
+      expect(auditServiceSpy).toHaveBeenCalledTimes(2); // two times, timer event + answer event
+      const auditEntryArgs = auditServiceSpy.calls.allArgs();
+      const auditEntryArg = auditEntryArgs.find(o => o[0].type === 'QuestionAnswered');
+      const auditEntryInserted = auditEntryArg &&  auditEntryArg[0];
       expect(auditEntryInserted instanceof QuestionAnswered
             || auditEntryInserted instanceof QuestionTimerCancelled).toBeTruthy();
       expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
@@ -261,6 +272,38 @@ describe('QuestionComponent', () => {
       const event = {};
       component.onClickSubmit(event);
       expect(component.onSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('#onSubmit', () => {
+    it('stores the answer when submit is pressed', () => {
+      component.answer = '9';
+      auditServiceSpy.calls.reset();
+      component.onSubmit();
+      expect(answerServiceSpy).toHaveBeenCalled();
+    });
+
+    it('stores the answer before it stores the QuestionAnswered Audit', () => {
+      component.answer = '8';
+      auditServiceSpy.calls.reset();
+      component.onSubmit();
+      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp;
+      const auditArgs = auditServiceSpy.calls.allArgs();
+      const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered');
+      const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp;
+      if (!questionAnsweredTimestamp || !answerTimestamp) {
+        fail('Missing timestamp');
+      }
+      expect(answerTimestamp.getTime()).toBeGreaterThanOrEqual(questionAnsweredTimestamp.getTime());
+    });
+  });
+
+  describe('#preSendTimeoutEvent', () => {
+    it('stores the answer', () => {
+      component.answer = '7';
+      auditServiceSpy.calls.reset();
+      component.preSendTimeoutEvent();
+      expect(answerServiceSpy).toHaveBeenCalled();
     });
   });
 });
