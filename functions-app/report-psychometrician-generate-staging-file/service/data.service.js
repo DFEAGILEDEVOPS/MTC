@@ -1,7 +1,6 @@
 'use strict'
 
 const async = require('async')
-const azure = require('azure-storage')
 const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
@@ -150,19 +149,14 @@ const dataService = {
         let tableStorageData
 
         if (data.checkCode) { // condition as some pupils may not have taken checks
-          const query = new azure.TableQuery()
-            .top(1)
-            .where('PartitionKey eq ?', data.checkCode)
-
           try {
             tableStorageData = await async.parallel({
-              marking: async () => azureTableService.queryEntitiesAsync(markingTable, query, null, null),
+              marking: async () => azureTableService.retrieveEntityAsync(markingTable, data.schoolGuid, data.checkCode),
               payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
             })
           } catch (error) {
             console.error(`writeStage2File() worker Lookup failed for checkCode [${data.checkCode}]`, error)
           }
-
           try {
             const archive = R.path(['payload', 'result', 'archive', '_'], tableStorageData)
             if (archive.length > 0) {
@@ -175,7 +169,7 @@ const dataService = {
             throw error
           }
 
-          const entity = R.head(R.pathOr([{}], ['marking', 'result', 'entries'], tableStorageData))
+          const entity = R.pathOr([{}], ['marking', 'result'], tableStorageData)
 
           try {
             const markingData = JSON.parse(R.path(['markedAnswers', '_'], entity))

@@ -306,11 +306,6 @@ export class CheckComponent implements OnInit, CanExit {
    * @param {string} answer
    */
   manualSubmitHandler(answer: string) {
-    // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    if (!this.isWarmUp) {
-      const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
-      this.answerService.setAnswer(answerSet);
-    }
     this.changeState();
   }
 
@@ -319,11 +314,6 @@ export class CheckComponent implements OnInit, CanExit {
    * @param {string} answer
    */
   questionTimeoutHandler(answer: string) {
-    // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    if (!this.isWarmUp) {
-      const answerSet = new Answer(this.question.factor1, this.question.factor2, answer, this.question.sequenceNumber);
-      this.answerService.setAnswer(answerSet);
-    }
     this.changeState();
   }
 
