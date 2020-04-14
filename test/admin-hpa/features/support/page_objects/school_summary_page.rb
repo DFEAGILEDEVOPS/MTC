@@ -16,8 +16,6 @@ class SchoolSummaryPage < SitePrism::Page
     element :caption, '.govuk-body', text: 'Pupil Register Summary'
     sections :rows, 'tbody tr' do
       element :total, 'td:nth-of-type(1)'
-      element :completed, 'td:nth-of-type(2)'
-      element :not_taking, 'td:nth-of-type(3)'
     end
   end
 
@@ -35,6 +33,7 @@ class SchoolSummaryPage < SitePrism::Page
     sections :rows, 'tbody tr' do
       element :date, 'td:nth-of-type(1)'
       element :pins_generated, 'td:nth-of-type(2)'
+      element :users_logged_in, 'td:nth-of-type(3)'
     end
   end
 
