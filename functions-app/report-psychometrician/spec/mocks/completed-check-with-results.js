@@ -13,7 +13,10 @@ module.exports = {
   maxMark: 10,
   markedAt: moment('2018-02-12T15:10:05.418'),
   startedAt: moment('2018-02-11T15:42:38.807'),
-  formData: [{ f1: 2, f2: 5 }, { f1: 11, f2: 2 }, { f1: 5, f2: 10 }, { f1: 4, f2: 4 }, { f1: 3, f2: 9 }, { f1: 2, f2: 4 }, { f1: 3, f2: 3 }, { f1: 4, f2: 9 }, { f1: 6, f2: 5 }, { f1: 12, f2: 12 }],
+  formData: [{ f1: 2, f2: 5 }, { f1: 11, f2: 2 }, { f1: 5, f2: 10 }, { f1: 4, f2: 4 }, { f1: 3, f2: 9 }, {
+    f1: 2,
+    f2: 4
+  }, { f1: 3, f2: 3 }, { f1: 4, f2: 9 }, { f1: 6, f2: 5 }, { f1: 12, f2: 12 }],
   data: {
     device: {
       navigator: {
@@ -87,7 +90,16 @@ module.exports = {
       data: {
         sequenceNumber: 1
       }
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:24.003Z',
+      data: {
+        sequenceNumber: 1,
+        question: '1x1'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:25.904Z'
     }, {
@@ -95,8 +107,20 @@ module.exports = {
       clientTimestamp: '2018-02-11T15:42:25.905Z'
     }, {
       type: 'QuestionRendered',
-      clientTimestamp: '2018-02-11T15:42:27.909Z'
-    }, {
+      clientTimestamp: '2018-02-11T15:42:27.909Z',
+      data: {
+        sequenceNumber: 2
+      }
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:27.909Z',
+      data: {
+        sequenceNumber: 2,
+        question: '1x2'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:29.630Z'
     }, {
@@ -104,8 +128,20 @@ module.exports = {
       clientTimestamp: '2018-02-11T15:42:29.631Z'
     }, {
       type: 'QuestionRendered',
-      clientTimestamp: '2018-02-11T15:42:31.636Z'
-    }, {
+      clientTimestamp: '2018-02-11T15:42:31.636Z',
+      data: {
+        sequenceNumber: 3
+      }
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:31.636Z',
+      data: {
+        sequenceNumber: 3,
+        question: '1x3'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:32.930Z'
     }, {
@@ -126,7 +162,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:42:40.796Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:40.796Z',
+      data: {
+        sequenceNumber: 1,
+        question: '2x5'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:42.514Z'
     }, {
@@ -135,7 +180,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:42:44.519Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:44.519Z',
+      data: {
+        sequenceNumber: 2,
+        question: '11x2'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:45.963Z'
     }, {
@@ -144,7 +198,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:42:47.968Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:47.968Z',
+      data: {
+        sequenceNumber: 3,
+        question: '4x4'
+      }
+    },
+    {
       type: 'RefreshDetected',
       clientTimestamp: '2018-02-11T15:42:53.156Z'
     }, {
@@ -153,6 +216,14 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:42:55.170Z'
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:55.170Z',
+      data: {
+        sequenceNumber: 4,
+        question: '4x4'
+      }
     }, {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:42:57.082Z'
@@ -162,7 +233,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:42:59.091Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:42:59.091Z',
+      data: {
+        sequenceNumber: 5,
+        question: '3x9'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:01.166Z'
     }, {
@@ -171,7 +251,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:43:03.172Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:43:03.172Z',
+      data: {
+        sequenceNumber: 6,
+        question: '2x8'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:07.396Z'
     }, {
@@ -180,7 +269,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:43:09.401Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:43:09.401Z',
+      data: {
+        sequenceNumber: 7,
+        question: '3x3'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:12.250Z'
     }, {
@@ -189,7 +287,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:43:14.255Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:43:14.255Z',
+      data: {
+        sequenceNumber: 8,
+        question: '2x8'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:19.203Z'
     }, {
@@ -198,7 +305,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:43:21.207Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:43:21.207Z',
+      data: {
+        sequenceNumber: 9,
+        question: '6x5'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:23.263Z'
     }, {
@@ -207,7 +323,16 @@ module.exports = {
     }, {
       type: 'QuestionRendered',
       clientTimestamp: '2018-02-11T15:43:25.266Z'
-    }, {
+    },
+    {
+      type: 'QuestionTimerStarted',
+      clientTimestamp: '2018-02-11T15:43:25.266Z',
+      data: {
+        sequenceNumber: 10,
+        question: '12x12'
+      }
+    },
+    {
       type: 'QuestionAnswered',
       clientTimestamp: '2018-02-11T15:43:26.771Z'
     }, {
