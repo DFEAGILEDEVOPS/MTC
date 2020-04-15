@@ -2,13 +2,13 @@
 
 /* global describe it expect jasmine beforeEach spyOn */
 
-const controller = require('../../../controllers/helpdesk')
+const controller = require('../../../controllers/helpdesk-impersonation')
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
 const ValidationError = require('../../../lib/validation-error')
 
 const httpMocks = require('node-mocks-http')
 
-describe('helpdesk controller', () => {
+describe('helpdesk impersonation controller', () => {
   let next
 
   function getRes () {
