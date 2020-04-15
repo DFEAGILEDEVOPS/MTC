@@ -30,13 +30,14 @@ Feature:
     And I enter and submit a valid <dfenumber> for impersonation
     Then I should be taken to the teachers school homepage corresponding to that <dfenumber>
     And I should see helpdesk's name
+    And helpdesk tools should be displayed
 
     Examples:
       | helpdesk | dfenumber |
       | helpdesk | 9991001   |
-      | helpdesk | 9991002   |
-      | helpdesk | 9991003   |
-      | helpdesk | 9991004   |
+#      | helpdesk | 9991002   |
+#      | helpdesk | 9991003   |
+#      | helpdesk | 9991004   |
 
   Scenario: Removing Impersonation returns user to Helpdesk impersonation page
     Given I have impersonated a school with the helpdesk user

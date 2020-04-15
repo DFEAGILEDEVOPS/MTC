@@ -197,3 +197,8 @@ And(/^I can return to the school landing page$/) do
   unauthorized_page.back_to_home.click
   expect(school_landing_page).to be_displayed
 end
+
+
+And(/^helpdesk tools should be displayed$/) do
+  expect(school_landing_page.helpdesk_tools).to be_all_there
+end

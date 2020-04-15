@@ -52,6 +52,10 @@ class SchoolLandingPage < SitePrism::Page
     element :service_message_text, '.govuk-body'
   end
 
+  section :helpdesk_tools, '.app-related-items', text: 'Helpdesk Tools' do
+    element :summary, 'a[href="/helpdesk/school-summary"]', text: 'View PIN usage'
+  end
+
   section :mtc_process, '#step-by-step-navigation' do
     element :show_all, 'button', text: 'Show all'
     section :prepare_for_check, '#prepare-for-the-check' do
