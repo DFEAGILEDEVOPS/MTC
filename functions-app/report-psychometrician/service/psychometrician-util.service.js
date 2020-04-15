@@ -418,10 +418,11 @@ psUtilService.getBrowser = function (userAgent) {
   return agent.toString()
 }
 
-psUtilService.getLoadTime = function (questionNumber, audits) {
+psUtilService.getLoadTime = function (questionNumber, factor1, factor2, audits) {
   const entry = audits.find(e => {
-    if (R.propEq('type', 'QuestionRendered', e) &&
-      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+    if (R.propEq('type', 'QuestionTimerStarted', e) &&
+      R.pathEq(['data', 'sequenceNumber'], questionNumber, e) &&
+      R.pathEq(['data', 'question'], `${factor1}x${factor2}`, e)) {
       return true
     }
   })

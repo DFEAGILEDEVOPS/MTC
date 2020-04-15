@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
+import { AnswerService } from '../services/answer/answer.service';
+import { AccessArrangements } from '../access-arrangements';
 import { AuditService } from '../services/audit/audit.service';
 import {
   QuestionRendered,
@@ -8,12 +10,12 @@ import {
   QuestionTimerEnded,
   QuestionTimerCancelled
 } from '../services/audit/auditEntry';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Config } from '../config.model';
+import { QuestionService } from '../services/question/question.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
-import { QuestionService } from '../services/question/question.service';
-import { Config } from '../config.model';
-import { AccessArrangements } from '../access-arrangements';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Answer } from '../services/answer/answer.model';
 
 @Component({
   selector: 'app-practice-question',
@@ -123,7 +125,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
               protected windowRefService: WindowRefService,
               protected questionService: QuestionService,
               protected storageService: StorageService,
-              protected speechService: SpeechService) {
+              protected speechService: SpeechService,
+              protected answerService: AnswerService) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
 
@@ -148,18 +151,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }));
     // Start the countdown and page timeout timers
     this.startTimer();
-  }
-
-  /**
-   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
-   */
-  async preSendTimeoutEvent() {
-    if (!this.config.questionReader) {
-      return this.soundComponent.playEndOfQuestionSound();
-    }
-
-    await this.speechService.waitForEndOfSpeech();
-    this.soundComponent.playEndOfQuestionSound();
   }
 
   /**
@@ -293,17 +284,31 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
+   */
+  async preSendTimeoutEvent() {
+    if (!this.isWarmUpQuestion) {
+      const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
+      this.answerService.setAnswer(answer);
+    }
+
+    if (!this.config.questionReader) {
+      return this.soundComponent.playEndOfQuestionSound();
+    }
+
+    await this.speechService.waitForEndOfSpeech();
+    this.soundComponent.playEndOfQuestionSound();
+  }
+
+  /**
    * Send the collected answer back to the parent component when the timer has
    * timed out.  Send whatever answer has been collected so far.
    * @return {boolean}
    */
   async sendTimeoutEvent() {
-    // console.log('sendTimeoutEvent() called');
     if (this.submitted) {
-      // console.log('sendTimeout(): answer already submitted');
       return false;
     }
-    // console.log(`practice-question.component: sendTimeoutEvent(): ${this.answer}`);
     this.auditService.addEntry(new QuestionTimerEnded({
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`

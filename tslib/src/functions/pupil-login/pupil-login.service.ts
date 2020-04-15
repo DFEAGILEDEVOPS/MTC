@@ -42,10 +42,7 @@ export class PupilLoginService {
       payload: message,
       processedAt: moment().toDate()
     })
-    if (message.practice === false) {
-      const loginDate = new Date(message.loginAt)
-      return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, loginDate)
-    }
-    return
+    const loginDate = new Date(message.loginAt)
+    return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, loginDate)
   }
 }
