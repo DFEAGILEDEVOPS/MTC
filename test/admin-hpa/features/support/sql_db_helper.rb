@@ -1,13 +1,13 @@
 class SqlDbHelper
 
-  def self.connect(admin_user,admin_password,server,port,database,azure_var)
+  def self.connect(admin_user, admin_password, server, port, database, azure_var)
     begin
       TinyTds::Client.new(username: admin_user,
-                                       password: admin_password,
-                                       host: server,
-                                       port: port,
-                                       database: database,
-                                       azure: azure_var
+                          password: admin_password,
+                          host: server,
+                          port: port,
+                          database: database,
+                          azure: azure_var
       )
     rescue TinyTds::Error => e
       abort "Test run failed due to - #{e.to_s}; SQL details: username=#{admin_user}, password=#{admin_password}, host=#{server}, port=#{port}, database=#{database}, azure=#{azure_var}"
@@ -283,9 +283,9 @@ class SqlDbHelper
   end
 
   def self.remove_all_pupil_from_group
-      sql = "UPDATE [mtc_admin].[pupil] SET group_id = null"
-      result = SQL_CLIENT.execute(sql)
-      result.do
+    sql = "UPDATE [mtc_admin].[pupil] SET group_id = null"
+    result = SQL_CLIENT.execute(sql)
+    result.do
   end
 
   def self.delete_all_from_group
@@ -315,7 +315,7 @@ class SqlDbHelper
   end
 
 
-  def self.set_pupil_attendance_via_school(school_id,code)
+  def self.set_pupil_attendance_via_school(school_id, code)
     sql = "UPDATE [mtc_admin].[pupil] set attendanceId=#{code} WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
@@ -333,7 +333,7 @@ class SqlDbHelper
     sql = "INSERT INTO [mtc_admin].[checkFormWindow] (checkForm_id, checkWindow_id, createdAt) VALUES (4, 1, '2019-01-29 14:32:56.61 +00:00')"
     result = SQL_CLIENT.execute(sql)
     result.insert
-   end
+  end
 
   def self.delete_from_hdf(school_id)
     sql = "DELETE from [mtc_admin].[hdf] where school_id='#{school_id}'"
@@ -376,11 +376,18 @@ class SqlDbHelper
     school_res.values.first
   end
 
-  def self.set_check_status(status_id,check_id)
+  def self.get_all_checks_from_school(school_id)
+    sql = "SELECT * FROM [mtc_admin].[check] where pupil_id IN (Select id from mtc_admin.pupil where school_id=#{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.set_check_status(status_id, check_id)
     sql = "UPDATE [mtc_admin].[check] set checkStatus_id=#{status_id} WHERE id=#{check_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
   #
   # def self.set_pupil_status_via_upn_list(upn_array)
   #   sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=4 WHERE upn in ('#{upn_array.join("','")}')"
@@ -460,6 +467,34 @@ class SqlDbHelper
     pupil_details_res = result.first
     result.cancel
     pupil_details_res
+  end
+
+  def self.live_checks_created_at(date, school_id)
+    sql = "SELECT * from mtc_admin.[check] c INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id) where CONVERT(DATE, c.createdAt)='#{date}' AND p.school_id =#{school_id} AND c.isLiveCheck = 1"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.count_live_logins_per_date(date, school_id)
+    sql = "SELECT COUNT(*) from mtc_admin.[check] c INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id) where CONVERT(DATE, c.createdAt)='#{date}' AND p.school_id =#{school_id} AND c.isLiveCheck = 1 and c.pupilLoginDate is not null"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
+  end
+
+  def self.tio_checks_created_at(date, school_id)
+    sql = "SELECT * from mtc_admin.[check] c INNER JOIN [mtc_admin].pupil p ON (p.id = c.pupil_id) where CONVERT(DATE, c.createdAt)='#{date}' AND p.school_id =#{school_id} AND c.isLiveCheck = 0"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.count_tio_logins_per_date(date, school_id)
+    sql = "SELECT COUNT(*) from mtc_admin.[check] c INNER JOIN [mtc_admin].pupil p ON (p.id = c.pupil_id) where CONVERT(DATE, c.createdAt)='#{date}' AND p.school_id =#{school_id} AND c.isLiveCheck = 0 and c.pupilLoginDate is not null"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
   end
 
 end

@@ -1,0 +1,107 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <% if (messages && messages.info && messages.info.length) { %>
+      <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+        <%= messages.info %>
+      </div>
+      <% } %>
+      <h1 class="govuk-heading-xl">Usage Summary for <%= summary.schoolName %> [<%= summary.dfeNumber %>]</h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <table id="registerSummary" name="registerSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Pupil Register Summary</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">
+              Total
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <%= summary.register.total %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="liveSummary" name="liveSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Live Checks</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Date
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Pins Generated
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Completed
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <% summary.liveCheckSummary.forEach((lcs, index) => { %>
+          <tr class="govuk-table__row">
+            <td scope="row">
+              <%= lcs.date %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.pinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.loggedIn %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= lcs.complete %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <table id="tioSummary" name="tioSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Try-it-Out Checks</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Date
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Pins Generated
+            </th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+              Users Logged In
+            </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <% summary.tioCheckSummary.forEach((tcs, index) => { %>
+          <tr class="govuk-table__row">
+            <td scope="row">
+              <%= tcs.date %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.pinsGenerated %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= tcs.loggedIn %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="govuk-back-to-top">
+        <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+          <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg"
+            width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+          </svg>Back to top
+        </a>
+      </div>
+    </div>
+  </div>
+</main>

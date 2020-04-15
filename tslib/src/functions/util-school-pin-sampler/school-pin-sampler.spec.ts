@@ -46,11 +46,13 @@ describe('school-pin-sampler', () => {
     const sampleSizeRequested = 5
     const samples = sut.generateSample(sampleSizeRequested, moment.utc())
     expect(samples.length).toEqual(sampleSizeRequested)
-    expect(samples[0].timezone).toEqual('Andorra (GMT +01:00)')
-    expect(samples[1].timezone).toEqual('United Arab Emirates (GMT +04:00)')
-    expect(samples[2].timezone).toEqual('Afghanistan (GMT +04:30)')
-    expect(samples[3].timezone).toEqual('Antigua & Barbuda (GMT -04:00)')
-    expect(samples[4].timezone).toEqual('Anguilla (GMT -04:00)')
+    const tzUtil = new TimezoneUtil()
+    const zones = tzUtil.getTimezoneList()
+    expect(samples[0].timezone).toEqual(zones[0].name)
+    expect(samples[1].timezone).toEqual(zones[1].name)
+    expect(samples[2].timezone).toEqual(zones[2].name)
+    expect(samples[3].timezone).toEqual(zones[3].name)
+    expect(samples[4].timezone).toEqual(zones[4].name)
   })
 
   test('does randomise if specified', () => {
