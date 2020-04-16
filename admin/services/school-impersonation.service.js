@@ -13,6 +13,13 @@ const schoolImpersonationService = {}
  * @returns {Object}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
+  if (typeof dfeNumber === 'string') {
+    dfeNumber = dfeNumber.trim()
+    if (dfeNumber[3] === '-' || dfeNumber[3] === '/') {
+      dfeNumber = dfeNumber.slice(0, 3) + dfeNumber.slice(4)
+    }
+  }
+
   const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
   // returns a validation error if dfeNumber provided is empty or has incorrect type
   if (dfeNumberValidationError.hasError()) {
