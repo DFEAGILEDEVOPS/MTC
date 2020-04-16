@@ -13,11 +13,15 @@ const schoolImpersonationService = {}
  * @returns {Object}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
-  if (typeof dfeNumber === 'string') {
+/*   if (typeof dfeNumber === 'string') {
     dfeNumber = dfeNumber.trim()
     if (dfeNumber[3] === '-' || dfeNumber[3] === '/') {
       dfeNumber = dfeNumber.slice(0, 3) + dfeNumber.slice(4)
     }
+  } */
+  if (typeof dfeNumber === 'string') {
+    const stripNonDigitsRegex = /[^0-9]/g
+    dfeNumber = dfeNumber.replace(stripNonDigitsRegex, '')
   }
 
   const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)

@@ -72,59 +72,23 @@ describe('schoolImpersonationService', () => {
       await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
     })
-    it('detects and removes hyphen at index 3 in the dfeNumber', async () => {
+    it('detects and removes non digits within the dfe number', async () => {
       spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       spyOn(schoolImpersonationService, 'impersonateSchool')
       const user = {}
-      const dfeNumber = '123-0000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
+      await schoolImpersonationService.setSchoolImpersonation(user, '123-0000')
       expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
-    })
-    it('does not detect and remove hyphen at index 2 in the dfeNumber', async () => {
-      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationService, 'impersonateSchool')
-      const user = {}
-      const dfeNumber = '12-30000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
-      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('12-30000')
-    })
-    it('does not detect and remove hyphen at index 4 in the dfeNumber', async () => {
-      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationService, 'impersonateSchool')
-      const user = {}
-      const dfeNumber = '1230-000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
-      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230-000')
-    })
-    it('detects and removes forward slash at index 3 in the dfeNumber', async () => {
-      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationService, 'impersonateSchool')
-      const user = {}
-      const dfeNumber = '123/0000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
+      await schoolImpersonationService.setSchoolImpersonation(user, '1-23-0000')
       expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
-    })
-    it('does not detect and remove forward slash at index 2 in the dfeNumber', async () => {
-      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationService, 'impersonateSchool')
-      const user = {}
-      const dfeNumber = '12/30000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
-      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('12/30000')
-    })
-    it('does not detect and remove forward slash at index 4 in the dfeNumber', async () => {
-      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
-      spyOn(schoolImpersonationService, 'impersonateSchool')
-      const user = {}
-      const dfeNumber = '1230/000'
-      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
-      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230/000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123/0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123.0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123000*0')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '.1230000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
     })
   })
 
