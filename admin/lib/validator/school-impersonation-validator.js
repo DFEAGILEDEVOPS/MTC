@@ -7,8 +7,37 @@ const isDfeNumberValid = (dfeNumber) => {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.noInput)
     return validationError
   }
+
+  if (typeof dfeNumber !== 'string') {
+    validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
+    return validationError
+  }
+
+  dfeNumber = dfeNumber.trim()
+  if (dfeNumber[3] === '-' || dfeNumber[3] === '/') {
+    dfeNumber = dfeNumber.slice(0, 3) + dfeNumber.slice(4)
+  }
+
   const isNumericRegex = new RegExp(/^\d+$/)
-  if (typeof dfeNumber !== 'string' || !isNumericRegex.test(dfeNumber)) {
+  if (!isNumericRegex.test(dfeNumber)) {
+    validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
+    return validationError
+  }
+  return validationError
+}
+
+const isDfeNumberValidV2 = (dfeNumber) => {
+  const validationError = new ValidationError()
+
+  if (typeof dfeNumber === 'string') {
+    dfeNumber = dfeNumber.trim()
+    if (dfeNumber[3] === '-' || dfeNumber[3] === '/') {
+      dfeNumber = dfeNumber.slice(0, 3) + dfeNumber.slice(4)
+    }
+  }
+
+  const sevenDigitRegex = new RegExp(/^\d{7}$/)
+  if (!sevenDigitRegex.test(dfeNumber)) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
     return validationError
   }
@@ -18,10 +47,10 @@ const isDfeNumberValid = (dfeNumber) => {
 const isSchoolRecordValid = (school) => {
   const validationError = new ValidationError()
   if (!school || !school.id) {
-    validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectInput)
+    validationError.addError('dfeNumber', SchoolImpersonationMessages.noMatch)
     return validationError
   }
   return validationError
 }
 
-module.exports = { isDfeNumberValid, isSchoolRecordValid }
+module.exports = { isDfeNumberValid: isDfeNumberValidV2, isSchoolRecordValid }
