@@ -9,6 +9,7 @@
     "rebuild": "yarn clean && yarn build",
     "lint": "standard && tslint --project .",
     "test": "yarn lint && yarn jest",
+    "test:throttle": "yarn lint && yarn jest --maxWorkers=2",
     "test:watch": "yarn watch",
     "watch:all": "yarn jest --watchAll",
     "watch": "yarn jest --watch",
