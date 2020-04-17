@@ -27,17 +27,43 @@ Feature:
 
   Scenario Outline: Helpdesk can login as a teacher
     Given I have signed in with <helpdesk>
-    And I enter and submit a valid <dfenumber> for impersonation
-    Then I should be taken to the teachers school homepage corresponding to that <dfenumber>
-    And I should see helpdesk's name
+    When I enter and submit a valid <dfenumber> for impersonation
+    Then I should see helpdesk's name
     And helpdesk tools should be displayed
 
     Examples:
       | helpdesk | dfenumber |
       | helpdesk | 9991001   |
-#      | helpdesk | 9991002   |
-#      | helpdesk | 9991003   |
-#      | helpdesk | 9991004   |
+      | helpdesk | 9991002   |
+      | helpdesk | 9991003   |
+      | helpdesk | 9991004   |
+
+  Scenario Outline: Helpdesk can login as a teacher
+    Given I have signed in with <helpdesk>
+    When I enter and submit a valid <dfenumber> for impersonation
+    Then I should see helpdesk's name
+    And helpdesk tools should be displayed
+
+    Examples:
+      | helpdesk | dfenumber           |
+      | helpdesk | 9a9c9v1bfb0n0m1m    |
+      | helpdesk | 9-991001            |
+      | helpdesk | 99-91001            |
+      | helpdesk | 999-1001            |
+      | helpdesk | 99910-01            |
+      | helpdesk | 999100-1            |
+      | helpdesk | 9/991001            |
+      | helpdesk | 99/91001            |
+      | helpdesk | 999/1001            |
+      | helpdesk | 9991/001            |
+      | helpdesk | 99910/01            |
+      | helpdesk | 999100/1            |
+      | helpdesk | 9991001/            |
+      | helpdesk | 9a9c9v1bfb0n0m1m    |
+      | helpdesk | 9!9@9£1$0%0^2&      |
+      | helpdesk | 9*9(9)1-0+0}3]{     |
+      | helpdesk | "[99'9;"1:0?0/4.,<" |
+
 
   Scenario: Removing Impersonation returns user to Helpdesk impersonation page
     Given I have impersonated a school with the helpdesk user
@@ -49,34 +75,10 @@ Feature:
     When I want to sign out as a helpdesk user
     Then I am taken back to the login page
 
-  Scenario Outline: An error is shown when an invalid Dfe number is entered
+  Scenario: An error is shown when an invalid Dfe number is entered
     Given I am on the helpdesk impersonation page
-    When I enter <invalid_dfe_number> as the Dfe number
+    When I enter 0000000 as the Dfe number
     Then I am shown an error stating the value does not match a school
-
-    Examples:
-      | invalid_dfe_number |
-      | 0000000            |
-      | 1                  |
-
-  Scenario Outline: An error is shown when an invalid Dfe number is entered
-    Given I am on the helpdesk impersonation page
-    When I enter <invalid_dfe_number> as the Dfe number
-    Then I am shown an error stating the value is in the incorrect format
-
-    Examples:
-      | invalid_dfe_number |
-      | .9991002           |
-      | 9 991002           |
-      | 999100 2           |
-      | 9991002 sdfdsafsdf |
-      | sdfdsafsdf         |
-      | kjgjdflkj9991002   |
-      | k9991002           |
-      | 9991002d           |
-      | 9991**2            |
-      | 9991OO2            |
-
 
   Scenario Outline: Helpdesk user can access all pages
     Given I have impersonated a school with the helpdesk user
