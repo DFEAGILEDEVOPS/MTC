@@ -23,7 +23,7 @@ class AddPupilPage < SitePrism::Page
   section :reason, ReasonSection, ".show-age-content"
 
   section :what_is_upn, ".govuk-details" do
-    element :toggle, "summary .govuk-details__summary"
+    element :toggle, ".govuk-details__summary"
     elements :explanatory_text, "p"
     element :more_details, "a[href='https://www.gov.uk/government/publications/unique-pupil-numbers']"
   end
