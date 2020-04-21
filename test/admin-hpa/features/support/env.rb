@@ -34,7 +34,7 @@ require_relative 'helpers'
 include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
-ENV["PUPIL_BASE_URL"] ||='http://localhost:4200'
+ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '300'
 
@@ -73,7 +73,7 @@ Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
-port =  ENV['SQL_PORT'] || 1433
+port = ENV['SQL_PORT'] || 1433
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 azure_test = ENV['AZURE'] || 'false'
 if azure_test == 'true'
@@ -84,7 +84,7 @@ else
   admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 end
 
-SQL_CLIENT = SqlDbHelper.connect(admin_user,admin_password,server,port,database,azure_var)
+SQL_CLIENT = SqlDbHelper.connect(admin_user, admin_password, server, port, database, azure_var)
 
 SQL_CLIENT.execute('SET ANSI_NULLS ON').do
 SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
@@ -98,12 +98,12 @@ SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
 if File.exist?('../../.env')
   credentials = File.read('../../.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
-  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
-  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+  @account_name = credentials.find {|a| a.include? 'AccountName'}.gsub('AccountName=', '')
+  @account_key = credentials.find {|a| a.include? 'AccountKey'}.gsub('AccountKey=', '')
 else
   credentials = ENV['AZURE_STORAGE_CONNECTION_STRING'].split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
-  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
-  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+  @account_name = credentials.find {|a| a.include? 'AccountName'}.gsub('AccountName=', '')
+  @account_key = credentials.find {|a| a.include? 'AccountKey'}.gsub('AccountKey=', '')
 end
 
 ENV["AZURE_ACCOUNT_NAME"] ||= @account_name
@@ -121,7 +121,7 @@ SqlDbHelper.update_to_25_questions
 
 
 redis_key = ENV['REDIS_KEY'] || ''
-redis_port =  ENV['REDIS_PORT'] || 6379
+redis_port = ENV['REDIS_PORT'] || 6379
 
 if ENV['DOCKER'] == 'true'
   redis_host = 'redis'
@@ -137,3 +137,9 @@ end
 
 # clear redis cache before run
 REDIS_CLIENT.flushall
+
+# BrowserStack env vars
+#
+ENV['BS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BS_KEY'))}.split('=').last
+ENV['BS_USER'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BS_USER'))}.split('=').last
+
