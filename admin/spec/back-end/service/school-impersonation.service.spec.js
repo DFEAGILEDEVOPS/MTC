@@ -54,7 +54,44 @@ describe('schoolImpersonationService', () => {
       expect(schoolImpersonationValidator.isSchoolRecordValid).toHaveBeenCalled()
       expect(schoolImpersonationService.impersonateSchool).not.toHaveBeenCalled()
     })
+    it('detects and trims leading spaces in the dfeNumber', async () => {
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
+      spyOn(schoolImpersonationService, 'impersonateSchool')
+      const user = {}
+      const dfeNumber = ' 1230000'
+      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+    })
+    it('detects and trims trailing spaces in the dfeNumber', async () => {
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
+      spyOn(schoolImpersonationService, 'impersonateSchool')
+      const user = {}
+      const dfeNumber = '1230000 '
+      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+    })
+    it('detects and removes non digits within the dfe number', async () => {
+      spyOn(schoolImpersonationValidator, 'isDfeNumberValid').and.returnValue(new ValidationError())
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue({ dfeNumber: '1230000', id: 1, timezone: '' })
+      spyOn(schoolImpersonationService, 'impersonateSchool')
+      const user = {}
+      await schoolImpersonationService.setSchoolImpersonation(user, '123-0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '1-23-0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123/0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123.0000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '123000*0')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+      await schoolImpersonationService.setSchoolImpersonation(user, '.1230000')
+      expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')
+    })
   })
+
   describe('impersonateSchool', () => {
     it('populates the user session object without school related data', () => {
       const school = { dfeNumber: 1230000, id: 1, timezone: '' }
@@ -63,6 +100,7 @@ describe('schoolImpersonationService', () => {
       expect(user).toEqual({ School: 1230000, schoolId: 1, timezone: '', role: 'helpdesk' })
     })
   })
+
   describe('removeImpersonation', () => {
     it('returns the user session object without school related data', () => {
       const user = { School: '1230000', schoolId: 1, timezone: '', role: 'helpdesk' }

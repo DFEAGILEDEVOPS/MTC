@@ -1,14 +1,11 @@
 const ValidationError = require('../validation-error')
 const SchoolImpersonationMessages = require('../errors/school-impersonation')
 
-const isDfeNumberValid = (dfeNumber) => {
+const isDfeNumberValidV2 = (dfeNumber) => {
   const validationError = new ValidationError()
-  if (!dfeNumber) {
-    validationError.addError('dfeNumber', SchoolImpersonationMessages.noInput)
-    return validationError
-  }
-  const isNumericRegex = new RegExp(/^\d+$/)
-  if (typeof dfeNumber !== 'string' || !isNumericRegex.test(dfeNumber)) {
+
+  const sevenDigitRegex = new RegExp(/^\d{7}$/)
+  if (!sevenDigitRegex.test(dfeNumber)) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
     return validationError
   }
@@ -18,10 +15,10 @@ const isDfeNumberValid = (dfeNumber) => {
 const isSchoolRecordValid = (school) => {
   const validationError = new ValidationError()
   if (!school || !school.id) {
-    validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectInput)
+    validationError.addError('dfeNumber', SchoolImpersonationMessages.noMatch)
     return validationError
   }
   return validationError
 }
 
-module.exports = { isDfeNumberValid, isSchoolRecordValid }
+module.exports = { isDfeNumberValid: isDfeNumberValidV2, isSchoolRecordValid }
