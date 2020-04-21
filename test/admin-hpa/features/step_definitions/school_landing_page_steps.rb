@@ -124,6 +124,7 @@ end
 
 And(/^I enter and submit a valid (.*) for impersonation$/) do |dfenumber|
   helpdesk_impersonation_page.dfe_number.set dfenumber
+  sleep 2
   helpdesk_impersonation_page.submit.click
 end
 
@@ -201,4 +202,5 @@ end
 
 And(/^helpdesk tools should be displayed$/) do
   expect(school_landing_page.helpdesk_tools).to be_all_there
+  sleep 2
 end

@@ -13,6 +13,11 @@ const schoolImpersonationService = {}
  * @returns {Object}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
+  if (typeof dfeNumber === 'string') {
+    const stripNonDigitsRegex = /[^0-9]/g
+    dfeNumber = dfeNumber.replace(stripNonDigitsRegex, '')
+  }
+
   const dfeNumberValidationError = schoolImpersonationValidator.isDfeNumberValid(dfeNumber)
   // returns a validation error if dfeNumber provided is empty or has incorrect type
   if (dfeNumberValidationError.hasError()) {
