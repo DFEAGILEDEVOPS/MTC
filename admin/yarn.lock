@@ -1236,47 +1236,10 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/bluebird@^3.4.0":
-  version "3.5.28"
-  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.28.tgz#04c1a520ff076649236bc8ca21198542ce2bdb09"
-  integrity sha512-0Vk/kqkukxPKSzP9c8WJgisgGDx5oZDbsLLWIP5t70yThO/YleE+GEm2S1GlRALTaack3O7U5OS5qEm7q2kciA==
-
-"@types/body-parser@*":
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.1.tgz#18fcf61768fb5c30ccc508c21d6fd2e8b3bf7897"
-  integrity sha512-RoX2EZjMiFMjZh9lmYrwgoP9RTpAjSHiJxdp4oidAQVO02T7HER3xj9UKue5534ULWeqVEkujhWcyvUce+d68w==
-  dependencies:
-    "@types/connect" "*"
-    "@types/node" "*"
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
-
-"@types/connect@*":
-  version "3.4.32"
-  resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
-  integrity sha512-4r8qa0quOvh7lGD0pre62CAb1oni1OO6ecJLGCezTmhQ8Fz50Arx9RUszryR8KlgK6avuSXvviL6yWyViQABOg==
-  dependencies:
-    "@types/node" "*"
-
-"@types/express-serve-static-core@*":
-  version "4.16.11"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.16.11.tgz#46e8cb091de19d51731a05c2581e515855979dad"
-  integrity sha512-K8d2M5t3tBQimkyaYTXxtHYyoJPUEhy2/omVRnTAKw5FEdT+Ft6lTaTOpoJdHeG+mIwQXXtqiTcYZ6IR8LTzjQ==
-  dependencies:
-    "@types/node" "*"
-    "@types/range-parser" "*"
-
-"@types/express@~4.0.34":
-  version "4.0.39"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.0.39.tgz#1441f21d52b33be8d4fa8a865c15a6a91cd0fa09"
-  integrity sha512-dBUam7jEjyuEofigUXCtublUHknRZvcRgITlGsTbFgPvnTwtQUt2NgLakbsf+PsGo/Nupqr3IXCYsOpBpofyrA==
-  dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "*"
-    "@types/serve-static" "*"
 
 "@types/got@^9.6.9":
   version "9.6.9"
@@ -1319,11 +1282,6 @@
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
-"@types/mime@*":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
-  integrity sha512-FwI9gX75FgVBJ7ywgnq/P7tw+/o1GUbtP0KzbtusLigAOgIgNISRK0ZPl4qertvXSIE8YbsVJueQ90cDt9YYyw==
-
 "@types/moment@^2.13.0":
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
@@ -1365,11 +1323,6 @@
   dependencies:
     ts-toolbelt "^6.1.11"
 
-"@types/range-parser@*":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
-  integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
-
 "@types/readable-stream@^2.3.5":
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/@types/readable-stream/-/readable-stream-2.3.5.tgz#99c215f9c78563ebdfeff400246a724fb36bae4a"
@@ -1377,14 +1330,6 @@
   dependencies:
     "@types/node" "*"
     safe-buffer "*"
-
-"@types/serve-static@*":
-  version "1.13.3"
-  resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.3.tgz#eb7e1c41c4468272557e897e9171ded5e2ded9d1"
-  integrity sha512-oprSwp094zOglVrXdlo/4bAHtKTAxX6VT8FOZlBKrmyLbNvE1zxZyJ6yikMVtHIvwP45+ZQGJn+FdXGKTozq0g==
-  dependencies:
-    "@types/express-serve-static-core" "*"
-    "@types/mime" "*"
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -2121,7 +2066,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^3.3.0, bluebird@^3.3.3, bluebird@^3.4.0:
+bluebird@^3.3.0, bluebird@^3.3.3:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.1.tgz#df70e302b471d7473489acf26a93d63b53f874de"
   integrity sha512-DdmyoGCleJnkbp3nkbxTLJ18rjDsE4yCggEwKNXkeV123sPNfOCYeDoeuOY+F2FrSjO1YXcTU+dsy96KMy+gcg==
@@ -4012,17 +3957,6 @@ express-session@^1.15.6:
     parseurl "~1.3.3"
     safe-buffer "5.2.0"
     uid-safe "~2.1.5"
-
-express-validator@^3.2.0:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/express-validator/-/express-validator-3.2.1.tgz#45603e7eee693185c2198fbdebd414925ffd3524"
-  integrity sha1-RWA+fu5pMYXCGY+969QUkl/9NSQ=
-  dependencies:
-    "@types/bluebird" "^3.4.0"
-    "@types/express" "~4.0.34"
-    bluebird "^3.4.0"
-    lodash "^4.16.0"
-    validator "~6.2.0"
 
 express-winston@^3.0.1:
   version "3.4.0"
@@ -6668,7 +6602,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.0.0, lodash@^4.12.0, lodash@^4.16.0, lodash@^4.17.10, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.6.1, lodash@~4.17.10, lodash@~4.17.15:
+lodash@^4.0.0, lodash@^4.12.0, lodash@^4.17.10, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.6.1, lodash@~4.17.10, lodash@~4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -10431,11 +10365,6 @@ validator@^12.2.0:
   version "12.2.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-12.2.0.tgz#660d47e96267033fd070096c3b1a6f2db4380a0a"
   integrity sha512-jJfE/DW6tIK1Ek8nCfNFqt8Wb3nzMoAbocBF6/Icgg1ZFSBpObdnwVY2jQj6qUqzhx5jc71fpvBWyLGO7Xl+nQ==
-
-validator@~6.2.0:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-6.2.1.tgz#bc575b78d15beb2e338a665ba9530c7f409ef667"
-  integrity sha1-vFdbeNFb6y4zimZbqVMMf0Ce9mc=
 
 validator@~9.4.1:
   version "9.4.1"
