@@ -23,13 +23,13 @@ Feature: Pupil Status Outcome
     Given I have logged in to the check
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Not started'
+    And I should see how many days I have left and when the check window closes
 
   @pupil_not_taking_check
   Scenario Outline: Pupil Status is Not Taking the Check when a pupil is not taking the check
     Given I have a pupil not taking the check with the reason <reason>
     When I am on the Pupil Status page
     Then I can see the status for the pupil is <reason> for pupil not taking the check
-    And I should see how many days I have left and when the check window closes
 
     Examples:
       | reason                                         |
