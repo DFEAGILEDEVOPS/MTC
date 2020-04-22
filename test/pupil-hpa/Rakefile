@@ -6,6 +6,7 @@ require 'parallel'
 require 'colorize'
 
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
+File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
 
 BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
   Cucumber::Rake::Task.new("bs_#{browser}".to_sym) do |task|

@@ -7,6 +7,7 @@ require 'colorize'
 require_relative 'features/support/browserstack_settings'
 
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
+File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
 
 Cucumber::Rake::Task.new(:features) do |t|
   @start_time = Time.now
