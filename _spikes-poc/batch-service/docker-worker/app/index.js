@@ -27,7 +27,7 @@ async function drainPool () {
 }
 
 ;(async function main () {
-  try{
+  try {
     console.log(`${name} starting`)
     await initPool()
     console.log(`${name} db pool init complete`)
