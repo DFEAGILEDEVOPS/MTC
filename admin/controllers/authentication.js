@@ -20,6 +20,8 @@ const home = (req, res) => {
         return res.redirect(homeRoutes.serviceManagerHomeRoute)
       case roles.helpdesk:
         return res.redirect(homeRoutes.schoolHomeRoute)
+      case roles.techSupport:
+        return res.redirect(homeRoutes.techSupportHomeRoute)
     }
   } else {
     switch (config.Auth.mode) {
@@ -66,6 +68,8 @@ const postSignIn = (req, res) => {
       return res.redirect(homeRoutes.testDeveloperHomeRoute)
     case roles.serviceManager:
       return res.redirect(homeRoutes.serviceManagerHomeRoute)
+    case roles.techSupport:
+      return res.redirect(homeRoutes.techSupportHomeRoute)
     default:
       return res.redirect(homeRoutes.schoolHomeRoute)
   }
