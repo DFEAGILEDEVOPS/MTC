@@ -144,5 +144,5 @@ REDIS_CLIENT.flushall
 
 # BrowserStack env vars
 #
-ENV['BS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BS_KEY'))}.split('=').last
-ENV['BS_USER'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BS_USER'))}.split('=').last
+ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
+ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last

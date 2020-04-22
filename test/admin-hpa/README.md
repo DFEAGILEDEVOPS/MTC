@@ -34,8 +34,8 @@ These two commands will install all the gems that the tests need.
 To run in BrowserStack mode, please enter you username and password to the root .env file in the following format:
 
 ```
-BS_KEY=XYZ
-BS_USER=xyz
+BROWSERSTACK_ACCESS_KEY=XYZ
+BROWSERSTACK_USERNAME=xyz
 ``` 
 
 #####Basic
