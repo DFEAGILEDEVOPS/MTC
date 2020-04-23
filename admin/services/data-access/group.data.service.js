@@ -235,13 +235,19 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
 /**
  * Soft deletes a group.
  * @param {number} groupId the id of the group to mark as deleted
+ * @param {number} schoolId - the guaranteed schoolId of the teacher
  * @returns {Promise<*>}
  */
-groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
+groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
   const params = [
     {
       name: 'groupId',
       value: groupId,
+      type: TYPES.Int
+    },
+    {
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }
   ]
@@ -249,8 +255,18 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   let sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
   const groups = await sqlService.query(sql, params)
 
-  sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
-  DELETE [mtc_admin].[group] WHERE id=@groupId`
+  sql = `
+      DECLARE @groupSchoolId Int; -- the school_id on the group
+      SET @groupSchoolId = (SELECT school_id FROM [mtc_admin].[group] WHERE id = @groupId);
+      IF @groupSchoolId <> @schoolId
+          THROW 51000, 'FORBIDDEN: the user is not allowed to edit this group', 1;
+
+      UPDATE [mtc_admin].[pupil]
+         SET group_id=NULL
+       WHERE group_id = @groupId;
+      
+      DELETE [mtc_admin].[group]
+       WHERE id = @groupId`
 
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
   await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
