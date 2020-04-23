@@ -22,5 +22,10 @@ browser_caps:
     "os": "Windows"
     "os_version": "10"
     "browser": "Chrome"
-    "browser_version": "58.0"
+    "resolution": "1024x768"
+  dskjfskfhj:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "Edge"
+    "browser_version": "81.0"
     "resolution": "1024x768"
