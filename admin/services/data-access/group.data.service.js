@@ -5,6 +5,7 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('./redis-cache.service')
+const { isPositive } = require('ramda-adjunct')
 
 /**
  * Get active groups (non-soft-deleted).
@@ -239,6 +240,14 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
  * @returns {Promise<*>}
  */
 groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
+  if (!isPositive(schoolId)) {
+    throw new Error('Param error schoolId')
+  }
+
+  if (!isPositive(groupId)) {
+    throw new Error(`Param error groupId '${groupId}'`)
+  }
+
   const params = [
     {
       name: 'groupId',
@@ -251,11 +260,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
       type: TYPES.Int
     }
   ]
-
-  let sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
-  const groups = await sqlService.query(sql, params)
-
-  sql = `
+  const sql = `
       DECLARE @groupSchoolId Int; -- the school_id on the group
       SET @groupSchoolId = (SELECT school_id FROM [mtc_admin].[group] WHERE id = @groupId);
       IF @groupSchoolId <> @schoolId
@@ -269,7 +274,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
        WHERE id = @groupId`
 
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
-  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  await redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
   return modifyResult
 }
 
