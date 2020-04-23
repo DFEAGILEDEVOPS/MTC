@@ -140,3 +140,9 @@ end
 
 # clear redis cache before run
 REDIS_CLIENT.flushall
+
+
+# BrowserStack env vars
+#
+ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
+ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last
