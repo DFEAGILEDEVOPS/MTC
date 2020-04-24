@@ -4,13 +4,23 @@ require 'cucumber/rake/task'
 require 'pry'
 require 'capybara'
 require 'colorize'
+require_relative 'features/support/browserstack_settings'
 
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
+File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
 
 Cucumber::Rake::Task.new(:features) do |t|
   @start_time = Time.now
   t.cucumber_opts = "--format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+end
+
+
+BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
+  Cucumber::Rake::Task.new("bs_#{browser}".to_sym) do |task|
+    task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt"
+    task.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+  end
 end
 
 desc 're run failing test'
@@ -20,9 +30,11 @@ end
 
 at_exit do
   puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
-  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty?
+  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
   puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
-  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty?
+  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
   exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
   colour = exit_code == 0 ? 'green' : 'red'
   puts "## Suite took #{(Time.now - @start_time) / 60}"
