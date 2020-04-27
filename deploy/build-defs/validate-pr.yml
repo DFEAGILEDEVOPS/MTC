@@ -20,8 +20,6 @@ jobs:
   steps:
   - task: Bash@3
     inputs:
-      env:
-        PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
       filePath: 'deploy/pr-label-check.sh'
       arguments: $PULL_REQUEST_ID
       failOnStderr: true
