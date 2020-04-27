@@ -18,18 +18,12 @@ pool:
 jobs:
 - job: FastFail
   steps:
+    - task: ShellScript@2
     displayName: 'Fail if CI Enabled label not applied to PR'
-    failOnStderr: true
-    - bash: |
-    PR_ID=$(System.PullRequest.PullRequestNumber)
-    PR_URL="https://api.github.com/repos/dfeagiledevops/mtc/pulls/$PR_ID"
-    echo "looking up PR at $PR_URL"
-    CURL_RESPONSE=$(curl -s $PR_URL | jq '.labels[] | select(.id==861719997) | .id')
-    echo "response is $CURL_RESPONSE"
-    if [ "$CURL_RESPONSE" -ne "861719997" ]; then
-    exit 1;
-    fi
-- job: BuildAdminImage
+    inputs:
+      scriptPath: '../pr-label-check.sh'
+      failOnStandardError: true
+- job: Generate
   dependsOn: FastFail
     steps:
       - task: ShellScript@2
@@ -37,12 +31,4 @@ jobs:
       inputs:
         scriptPath: 'admin/vso-add-build-and-commit.sh'
         failOnStandardError: true
-#      - task: Docker@1
-#      displayName: 'Create Image'
-#      inputs:
-#        azureSubscriptionEndpoint: 'MTC EE Dev'
-#        azureContainerRegistry: ''
-#        dockerFile: admin/Dockerfile
-#        imageName: 'admin:$(Build.BuildNumber)'
-#        includeSourceTags: true
-#        includeLatestTag: true
+
