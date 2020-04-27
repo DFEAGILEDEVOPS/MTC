@@ -83,11 +83,6 @@ const manageGroupPage = async (req, res, next) => {
     }
   }
 
-  if (group === undefined) {
-    // Possible attempt to edit a group outside of the current school context
-    return next(new Error('Group not found'))
-  }
-
   try {
     pupilsList = await groupService.getPupils(req.user.schoolId, req.params.groupId)
     pupilsList.map((p) => { selectedPupils[p.id] = !!p.group_id })
