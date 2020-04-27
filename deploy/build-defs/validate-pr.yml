@@ -18,16 +18,8 @@ pool:
 jobs:
 - job: FastFail
   steps:
-- task: ShellScript@2
-    scriptPath: 'deploy/pr-label-check.sh'
-    args: '$(System.PullRequest.PullRequestNumber)'
-    failOnStandardError: true
-    displayName: 'Fail if CI Enabled label not applied to PR'
-- job: Generate
-  dependsOn: FastFail
-  steps:
-    - task: ShellScript@2
-    displayName: 'generate build and commit details file'
+  - task: Bash@3
     inputs:
-      scriptPath: 'admin/vso-add-build-and-commit.sh'
-      failOnStandardError: true
+      filePath: 'deploy/pr-label-check.sh'
+      arguments: '1624'
+      failOnStderr: true
