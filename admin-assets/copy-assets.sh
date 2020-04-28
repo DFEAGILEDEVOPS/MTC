@@ -1,6 +1,6 @@
 #!/bin/bash -x
 cd ../admin
-npm install
+yarn install --frozen-lockfile
 cd ../admin-assets
 rm -rf ./assets
 cp -a ../admin/public/. ./assets
