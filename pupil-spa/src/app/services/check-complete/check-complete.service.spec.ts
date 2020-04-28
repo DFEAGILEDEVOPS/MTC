@@ -34,9 +34,9 @@ describe('CheckCompleteService', () => {
           StorageService,
           TokenService,
           AppUsageService,
-          {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
-          {provide: QUEUE_STORAGE_TOKEN},
-          {provide: Router, useValue: mockRouter}
+          { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
+          { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+          { provide: Router, useValue: mockRouter }
         ]
       }
     );

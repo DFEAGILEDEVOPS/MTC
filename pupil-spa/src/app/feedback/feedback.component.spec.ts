@@ -30,7 +30,7 @@ describe('FeedbackComponent', () => {
       imports: [],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
-        { provide: QUEUE_STORAGE_TOKEN },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: Router, useValue: mockRouter },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
