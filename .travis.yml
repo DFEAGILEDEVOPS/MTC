@@ -9,6 +9,8 @@ before_install:
 script:
   - cd admin
   - docker build .
+  - cd ../admin-assets
+  - docker build .
   - cd ../pupil-spa
   - docker build .
   - cd ../pupil-api
