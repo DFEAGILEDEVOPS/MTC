@@ -5,17 +5,17 @@ services:
   - docker
 node_js:
   - 10.16.3
+env:
+  - IMAGE=admin
+  - IMAGE=admin-assets
+  - IMAGE=pupil-spa
+  - IMAGE=pupil-api
 before_install:
   - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-script:
-  - cd admin
-  - docker build .
   - cd ../admin-assets
   - ./copy-assets.sh
-  - docker build .
-  - cd ../pupil-spa
-  - docker build .
-  - cd ../pupil-api
+script:
+  - cd $IMAGE
   - docker build .
 after_script:
   - docker images
