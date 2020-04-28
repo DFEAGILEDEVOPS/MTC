@@ -5,6 +5,7 @@ const sqlService = require('./sql.service')
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const redisCacheService = require('./redis-cache.service')
+const { isPositive } = require('ramda-adjunct')
 
 /**
  * Get active groups (non-soft-deleted).
@@ -235,25 +236,45 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
 /**
  * Soft deletes a group.
  * @param {number} groupId the id of the group to mark as deleted
+ * @param {number} schoolId - the guaranteed schoolId of the teacher
  * @returns {Promise<*>}
  */
-groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
+groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
+  if (!isPositive(schoolId)) {
+    throw new Error('Param error schoolId')
+  }
+
+  if (!isPositive(groupId)) {
+    throw new Error(`Param error groupId '${groupId}'`)
+  }
+
   const params = [
     {
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
+    },
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
     }
   ]
+  const sql = `
+      DECLARE @groupSchoolId Int; -- the school_id on the group
+      SET @groupSchoolId = (SELECT school_id FROM [mtc_admin].[group] WHERE id = @groupId);
+      IF @groupSchoolId <> @schoolId
+          THROW 51000, 'FORBIDDEN: the user is not allowed to edit this group', 1;
 
-  let sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
-  const groups = await sqlService.query(sql, params)
-
-  sql = `UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE group_id=@groupId;
-  DELETE [mtc_admin].[group] WHERE id=@groupId`
+      UPDATE [mtc_admin].[pupil]
+         SET group_id=NULL
+       WHERE group_id = @groupId;
+      
+      DELETE [mtc_admin].[group]
+       WHERE id = @groupId`
 
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
-  await redisCacheService.drop(`group.sqlFindGroups.${groups[0].school_id}`)
+  await redisCacheService.drop(`group.sqlFindGroups.${schoolId}`)
   return modifyResult
 }
 
