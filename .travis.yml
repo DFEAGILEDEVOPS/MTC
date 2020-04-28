@@ -14,6 +14,7 @@ before_install:
   - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
   - cd admin-assets
   - ./copy-assets.sh
+  - cd ..
 script:
   - cd $IMAGE
   - docker build .
