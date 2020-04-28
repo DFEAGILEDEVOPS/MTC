@@ -83,6 +83,9 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (pupilUrlSl
     throw new Error('Pupil url slug is not provided')
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, schoolId)
+  if (!pupil) {
+    throw new Error(`Pupil ${pupilUrlSlug} not found in school ID ${schoolId}`)
+  }
   await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(pupilUrlSlug)
   await preparedCheckSyncService.addMessages(pupilUrlSlug)
   return pupil
