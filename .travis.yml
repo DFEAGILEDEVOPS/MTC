@@ -10,6 +10,7 @@ script:
   - cd admin
   - docker build .
   - cd ../admin-assets
+  - ./copy-assets.sh
   - docker build .
   - cd ../pupil-spa
   - docker build .
