@@ -202,6 +202,10 @@ const editGroup = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+  if (oldGroup === undefined) {
+    // Possible attempt to edit a group outside of the current school context
+    return next(new Error('Group not found'))
+  }
 
   const group = {
     name: req.body.name,
@@ -259,7 +263,7 @@ const removeGroup = async (req, res, next) => {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
-    await groupService.remove(req.user.schoolId, req.params.groupId)
+    await groupService.remove(req.user.schoolId, parseInt(req.params.groupId, 10))
   } catch (error) {
     return next(error)
   }
