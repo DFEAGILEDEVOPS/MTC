@@ -165,7 +165,7 @@ groupService.remove = async (schoolId, groupId) => {
   }
   const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
   await redisCacheService.drop(pupilRegisterRedisKey)
-  return groupDataService.sqlMarkGroupAsDeleted(groupId)
+  return groupDataService.sqlMarkGroupAsDeleted(groupId, schoolId)
 }
 
 module.exports = groupService
