@@ -8,6 +8,10 @@ before_install:
   - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
 script:
   - cd admin
-  - docker build --tag $TRAVIS_PULL_REQUEST .
+  - docker build .
+  - cd ../pupil-spa
+  - docker build .
+  - cd ../pupil-api
+  - docker build .
 after_script:
   - docker images
