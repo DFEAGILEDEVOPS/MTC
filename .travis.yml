@@ -1,3 +1,4 @@
+# currently unused. retained for potential future use to validate docker image builds
 sudo: required
 services:
   - docker
