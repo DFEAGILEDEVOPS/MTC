@@ -20,3 +20,9 @@ script:
   - docker build .
 after_script:
   - docker images
+# should push images on commit to master only
+deploy:
+  - provider: script
+    script: bash deploy/docker/push-images-to-hub.sh
+    on:
+      branch: master
