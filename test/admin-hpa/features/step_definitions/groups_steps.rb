@@ -79,7 +79,7 @@ end
 Given(/^I have added already added a pupil to another group$/) do
   step 'I am on the create group page'
   add_edit_groups_page.group_name.set 'Group1'+ (rand(23243)).to_s
-  pupil = add_edit_groups_page.pupil_list.rows.first
+  pupil = add_edit_groups_page.pupil_list.rows.last
   pupil.checkbox.click
   @pupil_name = pupil.name.text
   add_edit_groups_page.sticky_banner.confirm.click
