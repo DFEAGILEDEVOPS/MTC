@@ -122,6 +122,7 @@ const checkForm = require('./routes/check-form')
 const results = require('./routes/results')
 const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
+const techSupport = require('./routes/tech-support')
 
 if (process.env.NODE_ENV === 'development') {
   piping({
@@ -317,6 +318,7 @@ if (WEBSITE_OFFLINE) {
   app.use('/check-form', checkForm)
   app.use('/results', results)
   app.use('/pupil-status', pupilStatus)
+  app.use('/tech-support', techSupport)
 }
 
 // catch 404 and forward to error handler
