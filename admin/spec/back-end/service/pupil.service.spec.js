@@ -70,4 +70,17 @@ describe('pupil service', () => {
       expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
     })
   })
+
+  describe('#findPupilsBySchoolId', () => {
+    it('it throws an error when schoolId is not provided', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
+      try {
+        await pupilService.findPupilsBySchoolId()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('schoolId is not provided')
+      }
+      expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
+    })
+  })
 })

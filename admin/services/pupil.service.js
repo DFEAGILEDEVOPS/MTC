@@ -38,4 +38,17 @@ pupilService.getPupilsWithFullNames = async (schoolId) => {
   }))
 }
 
+/**
+ * Fetch all pupils for a school by schoolId sorted by lastname ascending.
+ * Sorting to be removed in a future version
+ * @param schoolId
+ * @returns {Promise<*>}
+ */
+pupilService.findPupilsBySchoolId = function findPupilsBySchoolId (schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId is not provided')
+  }
+  return pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+}
+
 module.exports = pupilService
