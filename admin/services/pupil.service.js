@@ -29,7 +29,7 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  */
 pupilService.getPupilsWithFullNames = async (schoolId) => {
   if (!schoolId) {
-    throw new Error('schoolId is not provided')
+    throw new Error('schoolId is required')
   }
   const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
   return pupils.map(p => ({
@@ -41,14 +41,31 @@ pupilService.getPupilsWithFullNames = async (schoolId) => {
 /**
  * Fetch all pupils for a school by schoolId sorted by lastname ascending.
  * Sorting to be removed in a future version
- * @param schoolId
+ * @param schoolId required
  * @returns {Promise<*>}
  */
 pupilService.findPupilsBySchoolId = function findPupilsBySchoolId (schoolId) {
   if (!schoolId) {
-    throw new Error('schoolId is not provided')
+    throw new Error('schoolId is required')
   }
   return pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+}
+
+/**
+ * Fetch all pupils for a school by schoolId sorted by lastname ascending.
+ * Sorting to be removed in a future version
+ * @param urlSlug required
+ * @param schoolId required
+ * @returns {Promise<*>}
+ */
+pupilService.findOneBySlugAndSchool = function findOneBySlugAndSchool (urlSlug, schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  if (!urlSlug) {
+    throw new Error('urlSlug is required')
+  }
+  return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
 }
 
 module.exports = pupilService

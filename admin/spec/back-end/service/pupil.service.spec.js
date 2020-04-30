@@ -65,7 +65,7 @@ describe('pupil service', () => {
         await pupilService.getPupilsWithFullNames()
         fail()
       } catch (error) {
-        expect(error.message).toBe('schoolId is not provided')
+        expect(error.message).toBe('schoolId is required')
       }
       expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
     })
@@ -78,9 +78,22 @@ describe('pupil service', () => {
         await pupilService.findPupilsBySchoolId()
         fail()
       } catch (error) {
-        expect(error.message).toBe('schoolId is not provided')
+        expect(error.message).toBe('schoolId is required')
       }
       expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('#findOneBySlugAndSchool', () => {
+    it('it throws an error when schoolId is not provided', async () => {
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
+      try {
+        await pupilService.findOneBySlugAndSchool()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('schoolId is required')
+      }
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
     })
   })
 })
