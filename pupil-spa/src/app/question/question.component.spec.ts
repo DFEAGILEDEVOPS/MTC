@@ -294,7 +294,7 @@ describe('QuestionComponent', () => {
       if (!questionAnsweredTimestamp || !answerTimestamp) {
         fail('Missing timestamp');
       }
-      expect(answerTimestamp.getTime()).toBeGreaterThanOrEqual(questionAnsweredTimestamp.getTime());
+      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime());
     });
   });
 

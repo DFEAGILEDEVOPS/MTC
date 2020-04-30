@@ -1,16 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpokenPracticeQuestionComponent } from './spoken-practice-question.component';
-import { SpeechService } from '../services/speech/speech.service';
-import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { StorageService } from '../services/storage/storage.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { SoundComponentMock } from '../sound/sound-component-mock';
-import { AnswerService } from '../services/answer/answer.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { SpokenPracticeQuestionComponent } from './spoken-practice-question.component';
+import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
@@ -26,6 +28,7 @@ describe('SpokenPracticeQuestionComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         StorageService,
         WindowRefService,
         AnswerService

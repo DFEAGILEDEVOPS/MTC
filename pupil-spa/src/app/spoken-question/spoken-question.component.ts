@@ -27,7 +27,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected speechService: SpeechService,
               protected questionService: QuestionService,
               protected answerService: AnswerService) {
-    super(auditService, windowRefService, registerInputService, questionService, storageService, speechService, answerService);
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
   }
 
   ngOnInit() {

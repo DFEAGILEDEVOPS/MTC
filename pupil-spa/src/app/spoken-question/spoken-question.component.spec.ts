@@ -3,16 +3,16 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
-import { StorageService } from '../services/storage/storage.service';
+import { SoundComponentMock } from '../sound/sound-component-mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenQuestionComponent } from './spoken-question.component';
+import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { QuestionService } from '../services/question/question.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;

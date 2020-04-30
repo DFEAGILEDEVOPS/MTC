@@ -16,6 +16,7 @@ import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Answer } from '../services/answer/answer.model';
+import {RegisterInputService} from '../services/register-input/registerInput.service';
 
 @Component({
   selector: 'app-practice-question',
@@ -126,7 +127,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
               protected questionService: QuestionService,
               protected storageService: StorageService,
               protected speechService: SpeechService,
-              protected answerService: AnswerService) {
+              protected answerService: AnswerService,
+              protected registerInputService: RegisterInputService) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
 
@@ -335,7 +337,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
         return;
     }
     this.startedAnswering = true;
-    // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       if (this.config.questionReader) {
         // if user input interrupts the question being read out, start the timer
@@ -388,7 +389,17 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    event.preventDefault();
+    event.stopPropagation();
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
+    if (!this.isWarmUpQuestion) {
+      const questionData = {
+        questionNumber: this.sequenceNumber,
+        factor1: this.factor1,
+        factor2: this.factor2
+      };
+      this.registerInputService.addEntry(event, questionData);
+    }
     const key = event.key;
     // register inputs
     switch (key) {
