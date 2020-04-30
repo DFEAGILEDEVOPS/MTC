@@ -1,4 +1,5 @@
 const pupilDataService = require('./data-access/pupil.data.service')
+const sorting = require('../helpers/table-sorting')
 
 const pupilService = {}
 
@@ -32,7 +33,8 @@ pupilService.getPupilsWithFullNames = async (schoolId) => {
     throw new Error('schoolId is required')
   }
   const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
-  return pupils.map(p => ({
+  const sortedPupils = sorting.sortByProps('lastName', pupils)
+  return sortedPupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug
   }))
@@ -44,11 +46,13 @@ pupilService.getPupilsWithFullNames = async (schoolId) => {
  * @param schoolId required
  * @returns {Promise<*>}
  */
-pupilService.findPupilsBySchoolId = function findPupilsBySchoolId (schoolId) {
+pupilService.findPupilsBySchoolId = async function findPupilsBySchoolId (schoolId) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  return pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+  const sortedPupils = sorting.sortByProps('lastName', pupils)
+  return sortedPupils
 }
 
 /**
