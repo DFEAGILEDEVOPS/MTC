@@ -1,0 +1,22 @@
+dist: xenial
+os: linux
+language: node_js
+services:
+  - docker
+node_js:
+  - 10.16.3
+env:
+  - IMAGE=admin
+  - IMAGE=admin-assets
+  - IMAGE=pupil-spa
+  - IMAGE=pupil-api
+before_install:
+  - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
+  - cd admin-assets
+  - ./copy-assets.sh
+  - cd ..
+script:
+  - cd $IMAGE
+  - docker build .
+after_script:
+  - docker images
