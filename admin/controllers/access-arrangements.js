@@ -221,13 +221,16 @@ controller.getAddInputAssistant = async (req, res, next) => {
     next(error)
   }
 
+  let pupils
   try {
     // TODO: load pupil list
+    pupils = []
   } catch (error) {
     return next(error)
   }
   return res.render('access-arrangements/retro-add-input-assistant', {
     breadcrumbs: req.breadcrumbs(),
+    pupils,
     error: new ValidationError()
   })
 }

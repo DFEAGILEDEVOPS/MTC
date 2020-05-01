@@ -40,6 +40,12 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
     isAdminWindowAvailable,
     (req, res, next) => accessArrangementsController.getDeleteAccessArrangements(req, res, next)
   )
+  router.get(
+    '/retro-add-input-assistant',
+    isAuthenticated([roles.teacher, roles.helpdesk]),
+    isAdminWindowAvailable,
+    (req, res, next) => accessArrangementsController.getAddInputAssistant(req, res, next)
+  )
 }
 
 module.exports = router
