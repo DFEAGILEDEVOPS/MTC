@@ -392,6 +392,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
+    if (this.submitted) {
+      return false;
+    }
     if (!this.isWarmUpQuestion) {
       const questionData = {
         questionNumber: this.sequenceNumber,
