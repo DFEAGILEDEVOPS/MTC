@@ -209,4 +209,27 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
+controller.getAddInputAssistant = async (req, res, next) => {
+  res.locals.pageTitle = 'Record input assistant used in Official check'
+  req.breadcrumbs('Select pupils and access arrangements', '/select-access-arrangements')
+  req.breadcrumbs('Record input assistant')
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
+
+  try {
+    // TODO: load pupil list
+  } catch (error) {
+    return next(error)
+  }
+  return res.render('access-arrangements/retro-add-input-assistant', {
+    breadcrumbs: req.breadcrumbs(),
+    error: new ValidationError()
+  })
+}
+
 module.exports = controller
