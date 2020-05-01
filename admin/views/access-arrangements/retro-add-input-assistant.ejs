@@ -11,7 +11,7 @@
         <div class="govuk-error-summary__body">
           <p>See highlighted errors below.</p>
           <ul class="govuk-list govuk-error-summary__list">
-            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'nextButtonInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+            <% error.getUniqueFields(['pupil-autocomplete-container']).map(f => { %>
             <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
             <% }) %>
           </ul>
@@ -30,7 +30,7 @@
               <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
                 <option value="">Select a pupil</option>
                 <% pupils.map(p => { %>
-                <option value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>>
+                <option value="<%= p.urlSlug %>">
                   <%= p.fullName %></option>
                 <% }) %>
               </select>

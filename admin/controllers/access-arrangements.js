@@ -211,7 +211,7 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
 
 controller.getAddInputAssistant = async (req, res, next) => {
   res.locals.pageTitle = 'Record input assistant used in Official check'
-  req.breadcrumbs('Select pupils and access arrangements', '/select-access-arrangements')
+  req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
   req.breadcrumbs('Record input assistant')
 
   try {
@@ -223,8 +223,7 @@ controller.getAddInputAssistant = async (req, res, next) => {
 
   let pupils
   try {
-    // TODO: load pupil list
-    pupils = []
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
   } catch (error) {
     return next(error)
   }
