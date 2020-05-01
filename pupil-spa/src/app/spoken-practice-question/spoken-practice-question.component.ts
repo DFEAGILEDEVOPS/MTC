@@ -19,6 +19,12 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;
 
+  /**
+   * Do not show 'practice' label on top left.
+   */
+  public isWarmUpQuestion = true;
+
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
@@ -28,7 +34,6 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected answerService: AnswerService,
               protected registerInputService: RegisterInputService) {
     super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
-    this.isWarmUpQuestion = true;
   }
 
   ngOnInit() {

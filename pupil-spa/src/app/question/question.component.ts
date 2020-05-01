@@ -54,6 +54,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
+    if (this.submitted) {
+      return;
+    }
     const questionData = {
       questionNumber: this.sequenceNumber,
       factor1: this.factor1,
@@ -68,6 +71,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event) {
+    if (this.submitted) {
+      return;
+    }
     const questionData = {
       questionNumber: this.sequenceNumber,
       factor1: this.factor1,

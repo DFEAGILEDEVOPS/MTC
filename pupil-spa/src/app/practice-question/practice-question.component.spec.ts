@@ -101,6 +101,15 @@ describe('PractiseQuestionComponent', () => {
       component.onClickAnswer(6, event);
       expect(component.answer).toBe('12345');
     });
+    it('does not add input to the answer if enter has been clicked', () => {
+      component.startTimer();
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(2, {});
+      component.onClickAnswer(3, {});
+      component.onClickSubmit({}); // click enter button on the onscreen keyboard
+      component.onClickAnswer(4, {});
+      expect(component.answer).toBe('123');
+    });
   });
 
   describe('onClickBackspace', () => {

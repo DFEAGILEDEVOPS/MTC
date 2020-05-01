@@ -14,7 +14,6 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import {audit} from 'rxjs/operators';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -84,6 +83,21 @@ describe('QuestionComponent', () => {
       expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
       expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
     });
+
+    it('does not register additional mouse events if enter has been clicked', () => {
+      component.startTimer();
+      dispatchMouseEvent();
+      component.onClickAnswer(1, {});
+      dispatchMouseEvent();
+      component.onClickAnswer(2, {});
+      dispatchMouseEvent();
+      component.onClickAnswer(3, {});
+      dispatchMouseEvent();
+      component.onClickSubmit({}); // click enter button on the onscreen keyboard
+      dispatchMouseEvent();
+      component.onClickAnswer(4, {});
+      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is clicked
+    });
   });
 
   describe('handleTouchEvent', () => {
@@ -100,6 +114,21 @@ describe('QuestionComponent', () => {
       dispatchTouchEvent();
       expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
       expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not register additional touch events once enter has been pressed', () => {
+      component.startTimer();
+      dispatchTouchEvent();
+      component.onClickAnswer(1, {});
+      dispatchTouchEvent();
+      component.onClickAnswer(2, {});
+      dispatchTouchEvent();
+      component.onClickAnswer(3, {});
+      dispatchTouchEvent();
+      component.onClickSubmit({}); // touch-click enter button on the onscreen keyboard
+      dispatchTouchEvent();
+      component.onClickAnswer(4, {});
+      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is pressed
     });
   });
 
@@ -191,7 +220,7 @@ describe('QuestionComponent', () => {
       dispatchKeyEvent({ key: '3' });
       expect(component.answer).toBe('123');
       component.onSubmit(); // press enter
-      const event4 = dispatchKeyEvent({ key: 'r' });
+      dispatchKeyEvent({ key: 'r' });
       expect(registerInputServiceSpy.calls.count()).toBe(3); // 4th one is ignored after enter is pressed
     });
   });
