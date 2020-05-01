@@ -19,18 +19,20 @@ describe('SpokenQuestionComponent', () => {
   let fixture: ComponentFixture<SpokenQuestionComponent>;
   let speechService, storageService, answerService;
   let answerServiceSpy: any;
+  let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SpokenQuestionComponent ],
       providers: [
-        AnswerService,
         { provide: AuditService, useClass: AuditServiceMock },
-        WindowRefService,
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
-        StorageService
+        AnswerService,
+        StorageService,
+        WindowRefService,
       ]
     })
     .compileComponents();
@@ -47,6 +49,8 @@ describe('SpokenQuestionComponent', () => {
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
     answerServiceSpy = spyOn(answerService, 'setAnswer');
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
     fixture.detectChanges();
   });
 
@@ -76,6 +80,28 @@ describe('SpokenQuestionComponent', () => {
       component.answer = '6';
       component.preSendTimeoutEvent();
       expect(answerServiceSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleKeyboardEvent', () => {
+    function dispatchKeyEvent(keyboardDict) {
+      const event = new KeyboardEvent('keydown', keyboardDict);
+      event.initEvent('keydown', true, true);
+      document.dispatchEvent(event);
+      return event;
+    }
+
+    it('does not register key strokes after submission', () => {
+      component.startTimer();
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      dispatchKeyEvent({ key: '4' });
+      expect(registerInputServiceSpy.calls.count()).toBe(3); // 4th one is ignored after enter is pressed
+      // That last key press should not be registered in the answer either
+      expect(component.answer).toBe('123');
     });
   });
 });

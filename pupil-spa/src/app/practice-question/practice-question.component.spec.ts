@@ -18,6 +18,8 @@ describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
   let fixture: ComponentFixture<PracticeQuestionComponent>;
   let mockSpeechService: SpeechServiceMock;
+  let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
 
   beforeEach(async(() => {
     mockSpeechService = new SpeechServiceMock();
@@ -41,6 +43,8 @@ describe('PractiseQuestionComponent', () => {
     fixture = TestBed.createComponent(PracticeQuestionComponent);
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
     fixture.detectChanges();
   });
 
@@ -166,6 +170,26 @@ describe('PractiseQuestionComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
       expect(component.answer).toBe('1');
+    });
+
+    it('does not add to the answer after submission', () => {
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: '4' });
+      expect(component.answer).toBe('123');
+    });
+
+    it('does not register key strokes for warm up questions', () => {
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: 'r' });
+      expect(registerInputServiceSpy.calls.count()).toBe(0);
     });
 
     it('keyboard calls deleteChar when pressing Backspace or Delete', () => {

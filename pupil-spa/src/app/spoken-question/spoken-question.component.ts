@@ -19,6 +19,11 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   private subscription: Subscription;
 
+  /**
+   * Do not show 'practice' label on top left.
+   */
+  public isWarmUpQuestion = false;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected registerInputService: RegisterInputService,

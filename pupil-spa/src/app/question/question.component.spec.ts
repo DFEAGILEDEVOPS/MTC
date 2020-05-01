@@ -21,6 +21,7 @@ describe('QuestionComponent', () => {
   let fixture: ComponentFixture<QuestionComponent>;
   const auditServiceMock = new AuditServiceMock();
   let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
   let answerService: AnswerService;
   let answerServiceSpy: any;
   let auditService: AuditService;
@@ -32,12 +33,12 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        AnswerService,
-        { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        AnswerService,
         StorageService,
         WindowRefService,
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]
     }).compileComponents().catch(error => { console.error(error); });
   }));
@@ -52,7 +53,7 @@ describe('QuestionComponent', () => {
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
 
     answerService = fixture.debugElement.injector.get(AnswerService);
     answerServiceSpy = spyOn(answerService, 'setAnswer');
@@ -180,10 +181,18 @@ describe('QuestionComponent', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough();
       dispatchKeyEvent({ key: '5' });
       dispatchKeyEvent({ key: 'f' });
-      dispatchKeyEvent({ key: 'Enter' });
-      dispatchKeyEvent({ key: ' ' }); // space bar
-      dispatchKeyEvent({ key: 'Control' });
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(5);
+      dispatchKeyEvent({ key: 'Enter' }); // Enter will trigger submission
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not register key strokes after submission', () => {
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: 'r' });
+      expect(registerInputServiceSpy.calls.count()).toBe(3); // 4th one is ignored after enter is pressed
     });
   });
 

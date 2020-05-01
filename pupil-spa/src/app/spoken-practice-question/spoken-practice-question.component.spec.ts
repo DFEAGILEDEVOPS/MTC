@@ -20,6 +20,8 @@ describe('SpokenPracticeQuestionComponent', () => {
   let speechService, auditService, storageService;
   let answerService: AnswerService;
   let answerServiceSpy: any;
+  let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -49,6 +51,9 @@ describe('SpokenPracticeQuestionComponent', () => {
 
     spyOn(speechService, 'speakQuestion');
     spyOn(auditService, 'addEntry');
+
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
 
     component.soundComponent = new SoundComponentMock();
     fixture.detectChanges();
@@ -80,6 +85,37 @@ describe('SpokenPracticeQuestionComponent', () => {
       } catch (error) {
         fail(error);
       }
+    });
+  });
+
+  describe('handleKeyboardEvent', () => {
+    function dispatchKeyEvent(keyboardDict) {
+      const event = new KeyboardEvent('keydown', keyboardDict);
+      event.initEvent('keydown', true, true);
+      document.dispatchEvent(event);
+      return event;
+    }
+
+    it('does not add to the answer after submission', () => {
+      component.startTimer();
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: '4' });
+      expect(component.answer).toBe('123');
+    });
+
+    it('does not register key strokes for warm up questions', () => {
+      component.startTimer();
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: 'r' });
+      expect(registerInputServiceSpy.calls.count()).toBe(0);
     });
   });
 });

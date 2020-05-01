@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
-import { AnswerService } from '../services/answer/answer.service';
 import { AccessArrangements } from '../access-arrangements';
+import { Answer } from '../services/answer/answer.model';
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
+import { Config } from '../config.model';
 import {
   QuestionRendered,
   QuestionAnswered,
@@ -10,13 +12,11 @@ import {
   QuestionTimerEnded,
   QuestionTimerCancelled
 } from '../services/audit/auditEntry';
-import { Config } from '../config.model';
 import { QuestionService } from '../services/question/question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { Answer } from '../services/answer/answer.model';
-import {RegisterInputService} from '../services/register-input/registerInput.service';
 
 @Component({
   selector: 'app-practice-question',
@@ -254,6 +254,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       clearTimeout(this.timeout);
     } else {
       // timeout didn't start so nothing to submit
+      // console.log('timeout not available, returning false');
       return false;
     }
 
