@@ -16,6 +16,7 @@ const scoreService = require('../services/score.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const attendanceCodeService = require('../services/attendance.service')
+// const schoolService = require('../services/school.service')
 
 const controller = {}
 
