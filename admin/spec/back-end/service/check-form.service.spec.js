@@ -2,14 +2,9 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe beforeEach it expect spyOn fail */
+/* global describe it expect spyOn fail */
 
-const fs = require('fs-extra')
-const checkFormDataService = require('../../../services/data-access/check-form.data.service')
 const random = require('../../../lib/random-generator')
-
-const checkFormsMock = require('../mocks/check-forms')
-const checkWindowByForm = require('../mocks/check-window-by-form')
 
 const checkFormMock = {
   id: 100,
@@ -124,22 +119,6 @@ describe('check-form.service', () => {
       } catch (error) {
         fail(error)
       }
-    })
-  })
-
-  describe('getCheckFormsByIds', () => {
-    it('throws an error if check form ids list is empty', async () => {
-      try {
-        await service.getCheckFormsByIds()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('batchIds list empty or not defined')
-      }
-    })
-    it('returns parsed check forms', async () => {
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
-      const result = await service.getCheckFormsByIds([1])
-      expect(typeof result[0].formData).toBe('object')
     })
   })
 })

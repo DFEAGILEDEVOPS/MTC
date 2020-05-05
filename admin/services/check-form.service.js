@@ -1,10 +1,5 @@
 'use strict'
 
-const fs = require('fs')
-const moment = require('moment')
-
-const checkFormDataService = require('../services/data-access/check-form.data.service')
-const config = require('../config')
 const random = require('../lib/random-generator')
 
 const checkFormService = {
@@ -57,45 +52,11 @@ const checkFormService = {
   },
 
   /**
-   * create a check form
-   * @param form the form as an object
-   */
-  create: async (form) => {
-    return checkFormDataService.sqlCreate(form)
-  },
-
-  /**
-   * Get a non-deleted form
-   * @param formId the id of the form
-   */
-  getCheckForm: async (formId) => {
-    let form = await checkFormDataService.sqlFindActiveForm(formId)
-    if (form && form.length > 0) {
-      form = form[0]
-      form.questions = JSON.parse(form.formData)
-    }
-    return form
-  },
-
-  /**
    * Extract the questions from the check-form, and add an `order` property.
    * @param questions
    */
   prepareQuestionData: function (questions) {
     return questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
-  },
-
-  getCheckFormsByIds: async (ids) => {
-    if (!ids || !Array.isArray((ids))) {
-      throw new Error('batchIds list empty or not defined')
-    }
-    let checkForms
-    checkForms = await checkFormDataService.sqlFindByIds(ids)
-    checkForms = checkForms.map(cf => {
-      cf.formData = JSON.parse(cf.formData)
-      return cf
-    })
-    return checkForms
   }
 }
 
