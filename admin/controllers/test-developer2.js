@@ -1,5 +1,5 @@
 const checkFormPresenter = require('../helpers/check-form-presenter')
-const checkFormV2Service = require('../services/test-developer.service')
+const testDeveloperService = require('../services/test-developer.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -16,7 +16,7 @@ controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   let checkForms
   try {
-    checkForms = await checkFormV2Service.getSavedForms()
+    checkForms = await testDeveloperService.getSavedForms()
   } catch (error) {
     return next(error)
   }
@@ -41,7 +41,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Upload new form'
   let hasExistingFamiliarisationCheckForm
   try {
-    hasExistingFamiliarisationCheckForm = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
+    hasExistingFamiliarisationCheckForm = await testDeveloperService.hasExistingFamiliarisationCheckForm()
   } catch (error) {
     return next(error)
   }
@@ -65,7 +65,7 @@ controller.postUpload = async (req, res, next) => {
   const uploadData = req.files && req.files.csvFiles
   const requestData = req.body
   try {
-    await checkFormV2Service.saveCheckForms(uploadData, requestData)
+    await testDeveloperService.saveCheckForms(uploadData, requestData)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return controller.getUploadNewFormsPage(req, res, next, error)
@@ -88,8 +88,8 @@ controller.getDelete = async (req, res, next) => {
   const urlSlug = req.params && req.params.urlSlug
   let checkFormName
   try {
-    checkFormName = await checkFormV2Service.getCheckFormName(urlSlug)
-    await checkFormV2Service.deleteCheckForm(urlSlug)
+    checkFormName = await testDeveloperService.getCheckFormName(urlSlug)
+    await testDeveloperService.deleteCheckForm(urlSlug)
   } catch (error) {
     return next(error)
   }
@@ -110,7 +110,7 @@ controller.getViewFormPage = async (req, res, next) => {
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
   try {
-    checkFormData = await checkFormV2Service.getCheckForm(urlSlug)
+    checkFormData = await testDeveloperService.getCheckForm(urlSlug)
   } catch (error) {
     return next(error)
   }
@@ -170,8 +170,8 @@ controller.getSelectFormPage = async (req, res, next) => {
   let assignedCheckForms
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    availableCheckForms = await checkFormV2Service.getCheckFormsByType(checkFormType)
-    assignedCheckForms = await checkFormV2Service.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
+    availableCheckForms = await testDeveloperService.getCheckFormsByType(checkFormType)
+    assignedCheckForms = await testDeveloperService.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
     checkWindowData = checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
     checkFormData = checkFormPresenter.getPresentationAvailableFormsData(availableCheckForms, assignedCheckForms)
   } catch (error) {
@@ -207,11 +207,11 @@ controller.postAssignForms = async (req, res, next) => {
   let hasAssignedFamiliarisationForm
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    hasAssignedFamiliarisationForm = await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+    hasAssignedFamiliarisationForm = await testDeveloperService.hasAssignedFamiliarisationForm(checkWindow)
     if (!hasAssignedFamiliarisationForm && !checkForms && checkFormType === 'familiarisation') {
       return res.redirect(`/check-form/select-form/${checkFormType}/${checkWindowUrlSlug}`)
     }
-    await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
+    await testDeveloperService.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
     highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
   } catch (error) {
     return next(error)
