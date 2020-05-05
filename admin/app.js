@@ -19,6 +19,7 @@ try {
 // telemetry
 // fallback to app insights, if configured
 const appInsights = require('./helpers/app-insights')
+// intentionally not awaited...
 appInsights.startInsightsIfConfigured()
 
 // non priority modules...
