@@ -10,7 +10,7 @@ const sqlService = require('./sql.service')
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by schoolId sorted by specific column.
+ * Fetch all pupils for a school by schoolId, unsorted.
  * @param schoolId
  * @returns {Promise<*>}
  */
@@ -21,7 +21,6 @@ pupilDataService.sqlFindPupilsBySchoolId = async function (schoolId) {
   SELECT *
   FROM [mtc_admin].[pupil] p
   WHERE p.school_id = @schoolId
-  ORDER BY lastName asc
     `
   return sqlService.query(sql, [paramSchoolId])
 }
