@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, expect, beforeEach, spyOn fail */
+/* global describe, it, expect, spyOn fail */
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 
