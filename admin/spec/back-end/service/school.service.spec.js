@@ -30,10 +30,10 @@ describe('school.service', () => {
       expect(actual).toEqual(school.name)
     })
   })
-  describe('findSchoolById', () => {
+  describe('findOneById', () => {
     it('should  throw an error if id not provided', async () => {
       try {
-        await sut.findSchoolById()
+        await sut.findOneById()
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -47,7 +47,7 @@ describe('school.service', () => {
         name: schoolName
       }
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(school))
-      const actual = await sut.findSchoolById(123)
+      const actual = await sut.findOneById(123)
       expect(actual).toBe(school)
     })
   })

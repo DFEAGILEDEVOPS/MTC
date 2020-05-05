@@ -23,7 +23,7 @@ controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
   const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
-  const school = await schoolService.findSchoolById(req.user.schoolId)
+  const school = await schoolService.findOneById(req.user.schoolId)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const score = await scoreService.getScorePercentage(p.id)
@@ -59,7 +59,7 @@ controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
   const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
-  const schoolData = await schoolService.findSchoolById(pupils[0].school_id)
+  const schoolData = await schoolService.findOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`

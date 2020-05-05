@@ -21,7 +21,7 @@ const schoolService = {
    * @param id {number}
    * @returns {Promise<*>}
    */
-  findSchoolById: function findSchoolById (id) {
+  findOneById: function findOneById (id) {
     if (!id) {
       throw new Error('id is required')
     }
