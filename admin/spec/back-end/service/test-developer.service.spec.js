@@ -4,12 +4,12 @@ const fs = require('fs-extra')
 
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')
-const checkFormV2Service = require('../../../services/check-form-v2.service')
+const checkFormV2Service = require('../../../services/test-developer.service')
 const checkFormsValidator = require('../../../lib/validator/check-form/check-forms-validator')
 const ValidationError = require('../../../lib/validation-error')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
-describe('check-form-v2.service', () => {
+describe('test-developer.service', () => {
   describe('saveCheckForms', () => {
     let uploadData
     let requestData

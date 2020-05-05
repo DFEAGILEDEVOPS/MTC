@@ -1,5 +1,5 @@
 const checkFormPresenter = require('../helpers/check-form-presenter')
-const checkFormV2Service = require('../services/check-form-v2.service')
+const checkFormV2Service = require('../services/test-developer.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
