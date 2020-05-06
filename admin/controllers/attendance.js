@@ -7,7 +7,7 @@ const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../lib/validator/hdf-confirm-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
 const hdfPresenter = require('../helpers/hdf-presenter')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -22,7 +22,7 @@ const controller = {}
 controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
+  const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
   const school = await schoolDataService.sqlFindOneById(req.user.schoolId)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
@@ -58,7 +58,7 @@ controller.getResults = async (req, res, next) => {
 controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
-  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(req.user.schoolId)
+  const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
   const schoolData = await schoolDataService.sqlFindOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {

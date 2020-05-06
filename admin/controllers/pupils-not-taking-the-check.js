@@ -4,7 +4,7 @@ const attendanceCodeService = require('../services/attendance.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -142,7 +142,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   const pupilSlug = req.params.pupilId
   try {
     await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId)
-    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.schoolId)
+    const pupil = await pupilService.findOneBySlugAndSchool(pupilSlug, req.user.schoolId)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
     const highlight = JSON.stringify(pupilSlug)
     return res.redirect(`/pupils-not-taking-the-check/view?hl=${highlight}`)
