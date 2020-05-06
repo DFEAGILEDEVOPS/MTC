@@ -312,6 +312,24 @@ describe('QuestionComponent', () => {
       component.onClickBackspace(event);
       expect(component['answer']).toBe('144');
     });
+
+    it('does not add to the input register once it has been submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      // answer = ''
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      // answer = '111'
+      component.onClickBackspace({});
+      component.onClickBackspace({});
+      // answer = '1'
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(5);
+      component.onClickSubmit({}); // needs something in the answer box
+      component.onClickBackspace({});
+
+      // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(6);
+    });
   });
 
   describe('#onClickSubmit', () => {

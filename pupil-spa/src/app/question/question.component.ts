@@ -106,6 +106,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {Object} event
    */
   onClickBackspace(event) {
+    if (this.submitted) {
+      return;
+    }
     this.registerInputService.storeEntry('Backspace',
       'click',
       this.sequenceNumber,
