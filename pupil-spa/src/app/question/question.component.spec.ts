@@ -313,6 +313,15 @@ describe('QuestionComponent', () => {
       expect(component['answer']).toBe('144');
     });
 
+    it('does not delete a char from the answer once it has been submitted', () => {
+      component['answer'] = '1444';
+      component.onClickBackspace({});
+      expect(component['answer']).toBe('144');
+      component.onClickSubmit({});
+      component.onClickBackspace(event);
+      expect(component['answer']).toBe('144');
+    });
+
     it('does not add to the input register once it has been submitted', () => {
       spyOn(registerInputService, 'storeEntry');
       // answer = ''
@@ -349,6 +358,17 @@ describe('QuestionComponent', () => {
       const event = {};
       component.onClickSubmit(event);
       expect(component.onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not add to the input register once submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      component.onClickSubmit({});
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+      component.onClickSubmit({});
+      // It should not call the registerInputService again not that submit has been clicked already
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
     });
   });
 

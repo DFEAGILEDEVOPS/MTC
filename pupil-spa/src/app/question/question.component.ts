@@ -166,6 +166,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {Object} event
    */
   onClickSubmit(event) {
+    if (this.submitted) {
+      return;
+    }
     this.registerInputService.storeEntry('Enter',
       'click',
       this.sequenceNumber,
