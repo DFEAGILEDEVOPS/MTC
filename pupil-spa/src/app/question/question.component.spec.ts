@@ -271,6 +271,27 @@ describe('QuestionComponent', () => {
       component.onClickAnswer(9, event);
       expect(component['answer']).toBe('9');
     });
+
+    it('does not add any new chars to the answer once it has been submitted', () => {
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      expect(component.answer).toBe('11');
+      component.onClickSubmit({});
+      component.onClickAnswer(2, {});
+      expect(component.answer).toBe('11');
+    });
+
+    it('does not add to the input register once it has been submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(2);
+      component.onClickSubmit({});
+      component.onClickAnswer(2, {});
+
+      // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('#onClickBackspace', () => {
