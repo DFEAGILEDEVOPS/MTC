@@ -210,7 +210,7 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
 }
 
 controller.getAddInputAssistant = async (req, res, next) => {
-  res.locals.pageTitle = 'Record input assistant used in Official check'
+  res.locals.pageTitle = 'Record input assistant used for official check'
   req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
   req.breadcrumbs('Record input assistant')
 
