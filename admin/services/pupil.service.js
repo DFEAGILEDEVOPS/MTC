@@ -1,4 +1,5 @@
 const pupilDataService = require('./data-access/pupil.data.service')
+const sorting = require('../helpers/table-sorting')
 
 const pupilService = {}
 
@@ -29,13 +30,46 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  */
 pupilService.getPupilsWithFullNames = async (schoolId) => {
   if (!schoolId) {
-    throw new Error('schoolId is not provided')
+    throw new Error('schoolId is required')
   }
   const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
-  return pupils.map(p => ({
+  const sortedPupils = sorting.sortByProps('lastName', pupils)
+  return sortedPupils.map(p => ({
     fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug
   }))
+}
+
+/**
+ * Fetch all pupils for a school by schoolId sorted by lastname ascending.
+ * Sorting to be removed in a future version
+ * @param schoolId required
+ * @returns {Promise<*>}
+ */
+pupilService.findPupilsBySchoolId = async function findPupilsBySchoolId (schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  const pupils = await pupilDataService.sqlFindPupilsBySchoolId(schoolId)
+  const sortedPupils = sorting.sortByProps('lastName', pupils)
+  return sortedPupils
+}
+
+/**
+ * Fetch all pupils for a school by schoolId sorted by lastname ascending.
+ * Sorting to be removed in a future version
+ * @param urlSlug required
+ * @param schoolId required
+ * @returns {Promise<*>}
+ */
+pupilService.findOneBySlugAndSchool = function findOneBySlugAndSchool (urlSlug, schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  if (!urlSlug) {
+    throw new Error('urlSlug is required')
+  }
+  return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
 }
 
 module.exports = pupilService
