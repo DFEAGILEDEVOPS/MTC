@@ -107,7 +107,8 @@ const getUnauthorised = (req, res) => {
 
 const getSignedOut = (req, res) => {
   res.locals.pageTitle = 'Signed Out'
-  res.render('signedout')
+  res.locals.dsiServicesLink = config.Auth.dfeSignIn.servicesUrl
+  res.render('dsi-signedout')
 }
 
 module.exports = {
