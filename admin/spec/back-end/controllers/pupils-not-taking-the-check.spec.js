@@ -9,7 +9,7 @@ const businessAvailabilityService = require('../../../services/business-availabi
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const pupilService = require('../../../services/pupil.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const groupService = require('../../../services/group.service')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
@@ -242,7 +242,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     describe('#removePupilNotTakingCheck: Remove:  reason for pupil', () => {
       it('should redirect to the select pupils page if pupilId is not supplied', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
 
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
@@ -267,7 +267,7 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should delete reason from pupils document and redirect', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -291,7 +291,7 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.reject(new Error()))
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -309,7 +309,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
-        expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
+        expect(pupilService.findOneBySlugAndSchool).not.toHaveBeenCalled()
         expect(req.flash).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
@@ -317,7 +317,7 @@ describe('pupils-not-taking-the-check controller:', () => {
 
       it('should execute next if pupilDataService.sqlFindOneBySlugAndSchool fails', async () => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue()
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.reject(new Error()))
+        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -335,7 +335,7 @@ describe('pupils-not-taking-the-check controller:', () => {
         )
         await controller(req, res, next)
         expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
-        expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
+        expect(pupilService.findOneBySlugAndSchool).toHaveBeenCalled()
         expect(req.flash).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
