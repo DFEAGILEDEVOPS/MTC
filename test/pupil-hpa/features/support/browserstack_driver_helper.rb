@@ -7,6 +7,7 @@ require_relative 'browserstack_settings'
 BrowserstackSettings.browser_caps.keys.each do |browser|
   Capybara.register_driver "bs_#{browser}".to_sym do |app|
     @caps = BrowserstackSettings.common_caps.merge(BrowserstackSettings.browser_caps.send(browser))
+    @caps = @caps.merge ({"name" => "#{Time.now.strftime("%d/%m/%y-%H:%M")}"})
     if @caps['browserstack.local'] && @caps['browserstack.local'].to_s == 'true'
       @bs_local = BrowserStack::Local.new
       bs_local_args = {"key" => "#{ENV['BROWSERSTACK_ACCESS_KEY']}", "force" => 'true'}
