@@ -31,7 +31,7 @@ describe('test developer 2 controller:', () => {
   describe('getViewFormsPage route', () => {
     const reqParams = {
       method: 'GET',
-      url: '/check-forms/view-forms'
+      url: '/test-developer/view-forms'
     }
     it('renders upload and view forms view', async () => {
       const res = getRes()
@@ -47,7 +47,7 @@ describe('test developer 2 controller:', () => {
   describe('getUploadNewFormsPage route', () => {
     const reqParams = {
       method: 'GET',
-      url: '/check-forms/upload-new-forms'
+      url: '/test-developer/upload-new-forms'
     }
     it('renders upload new form view', async () => {
       const res = getRes()
@@ -72,7 +72,7 @@ describe('test developer 2 controller:', () => {
   describe('postUpload route', () => {
     const reqParams = {
       method: 'POST',
-      url: '/check-forms/upload',
+      url: '/test-developer/upload',
       files: {
         csvFiles: [{ filename: 'filename1' }, { filename: 'filename2' }]
       },
@@ -107,7 +107,7 @@ describe('test developer 2 controller:', () => {
   describe('getDelete route', () => {
     const reqParams = {
       method: 'GET',
-      url: '/check-forms/delete/urlSlug',
+      url: '/test-developer/delete/urlSlug',
       params: {
         urlSlug: 'urlSlug'
       }
@@ -140,7 +140,7 @@ describe('test developer 2 controller:', () => {
   describe('getViewFormPage route', () => {
     const reqParams = {
       method: 'GET',
-      url: '/check-form/view/urlSlug',
+      url: '/test-developer/view/urlSlug',
       params: {
         urlSlug: 'urlSlug'
       }

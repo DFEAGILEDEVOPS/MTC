@@ -21,7 +21,7 @@ controller.getViewFormsPage = async (req, res, next) => {
     return next(error)
   }
   req.breadcrumbs(res.locals.pageTitle)
-  return res.render('check-form/view-forms', {
+  return res.render('test-developer/view-forms', {
     checkForms,
     breadcrumbs: req.breadcrumbs(),
     messages: res.locals.messages
@@ -37,7 +37,7 @@ controller.getViewFormsPage = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
-  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   res.locals.pageTitle = 'Upload new form'
   let hasExistingFamiliarisationCheckForm
   try {
@@ -46,7 +46,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
     return next(error)
   }
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/upload-new-forms', {
+  res.render('test-developer/upload-new-forms', {
     breadcrumbs: req.breadcrumbs(),
     errors: error || new ValidationError(),
     formData: req.body,
@@ -74,7 +74,7 @@ controller.postUpload = async (req, res, next) => {
   }
   const flashMessageData = checkFormPresenter.getFlashMessageData(uploadData)
   req.flash('info', flashMessageData)
-  res.redirect('/check-form/view-forms')
+  res.redirect('/test-developer/view-forms')
 }
 
 /**
@@ -95,7 +95,7 @@ controller.getDelete = async (req, res, next) => {
   }
   const flashMessage = { message: `Successfully deleted form ${checkFormName}` }
   req.flash('info', flashMessage)
-  return res.redirect('/check-form/view-forms')
+  return res.redirect('/test-developer/view-forms')
 }
 
 /**
@@ -106,7 +106,7 @@ controller.getDelete = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getViewFormPage = async (req, res, next) => {
-  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
   try {
@@ -116,7 +116,7 @@ controller.getViewFormPage = async (req, res, next) => {
   }
   res.locals.pageTitle = checkFormData.checkFormName
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/view-form', {
+  res.render('test-developer/view-form', {
     breadcrumbs: req.breadcrumbs(),
     checkFormData
   })
@@ -145,7 +145,7 @@ controller.getAssignFormsPage = async (req, res, next) => {
     hl = JSON.parse(hl)
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
-  res.render('check-form/view-assign-forms-to-check-windows', {
+  res.render('test-developer/view-assign-forms-to-check-windows', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     highlight: hl && new Set(hl),
@@ -179,9 +179,9 @@ controller.getSelectFormPage = async (req, res, next) => {
   }
   const hasAssignedForms = Array.isArray(assignedCheckForms) && assignedCheckForms.length > 0
   res.locals.pageTitle = `${checkWindowData.name} - ${checkWindowData.checkPeriod}`
-  req.breadcrumbs('Assign forms to check windows', '/check-form/assign-forms-to-check-windows')
+  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-forms-to-check-windows')
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/view-select-forms', {
+  res.render('test-developer/view-select-forms', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     checkFormData,
@@ -209,7 +209,7 @@ controller.postAssignForms = async (req, res, next) => {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
     hasAssignedFamiliarisationForm = await testDeveloperService.hasAssignedFamiliarisationForm(checkWindow)
     if (!hasAssignedFamiliarisationForm && !checkForms && checkFormType === 'familiarisation') {
-      return res.redirect(`/check-form/select-form/${checkFormType}/${checkWindowUrlSlug}`)
+      return res.redirect(`/test-developer/select-form/${checkFormType}/${checkWindowUrlSlug}`)
     }
     await testDeveloperService.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
     highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
@@ -218,7 +218,7 @@ controller.postAssignForms = async (req, res, next) => {
   }
   req.flash('info', highlightMessage)
   const highlight = JSON.stringify([`${checkWindowUrlSlug.toString()}-${checkFormType}`])
-  return res.redirect(`/check-form/assign-forms-to-check-windows?hl=${highlight}`)
+  return res.redirect(`/test-developer/assign-forms-to-check-windows?hl=${highlight}`)
 }
 
 module.exports = controller
