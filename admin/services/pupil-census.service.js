@@ -59,7 +59,7 @@ pupilCensusService.upload = async (uploadFile) => {
     throw new Error('No result has been returned from pupil bulk insertion')
   }
   // Update pupil census record with corresponding output
-  pupilCensusService.updateJobOutput(job.insertId, submissionResult)
+  await pupilCensusService.updateJobOutput(job.insertId, submissionResult)
 }
 
 /**

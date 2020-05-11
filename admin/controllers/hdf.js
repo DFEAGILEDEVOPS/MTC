@@ -10,7 +10,7 @@ const headteacherDeclarationService = require('../services/headteacher-declarati
 const pupilService = require('../services/pupil.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
 const hdfPresenter = require('../helpers/hdf-presenter')
-const schoolDataService = require('../services/data-access/school.data.service')
+const schoolService = require('../services/school.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const scoreService = require('../services/score.service')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -23,7 +23,7 @@ controller.getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
   const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
-  const school = await schoolDataService.sqlFindOneById(req.user.schoolId)
+  const school = await schoolService.findOneById(req.user.schoolId)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const score = await scoreService.getScorePercentage(p.id)
@@ -59,7 +59,7 @@ controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
   const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
-  const schoolData = await schoolDataService.sqlFindOneById(pupils[0].school_id)
+  const schoolData = await schoolService.findOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`

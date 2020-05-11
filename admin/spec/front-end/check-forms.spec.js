@@ -17,7 +17,7 @@ function initUploadCheckFormElements () {
                         </div>
   `)
 
-  const htmlForm = `<form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
+  const htmlForm = `<form action="/test-developer/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             ${hasExistingFamiliarisationCheckFormInput}
             <div class="form-group">
@@ -43,7 +43,7 @@ function initUploadCheckFormElements () {
 
             <div class="form-buttons">
                 <input type="submit" class="button" id="upload-form-submit" value="Upload" />
-                <a href="/check-form/view-forms" class="button button-secondary">Cancel</a>
+                <a href="/test-developer/view-forms" class="button button-secondary">Cancel</a>
             </div>
         </form>
   `

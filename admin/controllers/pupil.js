@@ -11,7 +11,7 @@ const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const pupilPresenter = require('../helpers/pupil-presenter')
-const schoolDataService = require('../services/data-access/school.data.service')
+const schoolService = require('../services/school.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
@@ -121,7 +121,7 @@ const getAddMultiplePupils = async (req, res, next) => {
 const postAddMultiplePupils = async (req, res, next) => {
   let school
   try {
-    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
+    school = await schoolService.findOneById(req.user.schoolId)
     if (!school) {
       throw new Error(`School with id [${req.user.schoolId}] not found`)
     }
@@ -233,7 +233,7 @@ const postEditPupil = async (req, res, next) => {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
 
-    school = await schoolDataService.sqlFindOneById(pupil.school_id)
+    school = await schoolService.findOneById(pupil.school_id)
     if (!school) {
       return next(new Error('School not found'))
     }
