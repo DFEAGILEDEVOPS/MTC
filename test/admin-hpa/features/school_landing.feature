@@ -109,8 +109,8 @@ Feature:
       | /service-manager/upload-pupil-census      |
       | /service-manager/check-settings           |
       | /service-manager/mod-settings             |
-      | /check-form/view-forms                    |
-      | /check-form/upload-new-forms              |
+      | /test-developer/view-forms                    |
+      | /test-developer/upload-new-forms              |
       | /test-developer/download-pupil-check-data |
       | /test-developer/view-pupil-payload        |
 
