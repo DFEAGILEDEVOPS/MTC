@@ -23,7 +23,7 @@
                 <p class="govuk-!-font-size-19"><%= cw.name %></p>
                 <div id="<%= `${cw.urlSlug.toString()}-familiarisation` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-familiarisation`)) { %> class="assigned-forms-highlight govuk-highlight-item"<% } %>>
               <span class="govuk-!-font-weight-bold govuk-!-font-size-19">
-                <a class="govuk-link" href="/check-form/select-form/familiarisation/<%= cw.urlSlug %>">Try it out period
+                <a class="govuk-link" href="/test-developer/select-form/familiarisation/<%= cw.urlSlug %>">Try it out period
                 </a>
               </span>
                   <span class="govuk-body govuk-!-font-size-19">(<%= cw.familiarisationCheckFormCount === 1 ? `${cw.familiarisationCheckFormCount} form` : `${cw.familiarisationCheckFormCount} forms` %> assigned)</span>
@@ -34,7 +34,7 @@
                 <div class="govuk-!-margin-bottom-5"></div>
                 <div id="<%= `${cw.urlSlug.toString()}-live` %>" <% if (highlight && highlight.has(`${cw.urlSlug.toString()}-live`)) { %> class="assigned-forms-highlight govuk-highlight-item"<% } %>>
               <span class="govuk-!-font-weight-bold govuk-!-font-size-19">
-                <a class="govuk-link" href="/check-form/select-form/live/<%= cw.urlSlug %>">
+                <a class="govuk-link" href="/test-developer/select-form/live/<%= cw.urlSlug %>">
                   Multiplication tables check period
                 </a>
               </span>
@@ -63,7 +63,7 @@
         <nav role="navigation" aria-labelledby="subsection-title">
           <ul class="govuk-list govuk-!-font-size-16">
             <li>
-              <a class="govuk-link" href="/check-form/view-forms">Upload and view forms</a>
+              <a class="govuk-link" href="/test-developer/view-forms">Upload and view forms</a>
             </li>
           </ul>
         </nav>

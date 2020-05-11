@@ -40,7 +40,7 @@
                 <li>Choose the file(s) to upload</li>
             </ol>
             <h3 class="govuk-heading-m">Upload files</h3>
-            <form action="/check-form/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
+            <form action="/test-developer/upload" method="post" enctype="multipart/form-data" id="check-form-upload-form">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="<%= hasExistingFamiliarisationCheckForm %>" />
             <% const csvErrors = errors.get('csvFiles') %>
@@ -104,7 +104,7 @@
                     </div>
                 </div>
                 <button type="submit" class="govuk-button" id="upload-form-submit">Upload</button>
-                <a href="/check-form/view-forms" class="govuk-button govuk-button--secondary">Cancel</a>
+                <a href="/test-developer/view-forms" class="govuk-button govuk-button--secondary">Cancel</a>
             </form>
         </div>
     </div>

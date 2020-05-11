@@ -19,8 +19,8 @@ const schoolDataService = {
     const paramId = { name: 'id', type: TYPES.Int, value: id }
     const sql = `
         SELECT school.*, ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
-        FROM ${sqlService.adminSchema}.${table}
-        LEFT JOIN ${sqlService.adminSchema}.sce
+        FROM [mtc_admin].[school]
+        LEFT JOIN [mtc_admin].sce
           ON sce.school_id = school.id
         WHERE school.id = @id
       `
@@ -37,7 +37,7 @@ const schoolDataService = {
     const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
     const sql = `
         SELECT *
-        FROM ${sqlService.adminSchema}.${table}
+        FROM [mtc_admin].[school]
         WHERE pin = @pin
       `
     const rows = await sqlService.readonlyQuery(sql, [paramPin])
@@ -53,8 +53,8 @@ const schoolDataService = {
     const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
     const sql = `
         SELECT school.*, ISNULL(sce.timezone, '${config.DEFAULT_TIMEZONE}') as timezone
-        FROM ${sqlService.adminSchema}.${table}
-        LEFT JOIN ${sqlService.adminSchema}.sce
+        FROM [mtc_admin].[school]
+        LEFT JOIN [mtc_admin].sce
           ON sce.school_id = school.id
         WHERE dfeNumber = @dfeNumber
       `
@@ -83,7 +83,7 @@ const schoolDataService = {
     }
     const select = `
     SELECT *
-    FROM ${sqlService.adminSchema}.${table}
+    FROM [mtc_admin].[school]
     `
     const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
@@ -94,7 +94,7 @@ const schoolDataService = {
   /**
    * Find schools by DfeNumbers
    * @param {Array} dfeNumbers
-   * @return {Promise<void>}
+   * @return {Promise<Array<*>>}
    */
   sqlFindByDfeNumbers: async (dfeNumbers) => {
     if (!(Array.isArray(dfeNumbers) && dfeNumbers.length > 0)) {
@@ -102,7 +102,7 @@ const schoolDataService = {
     }
     const select = `
   SELECT *
-  FROM ${sqlService.adminSchema}.${table}
+  FROM [mtc_admin].[school]
   `
     const { params, paramIdentifiers } = sqlService.buildParameterList(dfeNumbers, TYPES.Int)
     const whereClause = 'WHERE dfeNumber IN (' + paramIdentifiers.join(', ') + ')'
