@@ -8,22 +8,8 @@ class mtcError extends Error {
   }
 }
 
-class MtcCheckWindowNotFoundError extends mtcError {
-  constructor (message) {
-    super(message, 'The service manager must configure a valid check window')
-    this.name = 'MtcCheckWindowNotFound'
-  }
-}
-
-class MtcHelpdeskImpersonationError extends mtcError {
-  constructor (message) {
-    super(message, 'Helpdesk users must impersonate a school')
-    this.name = 'MtcHelpdeskImpersonationError'
-  }
-}
+exports.mtcError = mtcError
 
 module.exports = {
-  mtcError,
-  MtcCheckWindowNotFoundError,
-  MtcHelpdeskImpersonationError
+  mtcError
 }

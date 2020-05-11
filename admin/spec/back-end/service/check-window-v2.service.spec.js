@@ -6,7 +6,7 @@ const uuid = require('uuid/v4')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
-const { MtcCheckWindowNotFoundError } = require('../../../error-types/mtc-error')
+const MtcCheckWindowNotFoundError = require('../../../error-types/MtcCheckWindowNotFoundError')
 
 describe('check-window-v2.service', () => {
   describe('getCheckWindow', () => {
