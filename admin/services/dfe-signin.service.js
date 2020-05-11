@@ -37,7 +37,7 @@ const service = {
       if (dfeUser.organisation && dfeUser.organisation.urn) {
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
-          const error = new Error(`schoolNotFoundErrorInfo.message.\nURN:${dfeUser.organisation.urn}`)
+          const error = new Error(`${schoolNotFoundErrorInfo.message}.\nURN:${dfeUser.organisation.urn}`)
           error.code = schoolNotFoundErrorInfo.code
           throw error
         }

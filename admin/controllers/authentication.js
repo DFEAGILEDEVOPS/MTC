@@ -13,27 +13,22 @@ const home = (req, res) => {
   if (req.isAuthenticated()) {
     switch (req.user.role) {
       case roles.teacher:
+      case roles.helpdesk:
         return res.redirect(homeRoutes.schoolHomeRoute)
       case roles.testDeveloper:
         return res.redirect(homeRoutes.testDeveloperHomeRoute)
       case roles.serviceManager:
         return res.redirect(homeRoutes.serviceManagerHomeRoute)
-      case roles.helpdesk:
-        return res.redirect(homeRoutes.schoolHomeRoute)
       case roles.techSupport:
         return res.redirect(homeRoutes.techSupportHomeRoute)
     }
   } else {
-    switch (config.Auth.mode) {
-      case authModes.dfeSignIn:
-        return res.redirect(dfeSignInRedirect)
-      default:
-        return res.redirect('/sign-in')
-    }
+    redirectToAuthModeSignIn(res)
   }
 }
 
 const redirectToAuthModeSignIn = (res) => {
+  res.locals.pageTitle = 'Check Development - Login'
   switch (config.Auth.mode) {
     case authModes.dfeSignIn:
       res.redirect(dfeSignInRedirect)
@@ -47,7 +42,7 @@ const redirectToAuthModeSignIn = (res) => {
 const getSignIn = (req, res) => {
   res.locals.pageTitle = 'Check Development - Login'
   if (req.isAuthenticated()) {
-    res.redirect('/school/school-home')
+    home(req, res)
   } else {
     redirectToAuthModeSignIn(res)
   }
@@ -59,20 +54,7 @@ const postSignIn = (req, res) => {
     displayName:${req.user.displayName}
     role:${req.user.role}
     timezone:"${req.user.timezone}"`)
-
-  switch (req.user.role) {
-    case roles.teacher:
-    case roles.helpdesk:
-      return res.redirect(homeRoutes.schoolHomeRoute)
-    case roles.testDeveloper:
-      return res.redirect(homeRoutes.testDeveloperHomeRoute)
-    case roles.serviceManager:
-      return res.redirect(homeRoutes.serviceManagerHomeRoute)
-    case roles.techSupport:
-      return res.redirect(homeRoutes.techSupportHomeRoute)
-    default:
-      return res.redirect(homeRoutes.schoolHomeRoute)
-  }
+  return home(req, res)
 }
 
 const getSignOut = (req, res) => {
