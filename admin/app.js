@@ -331,16 +331,12 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   const errorId = uuidV4()
   // set locals, only providing error in development
-  // @TODO: change this to a real logger with an error string that contains
-  // all pertinent information. Assume 2nd/3rd line support would pick this
-  // up from logging web interface (e.g. ELK / LogDNA)
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
   // render the error page
-  // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}

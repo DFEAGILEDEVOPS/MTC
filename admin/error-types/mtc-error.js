@@ -1,3 +1,5 @@
+'use strict'
+
 class mtcError extends Error {
   constructor (message, userMessage = '') {
     super(message)
@@ -20,11 +22,8 @@ class MtcHelpdeskImpersonationError extends mtcError {
   }
 }
 
-class MtcSchoolMismatchError extends mtcError {
-  constructor (message) {
-    super(message, 'The selected school is not registered in MTC')
-    this.name = 'MtcSchoolMismatchError'
-  }
+module.exports = {
+  mtcError,
+  MtcCheckWindowNotFoundError,
+  MtcHelpdeskImpersonationError
 }
-
-module.exports = { mtcError, MtcCheckWindowNotFoundError, MtcHelpdeskImpersonationError, MtcSchoolMismatchError }
