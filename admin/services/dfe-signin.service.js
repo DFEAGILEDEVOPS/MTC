@@ -7,7 +7,7 @@ const userDataService = require('./data-access/user.data.service')
 const roles = require('../lib/consts/roles')
 const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
 const adminLogonEventDataService = require('./data-access/admin-logon-event.data.service')
-const schoolNotFoundErrorCode = 12345 // TODO decide on a number scheme
+const schoolNotFoundErrorInfo = require('../lib/errors/dfe-signin').schoolNotFound
 
 const service = {
   /**
@@ -37,7 +37,9 @@ const service = {
       if (dfeUser.organisation && dfeUser.organisation.urn) {
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
-          throw new Error(`${schoolNotFoundErrorCode}:school not found with URN:${dfeUser.organisation.urn}`)
+          const error = new Error(`schoolNotFoundErrorInfo.message.\nURN:${dfeUser.organisation.urn}`)
+          error.code = schoolNotFoundErrorInfo.code
+          throw error
         }
       } else {
         throw new Error('user.organisation or user.organisation.urn not found on dfeUser object')
