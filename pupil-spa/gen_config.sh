@@ -1,4 +1,9 @@
 #!/bin/bash
+set -e
+# set -x
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+envFile=${scriptDir}/../.env
+[[ -f ${envFile} ]] && source ${envFile}
 authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
 authPingUrl=${AUTH_PING_URL:-"http://localhost:3003/ping"}
 production=${PRODUCTION:-"false"}
