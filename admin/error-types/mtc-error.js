@@ -8,8 +8,6 @@ class mtcError extends Error {
   }
 }
 
-exports.mtcError = mtcError
-
 module.exports = {
   mtcError
 }
