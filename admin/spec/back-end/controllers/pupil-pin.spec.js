@@ -19,6 +19,7 @@ const groupService = require('../../../services/group.service')
 const schoolMock = require('../mocks/school')
 const groupsMock = require('../mocks/groups')
 const pupilPinPresenter = require('../../../helpers/pupil-pin-presenter')
+const schoolService = require('../../../services/school.service')
 
 describe('pupilPin controller:', () => {
   let next
@@ -165,7 +166,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
         })
         it('displays the generate pins list page', async () => {
           const res = getRes()
@@ -196,7 +197,7 @@ describe('pupilPin controller:', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
-          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+          spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
         })
 
         it('displays the generate pins list page', async () => {
@@ -221,7 +222,7 @@ describe('pupilPin controller:', () => {
           controller = require('../../../controllers/pupil-pin').getGeneratePinsList
           spyOn(checkWindowV2Service, 'getActiveCheckWindow')
           spyOn(businessAvailabilityService, 'getAvailabilityData')
-          spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
+          spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(undefined))
         })
 
         it('it throws an error', async () => {
@@ -286,7 +287,7 @@ describe('pupilPin controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
-        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
+        spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -333,7 +334,7 @@ describe('pupilPin controller:', () => {
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
+        spyOn(schoolService, 'findOneById').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -351,7 +352,7 @@ describe('pupilPin controller:', () => {
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(schoolMock)
+        spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
         spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(res, 'redirect').and.returnValue(null)
@@ -388,7 +389,7 @@ describe('pupilPin controller:', () => {
         spyOn(businessAvailabilityService, 'determinePinGenerationEligibility')
         spyOn(checkStartService, 'prepareCheck2')
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-        spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(undefined)
+        spyOn(schoolService, 'findOneById').and.returnValue(undefined)
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()

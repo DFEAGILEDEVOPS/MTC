@@ -52,7 +52,7 @@ describe('pupilCensusService', () => {
   describe('process', () => {
     it('calls file validator', async () => {
       spyOn(fileValidator, 'validate')
-      pupilCensusService.process(pupilCensusUploadMock)
+      await pupilCensusService.process(pupilCensusUploadMock)
       expect(fileValidator.validate).toHaveBeenCalled()
     })
   })

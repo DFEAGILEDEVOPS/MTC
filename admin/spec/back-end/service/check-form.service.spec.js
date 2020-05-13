@@ -2,14 +2,9 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe beforeEach it expect spyOn fail */
+/* global describe it expect spyOn fail */
 
-const fs = require('fs-extra')
-const checkFormDataService = require('../../../services/data-access/check-form.data.service')
 const random = require('../../../lib/random-generator')
-
-const checkFormsMock = require('../mocks/check-forms')
-const checkWindowByForm = require('../mocks/check-window-by-form')
 
 const checkFormMock = {
   id: 100,
@@ -124,136 +119,6 @@ describe('check-form.service', () => {
       } catch (error) {
         fail(error)
       }
-    })
-  })
-
-  describe('#checkWindowNames()', () => {
-    it('should return a string value', () => {
-      const formData = {
-        id: 1,
-        name: 'Window Test 1'
-      }
-      const result = service.checkWindowNames([formData])
-      expect(result.toString()).toBe(' Window Test 1')
-      expect(result).toBeTruthy()
-    })
-  })
-
-  describe('#canDelete()', () => {
-    it('should return a boolean', () => {
-      const formData = checkWindowByForm[29]
-      const result = service.canDelete(formData)
-      expect(result.toString()).toBe('false')
-      expect(result).toBeFalsy()
-    })
-  })
-
-  describe('#buildFormName()', () => {
-    it('should return a valid form name', async () => {
-      const result = await service.buildFormName('MTC0100.csv')
-      expect(result).toBe('MTC0100')
-      expect(result).toBeTruthy()
-    })
-
-    it('should return a false if the name is invalid', async () => {
-      const result = await service.buildFormName('0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.csv')
-      expect(result).toBeFalsy()
-    })
-  })
-
-  describe('#validateCheckFormName()', () => {
-    describe('When the name is available', () => {
-      const formName = 'MTC0100'
-      beforeEach(() => {
-        spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue([])
-      })
-
-      it('should return true when form name not in use', async () => {
-        const result = await service.validateCheckFormName(formName)
-        expect(result).toBe(true)
-      })
-    })
-
-    describe('When the form name is not available', () => {
-      const formName = 'MTC0100'
-      beforeEach(() => {
-        spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue(formName)
-      })
-
-      it('should return false', async () => {
-        const result = await service.validateCheckFormName(formName)
-        expect(result).toBeFalsy()
-      })
-    })
-  })
-
-  describe('#isRowCountValid()', () => {
-    let csvFile
-
-    describe('When the number of lines is valid', () => {
-      beforeEach(() => {
-        csvFile = 'data/fixtures/check-form-5.csv'
-        spyOn(fs, 'readFileSync').and.returnValue(csvFile)
-      })
-
-      it('should return true', () => {
-        const result = service.isRowCountValid(csvFile)
-        expect(result).toBeTruthy()
-      })
-    })
-
-    describe('When the number of lines is invalid', () => {
-      beforeEach(() => {
-        csvFile = 'data/fixtures/check-form-7.csv'
-        spyOn(fs, 'readFileSync').and.returnValue(false)
-      })
-
-      it('should return false', () => {
-        const result = service.isRowCountValid(csvFile)
-        expect(result).toBeFalsy()
-      })
-    })
-  })
-
-  describe('#getUnassignedFormsForCheckWindow() - Get unassigned forms for selected check window.', () => {
-    beforeEach(() => {
-      spyOn(checkFormDataService, 'sqlFetchSortedActiveFormsNotAssignedToWindowByName').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
-    })
-
-    it('should return a list of unassigned check forms ids', async () => {
-      const existingAssignedForms = [101, 102]
-      const result = await service.getUnassignedFormsForCheckWindow(existingAssignedForms)
-      expect(result[0].id).toBe(100)
-      expect(result[0].name).toBe('MTC0100')
-      expect(result).toBeTruthy()
-    })
-  })
-
-  describe('#getAssignedFormsForCheckWindow() - Get assigned forms for selected check window.', () => {
-    beforeEach(() => {
-      spyOn(checkFormDataService, 'sqlFetchSortedActiveFormsByName').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
-    })
-
-    it('should return a list of assigned check forms id', async () => {
-      const result = await service.getAssignedFormsForCheckWindow(1)
-      expect(result).toBeTruthy()
-      expect(result.length).toBe(checkFormsMock.length)
-    })
-  })
-
-  describe('getCheckFormsByIds', () => {
-    it('throws an error if check form ids list is empty', async () => {
-      try {
-        await service.getCheckFormsByIds()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('batchIds list empty or not defined')
-      }
-    })
-    it('returns parsed check forms', async () => {
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
-      const result = await service.getCheckFormsByIds([1])
-      expect(typeof result[0].formData).toBe('object')
     })
   })
 })
