@@ -12,7 +12,7 @@
             <p class="govuk-body">
                 Upload, view or remove check forms.
             </p>
-            <a class="govuk-button" href="/check-form/upload-new-forms">Upload new form</a>
+            <a class="govuk-button" href="/test-developer/upload-new-forms">Upload new form</a>
         <% if (Array.isArray(checkForms) && checkForms.length > 0) { %>
             <table id="checkFormsList" role="group" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                 <caption class="govuk-body govuk-table__caption">Check forms</caption>
@@ -36,14 +36,14 @@
                         <td scope="row" <% if (messages.info && Array.isArray(messages.info[0].checkForms) && messages.info[0].checkForms.some(f => f.checkFormName === cf.checkFormName)) { %> class="govuk-highlight-item"<% } %>>
                             <div class="govuk-highlight-wrapper">
                                 <a name="anchor-<%= cf.checkFormName %>"></a>
-                                <a class="govuk-link" href="/check-form/view/<%= cf.urlSlug %>" class="govuk-!-font-weight-bold"><%= cf.checkFormName %></a>
+                                <a class="govuk-link" href="/test-developer/view/<%= cf.urlSlug %>" class="govuk-!-font-weight-bold"><%= cf.checkFormName %></a>
                             </div>
                         </td>
                         <td><%= cf.checkFormType %></td>
                         <td><%= cf.createdAt %></td>
                         <td>
                         <% if (cf.canRemoveCheckForm) { %>
-                            <a class="govuk-link modal-link" id="js-modal-link" href="/check-form/delete/<%= cf.urlSlug %>">Remove</a>
+                            <a class="govuk-link modal-link" id="js-modal-link" href="/test-developer/delete/<%= cf.urlSlug %>">Remove</a>
                         <% } %>
                         </td>
                     </tr>
@@ -62,7 +62,7 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="/check-form/assign-forms-to-check-windows">Assign forms to check window</a>
+                            <a class="govuk-link" href="/test-developer/assign-forms-to-check-windows">Assign forms to check window</a>
                         </li>
                     </ul>
                 </nav>
