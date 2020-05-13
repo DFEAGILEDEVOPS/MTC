@@ -19,6 +19,11 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   private subscription: Subscription;
 
+  /**
+   * Do not show 'practice' label on top left.
+   */
+  public isWarmUpQuestion = false;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected registerInputService: RegisterInputService,
@@ -27,7 +32,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected speechService: SpeechService,
               protected questionService: QuestionService,
               protected answerService: AnswerService) {
-    super(auditService, windowRefService, registerInputService, questionService, storageService, speechService, answerService);
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
   }
 
   ngOnInit() {

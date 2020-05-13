@@ -19,7 +19,7 @@ describe('ConnectivityService', () => {
       providers: [
         AzureQueueService,
         ConnectivityService,
-        { provide: QUEUE_STORAGE_TOKEN }
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
       ]
     });
     httpClient = TestBed.get(HttpClient);
