@@ -63,7 +63,7 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    xit('POST: should render the check summary', async () => {
+    it('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
       spyOn(res, 'render').and.returnValue(null)
@@ -76,7 +76,7 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    xit('POST: should redirect back to GET when validation fails', async () => {
+    it('POST: should redirect back to GET when validation fails', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
       spyOn(res, 'render')
