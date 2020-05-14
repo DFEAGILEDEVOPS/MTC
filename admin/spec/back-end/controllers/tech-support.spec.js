@@ -63,15 +63,27 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should render the check summary', async () => {
+    xit('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
       spyOn(res, 'render').and.returnValue(null)
       await sut.postCheckViewPage(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
-      expect(res.summaryData).toBeDefined()
-      // expect(next).not.toHaveBeenCalled()
+      expect(res.formData).toBeDefined()
+      expect(res.breadcrumbs).toBeDefined()
+      expect(res.error).toBeDefined()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    xit('POST: should redirect back to GET when validation fails', async () => {
+      const req = getRequest(getReqParams)
+      const res = getResponse()
+      spyOn(res, 'render')
+      await sut.postCheckViewPage(req, res, next)
+      expect(res.statusCode).toBe(500)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
 })

@@ -34,7 +34,7 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
   try {
     return res.render('tech-support/check-view', {
       breadcrumbs: req.breadcrumbs(),
-      formData: req.body,
+      formData: {},
       err: error || new ValidationError()
     })
   } catch (error) {
@@ -50,13 +50,14 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
  */
 controller.postCheckViewPage = async (req, res, next) => {
   const { checkCode } = req.body
+  res.locals.pageTitle = 'Tech Support Check View'
   try {
-    res.render('/tech-support/check-view-summary', {
+    res.render('tech-support/check-view', {
       breadcrumbs: [
-        { name: 'Tech Support Check View' },
-        { name: 'Tech Support Check View Summary' }
+        { name: 'Tech Support Check View' }
       ],
-      summaryData: {
+      err: new ValidationError(),
+      formData: {
         checkCode: checkCode
       }
     })
