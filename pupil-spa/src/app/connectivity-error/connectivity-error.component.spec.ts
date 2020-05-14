@@ -23,7 +23,7 @@ describe('ConnectivityErrorComponent', () => {
       providers: [
         AzureQueueService,
         ConnectivityService,
-        { provide: QUEUE_STORAGE_TOKEN }
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
       ]
     })
     .compileComponents();

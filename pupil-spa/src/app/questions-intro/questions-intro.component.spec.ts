@@ -37,7 +37,7 @@ describe('QuestionsIntroComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: QUEUE_STORAGE_TOKEN },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         AzureQueueService,
         TokenService,
         StorageService,

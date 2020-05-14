@@ -26,8 +26,8 @@ describe('PupilPrefsService', () => {
       imports: [],
       providers: [
         AppConfigService,
-        {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
-        {provide: QUEUE_STORAGE_TOKEN},
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         AzureQueueService,
         PupilPrefsService,
         TokenService,

@@ -7,7 +7,7 @@
         <app-warmup-loading *ngSwitchCase="'warmup-preload'"
             [question]="question"
             [loadingTimeout]="config.loadingTime"
-            (timeoutEvent)="loadingTimeoutHandler($event)"
+            (timeoutEvent)="loadingTimeoutHandler()"
             [total]="totalNumberOfQuestions"
             [shouldShowWarningModal]="false"
             [familiarisationCheck]="familiarisationCheck">
@@ -21,7 +21,7 @@
         <app-loading *ngSwitchCase="'preload'"
             [question]="question"
             [loadingTimeout]="config.loadingTime"
-            (timeoutEvent)="loadingTimeoutHandler($event)"
+            (timeoutEvent)="loadingTimeoutHandler()"
             [total]="totalNumberOfQuestions"
             [familiarisationCheck]="familiarisationCheck">
         </app-loading>
