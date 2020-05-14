@@ -1,9 +1,7 @@
 'use strict'
 
-/* global describe, it, spyOn expect beforeEach afterEach */
+/* global describe it expect beforeEach  */
 
-const uuid = require('uuid/v4')
-const ValidationError = require('../../../../../lib/validation-error')
 let sut
 
 const valueName = 'theUUID'

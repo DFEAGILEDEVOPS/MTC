@@ -1,6 +1,7 @@
 'use strict'
 
 const ValidationError = require('../lib/validation-error')
+const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const controller = {}
 
@@ -49,9 +50,13 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
  * @param {object} next
  */
 controller.postCheckViewPage = async (req, res, next) => {
-  const { checkCode } = req.body
   res.locals.pageTitle = 'Tech Support Check View'
+  const { checkCode } = req.body
   try {
+    const validationError = uuidValidator.validate(checkCode, 'checkCode')
+    if (validationError && validationError.hasError && validationError.hasError()) {
+      return controller.getCheckViewPage(req, res, next, validationError)
+    }
     res.render('tech-support/check-view', {
       breadcrumbs: [
         { name: 'Tech Support Check View' }
