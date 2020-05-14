@@ -1,5 +1,7 @@
 'use strict'
 
+const ValidationError = require('../lib/validation-error')
+
 const controller = {}
 
 /**
@@ -31,7 +33,9 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Tech Support Check View'
   try {
     return res.render('tech-support/check-view', {
-      breadcrumbs: [{ name: 'Tech Support Check View' }]
+      breadcrumbs: req.breadcrumbs(),
+      formData: req.body,
+      err: error || new ValidationError()
     })
   } catch (error) {
     return next(error)

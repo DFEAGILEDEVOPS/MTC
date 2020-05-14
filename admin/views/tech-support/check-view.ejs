@@ -6,7 +6,44 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">Check View</h1>
+      <% if (err.hasError()) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                You need to fix the errors on this page before continuing.
+            </h2>
+            <div class="govuk-error-summary__body">
+                <p>See highlighted errors below.</p>
+                <ul class="govuk-list govuk-error-summary__list">
+                    <% err.getUniqueFields(['checkCode']).map(f => { %>
+                        <% const errors = err.get(f) %>
+                        <% if (Array.isArray(errors)) { %>
+                            <%  errors.map(e => { %>
+                                <li><a href="#<%= f %>"><%= e %></a></li>
+                        <% }) } else { %>
+                            <li><a href="#<%= f %>"><%= errors %></a></li>
+                        <% } %>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    <% } %>
+    <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+    <%- partial('partials/_gds_session_expiry') %>
+    <form action="/tech-support/checkview" id="checkViewForm" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group <%= err.isError('checkCode') ? 'govuk-form-group--error' : '' %>">
+            <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Check Code</label>
+            <% if (err.isError('checkCode')) { %>
+                <span class="govuk-error-message"><%= err.get('checkCode') %></span>
+            <% } %>
+            <input type="text"
+                   id="checkCode"
+                   class="govuk-input govuk-!-width-three-quarters <%= err.isError('checkCode') ? 'govuk-input--error' : '' %>"
+                   name="checkCode"
+                   value="<%= formData['checkCode'] %>"/>
+        </div>
+        <button type="submit" id="submit-checkcode" class="govuk-button">Submit</button>
+    </form>
     </div>
   </div>
 </main>

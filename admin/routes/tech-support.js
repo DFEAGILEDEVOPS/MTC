@@ -7,15 +7,21 @@ const isAuthenticated = require('../authentication/middleware')
 const techSupportController = require('../controllers/tech-support')
 
 router.get(
-  ['/home'],
+  '/home',
   isAuthenticated([roles.techSupport]),
   (req, res, next) => techSupportController.getHomePage(req, res, next)
 )
 
 router.get(
-  ['/checkview'],
+  '/checkview',
   isAuthenticated([roles.techSupport]),
   (req, res, next) => techSupportController.getCheckViewPage(req, res, next)
+)
+
+router.post(
+  '/checkview',
+  isAuthenticated([roles.techSupport]),
+  (req, res, next) => techSupportController.postCheckViewPage(req, res, next)
 )
 
 module.exports = router
