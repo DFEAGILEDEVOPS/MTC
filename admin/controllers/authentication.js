@@ -88,6 +88,7 @@ const getSignInFailure = (req, res) => {
 
 const getUnauthorised = (req, res) => {
   res.locals.pageTitle = 'Access Unauthorised'
+  res.statusCode = 401
   res.render('unauthorised')
 }
 
