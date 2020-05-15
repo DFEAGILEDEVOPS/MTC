@@ -23,18 +23,22 @@ const home = (req, res) => {
         return res.redirect(homeRoutes.techSupportHomeRoute)
     }
   } else {
-    redirectToAuthModeSignIn(res)
+    redirectToAuthModeSignIn(req, res)
   }
 }
 
-const redirectToAuthModeSignIn = (res) => {
+const redirectToAuthModeSignIn = (req, res) => {
   res.locals.pageTitle = 'Check Development - Login'
   switch (config.Auth.mode) {
     case authModes.dfeSignIn:
       res.redirect(dfeSignInRedirect)
       break
     default: //  local
-      res.render('sign-in')
+      if (req.url === '/sign-in') {
+        res.render('sign-in')
+      } else {
+        res.redirect('/sign-in')
+      }
       break
   }
 }
@@ -44,7 +48,7 @@ const getSignIn = (req, res) => {
   if (req.isAuthenticated()) {
     home(req, res)
   } else {
-    redirectToAuthModeSignIn(res)
+    redirectToAuthModeSignIn(req, res)
   }
 }
 
