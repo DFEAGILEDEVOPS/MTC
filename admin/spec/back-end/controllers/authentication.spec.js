@@ -6,6 +6,8 @@ const httpMocks = require('node-mocks-http')
 const sut = require('../../../controllers/authentication')
 const homeRoutes = require('../../../lib/consts/home-routes')
 const roles = require('../../../lib/consts/roles')
+const config = require('../../../config')
+const authModes = require('../../../lib/consts/auth-modes')
 
 const getReqParams = (url = '/', method = 'GET') => {
   return {
@@ -36,25 +38,78 @@ describe('authentication controller', () => {
   })
 
   describe('home', () => {
-    it('should redirect to signin when not authenticated', () => {
-      const res = createResponse()
-      spyOn(res, 'redirect')
-      sut.home(createRequest(false), res)
-      expect(res.redirect).toHaveBeenCalledWith('/sign-in')
+    describe('unauthenticated requests', () => {
+      const unauthenticated = false
+      it('should redirect to signin when requested url is not /sign-in', () => {
+        const res = createResponse()
+        spyOn(res, 'redirect')
+        sut.home(createRequest(unauthenticated), res)
+        expect(res.redirect).toHaveBeenCalledWith('/sign-in')
+      })
+
+      it('renders view if /sign-in is requested', () => {
+        const res = createResponse()
+        spyOn(res, 'render')
+        const params = getReqParams('/sign-in')
+        sut.home(createRequest(unauthenticated, params), res)
+        expect(res.render).toHaveBeenCalledWith('sign-in')
+      })
+
+      it('redirect to /oidc-sign-in if in dsi auth mode', () => {
+        config.Auth.mode = authModes.dfeSignIn
+        const res = createResponse()
+        spyOn(res, 'redirect')
+        sut.home(createRequest(unauthenticated), res)
+        expect(res.redirect).toHaveBeenCalledWith('/oidc-sign-in')
+      })
     })
 
-    it('should redirect to school homepage when teacher role is authenticated', () => {
-      const res = createResponse()
-      spyOn(res, 'redirect')
-      sut.home(createRequest(true), res)
-      expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
-    })
+    describe('authenticated requests', () => {
+      const authenticated = true
+      it('should redirect to correct home when teacher role is authenticated', () => {
+        const res = createResponse()
+        spyOn(res, 'redirect')
+        sut.home(createRequest(authenticated), res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
+      })
 
-    it('should redirect to test dev homepage when test dev role is authenticated', () => {
-      const res = createResponse()
-      spyOn(res, 'redirect')
-      sut.home(createRequest(true), res, getReqParams(), roles.testDeveloper)
-      expect(res.redirect).toHaveBeenCalledWith(homeRoutes.testDeveloperHomeRoute)
+      it('should redirect to correct home when helpdesk role is authenticated', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.helpdesk)
+        spyOn(res, 'redirect')
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
+      })
+
+      it('should redirect to correct home when test dev role is authenticated', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.testDeveloper)
+        spyOn(res, 'redirect')
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.testDeveloperHomeRoute)
+      })
+
+      it('should redirect to correct home when service manager is authenticated', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.serviceManager)
+        spyOn(res, 'redirect')
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.serviceManagerHomeRoute)
+      })
+
+      it('should redirect to correct home when techsupport role is authenticated', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.techSupport)
+        spyOn(res, 'redirect')
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.techSupportHomeRoute)
+      })
+    })
+  })
+
+  describe('getSignIn', () => {
+    it('redirects to /sign-in if unauthenticated', () => {
+      
     })
   })
 })
