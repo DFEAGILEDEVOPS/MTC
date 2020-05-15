@@ -16,7 +16,7 @@ const getReqParams = (url = '/', method = 'GET') => {
   }
 }
 
-const createRequest = (isAuthenticated, params = getReqParams , role = 'TEACHER') => {
+const createRequest = (isAuthenticated, params = getReqParams, role = 'TEACHER') => {
   const req = httpMocks.createRequest(params)
   req.user = {
     role: role
