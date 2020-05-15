@@ -9,14 +9,12 @@
             <h1 class="govuk-heading-xl">Multiplication tables check for test development</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <ol class="govuk-list">
-                <% const uploadAndViewFormsHrefValue = '/check-form/view-forms' %>
                 <li>
-                    <h4 class="govuk-heading-s"><a class="govuk-link" href="<%= uploadAndViewFormsHrefValue %>">Upload and view forms</a></h4>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="/test-developer/view-forms">Upload and view forms</a></h4>
                     <p class="govuk-body">Add, view, remove and edit check forms</p>
                 </li>
                 <li>
-                    <% const assignFormsHrefValue = '/check-form/assign-forms-to-check-windows' %>
-                    <h4 class="govuk-heading-s"><a class="govuk-link" href="<%= assignFormsHrefValue %>">Assign forms to check windows</a></h4>
+                    <h4 class="govuk-heading-s"><a class="govuk-link" href="/test-developer/assign-forms-to-check-windows">Assign forms to check windows</a></h4>
                     <p>Select uploaded forms and assign them to check windows</p>
                 </li>
                 <li>

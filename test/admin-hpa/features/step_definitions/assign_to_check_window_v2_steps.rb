@@ -58,7 +58,7 @@ When(/^I attempt to assign a live form to a active check window$/) do
 end
 
 Then(/^I should not be allowed to do so$/) do
-  select_form_to_assign_page.check_forms.rows.each {|row| expect(row).to have_no_select}
+  select_form_to_assign_page.check_forms.rows.each {|row| expect(row.has_no_select?).to be_truthy}
 end
 
 And(/^form assigned to '(.*)' check window display 'yes'$/) do |window_name|

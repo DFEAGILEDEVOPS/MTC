@@ -1,9 +1,9 @@
 class UploadAndViewFormsV2Page < SitePrism::Page
-  set_url '/check-form/view-forms'
+  set_url '/test-developer/view-forms'
 
   element :heading, '.govuk-heading-xl', text: 'Upload and view forms'
   element :info, '.govuk-body', text: 'Upload, view or remove check forms.'
-  element :upload_new_form, 'a[href="/check-form/upload-new-forms"]'
+  element :upload_new_form, 'a[href="/test-developer/upload-new-forms"]'
   element :flash_message, '.govuk-info-message'
   element :confirm_delete, '#js-modal-confirmation-button'
   element :cancel_delete, '#js-modal-cancel-button'

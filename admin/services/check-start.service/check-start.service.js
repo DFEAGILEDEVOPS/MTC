@@ -180,6 +180,7 @@ checkStartService.storeCheckConfigs = async function (preparedChecks, newChecks)
       checkId: newChecks.find(check => check.check_checkCode === pcheck.checkCode).check_id
     }
   })
+  // intentionally not awaited?
   checkStartDataService.sqlStoreBatchConfigs(config)
 }
 

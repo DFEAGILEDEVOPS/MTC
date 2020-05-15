@@ -13,7 +13,7 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
 const pupilValidator = require('../../../lib/validator/pupil-validator')
-const schoolDataService = require('../../../services/data-access/school.data.service')
+const schoolService = require('../../../services/school.service')
 const schoolMock = require('../mocks/school')
 const uploadedFileService = require('../../../services/uploaded-file.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
@@ -110,7 +110,7 @@ describe('pupil controller:', () => {
       beforeEach(() => {
         pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
         controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService,
+          '../services/school.service': schoolService,
           '../services/pupil-add-service': pupilAddService
         }).postAddPupil
       })
@@ -234,9 +234,9 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('sqlFindOneById').resolves(schoolMock)
+        sandbox.mock(schoolService).expects('findOneById').resolves(schoolMock)
         controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService
+          '../services/school.service': schoolService
         }).postAddMultiplePupils
       })
 
@@ -315,9 +315,9 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('sqlFindOneById').resolves(undefined)
+        sandbox.mock(schoolService).expects('findOneById').resolves(undefined)
         controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService
+          '../services/school.service': schoolService
         }).postAddMultiplePupils
       })
       it('it throws an error', async () => {
@@ -436,7 +436,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
@@ -456,19 +456,19 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
-      expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
+      expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
     it('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
       spyOn(pupilValidator, 'validate').and.returnValue(new ValidationError())
       // spyOn(pupilDataService, 'sqlUpdate')
       spyOn(pupilEditService, 'update')
@@ -477,7 +477,7 @@ describe('pupil controller:', () => {
       // exception to bail out early, which saves mocking the remaining calls.
       await controller(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
-      expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
+      expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilEditService.update).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
@@ -24,12 +24,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
-              protected registerInputService: RegisterInputService,
               protected questionService: QuestionService,
               protected storageService: StorageService,
               protected speechService: SpeechService,
-              protected answerService: AnswerService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService);
+              protected answerService: AnswerService,
+              protected registerInputService: RegisterInputService) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
     this.window = windowRefService.nativeWindow;
   }
 
@@ -54,6 +54,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
+    if (this.submitted) {
+      return;
+    }
     const questionData = {
       questionNumber: this.sequenceNumber,
       factor1: this.factor1,
@@ -68,56 +71,15 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event) {
-    const questionData = {
-      questionNumber: this.sequenceNumber,
-      factor1: this.factor1,
-      factor2: this.factor2
-    };
-    this.registerInputService.addEntry(event, questionData);
-  }
-
-  /**
-   * Handle key presses
-   * @param {KeyboardEvent} event
-   * @return {boolean}
-   */
-  @HostListener('document:keydown', [ '$event' ])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    const questionData = {
-      questionNumber: this.sequenceNumber,
-      factor1: this.factor1,
-      factor2: this.factor2
-    };
-    this.registerInputService.addEntry(event, questionData);
-    const key = event.key;
-    // register inputs
-    switch (key) {
-      case 'Backspace':
-      case 'Delete':
-      case 'Del':
-        this.deleteChar();
-        break;
-      case 'Tab':
-        this.repeatQuestion();
-        break;
-      case 'Enter':
-        this.onSubmit();
-        break;
-      case '0':
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9':
-        this.addChar(key);
-        break;
+    if (this.submitted) {
+      return;
     }
-    // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
-    return false;
+    const questionData = {
+      questionNumber: this.sequenceNumber,
+      factor1: this.factor1,
+      factor2: this.factor2
+    };
+    this.registerInputService.addEntry(event, questionData);
   }
 
   /**
@@ -126,6 +88,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {Object} event
    */
   onClickAnswer(number: number, event) {
+    if (this.submitted) {
+      return;
+    }
     this.registerInputService.storeEntry
     (number.toString(),
       'click',
@@ -141,6 +106,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {Object} event
    */
   onClickBackspace(event) {
+    if (this.submitted) {
+      return;
+    }
     this.registerInputService.storeEntry('Backspace',
       'click',
       this.sequenceNumber,
@@ -198,6 +166,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {Object} event
    */
   onClickSubmit(event) {
+    if (this.submitted) {
+      return;
+    }
     this.registerInputService.storeEntry('Enter',
       'click',
       this.sequenceNumber,

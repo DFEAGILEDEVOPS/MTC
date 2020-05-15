@@ -68,15 +68,6 @@ const serviceToExport = {
     const insertSql = insertHeader + inserts.join(',\n')
     const sql = [declareTable, insertSql, exec].join(';\n')
     return sqlService.query(sql, params)
-  },
-
-  sqlFindActivePinRecordsByPupilUrlSlug: async (urlSlug) => {
-    const view = 'vewPupilsWithActivePins'
-    const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
-    const sql = `SELECT *
-      FROM ${sqlService.adminSchema}.[${view}]
-      WHERE urlSlug = @urlSlug`
-    return sqlService.query(sql, [param])
   }
 }
 

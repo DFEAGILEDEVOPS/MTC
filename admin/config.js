@@ -172,7 +172,6 @@ module.exports = {
     groupCreate: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_CREATE') ? toBool(process.env.FEATURE_TOGGLE_GROUP_CREATE) : true,
     groupEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_EDIT') ? toBool(process.env.FEATURE_TOGGLE_GROUP_EDIT) : true,
     groupRemove: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_GROUP_REMOVE') ? toBool(process.env.FEATURE_TOGGLE_GROUP_REMOVE) : true,
-    newCheckForm: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_FORM') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_FORM) : true,
     newCheckWindow: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_NEW_CHECK_WINDOW') ? toBool(process.env.FEATURE_TOGGLE_NEW_CHECK_WINDOW) : true,
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true,
