@@ -30,7 +30,9 @@ const combinedTimeoutAndResourceLimitsReachedPredicate = (error) => {
 }
 
 let cache = {}
-/* @var mssql.ConnectionPool */
+/**
+ * @var {mssql.ConnectionPool} main connection pool for service
+ */
 let pool
 
 /**
