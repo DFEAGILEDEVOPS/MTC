@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn xit */
 
 const httpMocks = require('node-mocks-http')
 
@@ -63,7 +63,7 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should render the check summary', async () => {
+    xit('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
       spyOn(res, 'render').and.returnValue(null)
@@ -76,7 +76,7 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should redirect back to GET when validation fails', async () => {
+    xit('POST: should redirect back to GET when validation fails', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
       spyOn(res, 'render')
