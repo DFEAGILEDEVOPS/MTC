@@ -6,7 +6,16 @@ const R = require('ramda')
 
 const service = {
   getByCheckCode: async function getByCheckCode (checkCode) {
-    return R.head([])
+    const sql = 'SELECT * FROM mtc_admin.vewCheckDiagnostic WHERE checkCode=@checkCode'
+    const params = [
+      {
+        name: 'checkCode',
+        value: checkCode,
+        type: TYPES.UniqueIdentifier
+      }
+    ]
+    const result = await sqlService.readonlyQuery(sql, params)
+    return R.head(result)
   }
 }
 

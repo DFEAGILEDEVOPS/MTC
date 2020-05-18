@@ -1,6 +1,6 @@
 'use strict'
 
-/* globals describe expect it spyOn */
+/* globals describe expect it spyOn fail */
 
 const sut = require('../../../services/check-diagnostics.service')
 const dataService = require('../../../services/data-access/check-diagnostics.data.service')
@@ -19,7 +19,18 @@ describe('check diagnostics service', () => {
   })
 
   it('should return undefined when check not found', async () => {
+    spyOn(dataService, 'getByCheckCode').and.returnValue(undefined)
     const actual = await sut.getByCheckCode(checkCode)
     expect(actual).toBeUndefined()
+  })
+
+  it('should throw error when checkCode not provided', async () => {
+    try {
+      await sut.getByCheckCode()
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error.message).toEqual('checkCode is required')
+    }
   })
 })
