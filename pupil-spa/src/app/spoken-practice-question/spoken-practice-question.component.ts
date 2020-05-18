@@ -2,13 +2,14 @@ import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@ang
 import { Subscription } from 'rxjs';
 
 import { AnswerService } from '../services/answer/answer.service';
-import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { SpeechService } from '../services/speech/speech.service';
-import { StorageService } from '../services/storage/storage.service';
+import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { QuestionRendered } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-spoken-practice-question',
@@ -18,15 +19,21 @@ import { QuestionService } from '../services/question/question.service';
 export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;
 
+  /**
+   * Do not show 'practice' label on top left.
+   */
+  public isWarmUpQuestion = true;
+
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
               protected zone: NgZone,
               protected storageService: StorageService,
               protected questionService: QuestionService,
-              protected answerService: AnswerService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService);
-    this.isWarmUpQuestion = true;
+              protected answerService: AnswerService,
+              protected registerInputService: RegisterInputService) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
   }
 
   ngOnInit() {

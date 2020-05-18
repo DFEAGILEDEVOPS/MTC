@@ -31,7 +31,7 @@ $(function () {
 
     $('.filter-header').on('click', function (e) {
       $('.filter-label').toggleClass('active')
-      $('#filter-content').toggleClass('hidden')
+      $('#filter-content').toggleClass('js-filter-hidden-group')
     })
 
     $('.group-count').each(function () {
