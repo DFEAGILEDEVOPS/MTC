@@ -8,13 +8,13 @@ const service = {
    * @description create a new connection pool
    * @param {object} config the connection attributes
    * @param {string} name the unique name of the pool
-   * @returns {Promise.<object>} the active connection pool
+   * @returns {ConnectionPool} the active connection pool
    */
-  createPool: async function createPool (config, name) {
+  createPool: function createPool (config, name) {
     if (service.getPool(name)) {
       throw new Error('Pool with this name already exists')
     }
-    POOLS[name] = await (new ConnectionPool(config)).connect()
+    POOLS[name] = new ConnectionPool(config)
     return POOLS[name]
   },
   /**
@@ -23,7 +23,7 @@ const service = {
    * @returns {Promise.<object>} a promise containing the closing pool
    */
   closePool: function closePool (name) {
-    if (Object.prototype.hasOwnProperty.apply(POOLS, name)) {
+    if ({}.hasOwnProperty.call(POOLS, name)) {
       const pool = POOLS[name]
       delete POOLS[name]
       return pool.close()
@@ -35,7 +35,7 @@ const service = {
    * @returns {object} the specified pool, if it exists
    */
   getPool: function getPool (name) {
-    if (Object.prototype.hasOwnProperty.apply(POOLS, name)) {
+    if ({}.hasOwnProperty.call(POOLS, name)) {
       return POOLS[name]
     }
   }

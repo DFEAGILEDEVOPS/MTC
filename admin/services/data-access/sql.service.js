@@ -15,6 +15,12 @@ const {
 } = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
+const poolService = require('./sql.pool.service')
+const roles = require('../../lib/consts/roles')
+// these constants are temporary and we will use the role identifier only once we have full implementation
+const defaultPoolId = `${roles.teacher}`
+const readOnlyPoolId = `${defaultPoolId}:readonly`
+// const techSupportPoolId = `${roles.techSupport}`
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -225,7 +231,7 @@ sqlService.initPool = async () => {
     logger.warn('The connection pool has already been initialised')
     return
   }
-  pool = new mssql.ConnectionPool(poolConfig)
+  pool = poolService.createPool(poolConfig, defaultPoolId)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
@@ -238,10 +244,10 @@ sqlService.drainPool = async () => {
     logger.warn('The connection pool is not initialised')
     return
   }
-  return pool.close()
+  return poolService.closePool(defaultPoolId)
 }
 
-sqlService.initReadonlyPool = async () => {
+sqlService.initReadonlyPool = () => {
   if (config.Sql.AllowReadsFromReplica !== true) {
     throw new Error('Invalid Operation: Reads from Replica are disabled')
   }
@@ -249,7 +255,7 @@ sqlService.initReadonlyPool = async () => {
     logger.warn('The read-only connection pool has already been initialised')
     return
   }
-  readonlyPool = new mssql.ConnectionPool(readonlyPoolConfig)
+  readonlyPool = poolService.createPool(readonlyPoolConfig, readOnlyPoolId)
   readonlyPool.on('error', err => {
     logger.error('SQL Read-only Pool Error:', err)
   })
@@ -262,7 +268,7 @@ sqlService.drainReadonlyPool = async () => {
     logger.warn('The read-only connection pool is not initialised')
     return
   }
-  return readonlyPool.close()
+  return poolService.closePool(readOnlyPoolId)
 }
 
 /**
