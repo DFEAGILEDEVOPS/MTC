@@ -98,7 +98,11 @@ module.exports = {
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
     },
-    AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false
+    AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
+    TechSupport: {
+      Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
+      Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD
+    }
   },
   DatabaseRetry: {
     MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,
