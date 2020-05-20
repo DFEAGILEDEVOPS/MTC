@@ -19,6 +19,7 @@ try {
 // telemetry
 // fallback to app insights, if configured
 const appInsights = require('./helpers/app-insights')
+// intentionally not awaited...
 appInsights.startInsightsIfConfigured()
 
 // non priority modules...
@@ -115,10 +116,9 @@ const restart = require('./routes/restart')
 const pupilsNotTakingTheCheck = require('./routes/pupils-not-taking-the-check')
 const group = require('./routes/group')
 const pupilRegister = require('./routes/pupil-register')
-const attendance = require('./routes/attendance')
+const hdf = require('./routes/hdf')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
-const checkForm = require('./routes/check-form')
 const results = require('./routes/results')
 const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
@@ -160,7 +160,7 @@ busboy.extend(app, {
 const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url) ||
   (/^\/service-manager\/upload-pupil-census\/upload$/).test(url) ||
-  (/^\/check-form\/upload$/).test(url)
+  (/^\/test-developer\/upload$/).test(url)
 
 // as we run in container over http, we must set up proxy trust for secure cookies
 let secureCookie = false
@@ -312,10 +312,9 @@ if (WEBSITE_OFFLINE) {
   app.use('/group', group)
   app.use('/restart', restart)
   app.use('/pupil-register', pupilRegister)
-  app.use('/attendance', attendance)
+  app.use('/attendance', hdf)
   app.use('/access-arrangements', accessArrangements)
   app.use('/check-window', checkWindow)
-  app.use('/check-form', checkForm)
   app.use('/results', results)
   app.use('/pupil-status', pupilStatus)
   app.use('/tech-support', techSupport)
@@ -332,16 +331,12 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   const errorId = uuidV4()
   // set locals, only providing error in development
-  // @TODO: change this to a real logger with an error string that contains
-  // all pertinent information. Assume 2nd/3rd line support would pick this
-  // up from logging web interface (e.g. ELK / LogDNA)
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
   // render the error page
-  // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}

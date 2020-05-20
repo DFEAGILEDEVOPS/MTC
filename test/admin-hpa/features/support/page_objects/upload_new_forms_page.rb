@@ -1,5 +1,5 @@
 class UploadNewFormsPage < SitePrism::Page
-  set_url '/check-form/upload-new-forms'
+  set_url '/test-developer/upload-new-forms'
 
   element :heading, '.govuk-heading-xl', text: 'Upload new form'
   element :download_form_example_template, '.govuk-list .govuk-icon-download'

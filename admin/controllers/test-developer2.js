@@ -1,5 +1,5 @@
 const checkFormPresenter = require('../helpers/check-form-presenter')
-const checkFormV2Service = require('../services/check-form-v2.service')
+const testDeveloperService = require('../services/test-developer.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -16,12 +16,12 @@ controller.getViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   let checkForms
   try {
-    checkForms = await checkFormV2Service.getSavedForms()
+    checkForms = await testDeveloperService.getSavedForms()
   } catch (error) {
     return next(error)
   }
   req.breadcrumbs(res.locals.pageTitle)
-  return res.render('check-form/view-forms', {
+  return res.render('test-developer/view-forms', {
     checkForms,
     breadcrumbs: req.breadcrumbs(),
     messages: res.locals.messages
@@ -37,16 +37,16 @@ controller.getViewFormsPage = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
-  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   res.locals.pageTitle = 'Upload new form'
   let hasExistingFamiliarisationCheckForm
   try {
-    hasExistingFamiliarisationCheckForm = await checkFormV2Service.hasExistingFamiliarisationCheckForm()
+    hasExistingFamiliarisationCheckForm = await testDeveloperService.hasExistingFamiliarisationCheckForm()
   } catch (error) {
     return next(error)
   }
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/upload-new-forms', {
+  res.render('test-developer/upload-new-forms', {
     breadcrumbs: req.breadcrumbs(),
     errors: error || new ValidationError(),
     formData: req.body,
@@ -65,7 +65,7 @@ controller.postUpload = async (req, res, next) => {
   const uploadData = req.files && req.files.csvFiles
   const requestData = req.body
   try {
-    await checkFormV2Service.saveCheckForms(uploadData, requestData)
+    await testDeveloperService.saveCheckForms(uploadData, requestData)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return controller.getUploadNewFormsPage(req, res, next, error)
@@ -74,7 +74,7 @@ controller.postUpload = async (req, res, next) => {
   }
   const flashMessageData = checkFormPresenter.getFlashMessageData(uploadData)
   req.flash('info', flashMessageData)
-  res.redirect('/check-form/view-forms')
+  res.redirect('/test-developer/view-forms')
 }
 
 /**
@@ -88,14 +88,14 @@ controller.getDelete = async (req, res, next) => {
   const urlSlug = req.params && req.params.urlSlug
   let checkFormName
   try {
-    checkFormName = await checkFormV2Service.getCheckFormName(urlSlug)
-    await checkFormV2Service.deleteCheckForm(urlSlug)
+    checkFormName = await testDeveloperService.getCheckFormName(urlSlug)
+    await testDeveloperService.deleteCheckForm(urlSlug)
   } catch (error) {
     return next(error)
   }
   const flashMessage = { message: `Successfully deleted form ${checkFormName}` }
   req.flash('info', flashMessage)
-  return res.redirect('/check-form/view-forms')
+  return res.redirect('/test-developer/view-forms')
 }
 
 /**
@@ -106,17 +106,17 @@ controller.getDelete = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.getViewFormPage = async (req, res, next) => {
-  req.breadcrumbs('Upload and view forms', '/check-form/view-forms')
+  req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
   try {
-    checkFormData = await checkFormV2Service.getCheckForm(urlSlug)
+    checkFormData = await testDeveloperService.getCheckForm(urlSlug)
   } catch (error) {
     return next(error)
   }
   res.locals.pageTitle = checkFormData.checkFormName
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/view-form', {
+  res.render('test-developer/view-form', {
     breadcrumbs: req.breadcrumbs(),
     checkFormData
   })
@@ -145,7 +145,7 @@ controller.getAssignFormsPage = async (req, res, next) => {
     hl = JSON.parse(hl)
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
-  res.render('check-form/view-assign-forms-to-check-windows', {
+  res.render('test-developer/view-assign-forms-to-check-windows', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     highlight: hl && new Set(hl),
@@ -170,8 +170,8 @@ controller.getSelectFormPage = async (req, res, next) => {
   let assignedCheckForms
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    availableCheckForms = await checkFormV2Service.getCheckFormsByType(checkFormType)
-    assignedCheckForms = await checkFormV2Service.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
+    availableCheckForms = await testDeveloperService.getCheckFormsByType(checkFormType)
+    assignedCheckForms = await testDeveloperService.getCheckFormsByCheckWindowIdAndType(checkWindow, checkFormType)
     checkWindowData = checkFormPresenter.getPresentationCheckWindowData(checkWindow, checkFormType)
     checkFormData = checkFormPresenter.getPresentationAvailableFormsData(availableCheckForms, assignedCheckForms)
   } catch (error) {
@@ -179,9 +179,9 @@ controller.getSelectFormPage = async (req, res, next) => {
   }
   const hasAssignedForms = Array.isArray(assignedCheckForms) && assignedCheckForms.length > 0
   res.locals.pageTitle = `${checkWindowData.name} - ${checkWindowData.checkPeriod}`
-  req.breadcrumbs('Assign forms to check windows', '/check-form/assign-forms-to-check-windows')
+  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-forms-to-check-windows')
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('check-form/view-select-forms', {
+  res.render('test-developer/view-select-forms', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowData,
     checkFormData,
@@ -207,18 +207,18 @@ controller.postAssignForms = async (req, res, next) => {
   let hasAssignedFamiliarisationForm
   try {
     checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
-    hasAssignedFamiliarisationForm = await checkFormV2Service.hasAssignedFamiliarisationForm(checkWindow)
+    hasAssignedFamiliarisationForm = await testDeveloperService.hasAssignedFamiliarisationForm(checkWindow)
     if (!hasAssignedFamiliarisationForm && !checkForms && checkFormType === 'familiarisation') {
-      return res.redirect(`/check-form/select-form/${checkFormType}/${checkWindowUrlSlug}`)
+      return res.redirect(`/test-developer/select-form/${checkFormType}/${checkWindowUrlSlug}`)
     }
-    await checkFormV2Service.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
+    await testDeveloperService.updateCheckWindowForms(checkWindow, checkFormType, checkForms)
     highlightMessage = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindow.name, checkFormType)
   } catch (error) {
     return next(error)
   }
   req.flash('info', highlightMessage)
   const highlight = JSON.stringify([`${checkWindowUrlSlug.toString()}-${checkFormType}`])
-  return res.redirect(`/check-form/assign-forms-to-check-windows?hl=${highlight}`)
+  return res.redirect(`/test-developer/assign-forms-to-check-windows?hl=${highlight}`)
 }
 
 module.exports = controller

@@ -20,7 +20,7 @@ describe('CheckStartService', () => {
     const inject = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
-          { provide: QUEUE_STORAGE_TOKEN },
+          { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           TokenService,
           AzureQueueService,

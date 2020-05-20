@@ -12,7 +12,7 @@ describe('AzureQueueService', () => {
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
-        { provide: QUEUE_STORAGE_TOKEN },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
       ]
     })
     .compileComponents();

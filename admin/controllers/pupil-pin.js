@@ -11,7 +11,7 @@ const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const pinService = require('../services/pin.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
 const qrService = require('../services/qr.service')
-const schoolDataService = require('../services/data-access/school.data.service')
+const schoolService = require('../services/school.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   if (!req.params || !req.params.pinEnv) {
@@ -91,7 +91,7 @@ const getGeneratePinsList = async (req, res, next) => {
         breadcrumbs: req.breadcrumbs()
       })
     }
-    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
+    school = await schoolService.findOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School with id [${req.user.schoolId}] not found`))
     }
@@ -144,7 +144,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determinePinGenerationEligibility(isLiveCheck, checkWindowData, req.user.timezone)
-    school = await schoolDataService.sqlFindOneById(req.user.schoolId)
+    school = await schoolService.findOneById(req.user.schoolId)
     if (!school) {
       return next(Error(`School with id [${req.user.schoolId}] not found`))
     }

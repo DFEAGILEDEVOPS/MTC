@@ -1,21 +1,25 @@
 import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PracticeQuestionComponent } from './practice-question.component';
+import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { PracticeQuestionComponent } from './practice-question.component';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
+import { SoundComponentMock } from '../sound/sound-component-mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import { QuestionService } from '../services/question/question.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { SoundComponentMock } from '../sound/sound-component-mock';
-import {AnswerService} from '../services/answer/answer.service';
 
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
   let fixture: ComponentFixture<PracticeQuestionComponent>;
   let mockSpeechService: SpeechServiceMock;
+  let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
 
   beforeEach(async(() => {
     mockSpeechService = new SpeechServiceMock();
@@ -26,6 +30,7 @@ describe('PractiseQuestionComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: SpeechService, useValue: mockSpeechService },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         StorageService,
         WindowRefService,
         AnswerService
@@ -38,6 +43,8 @@ describe('PractiseQuestionComponent', () => {
     fixture = TestBed.createComponent(PracticeQuestionComponent);
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
     fixture.detectChanges();
   });
 
@@ -93,6 +100,15 @@ describe('PractiseQuestionComponent', () => {
       component.answer = '12345';
       component.onClickAnswer(6, event);
       expect(component.answer).toBe('12345');
+    });
+    it('does not add input to the answer if enter has been clicked', () => {
+      component.startTimer();
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(2, {});
+      component.onClickAnswer(3, {});
+      component.onClickSubmit({}); // click enter button on the onscreen keyboard
+      component.onClickAnswer(4, {});
+      expect(component.answer).toBe('123');
     });
   });
 
@@ -163,6 +179,26 @@ describe('PractiseQuestionComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
       expect(component.answer).toBe('1');
+    });
+
+    it('does not add to the answer after submission', () => {
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: '4' });
+      expect(component.answer).toBe('123');
+    });
+
+    it('does not register key strokes for warm up questions', () => {
+      const event1 = dispatchKeyEvent({ key: '1' });
+      const event2 = dispatchKeyEvent({ key: '2' });
+      const event3 = dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      const event4 = dispatchKeyEvent({ key: 'r' });
+      expect(registerInputServiceSpy.calls.count()).toBe(0);
     });
 
     it('keyboard calls deleteChar when pressing Backspace or Delete', () => {

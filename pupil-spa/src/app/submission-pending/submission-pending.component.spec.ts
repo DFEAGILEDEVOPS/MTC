@@ -43,7 +43,7 @@ describe('SubmissionPendingComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
-        { provide: QUEUE_STORAGE_TOKEN },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         StorageService
       ]
     })
