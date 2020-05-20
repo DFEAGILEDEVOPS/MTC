@@ -17,10 +17,6 @@ const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
 const poolService = require('./sql.pool.service')
 const roles = require('../../lib/consts/roles')
-// these constants are temporary and we will use the role identifier only once we have full implementation
-const defaultPoolId = `${roles.teacher}`
-const readOnlyPoolId = `${defaultPoolId}:readonly`
-// const techSupportPoolId = `${roles.techSupport}`
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -36,15 +32,6 @@ const combinedTimeoutAndResourceLimitsReachedPredicate = (error) => {
 }
 
 let cache = {}
-/**
- * @var {mssql.ConnectionPool} main connection pool for service
- */
-let pool
-
-/**
- * @var {mssql.ConnectionPool} readonly connection pool for replica reads
- */
-let readonlyPool
 
 /** Utility functions **/
 
@@ -227,11 +214,7 @@ const sqlService = {
 sqlService.adminSchema = '[mtc_admin]'
 
 sqlService.initPool = async () => {
-  if (pool) {
-    logger.warn('The connection pool has already been initialised')
-    return
-  }
-  pool = poolService.createPool(poolConfig, defaultPoolId)
+  const pool = poolService.createPool(poolConfig, roles.teacher)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
@@ -239,23 +222,14 @@ sqlService.initPool = async () => {
 }
 
 sqlService.drainPool = async () => {
-  await pool
-  if (!pool) {
-    logger.warn('The connection pool is not initialised')
-    return
-  }
-  return poolService.closePool(defaultPoolId)
+  return poolService.closePool(roles.teacher)
 }
 
 sqlService.initReadonlyPool = () => {
   if (config.Sql.AllowReadsFromReplica !== true) {
     throw new Error('Invalid Operation: Reads from Replica are disabled')
   }
-  if (readonlyPool) {
-    logger.warn('The read-only connection pool has already been initialised')
-    return
-  }
-  readonlyPool = poolService.createPool(readonlyPoolConfig, readOnlyPoolId)
+  const readonlyPool = poolService.createPool(readonlyPoolConfig, `${roles.teacher}:readonly`)
   readonlyPool.on('error', err => {
     logger.error('SQL Read-only Pool Error:', err)
   })
@@ -263,12 +237,7 @@ sqlService.initReadonlyPool = () => {
 }
 
 sqlService.drainReadonlyPool = async () => {
-  await readonlyPool
-  if (!readonlyPool) {
-    logger.warn('The read-only connection pool is not initialised')
-    return
-  }
-  return poolService.closePool(readOnlyPoolId)
+  return poolService.closePool(`${roles.teacher}:readonly`)
 }
 
 /**
@@ -302,15 +271,16 @@ function addParamsToRequestSimple (params, request) {
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
  * @param {string} redisKey - Redis key to cache resultset against
+ * @param {string} poolName - the connection pool to use for the query
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = [], redisKey) => {
+sqlService.query = async (sql, params = [], redisKey = undefined, poolName = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug(`sql.service.query(): ${sql}`)
     logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   }
-  await pool
 
+  const pool = await poolService.getPool(poolName)
   const query = async () => {
     let result = false
     if (redisKey) {
@@ -340,7 +310,7 @@ sqlService.query = async (sql, params = [], redisKey) => {
  * @param {string} redisKey - Redis key to cache resultset against
  * @returns {Promise<*>}
  */
-sqlService.readonlyQuery = async (sql, params = [], redisKey = '') => {
+sqlService.readonlyQuery = async (sql, params = [], redisKey = '', poolName = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug(`sql.service.readonlyQuery(): ${sql}`)
     logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
@@ -350,7 +320,7 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey = '') => {
   if (config.Sql.AllowReadsFromReplica !== true) {
     return sqlService.query(sql, params, redisKey)
   }
-  await readonlyPool
+  const readonlyPool = await poolService.getPool(`${poolName}:readonly`)
 
   const query = async () => {
     let result = false
@@ -415,13 +385,13 @@ function addParamsToRequest (params, request) {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = []) => {
+sqlService.modify = async (sql, params = [], poolName = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug('sql.service.modify(): SQL: ' + sql)
     logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   }
 
-  await pool
+  const pool = await poolService.getPool(poolName)
 
   const modify = async () => {
     const request = new mssql.Request(pool)
@@ -460,8 +430,8 @@ sqlService.modify = async (sql, params = []) => {
  * @param {Array} params
  * @return {Promise<{response?: Array}>}
  */
-sqlService.modifyWithResponse = async (sql, params = []) => {
-  await pool
+sqlService.modifyWithResponse = async (sql, params = [], poolName = roles.teacher) => {
+  const pool = await poolService.getPool(poolName)
 
   const modify = async () => {
     const request = new mssql.Request(pool)

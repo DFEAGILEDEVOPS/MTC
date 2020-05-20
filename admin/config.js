@@ -101,7 +101,11 @@ module.exports = {
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
     TechSupport: {
       Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
-      Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD
+      Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD,
+      Pool: {
+        Min: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 0,
+        Max: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 2
+      }
     }
   },
   DatabaseRetry: {

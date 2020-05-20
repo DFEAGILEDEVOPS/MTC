@@ -1,6 +1,7 @@
 'use strict'
 
 const { ConnectionPool } = require('mssql')
+const logger = require('../log.service').getLogger()
 const POOLS = {}
 
 const service = {
@@ -12,9 +13,10 @@ const service = {
    */
   createPool: function createPool (config, name) {
     if (service.getPool(name)) {
-      throw new Error('Pool with this name already exists')
+      logger.warn(`cannot create connectionPool with name ${name}, as it already exists`)
+    } else {
+      POOLS[name] = new ConnectionPool(config)
     }
-    POOLS[name] = new ConnectionPool(config)
     return POOLS[name]
   },
   /**
