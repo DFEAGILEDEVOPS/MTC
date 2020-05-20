@@ -2,8 +2,9 @@
 
 const azureStorage = require('azure-storage')
 
-const dataService = require('./data-access/data.service')
 const azureStorageHelper = require('../../lib/azure-storage-helper')
+const base = require('../../lib/logger')
+const dataService = require('./data-access/data.service')
 const MarkedCheck = require('../marked-check.class')
 const markingTable = 'checkResult'
 
@@ -70,8 +71,11 @@ const service = {
    * @return {Promise<void>}
    */
   persistMarkingData: async function persistMarkingData (markedChecks) {
-    return dataService.sqlSaveMarkingData(markedChecks)
+    if (this.logger && typeof this.logger === 'function') {
+      dataService.setLogger(this.logger)
+    }
+    return dataService.sqlPersistMarkingData(markedChecks)
   }
 }
 
-module.exports = service
+module.exports = Object.assign(service, base)

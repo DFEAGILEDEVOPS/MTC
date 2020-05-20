@@ -2,6 +2,7 @@
 
 const R = require('ramda')
 
+const base = require('../../../lib/logger')
 const sqlService = require('../../../lib/sql/sql.service')
 const questionIndex = {}
 const { TYPES } = sqlService
@@ -64,9 +65,7 @@ const service = {
    * @param {MarkedCheck[]} markedChecks
    * @return {Promise<void>}
    */
-  sqlSaveMarkingData: async function sqlSaveMarkingData (markedChecks) {
-    console.log('checks and marking data', markedChecks)
-
+  sqlPersistMarkingData: async function sqlSaveMarkingData (markedChecks) {
     function generateInsertStatements (i, o) {
       const sql = `
         DECLARE @checkId${i} Int;
@@ -115,7 +114,7 @@ const service = {
         // save each individual check to the database
         await sqlService.modifyWithTransaction(sql, params)
       } catch (error) {
-        console.error(`${name}: WARNING: error saving to database`, error)
+        this.logger.error(`${name}: WARNING: error saving to database`, error)
         // If a single checks fails just log it and carry on saving the next check.  We don't
         // want bad data in one check rolling everything back.
       }
@@ -134,4 +133,4 @@ const service = {
   }
 }
 
-module.exports = service
+module.exports = Object.assign(service, base)

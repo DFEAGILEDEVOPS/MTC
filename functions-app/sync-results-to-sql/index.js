@@ -11,7 +11,7 @@ module.exports = async function schoolImportIndex (context, myTimer) {
 
   let meta
   try {
-    meta = await v1.process(context)
+    meta = await v1.process(context.log)
   } catch (error) {
     meta = {}
     context.log.error(`${name}: ERROR: ${error.message}`, error)

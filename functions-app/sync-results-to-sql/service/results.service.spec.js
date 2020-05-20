@@ -129,9 +129,9 @@ describe('results.service', () => {
 
     it('calls the data service', async () => {
       const markedChecks = [] // dummy payload
-      spyOn(dataService, 'sqlSaveMarkingData')
-      await dataService.sqlSaveMarkingData(markedChecks)
-      expect(dataService.sqlSaveMarkingData).toHaveBeenCalledTimes(1)
+      spyOn(dataService, 'sqlPersistMarkingData')
+      await dataService.sqlPersistMarkingData(markedChecks)
+      expect(dataService.sqlPersistMarkingData).toHaveBeenCalledTimes(1)
     })
   })
 })

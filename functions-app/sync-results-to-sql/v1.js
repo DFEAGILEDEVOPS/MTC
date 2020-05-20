@@ -1,7 +1,8 @@
 'use strict'
 
+const base = require('../lib/logger')
 const resultsService = require('./service/results.service.js')
-// TODO: add logger service
+const name = 'sync-results-to-sql'
 
 const service = {
   /**
@@ -22,17 +23,21 @@ const service = {
    * Entry point for the module.  Will find all schools with new checks and then copy the marking results to sql server
    * @return {Promise<{}>}
    */
-  process: async function process () {
+  process: async function process (loggerFunc) {
+    if (loggerFunc && typeof loggerFunc === 'function') {
+      this.setLogger(loggerFunc)
+      resultsService.setLogger(loggerFunc)
+    }
     // find all schools with new checks to process
     const schools = await resultsService.getSchoolsWithNewChecks()
     const meta = { schoolsProcessed: schools.length, checksProcessed: 0, errors: 0 }
     for (const school of schools) {
-      console.log(`Processing school [${school.id}] ${school.name}`)
+      this.logger(`${name}: Processing school [${school.id}] ${school.name}`)
       try {
         const numChecksProccessed = await this.processSchool(school)
         meta.checksProcessed += numChecksProccessed
       } catch (error) {
-        console.error(`Error processing school [${school.id}] ${school.name}`, error)
+        this.logger.error(`Error processing school [${school.id}] ${school.name}`, error)
         meta.errors += 1
       }
     }
@@ -40,4 +45,4 @@ const service = {
   }
 }
 
-module.exports = service
+module.exports = Object.assign(service, base)
