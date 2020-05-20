@@ -1,44 +1,45 @@
 'use strict'
 
 const { ConnectionPool } = require('mssql')
+const connectionBuilder = require('./sql.role-connection.builder')
 const logger = require('../log.service').getLogger()
 const POOLS = {}
 
 const service = {
   /**
    * @description create a new connection pool
-   * @param {object} config the connection attributes
-   * @param {string} name the unique name of the pool
+   * @param {string} poolName the unique name of the pool
    * @returns {ConnectionPool} the active connection pool
    */
-  createPool: function createPool (config, name) {
-    if (service.getPool(name)) {
-      logger.warn(`cannot create connectionPool with name ${name}, as it already exists`)
+  createPool: function createPool (poolName) {
+    if (service.getPool(poolName)) {
+      logger.warn(`cannot create connectionPool with name ${poolName}, as it already exists`)
     } else {
-      POOLS[name] = new ConnectionPool(config)
+      const config = connectionBuilder.build(poolName)
+      POOLS[poolName] = new ConnectionPool(config)
     }
-    return POOLS[name]
+    return POOLS[poolName]
   },
   /**
    * @description closes the specified pool
-   * @param {string} name the name of the pool to close
+   * @param {string} poolName the name of the pool to close
    * @returns {Promise.<object>} a promise containing the closing pool
    */
-  closePool: function closePool (name) {
-    if ({}.hasOwnProperty.call(POOLS, name)) {
-      const pool = POOLS[name]
-      delete POOLS[name]
+  closePool: function closePool (poolName) {
+    if ({}.hasOwnProperty.call(POOLS, poolName)) {
+      const pool = POOLS[poolName]
+      delete POOLS[poolName]
       return pool.close()
     }
   },
   /**
    * @description get a pool by name
-   * @param {string} name the name of the pool to fetch
+   * @param {string} poolName the name of the pool to fetch
    * @returns {object} the specified pool, if it exists
    */
-  getPool: function getPool (name) {
-    if ({}.hasOwnProperty.call(POOLS, name)) {
-      return POOLS[name]
+  getPool: function getPool (poolName) {
+    if ({}.hasOwnProperty.call(POOLS, poolName)) {
+      return POOLS[poolName]
     }
   }
 }
