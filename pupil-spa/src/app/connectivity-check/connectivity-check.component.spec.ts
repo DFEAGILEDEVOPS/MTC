@@ -40,7 +40,7 @@ describe('ConnectivityCheckComponent', () => {
         DeviceService,
         StorageService,
         WindowRefService,
-        { provide: QUEUE_STORAGE_TOKEN },
+        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: Router, useValue: mockRouter },
       ]
     })

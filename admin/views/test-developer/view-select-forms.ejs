@@ -12,11 +12,11 @@
                     `${checkWindowData.liveCheckStartDate} to ${checkWindowData.liveCheckEndDate}` %>
           </div>
         <% } else if (checkFormData && checkFormData.length === 0) { %>
-          No forms have been uploaded yet. Please go to <a class="govuk-link" href="/check-form/view-forms">upload and view forms</a> before assigning forms to check windows.
+          No forms have been uploaded yet. Please go to <a class="govuk-link" href="/test-developer/view-forms">upload and view forms</a> before assigning forms to check windows.
         <% } %>
       </div>
       <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
-      <form method="post" action="/check-form/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
+      <form method="post" action="/test-developer/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <table class="govuk-table govuk-spacious" id="assignFormToWindowList" role="group">
           <caption class="govuk-body govuk-table__caption">List of check forms</caption>
@@ -73,7 +73,7 @@
         </table>
         <% if (checkFormType !== 'live' && checkWindowData.isBeforeCheckType) { %>
         <input type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" value="Save" />
-        <a class="govuk-button govuk-button--secondary" href="/check-form/assign-forms-to-check-windows">Cancel</a>
+        <a class="govuk-button govuk-button--secondary" href="/test-developer/assign-forms-to-check-windows">Cancel</a>
         <% } %>
       </form>
         <div class="govuk-back-to-top">
@@ -92,7 +92,7 @@
       {
         countingLabel: 'Forms',
         cancelLabel: 'Cancel',
-        cancelLink: '/check-form/assign-forms-to-check-windows',
+        cancelLink: '/test-developer/assign-forms-to-check-windows',
         submitLabel: 'Confirm',
         isSubmitDisabled: true
       })

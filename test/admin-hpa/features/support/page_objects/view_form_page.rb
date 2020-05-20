@@ -1,9 +1,9 @@
 class ViewFormPage < SitePrism::Page
-  set_url '/check-form/view{/check_id}'
+  set_url '/test-developer/view{/check_id}'
 
   element :heading, '.govuk-heading-xl'
   element :information, '.information'
-  element :back_to_manage_forms, 'a[href="/check-form/assign-forms-to-check-windows"]'
+  element :back_to_manage_forms, 'a[href="/test-developer/assign-forms-to-check-windows"]'
   element :delete_form, 'a', text: 'Remove form'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
 

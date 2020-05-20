@@ -11,7 +11,7 @@ describe('headteacher-declaration.data.service', () => {
   describe('#sqlCreate', () => {
     it('calls sqlService', async () => {
       spyOn(sqlService, 'create').and.returnValue(Promise.resolve(sqlMockResponse))
-      service.sqlCreate({ prop: 'value' })
+      await service.sqlCreate({ prop: 'value' })
       expect(sqlService.create).toHaveBeenCalled()
     })
   })

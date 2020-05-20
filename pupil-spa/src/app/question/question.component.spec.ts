@@ -14,13 +14,13 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import {audit} from 'rxjs/operators';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
   const auditServiceMock = new AuditServiceMock();
   let registerInputService: RegisterInputService;
+  let registerInputServiceSpy: any;
   let answerService: AnswerService;
   let answerServiceSpy: any;
   let auditService: AuditService;
@@ -32,12 +32,12 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        AnswerService,
-        { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        AnswerService,
         StorageService,
         WindowRefService,
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]
     }).compileComponents().catch(error => { console.error(error); });
   }));
@@ -52,7 +52,7 @@ describe('QuestionComponent', () => {
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
 
     answerService = fixture.debugElement.injector.get(AnswerService);
     answerServiceSpy = spyOn(answerService, 'setAnswer');
@@ -83,6 +83,21 @@ describe('QuestionComponent', () => {
       expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
       expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
     });
+
+    it('does not register additional mouse events if enter has been clicked', () => {
+      component.startTimer();
+      dispatchMouseEvent();
+      component.onClickAnswer(1, {});
+      dispatchMouseEvent();
+      component.onClickAnswer(2, {});
+      dispatchMouseEvent();
+      component.onClickAnswer(3, {});
+      dispatchMouseEvent();
+      component.onClickSubmit({}); // click enter button on the onscreen keyboard
+      dispatchMouseEvent();
+      component.onClickAnswer(4, {});
+      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is clicked
+    });
   });
 
   describe('handleTouchEvent', () => {
@@ -99,6 +114,21 @@ describe('QuestionComponent', () => {
       dispatchTouchEvent();
       expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
       expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not register additional touch events once enter has been pressed', () => {
+      component.startTimer();
+      dispatchTouchEvent();
+      component.onClickAnswer(1, {});
+      dispatchTouchEvent();
+      component.onClickAnswer(2, {});
+      dispatchTouchEvent();
+      component.onClickAnswer(3, {});
+      dispatchTouchEvent();
+      component.onClickSubmit({}); // touch-click enter button on the onscreen keyboard
+      dispatchTouchEvent();
+      component.onClickAnswer(4, {});
+      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is pressed
     });
   });
 
@@ -180,10 +210,18 @@ describe('QuestionComponent', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough();
       dispatchKeyEvent({ key: '5' });
       dispatchKeyEvent({ key: 'f' });
-      dispatchKeyEvent({ key: 'Enter' });
-      dispatchKeyEvent({ key: ' ' }); // space bar
-      dispatchKeyEvent({ key: 'Control' });
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(5);
+      dispatchKeyEvent({ key: 'Enter' }); // Enter will trigger submission
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not register key strokes after submission', () => {
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
+      expect(component.answer).toBe('123');
+      component.onSubmit(); // press enter
+      dispatchKeyEvent({ key: 'r' });
+      expect(registerInputServiceSpy.calls.count()).toBe(3); // 4th one is ignored after enter is pressed
     });
   });
 
@@ -233,6 +271,27 @@ describe('QuestionComponent', () => {
       component.onClickAnswer(9, event);
       expect(component['answer']).toBe('9');
     });
+
+    it('does not add any new chars to the answer once it has been submitted', () => {
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      expect(component.answer).toBe('11');
+      component.onClickSubmit({});
+      component.onClickAnswer(2, {});
+      expect(component.answer).toBe('11');
+    });
+
+    it('does not add to the input register once it has been submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(2);
+      component.onClickSubmit({});
+      component.onClickAnswer(2, {});
+
+      // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('#onClickBackspace', () => {
@@ -253,6 +312,33 @@ describe('QuestionComponent', () => {
       component.onClickBackspace(event);
       expect(component['answer']).toBe('144');
     });
+
+    it('does not delete a char from the answer once it has been submitted', () => {
+      component['answer'] = '1444';
+      component.onClickBackspace({});
+      expect(component['answer']).toBe('144');
+      component.onClickSubmit({});
+      component.onClickBackspace(event);
+      expect(component['answer']).toBe('144');
+    });
+
+    it('does not add to the input register once it has been submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      // answer = ''
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      // answer = '111'
+      component.onClickBackspace({});
+      component.onClickBackspace({});
+      // answer = '1'
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(5);
+      component.onClickSubmit({}); // needs something in the answer box
+      component.onClickBackspace({});
+
+      // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(6);
+    });
   });
 
   describe('#onClickSubmit', () => {
@@ -272,6 +358,17 @@ describe('QuestionComponent', () => {
       const event = {};
       component.onClickSubmit(event);
       expect(component.onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not add to the input register once submitted', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickAnswer(1, {});
+      component.onClickAnswer(1, {});
+      component.onClickSubmit({});
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+      component.onClickSubmit({});
+      // It should not call the registerInputService again not that submit has been clicked already
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -294,7 +391,7 @@ describe('QuestionComponent', () => {
       if (!questionAnsweredTimestamp || !answerTimestamp) {
         fail('Missing timestamp');
       }
-      expect(answerTimestamp.getTime()).toBeGreaterThanOrEqual(questionAnsweredTimestamp.getTime());
+      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime());
     });
   });
 
