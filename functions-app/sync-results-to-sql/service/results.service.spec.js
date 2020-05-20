@@ -120,6 +120,26 @@ describe('results.service', () => {
       expect(result.length).toBe(2)
       expect(result.every(o => o instanceof MarkedCheck)).toBe(true)
     })
+
+    it('reports when the marking data is not found', () => {
+      const mockLogger = jasmine.createSpyObj('mockLogger', ['verbose', 'info', 'error'])
+      const newChecks = [
+        { id: 3, checkCode: 'test3' },
+        { id: 4, checkCode: 'test4' }
+      ]
+      const markedChecks = [1, 4].map(i => {
+        return new MarkedCheck(`test${i}`,
+          uuidv4(),
+          markedAnswersString,
+          3,
+          '2020-05-19T14:15:50.160Z')
+      })
+      sut.setLogger(mockLogger)
+      const result = sut.findNewMarkedChecks(newChecks, markedChecks)
+      expect(result.length).toBe(1)
+      expect(mockLogger.error).toHaveBeenCalledTimes(1)
+      expect(mockLogger.error).toHaveBeenCalledWith('sync-results-to-sql: ERROR: Marking data not found for checkCode test3')
+    })
   })
 
   describe('#persistMarkingData', () => {
