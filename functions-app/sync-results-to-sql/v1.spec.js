@@ -24,7 +24,9 @@ describe('sync-results-to-sql:v1', () => {
 
   describe('#processSchool', () => {
     beforeEach(() => {
-      spyOn(resultsService, 'getNewChecks')
+      spyOn(resultsService, 'getNewChecks').and.returnValue([
+        { id: 1, name: 'Test School', schoolGuid: uuidv4() }
+      ])
       spyOn(resultsService, 'getSchoolResults')
       spyOn(resultsService, 'findNewMarkedChecks')
       spyOn(resultsService, 'persistMarkingData')
@@ -37,6 +39,6 @@ describe('sync-results-to-sql:v1', () => {
     it('calls a service to persist the data to the SQL DB', async () => {
       await sut.processSchool({ id: 1, name: 'Test', schoolGuid: uuidv4() })
       expect(resultsService.persistMarkingData).toHaveBeenCalledTimes(1)
-    })z
+    })
   })
 })
