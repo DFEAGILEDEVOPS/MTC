@@ -3,8 +3,6 @@
 const R = require('ramda')
 const mssql = require('mssql')
 const dateService = require('../date.service')
-const poolConfig = require('../../config/sql.config')
-const readonlyPoolConfig = require('../../config/sql.readonly.config')
 const moment = require('moment')
 const logger = require('../log.service').getLogger()
 const {
@@ -214,7 +212,7 @@ const sqlService = {
 sqlService.adminSchema = '[mtc_admin]'
 
 sqlService.initPool = async () => {
-  const pool = poolService.createPool(poolConfig, roles.teacher)
+  const pool = poolService.createPool(roles.teacher)
   pool.on('error', err => {
     logger.error('SQL Pool Error:', err)
   })
@@ -226,18 +224,20 @@ sqlService.drainPool = async () => {
 }
 
 sqlService.initReadonlyPool = () => {
+  /*
   if (config.Sql.AllowReadsFromReplica !== true) {
     throw new Error('Invalid Operation: Reads from Replica are disabled')
   }
-  const readonlyPool = poolService.createPool(readonlyPoolConfig, `${roles.teacher}:readonly`)
+  const readonlyPool = poolService.createPool(`${roles.teacher}:readonly`)
   readonlyPool.on('error', err => {
     logger.error('SQL Read-only Pool Error:', err)
   })
   return readonlyPool.connect()
+  */
 }
 
 sqlService.drainReadonlyPool = async () => {
-  return poolService.closePool(`${roles.teacher}:readonly`)
+  // return poolService.closePool(`${roles.teacher}:readonly`)
 }
 
 /**
@@ -320,7 +320,8 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey = '', poolName = ro
   if (config.Sql.AllowReadsFromReplica !== true) {
     return sqlService.query(sql, params, redisKey)
   }
-  const readonlyPool = await poolService.getPool(`${poolName}:readonly`)
+  // TODO breaks readonly requirement
+  const readonlyPool = await poolService.getPool(poolName)
 
   const query = async () => {
     let result = false
