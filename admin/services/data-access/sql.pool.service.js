@@ -35,7 +35,7 @@ const service = {
   /**
    * @description get a pool by name
    * @param {string} poolName the name of the pool to fetch
-   * @returns {object} the specified pool, if it exists
+   * @returns {ConnectionPool} the specified pool, if it exists
    */
   getPool: function getPool (poolName) {
     if ({}.hasOwnProperty.call(POOLS, poolName)) {
