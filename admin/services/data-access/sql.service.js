@@ -271,16 +271,16 @@ function addParamsToRequestSimple (params, request) {
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
  * @param {string} redisKey - Redis key to cache resultset against
- * @param {string} poolName - the connection pool to use for the query
+ * @param {string} userRole - optional. obtain a connection for a specific user role
  * @return {Promise<*>}
  */
-sqlService.query = async (sql, params = [], redisKey = undefined, poolName = roles.teacher) => {
+sqlService.query = async (sql, params = [], redisKey = undefined, userRole = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug(`sql.service.query(): ${sql}`)
     logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   }
 
-  const pool = await poolService.getPool(poolName)
+  const pool = await poolService.getPool(userRole)
   const query = async () => {
     let result = false
     if (redisKey) {
@@ -308,9 +308,10 @@ sqlService.query = async (sql, params = [], redisKey = undefined, poolName = rol
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
  * @param {string} redisKey - Redis key to cache resultset against
+ * @param {string} roleName - optional. obtain a connection for a specific user role
  * @returns {Promise<*>}
  */
-sqlService.readonlyQuery = async (sql, params = [], redisKey = '', poolName = roles.teacher) => {
+sqlService.readonlyQuery = async (sql, params = [], redisKey = '', roleName = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug(`sql.service.readonlyQuery(): ${sql}`)
     logger.debug('sql.service.readonlyQuery(): Params ', R.map(R.pick(['name', 'value']), params))
@@ -321,7 +322,7 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey = '', poolName = ro
     return sqlService.query(sql, params, redisKey)
   }
   // TODO breaks readonly requirement
-  const readonlyPool = await poolService.getPool(poolName)
+  const readonlyPool = await poolService.getPool(roleName)
 
   const query = async () => {
     let result = false
@@ -384,15 +385,16 @@ function addParamsToRequest (params, request) {
  * Modify data in SQL Server via mssql library.
  * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
  * @param {array} params - Array of parameters for SQL statement
+ * @param {string} roleName - optional. obtain a connection for a specific user role
  * @return {Promise}
  */
-sqlService.modify = async (sql, params = [], poolName = roles.teacher) => {
+sqlService.modify = async (sql, params = [], roleName = roles.teacher) => {
   if (config.Logging.DebugVerbosity > 1) {
     logger.debug('sql.service.modify(): SQL: ' + sql)
     logger.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
   }
 
-  const pool = await poolService.getPool(poolName)
+  const pool = await poolService.getPool(roleName)
 
   const modify = async () => {
     const request = new mssql.Request(pool)
@@ -429,10 +431,11 @@ sqlService.modify = async (sql, params = [], poolName = roles.teacher) => {
  * Return the response from the query
  * @param {String} sql
  * @param {Array} params
+ * @param {string} roleName - optional. obtain a connection for a specific user role
  * @return {Promise<{response?: Array}>}
  */
-sqlService.modifyWithResponse = async (sql, params = [], poolName = roles.teacher) => {
-  const pool = await poolService.getPool(poolName)
+sqlService.modifyWithResponse = async (sql, params = [], roleName = roles.teacher) => {
+  const pool = await poolService.getPool(roleName)
 
   const modify = async () => {
     const request = new mssql.Request(pool)

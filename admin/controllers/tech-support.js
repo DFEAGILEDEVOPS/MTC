@@ -2,6 +2,7 @@
 
 const ValidationError = require('../lib/validation-error')
 const uuidValidator = require('../lib/validator/common/uuid-validator')
+const checkDiagnosticsService = require('../services/check-diagnostics.service')
 
 const controller = {}
 
@@ -57,13 +58,15 @@ controller.postCheckViewPage = async (req, res, next) => {
     if (validationError && validationError.hasError && validationError.hasError()) {
       return controller.getCheckViewPage(req, res, next, validationError)
     }
+    const checkSummary = checkDiagnosticsService.getByCheckCode(checkCode)
     res.render('tech-support/check-view', {
       breadcrumbs: [
         { name: 'Tech Support Check View' }
       ],
       err: new ValidationError(),
       formData: {
-        checkCode: checkCode
+        checkCode: checkCode,
+        checkSummary: checkSummary
       }
     })
   } catch (error) {

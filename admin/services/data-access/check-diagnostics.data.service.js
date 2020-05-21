@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const TYPES = sqlService.TYPES
 const R = require('ramda')
+const roles = require('../../lib/consts/roles')
 
 const service = {
   getByCheckCode: async function getByCheckCode (checkCode) {
@@ -14,7 +15,7 @@ const service = {
         type: TYPES.UniqueIdentifier
       }
     ]
-    const result = await sqlService.readonlyQuery(sql, params)
+    const result = await sqlService.query(sql, params, undefined, roles.techSupport)
     return R.head(result)
   }
 }
