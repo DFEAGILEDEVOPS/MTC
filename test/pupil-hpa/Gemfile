@@ -1,11 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'activesupport'
+gem 'activesupport', '>= 5.2.4.3'
 gem 'capybara-screenshot'
 gem 'capybara'
 gem 'webdrivers', '~> 4.0'
 gem 'cucumber'
-gem 'numbers_in_words'
+gem 'numbers_in_words', '>= 0.4.0'
 gem 'poltergeist'
 gem 'pry'
 gem 'rake'
