@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (5.2.3)
+    activesupport (5.2.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -47,7 +47,7 @@ GEM
     cliver (0.3.2)
     coderay (1.1.2)
     colorize (0.8.1)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     cucumber (3.1.2)
       builder (>= 2.1.2)
       cucumber-core (~> 3.2.0)
@@ -73,7 +73,7 @@ GEM
     httparty (0.17.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.6.0)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -84,7 +84,7 @@ GEM
     mime-types-data (3.2019.0331)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.11.3)
+    minitest (5.14.1)
     mongo (2.9.0)
       bson (>= 4.4.2, < 5.0.0)
     multi_json (1.13.1)
@@ -141,7 +141,7 @@ GEM
     site_prism-all_there (0.1.1)
     thread_safe (0.3.6)
     tiny_tds (2.1.2)
-    tzinfo (1.2.5)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
     waitutil (0.2.1)
     webdrivers (4.1.2)
@@ -158,7 +158,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
+  activesupport (>= 5.2.4.3)
   azure-storage-blob
   azure-storage-queue
   azure-storage-table
@@ -170,7 +170,7 @@ DEPENDENCIES
   httparty
   lz_string
   mongo
-  numbers_in_words
+  numbers_in_words (>= 0.4.0)
   parallel
   parallel_tests
   poltergeist
@@ -189,4 +189,4 @@ DEPENDENCIES
   webdrivers (~> 4.0)
 
 BUNDLED WITH
-   1.16.6
+   1.17.3
