@@ -279,8 +279,11 @@ sqlService.query = async (sql, params = [], redisKey = undefined, userRole = rol
     logger.debug(`sql.service.query(): ${sql}`)
     logger.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   }
-
-  const pool = await poolService.getPool(userRole)
+  const createPoolIfItDoesNotExist = true
+  const pool = await poolService.getPool(userRole, createPoolIfItDoesNotExist)
+  if (!pool.connected && !pool.connecting) {
+    await pool.connect()
+  }
   const query = async () => {
     let result = false
     if (redisKey) {

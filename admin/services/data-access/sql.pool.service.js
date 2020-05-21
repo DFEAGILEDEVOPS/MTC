@@ -33,13 +33,19 @@ const service = {
     }
   },
   /**
-   * @description get a pool by name
+   * @description get a pool by name. will auto create if specified.
    * @param {string} poolName the name of the pool to fetch
+   * @param {Boolean} createIfNotFound if the pool does not exist, it will be created
    * @returns {ConnectionPool} the specified pool, if it exists
    */
-  getPool: function getPool (poolName) {
+  getPool: function getPool (poolName, createIfNotFound = false) {
     if ({}.hasOwnProperty.call(POOLS, poolName)) {
       return POOLS[poolName]
+    } else {
+      if (createIfNotFound === true) {
+        const pool = service.createPool(poolName)
+        return pool
+      }
     }
   }
 }
