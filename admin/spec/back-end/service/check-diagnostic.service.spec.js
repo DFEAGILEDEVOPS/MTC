@@ -2,8 +2,8 @@
 
 /* globals describe expect it spyOn fail */
 
-const sut = require('../../../services/check-diagnostics.service')
-const dataService = require('../../../services/data-access/check-diagnostics.data.service')
+const sut = require('../../../services/check-diagnostic.service')
+const dataService = require('../../../services/data-access/check-diagnostic.data.service')
 
 const checkCode = 'dd3ed042-648f-49bd-a559-45127596716d'
 

@@ -2,7 +2,7 @@
 
 const ValidationError = require('../lib/validation-error')
 const uuidValidator = require('../lib/validator/common/uuid-validator')
-const checkDiagnosticsService = require('../services/check-diagnostics.service')
+const checkDiagnosticsService = require('../services/check-diagnostic.service')
 
 const controller = {}
 

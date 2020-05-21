@@ -1,6 +1,6 @@
 'use strict'
 
-const dataService = require('./data-access/check-diagnostics.data.service.js')
+const dataService = require('./data-access/check-diagnostic.data.service')
 
 const service = {
   /**
@@ -8,7 +8,7 @@ const service = {
    * @param {string} checkCode required, valid UUID
    * @returns single check record, or undefined if not found
    */
-  getByCheckCode: async function getByCheckCode (checkCode) {
+  getByCheckCode: function getByCheckCode (checkCode) {
     if (!checkCode) {
       throw new Error('checkCode is required')
     }

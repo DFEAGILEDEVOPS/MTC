@@ -2,9 +2,11 @@
 /* global describe beforeEach it expect jasmine spyOn xit */
 
 const httpMocks = require('node-mocks-http')
+const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 
 let sut
 let next
+const checkCode = 'dd3ed042-648f-49bd-a559-45127596716d'
 
 const getReqParams = (url = '/tech-support/home', method = 'GET') => {
   return {
@@ -63,17 +65,19 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    xit('POST: should render the check summary', async () => {
+    it('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams)
+      req.body = {
+        checkCode: checkCode
+      }
       const res = getResponse()
       spyOn(res, 'render').and.returnValue(null)
+      spyOn(checkDiagnosticService, 'getByCheckCode').and.returnValue({})
       await sut.postCheckViewPage(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
-      expect(res.formData).toBeDefined()
-      expect(res.breadcrumbs).toBeDefined()
-      expect(res.error).toBeDefined()
       expect(next).not.toHaveBeenCalled()
+      expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
     })
 
     xit('POST: should redirect back to GET when validation fails', async () => {
@@ -81,8 +85,8 @@ describe('tech-support controller', () => {
       const res = getResponse()
       spyOn(res, 'render')
       await sut.postCheckViewPage(req, res, next)
-      expect(res.statusCode).toBe(500)
-      expect(res.render).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })
   })
