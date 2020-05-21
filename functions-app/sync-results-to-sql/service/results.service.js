@@ -28,7 +28,7 @@ const service = {
     const tableService = azureStorageHelper.getPromisifiedAzureTableService()
     const query = new azureStorage.TableQuery()
       .top(1000)
-      .where('PartitionKey eq ?', guid) // TODO: .toLowerCase()
+      .where('PartitionKey eq ? or PartitionKey eq ?', guid.toLowerCase(), guid.toUpperCase()) // accommodate any case
 
     const result = await tableService.queryEntitiesAsync(markingTable, query, null) // TODO: jms add retry handling
 
@@ -56,10 +56,10 @@ const service = {
   findNewMarkedChecks: function findNewMarkedChecks (newChecks, markedChecks) {
     // Create a Map so we can lookup by checkCode efficiently
     const newCheckMap = new Map()
-    newChecks.forEach(o => { newCheckMap.set(o.checkCode, 0) })
+    newChecks.forEach(o => { newCheckMap.set(o.checkCode.toLowerCase(), 0) })
 
     const filteredChecks = markedChecks.filter(o => {
-      if (newCheckMap.has(o.checkCode)) {
+      if (newCheckMap.has(o.checkCode.toLowerCase())) {
         newCheckMap.set(o.checkCode, 1)
         return true
       }
