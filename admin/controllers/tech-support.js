@@ -37,7 +37,8 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
     return res.render('tech-support/check-view', {
       breadcrumbs: req.breadcrumbs(),
       formData: {},
-      err: error || new ValidationError()
+      err: error || new ValidationError(),
+      summary: undefined
     })
   } catch (error) {
     return next(error)
@@ -66,9 +67,9 @@ controller.postCheckViewPage = async (req, res, next) => {
       ],
       err: new ValidationError(),
       formData: {
-        checkCode: checkCode,
-        checkSummary: checkSummary
-      }
+        checkCode: checkCode
+      },
+      summary: checkSummary
     })
   } catch (error) {
     return next(error)

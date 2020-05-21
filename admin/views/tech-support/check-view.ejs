@@ -40,10 +40,83 @@
                    id="checkCode"
                    class="govuk-input govuk-!-width-three-quarters <%= err.isError('checkCode') ? 'govuk-input--error' : '' %>"
                    name="checkCode"
-                   value="<%= formData['checkCode'] %>"/>
+                   value="17b64e3e-1785-4696-8cd5-b052a6d411e0"/>
         </div>
         <button type="submit" id="submit-checkcode" class="govuk-button">Submit</button>
     </form>
+    <% if (summary) { %>
+    <table id="checkSummary" name="checkSummary" class="govuk-table govuk-spacious">
+      <caption class="govuk-body govuk-table__caption">Check Summary</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">
+            Check Id
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Created At
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Check Code
+          </th>
+          <th scope="col" class="govuk-table__header">
+            School
+          </th>
+          <th scope="col" class="govuk-table__header">
+            DfE number
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Pupil Login Date
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Received By Server At
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Live Check?
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Check Status
+          </th>
+          <th scope="col" class="govuk-table__header">
+            Pin Expires At
+          </th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= summary.check_id %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.createdAt %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.checkCode %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.school_name %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.dfeNumber %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.pupilLoginDate %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.receivedByServerAt %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.isLiveCheck %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.check_desc %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= summary.pinExpiresAt %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <% } %>
     </div>
   </div>
 </main>
