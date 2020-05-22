@@ -55,4 +55,18 @@ describe('sql.role-connection.builder:integration', () => {
     expect(actual.pool.min).toEqual(config.Sql.TechSupport.Pool.Min)
     expect(actual.pool.max).toEqual(config.Sql.TechSupport.Pool.Max)
   })
+
+  it('should be readonly if specified', () => {
+    const actual = sut.build(roles.teacher, true)
+    expect(actual).toBeDefined()
+    expect(typeof actual).toEqual('object')
+    expect(actual.options.readOnlyIntent).toBe(true)
+  })
+
+  it('should default to non read-only', () => {
+    const actual = sut.build(roles.teacher)
+    expect(actual).toBeDefined()
+    expect(typeof actual).toEqual('object')
+    expect(actual.options.readOnlyIntent).toBe(false)
+  })
 })

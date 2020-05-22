@@ -60,7 +60,6 @@ controller.postCheckViewPage = async (req, res, next) => {
       return controller.getCheckViewPage(req, res, next, validationError)
     }
     const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
-    console.dir(checkSummary)
     res.render('tech-support/check-view', {
       breadcrumbs: [
         { name: 'Tech Support Check View' }

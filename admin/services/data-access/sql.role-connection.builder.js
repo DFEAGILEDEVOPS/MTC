@@ -6,7 +6,13 @@ const config = require('../../config')
 const R = require('ramda')
 
 const builder = {
-  build: function build (roleName) {
+  /**
+   * @description builds a sql connection config object
+   * @param {string} roleName - the role of the user to create a connection config for
+   * @param {boolean} readonly - set to true for a readonly connection, typically to a sql azure replica
+   * @returns {object} a config object that works with mssql
+   */
+  build: function build (roleName, readonly = false) {
     let cfg
     switch (roleName) {
       case roles.teacher:
@@ -22,6 +28,7 @@ const builder = {
       default:
         throw new Error('role not supported')
     }
+    cfg.options.readOnlyIntent = readonly
     return cfg
   }
 }

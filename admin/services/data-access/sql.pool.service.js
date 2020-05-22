@@ -11,11 +11,11 @@ const service = {
    * @param {string} poolName the unique name of the pool
    * @returns {ConnectionPool} the active connection pool
    */
-  createPool: function createPool (poolName) {
+  createPool: function createPool (poolName, readonly = false) {
     if (service.getPool(poolName)) {
       logger.warn(`cannot create connectionPool with name ${poolName}, as it already exists`)
     } else {
-      const config = connectionBuilder.build(poolName)
+      const config = connectionBuilder.build(poolName, readonly)
       POOLS[poolName] = new ConnectionPool(config)
     }
     return POOLS[poolName]
