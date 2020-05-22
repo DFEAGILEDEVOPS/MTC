@@ -227,7 +227,7 @@ sqlService.initReadonlyPool = () => {
   if (config.Sql.AllowReadsFromReplica !== true) {
     throw new Error('Invalid Operation: Reads from Replica are disabled')
   }
-  const readonlyPool = poolService.createPool(`${roles.teacher}:readonly`)
+  const readonlyPool = poolService.createPool(roles.teacher, true)
   readonlyPool.on('error', err => {
     logger.error('SQL Read-only Pool Error:', err)
   })
