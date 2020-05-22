@@ -224,7 +224,6 @@ sqlService.drainPool = async () => {
 }
 
 sqlService.initReadonlyPool = () => {
-  /*
   if (config.Sql.AllowReadsFromReplica !== true) {
     throw new Error('Invalid Operation: Reads from Replica are disabled')
   }
@@ -233,11 +232,10 @@ sqlService.initReadonlyPool = () => {
     logger.error('SQL Read-only Pool Error:', err)
   })
   return readonlyPool.connect()
-  */
 }
 
 sqlService.drainReadonlyPool = async () => {
-  // return poolService.closePool(`${roles.teacher}:readonly`)
+  return poolService.closePool(roles.teacher, true)
 }
 
 /**
@@ -324,8 +322,8 @@ sqlService.readonlyQuery = async (sql, params = [], redisKey = '', roleName = ro
   if (config.Sql.AllowReadsFromReplica !== true) {
     return sqlService.query(sql, params, redisKey)
   }
-  // TODO breaks readonly requirement
-  const readonlyPool = await poolService.getPool(roleName)
+
+  const readonlyPool = await poolService.getPool(roleName, true)
 
   const query = async () => {
     let result = false

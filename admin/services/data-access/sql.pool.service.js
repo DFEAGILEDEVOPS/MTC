@@ -5,6 +5,10 @@ const connectionBuilder = require('./sql.role-connection.builder')
 const logger = require('../log.service').getLogger()
 const POOLS = {}
 
+const buildPoolName = (poolName, readonly) => {
+  return `${poolName}:read=${readonly}`
+}
+
 const service = {
   /**
    * @description create a new connection pool
@@ -12,23 +16,25 @@ const service = {
    * @returns {ConnectionPool} the active connection pool
    */
   createPool: function createPool (poolName, readonly = false) {
-    if (service.getPool(poolName)) {
-      logger.warn(`cannot create connectionPool with name ${poolName}, as it already exists`)
+    const internalPoolName = buildPoolName(poolName, readonly)
+    if (service.getPool(poolName, false, readonly)) {
+      logger.warn(`cannot create connectionPool with name ${internalPoolName}, as it already exists`)
     } else {
       const config = connectionBuilder.build(poolName, readonly)
-      POOLS[poolName] = new ConnectionPool(config)
+      POOLS[internalPoolName] = new ConnectionPool(config)
     }
-    return POOLS[poolName]
+    return POOLS[internalPoolName]
   },
   /**
    * @description closes the specified pool
    * @param {string} poolName the name of the pool to close
    * @returns {Promise.<object>} a promise containing the closing pool
    */
-  closePool: function closePool (poolName) {
-    if ({}.hasOwnProperty.call(POOLS, poolName)) {
-      const pool = POOLS[poolName]
-      delete POOLS[poolName]
+  closePool: function closePool (poolName, readonly = false) {
+    const pool = service.getPool(poolName, false, readonly)
+    if (pool) {
+      const internalPoolName = buildPoolName(poolName, readonly)
+      delete POOLS[internalPoolName]
       return pool.close()
     }
   },
@@ -38,12 +44,13 @@ const service = {
    * @param {Boolean} createIfNotFound if the pool does not exist, it will be created
    * @returns {ConnectionPool} the specified pool, if it exists
    */
-  getPool: function getPool (poolName, createIfNotFound = false) {
-    if ({}.hasOwnProperty.call(POOLS, poolName)) {
-      return POOLS[poolName]
+  getPool: function getPool (poolName, createIfNotFound = false, readonly = false) {
+    const internalPoolName = buildPoolName(poolName, readonly)
+    if ({}.hasOwnProperty.call(POOLS, internalPoolName)) {
+      return POOLS[internalPoolName]
     } else {
       if (createIfNotFound === true) {
-        const pool = service.createPool(poolName)
+        const pool = service.createPool(poolName, readonly)
         return pool
       }
     }
