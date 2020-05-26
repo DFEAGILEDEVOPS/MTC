@@ -165,7 +165,8 @@ module.exports = {
         apiSecret: process.env.DFE_USER_INFO_API_SECRET,
         audience: process.env.DFE_USER_INFO_API_TOKEN_AUDIENCE || 'signin.education.gov.uk'
       },
-      signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL
+      signOutUrl: process.env.DFE_SIGNON_SIGNOUT_URL,
+      servicesUrl: process.env.DFE_SIGNON_SERVICES_URL
     }
   },
   Runtime: {

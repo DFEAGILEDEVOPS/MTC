@@ -208,7 +208,7 @@ describe('authentication controller', () => {
       const res = createResponse()
       spyOn(res, 'render')
       sut.getSignedOut(req, res)
-      expect(res.render).toHaveBeenCalledWith('signedout')
+      expect(res.render).toHaveBeenCalledWith('dsi-signedout')
       expect(res.statusCode).toBe(200)
       expect(res.locals.pageTitle).toBe('Signed Out')
     })
