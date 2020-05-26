@@ -4,6 +4,7 @@ const roles = require('../../lib/consts/roles')
 const sqlConfig = require('../../config/sql.config')
 const config = require('../../config')
 const R = require('ramda')
+const deepFreeze = require('../../lib/deep-freeze')
 
 const builder = {
   /**
@@ -13,13 +14,11 @@ const builder = {
    * @returns {object} a config object that works with mssql
    */
   build: function build (roleName, readonly = false) {
-    let cfg
+    const cfg = R.clone(sqlConfig)
     switch (roleName) {
       case roles.teacher:
-        cfg = sqlConfig
         break
       case roles.techSupport:
-        cfg = R.clone(sqlConfig)
         cfg.user = config.Sql.TechSupport.Username
         cfg.password = config.Sql.TechSupport.Password
         cfg.pool.min = config.Sql.TechSupport.Pool.Min
@@ -29,7 +28,7 @@ const builder = {
         throw new Error('role not supported')
     }
     cfg.options.readOnlyIntent = readonly
-    return cfg
+    return deepFreeze(cfg)
   }
 }
 

@@ -69,4 +69,9 @@ describe('sql.role-connection.builder:integration', () => {
     expect(typeof actual).toEqual('object')
     expect(actual.options.readOnlyIntent).toBe(false)
   })
+  it('should return deeply frozen config object', () => {
+    const actual = sut.build(roles.teacher)
+    expect(Object.isFrozen(actual)).toBe(true)
+    expect(Object.isFrozen(actual.pool)).toBe(true)
+  })
 })
