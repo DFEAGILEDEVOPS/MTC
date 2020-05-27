@@ -9,7 +9,7 @@ class AzureTableHelper
     begin
       retries ||= 0
       sleep 2
-      a = get_row('receivedCheck', partition_key, row_key)
+      a = get_row('receivedCheck', partition_key.downcase, row_key.downcase)
     rescue Azure::Core::Http::HTTPError => e
       retry if (retries += 1) < 120
     end

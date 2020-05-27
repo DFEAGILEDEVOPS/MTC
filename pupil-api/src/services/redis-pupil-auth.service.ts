@@ -53,7 +53,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
     // Emit a successful login to the queue
     const pupilLoginMessage: IPupilLoginMessage = {
-      checkCode: preparedCheckEntry.checkCode,
+      checkCode: preparedCheckEntry.checkCode.toLowerCase(),
       loginAt: new Date(),
       version: 1,
       practice: preparedCheckEntry.config.practice
