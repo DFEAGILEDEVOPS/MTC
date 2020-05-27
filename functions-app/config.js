@@ -35,6 +35,7 @@ module.exports = {
     censusRequestTimeout: parseInt(process.env.SQL_CENSUS_REQUEST_TIMEOUT, 10) || twoHoursInMilliseconds,
     connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
     Encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
+    EnableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool(process.env.SQL_ENABLE_ARITH_ABORT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default

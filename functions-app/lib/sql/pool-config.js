@@ -25,6 +25,12 @@ function validateSqlConfig (config) {
   if (typeof config.connectionTimeout !== 'number') {
     throw new Error('connectionTimeout must be a number')
   }
+  if (!config.EnableArithAbort) {
+    ex('EnableArithAbort')
+  }
+  if (typeof config.EnableArithAbort !== 'boolean') {
+    throw new Error('EnableArithAbort must be a boolean')
+  }
 }
 
 validateSqlConfig(sqlConfig)
@@ -42,7 +48,8 @@ const mssqlConfig = {
     idleTimeoutMillis: sqlConfig.Pooling.IdleTimeout || 30000
   },
   options: {
-    encrypt: sqlConfig.Encrypt
+    encrypt: sqlConfig.Encrypt,
+    enableArithAbort: sqlConfig.EnableArithAbort
   }
 }
 

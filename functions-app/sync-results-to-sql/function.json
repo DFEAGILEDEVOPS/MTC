@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "resultsTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule-description": "Run at 6pm every night",
+      "schedule": "0 0 18 * * *"
+    }
+  ]
+}

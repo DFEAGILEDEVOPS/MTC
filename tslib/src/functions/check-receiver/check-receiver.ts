@@ -8,8 +8,8 @@ const tableService = new az.AsyncTableService()
 class CheckReceiver {
   async process (context: Context, receivedCheck: SubmittedCheckMessageV3) {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: receivedCheck.schoolUUID,
-      RowKey: receivedCheck.checkCode,
+      PartitionKey: receivedCheck.schoolUUID.toLowerCase(),
+      RowKey: receivedCheck.checkCode.toLowerCase(),
       archive: receivedCheck.archive,
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version,
@@ -27,8 +27,8 @@ class CheckReceiver {
 
     const message: ValidateCheckMessageV1 = {
       version: 1,
-      checkCode: receivedCheck.checkCode,
-      schoolUUID: receivedCheck.schoolUUID
+      checkCode: receivedCheck.checkCode.toLowerCase(),
+      schoolUUID: receivedCheck.schoolUUID.toLowerCase()
     }
     context.bindings.checkValidationQueue = [message]
   }
