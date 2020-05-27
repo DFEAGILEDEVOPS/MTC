@@ -151,8 +151,8 @@ const dataService = {
         if (data.checkCode) { // condition as some pupils may not have taken checks
           try {
             tableStorageData = await async.parallel({
-              marking: async () => azureTableService.retrieveEntityAsync(markingTable, data.schoolGuid, data.checkCode),
-              payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid, data.checkCode)
+              marking: async () => azureTableService.retrieveEntityAsync(markingTable, data.schoolGuid.toLowerCase(), data.checkCode.toLowerCase()),
+              payload: async () => azureTableService.retrieveEntityAsync(checkReceivedTable, data.schoolGuid.toLowerCase(), data.checkCode.toLowerCase())
             })
           } catch (error) {
             console.error(`writeStage2File() worker Lookup failed for checkCode [${data.checkCode}]`, error)

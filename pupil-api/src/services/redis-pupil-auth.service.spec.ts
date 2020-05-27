@@ -70,6 +70,7 @@ describe('redis-pupil-auth.service', () => {
     const pinValidFromUtc = moment().startOf('day')
     const pinExpiresAtUtc = moment().endOf('day')
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: true
       },
@@ -90,6 +91,7 @@ describe('redis-pupil-auth.service', () => {
     const pinValidFromUtc = moment().add(1, 'hour')
     const pinExpiresAtUtc = moment().add(2, 'hour')
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: false
       },
@@ -110,6 +112,7 @@ describe('redis-pupil-auth.service', () => {
     const pinValidFromUtc = moment().subtract(2, 'hour')
     const pinExpiresAtUtc = moment().subtract(1, 'hour')
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: false
       },
@@ -138,6 +141,7 @@ describe('redis-pupil-auth.service', () => {
   test('redis item TTL should be set to 30 minutes from now if config.practice is defined and false', async () => {
     const thirtyMinutesInSeconds = 1800
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: false
       }
@@ -159,6 +163,7 @@ describe('redis-pupil-auth.service', () => {
 
   test('no redis expiry is set if config.practice is true', async () => {
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: true
       }
@@ -183,6 +188,7 @@ describe('redis-pupil-auth.service', () => {
 
   test('no redis expiry is set if config.practice does not exist', async () => {
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {}
     }
 
@@ -205,6 +211,7 @@ describe('redis-pupil-auth.service', () => {
 
   test('no redis expiry is set if config.practice is undefined', async () => {
     const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
       config: {
         practice: undefined
       }

@@ -36,7 +36,7 @@ export class PupilLoginService {
     }
     bindings.pupilEventTable = []
     bindings.pupilEventTable.push({
-      PartitionKey: message.checkCode,
+      PartitionKey: message.checkCode.toLowerCase(),
       RowKey: uuid(),
       eventType: 'pupil-login',
       payload: message,
