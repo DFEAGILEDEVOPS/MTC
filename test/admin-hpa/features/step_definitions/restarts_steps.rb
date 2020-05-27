@@ -102,7 +102,6 @@ Given(/^I have multiple pupils for restart$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
@@ -211,7 +210,6 @@ When(/^they become eligable for a restart$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
