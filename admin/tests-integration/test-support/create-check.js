@@ -50,9 +50,7 @@ const createCheck = async function createCheck (code, isLiveCheck) {
                      receivedByServerAt = GETUTCDATE(),
                      complete = 1,
                      completedAt = GETUTCDATE(),
-                     received = 1,
-                     mark = 10,
-                     maxMark = 10                        
+                     received = 1                 
                  where id = ${checkId};`
     await sqlService.modifyWithTransaction(sql)
   }
