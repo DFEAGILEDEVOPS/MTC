@@ -22,7 +22,7 @@ export class CheckStartedService {
     const preparedCheckKey = await this.redisService.get(cacheLookupKey)
     functionBindings.checkStartedTable = []
     functionBindings.checkStartedTable.push({
-      PartitionKey: checkStartedMessage.checkCode,
+      PartitionKey: checkStartedMessage.checkCode.toLowerCase(),
       RowKey: v4(),
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })

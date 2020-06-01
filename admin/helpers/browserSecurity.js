@@ -22,7 +22,7 @@ const init = (app) => {
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: scriptSources,
-      fontSrc: ["'self'", 'data:'],
+      fontSrc: ["'self'", 'data:', config.AssetPath],
       styleSrc: styleSources,
       imgSrc: imgSources,
       connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://dc.services.visualstudio.com/v2/track'],
