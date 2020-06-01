@@ -2,7 +2,7 @@
 
 const https = require('https')
 const ciEnabledLabelId = 861719997
-// Example call: 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557?client_id=xxxx&client_secret=yyyy'
+// Example call: 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557'
 const pullRequestId = process.argv[2]
 
 if (!pullRequestId) {
@@ -10,12 +10,15 @@ if (!pullRequestId) {
   process.exit(1)
 }
 
+const authToken = process.env.GITHUB_PAT
+
 const options = {
   hostname: 'api.github.com',
-  path: `/repos/dfeagiledevops/mtc/pulls/${pullRequestId}?client_id=${process.env.GITHUB_API_CLIENTID}&client_secret=${process.env.GITHUB_API_SECRET}`,
+  path: `/repos/dfeagiledevops/mtc/pulls/${pullRequestId}`,
   method: 'GET',
   headers: {
-    'User-Agent': 'node/https'
+    'User-Agent': 'node/https',
+    'Authorization': `token ${authToken}`
   }
 }
 
