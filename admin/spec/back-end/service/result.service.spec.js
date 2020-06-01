@@ -1,5 +1,6 @@
 'use strict'
 /* global describe, it, expect spyOn fail */
+const RA = require('ramda-adjunct')
 
 const resultDataService = require('../../../services/data-access/result.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
@@ -40,6 +41,7 @@ describe('result.service', () => {
       expect(result).toBeUndefined()
     })
   })
+
   describe('getSchoolScore', () => {
     it('calls sqlFindSchoolScoreBySchoolIdAndCheckWindowId when school id and check window id are provided and returns a valid score number', async () => {
       spyOn(resultDataService, 'sqlFindSchoolScoreBySchoolIdAndCheckWindowId').and.returnValue({ id: 1, score: 6 })
@@ -130,6 +132,7 @@ describe('result.service', () => {
       expect(scoreRecord).toEqual({ id: 1 })
     })
   })
+
   describe('assignResultStatuses', () => {
     it('returns incomplete status if check status is not received and pupil status is started', () => {
       const pupils = [{
@@ -214,4 +217,47 @@ describe('result.service', () => {
       }])
     })
   })
-})
+
+  describe('createPupilData', () => {
+    it('assigns a score to a pupil with a completed check', () => {
+      const data = [
+        { pupilId: 1, mark: 10, foreName: 'Joe', lastName: 'Test' }
+      ]
+      const result = resultService.createPupilData(data) // sut
+      expect(RA.isArray(result)).toBe(true)
+    })
+  })
+
+  describe('assignStatus', () => {
+    const sut = resultService.assignStatus
+
+    it('describes complete pupils with no status', () => {
+      const pupil = { restartAvailable: false, currentCheckId: 1, checkComplete: true }
+      const status = sut(pupil)
+      expect(status).toBe('')
+    })
+
+    it('describes incomplete pupils with an incomplete status', () => {
+      const pupil = { restartAvailable: false, currentCheckId: 2, checkComplete: false }
+      const status = sut(pupil)
+      expect(status).toBe('Incomplete')
+    })
+
+    it('describes pupils who did not take a check', () => {
+      const pupil = { restartAvailable: false, currentCheckId: null, checkComplete: false, attendanceId: false }
+      const status = sut(pupil)
+      expect(status).toBe('Did not participate')
+    })
+
+    it('describes pupils who are marked as not attending', () => {
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: null,
+        checkComplete: false,
+        attendanceReason: 'any of the reasons for not attending'
+      }
+      const status = sut(pupil)
+      expect(status).toBe('any of the reasons for not attending')
+    })
+  })
+}) // end result service

@@ -21,14 +21,12 @@ controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
   let pupilResultData
-  let generatedAt
-  let redisResult
+  let rawResultData
   let groups
   let checkWindow
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
   } catch (error) {
@@ -58,23 +56,23 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
 
   try {
-    redisResult = await resultService.getPupilResultData(req.user.schoolId)
-    pupilResultData = redisResult && redisResult.pupilResultData
+    rawResultData = await resultService.getPupilResultData(req.user.schoolId)
+    pupilResultData = rawResultData && rawResultData.pupils
   } catch (error) {
     return next(error)
   }
 
-  if (!pupilResultData) {
+  if (!pupilResultData || !Array.isArray(pupilResultData) || !pupilResultData.length > 0) {
     return res.render('results/view-results-not-found', {
       breadcrumbs: req.breadcrumbs()
     })
   }
+  // const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
+  // const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
+  const generatedAt = resultPresenter.formatGeneratedAtValue(rawResultData.generatedAt)
 
-  const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
-  const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
-  generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
   return res.render('results/view-results', {
-    pupilData,
+    pupilData: pupilResultData,
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
