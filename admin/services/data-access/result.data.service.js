@@ -1,40 +1,9 @@
 'use strict'
 
-const R = require('ramda')
-
 const sqlService = require('./sql.service')
 const TYPES = sqlService.TYPES
 
 const resultDataService = {
-  /**
-   * Find school score based on school id and check window id
-   * @param {Number} schoolId
-   * @param {Number} checkWindowId
-   * @returns {Promise<*>}
-   */
-  sqlFindSchoolScoreBySchoolIdAndCheckWindowId: async function sqlFindSchoolScoreBySchoolIdAndCheckWindowId (schoolId, checkWindowId) {
-    const sql = `
-  SELECT score
-  FROM ${sqlService.adminSchema}.schoolScore
-  WHERE school_id = @schoolId
-  AND checkWindow_id = @checkWindowId
-  `
-    const params = [
-      {
-        name: 'checkWindowId',
-        value: checkWindowId,
-        type: TYPES.Int
-      },
-      {
-        name: 'schoolId',
-        value: schoolId,
-        type: TYPES.Int
-      }
-    ]
-    const result = await sqlService.query(sql, params)
-    return R.head(result)
-  },
-
   /**
    * Provide the raw data for pupil scores (pupil details, scores, not attending info, and data for determining the results status)
    * @param {number} schoolId - school.id from database

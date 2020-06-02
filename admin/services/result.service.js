@@ -68,49 +68,25 @@ const resultService = {
       schoolId: schoolId,
       pupils: pupilIdentificationFlagService.addIdentificationFlags(this.sort(this.createPupilData(data)))
     }
-  }
-}
+  },
 
-/**
- * Find pupils with results based on school id and merge with pupil register data
- * @param {Number} schoolId
- * @returns {Object} requestData
- */
-resultService.getPupilResultData = async function (schoolId) {
-  if (!schoolId) {
-    throw new Error('school id not found')
+  /**
+   * Find pupils with results based on school id and merge with pupil register data
+   * @param {Number} schoolId
+   * @returns {Object} requestData
+   */
+  getPupilResultData: async function getPupilResultData (schoolId) {
+    if (!schoolId) {
+      throw new Error('school id not found')
+    }
+    const redisKey = redisKeyService.getSchoolResultsKey(schoolId)
+    let result = await redisCacheService.get(redisKey)
+    if (!result && featureToggles.isFeatureEnabled('schoolResultFetchFromDbEnabled') === true) {
+      result = await this.getPupilResultDataFromDb(schoolId)
+      // TODO: jms save result to redis
+    }
+    return result
   }
-  const redisKey = redisKeyService.getSchoolResultsKey(schoolId)
-  let result = await redisCacheService.get(redisKey)
-  if (!result && featureToggles.isFeatureEnabled('schoolResultFetchFromDbEnabled') === true) {
-    result = await this.getPupilResultDataFromDb(schoolId)
-    // TODO: jms save result to redis
-  }
-  // let parseResult
-  // try {
-  //   parseResult = JSON.parse(result)
-  // } catch (ignore) {}
-  return result
-}
-
-/**
- * Find school score based on check window id
- * @param {Number} schoolId
- * @param {Number} checkWindowId
- * @returns {Object} requestData
- */
-resultService.getSchoolScore = async (schoolId, checkWindowId) => {
-  if (!schoolId) {
-    throw new Error('school id not found')
-  }
-  if (!checkWindowId) {
-    throw new Error('check window id not found')
-  }
-  const schoolScore = await resultDataService.sqlFindSchoolScoreBySchoolIdAndCheckWindowId(schoolId, checkWindowId)
-  if (!schoolScore || Object.keys(schoolScore).length === 0) {
-    return
-  }
-  return schoolScore
 }
 
 module.exports = resultService
