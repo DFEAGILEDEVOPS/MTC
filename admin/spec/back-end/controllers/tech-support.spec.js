@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn xit */
+/* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
