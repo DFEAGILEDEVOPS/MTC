@@ -128,6 +128,14 @@
               <%= summary.pinExpiresAt %>
             </td>
           </tr>
+          <tr>
+            <td>
+              Received Check
+            </td>
+            <td>
+              <a id="view-received-check" target="_blank" href="received-check-payload?checkCode=<%= summary.checkCode %>">View Payload</a>
+            </td>
+          </tr>
         </tbody>
       </table>
       <% } %>

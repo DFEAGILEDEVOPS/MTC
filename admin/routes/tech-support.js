@@ -24,4 +24,10 @@ router.post(
   (req, res, next) => techSupportController.postCheckViewPage(req, res, next)
 )
 
+router.get(
+  '/received-check-payload',
+  isAuthenticated([roles.techSupport]),
+  (req, res, next) => techSupportController.getReceivedCheckPayload(req, res, next)
+)
+
 module.exports = router

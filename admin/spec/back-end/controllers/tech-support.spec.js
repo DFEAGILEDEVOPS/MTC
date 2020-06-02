@@ -3,6 +3,7 @@
 
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
+const payloadService = require('../../../services/payload.service')
 
 let sut
 let next
@@ -66,7 +67,7 @@ describe('tech-support controller', () => {
     })
 
     it('POST: should render the check summary', async () => {
-      const req = getRequest(getReqParams)
+      const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       req.body = {
         checkCode: checkCode
       }
@@ -80,14 +81,27 @@ describe('tech-support controller', () => {
       expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
     })
 
-    xit('POST: should redirect back to GET when validation fails', async () => {
-      const req = getRequest(getReqParams)
+    it('POST: should redirect back to GET when validation fails', async () => {
+      const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       const res = getResponse()
       spyOn(res, 'render')
+      spyOn(sut, 'getCheckViewPage')
       await sut.postCheckViewPage(req, res, next)
+      expect(next).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(200)
-      expect(res.render).toHaveBeenCalled()
-      expect(next).toHaveBeenCalled()
+      expect(sut.getCheckViewPage).toHaveBeenCalled()
+    })
+  })
+
+  describe('/received-check-payload', () => {
+    it('GET: should render payload', async () => {
+      const req = getRequest(getReqParams('/tech-support/received-check-payload', 'GET'))
+      const res = getResponse()
+      req.query.checkCode = checkCode
+      spyOn(payloadService, 'getPayload')
+      await sut.getReceivedCheckPayload(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+      expect(payloadService.getPayload).toHaveBeenCalledWith(checkCode)
     })
   })
 })
