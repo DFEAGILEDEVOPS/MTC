@@ -1,13 +1,12 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-      <%- partial('partials/_name_and_sign_out') %>
-  </div>
-</div>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">Tech Support</h1>
-      <a href="/tech-support/checkview">Check View</a>
+      <ol class="govuk-list">
+        <li class="govuk-!-margin-bottom-4">
+          <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/tech-support/checkview">Check View</a></h2>
+        </li>
     </div>
   </div>
 </main>

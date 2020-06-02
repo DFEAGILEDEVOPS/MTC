@@ -1,8 +1,4 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-    <%- partial('partials/_name_and_sign_out') %>
-  </div>
-</div>
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -43,6 +39,11 @@
         </div>
         <button type="submit" id="submit-checkcode" class="govuk-button">Submit</button>
       </form>
+      <% if (messages && messages.info && messages.info.length) { %>
+        <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+            <%= messages.info %>
+        </div>
+    <% } %>
       <% if (summary) { %>
       <table id="checkSummary" name="checkSummary" class="govuk-table govuk-spacious">
         <caption class="govuk-body govuk-table__caption">Check Summary</caption>
