@@ -33,13 +33,14 @@ controller.getHomePage = async (req, res, next) => {
  */
 controller.getCheckViewPage = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Tech Support Check View'
-  req.breadcrumbs('Check View', '/tech-support/checkview')
+  req.breadcrumbs('Check View')
   try {
     return res.render('tech-support/check-view', {
       breadcrumbs: req.breadcrumbs(),
       formData: {},
       err: error || new ValidationError(),
-      summary: undefined
+      summary: undefined,
+      notFound: false
     })
   } catch (error) {
     return next(error)
@@ -54,17 +55,16 @@ controller.getCheckViewPage = async (req, res, next, error = null) => {
  */
 controller.postCheckViewPage = async (req, res, next) => {
   res.locals.pageTitle = 'Tech Support Check View'
-  req.breadcrumbs('Check View', '/tech-support/checkview')
   const { checkCode } = req.body
   try {
     const validationError = uuidValidator.validate(checkCode, 'checkCode')
     if (validationError && validationError.hasError && validationError.hasError()) {
       return controller.getCheckViewPage(req, res, next, validationError)
     }
+    let notFound = false
     const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
     if (!checkSummary) {
-      req.flash('info', 'Check Not Found')
-      return controller.getCheckViewPage(req, res, next)
+      notFound = true
     }
     res.render('tech-support/check-view', {
       breadcrumbs: req.breadcrumbs(),
@@ -72,7 +72,8 @@ controller.postCheckViewPage = async (req, res, next) => {
       formData: {
         checkCode: checkCode
       },
-      summary: checkSummary
+      summary: checkSummary,
+      notFound: notFound
     })
   } catch (error) {
     return next(error)

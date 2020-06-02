@@ -39,9 +39,9 @@
         </div>
         <button type="submit" id="submit-checkcode" class="govuk-button">Submit</button>
       </form>
-      <% if (messages && messages.info && messages.info.length) { %>
+      <% if (notFound && notFound == true) { %>
         <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-            <%= messages.info %>
+            Check Not Found
         </div>
     <% } %>
       <% if (summary) { %>
