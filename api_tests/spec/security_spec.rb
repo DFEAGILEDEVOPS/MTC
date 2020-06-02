@@ -14,7 +14,7 @@ describe 'Security API spec' do
       expect(response.headers['x-download-options']).to eql 'noopen'
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-xss-protection']).to eql "1; mode=block"
-      csp_array = ["default-src", "'self';", "script-src", "'self'", "'unsafe-inline'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://az416426.vo.msecnd.net", "font-src", "'self'", "data:;", "style-src", "'self'", "'unsafe-inline'", "img-src", "'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "data:", "connect-src", "'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://dc.services.visualstudio.com/v2/track;", "object-src", "'self'", "media-src", "'none';", "child-src", "'none'"]
+      csp_array = ["default-src", "'self';", "script-src", "'self'", "'unsafe-inline'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://az416426.vo.msecnd.net", "font-src", "'self'", "data: https://devassets-as-mtc.azurewebsites.net/", "style-src", "'self'", "'unsafe-inline'", "img-src", "'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "data:", "connect-src", "'self'", "https://www.google-analytics.com", "https://www.googletagmanager.com", "https://dc.services.visualstudio.com/v2/track;", "object-src", "'self'", "media-src", "'none';", "child-src", "'none'"]
       csp_array.each {|csp_value| expect(response.headers['content-security-policy']).to include csp_value}
     end
   end
