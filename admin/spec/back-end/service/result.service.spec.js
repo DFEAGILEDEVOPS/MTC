@@ -117,6 +117,30 @@ describe('result.service', () => {
       expect(res.pupils[1].fullName).toBe('Smith, Jack B')
       expect(res.pupils[2].fullName).toBe('Smith, Jack C')
     })
+
+    it('returns a status field for each pupil', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', currentCheckId: 1, checkComplete: true, attendanceReason: null, restartAvailable: false },
+        { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: 'Not attending', restartAvailable: false },
+        { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: '', restartAvailable: true }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].status).toBeDefined()
+    })
+
+    it('returns a score field for each pupil that took the check', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', mark: 5 },
+        { lastName: 'Wall', foreName: 'Jane', dateOfBirth: moment('2012-07-01'), middleNames: '', mark: 8 },
+        { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: '', restartAvailable: true }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].score).toBe(5) // Jack Smith #1
+      expect(res.pupils[1].score).toBeUndefined() // Jane Wall #2
+      expect(res.pupils[2].score).toBe(8) // Jasmine Testsuite #3 after sorting
+    })
   })
 
   describe('getPupilResultData', () => {
