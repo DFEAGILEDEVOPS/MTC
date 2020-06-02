@@ -9,7 +9,7 @@ const pupilIdentificationFlagService = require('./pupil-identification-flag.serv
 
 const resultService = {
   sort: function sort (data) {
-    return sortService.sortByProps(['lastName', 'firstName', 'middleNames'], data)
+    return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   },
 
   /**

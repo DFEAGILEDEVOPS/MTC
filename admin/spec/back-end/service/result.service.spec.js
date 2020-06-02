@@ -1,11 +1,124 @@
 'use strict'
-/* global describe, it, expect spyOn fail */
+/* global describe, it, expect spyOn fail jasmine xit */
 const RA = require('ramda-adjunct')
+const moment = require('moment')
 
+const resultDataService = require('../../../services/data-access/result.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const resultService = require('../../../services/result.service')
 
 describe('result.service', () => {
+  describe('getPupilResultDataFromDb', () => {
+    const schoolId = 0
+
+    it('returns an object', async () => {
+      const mockResultData = []
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(typeof res).toBe('object')
+    })
+
+    it('has a generatedAt prop', async () => {
+      const mockResultData = []
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(moment.isMoment(res.generatedAt)).toBe(true)
+    })
+
+    it('has a schoolId prop', async () => {
+      const mockResultData = []
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.schoolId).toBe(schoolId)
+    })
+
+    it('sorts the pupils alphabetically', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: '' },
+        { lastName: 'Talon', foreName: '' },
+        { lastName: 'Anchovy', foreName: '' }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].lastName).toBe('Anchovy')
+      expect(res.pupils[1].lastName).toBe('Smith')
+      expect(res.pupils[2].lastName).toBe('Talon')
+    })
+
+    it('sorts the pupils alphabetically - if the lastNames are the same it then sorts by foreName', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'Toad' },
+        { lastName: 'Smith', foreName: 'Mario' },
+        { lastName: 'Anchovy', foreName: 'Zeus' }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].lastName).toBe('Anchovy')
+      expect(res.pupils[1]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Mario' }))
+      expect(res.pupils[2]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Toad' }))
+    })
+
+    it('sorts the pupils alphabetically - if the lastname and forenames are the same it sorts by dob', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'John', dateOfBirth: moment('1970-01-01') },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-02') },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-01') }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Jack', dateOfBirth: '1 Jan 2010' }))
+      expect(res.pupils[1]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Jack', dateOfBirth: '2 Jan 2010' }))
+      expect(res.pupils[2]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'John' }))
+    })
+
+    it('sorts the pupils alphabetically - if the lastname, forename and dob are the same it sorts by middlenames', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Zebra' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Xani' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Bea' }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].middleNames).toEqual('Bea')
+      expect(res.pupils[1].middleNames).toEqual('Xani')
+      expect(res.pupils[2].middleNames).toEqual('Zebra')
+    })
+
+    it('returns the pupil group_id', async () => {
+      const mockResultData = [
+        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].group_id).toBe(42)
+    })
+
+    it('returns the pupil full name', async () => {
+      const mockResultData = [
+        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].fullName).toBe('Smith, Jack')
+    })
+
+    /**
+     * This is a bug in the pupil identification flags service.
+     */
+    xit('returns the pupil full name with middle names if pupil differentiation requires a middleName sort', async () => {
+      const mockResultData = [
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'B' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'A' }
+      ]
+      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      const res = await resultService.getPupilResultDataFromDb(schoolId)
+      expect(res.pupils[0].fullName).toBe('Smith, Jack A')
+      expect(res.pupils[1].fullName).toBe('Smith, Jack B')
+      expect(res.pupils[2].fullName).toBe('Smith, Jack C')
+    })
+  })
+
   describe('getPupilResultData', () => {
     it('calls redisCacheService get when school id is provided', async () => {
       spyOn(redisCacheService, 'get').and.returnValue('[{}]')
