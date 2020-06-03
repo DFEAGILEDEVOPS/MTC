@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment-timezone')
 
 const config = require('../config')
@@ -67,8 +68,6 @@ controller.getViewResultsPage = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
-  // const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
-  // const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
   const generatedAt = resultPresenter.formatGeneratedAtValue(rawResultData.generatedAt)
 
   return res.render('results/view-results', {

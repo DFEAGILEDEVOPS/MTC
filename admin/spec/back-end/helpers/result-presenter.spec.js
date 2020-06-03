@@ -1,71 +1,9 @@
-/* global describe, expect, it */
+/* global describe it expect */
 
-const moment = require('moment')
-const resultPresenter = require('../../../helpers/result-presenter')
+// const resultPresenter = require('../../../helpers/result-presenter')
 
 describe('resultPresenter', () => {
-  describe('getResultsViewData', () => {
-    it('provides a score if no attendance reason is detected', () => {
-      const dateOfBirth = moment.utc().subtract(7, 'year')
-      const pupils = [{
-        foreName: 'foreName',
-        lastName: 'lastName',
-        middleNames: 'middleNames',
-        dateOfBirth: dateOfBirth,
-        mark: 5,
-        reason: null,
-        group_id: 1,
-        checkStatusCode: 'CMP',
-        pupilStatusCode: 'COMPLETED',
-        statusInformation: ''
-      }]
-      const pupilData = resultPresenter.getResultsViewData(pupils)
-      expect(pupilData).toEqual([{
-        foreName: 'foreName',
-        lastName: 'lastName',
-        middleNames: 'middleNames',
-        fullName: 'lastName, foreName',
-        dateOfBirth: dateOfBirth,
-        score: 5,
-        status: '',
-        group_id: 1
-      }])
-    })
-    it('returns a dash as score when attendance reason is detected', () => {
-      const dateOfBirth = moment.utc().subtract(7, 'year')
-      const pupils = [{
-        foreName: 'foreName',
-        lastName: 'lastName',
-        middleNames: 'middleNames',
-        dateOfBirth: dateOfBirth,
-        mark: 5,
-        reason: 'Absent',
-        group_id: 1,
-        statusInformation: ''
-      }]
-      const pupilData = resultPresenter.getResultsViewData(pupils)
-      expect(pupilData).toEqual([{
-        foreName: 'foreName',
-        lastName: 'lastName',
-        middleNames: 'middleNames',
-        fullName: 'lastName, foreName',
-        dateOfBirth: dateOfBirth,
-        score: '-',
-        status: 'Absent',
-        group_id: 1
-      }])
-    })
-  })
-  describe('formatScore', () => {
-    it('returns score with 1 decimal point', () => {
-      const scoreValue = 7.8976
-      const score = resultPresenter.formatScore(scoreValue)
-      expect(score.toString().split('.')[1].length).toBe(1)
-    })
-    it('returns undefined if score passed in undefined', () => {
-      const scoreValue = undefined
-      const score = resultPresenter.formatScore(scoreValue)
-      expect(score).toBeUndefined()
-    })
+  it('testsuite needs at least one test', () => {
+    expect('this rather sad').toBeTruthy()
   })
 })
