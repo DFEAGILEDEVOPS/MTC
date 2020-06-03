@@ -23,10 +23,8 @@ const resultPresenter = {
   },
 
   presentPupilData: function presentPupilData (pupil) {
-    const o = R.clone(pupil)
     const scoreSlot = R.propOr('-', 'score', pupil)
-    console.log('presentation pupil', o)
-    return R.assoc('score', scoreSlot, o)
+    return R.assoc('score', scoreSlot, pupil)
   }
 }
 
