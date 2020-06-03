@@ -1,3 +1,5 @@
+'use strict'
+
 const moment = require('moment')
 
 const featureToggles = require('feature-toggles')
@@ -8,6 +10,13 @@ const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 
 const resultService = {
+  status: Object.freeze({
+    restartNotTaken: 'Did not attempt the restart',
+    incomplete: 'Incomplete',
+    didNotParticipate: 'Did not participate',
+    complete: ''
+  }),
+
   sort: function sort (data) {
     return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   },
@@ -19,20 +28,20 @@ const resultService = {
    */
   assignStatus: function assignStatus (pupil) {
     if (pupil.restartAvailable) {
-      return 'Did not attempt the restart'
+      return resultService.status.restartNotTaken
     }
 
     if (pupil.currentCheckId) {
       if (pupil.checkComplete === true) {
-        return ''
+        return resultService.status.complete
       } else {
-        return 'Incomplete'
+        return resultService.status.incomplete
       }
     } else {
       if (pupil.attendanceReason) {
         return pupil.attendanceReason
       } else {
-        return 'Did not participate'
+        return resultService.status.didNotParticipate
       }
     }
   },
