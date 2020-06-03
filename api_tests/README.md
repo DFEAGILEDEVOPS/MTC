@@ -17,11 +17,11 @@ Add public key for rvm
 `gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3`
 Install RVM
 `curl -sSL https://get.rvm.io | bash -s stable --ruby`
-Once rvm is installed, we need ruby version 2.4.0, to install use the following:
- `rvm install 2.4.0`
+Once rvm is installed, we need ruby version 2.6.0, to install use the following:
+ `rvm install 2.6.0`
  
-Use ruby version 2.4.0 and set it as your default:
- `rvm use 2.4.0 --default`
+Use ruby version 2.6.0 and set it as your default:
+ `rvm use 2.6.0 --default`
 
 ##Installing required gems
 
