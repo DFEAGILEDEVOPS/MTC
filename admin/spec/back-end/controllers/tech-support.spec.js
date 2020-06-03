@@ -81,7 +81,7 @@ describe('tech-support controller', () => {
       expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
     })
 
-    it('POST: should redirect back to GET when validation fails', async () => {
+    it('POST: should call getCheckViewPage when validation fails', async () => {
       const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       const res = getResponse()
       spyOn(res, 'render')
@@ -94,12 +94,16 @@ describe('tech-support controller', () => {
   })
 
   describe('/received-check-payload', () => {
-    it('GET: should render payload', async () => {
+    it('GET: should send payload as JSON response', async () => {
       const req = getRequest(getReqParams('/tech-support/received-check-payload', 'GET'))
       const res = getResponse()
       req.query.checkCode = checkCode
       spyOn(payloadService, 'getPayload')
+      spyOn(res, 'send')
+      spyOn(res, 'type')
       await sut.getReceivedCheckPayload(req, res, next)
+      expect(res.send).toHaveBeenCalled()
+      expect(res.type).toHaveBeenCalledWith('json')
       expect(next).not.toHaveBeenCalled()
       expect(payloadService.getPayload).toHaveBeenCalledWith(checkCode)
     })

@@ -39,7 +39,7 @@ const controller = {
         formData: {},
         err: error || new ValidationError(),
         summary: undefined,
-        notFound: false
+        found: undefined
       })
     } catch (error) {
       return next(error)
@@ -59,10 +59,10 @@ const controller = {
       if (validationError && validationError.hasError && validationError.hasError()) {
         return controller.getCheckViewPage(req, res, next, validationError)
       }
-      let notFound = false
+      let found = false
       const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
-      if (!checkSummary) {
-        notFound = true
+      if (checkSummary) {
+        found = true
       }
       req.breadcrumbs('Check View')
       res.render('tech-support/check-view', {
@@ -72,7 +72,7 @@ const controller = {
           checkCode: checkCode
         },
         summary: checkSummary,
-        notFound: notFound
+        found: found
       })
     } catch (error) {
       return next(error)
@@ -86,16 +86,16 @@ const controller = {
    */
   getReceivedCheckPayload: async function getReceivedCheckPayload (req, res, next) {
     const checkCode = req.query.checkCode.trim()
-    let response
+    let payload
     try {
-      const payload = await payloadService.getPayload(checkCode)
-      response = payload
+      payload = await payloadService.getPayload(checkCode)
+      console.log('GUY: payload is...')
+      console.dir(payload)
     } catch (error) {
       next(error)
-      // response = { message: 'check not found' }
     }
     res.type('json')
-    res.send(JSON.stringify(response, null, '    '))
+    res.send(JSON.stringify(payload, null, '    '))
   }
 }
 
