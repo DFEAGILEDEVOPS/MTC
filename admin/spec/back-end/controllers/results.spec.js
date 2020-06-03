@@ -50,7 +50,7 @@ describe('results controller:', () => {
       pupils: [
         { fullName: 'Aardvark, Lucy', score: 10, status: '' },
         { fullName: 'Bee, John', score: 10, status: '' },
-        { fullName: 'Cricket, Jimmy', score: null, status: 'Left school' }
+        { fullName: 'Cricket, Jimmy', score: '-', status: 'Left school' }
       ],
       generatedAt: moment('2020-07-01T04:12:34')
     }
@@ -185,7 +185,7 @@ describe('results controller:', () => {
       spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
       spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
       spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
-      spyOn(resultService, 'getPupilResultData').and.returnValue(undefined)
+      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupils: [] })
 
       // exec
       await controller.getViewResultsPage(req, res, next)

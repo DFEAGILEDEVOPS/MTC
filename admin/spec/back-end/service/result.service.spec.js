@@ -220,6 +220,34 @@ describe('result.service', () => {
       const result = resultService.createPupilData(data) // sut
       expect(RA.isArray(result)).toBe(true)
     })
+
+    it('returns the right shaped object', () => {
+      const data = [
+        {
+          foreName: 'Jon',
+          lastName: 'Programmer',
+          middleNames: 'bbb',
+          group_id: 12,
+          dateOfBirth: moment.utc('2020-01-01'),
+          mark: 9,
+          foo: 'bar',
+          urlSlug: 'aaa'
+        }
+      ]
+      const result = resultService.createPupilData(data) // sut
+      expect(result[0]).toEqual(jasmine.objectContaining({
+        // dateOfBirth: '2020-01-01T00:00:00.000Z',
+        foreName: 'Jon',
+        group_id: 12,
+        lastName: 'Programmer',
+        middleNames: 'bbb',
+        score: 9,
+        status: 'Did not participate',
+        urlSlug: 'aaa'
+      }))
+      expect(moment.isMoment(result[0].dateOfBirth)).toBe(true)
+      expect(result[0].dateOfBirth.unix()).toBe(1577836800) // > moment.utc('2020-01-01').unix() = 1577836800
+    })
   })
 
   describe('assignStatus', () => {

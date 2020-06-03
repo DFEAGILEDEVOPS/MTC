@@ -58,12 +58,14 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   try {
     rawResultData = await resultService.getPupilResultData(req.user.schoolId)
-    pupilResultData = rawResultData && rawResultData.pupils
+    if (rawResultData.pupils && Array.isArray(rawResultData.pupils) && rawResultData.pupils.length > 0) {
+      pupilResultData = rawResultData.pupils.map(p => resultPresenter.presentPupilData(p))
+    }
   } catch (error) {
     return next(error)
   }
 
-  if (!pupilResultData || !Array.isArray(pupilResultData) || !pupilResultData.length > 0) {
+  if (!pupilResultData) {
     return res.render('results/view-results-not-found', {
       breadcrumbs: req.breadcrumbs()
     })

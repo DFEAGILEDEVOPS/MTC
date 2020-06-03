@@ -61,7 +61,8 @@ const resultService = {
         group_id: o.group_id,
         dateOfBirth: o.dateOfBirth,
         score: o.mark,
-        status: this.assignStatus(o)
+        status: this.assignStatus(o),
+        urlSlug: o.urlSlug
       }
     })
   },
