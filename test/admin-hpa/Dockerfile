@@ -1,4 +1,4 @@
-FROM ruby:2.4.0
+FROM ruby:2.6.0
 
 COPY ./install-freetds.sh .
 RUN ./install-freetds.sh
