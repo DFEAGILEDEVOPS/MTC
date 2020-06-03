@@ -24,7 +24,7 @@
     "watch": "yarn test:watch"
   },
   "mtc": {
-    "assets-version": "e9a5320543847e1023ae6f30d2b150c7"
+    "assets-version": "dfb8d1dc1f8725f8b0813fdebb08f8fd"
   },
   "engines": {
     "node": ">= 10.16.3"
@@ -67,7 +67,7 @@
     "morgan": "~1.9.0",
     "mssql": "6.1.0",
     "node-dir": "^0.1.17",
-    "openid-client": "^3.7.3",
+    "openid-client": "^3.12.2",
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
