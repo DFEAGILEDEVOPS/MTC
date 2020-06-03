@@ -2,21 +2,24 @@ dist: xenial
 os: linux
 language: node_js
 services:
-  - docker
+- docker
 node_js:
-  - 10.16.3
+- 10.16.3
 env:
+  jobs:
   - IMAGE=admin
   - IMAGE=admin-assets
   - IMAGE=pupil-spa
   - IMAGE=pupil-api
+  global:
+    secure: OEiTwHj93kuIZDRBGTp69y91mQFdL6CymVH9s8EhhDK4HWa+kfnOvpRAH4bBBllrbadAVsHizrOb1GQ0zBqYybe8oYk5Q/aOLR7pTzROTVuDx2bc8Rbem88C8VCpmVXOnuyJtWKRI9wMSmzES3QMthzx11HYjSd2hQvFgCnIbgzQGWm/SZ3vS5+ivTr4r3W4Vf8Pd0c60Rwoco/BGdB3BZQSa6PAtg65sI2yf6mydK2QRkcPszyC/k9vykG1cpfZ6bddhIuY57ZF4rLlcAC6X9Cq6hYMrAvyuH1TezgHsDZ+w7YhE8gmZjfHBuB7DrZm0pgdG/RYtSjodhRMyy+ZfyGW0ePzsAiw05Y/BlXUmhcedrnTKRCmUC4ZRHu3RZJD07gPontx8wiSRIrc5pICiuIYX6njQU3N4EWGb6U5JR+kKh8g8Jq52appQDp/RB4KnU1WJDfc+NCK7Exu8oDEsGjFU/e39kZy83S7Ih84Wu4V5buudCyseJlpaEfL989+lO21sB41hZHX8vFbFendGyPObrYwuF3I91Vt0PArTSkowc9eSZNV5w4BVDfPD7UCxpc0/CIqGTJmCgh2BPPJMjs4YzWw3eLgaLIEagr0765XzcQiBwQ9ol1bteRNDfsC89bq/0jpkeydB5XS1ktsDZs5GumUirWTExmxII5Np8k=
 before_install:
-  - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-  - cd admin-assets
-  - ./copy-assets.sh
-  - cd ..
+- node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
+- cd admin-assets
+- "./copy-assets.sh"
+- cd ..
 script:
-  - cd $IMAGE
-  - docker build .
+- cd $IMAGE
+- docker build .
 after_script:
-  - docker images
+- docker images
