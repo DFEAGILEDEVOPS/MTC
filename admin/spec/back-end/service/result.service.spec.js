@@ -245,6 +245,9 @@ describe('result.service', () => {
         status: 'Did not participate',
         urlSlug: 'aaa'
       }))
+
+      // Handle the dateOfBirth prop as a special case as moment objects are not equal even if they have the same date
+      // It should be output as a moment object just the same as the input - passed through
       expect(moment.isMoment(result[0].dateOfBirth)).toBe(true)
       expect(result[0].dateOfBirth.unix()).toBe(1577836800) // > moment.utc('2020-01-01').unix() = 1577836800
     })
