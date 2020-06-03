@@ -8,6 +8,7 @@ const redisKeyService = require('./redis-key.service')
 const resultDataService = require('../services/data-access/result.data.service')
 const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
+const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
 
 const resultService = {
   status: Object.freeze({
@@ -92,7 +93,9 @@ const resultService = {
     let result = await redisCacheService.get(redisKey)
     if (!result && featureToggles.isFeatureEnabled('schoolResultFetchFromDbEnabled') === true) {
       result = await this.getPupilResultDataFromDb(schoolId)
-      // TODO: jms save result to redis
+      try {
+        await redisCacheService.set(redisKey, result, schoolResultsTtl)
+      } catch (ignored) {}
     }
     return result
   }

@@ -6,6 +6,7 @@ const moment = require('moment')
 const resultDataService = require('../../../services/data-access/result.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const resultService = require('../../../services/result.service')
+const featureToggles = require('feature-toggles')
 
 describe('result.service', () => {
   describe('getPupilResultDataFromDb', () => {
@@ -73,12 +74,15 @@ describe('result.service', () => {
 
     it('sorts the pupils alphabetically - if the lastname, forename and dob are the same it sorts by middlenames', async () => {
       const mockResultData = [
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Zebra' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Xani' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2011-01-01'), middleNames: 'Bea' }
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Zebra' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Xani' },
+        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Bea' }
       ]
       spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
+      // Note: there is a bug in the pupil identification flag service that is causing the Xani record dateOfBirth to be set to
+      // an empty string due to double processing, and the fact that it operates as a presenter and a service.
+      // This manifests as this line of output during the test run: 'Date parameter is not a Date or Moment object: 1 Jan 2013'
       expect(res.pupils[0].middleNames).toEqual('Bea')
       expect(res.pupils[1].middleNames).toEqual('Xani')
       expect(res.pupils[2].middleNames).toEqual('Zebra')
@@ -103,7 +107,8 @@ describe('result.service', () => {
     })
 
     /**
-     * This is a bug in the pupil identification flags service.
+     * This test is disabled due to a bug in the pupil identification flag service that treats the last record as a special
+     * case and mishandles it.
      */
     xit('returns the pupil full name with middle names if pupil differentiation requires a middleName sort', async () => {
       const mockResultData = [
@@ -154,6 +159,7 @@ describe('result.service', () => {
       }
       expect(redisCacheService.get).toHaveBeenCalled()
     })
+
     it('throws an error if school id is not provided', async () => {
       spyOn(redisCacheService, 'get')
       const schoolId = undefined
@@ -165,6 +171,7 @@ describe('result.service', () => {
       }
       expect(redisCacheService.get).not.toHaveBeenCalled()
     })
+
     it('returns undefined if parsing the redis response fails', async () => {
       spyOn(redisCacheService, 'get')
       const schoolId = 1
@@ -175,6 +182,33 @@ describe('result.service', () => {
         fail()
       }
       expect(result).toBeUndefined()
+    })
+
+    it('saves the result to redis if it queried the database', async () => {
+      // setup
+      const schoolId = 1
+      spyOn(redisCacheService, 'get').and.returnValue(null) // initial cache miss from redis
+      spyOn(redisCacheService, 'set') // spy on the write to redis
+      const resultData = {
+        generatedAt: moment('2020-06-03T11:23:45'),
+        schoolId: schoolId,
+        pupils: [
+          { fullName: 'Smith, Jon', score: 10, status: '', group_id: 4, urlSlug: 'aaa' },
+          { fullName: 'Everett, Katy', score: 9, status: '', group_id: 4, urlSlug: 'bbb' }
+        ]
+      }
+      spyOn(resultService, 'getPupilResultDataFromDb').and.returnValue(resultData)
+      spyOn(featureToggles, 'isFeatureEnabled').and.callFake(arg => {
+        if (arg === 'schoolResultFetchFromDbEnabled') { return true }
+        return undefined
+      })
+
+      // exec
+      await resultService.getPupilResultData(schoolId)
+
+      // test
+      expect(resultService.getPupilResultDataFromDb).toHaveBeenCalledTimes(1)
+      expect(redisCacheService.set).toHaveBeenCalledTimes(1)
     })
   })
 
