@@ -75,12 +75,12 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
     is a tracking code and in production mode, eg `NODE_ENV=production`
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
 * SESSION_SECRET - random string; required for session support
-* JWT_TIMEOUT_HOURS - number - the timeout in hours of the JSON Web Token
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
 * DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 * WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
+* FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB - allow the schools results to be retrieved from the DB if not in Redis
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
