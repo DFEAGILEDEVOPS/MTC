@@ -26,6 +26,7 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
+  // @ts-ignore R.head returns a string, but its actually a row object
   return R.prop('cnt', obj)
 }
 
@@ -86,6 +87,7 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
+  // @ts-ignore
   return R.prop('description', obj)
 }
 

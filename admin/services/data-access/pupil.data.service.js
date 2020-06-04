@@ -201,7 +201,7 @@ pupilDataService.sqlUpdate = async (update) => {
 /**
  * Create a new pupil.
  * @param {object} data
- * @return  { insertId: <number>, rowsModified: <number> }
+ * @return  {Promise<import('./sql.service').SqlOperationResult>}
  */
 pupilDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
@@ -261,9 +261,17 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 }
 
 /**
+ * Pupil Token Update
+ * @typedef {Object} PupilTokenUpdate
+ * @property {number} id - pupil id
+ * @property {string} jwtToken - the jwt token
+ * @property {string} jwtSecret - the jwt token secret
+ */
+
+/**
  * Update several pupil tokens in one query
- * @param {id: number, jwtToken: String, jwtSecret: String} pupils
- * @return {Promise}
+ * @param {Array<PupilTokenUpdate>} pupils
+ * @return {Promise<import('./sql.service').SqlOperationResult>}
  */
 pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   const params = []

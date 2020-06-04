@@ -14,8 +14,8 @@ const pupilAccessArrangementsDataService = {}
 pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = async function (pupilId) {
   const sql = `
   SELECT
-    paa.*, 
-    pfs.code AS pupilFontSizeCode, 
+    paa.*,
+    pfs.code AS pupilFontSizeCode,
     pcc.code AS pupilColourContrastCode
   FROM [mtc_admin].[pupilAccessArrangements] paa
   LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
@@ -268,6 +268,7 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
   ]
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
+  // @ts-ignore
   return row && row.pupilColourContrasts_id
 }
 
@@ -290,6 +291,7 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
   ]
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
+  // @ts-ignore
   return row && row.pupilFontSizes_id
 }
 

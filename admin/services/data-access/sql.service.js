@@ -45,7 +45,7 @@ let readonlyPool
  * E.g. 'nvarchar' => 'NVarChar'
  * To get the whole Type for a parameter you need the object stored under this key.
  * @param {string} type
- * @return {string | undefined}
+ * @return {any}
  */
 const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
   // logger.debug(`findDataType('${type}'): called`)
@@ -563,7 +563,7 @@ sqlService.generateMultipleInsertStatements = async (table, data) => {
         const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
         return {
           ...sameParamWithType,
-          name: `${key}${idx}`,
+          name: `${key.toString()}${idx}`,
           value: (sameParamWithType.type.type === 'DATETIMEOFFSETN' ? moment(datum[key]) : datum[key])
         }
       }, R.keys(datum))
@@ -604,10 +604,17 @@ sqlService.generateUpdateStatement = async (table, data) => {
 }
 
 /**
+ * Operation Result
+ * @typedef {Object} SqlOperationResult
+ * @property {number | undefined} insertId - the primary key value of the newly inserted record
+ * @property {number | undefined} rowsModified - the number of rows modified by an update
+ */
+
+/**
  * Create a new record
  * @param {string} tableName
  * @param {object} data
- * @return {Promise} - returns the number of rows modified (e.g. 1)
+ * @return {Promise<SqlOperationResult>} - returns the number of rows modified (e.g. 1)
  */
 sqlService.create = async (tableName, data) => {
   const preparedData = convertMomentToJsDate(data)
