@@ -1,5 +1,6 @@
 'use strict'
 
+const logger = require('./log.service').getLogger()
 const moment = require('moment')
 
 const featureToggles = require('feature-toggles')
@@ -93,6 +94,7 @@ const resultService = {
     const redisKey = redisKeyService.getSchoolResultsKey(schoolId)
     let result = await redisCacheService.get(redisKey)
     if (!result && featureToggles.isFeatureEnabled('schoolResultFetchFromDbEnabled') === true) {
+      logger.debug(`result.service: redis cache miss for school ${schoolId}`)
       result = await this.getPupilResultDataFromDb(schoolId)
       try {
         await redisCacheService.set(redisKey, result, schoolResultsTtl)

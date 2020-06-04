@@ -187,7 +187,7 @@ describe('result.service', () => {
     it('saves the result to redis if it queried the database', async () => {
       // setup
       const schoolId = 1
-      spyOn(redisCacheService, 'get').and.returnValue(null) // initial cache miss from redis
+      spyOn(redisCacheService, 'get').and.returnValue(undefined) // initial cache miss from redis
       spyOn(redisCacheService, 'set') // spy on the write to redis
       const resultData = {
         generatedAt: moment('2020-06-03T11:23:45'),
