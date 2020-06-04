@@ -67,7 +67,7 @@ checkFormV2Service.prepareSubmissionData = async (uploadedFiles, checkFormType) 
 
 /**
  * Identifies whether a familiarisation check form already exists in the db
- * @returns {Boolean}
+ * @returns {Promise<Boolean>}
  */
 checkFormV2Service.hasExistingFamiliarisationCheckForm = async () => {
   const familiarisationCheckForm = await checkFormV2DataService.sqlFindFamiliarisationCheckForm()
@@ -95,7 +95,7 @@ checkFormV2Service.deleteCheckForm = async (urlSlug) => {
 /**
  * Fetches check form name
  * @param {String} urlSlug
- * @returns {String}
+ * @returns {Promise<String>}
  */
 checkFormV2Service.getCheckFormName = async (urlSlug) => {
   const checkForm = await checkFormV2DataService.sqlFindCheckFormByUrlSlug(urlSlug)
@@ -105,7 +105,7 @@ checkFormV2Service.getCheckFormName = async (urlSlug) => {
 /**
  * Fetches check form
  * @param {String} urlSlug
- * @returns {String}
+ * @returns {Promise<String>}
  */
 checkFormV2Service.getCheckForm = async (urlSlug) => {
   const checkForm = await checkFormV2DataService.sqlFindCheckFormByUrlSlug(urlSlug)
@@ -137,7 +137,7 @@ checkFormV2Service.getCheckFormsByCheckWindowIdAndType = async (checkWindow, che
 /**
  * Identifies whether check window has already a familiarisation form assigned
  * @param {Object} checkWindow
- * @returns {Boolean}
+ * @returns {Promise<Boolean>}
  */
 checkFormV2Service.hasAssignedFamiliarisationForm = async (checkWindow) => {
   if (!checkWindow || !checkWindow.id) {

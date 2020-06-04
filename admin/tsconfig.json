@@ -9,6 +9,7 @@
     "sourceMap": true,
     "target": "es6",
     "baseUrl": ".",
+    "skipLibCheck": true
   },
   "exclude": [
     ".nyc_output",
@@ -18,13 +19,14 @@
     "coverage",
     "data",
     "dist",
+    "karma.conf.js",
+    "newrelic.js",
+    "node_modules",
     "public",
+    "run-jasmine.js",
     "spec",
     "tests-integration",
     "views",
-    "karma.conf.js",
-    "newrelic.js",
-    "run-jasmine.js",
     "wallaby.conf.js"
   ]
 }

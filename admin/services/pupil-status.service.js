@@ -55,11 +55,29 @@ const pupilStatusService = {
   },
 
   /**
+ * Process Status Object
+ * @typedef {Object} ProcessStatus
+ * @property {Number} attendanceId
+ * @property {Boolean} checkComplete
+ * @property {Boolean} checkReceived
+ * @property {String} checkStatusCode
+ * @property {Number} currentCheckid
+ * @property {Number} notReceivedExpiryInMinutes
+ * @property {Date} pinExpiresAt
+ * @property {Boolean} pupilCheckComplete
+ * @property {Number} pupilId
+ * @property {Date} pupilLoginDate
+ * @property {Boolean} restartAvailable
+ * @property {Boolean} processingFailed
+ * @property {String} reason
+ */
+
+  /**
    * Return the process status using new pupil status fields
-   * @param {ProcessStatusArg} arg object containing the parameters
+   * @param {ProcessStatus} arg object containing the parameters
    * @return {string}
    */
-  getProcessStatusV2: function (arg) {
+  getProcessStatusV2: function (processStatus) {
     let status = 'N/A'
 
     const {
@@ -76,7 +94,7 @@ const pupilStatusService = {
       restartAvailable,
       processingFailed,
       reason
-    } = arg
+    } = processStatus
 
     if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
       throw new Error('pinExpiresAt must be null or a Moment.moment datetime')
@@ -105,7 +123,7 @@ const pupilStatusService = {
       status = 'Complete'
     } else {
       logger.error(`getProcessStatusV2(): ERROR: Unable to determine status for pupil [${pupilId}] arg was: \n` +
-        JSON.stringify(arg, ' ', 4))
+        JSON.stringify(processStatus, [' '], 4))
     }
     return status
   }
@@ -132,7 +150,7 @@ function isNotReceived (date, minutesToAdd, now) {
 
 /**
  * Test to see if a date has already passed
- * @param {moment.isMoment} date
+ * @param {moment.Moment} date
  * @return {boolean}
  */
 function isExpired (date) {

@@ -17,7 +17,7 @@ uploadedFileService.getFilesize = (file) => {
 /**
  * Get azure blob file size in KB.
  * @param {String} blob
- * @return {Number} size
+ * @return {Promise<Number>} size
  */
 uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blob) {

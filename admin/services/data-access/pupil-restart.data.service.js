@@ -93,7 +93,7 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
 
 /**
  * Find restart reasons
- * @return {Promise.<void>}
+ * @return {Promise<any>}
  */
 pupilRestartDataService.sqlFindRestartReasons = async function () {
   const sql = `

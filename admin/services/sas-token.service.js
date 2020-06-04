@@ -14,15 +14,23 @@ const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 const oneHourInSeconds = 1 * 60 * 60
 let azureQueueService
 
+/**
+ * Sas Token Object
+ * @typedef {Object} SasToken
+ * @property {string} token - the token data
+ * @property {string} url - the token as a url
+ * @property {string} queueName - the queue it is valid for
+ */
+
 const sasTokenService = {
   /**
    *
-   * @param queueName
-   * @param {Moment} expiryDate
+   * @param {string} queueName
+   * @param {moment.Moment} expiryDate
    * @param {Object} serviceImplementation
-   * @return {{token: string, url: string, queueName: string}}
+   * @return {Promise<SasToken>}
    */
-  generateSasToken: async function (queueName, expiryDate, serviceImplementation) {
+  generateSasToken: async function (queueName, expiryDate, serviceImplementation = undefined) {
     const start = performance.now()
     // See if a valid token can be retrieved from redis
     const redisKeyName = redisKeyService.getSasTokenKey(queueName)

@@ -13,7 +13,7 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
  * Get restart reasons
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 restartService.getReasons = async () => {
   return pupilRestartDataService.sqlFindRestartReasons()
@@ -76,9 +76,10 @@ restartService.restart = async (
 
 /**
  * Mark as deleted the latest pupil's restart
- * @param pupilId
- * @param userId
- * @returns {Object} - the pupil obj
+ * @param {string} pupilUrlSlug - the unique pupil uuid
+ * @param {number} userId - id of user deleting restart
+ * @param {number} schoolId - school id of teacher deleting restart
+ * @returns {Promise<Object>} - the pupil obj
  */
 restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   const pupil = await pupilDataService.sqlFindOneBySlug(pupilUrlSlug, schoolId)
@@ -106,9 +107,9 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
 
 /**
  *
- * @param { Number } schoolId
- * @param { Number[] } pupilIds
- * @return {Promise<>}
+ * @param {Number} schoolId
+ * @param {Array<Number>} pupilIds
+ * @return {Promise<void>}
  */
 restartService.validateIncomingPupils = async (schoolId, pupilIds) => {
   const dbPupils = await restartDataService.sqlFindPupilsEligibleForRestartByPupilId(schoolId, pupilIds)

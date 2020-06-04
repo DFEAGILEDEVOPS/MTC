@@ -6,7 +6,7 @@ const resultService = {}
 /**
  * Find pupils with results based on school id and merge with pupil register data
  * @param {Number} schoolId
- * @returns {Object} requestData
+ * @returns {Promise<Object>} requestData
  */
 resultService.getPupilResultData = async (schoolId) => {
   if (!schoolId) {
@@ -25,7 +25,7 @@ resultService.getPupilResultData = async (schoolId) => {
  * Find school score based on check window id
  * @param {Number} schoolId
  * @param {Number} checkWindowId
- * @returns {Object} requestData
+ * @returns {Promise<Object>} requestData
  */
 resultService.getSchoolScore = async (schoolId, checkWindowId) => {
   if (!schoolId) {

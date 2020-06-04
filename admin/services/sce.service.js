@@ -33,7 +33,7 @@ sceService.insertOrUpdateSceSchool = async (schoolId, timezone, countryCode) => 
 
 /**
  * Removes the sce data for a school
- * @param schoolId
+ * @param {string} urn - the unique reference number of the school
  * @return {Promise<object>}
  */
 sceService.removeSceSchool = async (urn) => {
