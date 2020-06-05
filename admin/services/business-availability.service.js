@@ -27,6 +27,7 @@ businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowDa
 /**
  * Return restarts availability
  * @param {Object} checkWindowData
+ * @param {string} timezone
  * @returns {Boolean} live pin generation allowance
  * @throws Will throw an error if the argument passed is not boolean type
  */
@@ -41,7 +42,7 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData, timezone) => 
  * @returns {Boolean} groups allowance
  */
 businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, undefined)
   return pinGenerationEligibilityData.isGroupsPageAccessible
 }
 
@@ -51,7 +52,7 @@ businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
  * @returns {Boolean} groups allowance
  */
 businessAvailabilityService.areAccessArrangementsAllowed = (checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, undefined)
   return pinGenerationEligibilityData.isAccessArrangementsPageAccessible
 }
 
@@ -75,7 +76,7 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
  * @throws Will throw an error if areRestartsAllowed is false
  */
 businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => {
-  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
+  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData, undefined)
   if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error('Restarts are not allowed')
   }
@@ -110,7 +111,7 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  * @param {Number} schoolId
  * @param {Object} checkWindowData
  * @param timezone
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)

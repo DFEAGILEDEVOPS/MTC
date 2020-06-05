@@ -18,7 +18,7 @@ const checkFormService = {
       throw new Error('usedFormIds is not an array')
     }
 
-    if (!availableForms.length > 0) {
+    if (availableForms.length <= 0) {
       throw new Error('There must be at least one form to select')
     }
 

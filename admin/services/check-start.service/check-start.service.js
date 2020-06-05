@@ -241,7 +241,7 @@ checkStartService.initialisePupilCheck = async function (
 /**
  * Return pupil login payloads
  * The payload needs to contain everything the pupil needs to login and take the check
- * @param checkIds
+ * @param {Array<any>} checks
  * @param {number} schoolId - DB PK - school.id
  * @return {Promise<Array>}
  */
