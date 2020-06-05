@@ -114,6 +114,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
 restartService.validateIncomingPupils = async (schoolId, pupilIds) => {
   const dbPupils = await restartDataService.sqlFindPupilsEligibleForRestartByPupilId(schoolId, pupilIds)
   const difference = setValidationService.validate(
+    // @ts-ignore
     pupilIds.map(x => parseInt(x, 10)), // convert incoming strings '99' to numbers 99
     dbPupils // must have an 'id' field to check against
   )

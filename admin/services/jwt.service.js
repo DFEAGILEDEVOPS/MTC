@@ -9,12 +9,18 @@ const pupilDataService = require('./data-access/pupil.data.service')
 
 /** @namespace */
 
+/**
+ * @typedef JwtToken
+ * @property {string} token
+ * @property {string} jwtSecret
+ */
+
 const jwtService = {
   /**
    *
    * @param {Object} pupil
-   * @param {Moment} expiryDate
-   * @return {*}
+   * @param {moment.Moment} expiryDate
+   * @return {Promise<JwtToken>}
    */
   createToken: async (pupil, expiryDate) => {
     if (!(pupil && pupil.id)) {
@@ -48,7 +54,7 @@ const jwtService = {
   /**
    * Verify a token
    * @param {String} token
-   * @return {boolean}
+   * @return {Promise<boolean>}
    */
   verify: async (token) => {
     if (!token) {
@@ -81,7 +87,7 @@ const jwtService = {
   /**
    * Decodes a token
    * @param {String} token
-   * @return {Object}
+   * @return {any}
    */
   decode: (token) => jwt.decode(token)
 }

@@ -8,7 +8,7 @@ const pinService = {}
 /**
  * Get active school Password
  * @param {number} dfeNumber
- * @returns {String}
+ * @returns {Promise<String>}
  */
 pinService.getActiveSchool = async (dfeNumber) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
@@ -21,10 +21,10 @@ pinService.getActiveSchool = async (dfeNumber) => {
 /**
  * Generate timestamp value based on parameters
  * @param {boolean} overrideEnabled
- * @param {moment} overrideValue
- * @param {moment} defaultValue
+ * @param {moment.Moment} overrideValue
+ * @param {moment.Moment} defaultValue
  * @param {string} schoolTimezone
- * @return {moment} pinTimestamp
+ * @returns {moment.Moment}
  */
 
 pinService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {

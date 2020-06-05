@@ -14,10 +14,24 @@ const redisService = require('./data-access/redis-cache.service')
 const startOfDay = () => moment().startOf('day')
 const eightAmToday = () => moment().startOf('day').add(8, 'hours')
 
+/**
+ * Unprepared Check
+ * @typedef {Object} UnpreparedCheck
+ * @property {string} schoolPin
+ * @property {number} pupilPin
+ * @property {string} checkCode
+ * @property {Pupil} pupil
+ */
+
+/**
+* @typedef {Object} Pupil
+* @property {string} uuid
+*/
+
 const service = {
   /**
    * Create the prepared Check and store it in Redis for login at scale
-   * @param {[{object}]} checks the pupil checks to prepare
+   * @param {Array<UnpreparedCheck>} checks the pupil checks to prepare
    * @param {string} schoolTimezone
    * @returns {Promise<void>}
    */
@@ -47,6 +61,7 @@ const service = {
       }
     })
     cacheItems.push(...lookupKeys)
+    // @ts-ignore
     return redisService.setMany(cacheItems)
   },
 
@@ -59,7 +74,7 @@ const service = {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
-    if (!checks.length > 0) {
+    if (checks.length <= 0) {
       // there are no preparedChecks outstanding, e.g the checkPin has already been deleted from the DB
       return
     }

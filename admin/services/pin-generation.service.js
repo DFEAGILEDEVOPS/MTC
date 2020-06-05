@@ -35,9 +35,15 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
 }
 
 /**
+ * @typedef {Object} GeneratedSchoolPassword
+ * @property {string} pin
+ * @property {moment.Moment} pinExpiresAt
+ */
+
+/**
  * Generate school password
  * @param school
- * @returns { pin: string, pinExpiresAt: Moment } || undefined
+ * @returns {GeneratedSchoolPassword | undefined}
  */
 pinGenerationService.generateSchoolPassword = school => {
   if (allowedWords.size < 5) {

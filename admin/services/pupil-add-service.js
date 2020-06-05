@@ -42,6 +42,7 @@ const pupilAddService = {
     }
 
     const saveData = R.omit(['dob-day', 'dob-month', 'dob-year', 'ageReason'], pupilData)
+    // @ts-ignore
     saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
     saveData.upn = R.pathOr('', ['upn'], pupilData).trim().toUpperCase()
 
@@ -84,7 +85,8 @@ const pupilAddService = {
     if (!pupil || pupil.length < 1) {
       return pupilData
     }
-    pupilData = R.omit('dateOfBirth', pupil)
+    // @ts-ignore
+    pupilData = R.omit(['dateOfBirth'], pupil)
     // expand single date field to 3
     pupilData['dob-day'] = pupil.dateOfBirth.format('D')
     pupilData['dob-month'] = pupil.dateOfBirth.format('M')
