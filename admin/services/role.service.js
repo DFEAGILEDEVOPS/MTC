@@ -3,10 +3,16 @@
 const roleDataService = require('./data-access/role.data.service')
 const roles = require('../lib/consts/roles')
 
+/**
+ * @typedef UserRole
+ * @property {string} title
+ * @property {number} id
+ */
+
 const service = {
   /**
    * @param roleName required
-   * @returns undefined or single role
+   * @returns {Promise<UserRole | undefined>}
    */
   findByTitle: async (roleTitle) => {
     if (!roleTitle) {

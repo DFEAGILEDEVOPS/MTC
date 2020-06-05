@@ -30,7 +30,7 @@ const settingService = require('./setting.service')
 /**
  * Find the pupils for the given dfe number
  * @param schoolId
- * @return {Promise<{hdfPupil[]}>}
+ * @return {Promise<any>}
  */
 headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
@@ -63,7 +63,7 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
  * @param schoolId
  * @param checkEndDate
  * @param timezone
- * @returns {Array}
+ * @returns {Promise<boolean>}
  */
 headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
   if (!checkEndDate) {

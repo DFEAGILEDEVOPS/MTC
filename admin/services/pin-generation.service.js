@@ -1,4 +1,4 @@
-const moment = require('moment-timezone')
+const momentTz = require('moment-timezone')
 const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 
@@ -17,8 +17,8 @@ const bannedWords = [
   'dim'
 ]
 
-const fourPmToday = () => moment().startOf('day').add(16, 'hours')
-const endOfDay = () => moment().endOf('day')
+const fourPmToday = () => momentTz().startOf('day').add(16, 'hours')
+const endOfDay = () => momentTz().endOf('day')
 
 const pinGenerationService = {}
 const chars = '23456789'
@@ -37,7 +37,7 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
 /**
  * @typedef {Object} GeneratedSchoolPassword
  * @property {string} pin
- * @property {moment.Moment} pinExpiresAt
+ * @property {import('moment').Moment} pinExpiresAt
  */
 
 /**

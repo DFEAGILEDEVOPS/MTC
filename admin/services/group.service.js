@@ -103,7 +103,7 @@ groupService.update = async (id, group, schoolId) => {
  * @param groupName
  * @param groupPupils
  * @param schoolId
- * @returns {number} id of inserted group
+ * @returns {Promise<number>} id of inserted group
  */
 groupService.create = async (groupName, groupPupils, schoolId) => {
   if (!groupName || !schoolId) {

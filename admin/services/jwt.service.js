@@ -1,8 +1,8 @@
 'use strict'
-const Promise = require('bluebird')
+const bluebird = require('bluebird')
 const moment = require('moment')
-const crypto = Promise.promisifyAll(require('crypto'))
-const jwt = Promise.promisifyAll(require('jsonwebtoken'))
+const crypto = bluebird.promisifyAll(require('crypto'))
+const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
