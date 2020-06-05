@@ -33,4 +33,11 @@ describe('check diagnostics service', () => {
       expect(error.message).toEqual('checkCode is required')
     }
   })
+
+  it('should trim spaces from checkCode before passing to data service', async () => {
+    spyOn(dataService, 'getByCheckCode').and.returnValue([{}])
+    const spacedCheckCode = ` ${checkCode} `
+    await sut.getByCheckCode(spacedCheckCode)
+    expect(dataService.getByCheckCode).toHaveBeenCalledWith(checkCode)
+  })
 })

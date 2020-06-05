@@ -12,7 +12,7 @@ const service = {
     if (!checkCode) {
       throw new Error('checkCode is required')
     }
-    return dataService.getByCheckCode(checkCode)
+    return dataService.getByCheckCode(checkCode.trim())
   }
 }
 
