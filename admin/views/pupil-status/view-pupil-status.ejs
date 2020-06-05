@@ -115,6 +115,19 @@
                 </summary>
                 <div class="govuk-details__text">
                     <% if (pupilStatusViewData.pupilsNotStarted && pupilStatusViewData.pupilsNotStarted.length > 0) { %>
+
+                        <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
+                            <p class="govuk-body govuk-!-font-weight-bold">
+                                    <span class="govuk-warning-text__icon warning-text__icon-small"
+                                          aria-hidden="true">!</span>
+                                The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days.
+                                Please ensure pupils have taken the official check before 4pm
+                                on <%= pupilStatusViewData.liveCheckEndDate %>.
+                                Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
+                                    PINs for the check</a> to continue.
+                            </p>
+                        <% } %>
+
                         <table id="pupil-status" name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
@@ -128,17 +141,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
-                                <p class="govuk-body govuk-!-font-weight-bold">
-                                    <span class="govuk-warning-text__icon warning-text__icon-small"
-                                          aria-hidden="true">!</span>
-                                    The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days.
-                                    Please ensure pupils have taken the official check before 4pm
-                                    on <%= pupilStatusViewData.liveCheckEndDate %>.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
-                                        PINs for the check</a> to continue.
-                                </p>
-                            <% } %>
                             <% pupilStatusViewData.pupilsNotStarted.forEach((p) => { %>
                                 <tr class="govuk-table__row">
                                     <td scope="row" class="govuk-table__cell">
