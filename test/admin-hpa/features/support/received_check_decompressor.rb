@@ -23,7 +23,7 @@ class ReceivedCheckDecompressor
 
   def self.get_archive
     fail 'please pass SCHOOL UUID and CHECK CODE in the format "decompress_achrive_message CF75C899-503E-4FC0-B0B0-D0F9D2AC7610 F3E1DE75-D6E9-4B63-989B-A1D37E0A7FA2"' if ARGV[1].nil?
-    get_row('receivedCheck', ARGV[0], ARGV[1])['archive']
+    get_row('receivedCheck', ARGV[0].downcase, ARGV[1].downcase)['archive']
   end
 
   def self.decompress_archive_message

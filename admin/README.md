@@ -66,11 +66,20 @@ Both will launch the app in development mode on http://localhost:3001/
 dotenv is installed and will load environment variables from a `.env` file stored in the root of the project,
 if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
-* AZURE_STORAGE_CONNECTION_STRING - Storage account for upload file storage and queues.  Upload is only enabled for
-    production environments, but the queues are used by all environments.
+##### Required environment variables
+
+The solution will fail to operate correctly without the following environment variables configured...
+
+* `SQL_TECH_SUPPORT_USER_PASSWORD` - **Required** password for the tech support sql azure user.  automatically created via sql migration
+* `SQL_PUPIL_CENSUS_USER_PASSWORD` - **Required** password for the pupil census sql azure user.  automatically created via sql migration
+* `AZURE_STORAGE_CONNECTION_STRING` - **Required**  Azure Storage account connection string.  Upload is only enabled for
+    production environments, but the queues are used by all environments
+
+##### Optional environment variables
+
 * DEBUG_VERBOSITY - For even more logging when the log level is set to `debug`.  Set to 1 for default logging, 2 for
-    more logging, and 3 for even more.
-* LOG_LEVEL - set to one of `debug`, `info`, `warning`, `error`, `alert`.  Default is `info`.
+    more logging, and 3 for even more
+* LOG_LEVEL - set to one of `debug`, `info`, `warning`, `error`, `alert`.  Default is `info`
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there
     is a tracking code and in production mode, eg `NODE_ENV=production`
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil

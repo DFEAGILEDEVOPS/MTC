@@ -1,0 +1,144 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <% if (err && err.hasError()) { %>
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+        data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          You need to fix the errors on this page before continuing.
+        </h2>
+        <div class="govuk-error-summary__body">
+          <p>See highlighted errors below.</p>
+          <ul class="govuk-list govuk-error-summary__list">
+            <% err.getUniqueFields(['checkCode']).map(f => { %>
+            <% const errors = err.get(f) %>
+            <% if (Array.isArray(errors)) { %>
+            <%  errors.map(e => { %>
+            <li><a href="#<%= f %>"><%= e %></a></li>
+            <% }) } else { %>
+            <li><a href="#<%= f %>"><%= errors %></a></li>
+            <% } %>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <form action="/tech-support/checkview" id="checkViewForm" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group <%= err.isError('checkCode') ? 'govuk-form-group--error' : '' %>">
+          <label class="govuk-label govuk-!-font-weight-bold" for="checkCode">Check Code</label>
+          <% if (err && err.isError('checkCode')) { %>
+          <span class="govuk-error-message"><%= err.get('checkCode') %></span>
+          <% } %>
+          <input type="text" id="checkCode"
+            class="govuk-input govuk-!-width-three-quarters <%= err.isError('checkCode') ? 'govuk-input--error' : '' %>"
+            name="checkCode" />
+        </div>
+        <button type="submit" id="submit-checkcode" class="govuk-button">Submit</button>
+      </form>
+      <% if (found == false) { %>
+        <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+            Check Not Found
+        </div>
+    <% } %>
+      <% if (summary) { %>
+      <table id="checkSummary" name="checkSummary" class="govuk-table govuk-spacious">
+        <caption class="govuk-body govuk-table__caption">Check Summary</caption>
+        <tbody class="govuk-table__body">
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              Check code
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.checkCode %>
+            </td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td scope="col" class="govuk-table__header">
+              Check Id
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.check_id %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+             Type
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.isLiveCheck ? "Live" : "Try It Out"  %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              Status
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.check_desc %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              Created at
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.createdAt %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              School name
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.school_name %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              DfE number
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.dfeNumber %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              Pupil login date
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.pupilLoginDate %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+             Received by server at
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.receivedByServerAt %>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col" class="govuk-table__header">
+              Pin expires at
+            </td>
+            <td class="govuk-table__cell">
+              <%= summary.pinExpiresAt %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Received Check
+            </td>
+            <td>
+              <a id="view-received-check" target="_blank" href="received-check-payload?checkCode=<%= summary.checkCode %>">View Payload</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </div>
+</main>
