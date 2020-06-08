@@ -10,7 +10,6 @@ const dropAzureUser = `DROP USER IF EXISTS ${config.Sql.Application.Username};`
 
 const dropLocalSqlUser = `DROP USER ${config.Sql.Application.Username}; DROP LOGIN ${config.Sql.Application.Username};`
 
-// TODO test on sql azure
 module.exports.generateSql = function () {
   if (config.Sql.Azure.Scale) {
     return dropAzureUser

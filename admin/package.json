@@ -21,7 +21,8 @@
     "purgestorage": "bin/init-dev-storage.js",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "parse-school-changes-csv": "node bin/parse-school-changes-csv.js",
-    "watch": "yarn test:watch"
+    "watch": "yarn test:watch",
+    "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
     "assets-version": "c57c7cfdcaa3ac01233a893dd3c84632"
