@@ -10,7 +10,8 @@ const pupilPresenter = {}
  */
 pupilPresenter.getPupilExampleYear = () => {
   const deductionYears = 8
-  return moment.utc().format('YYYY') - deductionYears
+  const currentYear = parseInt(moment.utc().format('YYYY'), 10)
+  return currentYear - deductionYears
 }
 
 pupilPresenter.getPupilsSortedWithIdentificationFlags = (pupils) => {

@@ -28,7 +28,7 @@ restartService.getReasons = async () => {
  * @param restartFurtherInfo
  * @param userName
  * @param {Number} schoolId - `school.id` database ID
- * @returns {Promise.<void>}
+ * @returns {Promise.<any>}
  */
 restartService.restart = async (
   pupilsList,

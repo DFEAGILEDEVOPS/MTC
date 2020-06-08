@@ -107,13 +107,32 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
 }
 
 /**
+ * @typedef BusinessAvailabilityInfo
+ * @property {boolean} familiarisationWindowStarted,
+ * @property {boolean} familiarisationWindowClosed,
+ * @property {boolean} checkWindowStarted,
+ * @property {boolean} checkWindowClosed,
+ * @property {string} checkWindowYear,
+ * @property {boolean} adminWindowStarted,
+ * @property {boolean} adminWindowClosed,
+ * @property {boolean} hdfAvailable,
+ * @property {boolean} hdfSubmitted,
+ * @property {boolean} canEditArrangements,
+ * @property {boolean} restartsAvailable,
+ * @property {boolean} livePinsAvailable,
+ * @property {boolean} familiarisationPinsAvailable,
+ * @property {boolean} groupsAvailable,
+ * @property {boolean} accessArrangementsAvailable
+ */
+
+/**
  * Returns data for the availability partial
  * @param {Number} schoolId
  * @param {Object} checkWindowData
- * @param timezone
- * @returns {Promise<Object>}
+ * @param {string} timezone
+ * @returns {Promise<BusinessAvailabilityInfo>}
  */
-businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone) => {
+businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone = undefined) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowData.id)

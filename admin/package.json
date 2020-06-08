@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.0",
-    "@types/jest": "^25.2.3",
     "applicationinsights": "^1.7.2",
     "axios": "^0.19.0",
     "azure-storage": "^2.10.2",
@@ -91,9 +90,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
+    "@types/jest": "^25.2.3",
     "@types/moment": "^2.13.0",
     "@types/node": "^12.7.12",
+    "@babel/preset-env": "^7.6.3",
     "@types/ramda": "^0.26.33",
     "chalk": "^3.0.0",
     "command-line-args": "^5.0.2",

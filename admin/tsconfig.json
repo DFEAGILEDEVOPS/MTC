@@ -2,15 +2,16 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
+    "baseUrl": ".",
     "checkJs": true,
-    "noImplicitAny": false,
-    "outDir": "./dist",
     "module": "commonjs",
     "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es6",
-    "baseUrl": ".",
-    "skipLibCheck": true
+    "target": "es6"
   },
   "exclude": [
     ".nyc_output",

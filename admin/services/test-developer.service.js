@@ -105,7 +105,7 @@ checkFormV2Service.getCheckFormName = async (urlSlug) => {
 /**
  * Fetches check form
  * @param {String} urlSlug
- * @returns {Promise<String>}
+ * @returns {Promise<any>}
  */
 checkFormV2Service.getCheckForm = async (urlSlug) => {
   const checkForm = await checkFormV2DataService.sqlFindCheckFormByUrlSlug(urlSlug)

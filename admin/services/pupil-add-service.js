@@ -14,7 +14,7 @@ const pupilAddService = {
    * Add pupil.
    * @param reqBody
    * @param schoolId
-   * @returns {Promise<void>}
+   * @returns {Promise<any>}
    */
   addPupil: async (reqBody, schoolId) => {
     if (!reqBody || reqBody.length < 1 || !schoolId || schoolId.length < 1) {

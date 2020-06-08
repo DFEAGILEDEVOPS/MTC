@@ -3,6 +3,7 @@ const numericOnlyRegExp = new RegExp(numericOnlyPattern)
 const R = require('ramda')
 
 const firstTruthy = ([head, ...tail]) => R.reduce(R.either, head, tail)
+// @ts-ignore
 const makeComparator = (propName) => R.comparator((a, b) => R.lt(R.prop(propName, a), R.prop(propName, b)))
 const sortByProps = (props, list) => R.sort(firstTruthy(R.map(makeComparator, props)), list)
 

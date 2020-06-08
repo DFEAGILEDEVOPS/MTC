@@ -18,7 +18,7 @@ module.exports = class ValidationError {
    *
    * @param {String} field - the html field
    * @param {String} message - the message to display
-   * @return {module.ValidationError}
+   * @return {ValidationError}
    */
   addError (field, message) {
     this.errors[field] = message

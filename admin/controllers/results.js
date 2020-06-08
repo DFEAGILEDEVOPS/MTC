@@ -28,6 +28,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+    // @ts-ignore
     generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)

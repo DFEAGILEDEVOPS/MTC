@@ -10,7 +10,7 @@ const singleCheckFormValidator = {}
 /**
  * Single check form data validation
  * @param {Object} uploadedFile
- * @returns {Array<String>} list of errors
+ * @returns {Promise<Array<String>>} list of errors
  */
 singleCheckFormValidator.validate = async (uploadedFile) => {
   let fileBuffer

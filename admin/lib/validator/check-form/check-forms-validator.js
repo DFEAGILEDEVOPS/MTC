@@ -19,8 +19,10 @@ module.exports.validate = async (uploadedFiles, requestData, existingCheckForms,
 
   const singleFileErrors = await Promise.all(uploadedFiles.map(async (uploadedFile) => singleCheckFormValidator.validate(uploadedFile)))
   const multipleFileErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
+  // @ts-ignore
   const fileErrors = R.flatten(R.concat(singleFileErrors, multipleFileErrors))
   if (fileErrors.length > 0) {
+    // @ts-ignore
     validationError.addError('csvFiles', fileErrors)
   }
   // Missing check form type

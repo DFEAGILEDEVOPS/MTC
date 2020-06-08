@@ -223,6 +223,7 @@ describe('check-start.service', () => {
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         const err = new Error()
+        // @ts-ignore
         err.number = 49999
         throw err
       })

@@ -19,6 +19,7 @@ dateValidator.validate = (validationError, dateData) => {
   const utcDate = dateService.createUTCFromDayMonthYear(dateData.day,
     dateData.month, dateData.year)
   const maxDaysInMonth = utcDate && utcDate.daysInMonth()
+  // @ts-ignore
   const yearWithinRange = isInt(dateData.year, { min: currentYear, max: (currentYear * 1 + 10) })
   const monthWithinRange = isInt(dateData.month, { min: 1, max: 12 })
 
