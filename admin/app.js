@@ -263,8 +263,10 @@ if (config.AZURE_STORAGE_CONNECTION_STRING) {
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates
+  // @ts-ignore
   if (req.isAuthenticated()) {
     res.locals.isAuthenticated = true
+    // @ts-ignore
     res.locals.user = req.user
   } else {
     res.locals.isAuthenticated = false
@@ -275,6 +277,7 @@ app.use(function (req, res, next) {
 
 app.use(function (req, res, next) {
   // make the flash messages available in the locals for use in view templates
+  // @ts-ignore
   res.locals.messages = req.flash()
   next()
 })
@@ -291,6 +294,7 @@ app.use(function (req, res, next) {
   csrf(req, res, next)
 })
 app.use((req, res, next) => {
+  // @ts-ignore
   if (!csrfExcludedPaths.includes(req.url)) res.locals.csrftoken = req.csrfToken()
   next()
 })

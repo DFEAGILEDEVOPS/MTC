@@ -13,6 +13,7 @@ const authModes = require('../lib/consts/auth-modes')
  * @returns {Promise<Strategy>} configured Passport Strategy
  */
 const initSignOnAsync = async () => {
+  // @ts-ignore
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   let issuer
   try {
@@ -57,6 +58,7 @@ const initSignOnAsync = async () => {
  * @returns {void}
  */
 const initSignOnSync = () => {
+  // @ts-ignore
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   logger.debug('discovering dfe signin service issuer...')
   Issuer.discover(config.Auth.dfeSignIn.issuerUrl)
