@@ -7,6 +7,12 @@ const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 
+/**
+ * @param {any} pupilData
+ * @param {number} schoolId
+ * @param {boolean} isMultiplePupilsSubmission
+ * @returns {Promise<ValidationError>}
+ */
 module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission = false) => {
   // TODO: Move to reusable validation service
   const validationError = new ValidationError()

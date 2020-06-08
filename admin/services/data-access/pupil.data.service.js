@@ -72,6 +72,16 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
   return R.head(results)
 }
 
+/**
+ * @typedef {object} PupilData
+ * @property {number} id
+ */
+
+/**
+ * @param {string} urlSlug
+ * @param {number} schoolId
+ * @returns {Promise<PupilData>}
+ */
 pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
@@ -84,6 +94,7 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
       AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
+  // @ts-ignore
   return R.head(results)
 }
 

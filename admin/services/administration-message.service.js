@@ -10,7 +10,7 @@ const serviceMessageRedisKey = 'serviceMessage'
 
 /**
  * Get the current service message
- * @returns {object}
+ * @returns {Promise<any>}
  */
 administrationMessageService.getMessage = async () => {
   let cachedServiceMessage
@@ -71,9 +71,7 @@ administrationMessageService.dropMessage = async (userId) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  const sqlDeleteParams = {}
-  sqlDeleteParams.deletedByUser_id = userId
-  await administrationMessageDataService.sqlDeleteServiceMessage(sqlDeleteParams)
+  await administrationMessageDataService.sqlDeleteServiceMessage()
   return redisCacheService.drop(serviceMessageRedisKey)
 }
 

@@ -21,7 +21,7 @@ accessArrangementsService.getAccessArrangements = async () => {
  * @param {Object} submittedData
  * @param {Number} schoolId
  * @param {Number} userId
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
   const urlSlug = submittedData.pupilUrlSlug || submittedData.urlSlug
@@ -42,7 +42,7 @@ accessArrangementsService.submit = async (submittedData, schoolId, userId) => {
  * @param {Object} pupil
  * @param {Number} schoolId
  * @param {Number} userId
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 accessArrangementsService.prepareData = async (requestData, pupil, schoolId, userId) => {
   const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
@@ -93,7 +93,7 @@ accessArrangementsService.prepareData = async (requestData, pupil, schoolId, use
  * Save access arrangements data
  * @param {Object} pupilAccessArrangements
  * @param {Object} pupil
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 
 accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
