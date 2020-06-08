@@ -26,6 +26,6 @@ describe('random-generator', () => {
     expect(
       function () { randomGenerator.getRandom(10, 'c'.repeat(257)) }
     ).toThrowError(`Argument 'chars' should not have more than 256 characters,
-    otherwise unpredictability will be broken`)
+      otherwise unpredictability will be broken`)
   })
 })
