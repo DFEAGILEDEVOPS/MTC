@@ -282,6 +282,14 @@ class SqlDbHelper
     pupil_pin_res
   end
 
+  def self.get_check_pin(check_id)
+    sql = "SELECT * FROM [mtc_admin].[checkPin] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_pin_res = result.first
+    result.cancel
+    pupil_pin_res
+  end
+
   def self.remove_all_pupil_from_group
     sql = "UPDATE [mtc_admin].[pupil] SET group_id = null"
     result = SQL_CLIENT.execute(sql)
