@@ -13,7 +13,6 @@ const authModes = require('../lib/consts/auth-modes')
  * @returns {Promise<Strategy>} configured Passport Strategy
  */
 const initSignOnAsync = async () => {
-  // @ts-ignore
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   let issuer
   try {
