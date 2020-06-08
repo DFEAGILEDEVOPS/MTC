@@ -85,7 +85,7 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * @param {number} schoolId
  * @param {object} checkEndDate
  * @param {string} timezone
- * @return {Promise<void>}
+ * @return {Promise<any>}
  */
 headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId, checkEndDate, timezone) => {
   const school = await schoolDataService.sqlFindOneById(schoolId)

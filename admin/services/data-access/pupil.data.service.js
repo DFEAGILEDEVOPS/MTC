@@ -212,7 +212,7 @@ pupilDataService.sqlUpdate = async (update) => {
 /**
  * Create a new pupil.
  * @param {object} data
- * @return  {Promise<import('./sql.service').SqlOperationResult>}
+ * @return  {Promise<any>}
  */
 pupilDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
@@ -282,7 +282,7 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 /**
  * Update several pupil tokens in one query
  * @param {Array<PupilTokenUpdate>} pupils
- * @return {Promise<import('./sql.service').SqlOperationResult>}
+ * @return {Promise<any>}
  */
 pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   const params = []
