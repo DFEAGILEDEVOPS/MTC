@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Install JUnit coverage reporter for admin unit tests
           command: cd admin; yarn add --dev jest-junit
-        - run:
+      - run:
           name: Admin unit tests with JUnit as reporter
           command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
           environment:
