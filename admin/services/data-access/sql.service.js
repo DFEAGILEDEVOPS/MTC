@@ -526,8 +526,7 @@ const sqlService = {
           const sameParamWithType = paramsWithTypes.find(({ name }) => name === key)
           return {
             ...sameParamWithType,
-            // @ts-ignore
-            name: `${key}${idx}`,
+            name: `${key.toString()}${idx}`,
             value: (sameParamWithType.type.type === 'DATETIMEOFFSETN' ? moment(datum[key]) : datum[key])
           }
         }, R.keys(datum))

@@ -118,6 +118,7 @@ describe('check-start.service', () => {
 
     test('throws an error if the schoolId is not provided', async () => {
       try {
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, userId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
@@ -127,6 +128,7 @@ describe('check-start.service', () => {
 
     test('throws an error if the userId is not provided', async () => {
       try {
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, undefined, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
@@ -137,6 +139,7 @@ describe('check-start.service', () => {
     test('throws an error if provided with pupilIds that are not a part of the school', async () => {
       try {
         spyOn(logger, 'error')
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('expected to throw')
       } catch (error) {
@@ -145,17 +148,20 @@ describe('check-start.service', () => {
     })
 
     test('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
+      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     test('calls initialisePupilCheck to randomly select a check form', async () => {
+      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('adds config to the database', async () => {
+      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
@@ -191,6 +197,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
@@ -207,6 +214,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
@@ -226,6 +234,7 @@ describe('check-start.service', () => {
         throw err
       })
       try {
+        // @ts-ignore
         await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
@@ -245,6 +254,7 @@ describe('check-start.service', () => {
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         return Promise.resolve(checksWithNoSchoolPins)
       })
+      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
@@ -317,7 +327,7 @@ describe('check-start.service', () => {
 
       test('throws an error if the check form allocation IDs are not supplied', async () => {
         try {
-          await checkStartService.createPupilCheckPayloads()
+          await checkStartService.createPupilCheckPayloads(undefined, undefined)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('checks is not defined')
@@ -326,7 +336,8 @@ describe('check-start.service', () => {
 
       test('throws an error if the check form allocation ID param is not an array', async () => {
         try {
-          await checkStartService.createPupilCheckPayloads({})
+          // @ts-ignore
+          await checkStartService.createPupilCheckPayloads({}, undefined)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('checks must be an array')
