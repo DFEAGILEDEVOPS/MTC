@@ -23,14 +23,14 @@ jobs:
       - restore_cache:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
       - run: cd admin; yarn install --frozen-lockfile
-#      - run:
-#          name: Install JUnit coverage reporter
-#          command: cd admin; yarn add --dev jest-junit
       - run:
-          name: Admin lint and ts compile
-          command: cd admin; yarn lint; rm -rf dist
+        name: Admin lint and ts compile
+        command: cd admin; yarn lint; rm -rf dist
       - run:
-          name: Run tests with JUnit as reporter
+          name: Install JUnit coverage reporter for admin unit tests
+          command: cd admin; yarn add --dev jest-junit
+        - run:
+          name: Admin unit tests with JUnit as reporter
           command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
           environment:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
