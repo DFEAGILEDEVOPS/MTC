@@ -25,7 +25,7 @@ jobs:
       - run: cd admin; yarn install --frozen-lockfile
       - run:
           name: Admin lint and ts compile
-          command: cd admin; yarn lint; rm -rf dist
+          command: cd admin; yarn lintAndBuild; rm -rf dist
       - run:
           name: Install JUnit coverage reporter for admin unit tests
           command: cd admin; yarn add --dev jest-junit
