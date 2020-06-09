@@ -11,8 +11,8 @@ const pupilDataService = require('./data-access/pupil.data.service')
 
 /**
  * @typedef JwtToken
- * @property {string} token
  * @property {string} jwtSecret
+ * @property {string} token
  */
 
 const jwtService = {

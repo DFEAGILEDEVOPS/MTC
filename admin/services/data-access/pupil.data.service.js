@@ -275,8 +275,8 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
  * Pupil Token Update
  * @typedef {Object} PupilTokenUpdate
  * @property {number} id - pupil id
- * @property {string} jwtToken - the jwt token
  * @property {string} jwtSecret - the jwt token secret
+ * @property {string} jwtToken - the jwt token
  */
 
 /**

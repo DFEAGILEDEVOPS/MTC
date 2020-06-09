@@ -17,9 +17,9 @@ let azureQueueService
 /**
  * Sas Token Object
  * @typedef {Object} SasToken
+ * @property {string} queueName - the queue it is valid for
  * @property {string} token - the token data
  * @property {string} url - the token as a url
- * @property {string} queueName - the queue it is valid for
  */
 
 const sasTokenService = {

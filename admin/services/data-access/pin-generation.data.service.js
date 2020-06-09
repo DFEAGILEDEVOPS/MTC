@@ -41,13 +41,13 @@ const serviceToExport = {
 
   /**
    * @typedef CreateCheck
-   * @property {number} pupil_id
    * @property {number} checkForm_id
    * @property {number} checkWindow_id
+   * @property {import('moment').Moment} createdBy_userId
    * @property {boolean} isLiveCheck
    * @property {import('moment').Moment} pinExpiresAt
+   * @property {number} pupil_id
    * @property {number} school_id
-   * @property {import('moment').Moment} createdBy_userId
    */
 
   /**

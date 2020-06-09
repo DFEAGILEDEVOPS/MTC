@@ -108,21 +108,21 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
 
 /**
  * @typedef BusinessAvailabilityInfo
- * @property {boolean} familiarisationWindowStarted,
- * @property {boolean} familiarisationWindowClosed,
- * @property {boolean} checkWindowStarted,
- * @property {boolean} checkWindowClosed,
- * @property {string} checkWindowYear,
- * @property {boolean} adminWindowStarted,
- * @property {boolean} adminWindowClosed,
- * @property {boolean} hdfAvailable,
- * @property {boolean} hdfSubmitted,
- * @property {boolean} canEditArrangements,
- * @property {boolean} restartsAvailable,
- * @property {boolean} livePinsAvailable,
- * @property {boolean} familiarisationPinsAvailable,
- * @property {boolean} groupsAvailable,
  * @property {boolean} accessArrangementsAvailable
+ * @property {boolean} adminWindowClosed
+ * @property {boolean} adminWindowStarted
+ * @property {boolean} canEditArrangements
+ * @property {boolean} checkWindowClosed
+ * @property {boolean} checkWindowStarted
+ * @property {string} checkWindowYear
+ * @property {boolean} familiarisationPinsAvailable
+ * @property {boolean} familiarisationWindowStarted
+ * @property {boolean} familiarisationWindowClosed
+ * @property {boolean} groupsAvailable
+ * @property {boolean} hdfAvailable
+ * @property {boolean} hdfSubmitted
+ * @property {boolean} livePinsAvailable
+ * @property {boolean} restartsAvailable
  */
 
 /**

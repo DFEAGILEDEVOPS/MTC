@@ -64,11 +64,11 @@ const pupilStatusService = {
  * @property {Number} currentCheckid
  * @property {Number} notReceivedExpiryInMinutes
  * @property {Date} pinExpiresAt
+ * @property {Boolean} processingFailed
  * @property {Boolean} pupilCheckComplete
  * @property {Number} pupilId
  * @property {Date} pupilLoginDate
  * @property {Boolean} restartAvailable
- * @property {Boolean} processingFailed
  * @property {String} reason
  */
 

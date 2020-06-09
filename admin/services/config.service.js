@@ -41,29 +41,29 @@ const configService = {
 
   /**
    * @typedef {object} RawPupilConfigData
-   * @property {number} pupilId
-   * @property {number} schoolId
-   * @property {number} loadingTime
-   * @property {number} questionTime
-   * @property {number} checkTime
    * @property {any} accessArrangementCodes
-   * @property {any} fontSizeCode
+   * @property {number} checkTime
    * @property {any} colourContrastCode
+   * @property {any} fontSizeCode
+   * @property {number} loadingTime
+   * @property {number} pupilId
+   * @property {number} questionTime
+   * @property {number} schoolId
    */
 
   /**
   * @typedef {object} StructuredPupilConfig
-  * @property {boolean} numpadRemoval
   * @property {boolean} audibleSounds
+  * @property {number} checkTime
   * @property {boolean} colourContrast
   * @property {any} colourContrastCode
-  * @property {boolean} inputAssistance
-  * @property {number} checkTime
-  * @property {number} loadingTime
-  * @property {number} questionTime
-  * @property {boolean} questionReader
   * @property {boolean} fontSize
+  * @property {boolean} inputAssistance
+  * @property {number} loadingTime
   * @property {boolean} nextBetweenQuestions
+  * @property {boolean} numpadRemoval
+  * @property {boolean} questionReader
+  * @property {number} questionTime
   */
 
   /**

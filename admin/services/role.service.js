@@ -5,8 +5,8 @@ const roles = require('../lib/consts/roles')
 
 /**
  * @typedef UserRole
- * @property {string} title
  * @property {number} id
+ * @property {string} title
  */
 
 const service = {

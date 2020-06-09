@@ -17,10 +17,10 @@ const eightAmToday = () => moment().startOf('day').add(8, 'hours')
 /**
  * Unprepared Check
  * @typedef {Object} UnpreparedCheck
- * @property {string} schoolPin
- * @property {number} pupilPin
  * @property {string} checkCode
  * @property {Pupil} pupil
+ * @property {number} pupilPin
+ * @property {string} schoolPin
  */
 
 /**

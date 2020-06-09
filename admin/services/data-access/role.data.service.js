@@ -8,8 +8,8 @@ const table = '[role]'
 
 /**
  * @typedef UserRole
- * @property {string} title
  * @property {number} id
+ * @property {string} title
  */
 
 const roleDataService = {
