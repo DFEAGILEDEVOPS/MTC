@@ -25,7 +25,7 @@ const payloadDataService = {
     const schoolUrlSlug = res[0].urlSlug
     const table = 'receivedCheck'
     const tableService = azureTableService.getPromisifiedAzureTableService()
-    return tableService.retrieveEntityAsync(table, schoolUrlSlug, checkCode)
+    return tableService.retrieveEntityAsync(table, schoolUrlSlug.toLowerCase(), checkCode.toLowerCase())
   }
 }
 

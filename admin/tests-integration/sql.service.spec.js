@@ -7,10 +7,10 @@ const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
-    console.log('globalDotEnvFile found', globalDotEnvFile)
+    // console.log('globalDotEnvFile found', globalDotEnvFile)
     require('dotenv').config({ path: globalDotEnvFile })
   } else {
-    console.log('No .env file found at project root')
+    console.warn('No .env file found at project root')
   }
 } catch (error) {
   console.error(error)
@@ -619,18 +619,18 @@ describe('sql.service:integration', () => {
       const stm = `
         DECLARE @a Integer,
                 @b Integer;
-        
+
         INSERT INTO [mtc_admin].[integrationTest] (tNVarCharMax)
         VALUES (@text1);
-        
+
         SET @a = SCOPE_IDENTITY();
-        
+
         INSERT INTO [mtc_admin].[integrationTest] (tNVarCharMax)
         VALUES (@text2);
-        
+
         SET @b = SCOPE_IDENTITY();
-        
-        SELECT * FROM [mtc_admin].[integrationTest] WHERE id IN (@a, @b);  
+
+        SELECT * FROM [mtc_admin].[integrationTest] WHERE id IN (@a, @b);
       `
       const params = [
         { name: 'text1', value: 'modifyTransactionWithResponse response #1', type: TYPES.NVarChar },
@@ -666,5 +666,9 @@ describe('sql.service:integration', () => {
       const result = await sql.query(stm1)
       expect(result).toEqual([])
     })
+  })
+
+  describe('uses correct pool when default overridden', () => {
+
   })
 })
