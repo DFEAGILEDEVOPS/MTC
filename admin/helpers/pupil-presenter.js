@@ -10,7 +10,7 @@ const pupilPresenter = {}
  */
 pupilPresenter.getPupilExampleYear = () => {
   const deductionYears = 8
-  const currentYear = parseInt(moment.utc().format('YYYY'), 10)
+  const currentYear = (new Date()).getFullYear() // returns number
   return currentYear - deductionYears
 }
 
