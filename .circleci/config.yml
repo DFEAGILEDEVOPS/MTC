@@ -27,10 +27,13 @@ jobs:
           name: Install JUnit coverage reporter
           command: cd admin; yarn add --dev jest-junit
       - run:
-          name: Run tests with JUnit as reporter
-          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
+          name: Admin - lint, tsc, unit tests & coverage
+          command: cd admin; yarn test
+#      - run:
+#          name: Run tests with JUnit as reporter
+#          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
+#          environment:
+#            JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: cd pupil-spa; yarn install --frozen-lockfile
       - run: cd pupil-spa; yarn run test-single
       - run: cd pupil-api; yarn install --frozen-lockfile
