@@ -28,7 +28,7 @@ controller.getViewResultsPage = async (req, res, next) => {
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    // @ts-ignore
+    // @ts-ignore Could end up being a merge conflict as JMS has fixed this in PR #1653
     generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)

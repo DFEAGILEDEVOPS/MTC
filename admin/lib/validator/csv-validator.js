@@ -19,7 +19,6 @@ module.exports.validate = (dataSet, header, element) => {
   if (dataSetCount < 2) errorArr.push(addBatchFileErrorMessages.hasOneRow)
   if (dataSetCount >= 300) errorArr.push(addBatchFileErrorMessages.exceedsAllowedRows)
   if (errorArr.length > 0) {
-    // @ts-ignore
     validationError.addError(element, errorArr)
   }
   return validationError

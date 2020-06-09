@@ -17,7 +17,7 @@ module.exports = class ValidationError {
   /**
    *
    * @param {String} field - the html field
-   * @param {String} message - the message to display
+   * @param {String | Array<String>} message - the message to display
    * @return {ValidationError}
    */
   addError (field, message) {

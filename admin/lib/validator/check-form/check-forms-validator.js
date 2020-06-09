@@ -22,7 +22,6 @@ module.exports.validate = async (uploadedFiles, requestData, existingCheckForms,
   // @ts-ignore
   const fileErrors = R.flatten(R.concat(singleFileErrors, multipleFileErrors))
   if (fileErrors.length > 0) {
-    // @ts-ignore
     validationError.addError('csvFiles', fileErrors)
   }
   // Missing check form type

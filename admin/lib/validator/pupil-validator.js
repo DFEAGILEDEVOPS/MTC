@@ -159,7 +159,6 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     }
   }
   if (upnErrorArr.length > 0) {
-    // @ts-ignore
     validationError.addError('upn', upnErrorArr)
   }
   return validationError

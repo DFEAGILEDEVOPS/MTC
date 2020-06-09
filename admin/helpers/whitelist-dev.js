@@ -32,8 +32,6 @@ const main = (app) => {
     logger.alert(errorMessage)
     app.use(function (req, res, next) {
       const err = new Error(errorMessage)
-      // @ts-ignore
-      err.status = 500
       next(err)
     })
   }

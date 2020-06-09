@@ -78,7 +78,6 @@ const migratorConfig = {
 const runMigrations = async (version) => {
   await createDatabaseIfNotExists()
 
-  // @ts-ignore
   const postgrator = new Migrator(migratorConfig)
 
   // subscribe to useful events

@@ -141,8 +141,8 @@ module.exports = {
   Monitoring: {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-      CollectDependencies: process.env.APPINSIGHTS_COLLECT_DEPS || true,
-      CollectExceptions: process.env.APPINSIGHTS_COLLECT_EXCEPTIONS || true
+      CollectDependencies: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_DEPS') ? toBool(process.env.APPINSIGHTS_COLLECT_DEPS) : true,
+      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true
     }
   },
   Redis: {

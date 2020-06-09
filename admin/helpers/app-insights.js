@@ -13,7 +13,6 @@ const startInsightsIfConfigured = async () => {
       .setAutoDependencyCorrelation(true)
       .setAutoCollectRequests(true)
       .setAutoCollectPerformance(true)
-      // @ts-ignore
       .setAutoCollectExceptions(config.Monitoring.ApplicationInsights.CollectExceptions)
       .setAutoCollectDependencies(config.Monitoring.ApplicationInsights.CollectDependencies)
       .setAutoCollectConsole(false)

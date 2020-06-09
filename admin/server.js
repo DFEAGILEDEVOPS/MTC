@@ -85,6 +85,5 @@ function onListening () {
     ? 'pipe ' + addr
     : 'port ' + addr.port
   logger.debug('Listening on ' + bind)
-  // @ts-ignore
-  logger.debug(`http://localhost:${addr.port}`)
+  logger.debug(`http://localhost:${port}`)
 }
