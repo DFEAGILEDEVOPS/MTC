@@ -24,8 +24,8 @@ jobs:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
       - run: cd admin; yarn install --frozen-lockfile
       - run:
-        name: Admin lint and ts compile
-        command: cd admin; yarn lint; rm -rf dist
+          name: Admin lint and ts compile
+          command: cd admin; yarn lint; rm -rf dist
       - run:
           name: Install JUnit coverage reporter for admin unit tests
           command: cd admin; yarn add --dev jest-junit
