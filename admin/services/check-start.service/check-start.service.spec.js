@@ -92,10 +92,8 @@ describe('check-start.service', () => {
       spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(mockNewChecks))
-      // @ts-ignore
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      // @ts-ignore
       spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
       spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
       spyOn(configService, 'getBatchConfig').and.returnValue(
@@ -147,18 +145,18 @@ describe('check-start.service', () => {
     })
 
     test('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     test('calls initialisePupilCheck to randomly select a check form', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('adds config to the database', async () => {
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
     })
@@ -193,7 +191,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -209,7 +207,7 @@ describe('check-start.service', () => {
         throw new Error('50001: no school pin found')
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -228,7 +226,7 @@ describe('check-start.service', () => {
         throw err
       })
       try {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -247,7 +245,7 @@ describe('check-start.service', () => {
       spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
         return Promise.resolve(checksWithNoSchoolPins)
       })
-      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, null, checkWindowMock)
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
   })

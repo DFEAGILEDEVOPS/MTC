@@ -11,7 +11,6 @@ const uploadedFileService = {}
  */
 uploadedFileService.getFilesize = (file) => {
   const stats = fs.statSync(file)
-  // @ts-ignore
   return Math.round(R.divide(stats.size, 1024) * 100) / 100
 }
 
@@ -28,7 +27,7 @@ uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blobFile || !blobFile.contentLength) {
     throw new Error('Blob file not found or invalid file')
   }
-  // @ts-ignore
+  // @ts-ignore need to create definition for promisified object
   return Math.round(R.divide(blobFile.contentLength, 1024) * 100) / 100
 }
 

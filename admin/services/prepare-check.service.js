@@ -61,7 +61,6 @@ const service = {
       }
     })
     cacheItems.push(...lookupKeys)
-    // @ts-ignore
     return redisService.setMany(cacheItems)
   },
 
