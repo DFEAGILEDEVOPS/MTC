@@ -204,7 +204,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
   // Compare date fields
   // Admin start date
   if (adminStartDate && adminStartDate.isAfter(adminEndDate, 'days')) {
-    // @ts-ignore
+    // @ts-ignore overly complex implementation that has a hard dependency on the ejs view to ensure elements render when the boolean is passed back
     validationError.addError('adminStartDateAfterAdminEndDate', true)
   }
   if (adminStartDate && adminStartDate.isAfter(familiarisationCheckStartDate)) {
