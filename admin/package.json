@@ -4,7 +4,7 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "lint": "standard",
+    "lint": "standard && tsc",
     "migrate-sql": "node ./data/sql/migrate-sql.js",
     "seed-sql": "node ./data/sql/seed-sql.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
