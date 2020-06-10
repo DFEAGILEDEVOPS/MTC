@@ -5,7 +5,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "./build.sh",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist; rm .env",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "lint": "standard",
     "lintAndBuild": "standard && tsc",
@@ -16,6 +16,7 @@
     "seed-sql": "node ./data/sql/seed-sql.js",
     "sasswatch": "gulp watch",
     "start": "node --max-http-header-size 15000 ./server.js",
+    "start2": "node --max-http-header-size 15000 ./dist/server.js",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
