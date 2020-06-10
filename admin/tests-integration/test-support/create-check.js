@@ -2,7 +2,7 @@
 
 const sqlService = require('../../services/data-access/sql.service')
 
-const createCheck = async function  createCheck (code, isLiveCheck) {
+const createCheck = async function createCheck (code, isLiveCheck) {
   const sql = `
       declare @tvp as [mtc_admin].CheckTableType;
       declare @pupilId int,
@@ -15,7 +15,7 @@ const createCheck = async function  createCheck (code, isLiveCheck) {
         top 1
         @pupilId = id,
         @schoolId = school_id
-      from 
+      from
         [mtc_admin].[vewPupilsEligibleForLivePinGeneration];
 
       INSERT into @tvp
