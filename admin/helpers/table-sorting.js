@@ -11,6 +11,7 @@ const tableSorting = {
 
   /**
    * Sort a list of objects based on a field
+   * @deprecated
    * @param {Array} tableData
    * @param {String} field
    * @param {Boolean} asc
@@ -20,15 +21,34 @@ const tableSorting = {
     return tableData.sort((a, b) => this.comparer(a[field], b[field], asc))
   },
 
+  /**
+   * @deprecated
+   * @param v1
+   * @param v2
+   * @param asc
+   * @return {*}
+   */
   comparer: function (v1, v2, asc) {
     return this.isNumericValue(v1) && this.isNumericValue(v2)
       ? this.getNumberComparisonResult(v1, v2, asc) : this.getStringComparisonResult(v1, v2, asc)
   },
 
+  /**
+   * @deprecated
+   * @param v
+   * @return {boolean}
+   */
   isNumericValue: function (v) {
     return ((typeof v === 'string' && numericOnlyRegExp.test(v)) || typeof v === 'number')
   },
 
+  /**
+   * @deprecated
+   * @param a
+   * @param b
+   * @param asc
+   * @return {number}
+   */
   getStringComparisonResult: function (a, b, asc) {
     if (this.isEmpty(a)) {
       return 1
@@ -43,10 +63,22 @@ const tableSorting = {
     }
   },
 
+  /**
+   * @deprecated
+   * @param a
+   * @param b
+   * @param asc
+   * @return {number}
+   */
   getNumberComparisonResult: function (a, b, asc) {
     return asc ? a - b : b - a
   },
 
+  /**
+   * @deprecated
+   * @param v
+   * @return {boolean}
+   */
   isEmpty: function (v) {
     if ((v === undefined || v === null || v === '')) {
       return true

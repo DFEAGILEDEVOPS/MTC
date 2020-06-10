@@ -35,4 +35,14 @@ describe('redis-key.service', () => {
       expect(sut.getSasTokenKey('fooQueue')).toBe('sasToken:fooQueue')
     })
   })
+
+  describe('getSchoolResultsKey', () => {
+    it('is defined', () => {
+      expect(sut.getSchoolResultsKey).toBeDefined()
+    })
+
+    it('returns the redis key for the school', () => {
+      expect(sut.getSchoolResultsKey(321)).toBe('result:321')
+    })
+  })
 })
