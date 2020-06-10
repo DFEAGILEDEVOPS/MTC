@@ -10,7 +10,7 @@ const pupilCensusProcessingService = {}
  * Processes and bulk imports pupil census
  * @param csvData
  * @param jobId
- * @return {Promise<void>}
+ * @return {Promise<any>}
  */
 pupilCensusProcessingService.process = async (csvData, jobId) => {
   // Fetch all unique school for pupil records

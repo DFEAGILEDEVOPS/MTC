@@ -72,6 +72,16 @@ pupilDataService.sqlFindOneBySlugWithAgeReason = async function (urlSlug, school
   return R.head(results)
 }
 
+/**
+ * @typedef {object} PupilData
+ * @property {number} id
+ */
+
+/**
+ * @param {string} urlSlug
+ * @param {number} schoolId
+ * @returns {Promise<PupilData>}
+ */
 pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
@@ -84,6 +94,7 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
       AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
+  // @ts-ignore
   return R.head(results)
 }
 
@@ -201,7 +212,7 @@ pupilDataService.sqlUpdate = async (update) => {
 /**
  * Create a new pupil.
  * @param {object} data
- * @return  { insertId: <number>, rowsModified: <number> }
+ * @return  {Promise<any>}
  */
 pupilDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
@@ -261,9 +272,17 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
 }
 
 /**
+ * Pupil Token Update
+ * @typedef {Object} PupilTokenUpdate
+ * @property {number} id - pupil id
+ * @property {string} jwtSecret - the jwt token secret
+ * @property {string} jwtToken - the jwt token
+ */
+
+/**
  * Update several pupil tokens in one query
- * @param {id: number, jwtToken: String, jwtSecret: String} pupils
- * @return {Promise}
+ * @param {Array<PupilTokenUpdate>} pupils
+ * @return {Promise<any>}
  */
 pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   const params = []

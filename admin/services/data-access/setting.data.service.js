@@ -6,6 +6,9 @@ const R = require('ramda')
 
 const settingDataService = {}
 
+/**
+ * @returns {Promise<any>}
+ */
 settingDataService.sqlFindOne = async () => {
   const sql = 'SELECT TOP 1 * FROM Settings'
   const result = await sqlService.query(sql)

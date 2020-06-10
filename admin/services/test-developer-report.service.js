@@ -20,7 +20,7 @@ const testDeveloperReportService = {
 
   /**
    * Get existing psychometrician report file
-   * @return {Object}
+   * @return {Promise<Object>}
    */
   downloadFile: async function downloadFile (container, fileName, stream) {
     return azureFileDataService.azureDownloadFileStream(container, fileName, stream)

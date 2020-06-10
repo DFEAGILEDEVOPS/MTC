@@ -15,22 +15,22 @@ const settingService = require('./setting.service')
 
 /**
  * @typedef {Object} hdfPupil
- * @property {string } foreName,
- * @property {string} lastName,
- * @property {string|null} middleNames,
- * @property {Moment.moment} dateOfBirth,
- * @property {string} urlSlug,
- * @property {pupilStatusCode} pupilStatusCode,
- * @property {string} checkStatusCode,
- * @property {number|null} group_id,
- * @property {string|null} reason,
+ * @property {string} checkStatusCode
+ * @property {Moment.moment} dateOfBirth
+ * @property {string } foreName
+ * @property {number|null} group_id
+ * @property {string} lastName
+ * @property {string|null} middleNames
+ * @property {pupilStatusCode} pupilStatusCode
+ * @property {string|null} reason
  * @property {string|null} reasonCode
+ * @property {string} urlSlug
  */
 
 /**
  * Find the pupils for the given dfe number
  * @param schoolId
- * @return {Promise<{hdfPupil[]}>}
+ * @return {Promise<any>}
  */
 headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
@@ -63,7 +63,7 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
  * @param schoolId
  * @param checkEndDate
  * @param timezone
- * @returns {Array}
+ * @returns {Promise<boolean>}
  */
 headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
   if (!checkEndDate) {
@@ -85,7 +85,7 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * @param {number} schoolId
  * @param {object} checkEndDate
  * @param {string} timezone
- * @return {Promise<void>}
+ * @return {Promise<any>}
  */
 headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId, checkEndDate, timezone) => {
   const school = await schoolDataService.sqlFindOneById(schoolId)

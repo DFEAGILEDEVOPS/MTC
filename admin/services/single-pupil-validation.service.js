@@ -16,11 +16,18 @@ const service = {
   },
 
   /**
+  * Pupil Validation Result
+  * @typedef {Object} PupilValidationResult
+  * @property {any} pupil - validated pupil
+  * @property {any} single - csv data
+  */
+
+  /**
    * Validate a single pupil record
    * @param {Array} pupilCsvData - pupilCsvData pupil row data from csv.  ['lastName', 'foreName', 'middleNames', 'dateOfBirth', 'gender', 'upn']
    * @param {object} school
    * @param {Boolean} isMultiplePupilsSubmission
-   * @return {Promise<{pupil: {school_id, upn: string, foreName: *, lastName: *, middleNames: *, gender: *, dateOfBirth: Date}, pupilCsvData: *}>}
+   * @return {Promise<PupilValidationResult>}
    */
   validate: async (pupilCsvData, school, isMultiplePupilsSubmission) => {
     const p = ({
