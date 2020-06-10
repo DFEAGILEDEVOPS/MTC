@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail spyOn afterAll */
+/* global describe beforeAll it afterAll */
 
 const path = require('path')
 const fs = require('fs')
