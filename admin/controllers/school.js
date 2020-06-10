@@ -18,7 +18,7 @@ const controller = {}
  * @param next
  * @returns {Promise<*>}
  */
-controller.getSchoolLandingPage = async (req, res, next) => {
+controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res, next) {
   res.locals.pageTitle = 'School Homepage'
   try {
     const isHelpdeskRole = helpdeskService.isHelpdeskRole(req.user)
