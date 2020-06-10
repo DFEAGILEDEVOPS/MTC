@@ -8,6 +8,7 @@ const pupilIdentificationFlag = {}
  * @returns {Array}
  */
 pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
+  // TODO: Fix issue where the last pupil does not get a middle name in the full name when they should
   pupils.forEach((p, i) => {
     const currentPupil = pupils[i]
     const nextPupil = pupils[i + 1]

@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment-timezone')
 
 const config = require('../config')
@@ -21,14 +22,12 @@ controller.getViewResultsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
   let pupilResultData
-  let generatedAt
-  let redisResult
+  let rawResultData
   let groups
   let checkWindow
   let isHdfSubmitted
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
-    generatedAt = redisResult && redisResult.generatedAt
     groups = await groupService.getGroups(req.user.schoolId)
     isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
   } catch (error) {
@@ -58,8 +57,10 @@ controller.getViewResultsPage = async (req, res, next) => {
   }
 
   try {
-    redisResult = await resultService.getPupilResultData(req.user.schoolId)
-    pupilResultData = redisResult && redisResult.pupilResultData
+    rawResultData = await resultService.getPupilResultData(req.user.schoolId)
+    if (rawResultData.pupils && Array.isArray(rawResultData.pupils) && rawResultData.pupils.length > 0) {
+      pupilResultData = rawResultData.pupils.map(p => resultPresenter.presentPupilData(p))
+    }
   } catch (error) {
     return next(error)
   }
@@ -69,12 +70,10 @@ controller.getViewResultsPage = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs()
     })
   }
+  const generatedAt = resultPresenter.formatGeneratedAtValue(rawResultData.generatedAt)
 
-  const pupilWithStatuses = resultService.assignResultStatuses(pupilResultData)
-  const pupilData = resultPresenter.getResultsViewData(pupilWithStatuses)
-  generatedAt = resultPresenter.formatGeneratedAtValue(generatedAt)
   return res.render('results/view-results', {
-    pupilData,
+    pupilData: pupilResultData,
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
