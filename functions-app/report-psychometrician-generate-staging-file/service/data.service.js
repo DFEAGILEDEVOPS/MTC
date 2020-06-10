@@ -5,7 +5,7 @@ const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
 const R = require('ramda')
-const uuidv4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const moment = require('moment')
 
 const azureFileDataService = require('../../lib/azure-file.data.service')

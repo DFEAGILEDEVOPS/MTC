@@ -12,7 +12,7 @@
     "install-bindings": "func extensions install"
   },
   "dependencies": {
-    "archiver": "^3.1.1",
+    "archiver": "^4.0.1",
     "async": "^3.2.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.2",
@@ -20,7 +20,7 @@
     "device": "^0.3.9",
     "dotenv": "^8.2.0",
     "fast-csv": "^4.1.1",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.1",
     "ioredis": "^4.16.0",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
@@ -31,7 +31,7 @@
     "ramda-adjunct": "^2.25.0",
     "to-bool": "^0.0.1",
     "useragent": "^2.3.0",
-    "uuid": "^3.4.0"
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "jasmine": "^3.5.0",
