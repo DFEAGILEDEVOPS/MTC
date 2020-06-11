@@ -40,9 +40,36 @@ const configService = {
   },
 
   /**
+   * @typedef {object} RawPupilConfigData
+   * @property {any} accessArrangementCodes
+   * @property {number} checkTime
+   * @property {any} colourContrastCode
+   * @property {any} fontSizeCode
+   * @property {number} loadingTime
+   * @property {number} pupilId
+   * @property {number} questionTime
+   * @property {number} schoolId
+   */
+
+  /**
+  * @typedef {object} StructuredPupilConfig
+  * @property {boolean} audibleSounds
+  * @property {number} checkTime
+  * @property {boolean} colourContrast
+  * @property {any} colourContrastCode
+  * @property {boolean} fontSize
+  * @property {boolean} inputAssistance
+  * @property {number} loadingTime
+  * @property {boolean} nextBetweenQuestions
+  * @property {boolean} numpadRemoval
+  * @property {boolean} questionReader
+  * @property {number} questionTime
+  */
+
+  /**
    * Generate the pupil config for a single pupil
-   * @param {pupilId, schoolId, loadingTime, questionTime, checkTime, accessArrangementCodes, fontSizeCode, colourContrastCode} singlePupilConfigData
-   * @return {*|{numpadRemoval, audibleSounds, checkTime, colourContrastCode, inputAssistance, loadingTime, questionReader, colourContrast, fontSize, questionTime, nextBetweenQuestions}}
+   * @param {RawPupilConfigData} singlePupilConfigData
+   * @return {StructuredPupilConfig}
    */
   generateConfig: function generateConfig (singlePupilConfigData) {
     const config = this.getBaseConfig()

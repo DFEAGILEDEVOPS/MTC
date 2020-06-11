@@ -15,16 +15,19 @@ const pupilStatusPresenter = {}
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
   pupilStatusViewData.pupilsWithErrors = pupilStatusPresenter.applyStatusDescriptionChange(
+    // @ts-ignore
     R.filter(p => R.includes(p.status, ['Error in processing', 'Incomplete'], p), pupilStatusData),
     ['Incomplete'],
     'Pupil check not received'
   )
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
+    // @ts-ignore
     R.filter(p => R.includes(p.status, ['Not started', 'PIN generated', 'Logged in', 'Processing', 'Restart'], p), pupilStatusData),
     ['Restart', 'PIN generated', 'Logged in'],
     'Not started'
   )
   pupilStatusViewData.pupilsNotAttending = R.filter(p => !!p.reason, pupilStatusData)
+  // @ts-ignore
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p), pupilStatusData)
 
   pupilStatusViewData.pupilsWithErrorsCount = pupilStatusViewData.pupilsWithErrors.length || 0

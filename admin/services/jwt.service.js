@@ -1,20 +1,26 @@
 'use strict'
-const Promise = require('bluebird')
+const bluebird = require('bluebird')
 const moment = require('moment')
-const crypto = Promise.promisifyAll(require('crypto'))
-const jwt = Promise.promisifyAll(require('jsonwebtoken'))
+const crypto = bluebird.promisifyAll(require('crypto'))
+const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
 
 /** @namespace */
 
+/**
+ * @typedef JwtToken
+ * @property {string} jwtSecret
+ * @property {string} token
+ */
+
 const jwtService = {
   /**
    *
    * @param {Object} pupil
-   * @param {Moment} expiryDate
-   * @return {*}
+   * @param {moment.Moment} expiryDate
+   * @return {Promise<JwtToken>}
    */
   createToken: async (pupil, expiryDate) => {
     if (!(pupil && pupil.id)) {
@@ -48,7 +54,7 @@ const jwtService = {
   /**
    * Verify a token
    * @param {String} token
-   * @return {boolean}
+   * @return {Promise<boolean>}
    */
   verify: async (token) => {
     if (!token) {
@@ -81,7 +87,7 @@ const jwtService = {
   /**
    * Decodes a token
    * @param {String} token
-   * @return {Object}
+   * @return {any}
    */
   decode: (token) => jwt.decode(token)
 }

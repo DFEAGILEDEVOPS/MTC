@@ -5,7 +5,7 @@ const pinValidator = {}
 /**
  * Validate pin
  * @param {string} pin
- * @param {Moment} pinExpiresAt
+ * @param {moment.Moment} pinExpiresAt
  * @returns {Boolean}
  */
 pinValidator.isActivePin = (pin, pinExpiresAt) => {

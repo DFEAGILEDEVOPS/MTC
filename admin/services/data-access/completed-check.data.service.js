@@ -119,6 +119,7 @@ completedCheckDataService.sqlFindOneByCheckCode = async function (checkCode) {
 
   // Hydrate the JSON string in to an object
   const first = R.head(result)
+  // @ts-ignore
   return R.assoc('data', (JSON.parse(first.data)).data, first)
 }
 

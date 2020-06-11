@@ -83,7 +83,7 @@ const dateService = {
    * @param keyDay
    * @param keyMonth
    * @param keyYear
-   * @returns {Moment}
+   * @returns {moment.Moment}
    */
   formatDateFromRequest: function (dateItem, keyDay, keyMonth, keyYear) {
     return moment.utc(
@@ -114,7 +114,7 @@ const dateService = {
    * @param {number|string} day
    * @param {number|string} month
    * @param {number|string} year
-   * @returns {Moment}
+   * @returns {moment.Moment}
    */
   createLocalTimeFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
@@ -131,7 +131,7 @@ const dateService = {
    * @param {number|string} day
    * @param {number|string} month
    * @param {number|string} year
-   * @returns {Moment}
+   * @returns {moment.Moment}
    */
   createUTCFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
@@ -145,7 +145,7 @@ const dateService = {
   },
   /**
    * returns current UTC date and time as moment
-   * @returns {Moment}
+   * @returns {moment.Moment}
    */
   utcNowAsMoment: () => {
     return moment.utc()
@@ -160,7 +160,7 @@ const dateService = {
    * @param {moment.Moment} date
    * @param {moment.Moment} startDate
    * @param {moment.Moment} endDate
-   * @param {string | null} granularity
+   * @param {moment.unitOfTime.StartOf} granularity
    * @returns {boolean}
    */
   isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
